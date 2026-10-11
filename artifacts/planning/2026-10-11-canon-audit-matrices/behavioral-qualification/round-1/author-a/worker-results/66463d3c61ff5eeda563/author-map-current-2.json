@@ -1,0 +1,99 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "66463d3c61ff5eeda563",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "9156a757fd93955348ca5766"
+      ],
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ca0a66d25c90e652baa92f28"
+      ],
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: @element.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "e42353cfc8fe3169b809b996"
+      ],
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/5a93bb0629055f53.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6"
+}

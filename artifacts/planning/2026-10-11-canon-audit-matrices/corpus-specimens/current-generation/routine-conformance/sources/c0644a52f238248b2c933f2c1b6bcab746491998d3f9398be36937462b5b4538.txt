@@ -1,0 +1,28 @@
+id: positive-case
+version: 1.1.0
+name: Positive Case
+description: Refer to the change risk assessment over a symbol the graph holds, with the diff taken from a comparison against a fixed commit.
+variables:
+  reads:
+    - base_ref
+    - positive_diff_scope
+    - positive_target
+  writes:
+    - name: positive_change_risk_verdict
+      type: object
+      description: One rating for the change, the counts it rests on, and the flows a reviewer exercises to cover it.
+required: true
+steps:
+  - kind: routine
+    id: assess-held-symbol
+    routine: gitnexus::change-risk-assessment
+    with:
+      target: "{positive_target}"
+      diff_scope: "{positive_diff_scope}"
+    outputs:
+      change_risk_verdict: positive_change_risk_verdict
+exits:
+  - id: assessed
+    isDefault: true
+outcome:
+  - The run measured what reaches a held symbol, read the flow inventory, measured what the comparison against `{base_ref}` moved, and settled the one rating the three measurements weigh to

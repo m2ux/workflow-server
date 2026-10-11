@@ -1,0 +1,369 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "a1d8d3a7c37ebb442e16",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs/report.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "afeb129e1e03e4f353693950"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/3a2f0d25e0e017f7.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "7b47769dd43afb09823a4b14"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/50a64427faa3df96.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "720f7eeadf6be862dd39b7ab"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability/line-2.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2,
+          "end": 2
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "e00abe344b2cf11c702b34f1"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 4,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "b055cfe76040cd42f5d207a8"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs/summary.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 5,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "e192558242a4ed960c5d7a46"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability/line-2.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 2,
+          "end": 2
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "0782b255d289b2d8aaa260a8"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 1
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "2ec151da2546cd9066780932"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "3641b7b9d54d55df0cc22cb1"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /initialActivity.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2,
+          "end": 2
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "5551fe05b667e60209399004"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "6d000a7587cb7a720d3ce09a"
+      ],
+      "status": "N",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

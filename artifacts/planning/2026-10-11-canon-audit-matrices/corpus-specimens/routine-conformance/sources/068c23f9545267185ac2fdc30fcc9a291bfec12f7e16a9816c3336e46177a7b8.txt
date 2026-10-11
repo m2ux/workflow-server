@@ -1,0 +1,83 @@
+id: reconnaissance
+version: 4.1.0
+name: Reconnaissance
+description: Run codebase reconnaissance and security decomposition.
+variables:
+  reads:
+    - agent_roster
+    - gitnexus_available
+    - planning_folder_path
+  writes:
+    - name: agent_roster
+      type: array
+      description: Roster of agents to dispatch, with per-agent group assignment and supplementary files.
+      defaultValue: []
+    - name: crate_review_roster
+      type: array
+      description: The roster entries whose group performs a crate deep review, in agent order — the graph fans this activity's exit over it, so its length is how many crate reviews run at once. The static-analysis and toolkit groups run beside it as branches of their own.
+    - name: dispatched_results
+      type: array
+      description: Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.
+    - name: domain_map
+      type: object
+      description: Structured domain map partitioned by crate, ready for sub-agent distribution.
+    - name: gathered_results
+      type: object
+      description: Ordered `{ items, dispatch_manifest, completeness }` collection over the expected brief ids.
+    - name: worker_briefs
+      type: array
+      description: Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting codebase reconnaissance (§1.2) — dispatching reconnaissance sub-agent
+  - kind: technique
+    id: compose-reconnaissance-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
+    id: dispatch-reconnaissance-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: verify-reconnaissance-files
+    technique:
+      name: orchestration-patterns::verify-output-files
+      inputs:
+        expected_output_files: r-crate-map.json, r-function-registry.json, r-reconnaissance-data.json
+  - kind: technique
+    id: compose-security-architecture-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
+    id: dispatch-security-architecture-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: verify-security-architecture-file
+    technique:
+      name: orchestration-patterns::verify-output-files
+      inputs:
+        expected_output_files: s-architectural-analysis.json
+  - kind: technique
+    id: map-vulnerability-domains
+    technique: map-vulnerability-domains
+  - kind: technique
+    id: assign-agent-groups
+    technique: dispatch-sub-agents::assign-roster
+  - kind: technique
+    id: route-reconnaissance-leads
+    technique: dispatch-sub-agents::route-leads
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Reconnaissance complete — architecture mapped and function registry built
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Codebase map and function registry available for primary audit dispatch
+  - Security architecture analysis persisted for cross-boundary checks
+  - Every reconnaissance lead routed to a roster agent

@@ -1,0 +1,41 @@
+id: negative-case
+version: 1.1.0
+name: Negative Case
+description: Refer to the group refresh over a group with a member no graph covers.
+variables:
+  reads:
+    - negative_group_name
+  writes:
+    - name: negative_group_freshness_report
+      type: object
+      description: The group's name, when its contract registry last synced, and one freshness entry per member, keyed by the name the registry gives it.
+    - name: negative_contract_registry_stats
+      type: object
+      description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
+    - name: negative_member_rebuild_stats
+      type: object
+      description: The counts the graph of the member rebuilt last holds afterwards. Held here so a rebuild's answer does not land under the name a direct index read writes.
+    - name: negative_unrebuildable_members
+      type: array
+      description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk — naming the member no graph covers by construction.
+    - name: negative_contract_report
+      type: object
+      description: Each contract the rebuilt registry holds with the member publishing it, its kind, and the member it cross-links to.
+required: true
+steps:
+  - kind: routine
+    id: refresh-uncovered-group
+    routine: gitnexus::group-refresh
+    with:
+      group_name: "{negative_group_name}"
+    outputs:
+      group_freshness_report: negative_group_freshness_report
+      contract_registry_stats: negative_contract_registry_stats
+      member_rebuild_stats: negative_member_rebuild_stats
+      unrebuildable_members: negative_unrebuildable_members
+      contract_report: negative_contract_report
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The same run under a group with a member no graph covers named that member among the unrebuildable while it rebuilt the registry over the members it could read, the fallback the refresh promises rather than a failure

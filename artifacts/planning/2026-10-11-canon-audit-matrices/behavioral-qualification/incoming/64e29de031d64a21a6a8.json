@@ -1,0 +1,368 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "64e29de031d64a21a6a8",
+  "attempt": "audit-two-evaluate-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "run.yaml#/steps: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "reason": "run.yaml#/steps/id=delivery: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "f45b86c19f25461cbe667622"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments/envelope: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/name: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369"
+      ],
+      "reason": "deliver.yaml#/steps: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "790b168511688f3580f49f17"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/id: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/technique: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143"
+      ],
+      "reason": "deliver.yaml#/outputs: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "deliver.yaml#/outputs/report: deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "620325a4c3f62c9867a7df90"
+      ],
+      "reason": "deliver.yaml#/inputs: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "reason": "deliver.yaml#/inputs/0: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "run.yaml#@element: The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

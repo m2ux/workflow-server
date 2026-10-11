@@ -1,0 +1,554 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "phase": "map",
+  "worktree_revision": "2e70d2e705892b2e6705cc3728d797226fa3f2b7",
+  "planning_root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2",
+  "assignments": 32,
+  "cells": 396,
+  "dispositions": {
+    "N": 309,
+    "A": 87
+  },
+  "packet_bytes_total": 520408,
+  "packet_bytes_maximum": 19595,
+  "returned_bytes_total": 307690,
+  "returned_bytes_maximum": 13325,
+  "per_assignment_preview_seconds_maximum": 36.87625217437744,
+  "captured_evidence_preparation_to_last_receipt_seconds": 538.3181459903717,
+  "shared_evidence_preparation_to_first_assignment_preview_seconds": 331.5156624317169,
+  "read_chunk_maximum_bytes": 7706,
+  "unique_full_source_blobs": 10,
+  "unique_criteria": 4,
+  "distinct_row_definitions": 52,
+  "exact_instruction_reads": [
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md",
+      "lines": [
+        1,
+        78
+      ],
+      "file_sha256": "befd30ff67933e35c319265022179ba7ac5dbe3ce5d1dc1823ea8216d236cf3e"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md",
+      "lines": [
+        1,
+        52
+      ],
+      "file_sha256": "2312ad99a5027b318e845f553982d97d8dcf2df226d356374855020ca4ed1fcb"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md",
+      "lines": [
+        1,
+        19
+      ],
+      "file_sha256": "3431738a83fa9f401aeb62876cc1e1eb76f2509d75fc33bd57590c629203ee13"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/AGENTS.md",
+      "lines": [
+        1,
+        71
+      ],
+      "file_sha256": "58896f5d8b3044d4274d949e4d2dd674bc4163fb59514acd4027073f7cb6821e"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-receipt.json",
+      "lines": [
+        1,
+        14
+      ],
+      "file_sha256": "da8f5efc9fe04abb24a43913480f1bedbf7e05d9d17e14aa7e7b9df72bd55e55"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+      "lines": [
+        5,
+        42
+      ],
+      "file_sha256": "055e863f90b66ea997d81700a40e939cf1ea14492d66deea4a8bfad14f09cac7"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md",
+      "lines": [
+        1,
+        79
+      ],
+      "file_sha256": "8dcff4d9afa654b65e23537759432743c53b8918d83ab59ed80772667813b0cc"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md",
+      "lines": [
+        1,
+        48
+      ],
+      "file_sha256": "691bf71557a986c67d795896b154470520ee22ca10f4f8d2b74faa2f2ee42d34"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "lines": [
+        3,
+        30
+      ],
+      "file_sha256": "afff3935b62e5fc29bc1d65b07fc1fe414fbd42f11a5934fc0f3942c4859ce0e"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "lines": [
+        572,
+        579
+      ],
+      "file_sha256": "afff3935b62e5fc29bc1d65b07fc1fe414fbd42f11a5934fc0f3942c4859ce0e"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-map.md",
+      "lines": [
+        1,
+        33
+      ],
+      "file_sha256": "ffcdf1473366d8cabfd9a00a12b74e6f81ce4a981e449a59c051502327148391"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/walk-rules.md",
+      "lines": [
+        1,
+        41
+      ],
+      "file_sha256": "251b6f3cd380e357a90ef3a8daca2d641d1e27b9c75d9c1e8e7e4f5d5f4c04b3"
+    }
+  ],
+  "pre_transcript_reads": [
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-map-queue.json",
+      "scope": "full queue; no packet evidence omitted"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/map/62003bc9f869e2ed4100.json",
+      "scope": "first 7800 characters; then key/type metadata and source_excerpts projection under 7800 characters"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources",
+      "scope": "file names only via rg --files"
+    },
+    {
+      "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "scope": "AGENTS path discovery and documentation heading-only searches"
+    },
+    {
+      "path": "/home/mike1/.codex/memories/MEMORY.md",
+      "scope": "required quick memory keyword search returned one unrelated Review registry line, unused for qualification judgments"
+    }
+  ],
+  "required_context_failures": [],
+  "irrelevant_context_observations": [
+    "The mandatory quick memory search returned one unrelated Review registry line; no prior result or outcome was opened or used. Full Audit mode and lifecycle reads include later phase guidance because those whole-document reads are explicit prerequisites."
+  ],
+  "forbidden_context_reads": [],
+  "limitations": [
+    "Only applicability mapping is returned; no evaluation, independent verification, inventory-completeness or audit-completion claim is made.",
+    "The 32 assignment previews share an initial full-source and criterion reading period. Preview-to-receipt elapsed times are measured, but are not isolated total semantic-work times. The shared preparation interval is reported separately.",
+    "Packet and receipt context bounds use the coordinator-provided conservative one-byte-per-token proxy, not a host tokenizer.",
+    "Initial instruction reads preceded the transcript writer; their exact file/range inventory is reconstructed here from observed tool calls."
+  ],
+  "todos": [
+    {
+      "task": "Read applicable skill path and captured inputs",
+      "status": "complete"
+    },
+    {
+      "task": "Map all assigned cells",
+      "status": "complete"
+    },
+    {
+      "task": "Write and validate typed receipts and measurements",
+      "status": "complete"
+    }
+  ],
+  "per_assignment": [
+    {
+      "assignment": "62003bc9f869e2ed4100",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 17835,
+      "returned_bytes": 12668,
+      "preview_to_receipt_seconds": 14.423576593399048,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "7641ffc721c232837baa",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 17397,
+      "returned_bytes": 10638,
+      "preview_to_receipt_seconds": 18.07647180557251,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "1795cf050a3936a880b4",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 16586,
+      "returned_bytes": 10743,
+      "preview_to_receipt_seconds": 20.651864290237427,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "82d5cc1216ad6058a26c",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 18948,
+      "returned_bytes": 11966,
+      "preview_to_receipt_seconds": 22.663636207580566,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "2ad051daae8aa769c918",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 16659,
+      "returned_bytes": 10837,
+      "preview_to_receipt_seconds": 14.549437999725342,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "b40a25bba6118b3dfb38",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 17832,
+      "returned_bytes": 11307,
+      "preview_to_receipt_seconds": 16.71453881263733,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "76d7ebaaabc8f1fb9072",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 18917,
+      "returned_bytes": 10923,
+      "preview_to_receipt_seconds": 19.56310248374939,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "3c99a588d6e4d2c1f7a9",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 18190,
+      "returned_bytes": 11073,
+      "preview_to_receipt_seconds": 20.650522708892822,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "8d8193ec72b0160f2d5a",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 19283,
+      "returned_bytes": 12254,
+      "preview_to_receipt_seconds": 12.28132677078247,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "a87ecc13b44d8b5ab4f8",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 19143,
+      "returned_bytes": 11618,
+      "preview_to_receipt_seconds": 12.715055227279663,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "192385f8097527b0f3b2",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 19595,
+      "returned_bytes": 11142,
+      "preview_to_receipt_seconds": 16.616477489471436,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "ce858df09696160ddfca",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 15,
+      "packet_bytes": 19160,
+      "returned_bytes": 13325,
+      "preview_to_receipt_seconds": 19.465659856796265,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "51ded0c9fdf28fe88dcf",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 4,
+      "packet_bytes": 10003,
+      "returned_bytes": 3254,
+      "preview_to_receipt_seconds": 17.24256730079651,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "b0538131fb3b8e20c6c0",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 4,
+      "packet_bytes": 8058,
+      "returned_bytes": 3119,
+      "preview_to_receipt_seconds": 21.209140062332153,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "1384940538ef3c801aeb",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 4,
+      "packet_bytes": 8791,
+      "returned_bytes": 3682,
+      "preview_to_receipt_seconds": 25.869386434555054,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "1d57d4c24729a7986771",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+      "items": 4,
+      "packet_bytes": 11495,
+      "returned_bytes": 3689,
+      "preview_to_receipt_seconds": 27.172096729278564,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "fd874d2411f1e2b2d054",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 17270,
+      "returned_bytes": 12740,
+      "preview_to_receipt_seconds": 11.522494554519653,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "92195e02cf6614b1a899",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 17561,
+      "returned_bytes": 10631,
+      "preview_to_receipt_seconds": 12.141857624053955,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "eaebb8f780cfbbd93495",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 16810,
+      "returned_bytes": 10597,
+      "preview_to_receipt_seconds": 17.019078254699707,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "46f9496e46046c20c695",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 17498,
+      "returned_bytes": 11517,
+      "preview_to_receipt_seconds": 21.306878805160522,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "8bfc7f1fc79695a5614b",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 17988,
+      "returned_bytes": 11563,
+      "preview_to_receipt_seconds": 9.4595205783844,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "056bce5a830aaf9adc4a",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 19101,
+      "returned_bytes": 11837,
+      "preview_to_receipt_seconds": 11.573188304901123,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "d0f6d7d27207e6c9d9be",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 17899,
+      "returned_bytes": 11362,
+      "preview_to_receipt_seconds": 14.400495767593384,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "4ab899110c65d04c4cea",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 18686,
+      "returned_bytes": 11084,
+      "preview_to_receipt_seconds": 17.159448385238647,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "df405bd5c16d0d2d70b3",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 19406,
+      "returned_bytes": 12030,
+      "preview_to_receipt_seconds": 14.724728107452393,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "3e685d211851272ee178",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 18670,
+      "returned_bytes": 11476,
+      "preview_to_receipt_seconds": 15.681745052337646,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "29e87467b09fe79bebeb",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 19122,
+      "returned_bytes": 10920,
+      "preview_to_receipt_seconds": 18.321877002716064,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "d3b2cfd62358fde883ec",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 15,
+      "packet_bytes": 18857,
+      "returned_bytes": 12674,
+      "preview_to_receipt_seconds": 20.498491048812866,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "3225d077bce7ab4f41f2",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 5,
+      "packet_bytes": 11578,
+      "returned_bytes": 4115,
+      "preview_to_receipt_seconds": 26.45187282562256,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "87340a7581bb70e04e58",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 5,
+      "packet_bytes": 10157,
+      "returned_bytes": 3947,
+      "preview_to_receipt_seconds": 31.70794701576233,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "7c8950517dabe96225f7",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 5,
+      "packet_bytes": 9749,
+      "returned_bytes": 4364,
+      "preview_to_receipt_seconds": 33.680402994155884,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    },
+    {
+      "assignment": "cc5f222afa61fb9ac157",
+      "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+      "items": 5,
+      "packet_bytes": 12164,
+      "returned_bytes": 4595,
+      "preview_to_receipt_seconds": 36.87625217437744,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "work_seconds_limit": 600,
+      "bounds_fit": true
+    }
+  ]
+}

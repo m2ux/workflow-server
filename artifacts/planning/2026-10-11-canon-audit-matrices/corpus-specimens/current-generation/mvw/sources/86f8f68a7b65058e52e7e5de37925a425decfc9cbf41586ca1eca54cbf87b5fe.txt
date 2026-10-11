@@ -1,0 +1,50 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-symptom-trace-conformance
+version: 1.0.0
+title: GitNexus Symptom Trace Conformance Workflow
+description: >-
+  Hold the gitnexus symptom-trace run to two cases. The positive case binds symptom text the graph
+  ranks into flows and a suspect the graph holds, so the run lands the ranked flows, the suspect's
+  connections, the ordered trace of every flow it runs and the call chains reaching it. The negative
+  case binds text no flow matches and a suspect no graph holds, so the ranking lands no flow, the
+  context resolves nothing, no trace is read and the raw query returns no chain — the fallback the
+  run promises for a symptom outside the graph, distinct from a suspect the graph holds and nothing
+  calls.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph every operation in the run addresses.
+    defaultValue: workflow-server
+  - name: positive_symptom_text
+    type: string
+    description: Error text the graph's ranking matches into flows, which the positive case follows.
+    defaultValue: technique not found
+  - name: positive_suspect_symbol
+    type: string
+    description: A symbol the graph holds, whose connections, flow traces and call chains the positive case reads.
+    defaultValue: composeLoaded
+  - name: negative_symptom_text
+    type: string
+    description: Text no flow's keywords match, so the negative case's ranking lands no flow.
+    defaultValue: zzqx quiddity nonesuch
+  - name: negative_suspect_symbol
+    type: string
+    description: A symbol no graph holds, so the negative case's context resolves nothing and its call chains are empty.
+    defaultValue: no_such_symbol_zz
+initialActivity: positive-case
+graph:
+  positive-case:
+    traced: negative-case
+  negative-case:
+    traced: report-cases
+  report-cases:
+    reported: __terminal__

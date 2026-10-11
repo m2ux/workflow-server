@@ -1,0 +1,27 @@
+{
+  "assignment": "b193f57538fc16c1546f",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "independent-adversarial-1",
+  "records": [
+    {
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "disputed",
+      "reason": "The N reason claims emission validation belongs only to Rules and excludes Protocol as operational context. AP-01 Detect at line 9 explicitly covers a technique Protocol instruction or Rules clause. Produce Protocol line 8 directs Emit the report without validation, so this is precisely an emitting Protocol instruction, not a heading, declaration, call or Capability description. The applicability must be A; the candidate exclusion is contradicted by both the source and complete criterion. This is an applicability dispute, not an evaluation finding.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

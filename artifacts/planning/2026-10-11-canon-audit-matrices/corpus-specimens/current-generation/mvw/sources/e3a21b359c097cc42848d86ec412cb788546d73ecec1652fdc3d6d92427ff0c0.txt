@@ -1,0 +1,25 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the public API enumeration over an index where nothing is staged.
+variables:
+  reads:
+    - negative_diff_scope
+  writes:
+    - name: negative_public_api_symbols
+      type: array
+      description: The exported symbols present in an empty diff, each with the file and kind the graph records — empty by construction.
+required: true
+steps:
+  - kind: routine
+    id: enumerate-empty-index
+    routine: gitnexus::public-api-enum
+    with:
+      diff_scope: "{negative_diff_scope}"
+    outputs:
+      public_api_symbols: negative_public_api_symbols
+exits:
+  - id: enumerated
+    isDefault: true
+outcome:
+  - The same run over an index with nothing staged landed an empty set, the fallback the filter promises for a change with no symbols rather than a failure

@@ -1,0 +1,178 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_audit_two",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "evaluate": {
+          "evidence": "Round1 Author remaining72 cells used458.099seconds and25449receiptbytes; AP01 six-cell return4895bytes. Conservative bytes/token1 with worst-observed output margin. Accepted completed work retained.",
+          "output_tokens_per_item": 1024,
+          "seconds_per_item": 8
+        },
+        "inventory": {
+          "evidence": "Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.",
+          "output_tokens_per_item": 1280,
+          "seconds_per_item": 18
+        },
+        "map": {
+          "evidence": "Round 1 required-work pilots: 49 cells in 186.767 seconds and 201.295 seconds; returned JSON 17806 and 41952 bytes. Conservative one-byte token upper bound plus margin yields 1024 output tokens per cell and 6 seconds per cell. Pilot receipts and transcripts are retained; source/tool refresh requires current judgments. One child slot is allocated to each mode's queue within the three-child pool.",
+          "output_tokens_per_item": 1100,
+          "seconds_per_item": 6
+        },
+        "obligations": {
+          "evidence": "Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json",
+          "output_tokens_per_item": 2048,
+          "seconds_per_item": 30
+        },
+        "verify": {
+          "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            1,
+            14
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ]
+      },
+      "input_tokens_estimate": 9079,
+      "output_tokens_estimate": 512,
+      "work_seconds_estimate": 5
+    },
+    "id": "b193f57538fc16c1546f",
+    "items": [
+      "7f339716e8d7474fb2512654"
+    ],
+    "mappings": {
+      "7f339716e8d7474fb2512654": "d0543163ca3f486e9fc8ff7aef5ae2a0e108318c378a423c2d69217e406ce424"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/sources",
+  "cells": {
+    "7f339716e8d7474fb2512654": [
+      "corpus/qualification/techniques/produce.md#/protocol/line-8",
+      "ap:emission-without-validation"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "ap:emission-without-validation": {
+      "end": 14,
+      "family": "Controlled Qualification",
+      "hash": "594d1861f288aaefb98e51a8222a1ab4e84743c06655b95fcd32ba6e9eb8d2c9",
+      "id": "ap:emission-without-validation",
+      "label": "AP-01",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 7,
+      "text": "### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n",
+      "title": "AP-01. emission-without-validation"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "7f339716e8d7474fb2512654": {
+      "actor": "/root",
+      "assignment": "cb12452fe57451b3ce9c",
+      "attempt": "deliberate-negative-candidate",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "fa905f1fbb2fa9cf53cd47ea3626fd0bdc92ce646c7794d02c5f9d148ab395da",
+      "reason": "Protocol instructions are operational context; emission validation is assigned only to Rules clauses.",
+      "status": "N"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/techniques/produce.md#/protocol/line-8": {
+      "address": "/protocol/line-8",
+      "end": 8,
+      "id": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+      "kind": "item",
+      "label": "/protocol/line-8",
+      "origin": "touched",
+      "section": "protocol",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 8,
+      "type": "technique"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 12,
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public."
+    },
+    {
+      "end": 14,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 1,
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n"
+    }
+  ],
+  "supplemental": {}
+}

@@ -1,0 +1,28 @@
+id: report-cases
+version: 1.1.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_graph_inventory
+    - negative_group_name
+    - negative_group_query_report
+    - negative_search_query
+    - positive_graph_inventory
+    - positive_group_name
+    - positive_group_query_report
+    - positive_search_query
+    - unknown_group_graph_inventory
+    - unknown_group_group_name
+    - unknown_group_group_query_report
+    - unknown_group_search_query
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed, so a reader can tell the ranking with results from the one empty across every member, and both from the error an unknown group name draws at the inventory

@@ -1,0 +1,19 @@
+id: find-project
+version: 1.0.0
+name: Find Project
+description: Bind project lookup by title.
+required: true
+steps:
+  - kind: technique
+    id: find-by-title
+    technique:
+      name: github::project::find-project
+      inputs:
+        owner_login: m2ux
+        owner_kind: user
+        project_title: Throwaway library write check
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - Project lookup resolved under github::project::find-project

@@ -1,0 +1,26 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - repo_name
+    - positive_target
+    - positive_impact_report
+    - positive_edit_approved
+    - negative_target
+    - negative_impact_report
+    - negative_edit_approved
+    - low_rating_target
+    - low_rating_impact_report
+    - low_rating_edit_approved
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed, so a reader can tell an approved edit from a held one, a rated symbol from a withheld rating, and a proceed answered at the gate from a seed kept because no gate was presented

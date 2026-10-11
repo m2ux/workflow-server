@@ -1,0 +1,78 @@
+{
+  "actor": "/root",
+  "assignment": "e8ce4e891e03c7b32e3a",
+  "attempt": "root-supporting-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "Read the entire activity: delivery invokes deliver with an explicit argument map. The exact argument names and referenced routine remain available to the AP-02 evaluations.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "Read the entire unchanged routine: envelope input, report exported from emit.report, and emit invoking produce. Its declaration and concrete invocation are distinct mapped contexts.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "Read the complete inherited contract: capability text and the archive destination rule. The leaf declaration and explicit call-chain context carry this rule to DP1 evaluation.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "Read Capability, Outputs, Protocol and both Rules through line12, including each semicolon-separated clause and the destination. This read disposition does not settle any semantic evaluation.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "Read initialActivity and the complete run graph including its sole done destination. Whole-graph termination is covered by DP2 evaluations.",
+      "status": "read"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

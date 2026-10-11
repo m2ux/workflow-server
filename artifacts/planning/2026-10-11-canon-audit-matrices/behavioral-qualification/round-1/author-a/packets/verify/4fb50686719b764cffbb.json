@@ -1,0 +1,2524 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_verify_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "verify": {
+          "evidence": "Initial required-work pilot caps. Measure the first assignment before releasing the remainder; host context comes from session token telemetry.",
+          "output_tokens_per_item": 256,
+          "seconds_per_item": 3
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            1,
+            14
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 98709,
+      "output_tokens_estimate": 12544,
+      "work_seconds_estimate": 147
+    },
+    "id": "4fb50686719b764cffbb",
+    "items": [
+      "69bbe5f010e4e9c6cc42b36b",
+      "4c9b9e3283acb76acd0c593c",
+      "eb0acb5f69509bc093ccb4c4",
+      "8f71acc678543f1dedd6da64",
+      "85d58778322169b7eb358fb2",
+      "e7190e6183add8a7b67d408d",
+      "7a49531ccbd7063bf5c4dd03",
+      "d10a33e1908da3335366adaa",
+      "a3b7b46de80a7e60f06f33aa",
+      "2f83f57df858c2cf145efffc",
+      "1fff788717e68470ea335f4a",
+      "9d43a5459db3bcbd7c1b6759",
+      "cbb292d61ff63c7740d065be",
+      "bbb0ef5214ae8bbcce715c65",
+      "71fd5507f4b74e2ec91c2b3e",
+      "f2a200e38a51bc411ee5e057",
+      "343988e91c335d3bdef76586",
+      "cc39f8b8ebb2b96169d05005",
+      "b1f517596f87f82a15830709",
+      "f30ba6f42d4230bf27814f3a",
+      "ca06cc90126da20e026a0486",
+      "96797ae8488cf51f8878572b",
+      "2e52133101ac058519a8aa51",
+      "8d0a1adc7b4ff87710b48af6",
+      "541cffe238719bcc6a46fe77",
+      "06d002e75cf36ea1b43c83b1",
+      "668f2c03b5c1dfffd6143cc5",
+      "7f339716e8d7474fb2512654",
+      "8f64e24f8a4caa9482d28228",
+      "232c484eaf1003ef830d4ffa",
+      "afeb129e1e03e4f353693950",
+      "7b47769dd43afb09823a4b14",
+      "d9eb0eb2cb8f9fb790e82eee",
+      "720f7eeadf6be862dd39b7ab",
+      "e00abe344b2cf11c702b34f1",
+      "f0f7088daffd00158c0c1032",
+      "e192558242a4ed960c5d7a46",
+      "e3b51412d1cbb5b26dbb8664",
+      "01bc60dde7d03c634b92d11c",
+      "0782b255d289b2d8aaa260a8",
+      "2ec151da2546cd9066780932",
+      "3641b7b9d54d55df0cc22cb1",
+      "5551fe05b667e60209399004",
+      "6d000a7587cb7a720d3ce09a",
+      "8ab5a44208c83cc6801721f8",
+      "9156a757fd93955348ca5766",
+      "ca0a66d25c90e652baa92f28",
+      "d074a916d8f80c61b3aa18a0",
+      "e42353cfc8fe3169b809b996"
+    ],
+    "mappings": {
+      "01bc60dde7d03c634b92d11c": "c4007659bd1a37baa0cba06dd952a318073a7b18bf566aea990b49eef95113d0",
+      "06d002e75cf36ea1b43c83b1": "f8342569f79ef430708a4fb33e06e63f27ffa1edba8c937328e4ab35daeb6023",
+      "0782b255d289b2d8aaa260a8": "b4842f5fd3e66ffabb6763260044db6b3de444dbeb74ee011407897f3cd66d13",
+      "1fff788717e68470ea335f4a": "99c37bdacd701074b25a53330ac2205b84b250cb28bab518ffd6fe1bb1978f3e",
+      "232c484eaf1003ef830d4ffa": "2fbcc9bf04ac11dae7a15343c013892be05b75e601742d306bc74e0eeb559f21",
+      "2e52133101ac058519a8aa51": "7a87aeebc07b14a413deb3fdb964b8ea06a5308afa2f989404f695f213072f9d",
+      "2ec151da2546cd9066780932": "f2f90aa236d159f838db207a23de9fe5a4e335aafce0350f523286f4d53411e6",
+      "2f83f57df858c2cf145efffc": "6b0aaac2c61abe9eadc66d0e12e8eb82b9bd7ccc35d3a7a903deb5a206c05250",
+      "343988e91c335d3bdef76586": "c7779c47834dbd51577eff900d7e5e203e565a29f9f24653254d6974c8b12682",
+      "3641b7b9d54d55df0cc22cb1": "c1cf8237614094b81ffc06be73fe82f4dfad82557ce6c0a6726f0d4fd1a73743",
+      "4c9b9e3283acb76acd0c593c": "0af2d14fb7a4b8a540edb7c0de354836592af911611b01dca7e794172b8d2c3f",
+      "541cffe238719bcc6a46fe77": "3cc431eea447f31f6f5f0a3aaca0328c833bbbfff79408261c35e757cdbd9a7a",
+      "5551fe05b667e60209399004": "709c0c4bd61195fa1b2da665677af7d7d4e92e422515882f94b41a346cfe4f87",
+      "668f2c03b5c1dfffd6143cc5": "9ea83069fbdf46aeb9594370b2d726470f72fa64805aba802e7f474a7b3334b6",
+      "69bbe5f010e4e9c6cc42b36b": "dfcbbe4c91107d24b49cfc02f59638d6fc026181f489d2697c36af2031a306ff",
+      "6d000a7587cb7a720d3ce09a": "92b2655948980ddcee667543caca0163d9f631565811530e1caeb3801463982c",
+      "71fd5507f4b74e2ec91c2b3e": "793bcd37df0926a3b7f78e4a9689c63f3b26ccfa85469df9d96e0a31c05d9f9b",
+      "720f7eeadf6be862dd39b7ab": "8546f53ef1c30e2205a08f805ba99f1bf097052dcf7d66dda330241535c718e3",
+      "7a49531ccbd7063bf5c4dd03": "7d1e785215cf8314f68d2c2606f1ab38c54f539bec2fbe733430e96b60b182ac",
+      "7b47769dd43afb09823a4b14": "587f45d219db60610c5dd53829e3e15551eb7bbbc5c974778164a38420dfac75",
+      "7f339716e8d7474fb2512654": "90f23b72a2336d74f2e2a309eaf08fac1bafcd0d79845201e73f334a78d0d711",
+      "85d58778322169b7eb358fb2": "3194b403802c680d6dbae3d4ab6bef7a5a71a6ec762cf1e30a18923917f171b8",
+      "8ab5a44208c83cc6801721f8": "7c3683b121278575d6eb7d2bb967c9ce46b442373738bbe8a06385d689921c65",
+      "8d0a1adc7b4ff87710b48af6": "e575eb522063f320d34eff4b061570f06b04ef76f8880f3136dc529675f23231",
+      "8f64e24f8a4caa9482d28228": "09d54567829af3ed34dbbef12ddafbf8f24c45a87190c374114c985ffea1a620",
+      "8f71acc678543f1dedd6da64": "23b1ca9d3e4d1883480c0912175ca7db80e8645971697ecc9c653e3c8355b815",
+      "9156a757fd93955348ca5766": "ecc6c22ec89b5985b74e3d07358eacfbd19b2cf65d8cf2b3929150f64dc5789a",
+      "96797ae8488cf51f8878572b": "c6fa63212b2dce78a549402c7f00c6db31e689b23f02ad24c798eda8c57b81ea",
+      "9d43a5459db3bcbd7c1b6759": "7a2bfb4cf1225c63d5df74f27516a4409b373c0cd0d5a24db21a47e131e6a383",
+      "a3b7b46de80a7e60f06f33aa": "6b87a8dde0e1f2a78bc5eb7eb33d0861606f65ba08a385f0a9c10dd6b2ed7a39",
+      "afeb129e1e03e4f353693950": "ece8bbff519a7a517e3dafc97fe744196d62b56ef94bb9e0a73d1bb85000198b",
+      "b1f517596f87f82a15830709": "e643ed645b502ec739df02208b3eefcc57957fff3ac9999db5ed481e9855f6c9",
+      "bbb0ef5214ae8bbcce715c65": "7556af576de89b68ad2b0e953f6882d84657e36553c2e3627d207d3f508101e1",
+      "ca06cc90126da20e026a0486": "41b38f55a7de37c3e133d5c25116e17b219171ac6be1ecd4092dc92d565264e6",
+      "ca0a66d25c90e652baa92f28": "90c7893367ab6b3db89f5e0a380af1dcf5b4a353eb309e716bf55617cb1c65f0",
+      "cbb292d61ff63c7740d065be": "df65ed89e56291e70b4f94b9ce64fd978bc2cd7c5d5b85000007ceb8a6bdd1c9",
+      "cc39f8b8ebb2b96169d05005": "e5ae63e48f0d327570a4bb3e9a28e22c04f1c694300d23b236da30a035e46a5d",
+      "d074a916d8f80c61b3aa18a0": "dc238b9e2a5179db72d4f5d15f2b1cf6347585880bfacec6aed61581ce13586c",
+      "d10a33e1908da3335366adaa": "81b0565b27561466d6808fd4219d08be6b812731074e97f25d709cbb924c266f",
+      "d9eb0eb2cb8f9fb790e82eee": "a1d9450d6c61bad6fd55d815ada61a519386dbfb2adec5484815ed7667c6a943",
+      "e00abe344b2cf11c702b34f1": "ac7fffc2a7af4b542497f7f83630210f646f9f0931b419f01a62920253a1e5c6",
+      "e192558242a4ed960c5d7a46": "d880d3e55c99b8cba49b28439d98849ed77bc1a1a744aecc08cf40120c4b300a",
+      "e3b51412d1cbb5b26dbb8664": "2d663c6d5c4a7f3a8ea5667dd22cd4c8b5ae6e7ee72acfc0806218b2bf3b389e",
+      "e42353cfc8fe3169b809b996": "db82e8a97848684a0b3da479c7d9ade9e062ff5de448deac05634c71e35eb356",
+      "e7190e6183add8a7b67d408d": "3de9e8a6391deeca7bafa3a2cd6c57fd06f9a77f5f642eeac291b84bf44680a1",
+      "eb0acb5f69509bc093ccb4c4": "323e04be7df1974844d324c6c36b309fb637c99161a1842f91f30109ee99104b",
+      "f0f7088daffd00158c0c1032": "a30602798c257ef73fe3d83da419bd1412a46c1044a546da1b67c541d4194735",
+      "f2a200e38a51bc411ee5e057": "d5df8acaa9e7619d08e804f91d68bbf41d71e8d69475f944345c65fa23b8e88e",
+      "f30ba6f42d4230bf27814f3a": "2affc9cc0cfb5531b1d2c02321d3b24b6b12b300bf20bb08b9c1444abdb43cf4"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a/sources",
+  "cells": {
+    "01bc60dde7d03c634b92d11c": [
+      "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "ap:emission-without-validation"
+    ],
+    "06d002e75cf36ea1b43c83b1": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5",
+      "ap:emission-without-validation"
+    ],
+    "0782b255d289b2d8aaa260a8": [
+      "corpus/qualification/activities/run.yaml#/id",
+      "ap:emission-without-validation"
+    ],
+    "1fff788717e68470ea335f4a": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+      "ap:emission-without-validation"
+    ],
+    "232c484eaf1003ef830d4ffa": [
+      "corpus/qualification/routines/deliver.yaml#/outputs/report",
+      "ap:emission-without-validation"
+    ],
+    "2e52133101ac058519a8aa51": [
+      "corpus/qualification/routines/deliver.yaml#/inputs",
+      "ap:emission-without-validation"
+    ],
+    "2ec151da2546cd9066780932": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "ap:emission-without-validation"
+    ],
+    "2f83f57df858c2cf145efffc": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1",
+      "ap:emission-without-validation"
+    ],
+    "343988e91c335d3bdef76586": [
+      "corpus/qualification/workflow.yaml#/graph",
+      "ap:emission-without-validation"
+    ],
+    "3641b7b9d54d55df0cc22cb1": [
+      "corpus/qualification/workflow.yaml#/initialActivity",
+      "ap:emission-without-validation"
+    ],
+    "4c9b9e3283acb76acd0c593c": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "ap:emission-without-validation"
+    ],
+    "541cffe238719bcc6a46fe77": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/rules",
+      "ap:emission-without-validation"
+    ],
+    "5551fe05b667e60209399004": [
+      "corpus/qualification/workflow.yaml#@element",
+      "ap:emission-without-validation"
+    ],
+    "668f2c03b5c1dfffd6143cc5": [
+      "corpus/qualification/techniques/produce.md#/protocol",
+      "ap:emission-without-validation"
+    ],
+    "69bbe5f010e4e9c6cc42b36b": [
+      "corpus/qualification/activities/run.yaml#/steps",
+      "ap:emission-without-validation"
+    ],
+    "6d000a7587cb7a720d3ce09a": [
+      "corpus/qualification/activities/run.yaml#@element",
+      "ap:emission-without-validation"
+    ],
+    "71fd5507f4b74e2ec91c2b3e": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "ap:emission-without-validation"
+    ],
+    "720f7eeadf6be862dd39b7ab": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "ap:emission-without-validation"
+    ],
+    "7a49531ccbd7063bf5c4dd03": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "ap:emission-without-validation"
+    ],
+    "7b47769dd43afb09823a4b14": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "ap:emission-without-validation"
+    ],
+    "7f339716e8d7474fb2512654": [
+      "corpus/qualification/techniques/produce.md#/protocol/line-8",
+      "ap:emission-without-validation"
+    ],
+    "85d58778322169b7eb358fb2": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "ap:emission-without-validation"
+    ],
+    "8ab5a44208c83cc6801721f8": [
+      "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "ap:emission-without-validation"
+    ],
+    "8d0a1adc7b4ff87710b48af6": [
+      "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "ap:emission-without-validation"
+    ],
+    "8f64e24f8a4caa9482d28228": [
+      "corpus/qualification/routines/deliver.yaml#/outputs",
+      "ap:emission-without-validation"
+    ],
+    "8f71acc678543f1dedd6da64": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "ap:emission-without-validation"
+    ],
+    "9156a757fd93955348ca5766": [
+      "corpus/qualification/routines/deliver.yaml#/id",
+      "ap:emission-without-validation"
+    ],
+    "96797ae8488cf51f8878572b": [
+      "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "ap:emission-without-validation"
+    ],
+    "9d43a5459db3bcbd7c1b6759": [
+      "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "ap:emission-without-validation"
+    ],
+    "a3b7b46de80a7e60f06f33aa": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11",
+      "ap:emission-without-validation"
+    ],
+    "afeb129e1e03e4f353693950": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "ap:emission-without-validation"
+    ],
+    "b1f517596f87f82a15830709": [
+      "corpus/qualification/workflow.yaml#/graph/run/done",
+      "ap:emission-without-validation"
+    ],
+    "bbb0ef5214ae8bbcce715c65": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "ap:emission-without-validation"
+    ],
+    "ca06cc90126da20e026a0486": [
+      "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "ap:emission-without-validation"
+    ],
+    "ca0a66d25c90e652baa92f28": [
+      "corpus/qualification/workflow.yaml#/id",
+      "ap:emission-without-validation"
+    ],
+    "cbb292d61ff63c7740d065be": [
+      "corpus/qualification/routines/deliver.yaml#/steps",
+      "ap:emission-without-validation"
+    ],
+    "cc39f8b8ebb2b96169d05005": [
+      "corpus/qualification/workflow.yaml#/graph/run",
+      "ap:emission-without-validation"
+    ],
+    "d074a916d8f80c61b3aa18a0": [
+      "corpus/qualification/techniques/produce.md#@element",
+      "ap:emission-without-validation"
+    ],
+    "d10a33e1908da3335366adaa": [
+      "corpus/qualification/techniques/produce.md#/rules",
+      "ap:emission-without-validation"
+    ],
+    "d9eb0eb2cb8f9fb790e82eee": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "ap:emission-without-validation"
+    ],
+    "e00abe344b2cf11c702b34f1": [
+      "corpus/qualification/techniques/produce.md#/outputs",
+      "ap:emission-without-validation"
+    ],
+    "e192558242a4ed960c5d7a46": [
+      "corpus/qualification/techniques/produce.md#/capability",
+      "ap:emission-without-validation"
+    ],
+    "e3b51412d1cbb5b26dbb8664": [
+      "corpus/qualification/techniques/produce.md#/capability/line-2",
+      "ap:emission-without-validation"
+    ],
+    "e42353cfc8fe3169b809b996": [
+      "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "ap:emission-without-validation"
+    ],
+    "e7190e6183add8a7b67d408d": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "ap:emission-without-validation"
+    ],
+    "eb0acb5f69509bc093ccb4c4": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/id",
+      "ap:emission-without-validation"
+    ],
+    "f0f7088daffd00158c0c1032": [
+      "corpus/qualification/techniques/produce.md#/outputs/report",
+      "ap:emission-without-validation"
+    ],
+    "f2a200e38a51bc411ee5e057": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "ap:emission-without-validation"
+    ],
+    "f30ba6f42d4230bf27814f3a": [
+      "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "ap:emission-without-validation"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "ap:emission-without-validation": {
+      "end": 14,
+      "family": "Controlled Qualification",
+      "hash": "594d1861f288aaefb98e51a8222a1ab4e84743c06655b95fcd32ba6e9eb8d2c9",
+      "id": "ap:emission-without-validation",
+      "label": "AP-01",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 7,
+      "text": "### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n",
+      "title": "AP-01. emission-without-validation"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "01bc60dde7d03c634b92d11c": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "fingerprint": "14865ccc304977b0d24f3c60c49373737090edc58366ceb0862f15950451f2b2",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "status": "N"
+    },
+    "06d002e75cf36ea1b43c83b1": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5dae073ece700b0c4bde04d78692d818ace894f7bd51c0d06f4dd94adb2e1e54",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /rules/line-5.",
+      "status": "N"
+    },
+    "0782b255d289b2d8aaa260a8": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "7803594cd290ae4641e05b6eee78bf669aae7641212d7b1ee0b6ccf2c7e3280a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "status": "N"
+    },
+    "1fff788717e68470ea335f4a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "796c7c84023bdee4ed0fa526611946f9e09315858bc75c6122c9b182dbfe21d8",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: /rules/line-11/clause-2.",
+      "status": "A"
+    },
+    "232c484eaf1003ef830d4ffa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "263ec4c96f92bbd125fe1bb37fee4f74116e099dabf43373550cc9c97409b909",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs/report.",
+      "status": "N"
+    },
+    "2e52133101ac058519a8aa51": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f976fabbe5f78f0205e7dcc19c43fc50fc1d15c6a8a13f66f43e720e198c9864",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /inputs.",
+      "status": "N"
+    },
+    "2ec151da2546cd9066780932": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "fingerprint": "5f3e1b24f3300fe2d2d4b63a782dfa4f1621f33b8f6f16ed98b66122ff45d59d",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "status": "N"
+    },
+    "2f83f57df858c2cf145efffc": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "c16398e9ef44c06146d1c5f109b24759dc9f57ecff3f90ca02a40eb233796d7c",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /rules/line-11/clause-1.",
+      "status": "N"
+    },
+    "343988e91c335d3bdef76586": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 4
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "a69869412401cdca6073bf83f2b6ae6da775f5eb5e350c63ff67c50dd4705ea0",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /graph.",
+      "status": "N"
+    },
+    "3641b7b9d54d55df0cc22cb1": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b5bab4517f322ee964ff4099fc2c8a0713639f196c64157983ffa897389caa9b",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /initialActivity.",
+      "status": "N"
+    },
+    "4c9b9e3283acb76acd0c593c": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "39ad1a3381b8f4e581986ec5cf8167766638926d5f2eaf3d2984592185dff38c",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery.",
+      "status": "N"
+    },
+    "541cffe238719bcc6a46fe77": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 4
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "74cd0567fbef8a65f1f883311856c09e9cad6f7bfd3e99258e7d228cbb113d4a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /rules.",
+      "status": "N"
+    },
+    "5551fe05b667e60209399004": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "fingerprint": "c9a2ae0efd4f7fd03df0ed36a95f3aac8b3d5a8c8b54493696777adbfb5801b2",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "status": "N"
+    },
+    "668f2c03b5c1dfffd6143cc5": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 9,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 7
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d1568b9fef81447528008b098e7e71c98fd716d97ac656f55908565fe13aaad4",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: /protocol.",
+      "status": "A"
+    },
+    "69bbe5f010e4e9c6cc42b36b": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "3c5a6d91b9048f7beb1c2b7c58c5e0e2bec291221278a2852291a9cc24bdc0fb",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps.",
+      "status": "N"
+    },
+    "6d000a7587cb7a720d3ce09a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "fingerprint": "5b55d56e5805ed5380ac27d7d9a56e289eb1b6131a6c2e9e993222ea40adcf80",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: @element.",
+      "status": "N"
+    },
+    "71fd5507f4b74e2ec91c2b3e": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f37ea62bcf17e2b0ca8b454587f78386273259f80f10c792426da0d9f78bd982",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=emit/id.",
+      "status": "N"
+    },
+    "720f7eeadf6be862dd39b7ab": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "28f5da6cacc01fdf55d3ef1052dc6d6f1763e9530f5973274dcfbaffbc7f5fbf",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability/line-2.",
+      "status": "N"
+    },
+    "7a49531ccbd7063bf5c4dd03": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e0b76026e360f6a5aba5747dae3ed747124e70f144f151bcf1469719c2c4e03d",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery/routine/name.",
+      "status": "N"
+    },
+    "7b47769dd43afb09823a4b14": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "a27c47b27667369e2f15660cfb7708edc426977f5bcb193e8652e6d6f50f10ec",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/50a64427faa3df96.",
+      "status": "N"
+    },
+    "7f339716e8d7474fb2512654": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 8,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 8
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2bda29b04ab8dd9ea2596cada66efc5c41b05970019dc289280883d6da977dd4",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: /protocol/line-8.",
+      "status": "A"
+    },
+    "85d58778322169b7eb358fb2": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "050c5d20320428e61784f18155fecfdf452ff8396783cccca739fd47661e2f0c",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery/routine/arguments.",
+      "status": "N"
+    },
+    "8ab5a44208c83cc6801721f8": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f4542ce920141fe0462f19b2c2adeab990fcb98784ba953d7bd1ad089f89a425",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/f075d23fadb959c8.",
+      "status": "N"
+    },
+    "8d0a1adc7b4ff87710b48af6": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e3f3f9dbb7719eb64fa3502235d80b5bc5af29dc8c46880de53664afe3bc725a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /inputs/0.",
+      "status": "N"
+    },
+    "8f64e24f8a4caa9482d28228": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "a0bd7b4ee25539e990f2b72f1f345837fd82287eb793870cde67b9314c626b5a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs.",
+      "status": "N"
+    },
+    "8f71acc678543f1dedd6da64": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "891100707b188942e961870fe5b0cbe4e4bcf0d7f1b4081426d48bbcbf8b8637",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery/routine.",
+      "status": "N"
+    },
+    "9156a757fd93955348ca5766": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "66463d3c61ff5eeda563",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "fe38b04b3681790ae7548f9087fe2a49dbda030cb6993f4047b3dd5db94827ad",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "status": "N"
+    },
+    "96797ae8488cf51f8878572b": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "0fb01960daad734c93f7ac43d3592e1849ecbf877636f1b19088338139a1d64f",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/aa4b84de66a9776b.",
+      "status": "N"
+    },
+    "9d43a5459db3bcbd7c1b6759": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "072b46367f594a3c338e741ec29ce996631f861a588a97715349b49c310d05ce",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /rules/line-12.",
+      "status": "N"
+    },
+    "a3b7b46de80a7e60f06f33aa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "0b24004dd6da711017948a10d889cb78c435ceaa9d9ed85103625e41b54ff5a8",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: /rules/line-11.",
+      "status": "A"
+    },
+    "afeb129e1e03e4f353693950": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "cb7a31f5a37e51dc1e8204a5d6f8596f80080bb3ff4f20fd7d52b892f81cbeb4",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/3a2f0d25e0e017f7.",
+      "status": "N"
+    },
+    "b1f517596f87f82a15830709": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "88d36e547a26bfc621500f8831832c3aacf70f493d00c73b8a28a393d6384e79",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /graph/run/done.",
+      "status": "N"
+    },
+    "bbb0ef5214ae8bbcce715c65": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "25366cb896c4b1fc10a94ecfad9d6b7d466e67672cda26c521b7116f77667d0d",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=emit.",
+      "status": "N"
+    },
+    "ca06cc90126da20e026a0486": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "1607deb2cca92f29e8b88a3dea8d1ce87c269ead86b1a910bc60be6cf74431db",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/475a98faaf5b9a55.",
+      "status": "N"
+    },
+    "ca0a66d25c90e652baa92f28": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "66463d3c61ff5eeda563",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5d393f5d0fad069abc18a27daeb4465dc67078694c3eca2b18de3065ed811fba",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /id.",
+      "status": "N"
+    },
+    "cbb292d61ff63c7740d065be": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2705f142a48674ceb3bdc9f85535ef8f311c57752210bcf4ef701795dde8647d",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps.",
+      "status": "N"
+    },
+    "cc39f8b8ebb2b96169d05005": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e74e2f4b6a40036e7168056c372d73d006e0fc64b655544f34546c7c7af44874",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /graph/run.",
+      "status": "N"
+    },
+    "d074a916d8f80c61b3aa18a0": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "66463d3c61ff5eeda563",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "fingerprint": "4d33ded2a0a824b0b82e76549e8d9bff6fda7f95cec754de84553803a44ebae5",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: @element.",
+      "status": "A"
+    },
+    "d10a33e1908da3335366adaa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "3b8bd7f14ec537d79f7112e9b44d53ea4ea94b4b14d61aba621f1e981edd7096",
+      "reason": "AP-01 scopes emitting Protocol instructions and Rules clauses. This row contains the report-emission directive at produce line 8 or line 11 clause 2; whether validation is required belongs to evaluation. Row: /rules.",
+      "status": "A"
+    },
+    "d9eb0eb2cb8f9fb790e82eee": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b4603c2a40c131b4f69fa92191940439ac5db7fb8c3b3d7044769270b253e169",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability.",
+      "status": "N"
+    },
+    "e00abe344b2cf11c702b34f1": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 4
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "4b4ab2545f3faadfd227fdf5136cb9f9699f909e8eb3dbb90608516c47f9592c",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs.",
+      "status": "N"
+    },
+    "e192558242a4ed960c5d7a46": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "cfc16cd3860e08f2203471c5edbd790220dc354853ed1f66362da99d3c0d09c2",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability.",
+      "status": "N"
+    },
+    "e3b51412d1cbb5b26dbb8664": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "83d31f380a4e892acdaef3001485563744267042fa049c2cb010d12c630f138a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /capability/line-2.",
+      "status": "N"
+    },
+    "e42353cfc8fe3169b809b996": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "66463d3c61ff5eeda563",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "0eb23e3c0ba7bc91f54ad1209351a02b7a7ad8935494a576fd241ab7328d3e5a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/5a93bb0629055f53.",
+      "status": "N"
+    },
+    "e7190e6183add8a7b67d408d": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "18ef45a0b850b76c73e2506205252ff624dcd00fb070d8f51a53d45757ef6b28",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery/routine/arguments/envelope.",
+      "status": "N"
+    },
+    "eb0acb5f69509bc093ccb4c4": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "be688e5e1e0d68e3fa7d",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f4b3b23d66c5716decd71e8c70f82dedcba0253935d419f272c9b93bf9ef77ac",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=delivery/id.",
+      "status": "N"
+    },
+    "f0f7088daffd00158c0c1032": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1f1f5721a474496d9db4",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2e3574b504ebfa770db9d23fc05ccf654a0a55a5d29ccea02cbc8458127b6d54",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /outputs/report.",
+      "status": "N"
+    },
+    "f2a200e38a51bc411ee5e057": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 6
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "31e4b9fd7b6d46811df6703a49760e43dd7caba4508cd0b7bdcdf06369b2a3ea",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses directing emission. This row is a declaration, description, retention/destination constraint, identifier or call/binding/graph construct and contains no emitting instruction. Row: /steps/id=emit/technique.",
+      "status": "N"
+    },
+    "f30ba6f42d4230bf27814f3a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "deb77f8732eb0fa2a114",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "39c80f3b1944635151c5114c6e6d39bd35802e32438433fdfed79ca93b08751a",
+      "reason": "AP-01 scopes technique Protocol instructions and Rules clauses. This row is a call, graph or inheritance relationship, not an emitting instruction; call/binding/graph constructs are expressly outside its emitting construct. Row: @relationship/3b27fd01db44f877.",
+      "status": "N"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/activities/run.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery": {
+      "address": "/steps/id=delivery",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "kind": "section",
+      "label": "/steps/id=delivery",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/id": {
+      "address": "/steps/id=delivery/id",
+      "end": 3,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/id",
+      "kind": "item",
+      "label": "/steps/id=delivery/id",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine": {
+      "address": "/steps/id=delivery/routine",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments": {
+      "address": "/steps/id=delivery/routine/arguments",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine/arguments",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope": {
+      "address": "/steps/id=delivery/routine/arguments/envelope",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/arguments/envelope",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name": {
+      "address": "/steps/id=delivery/routine/name",
+      "end": 5,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/name",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/routines/deliver.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "consumer",
+      "section": "id",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs": {
+      "address": "/outputs",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs/report": {
+      "address": "/outputs/report",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+      "kind": "item",
+      "label": "/outputs/report",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit": {
+      "address": "/steps/id=emit",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "kind": "section",
+      "label": "/steps/id=emit",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id": {
+      "address": "/steps/id=emit/id",
+      "end": 5,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "kind": "item",
+      "label": "/steps/id=emit/id",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique": {
+      "address": "/steps/id=emit/technique",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "kind": "item",
+      "label": "/steps/id=emit/technique",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 6,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7": {
+      "address": "@relationship/3a2f0d25e0e017f7",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "kind": "relationship",
+      "label": "produce",
+      "origin": "consumer",
+      "relationship": {
+        "address": "/steps/id=emit/technique",
+        "context": [],
+        "label": "produce",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96": {
+      "address": "@relationship/50a64427faa3df96",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "kind": "relationship",
+      "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+      "origin": "consumer",
+      "relationship": {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/workflow.yaml"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules": {
+      "address": "/rules",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5": {
+      "address": "/rules/line-5",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5",
+      "kind": "item",
+      "label": "/rules/line-5",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "context",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/produce.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/produce.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs": {
+      "address": "/outputs",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs/report": {
+      "address": "/outputs/report",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs/report",
+      "kind": "section",
+      "label": "/outputs/report",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/protocol": {
+      "address": "/protocol",
+      "end": 9,
+      "id": "corpus/qualification/techniques/produce.md#/protocol",
+      "kind": "section",
+      "label": "/protocol",
+      "origin": "touched",
+      "section": "protocol",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 7,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/protocol/line-8": {
+      "address": "/protocol/line-8",
+      "end": 8,
+      "id": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+      "kind": "item",
+      "label": "/protocol/line-8",
+      "origin": "touched",
+      "section": "protocol",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 8,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules": {
+      "address": "/rules",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 10,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11": {
+      "address": "/rules/line-11",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11",
+      "kind": "item",
+      "label": "/rules/line-11",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1": {
+      "address": "/rules/line-11/clause-1",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1",
+      "kind": "item",
+      "label": "/rules/line-11/clause-1",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2": {
+      "address": "/rules/line-11/clause-2",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+      "kind": "item",
+      "label": "/rules/line-11/clause-2",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-12": {
+      "address": "/rules/line-12",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "kind": "item",
+      "label": "/rules/line-12",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 12,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@element": {
+      "address": "@element",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8": {
+      "address": "@relationship/f075d23fadb959c8",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "kind": "relationship",
+      "label": "declared contract context",
+      "origin": "touched",
+      "relationship": {
+        "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+        "context": [],
+        "label": "declared contract context",
+        "source": "corpus/qualification/techniques/produce.md",
+        "target": "corpus/qualification/techniques/TECHNIQUE.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#/graph": {
+      "address": "/graph",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph",
+      "kind": "section",
+      "label": "/graph",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 4,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run": {
+      "address": "/graph/run",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run",
+      "kind": "section",
+      "label": "/graph/run",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run/done": {
+      "address": "/graph/run/done",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run/done",
+      "kind": "item",
+      "label": "/graph/run/done",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/workflow.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/initialActivity": {
+      "address": "/initialActivity",
+      "end": 2,
+      "id": "corpus/qualification/workflow.yaml#/initialActivity",
+      "kind": "item",
+      "label": "/initialActivity",
+      "origin": "touched",
+      "section": "initialActivity",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 2,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {envelope: sealed}"
+    },
+    {
+      "end": 14,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 1,
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n"
+    },
+    {
+      "end": 12,
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### report\n\n## Protocol\n- Validate the report, then emit it.\n\n## Rules\n- Retain the report ID; validate the report before each emission.\n- Destination is archive."
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 5,
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: null"
+    },
+    {
+      "end": 5,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "start": 1,
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive."
+    }
+  ],
+  "supplemental": {}
+}

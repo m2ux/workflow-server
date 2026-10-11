@@ -1,0 +1,535 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "evaluate": {
+          "evidence": "Round 1 evaluation pilot: 22 applicable cells, 52749 packet bytes, 6222 returned bytes, 86.991 seconds. Conservative one-byte token upper bound with margin; one allocated child slot. Finding-bearing assignments retain bounded output and observed overruns require recalibration.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            5
+          ],
+          [
+            9,
+            11
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 21179,
+      "output_tokens_estimate": 4096,
+      "work_seconds_estimate": 40
+    },
+    "id": "61eef4d58a1b5ca7c63b",
+    "items": [
+      "094759e3ffb8236db086b566",
+      "9a13e148e0a434d148bef242",
+      "e0fcd50974c10678a3e2fb44",
+      "8862878198e6198ef77c1f28",
+      "48da822c85267d96ea48c4c2",
+      "5453a725eb6086baaa72c972",
+      "c7fdcca69a6f6d3b3cfa7009",
+      "e5c1842a573eccbf8d7d7e60"
+    ],
+    "mappings": {
+      "094759e3ffb8236db086b566": "168c04a719f80f3c46e957c0963e6cd9a95fa20dbbddcbe28a8e32e31cef1f63",
+      "48da822c85267d96ea48c4c2": "8d13ebae2d12b0cf25f619f4088c5c702611f58297bf1d6be53cafb7c1b5b81d",
+      "5453a725eb6086baaa72c972": "f7d647ca5c2335dfd624bc9bf5ad6ea4313038d15f24219a203b17f7100f0e21",
+      "8862878198e6198ef77c1f28": "0cbb4fb1df2dbf29615a89335fcdea2af3b8bc50317578723aaa298c5821ab3c",
+      "9a13e148e0a434d148bef242": "284ae6093d84f56a9a9f5532992501f626a0143285719b126a3349322c6bb06c",
+      "c7fdcca69a6f6d3b3cfa7009": "22f7e0d377c9577bdc5be1e45bc095a898872073ed9b1102078a28a24e52a4e1",
+      "e0fcd50974c10678a3e2fb44": "8e1a7f2c62417d4f8d065fefc83b56349cf206138a069ead79664bd21722aa34",
+      "e5c1842a573eccbf8d7d7e60": "7409239d810135499a133349d01226ea1e1a08aa93ea89af11097a94686c0cb9"
+    },
+    "phase": "evaluate",
+    "returned": [],
+    "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-a/sources",
+  "cells": {
+    "094759e3ffb8236db086b566": [
+      "corpus/qualification/workflow.yaml#/graph",
+      "dp:2"
+    ],
+    "48da822c85267d96ea48c4c2": [
+      "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "dp:2"
+    ],
+    "5453a725eb6086baaa72c972": [
+      "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "dp:2"
+    ],
+    "8862878198e6198ef77c1f28": [
+      "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "dp:2"
+    ],
+    "9a13e148e0a434d148bef242": [
+      "corpus/qualification/workflow.yaml#/graph/run",
+      "dp:2"
+    ],
+    "c7fdcca69a6f6d3b3cfa7009": [
+      "corpus/qualification/workflow.yaml#/initialActivity",
+      "dp:2"
+    ],
+    "e0fcd50974c10678a3e2fb44": [
+      "corpus/qualification/workflow.yaml#/graph/run/done",
+      "dp:2"
+    ],
+    "e5c1842a573eccbf8d7d7e60": [
+      "corpus/qualification/workflow.yaml#@element",
+      "dp:2"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "dp:2": {
+      "end": 11,
+      "family": "2. Provide a terminating workflow path",
+      "hash": "78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5",
+      "id": "dp:2",
+      "label": "DP-02",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.",
+      "title": "2. Provide a terminating workflow path"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "094759e3ffb8236db086b566": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 4
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d79d5143821192a2c3b7835b58ae2135aaac63f356708803221ecfc68d996098",
+      "reason": "The workflow graph has the run activity and its done exit with destination null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "48da822c85267d96ea48c4c2": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "baddf90f1dfeadf0c244332d65b1035c892871b8a82179e45331e4c66609e0a4",
+      "reason": "The graph-entry relationship resolves the run activity. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "5453a725eb6086baaa72c972": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "af1f5d832de33a00f00fdf6a40062f4e4809d23ac268a8e2ff6aa83abf840c84",
+      "reason": "The graph-entry relationship identifies the run/done binding context. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "8862878198e6198ef77c1f28": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "333af111b3d3a874a9f4c4262e30394e0cf1ba7b2036deddb44cee56b0279d16",
+      "reason": "The initialActivity relationship connects qualification to run. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "9a13e148e0a434d148bef242": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2478115a27cd0d1679e2cdc6ee63bdc5adb6baf17932cda0dacb1725f9b24c4e",
+      "reason": "The graph run entry has done: null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "c7fdcca69a6f6d3b3cfa7009": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "6e3cf6cdd05265b19e20",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d0d683a5f303ae748e1ab8e9dc18dde59f4c9874d49808de7153aac046756c8a",
+      "reason": "The workflow initialActivity is run. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "e0fcd50974c10678a3e2fb44": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2a2a2b9927e065f3c28730736968d2816c8fd45a2fdd259437f8c2368a6d3e15",
+      "reason": "The graph exit done has destination null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "e5c1842a573eccbf8d7d7e60": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "6e3cf6cdd05265b19e20",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "fingerprint": "5025cb76842e449a2a6d5b053aeecf45706b132f13a2c06e8dfc609eb2e96609",
+      "reason": "The complete workflow has initialActivity run and graph run/done: null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/workflow.yaml#/graph": {
+      "address": "/graph",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph",
+      "kind": "section",
+      "label": "/graph",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 4,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run": {
+      "address": "/graph/run",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run",
+      "kind": "section",
+      "label": "/graph/run",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run/done": {
+      "address": "/graph/run/done",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run/done",
+      "kind": "item",
+      "label": "/graph/run/done",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/initialActivity": {
+      "address": "/initialActivity",
+      "end": 2,
+      "id": "corpus/qualification/workflow.yaml#/initialActivity",
+      "kind": "item",
+      "label": "/initialActivity",
+      "origin": "touched",
+      "section": "initialActivity",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 2,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 5,
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: null"
+    },
+    {
+      "end": 5,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 1,
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination"
+    },
+    {
+      "end": 11,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect."
+    },
+    {
+      "end": 6,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {envelope: sealed}"
+    }
+  ],
+  "supplemental": {}
+}

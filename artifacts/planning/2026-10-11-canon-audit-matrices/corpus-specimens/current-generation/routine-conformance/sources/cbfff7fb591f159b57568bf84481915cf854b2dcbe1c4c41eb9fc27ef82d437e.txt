@@ -1,0 +1,98 @@
+---
+metadata:
+  version: 1.2.0
+---
+
+## Capability
+
+Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output
+
+## Inputs
+
+### agent_id
+
+Designator for this agent instance (e.g., 'a1-nto', 'b-static-analysis', 'd2-toolkit'), which also names the persisted output file.
+
+### step_products
+
+The declared products of the activity's preceding steps — the tables and verdict sets folded into the structured output.
+
+## Outputs
+
+### sub_agent_output
+
+Structured JSON conforming to the [Schema](../resources/sub-agent-output-schema.md#schema).
+
+#### artifact
+
+`{agent_id}.json`
+
+#### audience
+
+`agent`
+
+#### agent_id
+
+identifier for this agent instance (e.g., 'group-a-nto', 'group-b', 'group-d')
+
+#### activity_followed
+
+the activity ID executed (e.g., 'sub-crate-review')
+
+#### steps_completed
+
+list of step IDs completed (must match activity definition)
+
+#### steps_skipped
+
+list of step IDs skipped with reasons (should be empty)
+
+#### findings
+
+structured list of findings with required fields per finding
+
+#### checklist_coverage
+
+per-§3-item verdicts (for crate review) or per-pattern results (for static analysis)
+
+#### mandatory_tables
+
+all tables the steps produce, or null with justification
+
+#### reconnaissance_leads
+
+observations not formal findings but for orchestrator review (optional)
+
+## Protocol
+
+### 1. Bootstrap
+
+- Inherit the dispatched session and load the assigned activity definition with its steps.
+  > If the workflow-server is unavailable or the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note that in the output.
+
+### 2. Execute Steps
+
+- Read the activity's steps array in order.
+- For each step, load its bound technique and read that technique's `## Capability` (what the step does) and `## Protocol` (how to do it).
+- Produce the output the bound technique defines in its `## Output(s)` before proceeding to the next step.
+- If a step cannot be completed (e.g., no `StorageMap`s in the crate for the lifecycle scan), record an explicit N/A with justification — do not silently skip.
+- If a step requires data or context that is unavailable, record the step as completed with output 'INCOMPLETE — [reason]', continue to the next step, and flag it in the self-verification.
+- Track which steps have been completed in `{sub_agent_output.steps_completed}`.
+
+### 3. Verify Output
+
+- Assemble `{sub_agent_output}` by folding every entry of `{step_products}` into its `mandatory_tables`, `checklist_coverage`, and `findings` fields, then verify it against the checks below before returning it.
+- `{sub_agent_output.steps_completed}` matches the activity's step IDs — no steps omitted.
+- Every FAIL in `{sub_agent_output.checklist_coverage}` has a corresponding finding in `{sub_agent_output.findings}`.
+- Every `{sub_agent_output.mandatory_tables}` entry is either populated or null with justification.
+- `{sub_agent_output}` is well-formed JSON and contains all required fields.
+
+## Rules
+
+### output-persisted-as-json-file
+
+The sub-agent writes its complete structured output as a JSON file into `{planning_folder_path}`, named by the agent designator and scope; this file is the canonical source for the merge agent and the auditable record of the agent's work.
+
+### output-conforms-to-schema
+
+The sub-agent's final output conforms to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md#schema).

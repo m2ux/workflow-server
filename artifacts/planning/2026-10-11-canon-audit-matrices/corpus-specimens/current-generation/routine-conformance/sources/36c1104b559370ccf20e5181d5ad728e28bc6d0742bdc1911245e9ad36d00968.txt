@@ -1,0 +1,25 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the sequence diagram source over the index, where nothing is staged.
+variables:
+  reads:
+    - negative_diff_scope
+  writes:
+    - name: negative_diagram_source
+      type: array
+      description: The ordered step trace of each execution flow the change runs through — empty by construction, since an empty change set reaches no flow.
+required: true
+steps:
+  - kind: routine
+    id: trace-empty-index
+    routine: gitnexus::sequence-diagram-source
+    with:
+      diff_scope: "{negative_diff_scope}"
+    outputs:
+      diagram_source: negative_diagram_source
+exits:
+  - id: traced
+    isDefault: true
+outcome:
+  - The same run under an index holding nothing landed an empty change set, traced no flow and left the diagram source empty, the fallback the run promises rather than a failure

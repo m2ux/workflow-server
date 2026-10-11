@@ -1,0 +1,1451 @@
+AUDIT2 VERIFICATION START 2026-10-11T07:29:14.694745+00:00
+EXPOSURE: This verifier previously mapped and evaluated round-1 captured Audit fixtures. The second-round mapper is a different actor. Current decisions and their exact reasons will be compared independently with current captured source and criterion bytes; no prior receipt or hidden outcome will be used.
+
+READ 001 | /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md | lines 5-18 of 48
+5: ## Phases
+6: 
+7: | Phase | Required Work | Independent Role |
+8: | --- | --- | --- |
+9: | `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |
+10: | `map` | Every row × AP/DP cell | Mapping author recorded per cell |
+11: | `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |
+12: | `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |
+13: | `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |
+14: 
+15: Inventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.
+16: 
+17: Use [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, AP/DP and supplemental criteria, required checks, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.
+18: 
+
+READ 002 | /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md | lines 33-48 of 48
+33: ## Returns
+34: 
+35: Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+36: 
+37: - **Identity.**
+38:   Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+39: - **Evidence.**
+40:   Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+41: - **Statuses.**
+42:   Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+43: - **Findings.**
+44:   A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. Follow [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+45: - **Check observations.**
+46:   A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+47: - **Partial work.**
+48:   A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+
+READ 003 | /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md | lines 27-40
+27: ## Applicability
+28: 
+29: Use [mapping assignments](audit-dispatch.md#phases) to decide every cell in the full row × AP/DP product. Each cell links to source evidence and exactly one disposition:
+30: 
+31: | Status | Evidence |
+32: | --- | --- |
+33: | `A` | The criterion's scope and the construct that makes it apply |
+34: | `N` | The criterion's excluding wording and source facts satisfying it |
+35: | `U` | The evidence or decision still missing |
+36: 
+37: Shared reasons name the exact assigned row set and hold for every member. A clean result or a Do not flag exception is an evaluation under an applicable criterion; it does not by itself establish inapplicability. Blank cells are unresolved. Table pagination preserves every logical pair exactly once.
+38: 
+39: After all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](commands.md#reset-audit-cells) or [refresh](commands.md#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](commands.md#check-audit-status) successfully.
+40: 
+
+READ 004 | /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-verify-queue.json | queue bytes 8467 | started 2026-10-11T07:29:54.755781+00:00
+COMMON {"actor": "/root/qualify_audit_one", "check_observation": null, "mode": "audit", "phase": "verify"}
+PATH PREFIX /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2
+QUEUE [{"assignment": "e846407120f5be094f4d", "packet": "audit-a/packets/verify/e846407120f5be094f4d.json", "run": "audit-a"}, {"assignment": "677686e44651e85a545c", "packet": "audit-a/packets/verify/677686e44651e85a545c.json", "run": "audit-a"}, {"assignment": "b8133f01d56d0da117eb", "packet": "audit-a/packets/verify/b8133f01d56d0da117eb.json", "run": "audit-a"}, {"assignment": "2c6fdfd874827456636d", "packet": "audit-a/packets/verify/2c6fdfd874827456636d.json", "run": "audit-a"}, {"assignment": "12139724df44ef616b27", "packet": "audit-a/packets/verify/12139724df44ef616b27.json", "run": "audit-a"}, {"assignment": "e7e132bfef63a60db9ef", "packet": "audit-a/packets/verify/e7e132bfef63a60db9ef.json", "run": "audit-a"}, {"assignment": "4e6d747341f6d4239a79", "packet": "audit-a/packets/verify/4e6d747341f6d4239a79.json", "run": "audit-a"}, {"assignment": "0171fb9d27bc77d7f138", "packet": "audit-a/packets/verify/0171fb9d27bc77d7f138.json", "run": "audit-a"}, {"assignment": "45e96b511b75b61f75f4", "packet": "audit-b/packets/verify/45e96b511b75b61f75f4.json", "run": "audit-b"}, {"assignment": "4df7f0acb83a1dead4e0", "packet": "audit-b/packets/verify/4df7f0acb83a1dead4e0.json", "run": "audit-b"}, {"assignment": "476e715ab4b13b2a9d65", "packet": "audit-b/packets/verify/476e715ab4b13b2a9d65.json", "run": "audit-b"}, {"assignment": "167c471729557441b296", "packet": "audit-b/packets/verify/167c471729557441b296.json", "run": "audit-b"}, {"assignment": "414653de97ef194c70a4", "packet": "audit-b/packets/verify/414653de97ef194c70a4.json", "run": "audit-b"}, {"assignment": "405cd8a38f1d38b488a1", "packet": "audit-b/packets/verify/405cd8a38f1d38b488a1.json", "run": "audit-b"}, {"assignment": "df577c8e06ada7532a12", "packet": "audit-b/packets/verify/df577c8e06ada7532a12.json", "run": "audit-b"}, {"assignment": "b0dc6c10a1d219c9640b", "packet": "audit-b/packets/verify/b0dc6c10a1d219c9640b.json", "run": "audit-b"}]
+
+READ 005 | assigned verification packet metadata | started 2026-10-11T07:30:21.663468+00:00
+{"actor": "/root/qualify_audit_one", "assignment": "e846407120f5be094f4d", "criteria": ["dp:1"], "index": 1, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 61241, "phase": "verify", "rows": 31, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+BUDGETS {"bytes_per_token": 1, "calibration": {"verify": {"evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.", "output_tokens_per_item": 512, "seconds_per_item": 5}}, "context_tokens": 258400, "output_tokens": 16000, "reserve_tokens": 20000, "safety_tokens": 30000, "slots": 1, "work_seconds": 600}
+{"actor": "/root/qualify_audit_one", "assignment": "677686e44651e85a545c", "criteria": ["ap:emission-without-validation"], "index": 2, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 60381, "phase": "verify", "rows": 31, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "b8133f01d56d0da117eb", "criteria": ["dp:2"], "index": 3, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 59530, "phase": "verify", "rows": 31, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "2c6fdfd874827456636d", "criteria": ["ap:broken-binding"], "index": 4, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 62428, "phase": "verify", "rows": 31, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "12139724df44ef616b27", "criteria": ["ap:broken-binding"], "index": 5, "items": 18, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 41417, "phase": "verify", "rows": 18, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "e7e132bfef63a60db9ef", "criteria": ["dp:2"], "index": 6, "items": 18, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 39027, "phase": "verify", "rows": 18, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "4e6d747341f6d4239a79", "criteria": ["ap:emission-without-validation"], "index": 7, "items": 18, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 39696, "phase": "verify", "rows": 18, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "0171fb9d27bc77d7f138", "criteria": ["dp:1"], "index": 8, "items": 18, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 41427, "phase": "verify", "rows": 18, "run": "audit-a", "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"}
+{"actor": "/root/qualify_audit_one", "assignment": "45e96b511b75b61f75f4", "criteria": ["dp:1"], "index": 9, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 61714, "phase": "verify", "rows": 31, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "4df7f0acb83a1dead4e0", "criteria": ["ap:emission-without-validation"], "index": 10, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 60806, "phase": "verify", "rows": 31, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "476e715ab4b13b2a9d65", "criteria": ["dp:2"], "index": 11, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 59952, "phase": "verify", "rows": 31, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "167c471729557441b296", "criteria": ["ap:broken-binding"], "index": 12, "items": 31, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 62797, "phase": "verify", "rows": 31, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "414653de97ef194c70a4", "criteria": ["ap:broken-binding"], "index": 13, "items": 19, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 43087, "phase": "verify", "rows": 19, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "405cd8a38f1d38b488a1", "criteria": ["dp:2"], "index": 14, "items": 19, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 40697, "phase": "verify", "rows": 19, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "df577c8e06ada7532a12", "criteria": ["ap:emission-without-validation"], "index": 15, "items": 19, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 41353, "phase": "verify", "rows": 19, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+{"actor": "/root/qualify_audit_one", "assignment": "b0dc6c10a1d219c9640b", "criteria": ["dp:1"], "index": 16, "items": 19, "mapper_actors": ["/root/qualify_audit_two"], "packet_bytes": 43046, "phase": "verify", "rows": 19, "run": "audit-b", "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"}
+UNIQUE REASON TEXTS 312
+READ END 2026-10-11T07:30:21.666286+00:00
+
+READ 006 | current complete captured definition bytes | started 2026-10-11T07:31:04.908324+00:00
+SOURCE audit-a corpus/qualification/activities/run.yaml hash=21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a lines=1-6
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {envelope: sealed}
+SOURCE audit-a corpus/qualification/routines/deliver.yaml hash=ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1 lines=1-6
+1: id: deliver
+2: inputs: [envelope]
+3: outputs: {report: emit.report}
+4: steps:
+5:   - id: emit
+6:     technique: produce
+SOURCE audit-a corpus/qualification/techniques/TECHNIQUE.md hash=dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b lines=1-5
+1: ## Capability
+2: Constrain inherited delivery.
+3: 
+4: ## Rules
+5: - Destination must be archive.
+SOURCE audit-a corpus/qualification/techniques/produce.md hash=53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77 lines=1-12
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### report
+6: 
+7: ## Protocol
+8: - Validate the report, then emit it.
+9: 
+10: ## Rules
+11: - Retain the report ID; validate the report before each emission.
+12: - Destination is archive.
+SOURCE audit-a corpus/qualification/workflow.yaml hash=02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771 lines=1-5
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: null
+SOURCE audit-b corpus/qualification/activities/run.yaml hash=e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813 lines=1-6
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {packet: sealed}
+SOURCE audit-b corpus/qualification/routines/deliver.yaml hash=ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1 lines=1-6
+1: id: deliver
+2: inputs: [envelope]
+3: outputs: {report: emit.report}
+4: steps:
+5:   - id: emit
+6:     technique: produce
+SOURCE audit-b corpus/qualification/techniques/TECHNIQUE.md hash=dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b lines=1-5
+1: ## Capability
+2: Constrain inherited delivery.
+3: 
+4: ## Rules
+5: - Destination must be archive.
+SOURCE audit-b corpus/qualification/techniques/produce.md hash=27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729 lines=1-12
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### summary
+6: 
+7: ## Protocol
+8: - Emit the report without validation.
+9: 
+10: ## Rules
+11: - Retain the report ID; emit the report without validation.
+12: - Destination is public.
+SOURCE audit-b corpus/qualification/workflow.yaml hash=be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1 lines=1-5
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: run
+READ END 2026-10-11T07:31:04.908381+00:00
+
+READ 007 | current criterion wording and covering introductions | started 2026-10-11T07:31:19.664648+00:00
+SOURCE corpus/canon/resources/anti-patterns.md hash=0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025
+1: # Controlled qualification anti-patterns
+2: 
+3: These two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.
+4: 
+5: ## Controlled Qualification
+6: 
+7: ### AP-01. emission-without-validation
+8: 
+9: Detect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.
+10: 
+11: Do not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.
+12: 
+13: Fix: Require validation of the same artifact before emission in every emitting instruction and clause.
+15: ### AP-02. broken-binding
+16: 
+17: Detect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.
+18: 
+19: Do not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.
+20: 
+21: Fix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.
+SOURCE corpus/canon/resources/design-principles.md hash=6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121
+1: # Controlled qualification design principles
+2: 
+3: These two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.
+4: 
+5: ## 1. Honor the executing workflow's inherited destination
+6: 
+7: A leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.
+9: ## 2. Provide a terminating workflow path
+10: 
+11: A workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.
+CRITERION METADATA {"ap:broken-binding": {"end": 21, "family": "Controlled Qualification", "hash": "7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8", "id": "ap:broken-binding", "label": "AP-02", "source": "corpus/canon/resources/anti-patterns.md", "start": 15, "title": "AP-02. broken-binding"}, "ap:emission-without-validation": {"end": 14, "family": "Controlled Qualification", "hash": "594d1861f288aaefb98e51a8222a1ab4e84743c06655b95fcd32ba6e9eb8d2c9", "id": "ap:emission-without-validation", "label": "AP-01", "source": "corpus/canon/resources/anti-patterns.md", "start": 7, "title": "AP-01. emission-without-validation"}, "dp:1": {"end": 8, "family": "1. Honor the executing workflow's inherited destination", "hash": "68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3", "id": "dp:1", "label": "DP-01", "source": "corpus/canon/resources/design-principles.md", "start": 5, "title": "1. Honor the executing workflow's inherited destination"}, "dp:2": {"end": 11, "family": "2. Provide a terminating workflow path", "hash": "78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5", "id": "dp:2", "label": "DP-02", "source": "corpus/canon/resources/design-principles.md", "start": 9, "title": "2. Provide a terminating workflow path"}}
+
+READ 008 | lossless current row projection chunk 1/1; unique rows 52 | 2026-10-11T07:32:18.871995+00:00
+SOURCE ALIASES {"S1": "corpus/qualification/activities/run.yaml", "S2": "corpus/qualification/routines/deliver.yaml", "S3": "corpus/qualification/techniques/TECHNIQUE.md", "S4": "corpus/qualification/techniques/produce.md", "S5": "corpus/qualification/workflow.yaml"}
+ROW COLUMNS: alias, source alias, address, kind, section, origin, start, end, overrides. Defaults: id=source#address; label=address; sources=[source]; source_kind=type inferred by source path (activity, routine, technique, workflow). Overrides preserve every differing field and the complete relationship object.
+["V01", "S1", "/id", "item", "id", "touched", 1, 1, {}]
+["V02", "S1", "/steps", "section", "steps", "touched", 3, 6, {}]
+["V03", "S1", "/steps/id=delivery", "section", "steps", "touched", 3, 6, {}]
+["V04", "S1", "/steps/id=delivery/id", "item", "steps", "touched", 3, 3, {}]
+["V05", "S1", "/steps/id=delivery/routine", "section", "steps", "touched", 5, 6, {}]
+["V06", "S1", "/steps/id=delivery/routine/arguments", "section", "steps", "touched", 6, 6, {}]
+["V07", "S1", "/steps/id=delivery/routine/arguments/envelope", "item", "steps", "touched", 6, 6, {}]
+["V08", "S1", "/steps/id=delivery/routine/arguments/packet", "item", "steps", "touched", 6, 6, {}]
+["V09", "S1", "/steps/id=delivery/routine/name", "item", "steps", "touched", 5, 5, {}]
+["V10", "S1", "@element", "element", "Whole Element", "touched", 1, 6, {}]
+["V11", "S1", "@relationship/5a93bb0629055f53", "relationship", "Relationships", "touched", 1, 6, {"label": "deliver", "sources": ["S1", "S2"], "relationship": {"address": "/steps/id=delivery/routine/name", "context": [], "label": "deliver", "source": "S1", "target": "S2"}}]
+["V12", "S2", "/id", "item", "id", "consumer", 1, 1, {}]
+["V13", "S2", "/inputs", "section", "inputs", "consumer", 2, 2, {}]
+["V14", "S2", "/inputs/0", "item", "inputs", "consumer", 2, 2, {}]
+["V15", "S2", "/outputs", "section", "outputs", "consumer", 3, 3, {}]
+["V16", "S2", "/outputs/report", "item", "outputs", "consumer", 3, 3, {}]
+["V17", "S2", "/steps", "section", "steps", "consumer", 5, 6, {}]
+["V18", "S2", "/steps/id=emit", "section", "steps", "consumer", 5, 6, {}]
+["V19", "S2", "/steps/id=emit/id", "item", "steps", "consumer", 5, 5, {}]
+["V20", "S2", "/steps/id=emit/technique", "item", "steps", "consumer", 6, 6, {}]
+["V21", "S2", "@element", "element", "Whole Element", "consumer", 1, 6, {}]
+["V22", "S2", "@relationship/3a2f0d25e0e017f7", "relationship", "Relationships", "consumer", 1, 6, {"label": "produce", "sources": ["S2", "S4"], "relationship": {"address": "/steps/id=emit/technique", "context": [], "label": "produce", "source": "S2", "target": "S4"}}]
+["V23", "S2", "@relationship/50a64427faa3df96", "relationship", "Relationships", "consumer", 1, 6, {"label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination", "sources": ["S1", "S2", "S3", "S4", "S5"], "relationship": {"address": "execution/qualification/run/delivery/deliver/emit", "context": ["S1", "S3", "S5"], "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination", "source": "S2", "target": "S4"}}]
+["V24", "S3", "/capability", "section", "capability", "context", 1, 3, {}]
+["V25", "S3", "/capability/line-2", "item", "capability", "context", 2, 2, {}]
+["V26", "S3", "/rules", "section", "rules", "context", 4, 5, {}]
+["V27", "S3", "/rules/line-5", "item", "rules", "context", 5, 5, {}]
+["V28", "S3", "@element", "element", "Whole Element", "context", 1, 5, {}]
+["V29", "S4", "/capability", "section", "capability", "touched", 1, 3, {}]
+["V30", "S4", "/capability/line-2", "item", "capability", "touched", 2, 2, {}]
+["V31", "S4", "/outputs", "section", "outputs", "touched", 4, 6, {}]
+["V32", "S4", "/outputs/report", "section", "outputs", "touched", 5, 6, {}]
+["V33", "S4", "/outputs/summary", "section", "outputs", "touched", 5, 6, {}]
+["V34", "S4", "/protocol", "section", "protocol", "touched", 7, 9, {}]
+["V35", "S4", "/protocol/line-8", "item", "protocol", "touched", 8, 8, {}]
+["V36", "S4", "/rules", "section", "rules", "touched", 10, 12, {}]
+["V37", "S4", "/rules/line-11", "item", "rules", "touched", 11, 11, {}]
+["V38", "S4", "/rules/line-11/clause-1", "item", "rules", "touched", 11, 11, {}]
+["V39", "S4", "/rules/line-11/clause-2", "item", "rules", "touched", 11, 11, {}]
+["V40", "S4", "/rules/line-12", "item", "rules", "touched", 12, 12, {}]
+["V41", "S4", "@element", "element", "Whole Element", "touched", 1, 12, {}]
+["V42", "S4", "@relationship/f075d23fadb959c8", "relationship", "Relationships", "touched", 1, 12, {"label": "declared contract context", "sources": ["S3", "S4"], "relationship": {"address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md", "context": [], "label": "declared contract context", "source": "S4", "target": "S3"}}]
+["V43", "S5", "/graph", "section", "graph", "touched", 4, 5, {}]
+["V44", "S5", "/graph/run", "section", "graph", "touched", 5, 5, {}]
+["V45", "S5", "/graph/run/done", "item", "graph", "touched", 5, 5, {}]
+["V46", "S5", "/id", "item", "id", "touched", 1, 1, {}]
+["V47", "S5", "/initialActivity", "item", "initialActivity", "touched", 2, 2, {}]
+["V48", "S5", "@element", "element", "Whole Element", "touched", 1, 5, {}]
+["V49", "S5", "@relationship/27bf829b0e84c593", "relationship", "Relationships", "touched", 1, 5, {"label": "graph:run", "sources": ["S1", "S5"], "relationship": {"address": "/graph/run/done", "context": [], "label": "graph:run", "source": "S5", "target": "S1"}}]
+["V50", "S5", "@relationship/3b27fd01db44f877", "relationship", "Relationships", "touched", 1, 5, {"label": "graph:run", "sources": ["S1", "S5"], "relationship": {"address": "/initialActivity", "context": [], "label": "graph:run", "source": "S5", "target": "S1"}}]
+["V51", "S5", "@relationship/475a98faaf5b9a55", "relationship", "Relationships", "touched", 1, 5, {"label": "graph-entry:run", "sources": ["S1", "S5"], "relationship": {"address": "/graph/run", "context": [], "label": "graph-entry:run", "source": "S5", "target": "S1"}}]
+["V52", "S5", "@relationship/aa4b84de66a9776b", "relationship", "Relationships", "touched", 1, 5, {"label": "graph-entry:run", "sources": ["S1", "S5"], "relationship": {"address": "/graph/run/done", "context": [], "label": "graph-entry:run", "source": "S5", "target": "S1"}}]
+
+READ 009 | first exact current mapping and binding structure | 2026-10-11T07:33:04.549651+00:00
+{"assignment_binding": "1cf60fd499ed2cb0c8e26f71d09a4ea2886bdf7886807e0a0ba1ecf0fa430e7d", "item": "330d9855c61f1fa6db1e92b2", "mapping": {"actor": "/root/qualify_audit_two", "assignment": "62003bc9f869e2ed4100", "attempt": "audit-map-1", "evidence": [{"end": 6, "source": "corpus/qualification/activities/run.yaml", "start": 1}, {"end": 8, "source": "corpus/canon/resources/design-principles.md", "start": 5}], "fingerprint": "a787c170f332165734358f32d8df054819aa0e78edbdf9a72902d2a0476e023d", "reason": "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the envelope argument. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.", "status": "N"}, "pair": ["corpus/qualification/activities/run.yaml#/steps", "dp:1"]}
+
+READ 010 | exact mapping reason segments chunk 1/3; 120 unique segments | 2026-10-11T07:34:32.122260+00:00
+LOSSLESS RULE: original reason = sentence-segment texts joined with the exact separator period plus space. Mapping records will supply ordered T identifiers; no reason text is summarized.
+["T001", "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the envelope argument"]
+["T002", "This activity or routine declaration has no leaf Destination"]
+["T003", "DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce."]
+["T004", "run.yaml#/steps/id=delivery: The delivery step invokes deliver and supplies the envelope argument"]
+["T005", "run.yaml#/steps/id=delivery/id: This scalar names the activity step delivery; it does not declare an argument key or exported output"]
+["T006", "run.yaml#/steps/id=delivery/routine: The routine object names deliver and supplies the envelope argument"]
+["T007", "run.yaml#/steps/id=delivery/routine/arguments: The invocation arguments have the single key envelope; sealed is its opaque value"]
+["T008", "run.yaml#/steps/id=delivery/routine/arguments/envelope: The invocation argument key is envelope and its opaque value is sealed"]
+["T009", "run.yaml#/steps/id=delivery/routine/name: The routine name deliver selects the declaration whose Inputs list is envelope"]
+["T010", "produce.md#/rules: The leaf Rules retain the report ID, validate the report before each emission, and declare Destination archive"]
+["T011", "DP-01 applies because this leaf row contains its Destination declaration"]
+["T012", "The qualification/run/deliver call chain selects the ancestor archive requirement; the declared values require comparison during evaluation."]
+["T013", "produce.md#/rules/line-11: The compound rule retains the report ID in its first clause and says to validate the report before each emission in its second"]
+["T014", "This leaf row contains no Destination declaration or inheritance relationship"]
+["T015", "DP-01 reaches the separate line-12 destination and its containing rows, not this instruction, service description or output name."]
+["T016", "produce.md#/rules/line-11/clause-1: Only the first semicolon-separated clause is this row: Retain the report ID"]
+["T017", "produce.md#/rules/line-11/clause-2: Only the second semicolon-separated clause is this row: validate the report before each emission"]
+["T018", "produce.md#/rules/line-12: The leaf declaration says Destination is archive"]
+["T019", "deliver.yaml#/steps: The routine steps resolve emit to technique produce, whose declared output is report"]
+["T020", "deliver.yaml#/steps/id=emit: The emit step calls produce, whose declared output is report"]
+["T021", "deliver.yaml#/steps/id=emit/id: The step identifier emit is the producer named by the routine output binding emit.report"]
+["T022", "deliver.yaml#/steps/id=emit/technique: The technique reference produce resolves the producer whose Outputs heading declares report"]
+["T023", "workflow.yaml#@relationship/3b27fd01db44f877: The initialActivity relationship connects qualification to run; the activity invokes deliver"]
+["T024", "This workflow identity or graph row has no leaf Destination declaration"]
+["T025", "Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration."]
+["T026", "workflow.yaml#@relationship/475a98faaf5b9a55: The graph-entry relationship connects the run graph node to the run activity"]
+["T027", "workflow.yaml#@relationship/aa4b84de66a9776b: This graph-entry relationship is attached to run.done, whose destination is null"]
+["T028", "workflow.yaml#/graph: The graph contains run with the done exit directed to null"]
+["T029", "workflow.yaml#/graph/run: The run graph entry has one done exit directed to null"]
+["T030", "workflow.yaml#/graph/run/done: The done exit value is null in the run graph node"]
+["T031", "produce.md#/capability: The leaf Capability describes the service Produce a report"]
+["T032", "produce.md#/capability/line-2: Produce a report is the Capability description, outside Protocol and Rules"]
+["T033", "produce.md#/protocol: The leaf Protocol contains the instruction: Validate the report, then emit it"]
+["T034", "produce.md#/protocol/line-8: This Protocol instruction says: Validate the report, then emit it"]
+["T035", "deliver.yaml#/outputs: The routine Outputs section exports report through emit.report"]
+["T036", "deliver.yaml#/outputs/report: The exported routine report is bound to emit.report"]
+["T037", "TECHNIQUE.md#/rules: The ancestor TECHNIQUE Rules declare Destination must be archive"]
+["T038", "DP-01 expressly treats the ancestor constraint as a declaration, not a competing leaf destination; this ancestor has no leaf declaration to check independently."]
+["T039", "TECHNIQUE.md#/rules/line-5: The ancestor destination constraint requires archive; it is not a leaf destination declaration"]
+["T040", "workflow.yaml#@element: The complete qualification workflow starts at run and has the sole graph exit run.done -> null"]
+["T041", "AP-01 is scoped to technique Protocol instructions and Rules clauses"]
+["T042", "This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive."]
+["T043", "AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row"]
+["T044", "Requiring validation remains an applicable contract; it is not grounds for N."]
+["T045", "AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes."]
+["T046", "deliver.yaml#/inputs: The routine Inputs list contains exactly envelope"]
+["T047", "deliver.yaml#/inputs/0: The sole routine input entry is envelope"]
+["T048", "TECHNIQUE.md#@element: The complete ancestor declares its capability and the required archive destination, with no leaf destination or binding"]
+["T049", "DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits"]
+["T050", "This activity/routine row or execution relationship supplies no graph transition."]
+["T051", "DP-02 is restricted to the workflow initialActivity and graph"]
+["T052", "This technique contract or instruction defines no workflow node or exit."]
+["T053", "DP-02 applies to the workflow root/graph construct represented here"]
+["T054", "The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant."]
+["T055", "TECHNIQUE.md#/capability: The ancestor Capability describes its service as Constrain inherited delivery"]
+
+READ 011 2026-10-11T07:37:11.119716+00:00 exact reason segments chunk 2/3; reason reconstructed by ordered segments joined with dot-space
+["T056", "TECHNIQUE.md#/capability/line-2: Constrain inherited delivery is the ancestor Capability description"]
+["T057", "deliver.yaml#@element: The complete deliver routine declares input envelope, exports report through emit.report, and calls produce in emit"]
+["T058", "AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs"]
+["T059", "Both a matching and a different key set remain applicable."]
+["T060", "This declaration or activity-step identifier is not an invocation argument key, routine input, exported step.output binding or its referenced producer step"]
+["T061", "Neither AP-02 binding contract is present in this row."]
+["T062", "This Markdown service, instruction or rule is not a binding or an Outputs name declaration"]
+["T063", "AP-02 explicitly excludes artifact mentions from its two binding contracts."]
+["T064", "AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint"]
+["T065", "The entry requires resolution of emit and produce before comparing the exported output with the declared name."]
+["T066", "A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes."]
+["T067", "This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs."]
+["T068", "AP-02 contract (1) uses this exact Inputs list as the required key set for each concrete deliver invocation; the declaration is an endpoint of that binding contract."]
+["T069", "deliver.yaml#@relationship/3a2f0d25e0e017f7: The deliver-to-produce call resolves emit.report through emit; produce declares report and Destination archive"]
+["T070", "deliver.yaml#@relationship/50a64427faa3df96: The execution relationship carries qualification -> run#delivery -> deliver#emit -> produce, the envelope argument, export emit.report, and the ancestor archive destination"]
+["T071", "AP-02 applies to both binding contracts carried by this instantiated call chain: activity arguments against routine Inputs and emit.report against the resolved produce Outputs declaration."]
+["T072", "produce.md#/outputs: The leaf Outputs heading declares the name report, consumed by deliver export emit.report"]
+["T073", "produce.md#/outputs/report: The leaf output declaration is report; the routine export refers to emit.report"]
+["T074", "run.yaml#/id: The activity declaration identifier is run"]
+["T075", "workflow.yaml#/id: The workflow declaration identifier is qualification"]
+["T076", "run.yaml#@element: The run activity contains delivery invoking deliver with argument key envelope"]
+["T077", "workflow.yaml#/initialActivity: The workflow initialActivity is run and its graph supplies run.done -> null"]
+["T078", "deliver.yaml#/id: The routine declaration identifier is deliver"]
+["T079", "produce.md#@element: The complete leaf declares output report, instruction Validate the report, then emit it, a separate emission Rules clause, and Destination archive"]
+["T080", "run.yaml#@relationship/5a93bb0629055f53: The concrete activity call supplies envelope to deliver, whose input is envelope and whose emit step calls produce"]
+["T081", "produce.md#@relationship/f075d23fadb959c8: The inheritance relationship connects produce Destination archive to its executing workflow ancestor requirement archive"]
+["T082", "This relationship carries destination inheritance, not an activity argument contract or exported routine-output binding"]
+["T083", "The leaf output contract belongs to its separate declaration and producer-call rows."]
+["T084", "This scalar only names the workflow; it is neither its initialActivity nor a graph edge"]
+["T085", "DP-02 is a whole-workflow reachability invariant, not an identifier equality check."]
+["T086", "This row represents a call or inheritance relationship, not the target leaf instruction"]
+["T087", "AP-01 excludes calls and bindings from constructs that themselves direct emission."]
+["T088", "AP-01 limits imperative checks to Protocol and Rules and expressly excludes Capability service descriptions."]
+["T089", "AP-01 requires an emitting instruction; an output-name declaration is expressly not itself an emission directive."]
+["T090", "DP-01 expressly carries the inherited destination rule through call and inheritance relationships to this leaf instance"]
+["T091", "The captured qualification/run/deliver chain, ancestor requirement and leaf declaration establish that applicability."]
+["T092", "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the packet argument"]
+["T093", "run.yaml#/steps/id=delivery: The delivery step invokes deliver and supplies the packet argument"]
+["T094", "run.yaml#/steps/id=delivery/routine: The routine object names deliver and supplies the packet argument"]
+["T095", "run.yaml#/steps/id=delivery/routine/arguments: The invocation arguments have the single key packet; sealed is its opaque value"]
+["T096", "run.yaml#/steps/id=delivery/routine/arguments/packet: The invocation argument key is packet and its opaque value is sealed"]
+["T097", "produce.md#/rules: The leaf Rules retain the report ID, emit the report without validation, and declare Destination public"]
+["T098", "produce.md#/rules/line-11: The compound rule retains the report ID in its first clause and says to emit the report without validation in its second"]
+["T099", "produce.md#/rules/line-11/clause-2: Only the second semicolon-separated clause is this row: emit the report without validation"]
+["T100", "produce.md#/rules/line-12: The leaf declaration says Destination is public"]
+["T101", "deliver.yaml#/steps: The routine steps resolve emit to technique produce, whose declared output is summary"]
+["T102", "deliver.yaml#/steps/id=emit: The emit step calls produce, whose declared output is summary"]
+["T103", "deliver.yaml#/steps/id=emit/technique: The technique reference produce resolves the producer whose Outputs heading declares summary"]
+["T104", "workflow.yaml#@relationship/27bf829b0e84c593: This graph relationship is the run.done -> run self-loop back to the run activity"]
+["T105", "workflow.yaml#@relationship/aa4b84de66a9776b: This graph-entry relationship is attached to run.done, whose destination is run"]
+
+READ 012 2026-10-11T07:37:25.212198+00:00 exact reason segments chunk 3/3; reason reconstructed by ordered segments joined with dot-space
+["T106", "workflow.yaml#/graph: The graph contains run with the done exit directed to run"]
+["T107", "workflow.yaml#/graph/run: The run graph entry has one done exit directed to run"]
+["T108", "workflow.yaml#/graph/run/done: The done exit value is run in the run graph node"]
+["T109", "produce.md#/protocol: The leaf Protocol contains the instruction: Emit the report without validation"]
+["T110", "produce.md#/protocol/line-8: This Protocol instruction says: Emit the report without validation"]
+["T111", "deliver.yaml#@relationship/3a2f0d25e0e017f7: The deliver-to-produce call resolves emit.report through emit; produce declares summary and Destination public"]
+["T112", "deliver.yaml#@relationship/50a64427faa3df96: The execution relationship carries qualification -> run#delivery -> deliver#emit -> produce, the packet argument, export emit.report, and the ancestor archive destination"]
+["T113", "produce.md#/outputs: The leaf Outputs heading declares the name summary, consumed by deliver export emit.report"]
+["T114", "produce.md#/outputs/summary: The leaf output declaration is summary; the routine export refers to emit.report"]
+["T115", "run.yaml#@element: The run activity contains delivery invoking deliver with argument key packet"]
+["T116", "workflow.yaml#/initialActivity: The workflow initialActivity is run and its graph supplies run.done -> run"]
+["T117", "produce.md#@element: The complete leaf declares output summary, instruction Emit the report without validation, a separate emission Rules clause, and Destination public"]
+["T118", "workflow.yaml#@element: The complete qualification workflow starts at run and has the sole graph exit run.done -> run"]
+["T119", "run.yaml#@relationship/5a93bb0629055f53: The concrete activity call supplies packet to deliver, whose input is envelope and whose emit step calls produce"]
+["T120", "produce.md#@relationship/f075d23fadb959c8: The inheritance relationship connects produce Destination public to its executing workflow ancestor requirement archive"]
+
+READ 013 2026-10-11T07:37:37.207611+00:00 assignment ownership and binding metadata
+{
+  "queue_entry": {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "e846407120f5be094f4d",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/verify/e846407120f5be094f4d.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  "packet_keys": [
+    "assignment",
+    "authority",
+    "captured_sources",
+    "cells",
+    "corpus_manifest",
+    "criteria",
+    "diagnostics",
+    "mappings",
+    "obligations",
+    "required_checks",
+    "rows",
+    "scope",
+    "source_excerpts",
+    "supplemental"
+  ],
+  "assignment": {
+    "actor": "/root/qualify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "verify": {
+          "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            8
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 62802,
+      "output_tokens_estimate": 15872,
+      "work_seconds_estimate": 155
+    },
+    "id": "e846407120f5be094f4d",
+    "items": [
+      "330d9855c61f1fa6db1e92b2",
+      "a5b35e7460c5ba032ea3ab9c",
+      "a09b4b5068e60047e85b9d20",
+      "4e129aea04e56ac3f5e18eac",
+      "235d809af28915c83b47a336",
+      "cb6557b6c858a3df047947ff",
+      "cced7364e2269714c048fe3b",
+      "381dd396d48f156e5b5332ba",
+      "69a9fd68e24025b700e9bbb1",
+      "9e2179b4c1fbfc73dc6b4981",
+      "acca57d9a610cd2900940f11",
+      "355ce3ec841005b898e3d8d3",
+      "2228315b4ed81fce11373514",
+      "2160f33c3a701883bf507397",
+      "b707f101a68f594abdbb9fc8",
+      "d5d35100c716e2ed184e7476",
+      "21f9cfbf2718ad51d2976c98",
+      "32efcf3836cf4d26fc113577",
+      "dafc343685f5a84041beee97",
+      "67bbb2cf737f1d39490640e1",
+      "9aa00375bff5d32993c718d0",
+      "46e28f2007abc40979497fc9",
+      "36ee15fe5284f5e03e6afdc4",
+      "b82b83027689277cdcc2042f",
+      "533e91f3401233d0974551eb",
+      "fbafce4f79dd46979495549a",
+      "ab40e04b150dd3790c5764db",
+      "791a31ca8731b94c89d67e5c",
+      "b3f616c2c1a987217e5cf61b",
+      "67ae926240e520bfdb63b1a3",
+      "263ad09bd2d440e2a894ee63"
+    ],
+    "mappings": {
+      "2160f33c3a701883bf507397": "bec870ad5d84e4c3d810e8533fefa1210bc39ae32ebc8681329b0de4f2e3ff9e",
+      "21f9cfbf2718ad51d2976c98": "e209db39594edd210ee3b41393129ab9f13774b52ffee1a605f6a84c07a040f2",
+      "2228315b4ed81fce11373514": "e1ff44057f4f86abeba8c5aec76aab139633f7ae0912df1c53ab4892a74ae5f0",
+      "235d809af28915c83b47a336": "51f58a5addb5a52b2433cfe6b74407201445a0e99f5fb37d416d9d486374d0ad",
+      "263ad09bd2d440e2a894ee63": "295faf9aaa1038527d2efe6ef29c61b3d18704ce61a0fcd729c84bededf2429c",
+      "32efcf3836cf4d26fc113577": "07428f1d058751339d02193c10c3e07b59e97d1d55115197ed82e982641d7135",
+      "330d9855c61f1fa6db1e92b2": "1cf60fd499ed2cb0c8e26f71d09a4ea2886bdf7886807e0a0ba1ecf0fa430e7d",
+      "355ce3ec841005b898e3d8d3": "40032a8fbdbcbea6b0b5374d1765c589c6a375ce24da897db6eb9eaf666609fd",
+      "36ee15fe5284f5e03e6afdc4": "a1b6ddc460d0848793ff5547aa14bd657290cbb1fd30548c9c2666ef5c436fea",
+      "381dd396d48f156e5b5332ba": "20a98c2453fdf85896b9b7d52b1378dae553aea58584c51d80ffbae04de13720",
+      "46e28f2007abc40979497fc9": "fe3741e7f2dd5c58136b842590c3750119f675e23d4116ab4faa710caadfdb5c",
+      "4e129aea04e56ac3f5e18eac": "84e1ddf2ddb6d9ce1986c091d36d113edd97f139852a9c2382381bf7fcaaa4df",
+      "533e91f3401233d0974551eb": "90811e5d25387267d5963df3d62c0639dc14a968f9764552ca43f31ab884efe1",
+      "67ae926240e520bfdb63b1a3": "08ca99b87d9f62ccc35178a1c1ec12535fc1a1e02a37079e1a1ab7b41d8ef6bc",
+      "67bbb2cf737f1d39490640e1": "3f5e729ca37fd244a40a2f64a6f1eea4fc78a22ef1342f720dcd1c9dbf4010a6",
+      "69a9fd68e24025b700e9bbb1": "39fd1f8b3cb4b61de072747a77336037b6da659febea9091858fcbe0499a2844",
+      "791a31ca8731b94c89d67e5c": "69d555e505919a11a6fb6ea87810cfbc82a5770b08fa2867ad6c1ec8c869b744",
+      "9aa00375bff5d32993c718d0": "bf87f5826be88e173aa4f74f29d6767ccf3ed6379f80b9c66af33a1b4d32a7d8",
+      "9e2179b4c1fbfc73dc6b4981": "2c4619d75cb662801cd0caebc050726ed2992a8a7b9472ee7a8f68e4ecb6abd9",
+      "a09b4b5068e60047e85b9d20": "ac6fc53f6e147b42c9becc541dff26cc69b2197943be979be0effd0951c31960",
+      "a5b35e7460c5ba032ea3ab9c": "4f7eb8ef7762a0dcd7c7b9fb82b374fb69dd53abda9b9a2df28c9bc6f5ed800d",
+      "ab40e04b150dd3790c5764db": "539a3f21ef7e45100a83940a06c09ae4b7e302e3dcb07c74b20c4347093a9d8c",
+      "acca57d9a610cd2900940f11": "fbcfd0e941a9f41c1005ff8d7e7773f74ee8dc2f449b0ee8982c48d120ebc036",
+      "b3f616c2c1a987217e5cf61b": "291003406a90c50e94a75f86ec3b9a6573c7dc85407e79216ec2e398d82a3c28",
+      "b707f101a68f594abdbb9fc8": "c5c3f8cb8de78461bbb6762372a7c5e5cc851fc91d42024b245916734f8deeec",
+      "b82b83027689277cdcc2042f": "456b27523699dc8c1ec2c02c702a71a15ffe11d1cb3dad6add7b6e16aaad118b",
+      "cb6557b6c858a3df047947ff": "2333d4d3422dddf6148d936e24208ef89c74bc6a894b5c776128331b7a42f5fc",
+      "cced7364e2269714c048fe3b": "94335083f6cf7ca91aa17db66ac28d2dbc7117d7aa4a21c4384eae92ca577180",
+      "d5d35100c716e2ed184e7476": "039a0f2b72d9f59b6b2227e18e1c0e314649c301b509774b540a51627934b397",
+      "dafc343685f5a84041beee97": "c0c79c9efe86bb89fa391e35a149dafcb39ff820fc3da74578d947c775340549",
+      "fbafce4f79dd46979495549a": "25928fe114f9d0d592a9e5e1efb033fd0ace59ce333904ea0209887f9411b3e3"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9",
+    "status": "pending"
+  },
+  "rows_type": "dict",
+  "rows_keys": [
+    "corpus/qualification/activities/run.yaml#/steps"
+  ],
+  "criteria_keys": [
+    "dp:1"
+  ]
+}
+
+READ 014 2026-10-11T07:37:49.522285+00:00 projection structure
+{"cell": ["corpus/qualification/activities/run.yaml#/steps", "dp:1"], "row": {"address": "/steps", "end": 6, "id": "corpus/qualification/activities/run.yaml#/steps", "kind": "section", "label": "/steps", "origin": "touched", "section": "steps", "source": "corpus/qualification/activities/run.yaml", "source_kind": "activity", "sources": ["corpus/qualification/activities/run.yaml"], "start": 3, "type": "activity"}, "criterion": {"end": 8, "family": "1. Honor the executing workflow's inherited destination", "hash": "68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3", "id": "dp:1", "label": "DP-01", "source": "corpus/canon/resources/design-principles.md", "start": 5, "text": "## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n", "title": "1. Honor the executing workflow's inherited destination"}, "mapping_keys": ["actor", "assignment", "attempt", "evidence", "fingerprint", "reason", "status"]}
+
+READ 015 2026-10-11T07:38:05.794385+00:00 exact evidence dictionary chunk 1/1, 37 unique lists; tuples are source,start,end; C1=corpus/canon/resources/design-principles.md C2=corpus/canon/resources/anti-patterns.md; S1..S5 as READ008
+["E001", [["S1", 1, 6], ["C1", 5, 8]]]
+["E002", [["S1", 1, 6], ["S2", 1, 6], ["S3", 1, 5], ["S4", 1, 12], ["S5", 1, 5], ["C1", 5, 8]]]
+["E003", [["S4", 1, 12], ["C1", 5, 8]]]
+["E004", [["S2", 1, 6], ["C1", 5, 8]]]
+["E005", [["S1", 1, 6], ["S5", 1, 5], ["C1", 5, 8]]]
+["E006", [["S5", 1, 5], ["C1", 5, 8]]]
+["E007", [["S3", 1, 5], ["C1", 5, 8]]]
+["E008", [["S1", 1, 6], ["C2", 7, 14]]]
+["E009", [["S4", 1, 12], ["C2", 7, 14]]]
+["E010", [["S2", 1, 6], ["C2", 7, 14]]]
+["E011", [["S5", 1, 5], ["C2", 7, 14]]]
+["E012", [["S1", 1, 6], ["S5", 1, 5], ["C2", 7, 14]]]
+["E013", [["S3", 1, 5], ["C2", 7, 14]]]
+["E014", [["S1", 1, 6], ["C1", 9, 11]]]
+["E015", [["S4", 1, 12], ["C1", 9, 11]]]
+["E016", [["S2", 1, 6], ["C1", 9, 11]]]
+["E017", [["S5", 1, 5], ["C1", 9, 11]]]
+["E018", [["S1", 1, 6], ["S5", 1, 5], ["C1", 9, 11]]]
+["E019", [["S3", 1, 5], ["C1", 9, 11]]]
+["E020", [["S1", 1, 6], ["S2", 1, 6], ["C2", 15, 21]]]
+["E021", [["S1", 1, 6], ["C2", 15, 21]]]
+["E022", [["S4", 1, 12], ["C2", 15, 21]]]
+["E023", [["S2", 1, 6], ["S4", 1, 12], ["C2", 15, 21]]]
+["E024", [["S1", 1, 6], ["S5", 1, 5], ["C2", 15, 21]]]
+["E025", [["S5", 1, 5], ["C2", 15, 21]]]
+["E026", [["S3", 1, 5], ["C2", 15, 21]]]
+["E027", [["S1", 1, 6], ["S2", 1, 6], ["S3", 1, 5], ["S4", 1, 12], ["S5", 1, 5], ["C2", 15, 21]]]
+["E028", [["S2", 1, 6], ["C2", 15, 21]]]
+["E029", [["S3", 1, 5], ["S4", 1, 12], ["C2", 15, 21]]]
+["E030", [["S2", 1, 6], ["S4", 1, 12], ["C1", 9, 11]]]
+["E031", [["S1", 1, 6], ["S2", 1, 6], ["S3", 1, 5], ["S4", 1, 12], ["S5", 1, 5], ["C1", 9, 11]]]
+["E032", [["S1", 1, 6], ["S2", 1, 6], ["C1", 9, 11]]]
+["E033", [["S3", 1, 5], ["S4", 1, 12], ["C1", 9, 11]]]
+["E034", [["S2", 1, 6], ["S4", 1, 12], ["C2", 7, 14]]]
+["E035", [["S1", 1, 6], ["S2", 1, 6], ["S3", 1, 5], ["S4", 1, 12], ["S5", 1, 5], ["C2", 7, 14]]]
+["E036", [["S3", 1, 5], ["S4", 1, 12], ["C2", 7, 14]]]
+["E037", [["S1", 1, 6], ["S2", 1, 6], ["C2", 7, 14]]]
+
+READ 016 2026-10-11T07:38:29.547959+00:00 mapping projection chunk 1/5; record=[owned item,row alias,status,ordered reason segments,evidence alias]; rows V01..V52 from sorted exact row IDs in READ008; every record author /root/qualify_audit_two attempt audit-map-1
+{"queue": 1, "run": "audit-a", "assignment": "e846407120f5be094f4d", "criterion": ["dp:1"], "mapper_assignment": ["2ad051daae8aa769c918", "62003bc9f869e2ed4100", "ce858df09696160ddfca"]}
+["330d9855c61f1fa6db1e92b2","V02","N",["T001","T002","T003"],"E001"]
+["a5b35e7460c5ba032ea3ab9c","V03","N",["T004","T002","T003"],"E001"]
+["a09b4b5068e60047e85b9d20","V04","N",["T005","T002","T003"],"E001"]
+["4e129aea04e56ac3f5e18eac","V05","N",["T006","T002","T003"],"E001"]
+["235d809af28915c83b47a336","V06","N",["T007","T002","T003"],"E001"]
+["cb6557b6c858a3df047947ff","V07","N",["T008","T002","T003"],"E001"]
+["cced7364e2269714c048fe3b","V09","N",["T009","T002","T003"],"E001"]
+["381dd396d48f156e5b5332ba","V36","A",["T010","T011","T012"],"E002"]
+["69a9fd68e24025b700e9bbb1","V37","N",["T013","T014","T015"],"E003"]
+["9e2179b4c1fbfc73dc6b4981","V38","N",["T016","T014","T015"],"E003"]
+["acca57d9a610cd2900940f11","V39","N",["T017","T014","T015"],"E003"]
+["355ce3ec841005b898e3d8d3","V40","A",["T018","T011","T012"],"E002"]
+["2228315b4ed81fce11373514","V17","N",["T019","T002","T003"],"E004"]
+["2160f33c3a701883bf507397","V18","N",["T020","T002","T003"],"E004"]
+["b707f101a68f594abdbb9fc8","V19","N",["T021","T002","T003"],"E004"]
+["d5d35100c716e2ed184e7476","V20","N",["T022","T002","T003"],"E004"]
+["21f9cfbf2718ad51d2976c98","V50","N",["T023","T024","T025"],"E005"]
+["32efcf3836cf4d26fc113577","V51","N",["T026","T024","T025"],"E005"]
+["dafc343685f5a84041beee97","V52","N",["T027","T024","T025"],"E005"]
+["67bbb2cf737f1d39490640e1","V43","N",["T028","T024","T025"],"E006"]
+["9aa00375bff5d32993c718d0","V44","N",["T029","T024","T025"],"E006"]
+["46e28f2007abc40979497fc9","V45","N",["T030","T024","T025"],"E006"]
+["36ee15fe5284f5e03e6afdc4","V29","N",["T031","T014","T015"],"E003"]
+["b82b83027689277cdcc2042f","V30","N",["T032","T014","T015"],"E003"]
+["533e91f3401233d0974551eb","V34","N",["T033","T014","T015"],"E003"]
+["fbafce4f79dd46979495549a","V35","N",["T034","T014","T015"],"E003"]
+["ab40e04b150dd3790c5764db","V15","N",["T035","T002","T003"],"E004"]
+["791a31ca8731b94c89d67e5c","V16","N",["T036","T002","T003"],"E004"]
+["b3f616c2c1a987217e5cf61b","V26","N",["T037","T038"],"E007"]
+["67ae926240e520bfdb63b1a3","V27","N",["T039","T038"],"E007"]
+["263ad09bd2d440e2a894ee63","V48","N",["T040","T024","T025"],"E006"]
+{"queue": 2, "run": "audit-a", "assignment": "677686e44651e85a545c", "criterion": ["ap:emission-without-validation"], "mapper_assignment": ["192385f8097527b0f3b2", "7641ffc721c232837baa", "76d7ebaaabc8f1fb9072"]}
+["69bbe5f010e4e9c6cc42b36b","V02","N",["T001","T041","T042"],"E008"]
+["4c9b9e3283acb76acd0c593c","V03","N",["T004","T041","T042"],"E008"]
+["eb0acb5f69509bc093ccb4c4","V04","N",["T005","T041","T042"],"E008"]
+["8f71acc678543f1dedd6da64","V05","N",["T006","T041","T042"],"E008"]
+["85d58778322169b7eb358fb2","V06","N",["T007","T041","T042"],"E008"]
+["e7190e6183add8a7b67d408d","V07","N",["T008","T041","T042"],"E008"]
+["7a49531ccbd7063bf5c4dd03","V09","N",["T009","T041","T042"],"E008"]
+["d10a33e1908da3335366adaa","V36","A",["T010","T043","T044"],"E009"]
+["a3b7b46de80a7e60f06f33aa","V37","A",["T013","T043","T044"],"E009"]
+["2f83f57df858c2cf145efffc","V38","N",["T016","T045"],"E009"]
+["1fff788717e68470ea335f4a","V39","A",["T017","T043","T044"],"E009"]
+["9d43a5459db3bcbd7c1b6759","V40","N",["T018","T045"],"E009"]
+["cbb292d61ff63c7740d065be","V17","N",["T019","T041","T042"],"E010"]
+["bbb0ef5214ae8bbcce715c65","V18","N",["T020","T041","T042"],"E010"]
+["71fd5507f4b74e2ec91c2b3e","V19","N",["T021","T041","T042"],"E010"]
+["f2a200e38a51bc411ee5e057","V20","N",["T022","T041","T042"],"E010"]
+["343988e91c335d3bdef76586","V43","N",["T028","T041","T042"],"E011"]
+["cc39f8b8ebb2b96169d05005","V44","N",["T029","T041","T042"],"E011"]
+["b1f517596f87f82a15830709","V45","N",["T030","T041","T042"],"E011"]
+["f30ba6f42d4230bf27814f3a","V50","N",["T023","T041","T042"],"E012"]
+["ca06cc90126da20e026a0486","V51","N",["T026","T041","T042"],"E012"]
+["96797ae8488cf51f8878572b","V52","N",["T027","T041","T042"],"E012"]
+["2e52133101ac058519a8aa51","V13","N",["T046","T041","T042"],"E010"]
+["8d0a1adc7b4ff87710b48af6","V14","N",["T047","T041","T042"],"E010"]
+["541cffe238719bcc6a46fe77","V26","N",["T037","T045"],"E013"]
+["06d002e75cf36ea1b43c83b1","V27","N",["T039","T045"],"E013"]
+["668f2c03b5c1dfffd6143cc5","V34","A",["T033","T043","T044"],"E009"]
+["7f339716e8d7474fb2512654","V35","A",["T034","T043","T044"],"E009"]
+["8f64e24f8a4caa9482d28228","V15","N",["T035","T041","T042"],"E010"]
+["232c484eaf1003ef830d4ffa","V16","N",["T036","T041","T042"],"E010"]
+["01bc60dde7d03c634b92d11c","V28","N",["T048","T045"],"E013"]
+{"queue": 3, "run": "audit-a", "assignment": "b8133f01d56d0da117eb", "criterion": ["dp:2"], "mapper_assignment": ["1795cf050a3936a880b4", "3c99a588d6e4d2c1f7a9", "a87ecc13b44d8b5ab4f8"]}
+["ec7e3577667dbf0846b7b09f","V02","N",["T001","T049","T050"],"E014"]
+["eaf04cb03551645c38d72842","V03","N",["T004","T049","T050"],"E014"]
+["51923b360aa3ef1a7585fbf4","V04","N",["T005","T049","T050"],"E014"]
+["7fa24663abc3348858407cd5","V05","N",["T006","T049","T050"],"E014"]
+["8f04699d8cada26b1b7ebcc5","V06","N",["T007","T049","T050"],"E014"]
+["f7c71bd7cd44e3d3cfd50614","V07","N",["T008","T049","T050"],"E014"]
+["501147c7c9cf63d456cc367b","V09","N",["T009","T049","T050"],"E014"]
+["21b5df21a5c696fcaa898fbf","V36","N",["T010","T051","T052"],"E015"]
+["d4d45cf60920c4360e003cf1","V37","N",["T013","T051","T052"],"E015"]
+["b1c897ef75ecfb0802a40206","V38","N",["T016","T051","T052"],"E015"]
+["b192bf0ffab5454aaf50901a","V39","N",["T017","T051","T052"],"E015"]
+["3e979fb0c7e3eb5836c3cb1a","V40","N",["T018","T051","T052"],"E015"]
+["f82d1cd9016de1cdd797e170","V17","N",["T019","T049","T050"],"E016"]
+["569231fa0b1023abbf3fc5e4","V18","N",["T020","T049","T050"],"E016"]
+["7567be6ff4d583433092c972","V19","N",["T021","T049","T050"],"E016"]
+["90bd5ed8d7c0859a6fbe41a1","V20","N",["T022","T049","T050"],"E016"]
+["094759e3ffb8236db086b566","V43","A",["T028","T053","T054"],"E017"]
+["9a13e148e0a434d148bef242","V44","A",["T029","T053","T054"],"E017"]
+["e0fcd50974c10678a3e2fb44","V45","A",["T030","T053","T054"],"E017"]
+["8862878198e6198ef77c1f28","V50","A",["T023","T053","T054"],"E018"]
+["48da822c85267d96ea48c4c2","V51","A",["T026","T053","T054"],"E018"]
+["5453a725eb6086baaa72c972","V52","A",["T027","T053","T054"],"E018"]
+["0e0de76a45b1ce5cc0a55a2d","V13","N",["T046","T049","T050"],"E016"]
+["0dfaae8a980c43d6afea14bc","V14","N",["T047","T049","T050"],"E016"]
+
+READ 017 2026-10-11T07:38:44.940323+00:00 mapping projection chunk 2/5; lossless schema from READ016
+["0ed30157350f8c23d6297b75","V24","N",["T055","T051","T052"],"E019"]
+["62d70a2ce5a077d8010ce9fe","V25","N",["T056","T051","T052"],"E019"]
+["6eb38943804944cf6cfbb4ed","V29","N",["T031","T051","T052"],"E015"]
+["dadf707dc4833496ce962762","V30","N",["T032","T051","T052"],"E015"]
+["7c49f2961aec4917ed955bd7","V15","N",["T035","T049","T050"],"E016"]
+["ad7314b738ea597d93ae3b23","V16","N",["T036","T049","T050"],"E016"]
+["19723157905da0f5874e77db","V21","N",["T057","T049","T050"],"E016"]
+{"queue": 4, "run": "audit-a", "assignment": "2c6fdfd874827456636d", "criterion": ["ap:broken-binding"], "mapper_assignment": ["82d5cc1216ad6058a26c", "8d8193ec72b0160f2d5a", "b40a25bba6118b3dfb38"]}
+["fc60645fdab03b4f360b972e","V02","A",["T001","T058","T059"],"E020"]
+["ece85719689c1a3411d52a12","V03","A",["T004","T058","T059"],"E020"]
+["03b141fa3c167d6b5347f32a","V04","N",["T005","T060","T061"],"E021"]
+["366a1ced08e276234b09d365","V05","A",["T006","T058","T059"],"E020"]
+["e4e1d36386ad37dc4007d953","V06","A",["T007","T058","T059"],"E020"]
+["f45b86c19f25461cbe667622","V07","A",["T008","T058","T059"],"E020"]
+["23d52f087c143d67f67da445","V09","A",["T009","T058","T059"],"E020"]
+["a30b577290e3406e29334f7b","V36","N",["T010","T062","T063"],"E022"]
+["6dff2018269cdd7f6ce3a242","V37","N",["T013","T062","T063"],"E022"]
+["923c5917ea2c9d4abe29e519","V38","N",["T016","T062","T063"],"E022"]
+["a03eed5b1543ec6c3d53b66c","V39","N",["T017","T062","T063"],"E022"]
+["185e903ef3c4ae26da231a32","V40","N",["T018","T062","T063"],"E022"]
+["82c8e910cc4b4df96a89e369","V17","A",["T019","T064","T065"],"E023"]
+["790b168511688f3580f49f17","V18","A",["T020","T064","T065"],"E023"]
+["e6707d2a492bbb28eafc3a21","V19","A",["T021","T064","T065"],"E023"]
+["387b3abcf94e6a19aabbf992","V20","A",["T022","T064","T065"],"E023"]
+["94b820a882f196103f835741","V50","N",["T023","T066"],"E024"]
+["8020bba4283a65b31df0f113","V51","N",["T026","T066"],"E024"]
+["f0755acc68e9a62e580665a3","V52","N",["T027","T066"],"E024"]
+["e3964a7ca7f68e7c40793e11","V43","N",["T028","T066"],"E025"]
+["fc47360bf214ca94a9c2f752","V44","N",["T029","T066"],"E025"]
+["e8a18028e34e1ace5d01fcf3","V45","N",["T030","T066"],"E025"]
+["1682a187cf7dd36419e2a143","V15","A",["T035","T064","T065"],"E023"]
+["7f71a92e9f425b2094dec98d","V16","A",["T036","T064","T065"],"E023"]
+["4c3a69d6842d941bb1b4ae64","V29","N",["T031","T062","T063"],"E022"]
+["883f9febadc76de8d4b64dd6","V30","N",["T032","T062","T063"],"E022"]
+["547682eae905cf61fddd33be","V34","N",["T033","T062","T063"],"E022"]
+["0f13f165ba007a4540cef470","V35","N",["T034","T062","T063"],"E022"]
+["5fb3f06992383a0be7318734","V24","N",["T055","T067"],"E026"]
+["c9c06fb4ee9924c6c63c553f","V25","N",["T056","T067"],"E026"]
+["4d029f4ed7a941dc5b13bafa","V28","N",["T048","T067"],"E026"]
+{"queue": 5, "run": "audit-a", "assignment": "12139724df44ef616b27", "criterion": ["ap:broken-binding"], "mapper_assignment": ["1d57d4c24729a7986771", "8d8193ec72b0160f2d5a"]}
+["620325a4c3f62c9867a7df90","V13","A",["T046","T068"],"E020"]
+["85e68983cef9c8b0f9a7bf33","V14","A",["T047","T068"],"E020"]
+["ac42c54bb5e18cc6005d1df7","V26","N",["T037","T067"],"E026"]
+["bfde9ab405ad9faa2bc4b5ac","V27","N",["T039","T067"],"E026"]
+["b34f6249f0f9b31107491750","V22","A",["T069","T064","T065"],"E023"]
+["8669d4026237cb94e83e2158","V23","A",["T070","T071"],"E027"]
+["c986d23bf9fe92ac15ab723d","V31","A",["T072","T064","T065"],"E023"]
+["8835c0ddec51d397d30590e7","V32","A",["T073","T064","T065"],"E023"]
+["588e9afc6de79e4e15622316","V01","N",["T074","T060","T061"],"E021"]
+["a1bbb96005ca910edd02b943","V46","N",["T075","T060","T061"],"E025"]
+["b331b3631bac4371bfebf008","V10","A",["T076","T058","T059"],"E020"]
+["b93fc9705f0d802bdff5440b","V47","N",["T077","T066"],"E025"]
+["bfa09024c94a6bc76d51c631","V12","N",["T078","T060","T061"],"E028"]
+["ca1e1515076ec0147e7b8338","V41","A",["T079","T064","T065"],"E023"]
+["ce1c6885d9fe828ffb2d4802","V48","N",["T040","T066"],"E025"]
+["eeab805ea4653756496776b5","V11","A",["T080","T058","T059"],"E020"]
+["fa0e42c99b24fa8b70e1b4c5","V42","N",["T081","T082","T083"],"E029"]
+["fa301823ccd44ed9374ce575","V21","A",["T057","T064","T065"],"E023"]
+{"queue": 6, "run": "audit-a", "assignment": "e7e132bfef63a60db9ef", "criterion": ["dp:2"], "mapper_assignment": ["a87ecc13b44d8b5ab4f8", "b0538131fb3b8e20c6c0"]}
+["9839de920cafa86c93f9e319","V31","N",["T072","T051","T052"],"E015"]
+["16ed4220394232ac66e84453","V32","N",["T073","T051","T052"],"E015"]
+["a6cc9c95bd8a15eec9337ab9","V22","N",["T069","T049","T050"],"E030"]
+["7616d539ed6effba75237723","V23","N",["T070","T049","T050"],"E031"]
+["a700a3294be653eb8e533547","V34","N",["T033","T051","T052"],"E015"]
+["cc4fea783a74407b8fdb654e","V35","N",["T034","T051","T052"],"E015"]
+["d9b55f0b6cbe3ed6ab868ed5","V26","N",["T037","T051","T052"],"E019"]
+["4da9396f20f50a18673256c5","V27","N",["T039","T051","T052"],"E019"]
+["36c8e451b93d39512aae352f","V11","N",["T080","T049","T050"],"E032"]
+["54a73e1bf111128988cf03fe","V28","N",["T048","T051","T052"],"E019"]
+["7d5cdef67a14fe0a0e70a8ff","V01","N",["T074","T049","T050"],"E014"]
+["8b3b602b6703003326b8df8d","V10","N",["T076","T049","T050"],"E014"]
+["8d0f33a043c7068e8c998046","V41","N",["T079","T051","T052"],"E015"]
+["98b55e096e4899353322814f","V42","N",["T081","T051","T052"],"E033"]
+["a0e70a1645458e99657058ca","V12","N",["T078","T049","T050"],"E016"]
+["b70cd0fa3dc717cd87f806e4","V46","N",["T075","T084","T085"],"E017"]
+["c7fdcca69a6f6d3b3cfa7009","V47","A",["T077","T053","T054"],"E017"]
+["e5c1842a573eccbf8d7d7e60","V48","A",["T040","T053","T054"],"E017"]
+{"queue": 7, "run": "audit-a", "assignment": "4e6d747341f6d4239a79", "criterion": ["ap:emission-without-validation"], "mapper_assignment": ["192385f8097527b0f3b2", "51ded0c9fdf28fe88dcf"]}
+["afeb129e1e03e4f353693950","V22","N",["T069","T086","T087"],"E034"]
+["7b47769dd43afb09823a4b14","V23","N",["T070","T086","T087"],"E035"]
+["d9eb0eb2cb8f9fb790e82eee","V24","N",["T055","T088"],"E013"]
+["720f7eeadf6be862dd39b7ab","V25","N",["T056","T088"],"E013"]
+["e00abe344b2cf11c702b34f1","V31","N",["T072","T089"],"E009"]
+["f0f7088daffd00158c0c1032","V32","N",["T073","T089"],"E009"]
+["e192558242a4ed960c5d7a46","V29","N",["T031","T088"],"E009"]
+["e3b51412d1cbb5b26dbb8664","V30","N",["T032","T088"],"E009"]
+["0782b255d289b2d8aaa260a8","V01","N",["T074","T041","T042"],"E008"]
+["2ec151da2546cd9066780932","V21","N",["T057","T041","T042"],"E010"]
+["3641b7b9d54d55df0cc22cb1","V47","N",["T077","T041","T042"],"E011"]
+
+READ 018 2026-10-11T07:39:02.183817+00:00 mapping projection chunk 3/5; lossless schema from READ016
+["5551fe05b667e60209399004","V48","N",["T040","T041","T042"],"E011"]
+["6d000a7587cb7a720d3ce09a","V10","N",["T076","T041","T042"],"E008"]
+["8ab5a44208c83cc6801721f8","V42","N",["T081","T086","T087"],"E036"]
+["9156a757fd93955348ca5766","V12","N",["T078","T041","T042"],"E010"]
+["ca0a66d25c90e652baa92f28","V46","N",["T075","T041","T042"],"E011"]
+["d074a916d8f80c61b3aa18a0","V41","A",["T079","T043","T044"],"E009"]
+["e42353cfc8fe3169b809b996","V11","N",["T080","T086","T087"],"E037"]
+{"queue": 8, "run": "audit-a", "assignment": "0171fb9d27bc77d7f138", "criterion": ["dp:1"], "mapper_assignment": ["1384940538ef3c801aeb", "ce858df09696160ddfca"]}
+["b6ad6f9e4c3bf6bcd7517234","V24","N",["T055","T038"],"E007"]
+["3dd8981b7cf70f3489f0cb9a","V25","N",["T056","T038"],"E007"]
+["b7876638c82ca7835e6ecd54","V31","N",["T072","T014","T015"],"E003"]
+["52eadd327712a19ac6cca68e","V32","N",["T073","T014","T015"],"E003"]
+["cf440ff1717daba3ba33af52","V13","N",["T046","T002","T003"],"E004"]
+["af24593c352cedfdf9a972fa","V14","N",["T047","T002","T003"],"E004"]
+["eb3d9f625d45294630564c36","V22","A",["T069","T090","T091"],"E002"]
+["15ee43746437cfdf860b1519","V23","A",["T070","T090","T091"],"E002"]
+["65dd3d64e8c54c7713685121","V21","N",["T057","T002","T003"],"E004"]
+["665c1a7ad6f6a7650e3f374a","V47","N",["T077","T024","T025"],"E006"]
+["69c0652ae2e85de91e1e5de4","V28","N",["T048","T038"],"E007"]
+["8bfa310664405693e5cee00b","V42","A",["T081","T090","T091"],"E002"]
+["91a7785154a1a018658ccae8","V11","A",["T080","T090","T091"],"E002"]
+["9fff88eaae065adb66759e66","V46","N",["T075","T024","T025"],"E006"]
+["a406c04573c91f8ad82577e3","V41","A",["T079","T011","T012"],"E002"]
+["a93639cc3c5c1ad866587c2e","V01","N",["T074","T002","T003"],"E001"]
+["bf312e511dcc8f4eda77a41a","V12","N",["T078","T002","T003"],"E004"]
+["fd8572c700cc4625bf5e2e78","V10","N",["T076","T002","T003"],"E001"]
+{"queue": 9, "run": "audit-b", "assignment": "45e96b511b75b61f75f4", "criterion": ["dp:1"], "mapper_assignment": ["8bfc7f1fc79695a5614b", "d3b2cfd62358fde883ec", "fd874d2411f1e2b2d054"]}
+["330d9855c61f1fa6db1e92b2","V02","N",["T092","T002","T003"],"E001"]
+["a5b35e7460c5ba032ea3ab9c","V03","N",["T093","T002","T003"],"E001"]
+["a09b4b5068e60047e85b9d20","V04","N",["T005","T002","T003"],"E001"]
+["4e129aea04e56ac3f5e18eac","V05","N",["T094","T002","T003"],"E001"]
+["235d809af28915c83b47a336","V06","N",["T095","T002","T003"],"E001"]
+["272c678aed06a8e25584080e","V08","N",["T096","T002","T003"],"E001"]
+["cced7364e2269714c048fe3b","V09","N",["T009","T002","T003"],"E001"]
+["381dd396d48f156e5b5332ba","V36","A",["T097","T011","T012"],"E002"]
+["69a9fd68e24025b700e9bbb1","V37","N",["T098","T014","T015"],"E003"]
+["9e2179b4c1fbfc73dc6b4981","V38","N",["T016","T014","T015"],"E003"]
+["acca57d9a610cd2900940f11","V39","N",["T099","T014","T015"],"E003"]
+["355ce3ec841005b898e3d8d3","V40","A",["T100","T011","T012"],"E002"]
+["2228315b4ed81fce11373514","V17","N",["T101","T002","T003"],"E004"]
+["2160f33c3a701883bf507397","V18","N",["T102","T002","T003"],"E004"]
+["b707f101a68f594abdbb9fc8","V19","N",["T021","T002","T003"],"E004"]
+["d5d35100c716e2ed184e7476","V20","N",["T103","T002","T003"],"E004"]
+["f442830158e33a5d097e4514","V49","N",["T104","T024","T025"],"E005"]
+["21f9cfbf2718ad51d2976c98","V50","N",["T023","T024","T025"],"E005"]
+["32efcf3836cf4d26fc113577","V51","N",["T026","T024","T025"],"E005"]
+["dafc343685f5a84041beee97","V52","N",["T105","T024","T025"],"E005"]
+["67bbb2cf737f1d39490640e1","V43","N",["T106","T024","T025"],"E006"]
+["9aa00375bff5d32993c718d0","V44","N",["T107","T024","T025"],"E006"]
+["46e28f2007abc40979497fc9","V45","N",["T108","T024","T025"],"E006"]
+["36ee15fe5284f5e03e6afdc4","V29","N",["T031","T014","T015"],"E003"]
+["b82b83027689277cdcc2042f","V30","N",["T032","T014","T015"],"E003"]
+["533e91f3401233d0974551eb","V34","N",["T109","T014","T015"],"E003"]
+["fbafce4f79dd46979495549a","V35","N",["T110","T014","T015"],"E003"]
+["ab40e04b150dd3790c5764db","V15","N",["T035","T002","T003"],"E004"]
+["791a31ca8731b94c89d67e5c","V16","N",["T036","T002","T003"],"E004"]
+["b3f616c2c1a987217e5cf61b","V26","N",["T037","T038"],"E007"]
+["67ae926240e520bfdb63b1a3","V27","N",["T039","T038"],"E007"]
+{"queue": 10, "run": "audit-b", "assignment": "4df7f0acb83a1dead4e0", "criterion": ["ap:emission-without-validation"], "mapper_assignment": ["29e87467b09fe79bebeb", "4ab899110c65d04c4cea", "92195e02cf6614b1a899"]}
+["69bbe5f010e4e9c6cc42b36b","V02","N",["T092","T041","T042"],"E008"]
+["4c9b9e3283acb76acd0c593c","V03","N",["T093","T041","T042"],"E008"]
+["eb0acb5f69509bc093ccb4c4","V04","N",["T005","T041","T042"],"E008"]
+["8f71acc678543f1dedd6da64","V05","N",["T094","T041","T042"],"E008"]
+["85d58778322169b7eb358fb2","V06","N",["T095","T041","T042"],"E008"]
+["460145b3f2b47abf7cc6997a","V08","N",["T096","T041","T042"],"E008"]
+["7a49531ccbd7063bf5c4dd03","V09","N",["T009","T041","T042"],"E008"]
+["d10a33e1908da3335366adaa","V36","A",["T097","T043","T044"],"E009"]
+["a3b7b46de80a7e60f06f33aa","V37","A",["T098","T043","T044"],"E009"]
+["2f83f57df858c2cf145efffc","V38","N",["T016","T045"],"E009"]
+["1fff788717e68470ea335f4a","V39","A",["T099","T043","T044"],"E009"]
+["9d43a5459db3bcbd7c1b6759","V40","N",["T100","T045"],"E009"]
+["cbb292d61ff63c7740d065be","V17","N",["T101","T041","T042"],"E010"]
+["bbb0ef5214ae8bbcce715c65","V18","N",["T102","T041","T042"],"E010"]
+["71fd5507f4b74e2ec91c2b3e","V19","N",["T021","T041","T042"],"E010"]
+["f2a200e38a51bc411ee5e057","V20","N",["T103","T041","T042"],"E010"]
+["ff07daa2c799e9750e2df8bc","V49","N",["T104","T041","T042"],"E012"]
+["f30ba6f42d4230bf27814f3a","V50","N",["T023","T041","T042"],"E012"]
+["ca06cc90126da20e026a0486","V51","N",["T026","T041","T042"],"E012"]
+["96797ae8488cf51f8878572b","V52","N",["T105","T041","T042"],"E012"]
+["343988e91c335d3bdef76586","V43","N",["T106","T041","T042"],"E011"]
+["cc39f8b8ebb2b96169d05005","V44","N",["T107","T041","T042"],"E011"]
+["b1f517596f87f82a15830709","V45","N",["T108","T041","T042"],"E011"]
+["2e52133101ac058519a8aa51","V13","N",["T046","T041","T042"],"E010"]
+["8d0a1adc7b4ff87710b48af6","V14","N",["T047","T041","T042"],"E010"]
+["541cffe238719bcc6a46fe77","V26","N",["T037","T045"],"E013"]
+["06d002e75cf36ea1b43c83b1","V27","N",["T039","T045"],"E013"]
+["668f2c03b5c1dfffd6143cc5","V34","A",["T109","T043","T044"],"E009"]
+["7f339716e8d7474fb2512654","V35","A",["T110","T043","T044"],"E009"]
+["8f64e24f8a4caa9482d28228","V15","N",["T035","T041","T042"],"E010"]
+
+READ 019 2026-10-11T07:39:20.761295+00:00 mapping projection chunk 4/5; lossless schema from READ016
+["232c484eaf1003ef830d4ffa","V16","N",["T036","T041","T042"],"E010"]
+{"queue": 11, "run": "audit-b", "assignment": "476e715ab4b13b2a9d65", "criterion": ["dp:2"], "mapper_assignment": ["3e685d211851272ee178", "d0f6d7d27207e6c9d9be", "eaebb8f780cfbbd93495"]}
+["ec7e3577667dbf0846b7b09f","V02","N",["T092","T049","T050"],"E014"]
+["eaf04cb03551645c38d72842","V03","N",["T093","T049","T050"],"E014"]
+["51923b360aa3ef1a7585fbf4","V04","N",["T005","T049","T050"],"E014"]
+["7fa24663abc3348858407cd5","V05","N",["T094","T049","T050"],"E014"]
+["8f04699d8cada26b1b7ebcc5","V06","N",["T095","T049","T050"],"E014"]
+["accbcdab5de3e41546023b48","V08","N",["T096","T049","T050"],"E014"]
+["501147c7c9cf63d456cc367b","V09","N",["T009","T049","T050"],"E014"]
+["21b5df21a5c696fcaa898fbf","V36","N",["T097","T051","T052"],"E015"]
+["d4d45cf60920c4360e003cf1","V37","N",["T098","T051","T052"],"E015"]
+["b1c897ef75ecfb0802a40206","V38","N",["T016","T051","T052"],"E015"]
+["b192bf0ffab5454aaf50901a","V39","N",["T099","T051","T052"],"E015"]
+["3e979fb0c7e3eb5836c3cb1a","V40","N",["T100","T051","T052"],"E015"]
+["3f2fc1d2f91b27a5d46f0504","V49","A",["T104","T053","T054"],"E018"]
+["8862878198e6198ef77c1f28","V50","A",["T023","T053","T054"],"E018"]
+["48da822c85267d96ea48c4c2","V51","A",["T026","T053","T054"],"E018"]
+["5453a725eb6086baaa72c972","V52","A",["T105","T053","T054"],"E018"]
+["f82d1cd9016de1cdd797e170","V17","N",["T101","T049","T050"],"E016"]
+["569231fa0b1023abbf3fc5e4","V18","N",["T102","T049","T050"],"E016"]
+["7567be6ff4d583433092c972","V19","N",["T021","T049","T050"],"E016"]
+["90bd5ed8d7c0859a6fbe41a1","V20","N",["T103","T049","T050"],"E016"]
+["094759e3ffb8236db086b566","V43","A",["T106","T053","T054"],"E017"]
+["9a13e148e0a434d148bef242","V44","A",["T107","T053","T054"],"E017"]
+["e0fcd50974c10678a3e2fb44","V45","A",["T108","T053","T054"],"E017"]
+["0e0de76a45b1ce5cc0a55a2d","V13","N",["T046","T049","T050"],"E016"]
+["0dfaae8a980c43d6afea14bc","V14","N",["T047","T049","T050"],"E016"]
+["0ed30157350f8c23d6297b75","V24","N",["T055","T051","T052"],"E019"]
+["62d70a2ce5a077d8010ce9fe","V25","N",["T056","T051","T052"],"E019"]
+["6eb38943804944cf6cfbb4ed","V29","N",["T031","T051","T052"],"E015"]
+["dadf707dc4833496ce962762","V30","N",["T032","T051","T052"],"E015"]
+["7c49f2961aec4917ed955bd7","V15","N",["T035","T049","T050"],"E016"]
+["ad7314b738ea597d93ae3b23","V16","N",["T036","T049","T050"],"E016"]
+{"queue": 12, "run": "audit-b", "assignment": "167c471729557441b296", "criterion": ["ap:broken-binding"], "mapper_assignment": ["056bce5a830aaf9adc4a", "46f9496e46046c20c695", "df405bd5c16d0d2d70b3"]}
+["fc60645fdab03b4f360b972e","V02","A",["T092","T058","T059"],"E020"]
+["ece85719689c1a3411d52a12","V03","A",["T093","T058","T059"],"E020"]
+["03b141fa3c167d6b5347f32a","V04","N",["T005","T060","T061"],"E021"]
+["366a1ced08e276234b09d365","V05","A",["T094","T058","T059"],"E020"]
+["e4e1d36386ad37dc4007d953","V06","A",["T095","T058","T059"],"E020"]
+["f1186a7f61ea9f6493402006","V08","A",["T096","T058","T059"],"E020"]
+["23d52f087c143d67f67da445","V09","A",["T009","T058","T059"],"E020"]
+["a30b577290e3406e29334f7b","V36","N",["T097","T062","T063"],"E022"]
+["6dff2018269cdd7f6ce3a242","V37","N",["T098","T062","T063"],"E022"]
+["923c5917ea2c9d4abe29e519","V38","N",["T016","T062","T063"],"E022"]
+["a03eed5b1543ec6c3d53b66c","V39","N",["T099","T062","T063"],"E022"]
+["185e903ef3c4ae26da231a32","V40","N",["T100","T062","T063"],"E022"]
+["30d521174c6c7f6c4a8579ad","V49","N",["T104","T066"],"E024"]
+["94b820a882f196103f835741","V50","N",["T023","T066"],"E024"]
+["8020bba4283a65b31df0f113","V51","N",["T026","T066"],"E024"]
+["f0755acc68e9a62e580665a3","V52","N",["T105","T066"],"E024"]
+["82c8e910cc4b4df96a89e369","V17","A",["T101","T064","T065"],"E023"]
+["790b168511688f3580f49f17","V18","A",["T102","T064","T065"],"E023"]
+["e6707d2a492bbb28eafc3a21","V19","A",["T021","T064","T065"],"E023"]
+["387b3abcf94e6a19aabbf992","V20","A",["T103","T064","T065"],"E023"]
+["e3964a7ca7f68e7c40793e11","V43","N",["T106","T066"],"E025"]
+["fc47360bf214ca94a9c2f752","V44","N",["T107","T066"],"E025"]
+["e8a18028e34e1ace5d01fcf3","V45","N",["T108","T066"],"E025"]
+["1682a187cf7dd36419e2a143","V15","A",["T035","T064","T065"],"E023"]
+["7f71a92e9f425b2094dec98d","V16","A",["T036","T064","T065"],"E023"]
+["4c3a69d6842d941bb1b4ae64","V29","N",["T031","T062","T063"],"E022"]
+["883f9febadc76de8d4b64dd6","V30","N",["T032","T062","T063"],"E022"]
+["547682eae905cf61fddd33be","V34","N",["T109","T062","T063"],"E022"]
+["0f13f165ba007a4540cef470","V35","N",["T110","T062","T063"],"E022"]
+["5fb3f06992383a0be7318734","V24","N",["T055","T067"],"E026"]
+["c9c06fb4ee9924c6c63c553f","V25","N",["T056","T067"],"E026"]
+{"queue": 13, "run": "audit-b", "assignment": "414653de97ef194c70a4", "criterion": ["ap:broken-binding"], "mapper_assignment": ["46f9496e46046c20c695", "cc5f222afa61fb9ac157", "df405bd5c16d0d2d70b3"]}
+["620325a4c3f62c9867a7df90","V13","A",["T046","T068"],"E020"]
+["85e68983cef9c8b0f9a7bf33","V14","A",["T047","T068"],"E020"]
+["ac42c54bb5e18cc6005d1df7","V26","N",["T037","T067"],"E026"]
+["bfde9ab405ad9faa2bc4b5ac","V27","N",["T039","T067"],"E026"]
+["b34f6249f0f9b31107491750","V22","A",["T111","T064","T065"],"E023"]
+["8669d4026237cb94e83e2158","V23","A",["T112","T071"],"E027"]
+["c986d23bf9fe92ac15ab723d","V31","A",["T113","T064","T065"],"E023"]
+["fef2366b0f34a7eda42dc08d","V33","A",["T114","T064","T065"],"E023"]
+["4d029f4ed7a941dc5b13bafa","V28","N",["T048","T067"],"E026"]
+["588e9afc6de79e4e15622316","V01","N",["T074","T060","T061"],"E021"]
+["a1bbb96005ca910edd02b943","V46","N",["T075","T060","T061"],"E025"]
+["b331b3631bac4371bfebf008","V10","A",["T115","T058","T059"],"E020"]
+["b93fc9705f0d802bdff5440b","V47","N",["T116","T066"],"E025"]
+["bfa09024c94a6bc76d51c631","V12","N",["T078","T060","T061"],"E028"]
+["ca1e1515076ec0147e7b8338","V41","A",["T117","T064","T065"],"E023"]
+["ce1c6885d9fe828ffb2d4802","V48","N",["T118","T066"],"E025"]
+["eeab805ea4653756496776b5","V11","A",["T119","T058","T059"],"E020"]
+["fa0e42c99b24fa8b70e1b4c5","V42","N",["T120","T082","T083"],"E029"]
+["fa301823ccd44ed9374ce575","V21","A",["T057","T064","T065"],"E023"]
+{"queue": 14, "run": "audit-b", "assignment": "405cd8a38f1d38b488a1", "criterion": ["dp:2"], "mapper_assignment": ["3e685d211851272ee178", "87340a7581bb70e04e58", "eaebb8f780cfbbd93495"]}
+["9839de920cafa86c93f9e319","V31","N",["T113","T051","T052"],"E015"]
+["7e07755f91a05aa3f3a47b42","V33","N",["T114","T051","T052"],"E015"]
+
+READ 020 2026-10-11T07:39:36.501946+00:00 mapping projection chunk 5/5; lossless schema from READ016
+["a6cc9c95bd8a15eec9337ab9","V22","N",["T111","T049","T050"],"E030"]
+["7616d539ed6effba75237723","V23","N",["T112","T049","T050"],"E031"]
+["a700a3294be653eb8e533547","V34","N",["T109","T051","T052"],"E015"]
+["cc4fea783a74407b8fdb654e","V35","N",["T110","T051","T052"],"E015"]
+["d9b55f0b6cbe3ed6ab868ed5","V26","N",["T037","T051","T052"],"E019"]
+["4da9396f20f50a18673256c5","V27","N",["T039","T051","T052"],"E019"]
+["19723157905da0f5874e77db","V21","N",["T057","T049","T050"],"E016"]
+["36c8e451b93d39512aae352f","V11","N",["T119","T049","T050"],"E032"]
+["54a73e1bf111128988cf03fe","V28","N",["T048","T051","T052"],"E019"]
+["7d5cdef67a14fe0a0e70a8ff","V01","N",["T074","T049","T050"],"E014"]
+["8b3b602b6703003326b8df8d","V10","N",["T115","T049","T050"],"E014"]
+["8d0f33a043c7068e8c998046","V41","N",["T117","T051","T052"],"E015"]
+["98b55e096e4899353322814f","V42","N",["T120","T051","T052"],"E033"]
+["a0e70a1645458e99657058ca","V12","N",["T078","T049","T050"],"E016"]
+["b70cd0fa3dc717cd87f806e4","V46","N",["T075","T084","T085"],"E017"]
+["c7fdcca69a6f6d3b3cfa7009","V47","A",["T116","T053","T054"],"E017"]
+["e5c1842a573eccbf8d7d7e60","V48","A",["T118","T053","T054"],"E017"]
+{"queue": 15, "run": "audit-b", "assignment": "df577c8e06ada7532a12", "criterion": ["ap:emission-without-validation"], "mapper_assignment": ["29e87467b09fe79bebeb", "3225d077bce7ab4f41f2", "92195e02cf6614b1a899"]}
+["afeb129e1e03e4f353693950","V22","N",["T111","T086","T087"],"E034"]
+["7b47769dd43afb09823a4b14","V23","N",["T112","T086","T087"],"E035"]
+["d9eb0eb2cb8f9fb790e82eee","V24","N",["T055","T088"],"E013"]
+["720f7eeadf6be862dd39b7ab","V25","N",["T056","T088"],"E013"]
+["e00abe344b2cf11c702b34f1","V31","N",["T113","T089"],"E009"]
+["b055cfe76040cd42f5d207a8","V33","N",["T114","T089"],"E009"]
+["e192558242a4ed960c5d7a46","V29","N",["T031","T088"],"E009"]
+["e3b51412d1cbb5b26dbb8664","V30","N",["T032","T088"],"E009"]
+["01bc60dde7d03c634b92d11c","V28","N",["T048","T045"],"E013"]
+["0782b255d289b2d8aaa260a8","V01","N",["T074","T041","T042"],"E008"]
+["2ec151da2546cd9066780932","V21","N",["T057","T041","T042"],"E010"]
+["3641b7b9d54d55df0cc22cb1","V47","N",["T116","T041","T042"],"E011"]
+["5551fe05b667e60209399004","V48","N",["T118","T041","T042"],"E011"]
+["6d000a7587cb7a720d3ce09a","V10","N",["T115","T041","T042"],"E008"]
+["8ab5a44208c83cc6801721f8","V42","N",["T120","T086","T087"],"E036"]
+["9156a757fd93955348ca5766","V12","N",["T078","T041","T042"],"E010"]
+["ca0a66d25c90e652baa92f28","V46","N",["T075","T041","T042"],"E011"]
+["d074a916d8f80c61b3aa18a0","V41","A",["T117","T043","T044"],"E009"]
+["e42353cfc8fe3169b809b996","V11","N",["T119","T086","T087"],"E037"]
+{"queue": 16, "run": "audit-b", "assignment": "b0dc6c10a1d219c9640b", "criterion": ["dp:1"], "mapper_assignment": ["7c8950517dabe96225f7", "d3b2cfd62358fde883ec", "fd874d2411f1e2b2d054"]}
+["b6ad6f9e4c3bf6bcd7517234","V24","N",["T055","T038"],"E007"]
+["3dd8981b7cf70f3489f0cb9a","V25","N",["T056","T038"],"E007"]
+["b7876638c82ca7835e6ecd54","V31","N",["T113","T014","T015"],"E003"]
+["8b527c51fa312ce306f5d8f4","V33","N",["T114","T014","T015"],"E003"]
+["cf440ff1717daba3ba33af52","V13","N",["T046","T002","T003"],"E004"]
+["af24593c352cedfdf9a972fa","V14","N",["T047","T002","T003"],"E004"]
+["eb3d9f625d45294630564c36","V22","A",["T111","T090","T091"],"E002"]
+["15ee43746437cfdf860b1519","V23","A",["T112","T090","T091"],"E002"]
+["263ad09bd2d440e2a894ee63","V48","N",["T118","T024","T025"],"E006"]
+["65dd3d64e8c54c7713685121","V21","N",["T057","T002","T003"],"E004"]
+["665c1a7ad6f6a7650e3f374a","V47","N",["T116","T024","T025"],"E006"]
+["69c0652ae2e85de91e1e5de4","V28","N",["T048","T038"],"E007"]
+["8bfa310664405693e5cee00b","V42","A",["T120","T090","T091"],"E002"]
+["91a7785154a1a018658ccae8","V11","A",["T119","T090","T091"],"E002"]
+["9fff88eaae065adb66759e66","V46","N",["T075","T024","T025"],"E006"]
+["a406c04573c91f8ad82577e3","V41","A",["T117","T011","T012"],"E002"]
+["a93639cc3c5c1ad866587c2e","V01","N",["T074","T002","T003"],"E001"]
+["bf312e511dcc8f4eda77a41a","V12","N",["T078","T002","T003"],"E004"]
+["fd8572c700cc4625bf5e2e78","V10","N",["T115","T002","T003"],"E001"]
+
+READ 021 2026-10-11T07:40:12.373196+00:00 repeat exact current applicability instruction from own READ003 to resolve relationship scope; one deliberate repeated read
+READ 003 | /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md | lines 27-40
+27: ## Applicability
+28: 
+29: Use [mapping assignments](audit-dispatch.md#phases) to decide every cell in the full row × AP/DP product. Each cell links to source evidence and exactly one disposition:
+30: 
+31: | Status | Evidence |
+32: | --- | --- |
+33: | `A` | The criterion's scope and the construct that makes it apply |
+34: | `N` | The criterion's excluding wording and source facts satisfying it |
+35: | `U` | The evidence or decision still missing |
+36: 
+37: Shared reasons name the exact assigned row set and hold for every member. A clean result or a Do not flag exception is an evaluation under an applicable criterion; it does not by itself establish inapplicability. Blank cells are unresolved. Table pagination preserves every logical pair exactly once.
+38: 
+39: After all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](commands.md#reset-audit-cells) or [refresh](commands.md#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](commands.md#check-audit-status) successfully.
+40: 
+
+
+READ 022 2026-10-11T07:40:24.383014+00:00 /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md lines 1-26; relationship definition for disputed-scope review
+1: # Change Surface
+2: 
+3: Author and Audit use the same captured inventory, applicability matrices and evidence gates. Scripts establish structural coverage; independent agents establish semantic accuracy.
+4: 
+5: ## Capture
+6: 
+7: 1. **Locate the record.**
+8:    Resolve the shared [planning record](planning.md), corpus root and paired engine. Each run has its own directory beneath that record. Read the [audit command conventions](commands.md#audit-command-conventions) before the first audit command.
+9: 2. **Declare the scope.**
+10:    Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.
+11: 3. **Capture the bytes.**
+12:    [Initialize the surface](commands.md#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+13: 4. **Check the proposed inventory.**
+14:    Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+15: 
+16: ## Identity
+17: 
+18: - **Items.**
+19:   Rows use the source path and native section, rule, input, output or step identifier. Nested steps retain their full ancestry and duplicate occurrences. Positional prose, paragraphs and candidate clauses use revision-bound source addresses. Independently testable constraints sharing one line need separate clause rows; verifiers add any missed boundary through the scope input's `rows` list. Whole-section, whole-element, missing-structure and relationship rows retain checks that span items.
+20: - **Relationships.**
+21:   Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.
+22: - **Supporting material.**
+23:   Resource and README rows belong to Workflow / Supporting Material under their actual namespace and source path. A namespace without a workflow definition remains a namespace. Shared content has one content row; referencing elements have relationship rows.
+24: - **Criteria.**
+25:   AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.
+26: 
+
+READ 023 2026-10-11T07:41:32.936515+00:00 repeat captured Returns contract before formatting typed receipts
+READ 002 | /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md | lines 33-48 of 48
+33: ## Returns
+34: 
+35: Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+36: 
+37: - **Identity.**
+38:   Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+39: - **Evidence.**
+40:   Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+41: - **Statuses.**
+42:   Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+43: - **Findings.**
+44:   A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. Follow [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+45: - **Check observations.**
+46:   A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+47: - **Partial work.**
+48:   A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+
+
+READ 024 2026-10-11T07:41:41.487639+00:00 /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-receipt.json complete 394 bytes
+{
+  "assignment": "copy-from-packet",
+  "snapshot": "copy-from-packet",
+  "actor": "host-bound-agent-id",
+  "attempt": "attempt-1",
+  "records": [
+    {
+      "items": ["copy-owned-item-id"],
+      "status": "U",
+      "reason": "Identify the missing evidence; supply a source-derived judgment when settled.",
+      "evidence": [{"source": "copy-source-key", "start": 1, "end": 1}]
+    }
+  ]
+}
+
+
+DERIVED DECISIONS 025: explicit per-row judgments and facts, order DP1 DP2 AP1 AP2; values substituted from the current source bytes
+V01 NNNN|run /id names the activity.
+V02 NNNA|run /steps contains delivery invoking deliver with {arg}.
+V03 NNNA|The delivery step invokes deliver with {arg}.
+V04 NNNN|delivery /id names the activity step.
+V05 NNNA|The delivery routine object names deliver and supplies {arg}.
+V06 NNNA|delivery arguments has the single key {arg}; sealed is opaque.
+V07 NNNA|The invocation argument key is envelope.
+V08 NNNA|The invocation argument key is packet.
+V09 NNNA|delivery routine/name selects deliver.
+V10 NNNA|The run element contains the concrete deliver invocation with {arg}.
+V11 ANNA|The run-to-deliver relationship binds argument {arg} to input envelope.
+V12 NNNN|deliver /id names the routine declaration.
+V13 NNNA|deliver /inputs declares the required key envelope.
+V14 NNNA|The sole deliver input item is envelope.
+V15 NNNA|deliver /outputs binds exported report to emit.report.
+V16 NNNA|deliver /outputs/report contains the emit.report binding.
+V17 NNNA|deliver /steps resolves emit to produce.
+V18 NNNA|The emit step calls produce.
+V19 NNNA|The producer step ID emit is named by emit.report.
+V20 NNNA|The emit technique reference selects produce.
+V21 NNNA|The deliver element declares input envelope, export emit.report and producer emit.
+V22 ANNA|The deliver-to-produce relationship resolves emit.report against output {out}.
+V23 ANNA|The execution relationship instantiates qualification/run/delivery/deliver/emit/produce.
+V24 NNNN|Ancestor /capability describes Constrain inherited delivery.
+V25 NNNN|The ancestor Capability paragraph describes inherited delivery.
+V26 NNNN|Ancestor /rules declares the required archive destination.
+V27 NNNN|The ancestor line-5 rule requires archive.
+V28 NNNN|The ancestor element contains Capability and its archive requirement.
+V29 NNNN|Leaf /capability describes Produce a report.
+V30 NNNN|The leaf Capability paragraph describes producing a report.
+V31 NNNA|Leaf /outputs declares {out}; deliver binds emit.report.
+V32 NNNA|Leaf /outputs/report declares report.
+V33 NNNA|Leaf /outputs/summary declares summary.
+V34 NNAN|Leaf /protocol contains: {instruction}.
+V35 NNAN|Protocol line 8 directs: {instruction}.
+V36 ANAN|Leaf /rules contains the emission clause and Destination {dest}.
+V37 NNAN|Rule line 11 combines retention with: {emission}.
+V38 NNNN|Only clause 1 is owned here: Retain the report ID.
+V39 NNAN|Only clause 2 is owned here: {emission}.
+V40 ANNN|Leaf rule line 12 declares Destination {dest}.
+V41 ANAA|The produce element declares output {out}, emitting instructions and Destination {dest}.
+V42 ANNN|The inheritance relationship links produce Destination {dest} to ancestor archive.
+V43 NANN|The workflow graph contains run.done pointing to {edge}.
+V44 NANN|The run graph entry has the single done exit to {edge}.
+V45 NANN|The run.done graph exit points to {edge}.
+V46 NNNN|workflow /id names qualification.
+V47 NANN|initialActivity selects run; its done exit points to {edge}.
+V48 NANN|The qualification workflow starts at run and has only run.done -> {edge}.
+V49 AANN|The graph relationship re-enters the run activity through run.done -> run.
+V50 AANN|The initialActivity relationship selects run in qualification.
+V51 AANN|The graph-entry relationship binds qualification graph node run to the run activity.
+V52 AANN|The graph-entry relationship at run.done identifies the executing run activity.
+
+WRITE 025 2026-10-11T07:44:14.705066+00:00 independently derived verification receipts; no canonical mutations
+{"receipt_directory":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-verify-receipts","write_start":"2026-10-11T07:44:14.698373+00:00","write_end":"2026-10-11T07:44:14.705066+00:00","task_start":"2026-10-11T07:29:14.694745+00:00","decision_order":["dp:1","dp:2","ap:emission-without-validation","ap:broken-binding"],"prior_exposure":"Round-1 mapping and evaluation; current criterion/source bytes and all new mapping reasons/dispositions/evidence were independently reread. No hidden expected outcomes or other receipts read.","records":396,"verified":389,"disputed":7,"packet_bytes_total":818599,"receipt_bytes_total":181244,"metrics":[{"run":"audit-a","assignment":"e846407120f5be094f4d","items":31,"packet_bytes":61241,"receipt_bytes":14735,"receipt_sha256":"e5add30d7f61b61ef0a998962f5a0647aef95826a73caea3ce1bd0f41870c6b8","disputed":3},{"run":"audit-a","assignment":"677686e44651e85a545c","items":31,"packet_bytes":60381,"receipt_bytes":12926,"receipt_sha256":"080d2ed4e845df34c4c3adbe86800b43d484fcc2a73061be31e555b8dc934fd7","disputed":0},{"run":"audit-a","assignment":"b8133f01d56d0da117eb","items":31,"packet_bytes":59530,"receipt_bytes":13156,"receipt_sha256":"046891d0790d52b12331c891b27b2e3889a31d1cfae57569e26166a726b8d989","disputed":0},{"run":"audit-a","assignment":"2c6fdfd874827456636d","items":31,"packet_bytes":62428,"receipt_bytes":14227,"receipt_sha256":"12a465def48b0564a5f1630b34cc4fd6a9f82c53ee176c840868dbd71de7dc0a","disputed":0},{"run":"audit-a","assignment":"12139724df44ef616b27","items":18,"packet_bytes":41417,"receipt_bytes":8955,"receipt_sha256":"1d0faa52319e9ce109080a180607f6dc06f2ad39bacf25a0542ee9969c0773df","disputed":0},{"run":"audit-a","assignment":"e7e132bfef63a60db9ef","items":18,"packet_bytes":39027,"receipt_bytes":8269,"receipt_sha256":"16c2721885bf4365c94a815bf835bf53fa494dca80b53da4c99564b639ad0cec","disputed":0},{"run":"audit-a","assignment":"4e6d747341f6d4239a79","items":18,"packet_bytes":39696,"receipt_bytes":8123,"receipt_sha256":"5a3a64c20b34399e1b9af9b989e90bc67a27e42741ad6bc81ce356d67a724155","disputed":0},{"run":"audit-a","assignment":"0171fb9d27bc77d7f138","items":18,"packet_bytes":41427,"receipt_bytes":9150,"receipt_sha256":"b5c05733578e752dd48a2aa0ddbb49ec716001e9a7abdf53d15d5447c7a4c5d6","disputed":0},{"run":"audit-b","assignment":"45e96b511b75b61f75f4","items":31,"packet_bytes":61714,"receipt_bytes":15082,"receipt_sha256":"b0769980efc2134d9502175dc1ab8741f8be4e02e1586856b17b31cbcf7716de","disputed":4},{"run":"audit-b","assignment":"4df7f0acb83a1dead4e0","items":31,"packet_bytes":60806,"receipt_bytes":12982,"receipt_sha256":"2887c68eb0d36899fff1f55d49619f7899cad610db88644aadb6c93396df4aea","disputed":0},{"run":"audit-b","assignment":"476e715ab4b13b2a9d65","items":31,"packet_bytes":59952,"receipt_bytes":13213,"receipt_sha256":"45d9b10ed92a43b8cf0542b3aa492024476b29d6ff78f5bdca71137387c91f38","disputed":0},{"run":"audit-b","assignment":"167c471729557441b296","items":31,"packet_bytes":62797,"receipt_bytes":14258,"receipt_sha256":"5fddbb9f17fee581f4c78e9b976a85fc18d3e46d0dc8b7b53e99360c72807721","disputed":0},{"run":"audit-b","assignment":"414653de97ef194c70a4","items":19,"packet_bytes":43087,"receipt_bytes":9380,"receipt_sha256":"40592a094d9e5175b35355f71c37733aee01266017c6d9b0fcb4215ee5a13695","disputed":0},{"run":"audit-b","assignment":"405cd8a38f1d38b488a1","items":19,"packet_bytes":40697,"receipt_bytes":8697,"receipt_sha256":"77898b7abc7f1fa3cbc25b87136829f7f393d2cae87dc989b9d198a5f92ee532","disputed":0},{"run":"audit-b","assignment":"df577c8e06ada7532a12","items":19,"packet_bytes":41353,"receipt_bytes":8514,"receipt_sha256":"1f949c17511e1347c2016c02fea31ebad707288662d4fd8ef566fa51ed07a916","disputed":0},{"run":"audit-b","assignment":"b0dc6c10a1d219c9640b","items":19,"packet_bytes":43046,"receipt_bytes":9577,"receipt_sha256":"202191ef96adbd3bcc3d751f12192992b873d76d247ca4b60ae7297d7c4d52d0","disputed":0}],"disagreements":[{"run":"audit-a","assignment":"e846407120f5be094f4d","item":"21f9cfbf2718ad51d2976c98","row":"corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877","mapped":"N","derived":"A"},{"run":"audit-a","assignment":"e846407120f5be094f4d","item":"32efcf3836cf4d26fc113577","row":"corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55","mapped":"N","derived":"A"},{"run":"audit-a","assignment":"e846407120f5be094f4d","item":"dafc343685f5a84041beee97","row":"corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b","mapped":"N","derived":"A"},{"run":"audit-b","assignment":"45e96b511b75b61f75f4","item":"f442830158e33a5d097e4514","row":"corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593","mapped":"N","derived":"A"},{"run":"audit-b","assignment":"45e96b511b75b61f75f4","item":"21f9cfbf2718ad51d2976c98","row":"corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877","mapped":"N","derived":"A"},{"run":"audit-b","assignment":"45e96b511b75b61f75f4","item":"32efcf3836cf4d26fc113577","row":"corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55","mapped":"N","derived":"A"},{"run":"audit-b","assignment":"45e96b511b75b61f75f4","item":"dafc343685f5a84041beee97","row":"corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b","mapped":"N","derived":"A"}]}
+
+VALIDATE 026 2026-10-11T07:44:57.695093+00:00
+{"check":"All 16 on-disk receipt wrappers have exact assignment ownership, current snapshots, independent actor, one record per cell, mandatory source coverage and overlapping row/criterion spans. No ledger submission performed.","completed_at":"2026-10-11T07:44:57.695093+00:00","elapsed_seconds_from_task_start":943.000348,"counts":{"verified":389,"disputed":7},"per_run":{"audit-a":{"verified":193,"disputed":3},"audit-b":{"verified":196,"disputed":4}},"receipt_bytes":181244,"largest_receipt_bytes":15082,"max_output_budget_bytes":16000,"mean_receipt_bytes_per_cell":457.687,"packet_bytes_once_each":818599,"transcript_bytes_before_validation":105400,"read_sequence":"READ001-024; WRITE025; VALIDATE026. READ021 and READ023 deliberately repeated short instruction excerpts to resolve relationship scope and confirm the return contract. READ013-014 were minor projection-format inspections. No necessary source/criterion prerequisite is missing.","instruction_observation":"DP-01 explicitly carries inheritance through call relationships but does not define call versus graph-reference scope. Seven current workflow-to-activity exclusions disputed because these relationships select or re-enter the activity on the stated executing call chain. Coordinator reconciliation remains required."}
+
+READ 027 2026-10-11T07:48:08.422070+00:00 corrected verification task start; /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-corrected-verify-queue.json; complete 963 bytes
+[
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "7cb1bbb89b2a094429a5",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/corrected-packets/7cb1bbb89b2a094429a5.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "6d12e58957274e839639",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/corrected-packets/6d12e58957274e839639.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  }
+]
+
+
+READ ATTEMPT 028 refused before displaying metadata: AssertionError: 8007. The bounded-output assertion prevented an oversized read; repeated as two separate packet projections. Tool exit 1; no receipt or canonical mutation.
+
+READ 028 2026-10-11T07:48:34.654445+00:00 corrected audit-a assignment/source/criterion metadata
+{"run":"audit-a","packet_bytes":14832,"packet_sha256":"954e540f126bd8b753d74a6bbde456f2b6e04eda36d6bf395128c6ddc781fc4f","assignment":{"actor":"/root/qualify_audit_one","budgets":{"bytes_per_token":1,"calibration":{"evaluate":{"evidence":"Round1 Author remaining72 cells used458.099seconds and25449receiptbytes; AP01 six-cell return4895bytes. Conservative bytes/token1 with worst-observed output margin. Accepted completed work retained.","output_tokens_per_item":1024,"seconds_per_item":8},"inventory":{"evidence":"Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.","output_tokens_per_item":1600,"seconds_per_item":18},"map":{"evidence":"Round 1 required-work pilots: 49 cells in 186.767 seconds and 201.295 seconds; returned JSON 17806 and 41952 bytes. Conservative one-byte token upper bound plus margin yields 1024 output tokens per cell and 6 seconds per cell. Pilot receipts and transcripts are retained; source/tool refresh requires current judgments. One child slot is allocated to each mode's queue within the three-child pool.","output_tokens_per_item":1100,"seconds_per_item":6},"obligations":{"evidence":"Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json","output_tokens_per_item":2048,"seconds_per_item":30},"verify":{"evidence":"Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.","output_tokens_per_item":512,"seconds_per_item":5}},"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"slots":1,"work_seconds":600},"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,8]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":15443,"output_tokens_estimate":1536,"work_seconds_estimate":15},"id":"7cb1bbb89b2a094429a5","items":["21f9cfbf2718ad51d2976c98","32efcf3836cf4d26fc113577","dafc343685f5a84041beee97"],"mappings":{"21f9cfbf2718ad51d2976c98":"5b53d4d5b64dadeae69236db08882d782ac7530eb807952d7231ecebfdf36a91","32efcf3836cf4d26fc113577":"1a3f4aa1649ab397235d93c50511812af63de73cdd0f667f63cd989ff487cd83","dafc343685f5a84041beee97":"bb900c4148e1bb2f7b8044c36607d7020cebc23a1511297e4225859e8b33ce45"},"phase":"verify","returned":[],"snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","status":"pending"},"captured_source_metadata":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources","criterion":{"dp:1":{"end":8,"family":"1. Honor the executing workflow's inherited destination","hash":"68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3","id":"dp:1","label":"DP-01","source":"corpus/canon/resources/design-principles.md","start":5,"text":"## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n","title":"1. Honor the executing workflow's inherited destination"}}}
+
+READ ATTEMPT 029 failed before displaying metadata: AttributeError: list object has no attribute items. Projection corrected to index the excerpt list. Tool exit 1; no receipt or canonical mutation.
+
+READ 029 2026-10-11T07:48:57.372310+00:00 corrected audit-b assignment/source/criterion metadata
+{"run":"audit-b","packet_bytes":17450,"packet_sha256":"e4cbf24d01b8ba99c2e6c37a07c50228eeaa76828624cd3eed6c5dd3aac4f3d7","assignment":{"actor":"/root/qualify_audit_one","budgets":{"bytes_per_token":1,"calibration":{"evaluate":{"evidence":"Round1 Author remaining72 cells used458.099seconds and25449receiptbytes; AP01 six-cell return4895bytes. Conservative bytes/token1 with worst-observed output margin. Accepted completed work retained.","output_tokens_per_item":1024,"seconds_per_item":8},"inventory":{"evidence":"Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.","output_tokens_per_item":1600,"seconds_per_item":18},"map":{"evidence":"Round 1 required-work pilots: 49 cells in 186.767 seconds and 201.295 seconds; returned JSON 17806 and 41952 bytes. Conservative one-byte token upper bound plus margin yields 1024 output tokens per cell and 6 seconds per cell. Pilot receipts and transcripts are retained; source/tool refresh requires current judgments. One child slot is allocated to each mode's queue within the three-child pool.","output_tokens_per_item":1100,"seconds_per_item":6},"obligations":{"evidence":"Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json","output_tokens_per_item":2048,"seconds_per_item":30},"verify":{"evidence":"Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.","output_tokens_per_item":512,"seconds_per_item":5}},"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"slots":1,"work_seconds":600},"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,8]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":18095,"output_tokens_estimate":2048,"work_seconds_estimate":20},"id":"6d12e58957274e839639","items":["f442830158e33a5d097e4514","21f9cfbf2718ad51d2976c98","32efcf3836cf4d26fc113577","dafc343685f5a84041beee97"],"mappings":{"21f9cfbf2718ad51d2976c98":"8b84ed447c680e3a6c347a7685e390c92472f02873d9d3af89dcc8aad6b01cf0","32efcf3836cf4d26fc113577":"0a20062caa95f5503e2c6e567bcf271f9f961a22eb6ef3e0c149cdec00a8766e","dafc343685f5a84041beee97":"4b29dae143d3952cbd0988677d97d74610c87b3eb38a93afa2c35bcf18df4145","f442830158e33a5d097e4514":"fa8da4126cef2cb9c24aec7b8baccfb9cb014079a26575c4e121f126dcf9e47a"},"phase":"verify","returned":[],"snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","status":"pending"},"captured_source_metadata":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/sources","criterion":{"dp:1":{"end":8,"family":"1. Honor the executing workflow's inherited destination","hash":"68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3","id":"dp:1","label":"DP-01","source":"corpus/canon/resources/design-principles.md","start":5,"text":"## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n","title":"1. Honor the executing workflow's inherited destination"}},"excerpt_sample":{"end":6,"hash":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","source":"corpus/qualification/activities/run.yaml","start":1,"text":"id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"}}
+
+READ 030 2026-10-11T07:49:16.180805+00:00 complete corrected audit-a cell/row/mapping fields and captured source hashes
+{"run":"audit-a","excerpt_identities":[{"end":6,"hash":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","source":"corpus/qualification/activities/run.yaml","start":1},{"end":5,"hash":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","source":"corpus/qualification/workflow.yaml","start":1},{"end":8,"hash":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","source":"corpus/canon/resources/design-principles.md","start":1}],"records":[{"item":"21f9cfbf2718ad51d2976c98","criterion":"dp:1","row":{"address":"@relationship/3b27fd01db44f877","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877","kind":"relationship","label":"graph:run","origin":"touched","relationship":{"address":"/initialActivity","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"15dacfa3a1e42e5049e3","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"9dcba66edd2391eb0b8a926a9db9c89bf7adaf3ba4e7092ff3694b1d90cbe22e","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}},{"item":"32efcf3836cf4d26fc113577","criterion":"dp:1","row":{"address":"@relationship/475a98faaf5b9a55","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55","kind":"relationship","label":"graph-entry:run","origin":"touched","relationship":{"address":"/graph/run","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"15dacfa3a1e42e5049e3","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"4954f076c5e722b424f96a8621a302354f5c427b912443e3d730448eeed777c2","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}},{"item":"dafc343685f5a84041beee97","criterion":"dp:1","row":{"address":"@relationship/aa4b84de66a9776b","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b","kind":"relationship","label":"graph-entry:run","origin":"touched","relationship":{"address":"/graph/run/done","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"15dacfa3a1e42e5049e3","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"8bcd27f3750d2064ed008a024a5ec9eba20549b05ce1e69c4d5213e676a1586f","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}}]}
+
+READ 031 2026-10-11T07:49:26.598141+00:00 complete corrected audit-b cell/row/mapping fields and captured source hashes
+{"run":"audit-b","excerpt_identities":[{"end":6,"hash":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","source":"corpus/qualification/activities/run.yaml","start":1},{"end":5,"hash":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","source":"corpus/qualification/workflow.yaml","start":1},{"end":8,"hash":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","source":"corpus/canon/resources/design-principles.md","start":1}],"records":[{"item":"f442830158e33a5d097e4514","criterion":"dp:1","row":{"address":"@relationship/27bf829b0e84c593","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593","kind":"relationship","label":"graph:run","origin":"touched","relationship":{"address":"/graph/run/done","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"464d407ded13eb5bec96","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"47b35aa599eac8abfb13cc4e744e89c0e02b3765ddf34f03542d8124fefe6fd9","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}},{"item":"21f9cfbf2718ad51d2976c98","criterion":"dp:1","row":{"address":"@relationship/3b27fd01db44f877","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877","kind":"relationship","label":"graph:run","origin":"touched","relationship":{"address":"/initialActivity","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"464d407ded13eb5bec96","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"7251efbcb67650f449fe3170a5355049a79b42d59215b0d26cef3169c794f5d8","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}},{"item":"32efcf3836cf4d26fc113577","criterion":"dp:1","row":{"address":"@relationship/475a98faaf5b9a55","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55","kind":"relationship","label":"graph-entry:run","origin":"touched","relationship":{"address":"/graph/run","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"464d407ded13eb5bec96","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"98777bb676c78014fded3e9e770f3399bdecef66fb61209c9b6ac6753c0ff555","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}},{"item":"dafc343685f5a84041beee97","criterion":"dp:1","row":{"address":"@relationship/aa4b84de66a9776b","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b","kind":"relationship","label":"graph-entry:run","origin":"touched","relationship":{"address":"/graph/run/done","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"},"mapping":{"actor":"/root","assignment":"464d407ded13eb5bec96","attempt":"complete-call-chain-applicability","evidence":[{"end":11,"source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"source":"corpus/qualification/workflow.yaml","start":1}],"fingerprint":"1d25093541cbab219e99f20cd1415ddd2c908b58edaae68ac251f0b6976a45fb","reason":"Each assigned relationship selects or re-enters run in executing workflow qualification. Its delivery call invokes deliver, whose emit step calls produce under the captured ancestor contract. DP1 explicitly carries the inherited constraint through those call relationships to the leaf instance. The no-leaf-declaration exclusion concerns independent file checks; it does not exclude these concrete executing-chain relationships.","status":"A"}}]}
+
+READ ATTEMPT 032 path lookup failed before source bytes were retrieved: FileNotFoundError for audit-a/sources/corpus/qualification/routines/deliver.yaml. Captured storage does not mirror logical source paths. Resolving only the assigned captured directory; no uncaptured fixture access.
+
+READ 032 2026-10-11T07:50:12.891823+00:00 captured-source directory lookup only; rg --files /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources; exit 0
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt
+
+READ 033 2026-10-11T07:50:33.603389+00:00 current captured source-byte hash comparison permits exact prior-byte reuse
+[{"run":"audit-a","source":"corpus/qualification/routines/deliver.yaml","bytes":105,"sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-a","source":"corpus/qualification/techniques/TECHNIQUE.md","bytes":85,"sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-a","source":"corpus/canon/resources/design-principles.md","bytes":1352,"sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-a","source":"corpus/qualification/activities/run.yaml","bytes":101,"sha256":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-a","source":"corpus/qualification/techniques/produce.md","bytes":207,"sha256":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-a","source":"corpus/qualification/workflow.yaml","bytes":68,"sha256":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/qualification/routines/deliver.yaml","bytes":105,"sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/qualification/techniques/TECHNIQUE.md","bytes":85,"sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/canon/resources/design-principles.md","bytes":1352,"sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/qualification/activities/run.yaml","bytes":99,"sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/qualification/techniques/produce.md","bytes":202,"sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","reuse":"complete original bytes read in READ006/007; exact SHA256 match"},{"run":"audit-b","source":"corpus/qualification/workflow.yaml","bytes":67,"sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","reuse":"complete original bytes read in READ006/007; exact SHA256 match"}]
+
+WRITE/VALIDATE 034 2026-10-11T07:51:19.649501+00:00 corrected verification receipts
+{"directory":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-corrected-verify-receipts","receipt_write_start":"2026-10-11T07:51:19.648885+00:00","completed_at":"2026-10-11T07:51:19.649501+00:00","elapsed_from_queue_read_seconds":191.227431,"metrics":[{"run":"audit-a","assignment":"7cb1bbb89b2a094429a5","packet_bytes":14832,"receipt_bytes":2989,"records":3,"verified":3,"disputed":0,"receipt_sha256":"e35c29b2c58334fb3f746a6478bb87d1a103b4ad6117783451ea9c6e99bc1275"},{"run":"audit-b","assignment":"6d12e58957274e839639","packet_bytes":17450,"receipt_bytes":3865,"records":4,"verified":4,"disputed":0,"receipt_sha256":"1f4ec8b50c3485f92906f2103b9ec3a137e5b3fbee70d975b8d3caad6caf6f55"}],"total_packet_bytes":32282,"total_receipt_bytes":6854,"context_reuse":"All six cited source files per run hash-match originals fully read in READ006/007; current criterion wording and exact revised mapping reasons/evidence were read again.","validation":"Seven independently verified; exact ownership, actor, snapshot, row/criterion overlap and all row.sources plus full-chain evidence confirmed. No ledger submission or evaluation.","read_observations":"An 8007-character projection was blocked by the bound, then split. A list-shape projection and logical-source-path lookup failed before retrieval and were corrected. All failures recorded; no missing prerequisite remains."}
+
+READ 035 2026-10-11T07:53:05.321612+00:00 Audit2 evaluation task start; /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md Returns lines 33-48
+33: ## Returns
+34: 
+35: Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+36: 
+37: - **Identity.**
+38:   Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+39: - **Evidence.**
+40:   Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+41: - **Statuses.**
+42:   Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+43: - **Findings.**
+44:   A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. Before returning findings, read [bands](reporting.md#bands), [severity](reporting.md#severity), [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+45: - **Check observations.**
+46:   A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+47: - **Partial work.**
+48:   A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+
+READ ATTEMPT 036: exact level-two heading lookup raised StopIteration before output; corrected to case-insensitive heading-level-aware section extraction. No source output was truncated.
+
+READ 036 2026-10-11T07:53:37.632669+00:00 mandatory reporting classification prerequisites
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md #Bands, lines 9-18
+9: ### Bands
+10: 
+11: | Band | Holds | Target |
+12: |---|---|---|
+13: | **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |
+14: | **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |
+15: | **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
+16: 
+17: State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
+18: 
+
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md #Severity, lines 19-31
+19: ### Severity
+20: 
+21: Severity ranks urgency inside a band. The band says whether the finding gates.
+22: 
+23: | Severity | Fires when |
+24: |----------|-----------|
+25: | `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |
+26: | `High` | An entry fires on a construct the change ships, and the defect propagates |
+27: | `Medium` | An entry fires and the defect stays in that construct |
+28: | `Low` | Hygiene with no consumer consequence |
+29: 
+30: The [dispatch phases](audit-dispatch.md#phases) own finding confirmation. An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
+31: 
+
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md #Finding Rows, lines 32-47
+32: ### Finding Rows
+33: 
+34: | Column | Carries |
+35: |--------|---------|
+36: | ID | Stable within the report |
+37: | Band | `Live`, `Contract`, or `Hygiene` |
+38: | Severity | The scale above |
+39: | Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |
+40: | Location | File and field, at the depth the evidence sits |
+41: | Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
+42: | Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |
+43: | Known | Set when a prior pass accepted this key |
+44: | Fix | The action the entry prescribes, in one line |
+45: 
+46: A row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.
+47: 
+
+READ 037 2026-10-11T07:53:47.836132+00:00 /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md Attribution, lines 35-44
+35: ## Attribution
+36: 
+37: - **`diff`**
+38:   A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.
+39: - **`pre-existing`**
+40:   The same construct and evidence at the base ref, independent of an I/O contract change on this surface.
+41: - **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.
+42: - **`fix`**
+43:   Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
+44: 
+
+READ 038 2026-10-11T07:54:05.416754+00:00 /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md lines 1-34; report context for retrospective attribution
+1: # Audit Mode
+2: 
+3: Reviews existing definitions through independently verified change-surface matrices, evidence-backed evaluation, finding confirmation and a complete coverage gate. A single canon question uses the bounded procedure below.
+4: 
+5: ## Prerequisites
+6: 
+7: Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).
+8: 
+9: ## Canon Question
+10: 
+11: For a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.
+12: 
+13: ## Procedure
+14: 
+15: 1. **Scope the surface.**
+16:    - Read the [criteria context](canon-context.md#criteria).
+17:    - Resolve [scope](canon-context.md#scope), then follow the shared [change-surface lifecycle](change-surface.md).
+18: 2. **Run the checks first.**
+19:    - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.
+20:    - Capture structural check outcomes now for inventory review; submit their typed observations during the obligations phase after the map is verified. AP/DP evaluation waits for that gate.
+21: 3. **Map and verify.**
+22:    - Capture the full inventory and four section matrices, decide applicability and independently verify every decision through the shared lifecycle. Resolve all discrepancies before evaluation.
+23: 4. **Evaluate.**
+24:    - Use [bounded assignments](audit-dispatch.md#phases) for the verified applicable cells and supporting obligations. The coordinator reconciles typed returns and preserves pending work.
+25: 5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).
+26: 6. **Verify findings.**
+27:    - Dispatch independent confirmation through the [obligations phase](audit-dispatch.md#phases). Only confirmed findings drive fixes.
+28: 7. **Report.**
+29:    - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.
+30:    - Report in the layout [Which Report](reporting.md#which-report) names.
+31: 8. **File a mechanised Detect.**
+32:    - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.
+33:    - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
+34: 
+
+READ 039 2026-10-11T07:54:22.129253+00:00 /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md lines 1-8, then complete evaluation queue 5333 bytes
+1: # Reporting
+2: 
+3: Severity, row shapes, and which report the run owes.
+4: 
+5: ## Report Context
+6: 
+7: Read this section before selecting a report layout.
+8: 
+
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-evaluate-queue.json
+[
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "64e29de031d64a21a6a8",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/evaluate/64e29de031d64a21a6a8.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "2f27173b333997e5890d",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/evaluate/2f27173b333997e5890d.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "44e6dcc86add66899ed9",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/evaluate/44e6dcc86add66899ed9.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "dc2f82359d3d1a4764e0",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/evaluate/dc2f82359d3d1a4764e0.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "e89332e0b71721fd7622",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a/packets/evaluate/e89332e0b71721fd7622.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "6bfad822d9bb2c4ab6a1",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/packets/evaluate/6bfad822d9bb2c4ab6a1.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "12ae19d79cdf98119f37",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/packets/evaluate/12ae19d79cdf98119f37.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "8d4a36b86152cc3c4123",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/packets/evaluate/8d4a36b86152cc3c4123.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "d791dd8be14e5051281c",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/packets/evaluate/d791dd8be14e5051281c.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  },
+  {
+    "actor": "/root/qualify_audit_one",
+    "assignment": "0400f73b5b67063becc8",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/packets/evaluate/0400f73b5b67063becc8.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  }
+]
+
+
+READ 040 2026-10-11T07:54:39.466964+00:00 evaluation scope, assignment metadata and attribution-context lookup
+{"instruction_lookup":{"command":"rg -n Audit|audit|base|origin reporting.md","exit":0,"output":"30:The [dispatch phases](audit-dispatch.md#phases) own finding confirmation. An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.\n42:| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |\n86:# Canon Audit \u2014 `{target}`\n"},"shared_scope_a":{"checks":["guards"],"paths":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/produce.md"],"qualification_mode":"audit","relationships":[{"address":"execution/qualification/run/delivery/deliver/emit","context":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/TECHNIQUE.md"],"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"}],"repeat":2},"shared_scope_b":{"checks":["guards"],"paths":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/produce.md"],"qualification_mode":"audit","relationships":[{"address":"execution/qualification/run/delivery/deliver/emit","context":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/TECHNIQUE.md"],"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"}],"repeat":2},"authority_a":"Read captured sources and return evidence; the coordinator owns state and edits.","authority_b":"Read captured sources and return evidence; the coordinator owns state and edits.","assignments":[{"run":"audit-a","assignment":"64e29de031d64a21a6a8","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","items":15,"criteria":["ap:broken-binding"],"bytes":33651,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,6],[15,21]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]]},"input_tokens_estimate":34668,"output_tokens_estimate":15360,"work_seconds_estimate":120}},{"run":"audit-a","assignment":"2f27173b333997e5890d","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","items":8,"criteria":["dp:2"],"bytes":19913,"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,5],[9,11]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":20694,"output_tokens_estimate":8192,"work_seconds_estimate":64}},{"run":"audit-a","assignment":"44e6dcc86add66899ed9","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","items":10,"criteria":["dp:1"],"bytes":32534,"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,8]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":33382,"output_tokens_estimate":10240,"work_seconds_estimate":80}},{"run":"audit-a","assignment":"dc2f82359d3d1a4764e0","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","items":6,"criteria":["ap:emission-without-validation"],"bytes":15658,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,14]],"corpus/qualification/techniques/produce.md":[[1,12]]},"input_tokens_estimate":16371,"output_tokens_estimate":6144,"work_seconds_estimate":48}},{"run":"audit-a","assignment":"e89332e0b71721fd7622","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9","items":7,"criteria":["ap:broken-binding"],"bytes":22778,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,6],[15,21]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":23525,"output_tokens_estimate":7168,"work_seconds_estimate":56}},{"run":"audit-b","assignment":"6bfad822d9bb2c4ab6a1","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","items":15,"criteria":["ap:broken-binding"],"bytes":33628,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,6],[15,21]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]]},"input_tokens_estimate":34645,"output_tokens_estimate":15360,"work_seconds_estimate":120}},{"run":"audit-b","assignment":"12ae19d79cdf98119f37","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","items":9,"criteria":["dp:2"],"bytes":22053,"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,5],[9,11]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":22868,"output_tokens_estimate":9216,"work_seconds_estimate":72}},{"run":"audit-b","assignment":"8d4a36b86152cc3c4123","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","items":11,"criteria":["dp:1"],"bytes":35135,"estimate":{"context":{"corpus/canon/resources/design-principles.md":[[1,8]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":36017,"output_tokens_estimate":11264,"work_seconds_estimate":88}},{"run":"audit-b","assignment":"d791dd8be14e5051281c","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","items":6,"criteria":["ap:emission-without-validation"],"bytes":15637,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,14]],"corpus/qualification/techniques/produce.md":[[1,12]]},"input_tokens_estimate":16350,"output_tokens_estimate":6144,"work_seconds_estimate":48}},{"run":"audit-b","assignment":"0400f73b5b67063becc8","actor":"/root/qualify_audit_one","phase":"evaluate","snapshot":"3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90","items":7,"criteria":["ap:broken-binding"],"bytes":22775,"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,6],[15,21]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":23522,"output_tokens_estimate":7168,"work_seconds_estimate":56}}]}
+
+READ 041 2026-10-11T07:56:01.978943+00:00 current evaluation source identity check; every excerpt hash and every complete captured source byte hash matches prior complete read
+[{"run":"audit-a","source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/qualification/activities/run.yaml","sha256":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","bytes":101,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/qualification/techniques/produce.md","sha256":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","bytes":207,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-a","source":"corpus/qualification/workflow.yaml","sha256":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","bytes":68,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/qualification/activities/run.yaml","sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","bytes":99,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/qualification/techniques/produce.md","sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","bytes":202,"reuse":"exact bytes fully read READ006/007"},{"run":"audit-b","source":"corpus/qualification/workflow.yaml","sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","bytes":67,"reuse":"exact bytes fully read READ006/007"}]
+
+COORDINATOR SCOPE CLARIFICATION before evaluation receipts: controlled cases declare scope.paths as changed surface for both modes; candidate bytes are supplied directly without Git comparison. Use diff for defects in touched definitions and unchanged routine bindings broken by the touched producer contract. Audit mode alone does not imply pre-existing; no base evidence supports pre-existing attribution.
+
+READ 042 2026-10-11T07:57:09.953497+00:00 exact current evaluation criterion units
+{"ap:broken-binding":{"end":21,"family":"Controlled Qualification","hash":"7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8","id":"ap:broken-binding","label":"AP-02","source":"corpus/canon/resources/anti-patterns.md","start":15,"text":"### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.","title":"AP-02. broken-binding"},"dp:2":{"end":11,"family":"2. Provide a terminating workflow path","hash":"78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5","id":"dp:2","label":"DP-02","source":"corpus/canon/resources/design-principles.md","start":9,"text":"## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.","title":"2. Provide a terminating workflow path"},"dp:1":{"end":8,"family":"1. Honor the executing workflow's inherited destination","hash":"68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3","id":"dp:1","label":"DP-01","source":"corpus/canon/resources/design-principles.md","start":5,"text":"## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n","title":"1. Honor the executing workflow's inherited destination"},"ap:emission-without-validation":{"end":14,"family":"Controlled Qualification","hash":"594d1861f288aaefb98e51a8222a1ab4e84743c06655b95fcd32ba6e9eb8d2c9","id":"ap:emission-without-validation","label":"AP-01","source":"corpus/canon/resources/anti-patterns.md","start":7,"text":"### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n","title":"AP-01. emission-without-validation"}}
+
+READ 043 2026-10-11T07:57:52.370025+00:00 all 94 exact evaluation item/row assignments; every row object equals READ008 and every full mapping object equals READ016-020 or corrected READ030-031; source reuse validated READ041
+[{"run":"audit-a","assignment":"64e29de031d64a21a6a8","criterion":["ap:broken-binding"],"items_and_previously_read_row_aliases":[["fc60645fdab03b4f360b972e","V02"],["ece85719689c1a3411d52a12","V03"],["366a1ced08e276234b09d365","V05"],["e4e1d36386ad37dc4007d953","V06"],["f45b86c19f25461cbe667622","V07"],["23d52f087c143d67f67da445","V09"],["82c8e910cc4b4df96a89e369","V17"],["790b168511688f3580f49f17","V18"],["e6707d2a492bbb28eafc3a21","V19"],["387b3abcf94e6a19aabbf992","V20"],["1682a187cf7dd36419e2a143","V15"],["7f71a92e9f425b2094dec98d","V16"],["620325a4c3f62c9867a7df90","V13"],["85e68983cef9c8b0f9a7bf33","V14"],["b331b3631bac4371bfebf008","V10"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-a","assignment":"2f27173b333997e5890d","criterion":["dp:2"],"items_and_previously_read_row_aliases":[["094759e3ffb8236db086b566","V43"],["9a13e148e0a434d148bef242","V44"],["e0fcd50974c10678a3e2fb44","V45"],["8862878198e6198ef77c1f28","V50"],["48da822c85267d96ea48c4c2","V51"],["5453a725eb6086baaa72c972","V52"],["c7fdcca69a6f6d3b3cfa7009","V47"],["e5c1842a573eccbf8d7d7e60","V48"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-a","assignment":"44e6dcc86add66899ed9","criterion":["dp:1"],"items_and_previously_read_row_aliases":[["21f9cfbf2718ad51d2976c98","V50"],["32efcf3836cf4d26fc113577","V51"],["dafc343685f5a84041beee97","V52"],["381dd396d48f156e5b5332ba","V36"],["355ce3ec841005b898e3d8d3","V40"],["eb3d9f625d45294630564c36","V22"],["15ee43746437cfdf860b1519","V23"],["8bfa310664405693e5cee00b","V42"],["91a7785154a1a018658ccae8","V11"],["a406c04573c91f8ad82577e3","V41"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-a","assignment":"dc2f82359d3d1a4764e0","criterion":["ap:emission-without-validation"],"items_and_previously_read_row_aliases":[["d10a33e1908da3335366adaa","V36"],["a3b7b46de80a7e60f06f33aa","V37"],["1fff788717e68470ea335f4a","V39"],["668f2c03b5c1dfffd6143cc5","V34"],["7f339716e8d7474fb2512654","V35"],["d074a916d8f80c61b3aa18a0","V41"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-a","assignment":"e89332e0b71721fd7622","criterion":["ap:broken-binding"],"items_and_previously_read_row_aliases":[["b34f6249f0f9b31107491750","V22"],["8669d4026237cb94e83e2158","V23"],["c986d23bf9fe92ac15ab723d","V31"],["8835c0ddec51d397d30590e7","V32"],["ca1e1515076ec0147e7b8338","V41"],["eeab805ea4653756496776b5","V11"],["fa301823ccd44ed9374ce575","V21"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-b","assignment":"6bfad822d9bb2c4ab6a1","criterion":["ap:broken-binding"],"items_and_previously_read_row_aliases":[["fc60645fdab03b4f360b972e","V02"],["ece85719689c1a3411d52a12","V03"],["366a1ced08e276234b09d365","V05"],["e4e1d36386ad37dc4007d953","V06"],["f1186a7f61ea9f6493402006","V08"],["23d52f087c143d67f67da445","V09"],["82c8e910cc4b4df96a89e369","V17"],["790b168511688f3580f49f17","V18"],["e6707d2a492bbb28eafc3a21","V19"],["387b3abcf94e6a19aabbf992","V20"],["1682a187cf7dd36419e2a143","V15"],["7f71a92e9f425b2094dec98d","V16"],["620325a4c3f62c9867a7df90","V13"],["85e68983cef9c8b0f9a7bf33","V14"],["b331b3631bac4371bfebf008","V10"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-b","assignment":"12ae19d79cdf98119f37","criterion":["dp:2"],"items_and_previously_read_row_aliases":[["3f2fc1d2f91b27a5d46f0504","V49"],["8862878198e6198ef77c1f28","V50"],["48da822c85267d96ea48c4c2","V51"],["5453a725eb6086baaa72c972","V52"],["094759e3ffb8236db086b566","V43"],["9a13e148e0a434d148bef242","V44"],["e0fcd50974c10678a3e2fb44","V45"],["c7fdcca69a6f6d3b3cfa7009","V47"],["e5c1842a573eccbf8d7d7e60","V48"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-b","assignment":"8d4a36b86152cc3c4123","criterion":["dp:1"],"items_and_previously_read_row_aliases":[["f442830158e33a5d097e4514","V49"],["21f9cfbf2718ad51d2976c98","V50"],["32efcf3836cf4d26fc113577","V51"],["dafc343685f5a84041beee97","V52"],["381dd396d48f156e5b5332ba","V36"],["355ce3ec841005b898e3d8d3","V40"],["eb3d9f625d45294630564c36","V22"],["15ee43746437cfdf860b1519","V23"],["8bfa310664405693e5cee00b","V42"],["91a7785154a1a018658ccae8","V11"],["a406c04573c91f8ad82577e3","V41"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-b","assignment":"d791dd8be14e5051281c","criterion":["ap:emission-without-validation"],"items_and_previously_read_row_aliases":[["d10a33e1908da3335366adaa","V36"],["a3b7b46de80a7e60f06f33aa","V37"],["1fff788717e68470ea335f4a","V39"],["668f2c03b5c1dfffd6143cc5","V34"],["7f339716e8d7474fb2512654","V35"],["d074a916d8f80c61b3aa18a0","V41"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}},{"run":"audit-b","assignment":"0400f73b5b67063becc8","criterion":["ap:broken-binding"],"items_and_previously_read_row_aliases":[["b34f6249f0f9b31107491750","V22"],["8669d4026237cb94e83e2158","V23"],["c986d23bf9fe92ac15ab723d","V31"],["fef2366b0f34a7eda42dc08d","V33"],["ca1e1515076ec0147e7b8338","V41"],["eeab805ea4653756496776b5","V11"],["fa301823ccd44ed9374ce575","V21"]],"budgets":{"bytes_per_token":1,"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"work_seconds":600}}]
+
+DERIVED EVALUATION 044 explicit tests and source-derived observations
+{"tests":{"ap:broken-binding":{"V02":["arguments"],"V03":["arguments"],"V05":["arguments"],"V06":["arguments"],"V07":["arguments"],"V08":["arguments"],"V09":["arguments"],"V10":["arguments"],"V11":["arguments"],"V13":["arguments"],"V14":["arguments"],"V15":["output"],"V16":["output"],"V17":["output"],"V18":["output"],"V19":["output"],"V20":["output"],"V21":["arguments","output"],"V22":["output"],"V23":["arguments","output"],"V31":["output"],"V32":["output"],"V33":["output"],"V41":["output"]},"ap:emission-without-validation":{"V34":["protocol"],"V35":["protocol"],"V36":["rule"],"V37":["rule"],"V39":["rule"],"V41":["protocol","rule"]},"dp:1":{"V11":["destination"],"V22":["destination"],"V23":["destination"],"V36":["destination"],"V40":["destination"],"V41":["destination"],"V42":["destination"],"V49":["destination"],"V50":["destination"],"V51":["destination"],"V52":["destination"]},"dp:2":{"V43":["termination"],"V44":["termination"],"V45":["termination"],"V47":["termination"],"V48":["termination"],"V49":["termination"],"V50":["termination"],"V51":["termination"],"V52":["termination"]}},"observations":{"audit-a":{"arguments":["pass","The concrete run.delivery call supplies exactly {envelope}, matching deliver Inputs [envelope]; sealed is opaque."],"output":["pass","deliver exports report from emit.report; emit calls produce, whose Outputs declares report. The referenced producer output exists."],"protocol":["pass","Protocol line 8 directs validation of the report before emitting that same report."],"rule":["pass","Rules line 11 clause 2 requires validation of the report before each emission; clause 1 only retains its ID."],"destination":["pass","qualification executes run -> deliver -> produce under qualification/techniques/TECHNIQUE.md. The leaf Destination archive equals inherited required archive."],"termination":["pass","The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path."]},"audit-b":{"arguments":["finding","The concrete run.delivery call supplies {packet}, while deliver Inputs is [envelope]. The unequal exact key sets break this invocation; sealed is opaque."],"output":["finding","deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale."],"protocol":["finding","Protocol line 8 explicitly directs emitting the report without validation, independently violating the instruction-level requirement to validate that artifact first."],"rule":["finding","Rules line 11 clause 2 independently directs emitting the report without validation. Clause 1 only retains the ID and supplies no validation."],"destination":["finding","The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive."],"termination":["finding","The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits."]}},"findings":{"arguments":{"band":"Live","severity":"Critical","origin":"diff","summary":"The delivery invocation supplies packet, but deliver requires envelope.","fix":"Use the exact envelope input key in the delivery invocation of deliver.","entry":"broken-binding","location":"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments"},"output":{"band":"Live","severity":"Critical","origin":"diff","summary":"The deliver report export binds emit.report although produce declares only summary.","fix":"Bind the routine export to emit.summary, which the called technique declares.","entry":"broken-binding","location":"corpus/qualification/routines/deliver.yaml#/outputs/report"},"protocol":{"band":"Live","severity":"High","origin":"diff","summary":"The Protocol directs report emission without prior validation.","fix":"Require validation of the report before emission in this Protocol instruction.","entry":"emission-without-validation","location":"corpus/qualification/techniques/produce.md#/protocol/line-8"},"rule":{"band":"Live","severity":"High","origin":"diff","summary":"The second Rules clause directs report emission without prior validation.","fix":"Require validation of the report before emission in this Rules clause.","entry":"emission-without-validation","location":"corpus/qualification/techniques/produce.md#/rules/line-11/clause-2"},"destination":{"band":"Live","severity":"High","origin":"diff","summary":"The executing produce leaf declares public, conflicting with its inherited archive destination.","fix":"Set the leaf Destination to its inherited required archive value.","entry":"1. Honor the executing workflow's inherited destination","location":"corpus/qualification/techniques/produce.md#/rules/line-12"},"termination":{"band":"Live","severity":"Critical","origin":"diff","summary":"The sole reachable graph exit loops from run back to run, leaving no terminating path.","fix":"Provide a reachable graph exit to null from initialActivity.","entry":"2. Provide a terminating workflow path","location":"corpus/qualification/workflow.yaml#/graph/run/done"}}}
+
+WRITE 044 2026-10-11T08:00:44.511116+00:00 10 independently derived evaluation receipts
+{"receipt_directory":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-evaluate-receipts","write_start":"2026-10-11T08:00:44.505426+00:00","write_end":"2026-10-11T08:00:44.511116+00:00","task_start":"2026-10-11T07:53:05.321612+00:00","elapsed_seconds":459.189504,"records":94,"audit_a_pass":46,"audit_b_finding_cells":48,"finding_occurrences":{"arguments":12,"output":12,"termination":9,"destination":11,"rule":4,"protocol":3},"unique_findings":6,"unique_band_counts":{"Live":6,"Contract":0,"Hygiene":0},"unique_severity_counts":{"Critical":3,"High":3},"multi_finding_cells":[{"run":"audit-b","assignment":"d791dd8be14e5051281c","item":"d074a916d8f80c61b3aa18a0","row":"corpus/qualification/techniques/produce.md#@element","defects":["protocol","rule"]},{"run":"audit-b","assignment":"0400f73b5b67063becc8","item":"8669d4026237cb94e83e2158","row":"corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96","defects":["arguments","output"]},{"run":"audit-b","assignment":"0400f73b5b67063becc8","item":"fa301823ccd44ed9374ce575","row":"corpus/qualification/routines/deliver.yaml#@element","defects":["arguments","output"]}],"packet_bytes_total":253762,"receipt_bytes_total":72040,"largest_receipt_bytes":13282,"metrics":[{"run":"audit-a","assignment":"64e29de031d64a21a6a8","items":15,"packet_bytes":33651,"receipt_bytes":7128,"receipt_sha256":"3c96a5322fa5c086d421aaa328213906be38e099093873057eaf34a3b71fbbdc","pass":15,"finding":0,"finding_occurrences":0},{"run":"audit-a","assignment":"2f27173b333997e5890d","items":8,"packet_bytes":19913,"receipt_bytes":3530,"receipt_sha256":"9c086136bab80db0803775b9532131175eaddfdccc35ebb66f2ad9578694eda5","pass":8,"finding":0,"finding_occurrences":0},{"run":"audit-a","assignment":"44e6dcc86add66899ed9","items":10,"packet_bytes":32534,"receipt_bytes":7490,"receipt_sha256":"0913ee0e9c4cebea06d9a1f77b7df5f392eab01690240afcfccec22db20c8972","pass":10,"finding":0,"finding_occurrences":0},{"run":"audit-a","assignment":"dc2f82359d3d1a4764e0","items":6,"packet_bytes":15658,"receipt_bytes":2556,"receipt_sha256":"1666c86fed7f58ec9254b6b2d6f4639757b8e04453cd0bb223b692fde9c657a3","pass":6,"finding":0,"finding_occurrences":0},{"run":"audit-a","assignment":"e89332e0b71721fd7622","items":7,"packet_bytes":22778,"receipt_bytes":4103,"receipt_sha256":"01ff059db4fb7104fb7d17b7bff3bc9a09f495686261b4c02a5f760416c01208","pass":7,"finding":0,"finding_occurrences":0},{"run":"audit-b","assignment":"6bfad822d9bb2c4ab6a1","items":15,"packet_bytes":33628,"receipt_bytes":13282,"receipt_sha256":"6684aceab77f47bcba793bf91e937424347fde5337564acc3a530c5678a07146","pass":0,"finding":15,"finding_occurrences":15},{"run":"audit-b","assignment":"12ae19d79cdf98119f37","items":9,"packet_bytes":22053,"receipt_bytes":7799,"receipt_sha256":"723c0be5c20fdfae3281d2e588ed09c0737c9e23345f5deead7fdf856436207f","pass":0,"finding":9,"finding_occurrences":9},{"run":"audit-b","assignment":"8d4a36b86152cc3c4123","items":11,"packet_bytes":35135,"receipt_bytes":12930,"receipt_sha256":"add6d3ee523697af63d49865a0c87b8e4b34baa49f6798130261df9a9a8b3272","pass":0,"finding":11,"finding_occurrences":11},{"run":"audit-b","assignment":"d791dd8be14e5051281c","items":6,"packet_bytes":15637,"receipt_bytes":5334,"receipt_sha256":"aadb8f20c60314394f80fbae0433dd741a9eb1161a8da466c6f54521256f14a7","pass":0,"finding":6,"finding_occurrences":7},{"run":"audit-b","assignment":"0400f73b5b67063becc8","items":7,"packet_bytes":22775,"receipt_bytes":7888,"receipt_sha256":"be85eaa1e3729a4b4910c0d5907fe18a6f79c8b99dece4b55ceb71dc42e61d21","pass":0,"finding":7,"finding_occurrences":9}],"classification_reasons":{"arguments":"Live/Critical: required invocation key cannot bind to the declared input; structurally broken.","output":"Live/Critical: export names an output absent from its resolved producer; structurally broken.","protocol":"Live/High: the current Protocol directs unvalidated artifact delivery, which propagates to the delivered result.","rule":"Live/High: the current Rules clause independently directs unvalidated artifact delivery, which propagates to the delivered result.","destination":"Live/High: the executing leaf directs delivery to a destination that violates the inherited requirement.","termination":"Live/Critical: the complete reachable control graph has no terminating path; structurally broken."},"attribution_limit":"diff follows the coordinator-declared changed surface, including stale consumer binding to the touched producer. No Git base comparison or pre-existing claim.","exposure":"Prior qualification exposure retained; current source-byte hashes, full criterion wording, and exact assigned row/mapping records checked. No expected outcome, baseline, or other actor findings read."}
+
+VALIDATE 045 2026-10-11T08:01:37.939559+00:00
+{"check":"All 10 on-disk evaluation wrappers passed current ownership/snapshot checks, exact item coverage, row/criterion evidence overlap, complete required source coverage, finding-field validation and identical deduplication metadata across every repeated defect.","completed_at":"2026-10-11T08:01:37.939559+00:00","elapsed_seconds":512.617947,"items":94,"counts":{"audit-a pass":46,"audit-b finding":48},"unique_findings":6,"unique_bands":{"Live":6},"unique_severity":{"Critical":3,"High":3},"multiple_findings":[{"run":"audit-b","row":"corpus/qualification/techniques/produce.md#@element","count":2},{"run":"audit-b","row":"corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96","count":2},{"run":"audit-b","row":"corpus/qualification/routines/deliver.yaml#@element","count":2}],"receipt_bytes":72040,"worst_batch_mean_bytes_per_item":["8d4a36b86152cc3c4123",1175.4545454545455],"calibration_observation":"The DP-01 finding batch averages 1175.45 receipt bytes/item, above the 1024 estimate, while every actual receipt remains below 16000. Future estimation should account for full inheritance context. Whole-queue elapsed time remains below the 8 seconds/item work estimate.","instruction_observations":"Current Returns directly names every finding prerequisite. Attribution required a coordinator clarification because supplied candidate snapshots have no Git base. One exact-level heading lookup failed before output and was corrected; no missing evaluation prerequisite remains.","canonical_mutations":false}

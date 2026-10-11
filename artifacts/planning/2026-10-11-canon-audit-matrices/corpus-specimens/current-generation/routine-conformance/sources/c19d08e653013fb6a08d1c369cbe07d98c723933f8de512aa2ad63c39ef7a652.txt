@@ -1,0 +1,54 @@
+---
+metadata:
+  version: 1.1.0
+---
+
+## Capability
+
+Decompose source code into subsystems, assign different prisms per region via calibration, and synthesize cross-boundary findings
+
+## Inputs
+
+### code_subsystem
+
+One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Shared across the decompose, calibrate, and execute techniques.
+
+#### subsystem_name
+
+The subsystem's identifier (class, function, or block name)
+
+#### start_line
+
+First line of the subsystem in the source file
+
+#### end_line
+
+Last line of the subsystem in the source file
+
+#### source_filename
+
+Name of the source file the subsystem was decomposed from
+
+#### other_subsystem_names
+
+Names of the peer subsystems adjacent to this one
+
+## Outputs
+
+### code_subsystem
+
+The set of decomposed structural subsystems, each carrying its identity, line range, source file, and peer names (see the matching input declaration for the per-subsystem fields).
+
+## Rules
+
+### code-only
+
+Subsystem mode requires code input. Reject general targets with guidance to use portfolio mode instead.
+
+### diversity-maximized
+
+Prism assignment maximizes diversity — the same prism is not assigned to multiple subsystems unless they are structurally identical.
+
+### subsystem-context-header
+
+Each per-subsystem worker receives a context header naming its region and the names of its neighbours, so the prism is aware of adjacent regions.

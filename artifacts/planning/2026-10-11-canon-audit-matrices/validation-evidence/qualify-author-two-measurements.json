@@ -1,0 +1,377 @@
+{
+  "completed_at": "2026-10-11T07:13:44.020385+00:00",
+  "assignments": 32,
+  "cells": 396,
+  "unique_rows": 52,
+  "statuses": [
+    {
+      "run": "author-a",
+      "criterion": "ap:broken-binding",
+      "status": "A",
+      "cells": 22
+    },
+    {
+      "run": "author-a",
+      "criterion": "ap:broken-binding",
+      "status": "N",
+      "cells": 27
+    },
+    {
+      "run": "author-a",
+      "criterion": "ap:emission-without-validation",
+      "status": "A",
+      "cells": 6
+    },
+    {
+      "run": "author-a",
+      "criterion": "ap:emission-without-validation",
+      "status": "N",
+      "cells": 43
+    },
+    {
+      "run": "author-a",
+      "criterion": "dp:1",
+      "status": "A",
+      "cells": 7
+    },
+    {
+      "run": "author-a",
+      "criterion": "dp:1",
+      "status": "N",
+      "cells": 42
+    },
+    {
+      "run": "author-a",
+      "criterion": "dp:2",
+      "status": "A",
+      "cells": 8
+    },
+    {
+      "run": "author-a",
+      "criterion": "dp:2",
+      "status": "N",
+      "cells": 41
+    },
+    {
+      "run": "author-b",
+      "criterion": "ap:broken-binding",
+      "status": "A",
+      "cells": 22
+    },
+    {
+      "run": "author-b",
+      "criterion": "ap:broken-binding",
+      "status": "N",
+      "cells": 28
+    },
+    {
+      "run": "author-b",
+      "criterion": "ap:emission-without-validation",
+      "status": "A",
+      "cells": 6
+    },
+    {
+      "run": "author-b",
+      "criterion": "ap:emission-without-validation",
+      "status": "N",
+      "cells": 44
+    },
+    {
+      "run": "author-b",
+      "criterion": "dp:1",
+      "status": "A",
+      "cells": 7
+    },
+    {
+      "run": "author-b",
+      "criterion": "dp:1",
+      "status": "N",
+      "cells": 43
+    },
+    {
+      "run": "author-b",
+      "criterion": "dp:2",
+      "status": "A",
+      "cells": 9
+    },
+    {
+      "run": "author-b",
+      "criterion": "dp:2",
+      "status": "N",
+      "cells": 41
+    }
+  ],
+  "receipt_total_bytes": 345189,
+  "receipt_max_bytes": 14119,
+  "packet_total_bytes": 520504,
+  "packet_max_bytes": 19598,
+  "elapsed_since_first_preserved_instruction_seconds": 478.037255,
+  "elapsed_seconds_per_cell_including_instruction_reads": 1.2071647853535354,
+  "format_seconds": 0.005664113006787375,
+  "stats": [
+    {
+      "assignment": "967a414fb489c91d3e3b",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 17838,
+      "receipt_bytes": 13443,
+      "sha256": "d8d35982fc01f31c0460b7de8ae85e64c1c0857be7bd43a75ea6d092ae6f2c0d"
+    },
+    {
+      "assignment": "81c68fd8082dbcd49de5",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 17400,
+      "receipt_bytes": 12539,
+      "sha256": "77bca65e706a7aa654e9f13e561871557862f7bab28aaab6c1d31c2d304a0a0c"
+    },
+    {
+      "assignment": "ec660a5e2bea29d981bb",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 16589,
+      "receipt_bytes": 11546,
+      "sha256": "a91e555fea2f2946f7a6893371c5e6c1c984bcdadcca7f574adaaf9bcfb88eb2"
+    },
+    {
+      "assignment": "438163fafc80ae6fdfdd",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 18951,
+      "receipt_bytes": 13729,
+      "sha256": "27437a57df9bc494f065af4c6535720caadf2642acbe2486921c14adc0338246"
+    },
+    {
+      "assignment": "904f49372ad172f89d78",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 16662,
+      "receipt_bytes": 11664,
+      "sha256": "71275b145259ff5d615d90e62141057570411965e0e5161ba5d4a35b7205767b"
+    },
+    {
+      "assignment": "80660252c1500d4ac8fa",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 17835,
+      "receipt_bytes": 13036,
+      "sha256": "24a2a8efa97f95c546f6b36f94d0aa729d4be25e887747c83e70af3794943f40"
+    },
+    {
+      "assignment": "e1aff0d87949d8baaca5",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 18920,
+      "receipt_bytes": 13164,
+      "sha256": "ed420c4c4f946acceeecd8cdd85e31ce739fa0a1f8d747a249b0e4c40ada9a97"
+    },
+    {
+      "assignment": "51b01678bb836e9f1766",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 18193,
+      "receipt_bytes": 11837,
+      "sha256": "ac29c17e4603d5e2bed4223b3b727d25d20b7ffe4581397121830943b155f44d"
+    },
+    {
+      "assignment": "39286c91308e5a653dd4",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 19286,
+      "receipt_bytes": 13892,
+      "sha256": "83ab6a52d463e92fa8bec9c06e09adcab25401c93569b36667664cc6a9178336"
+    },
+    {
+      "assignment": "3b9ff5e245cbf9e6c826",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 19146,
+      "receipt_bytes": 12499,
+      "sha256": "a7e1a15666d7ee7ce25f04a6a51a9de8538aa567378d8b410c90269ea6430c69"
+    },
+    {
+      "assignment": "6e441b1b1447a3e1475c",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 19598,
+      "receipt_bytes": 13846,
+      "sha256": "2dc80d7b8f1a342c8a0002a31931329e0a73dd3d07832bc0c75852adf8c7f901"
+    },
+    {
+      "assignment": "afda59fb757f4e34500b",
+      "run": "author-a",
+      "cells": 15,
+      "packet_bytes": 19163,
+      "receipt_bytes": 14119,
+      "sha256": "2141d93fdacc5afb1f8a6522b3de5fcb34c96b0b25e084f9989c24c5a398d2da"
+    },
+    {
+      "assignment": "c7f7d343d1f175f868d7",
+      "run": "author-a",
+      "cells": 4,
+      "packet_bytes": 10006,
+      "receipt_bytes": 3834,
+      "sha256": "47ca1573c63d0ead0a823f36b92e5e9429323cfc29fa614aac657daaa7bb2b81"
+    },
+    {
+      "assignment": "cca0304fbcde70d7f9a0",
+      "run": "author-a",
+      "cells": 4,
+      "packet_bytes": 8061,
+      "receipt_bytes": 3419,
+      "sha256": "5aad8a61e027c914dfc4ea47082fad09cb87023013e46d12ff69ee9d9252f5d7"
+    },
+    {
+      "assignment": "83cf9b220c3749b08453",
+      "run": "author-a",
+      "cells": 4,
+      "packet_bytes": 8794,
+      "receipt_bytes": 3995,
+      "sha256": "82122fb65c69dd0e53539810f42838a0f8694576d7a4c91edc2f61883760c3a1"
+    },
+    {
+      "assignment": "2be4b58c664592bb7f72",
+      "run": "author-a",
+      "cells": 4,
+      "packet_bytes": 11498,
+      "receipt_bytes": 4114,
+      "sha256": "cf60aae359911147f000efc704e93b8942c12946cdc67883bd4769779a04b8a0"
+    },
+    {
+      "assignment": "802c0997999cc88a1550",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 17273,
+      "receipt_bytes": 13547,
+      "sha256": "e98bb595718bdf9e8fc52e1d95b969bd95e25da6b46abfc9286d71cc6d764918"
+    },
+    {
+      "assignment": "435c664c65d4feeaffec",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 17564,
+      "receipt_bytes": 12545,
+      "sha256": "efc9a796483a75f57dd1078e12b5d4740c86baf16888b59d82e545f677719cd0"
+    },
+    {
+      "assignment": "fbdce7ffb44e1bc0c520",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 16813,
+      "receipt_bytes": 11512,
+      "sha256": "67a7235f6d816d4b5f2e44a691c4b82d32abd4a6c150ed1f5751c7b774cd2621"
+    },
+    {
+      "assignment": "632d323904d813980426",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 17501,
+      "receipt_bytes": 13218,
+      "sha256": "44537f4b90ce19a25d54732e06c75b6f15e5bd7486b2912c2aa257046c0ce2e3"
+    },
+    {
+      "assignment": "24e0ef155b591ec8b813",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 17991,
+      "receipt_bytes": 12458,
+      "sha256": "4461d59bccf508b1a6d0fc3f9c54002194ebe957d2758d3ad2f8fb2d307a43e4"
+    },
+    {
+      "assignment": "cec3edc189ce433de348",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 19104,
+      "receipt_bytes": 13682,
+      "sha256": "415c587c851d963d3948cc37ca872107b6f63ef39c8ae0e57042ac433c05eca7"
+    },
+    {
+      "assignment": "79371a94d15d4adb0aba",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 17902,
+      "receipt_bytes": 12107,
+      "sha256": "6ea59c2496b0d291d0311f5797d1def539a802c589d0bdfe5b13fbd66517c15f"
+    },
+    {
+      "assignment": "57190acbe5efd5ef9841",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 18689,
+      "receipt_bytes": 13378,
+      "sha256": "476df71efcad0917f8289f42b715a33bd92d21c73e7c0af1e4f96b452a4b91be"
+    },
+    {
+      "assignment": "984b584d286d651d9258",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 19409,
+      "receipt_bytes": 13775,
+      "sha256": "3049888bf5750a2456f04bd74c5a5fd32c188c1495b9168c846c542a59c1126a"
+    },
+    {
+      "assignment": "0871187df2bd1d391e81",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 18673,
+      "receipt_bytes": 12303,
+      "sha256": "37cf904a3f23b10d1e48075704f31c57d6d89736660ceb0feb8b34bafaae4955"
+    },
+    {
+      "assignment": "c996c032128135b2231f",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 19125,
+      "receipt_bytes": 13650,
+      "sha256": "039d01dc249a337a0068974ef1573671e63097b78e14cce97ccfbd9c419b93b6"
+    },
+    {
+      "assignment": "8230bad0ef653e91e3d1",
+      "run": "author-b",
+      "cells": 15,
+      "packet_bytes": 18860,
+      "receipt_bytes": 13395,
+      "sha256": "86e798cf7bef0bb59a2ff0f77ed21b6392e42607d7e47e8263538c357e8bb3e3"
+    },
+    {
+      "assignment": "4403dc7ee4f3817cd30c",
+      "run": "author-b",
+      "cells": 5,
+      "packet_bytes": 11581,
+      "receipt_bytes": 4818,
+      "sha256": "21a88bc78cbf4a7b35090de9e60802d9170210f5b084a88c20601c9f0b1c9922"
+    },
+    {
+      "assignment": "0f2e7d08455ebae8bf1b",
+      "run": "author-b",
+      "cells": 5,
+      "packet_bytes": 10160,
+      "receipt_bytes": 4300,
+      "sha256": "07b4fbc63983f2d644899359b1169701d9efc4e61c01d652e0489fc2c586f21d"
+    },
+    {
+      "assignment": "9b471c7b4abbd72ee3dd",
+      "run": "author-b",
+      "cells": 5,
+      "packet_bytes": 9752,
+      "receipt_bytes": 4757,
+      "sha256": "e4f487894bb452f7d5286625fc9b3aed1496ee0b9f1c7b9e4055eb16a4876657"
+    },
+    {
+      "assignment": "69d6c689321516182bc3",
+      "run": "author-b",
+      "cells": 5,
+      "packet_bytes": 12167,
+      "receipt_bytes": 5068,
+      "sha256": "7ff1745458ce67bc3ac88d1d4d965db9f9620e92978cf2332f1f72ffdc083142"
+    }
+  ],
+  "reading_path_observations": [
+    "Read SKILL.md then Author mode, canon prerequisites/terms/criteria/scope, the complete canon map and walk rules, design flow, the complete change-surface lifecycle, planning, audit dispatch and the typed receipt template.",
+    "Coordinator owns scope capture and audit commands; this worker reads assigned packets and writes only its own receipts and transcript.",
+    "Packet projection preserves each complete unique criterion, source excerpt and row record, grouped by exact serialized identity; equal source hashes permit cross-packet reuse. Both source variants and all distinct row addresses were read.",
+    "AP-01 applicability keeps compliant validation-before-emission directives applicable, checks semicolon clause 2 independently, and excludes the distinct retention-only clause. No pass or finding outcome is returned.",
+    "Receipt formatting requires four explicit human-derived reason codes per row and fails on missing or unowned rows; it has no default applicability branch.",
+    "Each record cites all row.sources plus its criterion source, using complete relevant files for absence claims; binding, destination and graph decisions add the captured dependency context needed for those reasons."
+  ]
+}

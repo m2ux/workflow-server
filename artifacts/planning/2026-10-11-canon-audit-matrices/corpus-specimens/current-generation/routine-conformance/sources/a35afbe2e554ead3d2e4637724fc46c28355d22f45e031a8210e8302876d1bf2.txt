@@ -1,0 +1,29 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the restructure surface over a symbol no graph holds.
+variables:
+  reads:
+    - negative_name
+  writes:
+    - name: negative_context_report
+      type: object
+      description: The symbol's callers, callees and flow membership — resolving nothing for a symbol no graph holds.
+    - name: negative_impact_report
+      type: object
+      description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level — withholding its rating for a symbol no graph holds.
+required: true
+steps:
+  - kind: routine
+    id: surface-absent-symbol
+    routine: gitnexus::restructure-surface
+    with:
+      name: "{negative_name}"
+    outputs:
+      context_report: negative_context_report
+      impact_report: negative_impact_report
+exits:
+  - id: measured
+    isDefault: true
+outcome:
+  - The same run under a symbol the graph does not hold landed a context answer resolving nothing and an impact answer withholding its rating, the fallback the run promises rather than a failure

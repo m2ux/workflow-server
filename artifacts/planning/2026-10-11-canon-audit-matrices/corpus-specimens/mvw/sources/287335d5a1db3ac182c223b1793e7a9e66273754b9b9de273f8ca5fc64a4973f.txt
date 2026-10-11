@@ -1,0 +1,21 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_coverage_gaps
+    - negative_update_candidates
+    - positive_coverage_gaps
+    - positive_update_candidates
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell a classified change from the empty lists an empty change set lands

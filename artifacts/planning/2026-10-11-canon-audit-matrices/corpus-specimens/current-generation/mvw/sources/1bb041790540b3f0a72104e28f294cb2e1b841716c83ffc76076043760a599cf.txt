@@ -1,0 +1,52 @@
+$schema: ../../schemas/workflow.schema.json
+id: workflow-authoring
+version: 1.7.0
+title: Workflow Authoring Workflow
+description: Guide agents through creating, updating, or reviewing workflow definitions.
+author: m2ux
+tags:
+  - workflow-creation
+  - workflow-review
+  - workflow-authoring
+  - schema-validation
+  - design-principles
+  - elicitation
+  - conventions
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: headless_mode
+    type: boolean
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
+    defaultValue: true
+  # Seeded with the session and named by the shared contract of the operations this workflow
+  # borrows, so the file owns the name and no activity produces it.
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
+  - name: scope_manifest
+    type: array
+    description: List of files to create, modify or remove with full paths and actions.
+  - name: current_file
+    type: object
+    description: The file currently being drafted.
+  - name: verified_findings
+    type: array
+    description: Findings whose claims survived independent re-derivation.
+initialActivity: intake-and-context
+graph:
+  intake-and-context:
+    review-scope-declined: __terminal__
+    review-scope-confirmed: quality-review
+    authoring: scope-and-draft
+  scope-and-draft:
+    done: quality-review
+    revise: scope-and-draft
+  quality-review:
+    done: validate-and-commit
+  validate-and-commit:
+    remediation-selected: quality-review
+    committed: __terminal__
+    fix-issues: intake-and-context
+    return-to-draft: scope-and-draft

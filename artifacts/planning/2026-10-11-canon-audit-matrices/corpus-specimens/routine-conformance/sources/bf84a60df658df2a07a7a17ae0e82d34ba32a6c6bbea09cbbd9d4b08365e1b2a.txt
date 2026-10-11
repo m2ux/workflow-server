@@ -1,0 +1,37 @@
+id: restructure-surface
+version: 1.0.0
+name: Restructure Surface
+description: >-
+  Take the two measurements a symbol's restructuring rests on — everything it reaches, and
+  everything that reaches it — so an extraction or a split is planned against the graph.
+
+inputs:
+  - id: name
+    description: The symbol being extracted, split or moved.
+
+outputs:
+  - id: context_report
+    type: object
+    description: The symbol's callers, callees and flow membership — the callees an extraction carries with it, and the calls a split divides.
+  - id: impact_report
+    type: object
+    description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level — the callers a restructuring updates.
+
+steps:
+  - kind: technique
+    id: read-connections
+    technique:
+      name: gitnexus::context
+      inputs:
+        name: name
+      outputs:
+        context_report: context_report
+  - kind: technique
+    id: measure-dependents
+    technique:
+      name: gitnexus::impact
+      inputs:
+        target: name
+        direction: upstream
+      outputs:
+        impact_report: impact_report

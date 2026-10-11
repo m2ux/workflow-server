@@ -1,0 +1,23 @@
+[
+  {
+    "actor": "/root/qualify_audit_two",
+    "assignment": "3bee1fd1e3f08073b847",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/packets/3bee1fd1e3f08073b847.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory"
+  },
+  {
+    "actor": "/root/qualify_audit_two",
+    "assignment": "3295bf9cec4fa57ced48",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/packets/3295bf9cec4fa57ced48.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory"
+  },
+  {
+    "actor": "/root/qualify_audit_two",
+    "assignment": "b193f57538fc16c1546f",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/packets/b193f57538fc16c1546f.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion"
+  }
+]

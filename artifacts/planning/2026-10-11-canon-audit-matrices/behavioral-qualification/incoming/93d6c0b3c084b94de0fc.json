@@ -1,0 +1,68 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "93d6c0b3c084b94de0fc",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination declaration to archive, satisfying qualification/techniques/TECHNIQUE.md.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The produce leaf declares Destination is public while its executing qualification ancestor requires archive."
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8",
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519",
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3",
+        "a406c04573c91f8ad82577e3",
+        "8bfa310664405693e5cee00b",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97",
+        "f442830158e33a5d097e4514"
+      ],
+      "reason": "The captured call chain is qualification initial/graph run -> run activity delivery -> deliver routine emit -> produce. Its executing workflow ancestor qualification/techniques/TECHNIQUE.md requires archive; the leaf declares public. The values conflict at the touched leaf declaration. The ancestor states the required value and is not itself a conflicting leaf. The wrong destination propagates through the executing call chain.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

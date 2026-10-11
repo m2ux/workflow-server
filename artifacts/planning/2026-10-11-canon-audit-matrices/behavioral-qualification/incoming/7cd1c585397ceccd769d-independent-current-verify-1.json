@@ -1,0 +1,465 @@
+{
+  "actor": "/root/qualify_verify_audit_one",
+  "assignment": "7cd1c585397ceccd769d",
+  "attempt": "independent-current-verify-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "620325a4c3f62c9867a7df90"
+      ],
+      "reason": "A: Routine Inputs contain only envelope. AP-02 requires comparing this concrete invocation or declaration endpoint with routine Inputs [envelope].",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "reason": "A: The routine input name is envelope. AP-02 requires comparing this concrete invocation or declaration endpoint with routine Inputs [envelope].",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ac42c54bb5e18cc6005d1df7"
+      ],
+      "reason": "N: Ancestor Rules declare Destination must be archive. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "bfde9ab405ad9faa2bc4b5ac"
+      ],
+      "reason": "N: The ancestor destination constraint requires archive. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b34f6249f0f9b31107491750"
+      ],
+      "reason": "A: The routine-to-technique relationship resolves emit to produce. AP-02 requires resolving emit.report through emit to produce and comparing its declared output names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "A: The execution relationship binds qualification/run/delivery/deliver/emit to produce and its ancestor. AP-02 applies to both concrete argument and resolved output contracts carried by this execution relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "c986d23bf9fe92ac15ab723d"
+      ],
+      "reason": "A: The leaf Outputs section declares report. AP-02 requires resolving emit.report through emit to produce and comparing its declared output names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "8835c0ddec51d397d30590e7"
+      ],
+      "reason": "A: The leaf output heading declares report. AP-02 requires resolving emit.report through emit to produce and comparing its declared output names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "588e9afc6de79e4e15622316"
+      ],
+      "reason": "N: run is the activity identifier. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a1bbb96005ca910edd02b943"
+      ],
+      "reason": "N: qualification is the workflow identifier. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "A: The complete activity invokes deliver with the sole argument key envelope. AP-02 requires comparing this concrete invocation or declaration endpoint with routine Inputs [envelope].",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b93fc9705f0d802bdff5440b"
+      ],
+      "reason": "N: The workflow initialActivity is run. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "bfa09024c94a6bc76d51c631"
+      ],
+      "reason": "N: deliver is the routine identifier. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "reason": "A: The complete leaf declares report, two emission directives and Destination is archive. AP-02 requires resolving emit.report through emit to produce and comparing its declared output names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ce1c6885d9fe828ffb2d4802"
+      ],
+      "reason": "N: The workflow starts at run and its sole exit is done: null. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "reason": "A: The run/delivery-to-deliver relationship carries argument key envelope. AP-02 requires comparing this concrete invocation or declaration endpoint with routine Inputs [envelope].",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fa0e42c99b24fa8b70e1b4c5"
+      ],
+      "reason": "N: The inheritance relationship connects produce to qualification TECHNIQUE.md. AP-02 concerns invocation argument keys and resolved output bindings; this construct participates in neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fa301823ccd44ed9374ce575"
+      ],
+      "reason": "A: deliver declares envelope input, report: emit.report and the emit-to-produce call. AP-02 requires resolving emit.report through emit to produce and comparing its declared output names.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

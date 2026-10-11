@@ -1,0 +1,100 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "1b1b11a66b7d809cf946",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "items": [
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "8835c0ddec51d397d30590e7",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "status": "pass",
+      "reason": "The routine export report binds emit.report; resolving emit reaches technique produce, whose complete Outputs declaration contains report. The declared producer output satisfies AP-02. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/report, corpus/qualification/techniques/produce.md#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "8669d4026237cb94e83e2158",
+        "fa301823ccd44ed9374ce575"
+      ],
+      "status": "pass",
+      "reason": "Both binding contracts hold in the captured invocation: delivery supplies exactly {envelope}, matching deliver Inputs [envelope]; deliver exports emit.report, and emit calls produce whose Outputs declare report. The full execution context resolves both comparisons. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/routines/deliver.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "status": "pass",
+      "reason": "The run delivery call selects deliver and supplies exactly the argument-key set {envelope}; deliver requires [envelope]. This concrete routine invocation satisfies AP-02. Assigned rows: corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    }
+  ]
+}

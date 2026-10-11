@@ -1,0 +1,51 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the area comprehension over a concept no flow ranks into.
+variables:
+  reads:
+    - negative_repo_path
+    - negative_search_query
+    - negative_tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The graph every answer in this run came from, which a report naming those answers names too.
+    - name: negative_index_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: negative_index_stale
+      type: boolean
+      description: Whether the graph is still behind the tree after the rebuild, which is the age every answer below carries.
+    - name: negative_query_report
+      type: object
+      description: The execution flows the area's concept lands in, the symbols those flows run, and the definitions reached outside any flow.
+    - name: negative_symbol_contexts
+      type: array
+      description: Per named symbol, its callers, callees and flow membership.
+      defaultValue: []
+    - name: negative_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the area's concept ranked into.
+      defaultValue: []
+required: true
+steps:
+  - kind: routine
+    id: comprehend-unranked-area
+    routine: gitnexus::area-comprehension
+    with:
+      search_query: "{negative_search_query}"
+      tree_path: "{negative_tree_path}"
+      repo_path: "{negative_repo_path}"
+    outputs:
+      repo_name: repo_name
+      index_stats: negative_index_stats
+      index_stale: negative_index_stale
+      query_report: negative_query_report
+      symbol_contexts: negative_symbol_contexts
+      flow_traces: negative_flow_traces
+exits:
+  - id: comprehended
+    isDefault: true
+outcome:
+  - The same run under a concept no flow ranks into landed a query report with no process and no process symbol, so both per-item passes ran zero times and the contexts and traces stayed empty — the fallback the run promises rather than a failure

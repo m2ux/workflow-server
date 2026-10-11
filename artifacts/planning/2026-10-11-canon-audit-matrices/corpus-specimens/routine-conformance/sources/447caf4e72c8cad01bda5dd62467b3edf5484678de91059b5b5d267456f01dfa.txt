@@ -1,0 +1,121 @@
+id: primary-audit
+version: 5.1.0
+name: Primary Audit
+description: Gather the agent branches the graph opened, verify their coverage, and merge their findings.
+variables:
+  reads:
+    - agent_roster
+    - crate_review_roster
+    - gitnexus_available
+    - planning_folder_path
+    - sub_crate_review_outputs
+    - sub_static_analysis_outputs
+    - sub_toolkit_review_outputs
+  writes:
+    - name: dispatch_complete
+      type: boolean
+      description: Phase 1b dispatch gate — every assigned agent dispatched and returned; gates report-generation entry
+      defaultValue: false
+    - name: dispatch_results
+      type: array
+      description: Collected results from all dispatched sub-agents.
+    - name: dispatched_results
+      type: array
+      description: Returns from the agents this activity dispatches singly — verification, gap re-dispatch and merge. The crate-review, static-analysis and toolkit groups are branches the graph opened and land in containers of their own.
+    - name: gathered_results
+      type: object
+      description: Ordered `{ items, dispatch_manifest, completeness }` collection over the expected brief ids.
+    - name: merge_complete
+      type: boolean
+      description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry
+      defaultValue: false
+    - name: verification_complete
+      type: boolean
+      description: Phase 1b verification gate — set from the verification sub-agent's output; gates report-generation entry
+      defaultValue: false
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
+    - name: worker_briefs
+      type: array
+      description: Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting primary audit — gathering the agent branches
+  - kind: technique
+    id: gather-all-agents
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: sub_crate_review_outputs
+        expected_ids: crate_review_roster
+  - kind: technique
+    id: verify-checklist-prompt-coverage
+    technique: verify-sub-agent-output
+  - kind: technique
+    id: verify-dispatch-completeness
+    technique: verify-sub-agent-output
+  - kind: technique
+    id: collect-all
+    technique: dispatch-sub-agents::collect-results
+  - kind: technique
+    id: verify-agent-output-files
+    technique:
+      name: orchestration-patterns::verify-output-files
+      inputs:
+        expected_output_files: a1-nto.json, a2-midnight-ledger.json, a3-node-startup.json, a4-node-consensus.json, a5-runtime.json, a6-primitives.json, a7-governance.json, b-static-analysis.json, d1-ledger-helpers.json, d2-toolkit.json
+  - kind: technique
+    id: compose-verification-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
+    id: dispatch-verification-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-gap-redispatch
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
+    id: act-on-gap-report
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-merge-agent
+    technique: dispatch-sub-agents::compose-roster-briefs
+  - kind: technique
+    id: dispatch-merge-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: gather-singly-dispatched-agents
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        expected_ids: worker_briefs
+  - kind: technique
+    id: preserve-verification-report
+    technique: orchestration-patterns::verify-output-files
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Primary audit complete — findings collected from all agent groups
+      - action: set
+        target: dispatch_complete
+        value: true
+      - action: set
+        target: verification_complete
+        value: true
+      - action: set
+        target: merge_complete
+        value: true
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Every priority-1/2 crate has been evaluated against the full §3 checklist in a dedicated context window, giving depth no single agent could reach
+  - Mechanical and pattern-based weaknesses across the whole in-scope surface are caught independently of the human-led review
+  - Storage lifecycle pairing is known, so unbounded-growth and orphaned-state risks can be judged from insert/remove completeness
+  - Toolkit code has guaranteed minimum-checklist coverage, closing the gap where benign-looking helpers are usually skimmed

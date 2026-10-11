@@ -1,0 +1,308 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "76d7ebaaabc8f1fb9072",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "reason": "deliver.yaml#/steps: The routine steps resolve emit to technique produce, whose declared output is report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit: The emit step calls produce, whose declared output is report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/id: The step identifier emit is the producer named by the routine output binding emit.report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/technique: The technique reference produce resolves the producer whose Outputs heading declares report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The initialActivity relationship connects qualification to run; the activity invokes deliver. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The graph-entry relationship connects the run graph node to the run activity. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: This graph-entry relationship is attached to run.done, whose destination is null. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "reason": "deliver.yaml#/inputs: The routine Inputs list contains exactly envelope. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "reason": "deliver.yaml#/inputs/0: The sole routine input entry is envelope. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "reason": "TECHNIQUE.md#/rules: The ancestor TECHNIQUE Rules declare Destination must be archive. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "TECHNIQUE.md#/rules/line-5: The ancestor destination constraint requires archive; it is not a leaf destination declaration. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "produce.md#/protocol: The leaf Protocol contains the instruction: Validate the report, then emit it. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "produce.md#/protocol/line-8: This Protocol instruction says: Validate the report, then emit it. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "reason": "deliver.yaml#/outputs: The routine Outputs section exports report through emit.report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "reason": "deliver.yaml#/outputs/report: The exported routine report is bound to emit.report. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

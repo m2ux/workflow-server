@@ -1,0 +1,72 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignments": 3,
+  "items": 17,
+  "statuses": {
+    "verified": 9,
+    "disputed": 8
+  },
+  "packet_bytes_total": 78549,
+  "returned_bytes_total": 18536,
+  "largest_return_bytes": 11020,
+  "largest_bounded_read_bytes": 7609,
+  "total_preparation_to_return_seconds": 275.25780057907104,
+  "full_original_source_blobs_read": 8,
+  "required_context_failures": [],
+  "forbidden_context_reads": [],
+  "additional_instruction_read": {
+    "path": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md",
+    "scope": "full file; one Scope heading"
+  },
+  "tool_failures": [
+    {
+      "command": "qualify-negative-helper.py sources",
+      "exit": 1,
+      "reason": "Scratch excerpt-equality assertion normalized the excerpt terminal newline but not the captured section terminal newline.",
+      "resolution": "Normalize terminal newlines on both values; SHA-256 identity validation and content comparison then passed for every manifest/excerpt source."
+    }
+  ],
+  "limitations": [
+    "Inventory verification and one applicability dispute only; no evaluation or canonical-state edits.",
+    "Timing includes shared complete-canon/source reads across the three assignments; per-assignment elapsed is measured from its first bounded packet read.",
+    "The routine omission affects several closure obligations; repeated disputed rows report the same missing source and call-chain defect, not additional independent defects."
+  ],
+  "per_assignment": [
+    {
+      "assignment": "3bee1fd1e3f08073b847",
+      "phase": "inventory",
+      "items": 12,
+      "packet_bytes": 46297,
+      "returned_bytes": 11020,
+      "first_packet_read_to_return_seconds": 267.55748772621155,
+      "work_seconds_limit": 600,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "receipt": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/receipts/3bee1fd1e3f08073b847.json"
+    },
+    {
+      "assignment": "3295bf9cec4fa57ced48",
+      "phase": "inventory",
+      "items": 4,
+      "packet_bytes": 23719,
+      "returned_bytes": 6160,
+      "first_packet_read_to_return_seconds": 247.36401295661926,
+      "work_seconds_limit": 600,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "receipt": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/receipts/3295bf9cec4fa57ced48.json"
+    },
+    {
+      "assignment": "b193f57538fc16c1546f",
+      "phase": "verify",
+      "items": 1,
+      "packet_bytes": 8533,
+      "returned_bytes": 1356,
+      "first_packet_read_to_return_seconds": 232.65959000587463,
+      "work_seconds_limit": 600,
+      "context_capacity_bytes": 208400,
+      "output_capacity_bytes": 16000,
+      "receipt": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/receipts/b193f57538fc16c1546f.json"
+    }
+  ]
+}

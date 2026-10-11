@@ -1,0 +1,153 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "1fa3f15a9b4c1684876b",
+  "attempt": "author-map-verify-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b",
+        "4c9b9e3283acb76acd0c593c",
+        "eb0acb5f69509bc093ccb4c4",
+        "8f71acc678543f1dedd6da64",
+        "85d58778322169b7eb358fb2",
+        "e7190e6183add8a7b67d408d",
+        "7a49531ccbd7063bf5c4dd03",
+        "9d43a5459db3bcbd7c1b6759",
+        "cbb292d61ff63c7740d065be",
+        "bbb0ef5214ae8bbcce715c65",
+        "71fd5507f4b74e2ec91c2b3e",
+        "f2a200e38a51bc411ee5e057",
+        "343988e91c335d3bdef76586",
+        "cc39f8b8ebb2b96169d05005",
+        "b1f517596f87f82a15830709",
+        "f30ba6f42d4230bf27814f3a",
+        "ca06cc90126da20e026a0486",
+        "96797ae8488cf51f8878572b",
+        "2e52133101ac058519a8aa51",
+        "8d0a1adc7b4ff87710b48af6",
+        "541cffe238719bcc6a46fe77",
+        "06d002e75cf36ea1b43c83b1",
+        "8f64e24f8a4caa9482d28228",
+        "232c484eaf1003ef830d4ffa",
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "Verified N after inspecting every listed construct: these rows are declarations, Capability descriptions, output headings, destination constraints, structural YAML content, calls or relationship context. They contain no imperative Protocol or Rules emission directive of their own. AP-01 explicitly limits its Detect to those emitting instructions and excludes these declaration/call/label forms. This is a scope exclusion, not a clean evaluation. Assigned rows: corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/id, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/techniques/TECHNIQUE.md#@element.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a",
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "Verified A from the original AP-01 scope: the leaf Protocol instruction at line 8 and independently testable Rules clause 2 at line 11 direct report emission or its required validation. These rows expose those instructions through the instruction, compound line, section or whole leaf. Correct validation would affect evaluation, not applicability. Assigned rows: corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2, corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "Verified N: the separately addressed first clause at produce line 11 only retains the report ID. AP-01 expressly excludes retention clauses from emission directives. The sibling emission clause remains a separate applicable row; its presence cannot make this isolated retention clause an emission instruction. Assigned rows: corpus/qualification/techniques/produce.md#/rules/line-11/clause-1.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c"
+}

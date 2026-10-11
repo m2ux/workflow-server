@@ -1,0 +1,79 @@
+id: source-analysis
+version: 1.1.0
+name: Source Analysis
+description: "Audit the existing document against the principles and persist the findings and strengths a rewrite works from, or an audit run reports."
+variables:
+  reads:
+    - document_title
+    - operation_type
+    - planning_folder_path
+    - source_document_path
+  writes:
+    - name: analysis_disposition
+      type: string
+      description: What the reader decided about the recorded findings on an audit run. Absent on a rewrite run, where the findings are not reviewed.
+      values:
+        - accepted
+        - revise
+    - name: finding_count
+      type: number
+      description: Count of plain-language findings recorded against the existing document.
+      defaultValue: 0
+    - name: source_analysis
+      type: object
+      description: The audit of the existing document against the principles, produced on rewrite and audit runs.
+    - name: source_analysis_path
+      type: string
+      description: Absolute path to the persisted source-analysis artifact.
+      defaultValue: ""
+required: false
+steps:
+  - kind: technique
+    id: analyze-source
+    technique: analyze-source
+  - kind: technique
+    id: persist-source-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: source-analysis.md
+        artifact_content: source_analysis
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: source_analysis_path
+  - kind: checkpoint
+    id: analysis-reviewed
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: audit
+    message: "{finding_count} plain-language findings recorded against `{document_title}` ([source analysis]({source_analysis_path}))."
+    defaultOption: accepted
+    autoAdvanceMs: 30000
+    options:
+      - id: accepted
+        label: Accepted
+        description: The findings accurately record where the document fails its readers.
+        effect:
+          setVariable:
+            analysis_disposition: accepted
+      - id: revise
+        label: Needs revision
+        description: The findings miss failures or misstate the guidelines they cite.
+        effect:
+          setVariable:
+            analysis_disposition: revise
+  - kind: technique
+    id: revise-source-analysis
+    technique: analyze-source
+    when: analysis_disposition == 'revise'
+exits:
+  - id: audit
+    when: operation_type == "audit"
+  - id: rewrite
+    isDefault: true
+outcome:
+  - The existing document's failures are recorded against the guidelines they breach, so a rewrite fixes named problems rather than restyling on taste
+  - The document's strengths are inventoried, so a rewrite preserves what already works for its readers
+  - An audit run closes on the analysis as its terminal record, authoring no document

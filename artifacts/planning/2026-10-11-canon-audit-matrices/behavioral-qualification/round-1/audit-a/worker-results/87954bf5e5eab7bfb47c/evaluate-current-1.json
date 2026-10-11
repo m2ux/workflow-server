@@ -1,0 +1,32 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "87954bf5e5eab7bfb47c",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654",
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a",
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "The complete leaf Protocol says Validate the report, then emit it. Its Rules independently require validating the report before each emission. Both instructions order validation of the same artifact before emission. The sibling Retain the report ID clause is non-emitting and was considered separately; it does not excuse or alter another clause. There is no instruction permitting unvalidated emission in the complete leaf.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

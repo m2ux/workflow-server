@@ -1,0 +1,76 @@
+---
+metadata:
+  version: 2.3.0
+---
+
+## Capability
+
+Implement a single task from the work package plan by writing code changes
+
+## Inputs
+
+### current_task
+
+A single atomic task to implement (description, affected files, dependencies)
+
+### test_plan
+
+*(optional)* Test [plan](../resources/test-plan.md#test-plan-structure) with strategy and acceptance criteria for guidance
+
+## Outputs
+
+### target_symbol
+
+The primary edit target — the function, class, or method this task changes, derived from `{current_task}`.
+
+### task_implementation
+
+Code changes for a single task
+
+### changed_paths
+
+Repository-relative paths this task wrote, as the set a commit stages.
+
+## Protocol
+
+### 1. Understand Context
+
+- Read the `{current_task}` description and requirements from the plan
+- Identify affected files, dependencies, and related code
+- Determine the primary edit target `{target_symbol}` — the function, class, or method this task changes — from `{current_task}`
+- Review the `{test_plan}` for acceptance criteria relevant to this task
+- Where the `{current_task}` description is ambiguous or missing context, read the plan document for what it leaves unstated, and record the residual ambiguity in `{task_implementation}`
+
+### 2. Pre Edit Impact Check
+
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[impact](/gitnexus/techniques/impact.md)(*target*: `{target_symbol}`, *direction*: `upstream`) before any edit
+- Read the resulting `{impact_report}`; where it reports HIGH or CRITICAL risk, record that level and the symbols it names in `{task_implementation}` before editing
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: `{target_symbol}`) to understand callers/callees of the symbol
+
+### 3. Write Code
+
+- Implement the code changes for this task
+- Follow existing code patterns and conventions in the target codebase
+- For Rust projects, follow TDD best practices from [tdd-concepts-rust](../resources/tdd-concepts-rust.md)
+
+### 4. Verify Locally
+
+- Check for obvious regressions in affected code
+- If the code changes do not compile, review the error messages, fix the issues, and retry
+- Where the suite cannot run here, update any test this diff invalidates on its own face — a reordered positional assertion, an assertion naming a renamed symbol — and record which tests remain unrun in `{task_implementation}`
+
+### 5. Post Edit Verification
+
+- Apply [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[detect-changes](/gitnexus/techniques/detect-changes.md) before commit to confirm the changes affect only the expected symbols and execution flows
+- Record the `{task_implementation}` for this task, capturing a brief summary of the approach taken
+- Emit `{changed_paths}` as the repository-relative paths this task wrote
+
+## Rules
+
+### single-task-focus
+
+Implement exactly one task — do not scope-creep into adjacent tasks
+
+### comment-proportionality
+
+Comment bulk stays proportional to the code it annotates, per [Comment proportionality](/ponytail/resources/review-taxonomy.md#comment-proportionality). Rationale already recorded in a plan or design artifact is cited rather than restated inline, so the two cannot drift apart.

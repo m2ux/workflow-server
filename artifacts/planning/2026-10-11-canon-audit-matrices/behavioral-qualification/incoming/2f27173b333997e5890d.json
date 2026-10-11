@@ -1,0 +1,175 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "2f27173b333997e5890d",
+  "attempt": "audit-two-evaluate-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "workflow.yaml#/graph: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "workflow.yaml#/graph/run: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "workflow.yaml#/graph/run/done: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8862878198e6198ef77c1f28"
+      ],
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "48da822c85267d96ea48c4c2"
+      ],
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "workflow.yaml#/initialActivity: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "workflow.yaml#@element: The entire workflow starts at run; the sole graph exit run.done leads to null. This is a finite terminating path.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

@@ -1,0 +1,385 @@
+{
+  "actor": "/root/qualify_verify_audit_one",
+  "assignment": "f13e20fa69d87267546c",
+  "attempt": "independent-current-verify-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9839de920cafa86c93f9e319"
+      ],
+      "reason": "N: The leaf Outputs section declares report. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "16ed4220394232ac66e84453"
+      ],
+      "reason": "N: The leaf output heading declares report. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a6cc9c95bd8a15eec9337ab9"
+      ],
+      "reason": "N: The routine-to-technique relationship resolves emit to produce. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7616d539ed6effba75237723"
+      ],
+      "reason": "N: The execution relationship binds qualification/run/delivery/deliver/emit to produce and its ancestor. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a700a3294be653eb8e533547"
+      ],
+      "reason": "N: The Protocol section contains: Validate the report, then emit it. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "cc4fea783a74407b8fdb654e"
+      ],
+      "reason": "N: The Protocol instruction is: Validate the report, then emit it. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "d9b55f0b6cbe3ed6ab868ed5"
+      ],
+      "reason": "N: Ancestor Rules declare Destination must be archive. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "4da9396f20f50a18673256c5"
+      ],
+      "reason": "N: The ancestor destination constraint requires archive. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "36c8e451b93d39512aae352f"
+      ],
+      "reason": "N: The run/delivery-to-deliver relationship carries argument key envelope. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "54a73e1bf111128988cf03fe"
+      ],
+      "reason": "N: The ancestor contains a Capability description and archive destination constraint. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7d5cdef67a14fe0a0e70a8ff"
+      ],
+      "reason": "N: run is the activity identifier. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8b3b602b6703003326b8df8d"
+      ],
+      "reason": "N: The complete activity invokes deliver with the sole argument key envelope. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8d0f33a043c7068e8c998046"
+      ],
+      "reason": "N: The complete leaf declares report, two emission directives and Destination is archive. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "98b55e096e4899353322814f"
+      ],
+      "reason": "N: The inheritance relationship connects produce to qualification TECHNIQUE.md. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a0e70a1645458e99657058ca"
+      ],
+      "reason": "N: deliver is the routine identifier. DP-02 is a workflow-graph invariant; this construct supplies no graph exit or initial-activity binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "reason": "N: qualification is the workflow identifier. DP-02 concerns the initial activity and reachable graph exits; the workflow ID supplies neither.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "A: The workflow initialActivity is run. DP-02 applies to this path-bearing construct with the entire workflow graph as context.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "A: The workflow starts at run and its sole exit is done: null. DP-02 applies to this path-bearing construct with the entire workflow graph as context.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

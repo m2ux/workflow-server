@@ -1,0 +1,2 @@
+Unexpected key(s) in SKILL.md frontmatter: hooks. Allowed properties are: allowed-tools, description, license, metadata, name
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices (name more with SBX_EXTRA_ROOTS=dir1:dir2)

@@ -1,0 +1,66 @@
+id: intake-and-scope
+version: 1.2.0
+name: Intake and Scope
+description: Capture the task and target, set intensity and scope, and trace the real end-to-end flow the change touches before the ladder is climbed.
+variables:
+  reads:
+    - artifact_dir
+    - target_path
+    - task_description
+  writes:
+    - name: lazy_intensity
+      type: string
+      description: "Strictness of the lazy lens: lite, full, or ultra"
+      defaultValue: full
+    - name: pass_scope
+      type: string
+      description: "Breadth of the pass: change (diff-scoped) or repo (whole-tree)"
+      defaultValue: change
+steps:
+  - kind: technique
+    id: capture-and-trace
+    technique: scope-intake
+  - kind: checkpoint
+    id: intensity-and-scope-confirmed
+    message: "The lazy lens for {task_description} at {target_path} — how strict the pass is, and how wide."
+    options:
+      - id: lite-change
+        label: Lite intensity, change scope
+        description: Lightest pass, over the diff only.
+        effect:
+          setVariable:
+            lazy_intensity: lite
+            pass_scope: change
+      - id: full-change
+        label: Full intensity, change scope
+        description: Standard pass, over the diff.
+        effect:
+          setVariable:
+            lazy_intensity: full
+            pass_scope: change
+      - id: ultra-change
+        label: Ultra intensity, change scope
+        description: Strictest pass, over the diff.
+        effect:
+          setVariable:
+            lazy_intensity: ultra
+            pass_scope: change
+      - id: full-repo
+        label: Full intensity, repo scope
+        description: Standard pass, over the whole tree.
+        effect:
+          setVariable:
+            lazy_intensity: full
+            pass_scope: repo
+      - id: ultra-repo
+        label: Ultra intensity, repo scope
+        description: Strictest pass, over the whole tree.
+        effect:
+          setVariable:
+            lazy_intensity: ultra
+            pass_scope: repo
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The task and the real flow it touches are understood and recorded, with the lazy lens calibrated to the user's chosen intensity and scope before any simplification begins

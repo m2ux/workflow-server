@@ -1,0 +1,244 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a",
+  "assignment": "2ec083a1ff3121742c5f",
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6",
+  "actor": "/root/qualify_verify_one",
+  "attempt": "author-verify-current-1",
+  "records": [
+    {
+      "items": [
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "status": "verified",
+      "reason": "Each named row declares envelope in deliver Inputs, the required-key endpoint compared with the concrete activity invocation under AP2. The complete invocation supplies envelope; a valid routine declaration cannot exempt the call. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "ac42c54bb5e18cc6005d1df7",
+        "bfde9ab405ad9faa2bc4b5ac"
+      ],
+      "status": "verified",
+      "reason": "Each named row is an identifier, graph structure, ancestor constraint or descriptive/imperative prose without either AP2 binding form or a declaration endpoint used by that form. AP2 excludes Markdown artifact mentions as bindings; the actual invocation, routine inputs/exports and leaf output declarations are separately applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "b34f6249f0f9b31107491750",
+        "8669d4026237cb94e83e2158",
+        "fa301823ccd44ed9374ce575"
+      ],
+      "status": "verified",
+      "reason": "Each named row contains deliver contract data or its produce call/execution relationship. The export is emit.report; emit resolves to produce, whose declared output is report. AP2 applies to that compared binding contract with the concrete invocation retained. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "c986d23bf9fe92ac15ab723d",
+        "8835c0ddec51d397d30590e7",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "status": "verified",
+      "reason": "Each named row includes produce Outputs/report, the declared-name endpoint of deliver export emit.report. AP2 expressly defines the keys below Outputs as the output names; applicability survives either agreement or disagreement. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "588e9afc6de79e4e15622316"
+      ],
+      "status": "verified",
+      "reason": "Each named row is an identifier, graph structure, ancestor constraint or descriptive/imperative prose without either AP2 binding form or a declaration endpoint used by that form. AP2 excludes Markdown artifact mentions as bindings; the actual invocation, routine inputs/exports and leaf output declarations are separately applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "a1bbb96005ca910edd02b943",
+        "b93fc9705f0d802bdff5440b",
+        "ce1c6885d9fe828ffb2d4802"
+      ],
+      "status": "verified",
+      "reason": "Each named row is an identifier, graph structure, ancestor constraint or descriptive/imperative prose without either AP2 binding form or a declaration endpoint used by that form. AP2 excludes Markdown artifact mentions as bindings; the actual invocation, routine inputs/exports and leaf output declarations are separately applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "b331b3631bac4371bfebf008",
+        "eeab805ea4653756496776b5"
+      ],
+      "status": "verified",
+      "reason": "Each named row contains or selects the concrete delivery invocation of deliver. The supplied key is envelope and the routine Inputs list declares envelope. AP2 requires this exact argument-key comparison for every invocation; success or mismatch belongs to evaluation. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "bfa09024c94a6bc76d51c631"
+      ],
+      "status": "verified",
+      "reason": "Each named row is an identifier, graph structure, ancestor constraint or descriptive/imperative prose without either AP2 binding form or a declaration endpoint used by that form. AP2 excludes Markdown artifact mentions as bindings; the actual invocation, routine inputs/exports and leaf output declarations are separately applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "fa0e42c99b24fa8b70e1b4c5"
+      ],
+      "status": "verified",
+      "reason": "These graph or ancestor relationships do not themselves specify a routine argument-key comparison or a step.output export. AP2 limits its binding contract to those two forms. Captured endpoint context is retained without treating every reference as a binding. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,529 @@
+id: submit-for-review
+version: 1.25.0
+name: Submit for Review
+description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+variables:
+  reads:
+    - awaiting_review
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - head_sha
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - planning_folder_path
+    - pr_number
+    - pr_url
+    - prior_feedback_triage
+    - problem_statement
+    - project_type
+    - provenance_log_path
+    - push_remote
+    - raised_findings_scope
+    - rating_cap
+    - requirements
+    - squash_merge_supported
+    - stealth_mode
+    - summary_refine_requested
+    - target_path
+    - target_repo
+    - ticket_disposition
+  writes:
+    - name: artifact_publish_ref
+      type: string
+      description: Engineering checkout's branch name.
+      defaultValue: ""
+    - name: attestation_option
+      type: string
+      description: What the human certified about the change at the DCO attestation gate.
+      values:
+        - certify
+        - flag-legal
+      defaultValue: certify
+    - name: awaiting_review
+      type: boolean
+      description: True while submit-for-review is waiting for reviewer feedback.
+      defaultValue: false
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: build_dependent_artifacts_pending
+      type: boolean
+      description: True when regen of build-only artifacts (e.g. .scale / node metadata) is required and the agent cannot produce them.
+      defaultValue: false
+    - name: classified_findings
+      type: array
+      description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
+    - name: code_findings_actionable
+      type: boolean
+      description: Whether any code-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: publishable_files
+      type: array
+      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
+    - name: push_remote_url
+      type: string
+      description: URL the push remote resolves to (used in stealth-mode isolation confirmation).
+      defaultValue: ""
+    - name: recommended_outcome
+      type: string
+      description: The PR-review outcome the agent recommends.
+      values:
+        - approved
+        - minor-changes
+        - significant-changes
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
+    - name: review_comments_summary
+      type: string
+      description: Concise multi-line summary of the reviewer's comments, one tagged line per comment.
+      defaultValue: ""
+    - name: review_posted
+      type: boolean
+      description: Whether review summary was posted to PR (review mode).
+      defaultValue: false
+    - name: review_requires_changes
+      type: boolean
+      description: Whether PR review feedback requires returning to planning.
+      defaultValue: false
+    - name: review_summary
+      type: string
+      description: The rendered review text destined for the pull request — posted verbatim by the publish operation, byte-for-byte what sign-off approved.
+      defaultValue: ""
+    - name: review_type
+      type: string
+      description: The review event to post. Absent until the review-summary-approval gate settles one.
+      values:
+        - approve
+        - request-changes
+        - comment
+    - name: summary_budget_overruns
+      type: array
+      description: Consolidated-review slots over their format budget, each { slot, measured, budget }.
+      defaultValue: []
+    - name: summary_refine_requested
+      type: boolean
+      description: Whether the reviewer asked for the consolidated summary to be rendered again before posting.
+      defaultValue: false
+    - name: test_findings_actionable
+      type: boolean
+      description: Whether any test-suite finding is at or above the severity that warrants action.
+      defaultValue: false
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Submitting work for review
+  - kind: technique
+    id: consolidate-review-findings
+    technique:
+      name: findings-classification
+      inputs:
+        ticket_disposition: ticket_disposition
+    when: is_review_mode == true
+  - kind: technique
+    id: resolve-artifact-publish
+    technique: resolve-artifact-publish
+    when: is_review_mode == true
+  - kind: technique
+    id: commit-review-artifacts
+    technique:
+      name: manage-git::artifact-commits
+      inputs:
+        activity_name: submit-for-review
+        issue_key: issue_number
+        files: publishable_files
+        branch: artifact_publish_ref
+    when: is_review_mode == true
+  - kind: loop
+    id: review-summary-cycle
+    name: Review Summary Approval Cycle
+    loopType: doWhile
+    when: is_review_mode == true
+    continueWhile:
+      type: simple
+      variable: summary_refine_requested
+      operator: ==
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: generate-review-summary
+        technique: review-summary
+        actions:
+          - action: validate
+            target: summary_budget_overruns == []
+            message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
+          - action: validate
+            target: summary_completeness_findings == []
+            message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
+      - kind: checkpoint
+        id: review-summary-approval
+        message: "Consolidated review summary, ready to post as a pull-request review: {review_summary}"
+        options:
+          - id: post-approve
+            label: Post review — Approve
+            description: Post the summary as an approving PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: approve
+                summary_refine_requested: false
+          - id: post-request-changes
+            label: Post review — Request changes
+            description: Post the summary as a request-changes PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: request-changes
+                summary_refine_requested: false
+          - id: post-comment
+            label: Post review — Comment only
+            description: Post the summary as a comment-only PR review
+            effect:
+              setVariable:
+                review_posted: true
+                review_type: comment
+                summary_refine_requested: false
+          - id: refine
+            label: Refine summary
+            description: The reply carries the adjustments, and the summary is rendered again for approval
+            effect:
+              setVariable:
+                review_posted: false
+                summary_refine_requested: true
+          - id: skip-posting
+            label: Skip posting to PR
+            description: Keep the summary local, don't post to GitHub
+            effect:
+              setVariable:
+                review_posted: false
+                summary_refine_requested: false
+  - kind: technique
+    id: persist-review-summary
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        bare_filename: review-summary.md
+        artifact_content: review_summary
+    when: is_review_mode == true && review_posted == true
+  - kind: technique
+    id: post-pr-review
+    technique: update-pr::post-review-comment
+    when: is_review_mode == true && review_posted == true
+  - kind: checkpoint
+    id: dco-sign-off-confirmation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: |-
+      Before pushing: please certify the Developer Certificate of Origin for this work package ([provenance log]({provenance_log_path})).
+
+      Certify that you:
+      1. Have the right to submit this contribution under the project's license
+      2. Did not include code with unclear or incompatible provenance
+      3. Are willing to take responsibility for defects and licensing issues in this patch
+    options:
+      - id: certify
+        label: I certify all of the above — proceed
+        description: The certification stands, with its timestamp and identity in the [provenance log]({provenance_log_path})
+        effect:
+          setVariable:
+            attestation_option: certify
+      - id: flag-legal
+        label: I have reservations — flag for legal review
+        description: The concern is recorded in the [provenance log]({provenance_log_path}) for legal or OSS program review
+        effect:
+          setVariable:
+            attestation_option: flag-legal
+  - kind: technique
+    id: dco-sign-off
+    technique: dco-provenance::record-attestation
+    when: is_review_mode != true
+  - kind: technique
+    id: verify-push-remote
+    technique: manage-git::verify-remote-private
+    when: stealth_mode == true
+    actions:
+      - action: validate
+        target: push_remote_verified != false
+        message: "Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run."
+  - kind: technique
+    id: verify-push-signatures
+    technique: manage-git::verify-commit-signatures
+    when: stealth_mode == true
+    actions:
+      - action: validate
+        target: commits_signed != false
+        message: "Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run."
+  - kind: checkpoint
+    id: private-push-confirmation
+    condition:
+      type: simple
+      variable: stealth_mode
+      operator: ==
+      value: true
+    message: "The push target is remote `{push_remote}` ({push_remote_url}), its commits carry valid signatures, and a stealth-mode run reaches a private remote only."
+    options:
+      - id: confirmed
+        label: Yes, push to the private remote
+        description: The remote is the verified private fork
+      - id: abort
+        label: No, abort push
+        description: The remote did not verify as private
+        effect:
+          exit: abort
+  - kind: technique
+    id: push-commits
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: target_path
+        branch: branch_name
+        remote_name: push_remote
+    when: is_review_mode != true
+  - kind: technique
+    id: update-description
+    technique: update-pr::render
+    when: is_review_mode != true && stealth_mode != true
+  - kind: loop
+    id: verify-pr-body-rerender
+    name: PR Body Verification Re-render Loop
+    loopType: while
+    when: is_review_mode != true && stealth_mode != true
+    continueWhile:
+      type: simple
+      variable: body_conforms
+      operator: ==
+      value: false
+    maxIterations: 2
+    steps:
+      - kind: technique
+        id: rerender-body
+        technique:
+          name: update-pr::render
+          inputs:
+            pr_template_variant: final
+      - kind: technique
+        id: verify-body
+        technique: update-pr::verify-body
+  - kind: checkpoint
+    id: body-non-conformant
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: body_conforms
+          operator: ==
+          value: false
+    message: |-
+      The PR body still fails `update-pr.pr-body-conformance`.
+
+      Findings:
+      {body_findings}
+    options:
+      - id: proceed-with-override
+        label: Proceed with override
+        description: Acknowledge the deviation and continue.
+        effect:
+          setVariable:
+            body_conforms: true
+      - id: provide-input
+        label: Provide missing input
+        description: The missing input (a pushed engineering branch, an issue rationale) is available to supply
+        effect:
+          setVariable:
+            body_conforms: false
+          exit: provide-input
+      - id: abort
+        label: Abort submission
+        description: The body stands as it is and the submission is abandoned.
+        effect:
+          exit: abort
+  - kind: technique
+    id: instruct-merge-strategy
+    technique: manage-git::instruct-merge-strategy
+    when: is_review_mode != true && stealth_mode != true
+  - kind: action
+    id: merge-strategy-guidance
+    when: is_review_mode != true && stealth_mode != true
+    actions:
+      - action: message
+        message: |-
+          PR is ready for review. Merge strategy guidance:
+
+          {presented_merge_guidance}
+  - kind: checkpoint
+    id: build-artifact-check
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: project_type
+          operator: ==
+          value: rust-substrate
+    message: |-
+      Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle, and CI is otherwise the first signal that they are stale.
+    options:
+      - id: artifacts-current
+        label: Artifacts current — continue
+        description: Either no build-dependent regeneration is owed, or the tree already carries the regenerated artifacts
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: false
+      - id: user-owns-regen
+        label: User owns regen — continue
+        description: Regeneration stays with the user, and the pull request carries the artifacts as they stand
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: true
+  - kind: action
+    id: announce-regen-owed
+    when: build_dependent_artifacts_pending == true
+    actions:
+      - action: message
+        message: "Build-dependent artifacts stay with the user to regenerate; the pull request carries them as they stand."
+  - kind: technique
+    id: mark-ready
+    technique: update-pr::mark-ready
+    when: is_review_mode != true && stealth_mode != true
+    actions:
+      - action: message
+        message: "Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url}"
+  - kind: loop
+    id: await-review-loop
+    name: Await Review Loop
+    loopType: doWhile
+    continueWhile:
+      type: simple
+      variable: awaiting_review
+      operator: ==
+      value: true
+    steps:
+      - kind: action
+        id: await-review
+        when: stealth_mode != true
+        actions: []
+      - kind: checkpoint
+        id: review-received
+        condition:
+          type: and
+          conditions:
+            - type: simple
+              variable: is_review_mode
+              operator: "!="
+              value: true
+            - type: simple
+              variable: stealth_mode
+              operator: "!="
+              value: true
+        message: The pull request is open and awaiting reviewer feedback.
+        options:
+          - id: yes-review
+            label: Yes, review comments received
+            description: Analyze and respond to the review comments now
+            effect:
+              setVariable:
+                awaiting_review: false
+          - id: no-waiting
+            label: No, still waiting for review
+            description: No reviewer feedback has arrived yet
+            effect:
+              setVariable:
+                awaiting_review: true
+  - kind: technique
+    id: process-review-comments
+    technique: respond-to-pr-review
+    when: is_review_mode != true && stealth_mode != true
+  - kind: technique
+    id: analyze-review-outcome
+    technique: review-outcome-analysis
+    when: is_review_mode != true && stealth_mode != true
+  - kind: checkpoint
+    id: review-outcome
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+    message: |-
+      Review outcome analysis complete.
+
+      Reviewer comments:
+      {review_comments_summary}
+
+      Recommended outcome: {recommended_outcome}.
+    options:
+      - id: approved
+        label: Approved - No changes required
+        description: The PR is approved as submitted
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: minor-changes
+        label: Minor changes - Can be addressed inline
+        description: Small fixes that don't require re-planning
+        effect:
+          setVariable:
+            review_requires_changes: false
+      - id: significant-changes
+        label: Significant changes required
+        description: The change needs re-planning before it can land
+        effect:
+          setVariable:
+            review_requires_changes: true
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Submission complete — PR review cycle finished, or (stealth mode) fix pushed to the verified private remote
+exits:
+  - id: review-mode
+    when: is_review_mode == true
+  - id: review-requires-changes
+    when: review_requires_changes == true
+  - id: review-approved
+    when: review_requires_changes == false
+    isDefault: true
+  - id: provide-input
+    immediate: true
+  - id: abort
+    immediate: true
+outcome:
+  - The change stands on the remote as a pull request open for review
+  - Build-dependent artifacts are handed to the user wherever regeneration is owed
+  - Review comments received and addressed
+  - Review outcome determined (proceed or rework)

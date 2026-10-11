@@ -1,0 +1,63 @@
+id: work-packages
+version: 4.1.0
+title: Work Packages Workflow
+description: Plan and coordinate multiple related work packages. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context. Execution triggers the work-package workflow for each package.
+author: m2ux
+tags:
+  - planning
+  - roadmap
+  - multi-package
+  - coordination
+  - prioritization
+rules:
+  workflow:
+    - Clarify scope and priorities before planning a roadmap — the packages a roadmap names are the hardest thing in it to revise.
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: analysis_type
+    type: string
+    description: Whether this roadmap continues previous work or opens a new initiative.
+    values:
+      - completion
+      - context
+  - name: user_request
+    type: string
+    description: The user's free-form description of the initiative that opened this session.
+  - name: completed_packages
+    type: array
+    description: List of completed work packages
+  - name: planning_folder_path
+    type: string
+    description: Path to the planning folder for this initiative
+  - name: package_plans
+    type: array
+    description: List of created plan document paths
+  - name: dependency_map
+    type: object
+    description: Map of inter-package dependencies identified during package planning
+  - name: parent_workflow
+    type: string
+    description: Reference back to work-packages context when triggering work-package workflow
+initialActivity: scope-assessment
+graph:
+  scope-assessment:
+    done: folder-setup
+    refine: scope-assessment
+  folder-setup:
+    done: analysis
+    adjust: folder-setup
+  analysis:
+    done: package-planning
+    revise: analysis
+  package-planning:
+    done: prioritization
+    revise: package-planning
+  prioritization:
+    done: finalize-roadmap
+    adjust: prioritization
+    revisit: package-planning
+  finalize-roadmap:
+    done: implementation
+    refine: finalize-roadmap

@@ -1,0 +1,294 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "ec660a5e2bea29d981bb",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_two",
+  "attempt": "author-map-independent-2",
+  "records": [
+    {
+      "items": [
+        "ec7e3577667dbf0846b7b09f"
+      ],
+      "status": "N",
+      "reason": "The activity steps contain the concrete delivery invocation of deliver and its argument-key set. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "eaf04cb03551645c38d72842"
+      ],
+      "status": "N",
+      "reason": "The delivery step contains the concrete deliver invocation and its argument-key set. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "51923b360aa3ef1a7585fbf4"
+      ],
+      "status": "N",
+      "reason": "The activity step identifier declares delivery; it is not the routine output step reference emit. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "7fa24663abc3348858407cd5"
+      ],
+      "status": "N",
+      "reason": "The routine invocation selects deliver and supplies its argument-key set. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "8f04699d8cada26b1b7ebcc5"
+      ],
+      "status": "N",
+      "reason": "The arguments object supplies the key set for this concrete invocation of deliver. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "f7c71bd7cd44e3d3cfd50614"
+      ],
+      "status": "N",
+      "reason": "The invocation supplies the argument key envelope with the opaque value sealed. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "501147c7c9cf63d456cc367b"
+      ],
+      "status": "N",
+      "reason": "The invocation name deliver selects the routine whose Inputs must be compared with this invocation. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "21b5df21a5c696fcaa898fbf"
+      ],
+      "status": "N",
+      "reason": "The leaf Rules section contains a report emission clause on line 11 and a Destination declaration on line 12. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "d4d45cf60920c4360e003cf1"
+      ],
+      "status": "N",
+      "reason": "This compound Rules line has an ID-retention clause and a separate report emission clause. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b1c897ef75ecfb0802a40206"
+      ],
+      "status": "N",
+      "reason": "The first clause is Retain the report ID; its sibling emission clause is a separate row. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b192bf0ffab5454aaf50901a"
+      ],
+      "status": "N",
+      "reason": "The second Rules clause independently directs the treatment of validation for report emission. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "3e979fb0c7e3eb5836c3cb1a"
+      ],
+      "status": "N",
+      "reason": "The leaf Rules line declares its Destination value. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "status": "A",
+      "reason": "The workflow graph defines the reachable run activity and its sole done destination. DP-02 applies to the workflow start and reachable graph path represented here. The whole captured workflow, including initialActivity and all exits, must be assessed together for a finite route to null; matching an activity identifier alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "status": "A",
+      "reason": "The run graph entry defines the sole exit used by the whole-workflow termination check. DP-02 applies to the workflow start and reachable graph path represented here. The whole captured workflow, including initialActivity and all exits, must be assessed together for a finite route to null; matching an activity identifier alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "status": "A",
+      "reason": "The graph exit run.done supplies the next activity or null in the workflow path. DP-02 applies to the workflow start and reachable graph path represented here. The whole captured workflow, including initialActivity and all exits, must be assessed together for a finite route to null; matching an activity identifier alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

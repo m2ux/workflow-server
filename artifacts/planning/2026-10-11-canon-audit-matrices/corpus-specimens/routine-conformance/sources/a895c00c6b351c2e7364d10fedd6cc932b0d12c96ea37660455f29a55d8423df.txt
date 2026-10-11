@@ -1,0 +1,108 @@
+id: execute-analysis
+version: 2.0.0
+name: Execute Prism Analysis
+description: Trigger the prism workflow for each audit scope and record each run from its manifest.
+variables:
+  reads:
+    - audit_description
+    - audit_output_path
+    - audit_scopes
+    - target_path
+  writes:
+    - name: all_analysis_artifact_paths
+      type: array
+      description: Accumulated paths to all analysis artifacts across triggered prism workflows, taken from each run's manifest
+    - name: current_activity
+      type: string
+      description: The prism activity the walk holds, and null once the prism graph routes to none
+    - name: from_activity
+      type: string
+      description: The prism activity an advance retires
+    - name: completed_analyses
+      type: array
+      description: "Array of completed prism runs, each read from that run's RUN-MANIFEST.json: { report_path, definitive_findings_path, status } plus the run's scope reference"
+    - name: current_scope
+      type: object
+      description: Current audit scope during the execute-analysis iteration loop
+    - name: output_path
+      type: string
+      description: The output location of the audit scope under analysis
+    - name: pipeline_mode
+      type: string
+      description: "Prism pipeline mode to use for analysis (default: full-prism for thorough audit coverage)"
+      defaultValue: full-prism
+    - name: target
+      type: string
+      description: The evaluation target an analysis run analyses
+    - name: target_description
+      type: string
+      description: Short description of what an audit scope covers
+techniques:
+  - scatter-gather
+triggers:
+  - workflow: prism
+    description: Execute prism analytical pipeline for each audit scope.
+    passContext:
+      - target
+      - target_description
+      - output_path
+      - pipeline_mode
+      - analysis_focus
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        description: Verify audit_scopes is non-empty before starting the trigger loop
+        condition:
+          type: simple
+          variable: audit_scopes
+          operator: exists
+  - kind: action
+    id: prepare-triggers
+    actions:
+      - action: set
+        target: completed_analyses
+        value: "[]"
+      - action: set
+        target: all_analysis_artifact_paths
+        value: "[]"
+  - kind: loop
+    id: scope-iteration
+    name: Audit Scope Iteration
+    loopType: forEach
+    variable: current_scope
+    over: audit_scopes
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: set-trigger-context
+        technique: execute-analysis::compose-trigger-context
+      - kind: technique
+        id: trigger-prism
+        technique:
+          name: workflow-engine::handle-sub-workflow
+          inputs:
+            workflow_id: prism
+      - kind: routine
+        id: walk-prism-child
+        routine: activity-loop
+        with:
+          session_index: child_session_index
+          initial_activity: child_initial_activity
+          enter_activity: workflow-engine::take-activity
+          planning_folder_path: child_planning_folder_path
+        outputs:
+          current_activity: current_activity
+          from_activity: from_activity
+      - kind: technique
+        id: read-run-manifest
+        technique: prism/read-run-manifest
+      - kind: technique
+        id: accumulate-analysis-run
+        technique: prism/accumulate-analysis-run
+outcome:
+  - Every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate into deliverables
+exits:
+  - id: done
+    isDefault: true

@@ -1,0 +1,69 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "a63be6e06aeb14502e1f",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "status": "pass",
+      "reason": "The second semicolon-separated Rules clause explicitly requires validation of the report before each emission. The first clause only retains the report ID; the destination declaration is not an emitting instruction. The Rules emission clause satisfies AP-01 independently. Assigned rows: corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "pass",
+      "reason": "The Protocol instruction says to validate the report, then emit it, ordering validation of the same artifact before emission. It satisfies AP-01 independently. Assigned rows: corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "status": "pass",
+      "reason": "The complete leaf contains two emitting directives: Protocol line 8 requires report validation before emission, and Rules line 11 clause 2 requires validation before each emission. Each satisfies AP-01 independently; retention and destination declarations do not direct emission. Assigned rows: corpus/qualification/techniques/produce.md#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    }
+  ]
+}

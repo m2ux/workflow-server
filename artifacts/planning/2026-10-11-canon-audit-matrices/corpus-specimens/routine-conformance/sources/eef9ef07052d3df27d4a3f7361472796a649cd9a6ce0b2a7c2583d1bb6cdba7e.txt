@@ -1,0 +1,22 @@
+id: survey-history
+version: 1.0.0
+name: Survey History
+description: Summarise the component's recent commits and the directories they touched.
+variables:
+  reads:
+    - component_path
+  writes:
+    - name: history_survey
+      type: object
+      description: The component's recent commit count, its distinct authors, the directories those commits touched, and this branch's own start and finish instants.
+required: true
+steps:
+  - kind: technique
+    id: survey-the-history
+    technique: survey-history
+exits:
+  - id: surveyed
+    isDefault: true
+outcome:
+  - Which parts of the component are moving is known, so a probe can be pointed at active code rather than at the largest directory alone
+  - This branch's own interval is recorded, so whether it ran beside its sibling is a fact in the record rather than an inference

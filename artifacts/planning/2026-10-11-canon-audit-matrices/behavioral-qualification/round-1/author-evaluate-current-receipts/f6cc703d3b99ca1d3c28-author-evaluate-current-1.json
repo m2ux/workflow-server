@@ -1,0 +1,187 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "f6cc703d3b99ca1d3c28",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-current-1",
+  "records": [
+    {
+      "items": [
+        "fc60645fdab03b4f360b972e",
+        "ece85719689c1a3411d52a12",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "f1186a7f61ea9f6493402006",
+        "23d52f087c143d67f67da445",
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33",
+        "b331b3631bac4371bfebf008",
+        "eeab805ea4653756496776b5"
+      ],
+      "status": "finding",
+      "reason": "AP-02 input contract fails: activity line 6 supplies the sole key packet, while routine line 2 requires the sole input envelope. The sets differ and no aliases or optional parameters exist. The opaque value sealed is not a defect. This is one broken invocation, Live/Critical because its binding is structurally broken; origin diff follows the touched activity. Assigned rows: corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/activities/run.yaml#@element, corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "Critical",
+          "origin": "diff",
+          "entry": "broken-binding",
+          "location": "corpus/qualification/activities/run.yaml:6 (steps.delivery.routine.arguments)",
+          "summary": "The delivery invocation supplies packet while deliver requires the envelope argument.",
+          "fix": "Use the exact argument key envelope at the delivery invocation; retain the opaque value sealed."
+        }
+      ]
+    },
+    {
+      "items": [
+        "82c8e910cc4b4df96a89e369",
+        "790b168511688f3580f49f17",
+        "e6707d2a492bbb28eafc3a21",
+        "387b3abcf94e6a19aabbf992",
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d",
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "fef2366b0f34a7eda42dc08d",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "status": "finding",
+      "reason": "AP-02 output contract fails: routine line 3 binds report to emit.report; lines 5-6 resolve emit to produce, whose Outputs line 5 declares only summary. The exported name report is allowed, but the referenced output report is absent. This is one dangling binding, Live/Critical. Origin diff follows this consumer's binding to the touched technique output contract. Assigned rows: corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary, corpus/qualification/techniques/produce.md#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "Critical",
+          "origin": "diff",
+          "entry": "broken-binding",
+          "location": "corpus/qualification/routines/deliver.yaml:3 (outputs.report)",
+          "summary": "The routine exports emit.report, but the called produce technique declares only summary.",
+          "fix": "Bind the exported report to emit.summary, an output declared by the technique called by emit."
+        }
+      ]
+    },
+    {
+      "items": [
+        "8669d4026237cb94e83e2158",
+        "fa301823ccd44ed9374ce575"
+      ],
+      "status": "finding",
+      "reason": "AP-02 exposes two distinct broken contracts: delivery supplies packet while deliver requires envelope (activity line 6, routine line 2); deliver exports emit.report while emit calls produce, which declares only summary (routine lines 3, 5-6; technique line 5). The whole routine and explicit execution relationship expose both. Both are Live/Critical structural binding failures. Origins are diff: the touched invocation and its touched output-contract consumer. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/routines/deliver.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "Critical",
+          "origin": "diff",
+          "entry": "broken-binding",
+          "location": "corpus/qualification/activities/run.yaml:6 (steps.delivery.routine.arguments)",
+          "summary": "The delivery invocation supplies packet while deliver requires the envelope argument.",
+          "fix": "Use the exact argument key envelope at the delivery invocation; retain the opaque value sealed."
+        },
+        {
+          "band": "Live",
+          "severity": "Critical",
+          "origin": "diff",
+          "entry": "broken-binding",
+          "location": "corpus/qualification/routines/deliver.yaml:3 (outputs.report)",
+          "summary": "The routine exports emit.report, but the called produce technique declares only summary.",
+          "fix": "Bind the exported report to emit.summary, an output declared by the technique called by emit."
+        }
+      ]
+    }
+  ]
+}

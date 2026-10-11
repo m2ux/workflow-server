@@ -1,0 +1,38 @@
+id: update-specification
+version: 1.6.0
+name: Update Specification
+description: Apply requirement changes, validation findings, or requested revisions to a working specification, preserving the specification protocol verbatim.
+variables:
+  reads:
+    - source_paths
+    - target_doc_exists
+    - target_doc_path
+    - update_pass_kind
+  writes:
+    - name: correction_iteration
+      type: number
+      description: Count of correction passes performed so far
+      defaultValue: 0
+    - name: working_specification_path
+      type: string
+      description: Absolute path to the working specification written for the current pass
+      defaultValue: ""
+required: true
+steps:
+  - kind: technique
+    id: update-specification
+    technique: update-specification
+    actions:
+      - action: message
+        message: "The working specification from pass {correction_iteration} carries every confirmed change with the protocol preserved ([updated specification]({working_specification_path}))."
+  - kind: action
+    id: enforce-working-spec-boundary
+    actions:
+      - action: validate
+        target: working_specification_path
+        message: "The working specification is not staged under the planning folder. Write `{working_specification}` to `{planning_folder_path}` and re-run."
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The full specification now reflects every confirmed change with its protocol intact

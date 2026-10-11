@@ -1,0 +1,612 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "677686e44651e85a545c",
+  "attempt": "audit-verify-two-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b"
+      ],
+      "reason": "run /steps contains delivery invoking deliver with envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "4c9b9e3283acb76acd0c593c"
+      ],
+      "reason": "The delivery step invokes deliver with envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "eb0acb5f69509bc093ccb4c4"
+      ],
+      "reason": "delivery /id names the activity step. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f71acc678543f1dedd6da64"
+      ],
+      "reason": "The delivery routine object names deliver and supplies envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "85d58778322169b7eb358fb2"
+      ],
+      "reason": "delivery arguments has the single key envelope; sealed is opaque. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e7190e6183add8a7b67d408d"
+      ],
+      "reason": "The invocation argument key is envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "reason": "delivery routine/name selects deliver. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "Leaf /rules contains the emission clause and Destination archive. A holds: emitting Protocol/Rules instructions and their containing rows are in AP-01 scope; validation affects the result, not applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "Rule line 11 combines retention with: validate the report before each emission. A holds: emitting Protocol/Rules instructions and their containing rows are in AP-01 scope; validation affects the result, not applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "Only clause 1 is owned here: Retain the report ID. N holds: retention and destination declarations do not direct artifact emission under AP-01.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "Only clause 2 is owned here: validate the report before each emission. A holds: emitting Protocol/Rules instructions and their containing rows are in AP-01 scope; validation affects the result, not applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "reason": "Leaf rule line 12 declares Destination archive. N holds: retention and destination declarations do not direct artifact emission under AP-01.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "reason": "deliver /steps resolves emit to produce. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "reason": "The emit step calls produce. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "reason": "The producer step ID emit is named by emit.report. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "reason": "The emit technique reference selects produce. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "343988e91c335d3bdef76586"
+      ],
+      "reason": "The workflow graph contains run.done pointing to null. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cc39f8b8ebb2b96169d05005"
+      ],
+      "reason": "The run graph entry has the single done exit to null. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "b1f517596f87f82a15830709"
+      ],
+      "reason": "The run.done graph exit points to null. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "reason": "The initialActivity relationship selects run in qualification. N holds: AP-01 excludes calls and bindings; this relationship is not the target leaf emission instruction.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "reason": "The graph-entry relationship binds qualification graph node run to the run activity. N holds: AP-01 excludes calls and bindings; this relationship is not the target leaf emission instruction.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "The graph-entry relationship at run.done identifies the executing run activity. N holds: AP-01 excludes calls and bindings; this relationship is not the target leaf emission instruction.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "reason": "deliver /inputs declares the required key envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "reason": "The sole deliver input item is envelope. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "reason": "Ancestor /rules declares the required archive destination. N holds: retention and destination declarations do not direct artifact emission under AP-01.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "The ancestor line-5 rule requires archive. N holds: retention and destination declarations do not direct artifact emission under AP-01.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "Leaf /protocol contains: Validate the report, then emit it. A holds: emitting Protocol/Rules instructions and their containing rows are in AP-01 scope; validation affects the result, not applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "Protocol line 8 directs: Validate the report, then emit it. A holds: emitting Protocol/Rules instructions and their containing rows are in AP-01 scope; validation affects the result, not applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "reason": "deliver /outputs binds exported report to emit.report. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "reason": "deliver /outputs/report contains the emit.report binding. N holds: AP-01 addresses technique Protocol/Rules instructions, not this YAML identifier, orchestration or binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "The ancestor element contains Capability and its archive requirement. N holds: retention and destination declarations do not direct artifact emission under AP-01.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

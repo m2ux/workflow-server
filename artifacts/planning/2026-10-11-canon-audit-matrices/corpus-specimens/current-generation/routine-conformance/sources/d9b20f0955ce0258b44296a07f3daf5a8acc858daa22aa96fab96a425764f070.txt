@@ -1,0 +1,38 @@
+id: ambiguous-name-case
+version: 1.0.0
+name: Ambiguous Name Case
+description: Refer to the guarded rename over a name the graph holds twice, with the gate refusing the preview.
+variables:
+  reads:
+    - ambiguous_name_file_path
+    - ambiguous_name_new_name
+    - ambiguous_name_symbol_name
+  writes:
+    - name: ambiguous_name_changes
+      type: array
+      description: The per-file edit list, each edit carrying the confidence its provenance earns — for a name held twice, a status of ambiguous with ranked candidates arrives in its place.
+    - name: ambiguous_name_rename_approved
+      type: boolean
+      description: Whether the previewed edit list was accepted at the gate.
+      defaultValue: true
+    - name: ambiguous_name_change_report
+      type: object
+      description: The symbols and execution flows the applied rename actually moved, read back off the diff — absent, the steps after the gate staying unreached.
+required: true
+steps:
+  - kind: routine
+    id: rename-ambiguous-symbol
+    routine: gitnexus::guarded-rename
+    with:
+      symbol_name: "{ambiguous_name_symbol_name}"
+      new_name: "{ambiguous_name_new_name}"
+      file_path: "{ambiguous_name_file_path}"
+    outputs:
+      changes: ambiguous_name_changes
+      rename_approved: ambiguous_name_rename_approved
+      change_report: ambiguous_name_change_report
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a name two symbols carry, with no file to separate them, previewed a status of ambiguous with ranked candidates rather than an edit list, the spliced gate refused it and the steps after the gate stayed unreached, so nothing was written and no diff was read back

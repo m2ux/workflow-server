@@ -1,0 +1,30 @@
+id: multi-verb-case
+version: 1.0.0
+name: Multi-Verb Case
+description: Refer to the API change gate over a URL the graph serves under several verbs.
+variables:
+  reads:
+    - multi_verb_route_path
+  writes:
+    - name: multi_verb_api_impact_report
+      type: object
+      description: The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole — the set form, routes with a total, where one URL serves several verbs.
+    - name: multi_verb_api_change_approved
+      type: boolean
+      description: Whether the measured consumer surface was accepted at the gate. True where the measurement named no mismatch, the rating being low enough that no gate was presented.
+      defaultValue: true
+required: true
+steps:
+  - kind: routine
+    id: gate-multi-verb-route
+    routine: gitnexus::api-change-gate
+    with:
+      route_path: "{multi_verb_route_path}"
+    outputs:
+      api_impact_report: multi_verb_api_impact_report
+      api_change_approved: multi_verb_api_change_approved
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a URL the graph serves under three verbs answered with the set form — routes with a total, one per verb — named no mismatch across them, and left the gate unpresented with the approval at its seeded value

@@ -1,0 +1,34 @@
+$schema: ../../schemas/workflow.schema.json
+id: codebase-wiki
+version: 1.1.0
+title: Codebase Wiki Workflow
+description: Build and maintain a durable, citation-backed, navigable LLM knowledge base over a codebase, in the Karpathy LLM-wiki format adapted for code. Its operations are reusable techniques other workflows bind via codebase-wiki/<op> to create, augment, query, or update the wiki.
+author: m2ux
+tags:
+  - codebase-wiki
+  - knowledge-base
+  - documentation
+  - citations
+  - karpathy-wiki
+  - code-comprehension
+rules:
+  activity: []
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: wiki_path
+    type: string
+    description: Root of the wiki tree — holds index.md, log.md, overview.md, and the typed-page subfolders.
+  - name: raw_baseline_commit
+    type: string
+    description: The pinned source commit every citation is relative to, read in place from the source tree.
+initialActivity: confirm-scope
+graph:
+  confirm-scope:
+    done: build-wiki
+  build-wiki:
+    done: lint-wiki
+  lint-wiki:
+    done: publish
+    needs-reingest: build-wiki

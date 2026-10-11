@@ -1,0 +1,323 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "192385f8097527b0f3b2",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "afeb129e1e03e4f353693950"
+      ],
+      "reason": "deliver.yaml#@relationship/3a2f0d25e0e017f7: The deliver-to-produce call resolves emit.report through emit; produce declares report and Destination archive. This row represents a call or inheritance relationship, not the target leaf instruction. AP-01 excludes calls and bindings from constructs that themselves direct emission.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7b47769dd43afb09823a4b14"
+      ],
+      "reason": "deliver.yaml#@relationship/50a64427faa3df96: The execution relationship carries qualification -> run#delivery -> deliver#emit -> produce, the envelope argument, export emit.report, and the ancestor archive destination. This row represents a call or inheritance relationship, not the target leaf instruction. AP-01 excludes calls and bindings from constructs that themselves direct emission.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee"
+      ],
+      "reason": "TECHNIQUE.md#/capability: The ancestor Capability describes its service as Constrain inherited delivery. AP-01 limits imperative checks to Protocol and Rules and expressly excludes Capability service descriptions.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "720f7eeadf6be862dd39b7ab"
+      ],
+      "reason": "TECHNIQUE.md#/capability/line-2: Constrain inherited delivery is the ancestor Capability description. AP-01 limits imperative checks to Protocol and Rules and expressly excludes Capability service descriptions.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e00abe344b2cf11c702b34f1"
+      ],
+      "reason": "produce.md#/outputs: The leaf Outputs heading declares the name report, consumed by deliver export emit.report. AP-01 requires an emitting instruction; an output-name declaration is expressly not itself an emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f0f7088daffd00158c0c1032"
+      ],
+      "reason": "produce.md#/outputs/report: The leaf output declaration is report; the routine export refers to emit.report. AP-01 requires an emitting instruction; an output-name declaration is expressly not itself an emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e192558242a4ed960c5d7a46"
+      ],
+      "reason": "produce.md#/capability: The leaf Capability describes the service Produce a report. AP-01 limits imperative checks to Protocol and Rules and expressly excludes Capability service descriptions.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "reason": "produce.md#/capability/line-2: Produce a report is the Capability description, outside Protocol and Rules. AP-01 limits imperative checks to Protocol and Rules and expressly excludes Capability service descriptions.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "TECHNIQUE.md#@element: The complete ancestor declares its capability and the required archive destination, with no leaf destination or binding. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "0782b255d289b2d8aaa260a8"
+      ],
+      "reason": "run.yaml#/id: The activity declaration identifier is run. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2ec151da2546cd9066780932"
+      ],
+      "reason": "deliver.yaml#@element: The complete deliver routine declares input envelope, exports report through emit.report, and calls produce in emit. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "3641b7b9d54d55df0cc22cb1"
+      ],
+      "reason": "workflow.yaml#/initialActivity: The workflow initialActivity is run and its graph supplies run.done -> null. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "5551fe05b667e60209399004"
+      ],
+      "reason": "workflow.yaml#@element: The complete qualification workflow starts at run and has the sole graph exit run.done -> null. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "6d000a7587cb7a720d3ce09a"
+      ],
+      "reason": "run.yaml#@element: The run activity contains delivery invoking deliver with argument key envelope. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8ab5a44208c83cc6801721f8"
+      ],
+      "reason": "produce.md#@relationship/f075d23fadb959c8: The inheritance relationship connects produce Destination archive to its executing workflow ancestor requirement archive. This row represents a call or inheritance relationship, not the target leaf instruction. AP-01 excludes calls and bindings from constructs that themselves direct emission.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

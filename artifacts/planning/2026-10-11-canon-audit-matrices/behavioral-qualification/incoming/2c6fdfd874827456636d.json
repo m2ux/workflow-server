@@ -1,0 +1,672 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "2c6fdfd874827456636d",
+  "attempt": "audit-verify-two-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "run /steps contains delivery invoking deliver with envelope. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "reason": "The delivery step invokes deliver with envelope. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "reason": "delivery /id names the activity step. N holds: this identifier is neither an invocation argument/input key nor a producer named by a routine output binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "reason": "The delivery routine object names deliver and supplies envelope. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "reason": "delivery arguments has the single key envelope; sealed is opaque. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "f45b86c19f25461cbe667622"
+      ],
+      "reason": "The invocation argument key is envelope. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "reason": "delivery routine/name selects deliver. A holds: this invocation or required-input endpoint participates in AP-02 argument-key/Inputs comparison, including matching keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a30b577290e3406e29334f7b"
+      ],
+      "reason": "Leaf /rules contains the emission clause and Destination archive. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "6dff2018269cdd7f6ce3a242"
+      ],
+      "reason": "Rule line 11 combines retention with: validate the report before each emission. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "923c5917ea2c9d4abe29e519"
+      ],
+      "reason": "Only clause 1 is owned here: Retain the report ID. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a03eed5b1543ec6c3d53b66c"
+      ],
+      "reason": "Only clause 2 is owned here: validate the report before each emission. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "185e903ef3c4ae26da231a32"
+      ],
+      "reason": "Leaf rule line 12 declares Destination archive. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369"
+      ],
+      "reason": "deliver /steps resolves emit to produce. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "790b168511688f3580f49f17"
+      ],
+      "reason": "The emit step calls produce. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "The producer step ID emit is named by emit.report. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "reason": "The emit technique reference selects produce. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "94b820a882f196103f835741"
+      ],
+      "reason": "The initialActivity relationship selects run in qualification. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "8020bba4283a65b31df0f113"
+      ],
+      "reason": "The graph-entry relationship binds qualification graph node run to the run activity. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "f0755acc68e9a62e580665a3"
+      ],
+      "reason": "The graph-entry relationship at run.done identifies the executing run activity. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e3964a7ca7f68e7c40793e11"
+      ],
+      "reason": "The workflow graph contains run.done pointing to null. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc47360bf214ca94a9c2f752"
+      ],
+      "reason": "The run graph entry has the single done exit to null. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e8a18028e34e1ace5d01fcf3"
+      ],
+      "reason": "The run.done graph exit points to null. N holds: workflow graph/activity references are outside both AP-02 routine argument and step.output binding forms.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143"
+      ],
+      "reason": "deliver /outputs binds exported report to emit.report. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "deliver /outputs/report contains the emit.report binding. A holds: AP-02 resolves emit -> produce and compares the exported output name with this producer/output endpoint, even when they match.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "4c3a69d6842d941bb1b4ae64"
+      ],
+      "reason": "Leaf /capability describes Produce a report. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "883f9febadc76de8d4b64dd6"
+      ],
+      "reason": "The leaf Capability paragraph describes producing a report. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "547682eae905cf61fddd33be"
+      ],
+      "reason": "Leaf /protocol contains: Validate the report, then emit it. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "0f13f165ba007a4540cef470"
+      ],
+      "reason": "Protocol line 8 directs: Validate the report, then emit it. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "5fb3f06992383a0be7318734"
+      ],
+      "reason": "Ancestor /capability describes Constrain inherited delivery. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "reason": "The ancestor Capability paragraph describes inherited delivery. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "4d029f4ed7a941dc5b13bafa"
+      ],
+      "reason": "The ancestor element contains Capability and its archive requirement. N holds: this service, instruction or destination/retention rule is neither an AP-02 binding nor an Outputs name declaration.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

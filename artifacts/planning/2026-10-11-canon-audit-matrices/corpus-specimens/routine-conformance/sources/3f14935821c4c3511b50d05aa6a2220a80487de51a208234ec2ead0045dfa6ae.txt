@@ -1,0 +1,31 @@
+id: unknown-group-case
+version: 1.0.0
+name: Unknown Group Case
+description: Refer to the group concept search under a group name the inventory does not list.
+variables:
+  reads:
+    - unknown_group_group_name
+    - unknown_group_search_query
+  writes:
+    - name: unknown_group_group_query_report
+      type: object
+      description: Execution flows drawn from the group's members and merged into one ranking, each carrying the member it came from — carrying no results, the ranked search answering with an error naming the missing group.
+    - name: unknown_group_graph_inventory
+      type: object
+      description: Every indexed graph with the tree it was built from, and the repository groups configured over them, which is where a group name that resolves to nothing is settled.
+required: true
+steps:
+  - kind: routine
+    id: search-unknown-group
+    routine: gitnexus::group-concept-search
+    with:
+      group_name: "{unknown_group_group_name}"
+      search_query: "{unknown_group_search_query}"
+    outputs:
+      group_query_report: unknown_group_group_query_report
+      graph_inventory: unknown_group_graph_inventory
+exits:
+  - id: searched
+    isDefault: true
+outcome:
+  - The same run under a group name no configuration holds read an inventory listing the configured groups without it, so the ranked search answered with an error naming the missing group and the ranking carries no results — the mark of an unknown group, settled at the inventory and distinct from a concept no member carries

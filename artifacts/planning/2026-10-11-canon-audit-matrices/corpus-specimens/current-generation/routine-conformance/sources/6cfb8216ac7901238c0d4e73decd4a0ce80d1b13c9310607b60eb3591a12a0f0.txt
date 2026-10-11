@@ -1,0 +1,78 @@
+id: prism
+version: 3.1.0
+title: Structural Analysis Prism Workflow
+description: Apply cognitive lenses to code or text through isolated sub-agent passes, each running in a fresh context window so the passes stay analytically independent.
+author: m2ux
+tags:
+  - analysis
+  - prism
+  - structural
+  - cognitive-lenses
+  - multi-mode
+  - adversarial
+rules:
+  workflow:
+    - "ISOLATION MODEL: Each analytical pass MUST be dispatched to a FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent between passes. The adversarial pass must never share context with the structural pass -- it receives only the textual output, not the generation history. This is the core invariant of the prism workflow."
+    - "PASS OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs. Workers are NOT resumed — each pass gets a new worker."
+    - "LENS HANDOFF: The orchestrator tells the worker which lens resource index to load; it does NOT load or forward the lens prompt itself."
+  activity:
+    - "LENS LOADING: Load the lens prompt for your pass from the prism workflow resources, using the resource index the orchestrator provides."
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: target
+    type: string
+    description: What to analyze -- a file path, directory path, inline text, question, or concept
+    required: true
+  - name: output_path
+    type: string
+    description: Directory to write analysis artifacts
+    defaultValue: .
+  - name: lens_name
+    type: string
+    description: Portfolio-mode lens name for per-lens artifact naming, distinct from the per-unit current_unit.lens_name.
+  - name: analysis_focus
+    type: string
+    description: Optional focus area to guide the analysis
+  - name: target_description
+    type: string
+    description: Short description of what is being analysed, standing as the target path when absent.
+  - name: repo_name
+    type: string
+    description: Name of the indexed graph covering the target. Empty where no graph covers it.
+    defaultValue: ""
+initialActivity: select-mode
+graph:
+  select-mode:
+    dispute: dispute-pass
+    subsystem: subsystem-pass
+    verified: verified-pass
+    reflect: reflect-pass
+    smart: smart-pass
+    adaptive: adaptive-pass
+    structural: structural-pass
+  structural-pass:
+    full-prism: adversarial-pass
+    behavioral: behavioral-synthesis-pass
+    structural-only: generate-report
+  adversarial-pass:
+    done: synthesis-pass
+  synthesis-pass:
+    done: generate-report
+  behavioral-synthesis-pass:
+    done: generate-report
+  generate-report:
+    done: deliver-result
+  dispute-pass:
+    done: generate-report
+  subsystem-pass:
+    done: generate-report
+  verified-pass:
+    done: generate-report
+  reflect-pass:
+    done: generate-report
+  smart-pass:
+    done: generate-report
+  adaptive-pass:
+    done: generate-report

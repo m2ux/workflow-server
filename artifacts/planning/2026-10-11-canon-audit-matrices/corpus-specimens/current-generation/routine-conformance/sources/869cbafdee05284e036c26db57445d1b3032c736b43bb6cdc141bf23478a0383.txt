@@ -1,0 +1,29 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the diff coverage map over an index holding nothing staged.
+variables:
+  reads:
+    - negative_diff_scope
+  writes:
+    - name: negative_coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+    - name: negative_update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+required: true
+steps:
+  - kind: routine
+    id: map-empty-index
+    routine: gitnexus::diff-coverage-map
+    with:
+      diff_scope: "{negative_diff_scope}"
+    outputs:
+      coverage_gaps: negative_coverage_gaps
+      update_candidates: negative_update_candidates
+exits:
+  - id: mapped
+    isDefault: true
+outcome:
+  - The same run under an index holding nothing staged landed an empty change set, so the per-symbol pass ran zero times and both lists landed empty — the fallback the run promises rather than a failure

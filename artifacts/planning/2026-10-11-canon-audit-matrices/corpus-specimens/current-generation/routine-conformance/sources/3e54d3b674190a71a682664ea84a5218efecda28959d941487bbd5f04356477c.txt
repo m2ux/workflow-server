@@ -1,0 +1,57 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-layer-conformance
+version: 1.1.0
+title: GitNexus Layer Conformance Workflow
+description: >-
+  Bind the four gitnexus operations that answer a question of their own — the shortest path between
+  two symbols, the import cycles a graph holds, the taint findings a file records, and the predicates
+  gating a function — as this workflow's own steps. Two of the four read a graph layer a build
+  records only when asked, so the walk addresses two graphs: one indexed with its program-dependence
+  layers, where both of those answers are measurements, and one built without them, where each lands
+  the note naming the build that records them. What the walk evidences is that a library operation
+  bound directly from an activity lands its declared answer in the bag under either graph, an absent
+  layer arriving as a note inside a well-formed answer.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - technique
+  - library
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: repo_name
+    type: string
+    description: Name of the graph indexed with its program-dependence layers, which the walk opens at and every operation addresses by this name. The absent-layer activity names its own graph at each step, so this one stands for the whole walk.
+    defaultValue: workflow-server
+  - name: absent_layer_graph
+    type: string
+    description: Name of the graph built without its program-dependence layers, which the absent-layer activity addresses and the report names as the source of the noted answers.
+    defaultValue: midnight-wallet
+  - name: from_symbol
+    type: string
+    description: The symbol a traced path starts at — the server entry point of the graph indexed with its program-dependence layers.
+    defaultValue: createServer
+  - name: to_symbol
+    type: string
+    description: The symbol a traced path ends at — a predicate three call hops from that entry point.
+    defaultValue: isEngineeringMultiRoot
+  - name: dependence_target
+    type: string
+    description: The function whose taint findings and gating predicates are read from the graph holding the layers that record them.
+    defaultValue: buildSessionScope
+  - name: absent_layer_target
+    type: string
+    description: The function whose taint findings and gating predicates are asked of the graph built without the layers that record them.
+    defaultValue: restoreShieldedWallet
+initialActivity: trace-and-check
+graph:
+  trace-and-check:
+    traced: read-the-layer
+  read-the-layer:
+    read: read-the-absent-layer
+  read-the-absent-layer:
+    noted: report-conformance
+  report-conformance:
+    reported: __terminal__

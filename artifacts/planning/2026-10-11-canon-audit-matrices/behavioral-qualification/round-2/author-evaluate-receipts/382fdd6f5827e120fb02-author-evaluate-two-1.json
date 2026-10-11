@@ -1,0 +1,40 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "382fdd6f5827e120fb02",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "items": [
+        "094759e3ffb8236db086b566",
+        "9a13e148e0a434d148bef242",
+        "e0fcd50974c10678a3e2fb44",
+        "8862878198e6198ef77c1f28",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "pass",
+      "reason": "The complete workflow starts at run and its only graph exit is run.done: null. The explicit finite path initialActivity -> run -> done -> null satisfies DP2. Resolved activity calls do not add graph exits. Assigned rows: corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b, corpus/qualification/workflow.yaml#/initialActivity, corpus/qualification/workflow.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+id: report-conformance
+version: 1.0.0
+name: Report Conformance
+description: Write what the two passes produced and what the run did to produce it.
+variables:
+  reads:
+    - component_path
+    - entry_counts
+    - initial_target
+    - planning_folder_path
+    - size_measurements
+  writes:
+    - name: conformance_report
+      type: string
+      description: The report this run wrote, as the guide shapes it.
+required: true
+steps:
+  - kind: technique
+    id: write-the-report
+    technique: report-conformance
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - The report holds both passes' measurements and says which measurement each site supplied, so a reader can tell one run serving two sites from two runs that happen to agree

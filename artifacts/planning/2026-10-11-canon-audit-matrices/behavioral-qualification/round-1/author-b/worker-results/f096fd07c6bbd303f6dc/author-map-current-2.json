@@ -1,0 +1,423 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "f096fd07c6bbd303f6dc",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "330d9855c61f1fa6db1e92b2"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a5b35e7460c5ba032ea3ab9c"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a09b4b5068e60047e85b9d20"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery/id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "4e129aea04e56ac3f5e18eac"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery/routine.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "235d809af28915c83b47a336"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery/routine/arguments.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "272c678aed06a8e25584080e"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery/routine/arguments/packet.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "cced7364e2269714c048fe3b"
+      ],
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /steps/id=delivery/routine/name.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba"
+      ],
+      "reason": "DP-01 scopes the leaf Destination declaration. This row contains that declaration at produce line 12, requiring comparison with the executing qualification ancestor at TECHNIQUE.md line 5. Row: /rules.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "69a9fd68e24025b700e9bbb1"
+      ],
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /rules/line-11.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "9e2179b4c1fbfc73dc6b4981"
+      ],
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /rules/line-11/clause-1.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "acca57d9a610cd2900940f11"
+      ],
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /rules/line-11/clause-2.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "355ce3ec841005b898e3d8d3"
+      ],
+      "reason": "DP-01 scopes the leaf Destination declaration. This row contains that declaration at produce line 12, requiring comparison with the executing qualification ancestor at TECHNIQUE.md line 5. Row: /rules/line-12.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "36ee15fe5284f5e03e6afdc4"
+      ],
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /capability.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 2
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b82b83027689277cdcc2042f"
+      ],
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /capability/line-2.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "DP-01 explicitly includes call and inheritance relationships. This row carries qualification to run, deliver and produce, or binds produce to the ancestor archive requirement. Row: @relationship/5a93bb0629055f53.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

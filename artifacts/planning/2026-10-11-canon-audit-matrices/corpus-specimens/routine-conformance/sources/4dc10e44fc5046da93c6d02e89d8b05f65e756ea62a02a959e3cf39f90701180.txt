@@ -1,0 +1,23 @@
+id: read-project-field
+version: 1.0.0
+name: Read Project Field
+description: Bind a single-select field read.
+required: true
+steps:
+  - kind: technique
+    id: read-one-field
+    technique:
+      name: github::project::read-project-field
+      inputs:
+        owner_login: m2ux
+        owner_kind: user
+        project_number: "8"
+        item_id: "253986171"
+        field_name: Throwaway status
+      outputs:
+        field_options: select_options
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The field read resolved under github::project::read-project-field

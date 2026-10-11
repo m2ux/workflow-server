@@ -1,0 +1,1309 @@
+{
+  "mode": "Audit",
+  "qualification": "retrospective baseline using the captured prior Workflow Canon skill",
+  "skill_root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon",
+  "skill_revision": "741626a96d9e854429798b68b05ae73d012d1ce5",
+  "skill_revision_observation": {
+    "command": [
+      "git",
+      "rev-parse",
+      "741626a96d9e854429798b68b05ae73d012d1ce5"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server",
+    "exit_code": 0,
+    "elapsed_ns": 1927148,
+    "stdout": "741626a96d9e854429798b68b05ae73d012d1ce5\n",
+    "stderr": ""
+  },
+  "planning_record": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices",
+  "authority": "Read the prior skill and supplied controlled sources; write this report and own transcript. No definition edits or publication.",
+  "cases": [
+    {
+      "case": "a",
+      "input": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-a.json",
+      "status": "finished",
+      "verdict": "conforms to the four controlled criteria",
+      "scope": {
+        "primary_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/produce.md"
+        ],
+        "closure_paths": [
+          "corpus/qualification/routines/deliver.yaml"
+        ],
+        "inherited_context": [
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "definition_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/routines/deliver.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/techniques/produce.md"
+        ]
+      },
+      "criterion_coverage": [
+        {
+          "entry": "AP-01. emission-without-validation",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "source_lines": [
+            7,
+            13
+          ],
+          "status": "walked",
+          "result": "conformant",
+          "finding_ids": [],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-5 contain workflow identity, initialActivity and graph labels. AP-01 explicitly excludes graph labels; none is a technique Protocol instruction or Rules clause."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-6 declare the run activity and delivery routine invocation. Routine calls and bindings are explicitly excluded."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-6 declare inputs, an output binding, and the emit step calling produce. Bindings and routine calls are explicitly excluded."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "walked",
+              "evidence": "Capability at line 2 describes the service. Rules line 5 declares the inherited destination; destination declarations are explicitly excluded from emission directives."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Capability line 2 and Outputs line 5 are declarations. Protocol line 8 requires validation before emission. Rules line 11 contains an excluded retention clause and a separate clause requiring validation before every emission. Rules line 12 declares the destination and is excluded."
+            }
+          ]
+        },
+        {
+          "entry": "AP-02. broken-binding",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "source_lines": [
+            15,
+            21
+          ],
+          "status": "walked",
+          "result": "conformant",
+          "finding_ids": [],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-5 declare graph nodes and exits, not activity routine arguments or routine output bindings."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "walked",
+              "evidence": "steps[0].routine.name resolves deliver. At line 6 the argument-key set is {envelope}, equal to deliver.inputs at line 2. The value sealed is opaque."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "walked",
+              "evidence": "outputs.report at line 3 is emit.report. The emit step at lines 5-6 calls produce, whose Outputs key at line 5 is report. The resolved output exists."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "The complete ancestor contains Capability and a destination Rules clause, with neither binding form named by AP-02."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Outputs declares exactly report at line 5. Protocol and Rules artifact mentions do not create additional bindings."
+            }
+          ]
+        },
+        {
+          "entry": "Honor the executing workflow's inherited destination",
+          "home": "corpus/canon/resources/design-principles.md",
+          "source_lines": [
+            5,
+            7
+          ],
+          "status": "walked",
+          "result": "conformant",
+          "finding_ids": [],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Used as execution context: qualification starts run. The principle expressly assigns the qualification ancestor to this call chain."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Context resolves run.steps[0].routine.name to deliver."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Context resolves deliver.steps[0].technique to produce."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "Rules line 5 supplies required destination archive. The criterion explicitly treats this ancestor constraint as a declaration, not an independently conflicting leaf destination."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Through qualification -> run -> deliver -> produce, the leaf inherits qualification/techniques/TECHNIQUE.md Rules line 5, which requires archive. Leaf Rules line 12 declares archive and satisfies it."
+            }
+          ]
+        },
+        {
+          "entry": "Provide a terminating workflow path",
+          "home": "corpus/canon/resources/design-principles.md",
+          "source_lines": [
+            9,
+            11
+          ],
+          "status": "walked",
+          "result": "conformant",
+          "finding_ids": [],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "walked",
+              "evidence": "Whole graph at lines 1-5: initialActivity is run, with the single path run.done -> null. It terminates after one graph exit."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "The file declares activity steps. The principle explicitly says activity steps do not add graph exits."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "The file declares routine steps. The principle explicitly says routine steps do not add graph exits."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "The file contains technique Capability and Rules, not a workflow graph."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "not-applicable",
+              "evidence": "The file contains technique Capability, Outputs, Protocol and Rules, not a workflow graph."
+            }
+          ]
+        }
+      ],
+      "coverage_counts": {
+        "criteria_walked": 4,
+        "criteria_total": 4,
+        "blocked_criteria": 0,
+        "definition_paths": 5,
+        "closed_unit_path_dispositions": 20,
+        "walked_unit_paths": 7,
+        "not_applicable_unit_paths": 13,
+        "blocked_unit_paths": 0
+      },
+      "source_coverage": {
+        "enumerated": 8,
+        "read_whole": 8,
+        "unread": [],
+        "items": [
+          {
+            "path": "corpus/canon/resources/anti-patterns.md",
+            "role": "criterion home",
+            "status": "read",
+            "bytes": 2055,
+            "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/canon/resources/convention-conformance.md",
+            "role": "evidence-scope context",
+            "status": "read",
+            "bytes": 411,
+            "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/canon/resources/design-principles.md",
+            "role": "criterion home",
+            "status": "read",
+            "bytes": 1352,
+            "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/activities/run.yaml",
+            "role": "primary",
+            "status": "read",
+            "bytes": 101,
+            "sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/routines/deliver.yaml",
+            "role": "contract closure",
+            "status": "read",
+            "bytes": 105,
+            "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/techniques/TECHNIQUE.md",
+            "role": "inherited context",
+            "status": "read",
+            "bytes": 85,
+            "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/techniques/produce.md",
+            "role": "primary",
+            "status": "read",
+            "bytes": 207,
+            "sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/workflow.yaml",
+            "role": "primary",
+            "status": "read",
+            "bytes": 68,
+            "sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+            "captured_bytes_match": true
+          }
+        ]
+      },
+      "findings": [],
+      "band_counts": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "severity_counts": {
+        "Critical": 0,
+        "High": 0,
+        "Medium": 0,
+        "Low": 0
+      },
+      "guard_observation": {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-observation.json",
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-output.txt",
+        "check": "controlled qualification structural guard",
+        "exit_code": 0,
+        "errors": [],
+        "sources": 8,
+        "criteria": 4,
+        "output_bytes": 269,
+        "elapsed_seconds": 0.11438447999535128,
+        "evidence_kind": "preserved measured observation, not a new run"
+      },
+      "positive_hand_check_control": "The hand walk reports each criterion against the supplied case b corpus. The clean case a therefore has a demonstrated positive case for every empty semantic check.",
+      "limitations": [
+        "The conclusion is limited to the four supplied controlled criteria and captured dialect; it is not full-project-canon, engine-schema, security, or runtime conformance.",
+        "The supplied structural-check observations were preserved and inspected, not rerun. Both report exit 0 and no errors; those outputs do not measure the four semantic criteria.",
+        "No earlier definition revision or candidate/base change pair was supplied. Findings are present in the captured existing sources; diff versus pre-existing Git attribution is not established.",
+        "The source scope is explicitly complete for this qualification. No uncaptured project consumers, siblings, exemption surfaces, guard registry, or prior residual were consulted.",
+        "The task supplies four criteria, so the controlled family is applied directly. The prior skill catalog ordering convention is not used to invent an additional criterion or exempt these supplied entries."
+      ],
+      "measured_work": {
+        "captured_input_payload_bytes": 6014,
+        "whole_source_bytes": 4384,
+        "whole_source_read_elapsed_seconds": 0.000194646,
+        "source_read_events": 8,
+        "source_lines": 71,
+        "preserved_check_elapsed_seconds": 0.11438447999535128
+      }
+    },
+    {
+      "case": "b",
+      "input": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-b.json",
+      "status": "finished",
+      "verdict": "does not conform to the four controlled criteria",
+      "scope": {
+        "primary_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/produce.md"
+        ],
+        "closure_paths": [
+          "corpus/qualification/routines/deliver.yaml"
+        ],
+        "inherited_context": [
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "definition_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/routines/deliver.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/techniques/produce.md"
+        ]
+      },
+      "criterion_coverage": [
+        {
+          "entry": "AP-01. emission-without-validation",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "source_lines": [
+            7,
+            13
+          ],
+          "status": "walked",
+          "result": "violations",
+          "finding_ids": [
+            "B04",
+            "B05"
+          ],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-5 contain workflow identity, initialActivity and graph labels. AP-01 explicitly excludes graph labels; none is a technique Protocol instruction or Rules clause."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-6 declare the run activity and delivery routine invocation. Routine calls and bindings are explicitly excluded."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-6 declare inputs, an output binding, and the emit step calling produce. Bindings and routine calls are explicitly excluded."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "walked",
+              "evidence": "Capability at line 2 describes the service. Rules line 5 declares the inherited destination; destination declarations are explicitly excluded from emission directives."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Capability line 2 and Outputs line 5 are declarations, not emitting instructions. Protocol line 8 explicitly emits without validation. Rules line 11 has a retention clause and a distinct semicolon-separated clause emitting without validation. Rules line 12 is a destination declaration. The Protocol and Rules violations are separate instructions."
+            }
+          ]
+        },
+        {
+          "entry": "AP-02. broken-binding",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "source_lines": [
+            15,
+            21
+          ],
+          "status": "walked",
+          "result": "violations",
+          "finding_ids": [
+            "B01",
+            "B02"
+          ],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "Lines 1-5 declare graph nodes and exits, not activity routine arguments or routine output bindings."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "walked",
+              "evidence": "steps[0].routine.name resolves deliver. At line 6 the argument-key set is {packet}; routine inputs at line 2 are {envelope}. The invocation violates the exact key contract. The value sealed is opaque and supplies no other finding."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "walked",
+              "evidence": "outputs.report at line 3 is emit.report. The emit step at lines 5-6 calls produce, whose sole declared Outputs key is summary. The referenced report is absent. Exported name report may legally differ from a declared technique output."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "The complete ancestor contains Capability and a destination Rules clause, with neither binding form named by AP-02."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Outputs declares exactly summary at line 5. The Protocol and Rules references to a report are Markdown artifact mentions, not bindings and therefore not additional AP-02 findings."
+            }
+          ]
+        },
+        {
+          "entry": "Honor the executing workflow's inherited destination",
+          "home": "corpus/canon/resources/design-principles.md",
+          "source_lines": [
+            5,
+            7
+          ],
+          "status": "walked",
+          "result": "violation",
+          "finding_ids": [
+            "B06"
+          ],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Used as execution context: qualification starts run. The principle expressly assigns the qualification ancestor to this call chain."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Context resolves run.steps[0].routine.name to deliver."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "No leaf Destination declaration. Context resolves deliver.steps[0].technique to produce."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "Rules line 5 supplies required destination archive. The criterion explicitly treats this ancestor constraint as a declaration, not an independently conflicting leaf destination."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "walked",
+              "evidence": "Through qualification -> run -> deliver -> produce, the leaf inherits qualification/techniques/TECHNIQUE.md Rules line 5, which requires archive. Leaf Rules line 12 declares public, violating that inherited contract."
+            }
+          ]
+        },
+        {
+          "entry": "Provide a terminating workflow path",
+          "home": "corpus/canon/resources/design-principles.md",
+          "source_lines": [
+            9,
+            11
+          ],
+          "status": "walked",
+          "result": "violation",
+          "finding_ids": [
+            "B03"
+          ],
+          "path_coverage": [
+            {
+              "path": "corpus/qualification/workflow.yaml",
+              "status": "walked",
+              "evidence": "Whole graph at lines 1-5: initialActivity is run; the only edge is run.done -> run. The reachable set is {run}; no null destination exists, so no finite terminating path exists."
+            },
+            {
+              "path": "corpus/qualification/activities/run.yaml",
+              "status": "not-applicable",
+              "evidence": "The file declares activity steps. The principle explicitly says activity steps do not add graph exits."
+            },
+            {
+              "path": "corpus/qualification/routines/deliver.yaml",
+              "status": "not-applicable",
+              "evidence": "The file declares routine steps. The principle explicitly says routine steps do not add graph exits."
+            },
+            {
+              "path": "corpus/qualification/techniques/TECHNIQUE.md",
+              "status": "not-applicable",
+              "evidence": "The file contains technique Capability and Rules, not a workflow graph."
+            },
+            {
+              "path": "corpus/qualification/techniques/produce.md",
+              "status": "not-applicable",
+              "evidence": "The file contains technique Capability, Outputs, Protocol and Rules, not a workflow graph."
+            }
+          ]
+        }
+      ],
+      "coverage_counts": {
+        "criteria_walked": 4,
+        "criteria_total": 4,
+        "blocked_criteria": 0,
+        "definition_paths": 5,
+        "closed_unit_path_dispositions": 20,
+        "walked_unit_paths": 7,
+        "not_applicable_unit_paths": 13,
+        "blocked_unit_paths": 0
+      },
+      "source_coverage": {
+        "enumerated": 8,
+        "read_whole": 8,
+        "unread": [],
+        "items": [
+          {
+            "path": "corpus/canon/resources/anti-patterns.md",
+            "role": "criterion home",
+            "status": "read",
+            "bytes": 2055,
+            "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/canon/resources/convention-conformance.md",
+            "role": "evidence-scope context",
+            "status": "read",
+            "bytes": 411,
+            "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/canon/resources/design-principles.md",
+            "role": "criterion home",
+            "status": "read",
+            "bytes": 1352,
+            "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/activities/run.yaml",
+            "role": "primary",
+            "status": "read",
+            "bytes": 99,
+            "sha256": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/routines/deliver.yaml",
+            "role": "contract closure",
+            "status": "read",
+            "bytes": 105,
+            "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/techniques/TECHNIQUE.md",
+            "role": "inherited context",
+            "status": "read",
+            "bytes": 85,
+            "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/techniques/produce.md",
+            "role": "primary",
+            "status": "read",
+            "bytes": 202,
+            "sha256": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+            "captured_bytes_match": true
+          },
+          {
+            "path": "corpus/qualification/workflow.yaml",
+            "role": "primary",
+            "status": "read",
+            "bytes": 67,
+            "sha256": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+            "captured_bytes_match": true
+          }
+        ]
+      },
+      "findings": [
+        {
+          "id": "B01",
+          "entry": "AP-02. broken-binding",
+          "criterion_source": "corpus/canon/resources/anti-patterns.md:17",
+          "location": "corpus/qualification/activities/run.yaml:6 :: steps[0].routine.arguments",
+          "summary": "The deliver invocation passes packet while deliver requires envelope.",
+          "evidence": {
+            "argument_keys": [
+              "packet"
+            ],
+            "routine_inputs": [
+              "envelope"
+            ],
+            "routine_resolution": "steps[0].routine.name = deliver -> corpus/qualification/routines/deliver.yaml:1-2"
+          },
+          "fix": "Rename the invocation argument key packet to envelope, preserving the opaque value sealed.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_reason": "The exact input contract is structurally broken: the required input is absent and an undeclared input is supplied."
+        },
+        {
+          "id": "B02",
+          "entry": "AP-02. broken-binding",
+          "criterion_source": "corpus/canon/resources/anti-patterns.md:17",
+          "location": "corpus/qualification/routines/deliver.yaml:3 :: outputs.report",
+          "summary": "The routine binds emit.report although emit calls a technique that declares only summary.",
+          "evidence": {
+            "binding": "emit.report",
+            "step": "emit",
+            "called_technique": "produce",
+            "declared_outputs": [
+              "summary"
+            ],
+            "closure_reason": "The routine consumes the Outputs contract declared by the scoped produce technique."
+          },
+          "fix": "Bind outputs.report to emit.summary; the exported routine name report may remain report.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_reason": "A routine output references a nonexistent output on its resolved producing step, leaving the output contract structurally broken."
+        },
+        {
+          "id": "B03",
+          "entry": "Provide a terminating workflow path",
+          "criterion_source": "corpus/canon/resources/design-principles.md:11",
+          "location": "corpus/qualification/workflow.yaml:5 :: graph.run.done (whole workflow from initialActivity)",
+          "summary": "The only reachable edge returns run to itself; no finite path reaches null.",
+          "evidence": {
+            "initialActivity": "run",
+            "graph": {
+              "run": {
+                "done": "run"
+              }
+            },
+            "reachable_activities": [
+              "run"
+            ],
+            "reachable_null": false
+          },
+          "fix": "Set graph.run.done to null to provide a finite path from initialActivity to termination.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_reason": "The complete execution graph is structurally unable to terminate, violating its whole-workflow invariant."
+        },
+        {
+          "id": "B04",
+          "entry": "AP-01. emission-without-validation",
+          "criterion_source": "corpus/canon/resources/anti-patterns.md:9",
+          "location": "corpus/qualification/techniques/produce.md:8 :: Protocol, instruction 1",
+          "summary": "The Protocol explicitly emits the report without validating it.",
+          "evidence": "Emit the report without validation.",
+          "fix": "Require validation of the report before this Protocol instruction emits it.",
+          "band": "Live",
+          "severity": "High",
+          "classification_reason": "The imperative directs misbehavior during execution, and its unvalidated emission propagates to the artifact consumer.",
+          "verification": "Re-read AP-01 Detect, Do not flag and Fix together with the complete produce technique. This is an imperative emitting instruction, and no exception applies."
+        },
+        {
+          "id": "B05",
+          "entry": "AP-01. emission-without-validation",
+          "criterion_source": "corpus/canon/resources/anti-patterns.md:9",
+          "location": "corpus/qualification/techniques/produce.md:11 :: Rules, clause 2 after the semicolon",
+          "summary": "The second Rules clause independently emits the report without validation.",
+          "evidence": "Retain the report ID; emit the report without validation.",
+          "fix": "Require validation before emission in the second Rules clause; the retention clause can remain.",
+          "band": "Live",
+          "severity": "High",
+          "classification_reason": "A separate executing instruction permits unvalidated emission, with consequences for the artifact consumer.",
+          "verification": "Re-read AP-01 and split line 11 at the semicolon. The retention clause is excluded, while the second clause independently satisfies Detect. A Protocol finding cannot subsume this instruction."
+        },
+        {
+          "id": "B06",
+          "entry": "Honor the executing workflow's inherited destination",
+          "criterion_source": "corpus/canon/resources/design-principles.md:7",
+          "location": "corpus/qualification/techniques/produce.md:12 :: Rules, Destination",
+          "summary": "The executed leaf declares public while its inherited destination contract requires archive.",
+          "evidence": {
+            "leaf_destination": "public",
+            "inherited_destination": "archive",
+            "ancestor_location": "corpus/qualification/techniques/TECHNIQUE.md:5",
+            "execution": [
+              "qualification",
+              "run",
+              "deliver",
+              "produce"
+            ]
+          },
+          "fix": "Set the leaf Destination declaration to archive, as required by its executing workflow ancestor.",
+          "band": "Contract",
+          "severity": "High",
+          "classification_reason": "The leaf remains declaratively callable, but carries an incompatible inherited contract across the execution chain. The captured dialect does not establish runtime precedence between the conflicting declarations.",
+          "verification": "Re-read the complete destination principle, the complete leaf and the ancestor Rules. The principle explicitly assigns this ancestor through the captured call chain; public differs from archive. The ancestor itself is excluded as a conflicting leaf."
+        }
+      ],
+      "band_counts": {
+        "Live": 5,
+        "Contract": 1,
+        "Hygiene": 0
+      },
+      "severity_counts": {
+        "Critical": 3,
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      },
+      "guard_observation": {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-observation.json",
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt",
+        "check": "controlled qualification structural guard",
+        "exit_code": 0,
+        "errors": [],
+        "sources": 8,
+        "criteria": 4,
+        "output_bytes": 269,
+        "elapsed_seconds": 0.11567819901392795,
+        "evidence_kind": "preserved measured observation, not a new run"
+      },
+      "positive_hand_check_control": "The concrete findings supply positive corpus cases for each of the four applied criteria.",
+      "limitations": [
+        "The conclusion is limited to the four supplied controlled criteria and captured dialect; it is not full-project-canon, engine-schema, security, or runtime conformance.",
+        "The supplied structural-check observations were preserved and inspected, not rerun. Both report exit 0 and no errors; those outputs do not measure the four semantic criteria.",
+        "No earlier definition revision or candidate/base change pair was supplied. Findings are present in the captured existing sources; diff versus pre-existing Git attribution is not established.",
+        "The source scope is explicitly complete for this qualification. No uncaptured project consumers, siblings, exemption surfaces, guard registry, or prior residual were consulted.",
+        "The task supplies four criteria, so the controlled family is applied directly. The prior skill catalog ordering convention is not used to invent an additional criterion or exempt these supplied entries."
+      ],
+      "measured_work": {
+        "captured_input_payload_bytes": 6006,
+        "whole_source_bytes": 4376,
+        "whole_source_read_elapsed_seconds": 0.000152814,
+        "source_read_events": 8,
+        "source_lines": 71,
+        "preserved_check_elapsed_seconds": 0.11567819901392795
+      }
+    }
+  ],
+  "verification": {
+    "highs_rederived": [
+      "B04",
+      "B05",
+      "B06"
+    ],
+    "highs_withdrawn": [],
+    "highs_downgraded": [],
+    "mediums": [],
+    "deduplication": "Each failing instruction and each binding appears once. Whole-element and related source evidence do not create duplicate findings."
+  },
+  "mechanized_detect_candidates": [
+    {
+      "entry": "AP-01. emission-without-validation",
+      "keys_on": "Each Protocol instruction and each semicolon-separated Rules clause explicitly permitting emission of an artifact without prior validation of that artifact.",
+      "occurrences": [
+        "B04",
+        "B05"
+      ],
+      "registry_status": "No controlled semantic registry was supplied. Candidate recorded here; no external filing or implementation authorized."
+    },
+    {
+      "entry": "AP-02. broken-binding",
+      "keys_on": "Resolved invocation key-set inequality and resolved routine output names absent from the called technique Outputs declaration.",
+      "occurrences": [
+        "B01",
+        "B02"
+      ],
+      "registry_status": "No controlled semantic registry was supplied. Candidate recorded here; no external filing or implementation authorized."
+    }
+  ],
+  "measured_work": {
+    "boundary": "From the first captured SKILL.md read to creation of this report; elapsed wall time includes reasoning and tool orchestration. Bytes count content exposed in recorded reads, including deliberate rereads.",
+    "started_unix": 1791701831.9242568,
+    "finished_unix": 1791702238.8914356,
+    "elapsed_seconds": 406.9671788215637,
+    "instruction_read_events": 23,
+    "instruction_bytes_exposed": 31985,
+    "instruction_files": [
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/SKILL.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/audit-mode.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-map.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/definition-scope.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/planning.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/walk-rules.md"
+    ],
+    "captured_input_payload_bytes": 12020,
+    "whole_source_bytes": 8760,
+    "verification_source_bytes_exposed": 1741,
+    "all_recorded_read_events": 49,
+    "all_recorded_read_bytes_exposed": 56596,
+    "recorded_read_elapsed_seconds": 0.003835989,
+    "transcript": "/tmp/baseline-audit-transcript.txt",
+    "measurement_notes": [
+      "Instruction byte counts include complete SKILL, Audit, Planning, Canon Map and Walk Rules reads, plus bounded linked sections.",
+      "The Standalone fenced template required one corrected bounded read after a partial initial section read. Both outputs and their costs are retained.",
+      "Source bytes include whole neutral corpus reads. Input JSON bytes separately include the captured source text. Re-derivation reads are reported separately.",
+      "Internal reparsing for serialization and line-count summaries does not add a second exposed-source-byte charge."
+    ],
+    "recorded_reads": [
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/SKILL.md",
+        "bytes": 4339,
+        "read_elapsed_ns": 49905,
+        "read_started_unix": 1791701831.9242568
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/audit-mode.md",
+        "bytes": 4675,
+        "read_elapsed_ns": 32577,
+        "read_started_unix": 1791701845.6160507
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/planning.md",
+        "bytes": 1288,
+        "read_elapsed_ns": 18229,
+        "read_started_unix": 1791701845.616147
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-a.json",
+        "bytes": 6014,
+        "read_elapsed_ns": 29296,
+        "read_started_unix": 1791701845.6161964
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-b.json",
+        "bytes": 6006,
+        "read_elapsed_ns": 17430,
+        "read_started_unix": 1791701845.616261
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Prerequisites",
+        "lines": [
+          5,
+          8
+        ],
+        "bytes": 154,
+        "read_elapsed_ns": 146960,
+        "read_started_unix": 1791701864.6478357
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Terms",
+        "lines": [
+          9,
+          16
+        ],
+        "bytes": 422,
+        "read_elapsed_ns": 80844,
+        "read_started_unix": 1791701864.6480448
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Criteria",
+        "lines": [
+          17,
+          22
+        ],
+        "bytes": 430,
+        "read_elapsed_ns": 74035,
+        "read_started_unix": 1791701864.6481662
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Scope",
+        "lines": [
+          23,
+          28
+        ],
+        "bytes": 476,
+        "read_elapsed_ns": 70424,
+        "read_started_unix": 1791701864.6482675
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Checks",
+        "lines": [
+          43,
+          51
+        ],
+        "bytes": 1130,
+        "read_elapsed_ns": 80993,
+        "read_started_unix": 1791701864.6483626
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-map.md",
+        "section": "Unit Inventory",
+        "lines": [
+          5,
+          18
+        ],
+        "bytes": 664,
+        "read_elapsed_ns": 71858,
+        "read_started_unix": 1791701864.648468
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+        "section": "Conventions",
+        "lines": [
+          3,
+          19
+        ],
+        "bytes": 1492,
+        "read_elapsed_ns": 88151,
+        "read_started_unix": 1791701864.6485658
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-map.md",
+        "section": null,
+        "lines": [
+          1,
+          33
+        ],
+        "bytes": 2084,
+        "read_elapsed_ns": 46204,
+        "read_started_unix": 1791701882.4172773
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/walk-rules.md",
+        "section": null,
+        "lines": [
+          1,
+          41
+        ],
+        "bytes": 2329,
+        "read_elapsed_ns": 32557,
+        "read_started_unix": 1791701882.417396
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/definition-scope.md",
+        "section": "Scope",
+        "lines": [
+          5,
+          35
+        ],
+        "bytes": 2121,
+        "read_elapsed_ns": 132298,
+        "read_started_unix": 1791701882.4174602
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md",
+        "section": "Homes",
+        "lines": [
+          29,
+          42
+        ],
+        "bytes": 1253,
+        "read_elapsed_ns": 101265,
+        "read_started_unix": 1791701882.417628
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+        "section": "Resolve Ref",
+        "lines": [
+          22,
+          29
+        ],
+        "bytes": 101,
+        "read_elapsed_ns": 129462,
+        "read_started_unix": 1791701882.4177685
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+        "section": "List Units",
+        "lines": [
+          424,
+          435
+        ],
+        "bytes": 336,
+        "read_elapsed_ns": 392643,
+        "read_started_unix": 1791701882.417929
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+        "section": "Fetch Unit",
+        "lines": [
+          448,
+          455
+        ],
+        "bytes": 261,
+        "read_elapsed_ns": 398523,
+        "read_started_unix": 1791701882.4183486
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md",
+        "section": "Canon Check Conventions",
+        "lines": [
+          363,
+          390
+        ],
+        "bytes": 1774,
+        "read_elapsed_ns": 567644,
+        "read_started_unix": 1791701882.418778
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+        "section": "Report Context",
+        "lines": [
+          5,
+          82
+        ],
+        "bytes": 3970,
+        "read_elapsed_ns": 182503,
+        "read_started_unix": 1791701910.3234344
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+        "section": "Which Report",
+        "lines": [
+          83,
+          86
+        ],
+        "bytes": 225,
+        "read_elapsed_ns": 158607,
+        "read_started_unix": 1791701910.3236895
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+        "section": "File Coverage",
+        "lines": [
+          60,
+          72
+        ],
+        "bytes": 658,
+        "read_elapsed_ns": 143950,
+        "read_started_unix": 1791701910.3238811
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-observation.json",
+        "section": null,
+        "lines": [
+          1,
+          13
+        ],
+        "bytes": 776,
+        "read_elapsed_ns": 28078,
+        "read_started_unix": 1791701910.3240535
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-observation.json",
+        "section": null,
+        "lines": [
+          1,
+          13
+        ],
+        "bytes": 776,
+        "read_elapsed_ns": 21613,
+        "read_started_unix": 1791701910.3241048
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+        "section": "Standalone",
+        "lines": [
+          87,
+          91
+        ],
+        "bytes": 70,
+        "read_elapsed_ns": 107304,
+        "read_started_unix": 1791701945.7990813
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-output.txt",
+        "bytes": 269,
+        "read_elapsed_ns": 22060,
+        "read_started_unix": 1791701945.7992566
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt",
+        "bytes": 269,
+        "read_elapsed_ns": 20334,
+        "read_started_unix": 1791701945.7993093
+      },
+      {
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md",
+        "section": "Standalone",
+        "lines": [
+          87,
+          131
+        ],
+        "bytes": 1733,
+        "read_elapsed_ns": 121043,
+        "read_started_unix": 1791701984.8778136,
+        "note": "Complete section with fenced template headings included."
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/canon/resources/anti-patterns.md",
+        "logical_path": "corpus/canon/resources/anti-patterns.md",
+        "bytes": 2055,
+        "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 53482,
+        "read_started_unix": 1791701984.8780656
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/canon/resources/convention-conformance.md",
+        "logical_path": "corpus/canon/resources/convention-conformance.md",
+        "bytes": 411,
+        "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 26646,
+        "read_started_unix": 1791701984.8782063
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/canon/resources/design-principles.md",
+        "logical_path": "corpus/canon/resources/design-principles.md",
+        "bytes": 1352,
+        "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 21036,
+        "read_started_unix": 1791701984.8782709
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/qualification/activities/run.yaml",
+        "logical_path": "corpus/qualification/activities/run.yaml",
+        "bytes": 101,
+        "sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 20085,
+        "read_started_unix": 1791701984.878325
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/qualification/routines/deliver.yaml",
+        "logical_path": "corpus/qualification/routines/deliver.yaml",
+        "bytes": 105,
+        "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 19921,
+        "read_started_unix": 1791701984.8783693
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/qualification/techniques/TECHNIQUE.md",
+        "logical_path": "corpus/qualification/techniques/TECHNIQUE.md",
+        "bytes": 85,
+        "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 19246,
+        "read_started_unix": 1791701984.8784196
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/qualification/techniques/produce.md",
+        "logical_path": "corpus/qualification/techniques/produce.md",
+        "bytes": 207,
+        "sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 17085,
+        "read_started_unix": 1791701984.8784592
+      },
+      {
+        "case": "a",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/corpus/qualification/workflow.yaml",
+        "logical_path": "corpus/qualification/workflow.yaml",
+        "bytes": 68,
+        "sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 17145,
+        "read_started_unix": 1791701984.878495
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/canon/resources/anti-patterns.md",
+        "logical_path": "corpus/canon/resources/anti-patterns.md",
+        "bytes": 2055,
+        "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 22318,
+        "read_started_unix": 1791701984.878608
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/canon/resources/convention-conformance.md",
+        "logical_path": "corpus/canon/resources/convention-conformance.md",
+        "bytes": 411,
+        "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 25682,
+        "read_started_unix": 1791701984.8786643
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/canon/resources/design-principles.md",
+        "logical_path": "corpus/canon/resources/design-principles.md",
+        "bytes": 1352,
+        "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 21006,
+        "read_started_unix": 1791701984.8787107
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/activities/run.yaml",
+        "logical_path": "corpus/qualification/activities/run.yaml",
+        "bytes": 99,
+        "sha256": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 18374,
+        "read_started_unix": 1791701984.8787591
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/routines/deliver.yaml",
+        "logical_path": "corpus/qualification/routines/deliver.yaml",
+        "bytes": 105,
+        "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 17178,
+        "read_started_unix": 1791701984.878801
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/techniques/TECHNIQUE.md",
+        "logical_path": "corpus/qualification/techniques/TECHNIQUE.md",
+        "bytes": 85,
+        "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 16717,
+        "read_started_unix": 1791701984.8788362
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/techniques/produce.md",
+        "logical_path": "corpus/qualification/techniques/produce.md",
+        "bytes": 202,
+        "sha256": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 16077,
+        "read_started_unix": 1791701984.878871
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/workflow.yaml",
+        "logical_path": "corpus/qualification/workflow.yaml",
+        "bytes": 67,
+        "sha256": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+        "captured_bytes_match": true,
+        "read_elapsed_ns": 15462,
+        "read_started_unix": 1791701984.878904
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/canon/resources/anti-patterns.md",
+        "logical_path": "corpus/canon/resources/anti-patterns.md",
+        "lines": [
+          7,
+          13
+        ],
+        "purpose": "Independent High re-derivation from cited criterion and construct",
+        "bytes": 774,
+        "read_elapsed_ns": 49220,
+        "read_started_unix": 1791702096.1242177
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/canon/resources/design-principles.md",
+        "logical_path": "corpus/canon/resources/design-principles.md",
+        "lines": [
+          5,
+          7
+        ],
+        "purpose": "Independent High re-derivation from cited criterion and construct",
+        "bytes": 680,
+        "read_elapsed_ns": 27302,
+        "read_started_unix": 1791702096.1243277
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/techniques/produce.md",
+        "logical_path": "corpus/qualification/techniques/produce.md",
+        "lines": [
+          1,
+          12
+        ],
+        "purpose": "Independent High re-derivation from cited criterion and construct",
+        "bytes": 202,
+        "read_elapsed_ns": 25338,
+        "read_started_unix": 1791702096.1243887
+      },
+      {
+        "case": "b",
+        "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/corpus/qualification/techniques/TECHNIQUE.md",
+        "logical_path": "corpus/qualification/techniques/TECHNIQUE.md",
+        "lines": [
+          1,
+          5
+        ],
+        "purpose": "Independent High re-derivation from cited criterion and construct",
+        "bytes": 85,
+        "read_elapsed_ns": 19879,
+        "read_started_unix": 1791702096.1244373
+      }
+    ]
+  }
+}

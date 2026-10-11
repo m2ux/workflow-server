@@ -1,0 +1,182 @@
+id: requirements-refinement
+version: 1.16.0
+name: Requirements Refinement
+description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
+variables:
+  reads:
+    - assumption_outcome
+    - change_category
+    - component_git_dir
+    - operation_type
+    - planning_folder_path
+    - pr_number
+    - target_path
+  writes:
+    - name: assumptions_log
+      type: object
+      description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
+    - name: design_context
+      type: string
+      description: Reference workflows, integration points, operators and triggers the reader supplied before elicitation. Absent where the context step was skipped.
+    - name: design_context_supplied
+      type: boolean
+      description: Whether the reader supplied design context before elicitation, or chose to proceed without it.
+      defaultValue: false
+    - name: design_dimensions
+      type: array
+      description: The ordered design dimensions to elicit for this run's mode.
+    - name: dimension_questions
+      type: string
+      description: Markdown elicitation prompt for the current design dimension (from prepare-dimension).
+      defaultValue: ""
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether open design judgements remain after reconcile-design-assumptions — listed in the Gate 2 batch payload when true.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop.
+      defaultValue: false
+    - name: specification_path
+      type: string
+      description: Absolute path to the persisted design-specification artifact.
+      defaultValue: ""
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: set-design-dimensions
+    technique: derive-design-dimensions
+  - kind: checkpoint
+    id: design-context
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
+    message: "Optional design context — reference workflows, integration points, or operators and triggers."
+    defaultOption: skip-context
+    autoAdvanceMs: 30000
+    options:
+      - id: provide-context
+        label: Provide design context
+        description: Capture reference workflows, integration points, and operators before elicitation.
+        effect:
+          setVariable:
+            design_context_supplied: true
+      - id: skip-context
+        label: Skip — proceed to elicitation
+        description: Proceed without additional design context
+        effect:
+          setVariable:
+            design_context_supplied: false
+  - kind: action
+    id: record-design-context
+    when: design_context_supplied == true
+    actions:
+      - action: set
+        target: design_context
+        message: Record the reference workflows, integration points, operators and triggers the reader supplied, so dimension elicitation reads them from the bag rather than from the exchange.
+  - kind: technique
+    id: synthesize-update-specification
+    technique: synthesize-update-specification
+    when: operation_type == 'update'
+  - kind: loop
+    id: dimension-elicitation-loop
+    name: Dimension Elicitation Loop
+    loopType: forEach
+    variable: current_dimension
+    over: design_dimensions
+    maxIterations: 12
+    when: operation_type != 'update'
+    steps:
+      - kind: technique
+        id: prepare-dimension
+        technique:
+          name: prepare-dimension
+          inputs:
+            design_context: design_context
+      - kind: action
+        id: surface-dimension-questions
+        actions:
+          - action: message
+            message: "Design dimension `{current_dimension}` — elicit answers to:
+
+
+              {dimension_questions}"
+      - kind: technique
+        id: capture-dimension
+        technique: capture-dimension
+  - kind: technique
+    id: persist-specification
+    technique: persist-design-specification
+  - kind: technique
+    id: persist-design-specification-artifact
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: design-specification.md
+        artifact_content: design_specification
+        target_dir: planning_folder_path
+  - kind: checkpoint
+    id: spec-confirmed
+    message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path}). Stakeholder attestation at Gate 2."
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Yes — specification is complete
+        description: The captured specification is accurate across all elicited dimensions.
+      - id: refine
+        label: Needs changes
+        description: One or more dimensions require additions, removals, or modifications before drafting.
+        effect:
+          exit: refine
+  - kind: action
+    id: announce-specification
+    actions:
+      - action: message
+        message: "Design specification persisted ([design specification]({specification_path})). Open judgements after reconcile batch into Gate 2."
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: work-package::review-assumptions::collect
+      inputs:
+        assumption_source: the refined workflow requirements and the constructs they name
+        assumption_categories: "Activity Boundaries, Checkpoint Necessity, Technique Selection, Rule Scope, Variable State, Schema Construct Choice"
+  - kind: technique
+    id: reconcile-assumptions
+    technique: reconcile-design-assumptions
+  - kind: loop
+    id: assumption-reconciliation
+    name: Assumption Reconciliation Loop
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: has_resolvable_assumptions
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: reconcile-iteration
+        technique: reconcile-design-assumptions
+  - kind: action
+    id: announce-open-judgements
+    when: has_open_assumptions == true
+    actions:
+      - action: message
+        message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."
+  - kind: technique
+    id: update-assumptions-log
+    technique: work-package::review-assumptions::record
+exits:
+  - id: update
+    when: operation_type == "update"
+  - id: create
+    isDefault: true
+  - id: refine
+    immediate: true
+outcome:
+  - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2
+  - Audit-resolvable design assumptions converge via a while-loop; open judgements remain in the assumptions log for the late approve-to-commit batch

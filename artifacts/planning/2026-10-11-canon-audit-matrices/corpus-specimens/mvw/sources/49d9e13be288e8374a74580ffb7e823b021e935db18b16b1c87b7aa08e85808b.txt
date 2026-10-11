@@ -1,0 +1,74 @@
+id: symptom-trace
+version: 1.0.0
+name: Symptom Trace
+description: >-
+  Follow a symptom into the graph — the flows its text lands in, the suspect symbol's connections,
+  the ordered trace of every flow that symbol runs, and the call chains that reach it.
+
+inputs:
+  - id: symptom_text
+    description: The error text or observed behaviour, as the keywords a ranking matches.
+  - id: suspect_symbol
+    description: The symbol the symptom points at, whose connections and callers the run reads.
+
+outputs:
+  - id: query_report
+    type: object
+    description: The execution flows the symptom's text ranked into, the symbols those flows run, and the definitions reached outside any flow.
+  - id: context_report
+    type: object
+    description: The suspect's callers, callees and flow membership.
+  - id: suspect_flow_traces
+    type: array
+    description: The ordered step trace of each execution flow the suspect participates in.
+  - id: call_chains
+    type: array
+    description: Every chain of calls reaching the suspect within two hops, each with the caller it starts at and how many hops it takes.
+
+internals:
+  - id: suspect_process
+    description: The execution flow the run holds, whose ordered trace the pass reads.
+
+steps:
+  - kind: technique
+    id: rank-symptom
+    technique:
+      name: gitnexus::query
+      inputs:
+        search_query: symptom_text
+      outputs:
+        query_report: query_report
+  - kind: technique
+    id: read-suspect
+    technique:
+      name: gitnexus::context
+      inputs:
+        name: suspect_symbol
+      outputs:
+        context_report: context_report
+  - kind: loop
+    id: flow-cycle
+    name: Flow Cycle
+    loopType: forEach
+    variable: suspect_process
+    over: context_report.processes
+    maxIterations: 50
+    steps:
+      - kind: technique
+        id: read-trace
+        technique:
+          name: gitnexus::read-process
+          inputs:
+            process_name: "{suspect_process.name}"
+        actions:
+          - action: set
+            target: suspect_flow_traces
+            description: This flow's ordered step trace, appended to the traces the run holds.
+  - kind: technique
+    id: trace-call-chains
+    technique:
+      name: gitnexus::cypher
+      inputs:
+        cypher_query: "MATCH path = (a)-[r:CodeRelation*1..2]->(b:Function {name: '{suspect_symbol}'}) WHERE all(rel IN rels(path) WHERE rel.type = 'CALLS') RETURN a.name AS caller, a.filePath AS caller_file, size(rels(path)) AS hops"
+      outputs:
+        result_rows: call_chains

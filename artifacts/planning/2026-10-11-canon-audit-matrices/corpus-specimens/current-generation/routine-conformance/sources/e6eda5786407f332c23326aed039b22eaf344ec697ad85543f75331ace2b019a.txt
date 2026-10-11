@@ -1,0 +1,342 @@
+id: quality-review
+version: 2.1.0
+name: Quality Review
+description: Quality review of drafted workflow content.
+variables:
+  reads:
+    - component_git_dir
+    - operation_type
+    - planning_folder_path
+    - pr_number
+    - scope_manifest_confirmed
+    - target_path
+    - target_workflow_ids
+  writes:
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: compliance_report
+      type: string
+      description: "Rolled-up compliance report body following the Compliance Report Template: severity counts, finding tables, and recommended fixes. Principle and anti-pattern detail stays in satellite finding files linked from the report."
+    - name: conformance_finding_count
+      type: number
+      description: Count of convention-conformance divergences from audit-conformance.
+      defaultValue: 0
+    - name: conformance_findings_path
+      type: string
+      description: Absolute path to the persisted conformance-findings artifact when findings exist.
+      defaultValue: ""
+    - name: drafted_files
+      type: array
+      description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
+    - name: enforcement_finding_count
+      type: number
+      description: Count of text-only rules from audit-rule-enforcement.
+      defaultValue: 0
+    - name: enforcement_findings_path
+      type: string
+      description: Absolute path to the persisted enforcement-findings artifact when findings exist.
+      defaultValue: ""
+    - name: expressiveness_finding_count
+      type: number
+      description: Count of expressiveness findings from audit-expressiveness.
+      defaultValue: 0
+    - name: expressiveness_findings_path
+      type: string
+      description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+      defaultValue: ""
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: has_critical_finding
+      type: boolean
+      description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
+      defaultValue: false
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — create, update, or review.
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: review_findings_count
+      type: number
+      description: Total number of compliance findings identified during review.
+      defaultValue: 0
+    - name: rule_hygiene_finding_count
+      type: number
+      description: Count of rule-hygiene findings from audit-rule-hygiene.
+      defaultValue: 0
+    - name: rule_hygiene_findings_path
+      type: string
+      description: Absolute path to the persisted rule-hygiene-findings artifact when findings exist.
+      defaultValue: ""
+    - name: target_workflow_id
+      type: string
+      description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple.
+    - name: update_seeded_from_review
+      type: boolean
+      description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes).
+      defaultValue: false
+    - name: verified_findings
+      type: array
+      description: "The recalibrated finding set: each High marked confirmed, downgraded or withdrawn with the evidence of its re-derivation, and each surviving Medium spot-confirmed. Only entries in this set are eligible to drive a fix."
+      defaultValue: []
+    - name: verified_findings_path
+      type: string
+      description: Absolute path to the persisted verified-findings artifact.
+      defaultValue: ""
+required: true
+steps:
+  - kind: loop
+    id: multi-target-review-loop
+    name: Multi-Target Review Loop
+    loopType: forEach
+    variable: target_workflow_id
+    over: target_workflow_ids
+    maxIterations: 20
+    when: operation_type == 'review'
+    steps:
+      - kind: technique
+        id: load-all-workflow-files
+        technique: reload-workflow
+      - kind: technique
+        id: principle-compliance-audit
+        technique: audit-principles
+      - kind: technique
+        id: persist-principle-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: "{target_workflow_id}-principle-findings.md"
+            artifact_content: principle_findings
+            target_dir: planning_folder_path
+      - kind: technique
+        id: anti-pattern-scan
+        technique: audit-anti-patterns
+      - kind: technique
+        id: persist-anti-pattern-findings
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: "{target_workflow_id}-anti-pattern-findings.md"
+            artifact_content: anti_pattern_findings
+            target_dir: planning_folder_path
+      - kind: technique
+        id: schema-validation-check
+        technique: audit-schema-validation
+      - kind: technique
+        id: verify-high-findings-review
+        technique: verify-high-findings
+      - kind: technique
+        id: persist-verified-findings-review
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: "{target_workflow_id}-verified-findings.md"
+            artifact_content: verified_findings
+            target_dir: planning_folder_path
+      - kind: technique
+        id: compile-report
+        technique: compile-report
+  - kind: technique
+    id: persist-compliance-report
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: compliance-review.md
+        artifact_content: compliance_report
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
+    when: operation_type == 'review'
+  - kind: checkpoint
+    id: review-disposition
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: review
+    message: "Compliance report complete. {review_findings_count} findings across {target_workflow_ids} ([compliance report]({report_path}))."
+    options:
+      - id: fix-issues
+        label: Fix identified issues
+        description: Switch to update mode and apply recommended fixes
+        effect:
+          setVariable:
+            operation_type: update
+            update_seeded_from_review: true
+          exit: fix-issues
+      - id: report-only
+        label: Report only — no changes
+        description: Save the compliance report without making changes
+      - id: selective-fixes
+        label: Selective fixes
+        description: Choose which findings to fix
+        effect:
+          setVariable:
+            operation_type: update
+            update_seeded_from_review: true
+          exit: fix-issues
+  - kind: technique
+    id: audit-expressiveness
+    technique: audit-expressiveness
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: action
+    id: expressiveness-clean
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count == 0
+    actions:
+      - action: message
+        message: Schema expressiveness review complete — 0 findings.
+  - kind: action
+    id: expressiveness-findings-flagged
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count > 0
+    actions:
+      - action: message
+        message: "Schema expressiveness review complete. {expressiveness_finding_count} findings ([expressiveness findings]({expressiveness_findings_path}))."
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: action
+    id: conformance-clean
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count == 0
+    actions:
+      - action: message
+        message: Convention conformance review complete — 0 divergences.
+  - kind: action
+    id: conformance-findings-flagged
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count > 0
+    actions:
+      - action: message
+        message: "Convention conformance review complete. {conformance_finding_count} divergences ([conformance findings]({conformance_findings_path}))."
+  - kind: technique
+    id: audit-rule-hygiene
+    technique: audit-rule-hygiene
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: action
+    id: rule-hygiene-clean
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count == 0
+    actions:
+      - action: message
+        message: Rule hygiene audit complete — 0 findings.
+  - kind: action
+    id: rule-hygiene-findings-flagged
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count > 0
+    actions:
+      - action: message
+        message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings ([rule hygiene findings]({rule_hygiene_findings_path}))."
+  - kind: technique
+    id: audit-rule-enforcement
+    technique: audit-rule-enforcement
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: persist-enforcement-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: enforcement-findings.md
+        artifact_content: enforcement_findings
+        target_dir: planning_folder_path
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
+  - kind: action
+    id: enforcement-clean
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count == 0
+    actions:
+      - action: message
+        message: Rule-to-structure audit complete — 0 text-only rules.
+  - kind: action
+    id: enforcement-findings-flagged
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
+    actions:
+      - action: message
+        message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules ([enforcement findings]({enforcement_findings_path}))."
+  - kind: technique
+    id: verify-high-findings
+    technique: verify-high-findings
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: persist-verified-findings
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: verified-findings.md
+        artifact_content: verified_findings
+        target_dir: planning_folder_path
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: action
+    id: classify-audit-findings
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set true iff any of expressiveness_finding_count, conformance_finding_count, rule_hygiene_finding_count, or enforcement_finding_count is greater than 0, or the verified findings (verified_findings, recalibrated by verify-high-findings) still list fixable items. False only when every pass's finding count is 0.
+      - action: set
+        target: has_critical_finding
+        message: Set true iff any verified finding (verified_findings) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+  - kind: loop
+    id: audit-fix-cycle
+    name: Audit Fix Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: needs_audit_fixes
+      operator: ==
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: yaml-authoring
+        technique: yaml-authoring
+      - kind: technique
+        id: audit-schema-validation
+        technique: audit-schema-validation
+      - kind: technique
+        id: apply-audit-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: re-audit-expressiveness
+        technique: audit-expressiveness
+      - kind: technique
+        id: re-audit-conformance
+        technique: audit-conformance
+      - kind: technique
+        id: re-audit-rule-hygiene
+        technique: audit-rule-hygiene
+      - kind: technique
+        id: re-audit-rule-enforcement
+        technique: audit-rule-enforcement
+      - kind: action
+        id: reassess-audit-fixes
+        actions:
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the audits, set true iff any of the four re-audited finding counts (expressiveness, conformance, rule hygiene, enforcement) is still greater than 0; false when every pass comes back at 0 findings.
+          - action: set
+            target: has_critical_finding
+            message: After re-running the audits, set true iff any remaining finding is Critical severity.
+exits:
+  - id: has-blocker
+    when: has_critical_finding == true
+  - id: done
+    isDefault: true
+  - id: fix-issues
+outcome:
+  - The workflow expresses its logic in schema constructs the engine can act on, not prose an agent must interpret — behavior is structural, not advisory
+  - The content reads and behaves like its sibling workflows, so users and agents carry one mental model across the whole library
+  - The rule set is lean and trustworthy — no restatements of protocol the engine already enforces, no contradictions, no duplicated guidance to drift out of sync
+  - Critical rules are enforced by structure rather than hope, so they hold even when an agent skips the prose

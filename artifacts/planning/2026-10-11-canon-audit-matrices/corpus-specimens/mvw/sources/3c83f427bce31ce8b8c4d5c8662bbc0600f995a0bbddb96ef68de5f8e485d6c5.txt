@@ -1,0 +1,43 @@
+---
+metadata:
+  version: 1.2.0
+---
+
+## Capability
+
+Assumptions from the work classified against the bound assumption categories in the assumptions log.
+
+## Outputs
+
+### assumptions_log
+
+The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) with the newly collected, classified assumptions appended — each carrying type, statement, rationale, and alternatives. This file is the record of truth for the surfaced assumptions.
+
+### open_assumptions
+
+The collected assumptions classified as open (stakeholder-dependent, non-code-resolvable), which downstream steps iterate for review; empty when none were identified.
+
+### has_open_assumptions
+
+Boolean gate — true iff `{open_assumptions}` is non-empty.
+
+## Protocol
+
+### 1. Identify the Assumptions
+
+- Identify all implicit decisions and assumptions made across `{assumption_source}` — consult the [probe vocabulary](../../resources/assumptions-review.md#probe-vocabulary) and [classification vocabulary](../../resources/assumptions-review.md#classification-vocabulary) when filling rows
+
+### 2. Classify and Rate Each
+
+- Classify each by a category from `{assumption_categories}`, choosing the category appropriate to the part of `{assumption_source}` generating them
+   > Use the categories supplied for the current phase.
+- Assign a risk letter (**H** / **M** / **L**) from the classification vocabulary; treat **H** as requiring validation before proceeding and **M** as checkpoint-confirmable for the current task
+
+### 3. Record a Null Result
+
+- If no significant assumptions are identified, record a single null row in the log (`No significant assumptions ([reason])`) and proceed — do not prompt the user to confirm a null result
+
+### 4. Append Them to the Log
+
+- Append collected assumptions to the `{assumptions_log}` (or start a fresh log if none exists) as one table row each — ID, phase, category, risk, statement with rationale — per the [log template](../../resources/assumptions-review.md#assumptions-log-template); record alternatives considered for architectural assumptions (they become the decision space if the assumption stays open)
+- Write Open Assumptions entries to the `manage-artifacts.markdown-line-breaks` rule

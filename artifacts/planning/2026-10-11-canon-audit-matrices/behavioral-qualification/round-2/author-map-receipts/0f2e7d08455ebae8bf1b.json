@@ -1,0 +1,109 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b",
+  "assignment": "0f2e7d08455ebae8bf1b",
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd",
+  "actor": "/root/qualify_author_two",
+  "attempt": "author-map-independent-2",
+  "records": [
+    {
+      "items": [
+        "98b55e096e4899353322814f"
+      ],
+      "status": "N",
+      "reason": "The inheritance relationship binds the leaf produce to qualification techniques TECHNIQUE.md. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "a0e70a1645458e99657058ca"
+      ],
+      "status": "N",
+      "reason": "The routine identifier declares deliver; this row contains no input declaration or output-step binding. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "status": "N",
+      "reason": "The workflow identifier declares qualification; it does not define a path or exit. DP-02 is a whole-workflow invariant over initialActivity and graph destinations. This row declares no workflow start or graph path; activity and routine steps add no exits, and an isolated identifier or technique declaration is not a terminating-path test.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "status": "A",
+      "reason": "The initialActivity value run selects the start from which the whole graph must reach a null destination. DP-02 applies to the workflow start and reachable graph path represented here. The whole captured workflow, including initialActivity and all exits, must be assessed together for a finite route to null; matching an activity identifier alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "A",
+      "reason": "The whole workflow contains initialActivity and every graph exit required to decide the finite-path invariant. DP-02 applies to the workflow start and reachable graph path represented here. The whole captured workflow, including initialActivity and all exits, must be assessed together for a finite route to null; matching an activity identifier alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

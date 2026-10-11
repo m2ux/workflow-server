@@ -1,0 +1,242 @@
+{
+  "assignment": "e8980cbbcafa22ed8061",
+  "snapshot": "ef29a3e65c47ae330493a92d5618f13b36393586d6321ab8962a3a0a46c5167e",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "independent-corrected-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "The design-principle home is a captured canon authority and has no call into the qualification definitions. Its unselected definition scope is appropriate; both of its complete principles are present in the criterion inventory and remain available independently of source selection.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "The selected run seed directly invokes the selected deliver routine at delivery/routine/name. Deliver and produce are selected, and the explicit execution relationship includes qualification workflow, run activity, deliver routine, leaf technique and ancestor. The invocation and inherited-contract closure therefore retain all captured definitions needed to assess packet against envelope and the leaf destination against archive.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Deliver is selected as a non-seed consumer/invoked definition. The activity call, emit-to-produce call, emit.report export and the explicit execution relationship are represented with both endpoints and all workflow/activity/ancestor context sources. This includes the routine in the closure even though it is not one of the three seed paths.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "The ancestor is selected as inherited context and produce has the corresponding declared-contract relationship. The complete execution relationship places the leaf in qualification through run and deliver, retaining this ancestor and its archive requirement. The ancestor source contains no additional outgoing reference to extend the captured closure.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "The produce seed, its deliver caller/output consumer and its TECHNIQUE ancestor are selected. The immediate producer call, ancestor relationship and explicit qualification/run/delivery/deliver/emit relationship retain the exported emit.report binding and complete executing context. The source closure therefore covers the leaf output declaration and inherited destination contract through their captured consumers.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "The qualification seed and all definitions in its captured execution chain are selected: initialActivity run, delivery routine deliver, emit technique produce and the inherited TECHNIQUE ancestor. The graph entry and loop occurrences are represented, and the explicit execution relationship retains the full workflow/activity/routine/leaf/ancestor context. The current source set closes the captured invocation and consumer relationships.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}

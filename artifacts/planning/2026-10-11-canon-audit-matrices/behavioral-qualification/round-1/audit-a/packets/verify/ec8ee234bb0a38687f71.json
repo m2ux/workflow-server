@@ -1,0 +1,1655 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_verify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "verify": {
+          "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            5
+          ],
+          [
+            9,
+            11
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 65453,
+      "output_tokens_estimate": 15872,
+      "work_seconds_estimate": 155
+    },
+    "id": "ec8ee234bb0a38687f71",
+    "items": [
+      "ec7e3577667dbf0846b7b09f",
+      "eaf04cb03551645c38d72842",
+      "51923b360aa3ef1a7585fbf4",
+      "7fa24663abc3348858407cd5",
+      "8f04699d8cada26b1b7ebcc5",
+      "f7c71bd7cd44e3d3cfd50614",
+      "501147c7c9cf63d456cc367b",
+      "21b5df21a5c696fcaa898fbf",
+      "d4d45cf60920c4360e003cf1",
+      "b1c897ef75ecfb0802a40206",
+      "b192bf0ffab5454aaf50901a",
+      "3e979fb0c7e3eb5836c3cb1a",
+      "f82d1cd9016de1cdd797e170",
+      "569231fa0b1023abbf3fc5e4",
+      "7567be6ff4d583433092c972",
+      "90bd5ed8d7c0859a6fbe41a1",
+      "094759e3ffb8236db086b566",
+      "9a13e148e0a434d148bef242",
+      "e0fcd50974c10678a3e2fb44",
+      "8862878198e6198ef77c1f28",
+      "48da822c85267d96ea48c4c2",
+      "5453a725eb6086baaa72c972",
+      "0e0de76a45b1ce5cc0a55a2d",
+      "0dfaae8a980c43d6afea14bc",
+      "0ed30157350f8c23d6297b75",
+      "62d70a2ce5a077d8010ce9fe",
+      "6eb38943804944cf6cfbb4ed",
+      "dadf707dc4833496ce962762",
+      "7c49f2961aec4917ed955bd7",
+      "ad7314b738ea597d93ae3b23",
+      "19723157905da0f5874e77db"
+    ],
+    "mappings": {
+      "094759e3ffb8236db086b566": "168c04a719f80f3c46e957c0963e6cd9a95fa20dbbddcbe28a8e32e31cef1f63",
+      "0dfaae8a980c43d6afea14bc": "74669b075ab3d0c9d316cad90a743a5d068e3c407548dad4a453b05823e94e05",
+      "0e0de76a45b1ce5cc0a55a2d": "1d9178e17c15496d72a3818993591bfe0ace865eddc4d4c41cf2f6703d14a5e7",
+      "0ed30157350f8c23d6297b75": "3171b0c7d71b6cf2e59588543f6aa1de7434d4b429e543f8a351216717baa3cf",
+      "19723157905da0f5874e77db": "4214f79e160b4e0abb1e5fbd931ddc3c9e9eddf253d6c04ca707586b5f01d974",
+      "21b5df21a5c696fcaa898fbf": "3e20683b7b2ba29f0fcac29a35af5839c84975c366a821e8ecb0f1549acb157f",
+      "3e979fb0c7e3eb5836c3cb1a": "a575a00a1fc138da5eecdabb3f5ed49b44e1da700b34d683e63320f8b0a62990",
+      "48da822c85267d96ea48c4c2": "8d13ebae2d12b0cf25f619f4088c5c702611f58297bf1d6be53cafb7c1b5b81d",
+      "501147c7c9cf63d456cc367b": "17a41fae520e9860185334f6fec994b319c4472d6503329cb2e212daba64ae13",
+      "51923b360aa3ef1a7585fbf4": "18053c9383bfca5d9603c144f8fa039a1d6db0342c98f8ea5ac050ddb4094fd8",
+      "5453a725eb6086baaa72c972": "f7d647ca5c2335dfd624bc9bf5ad6ea4313038d15f24219a203b17f7100f0e21",
+      "569231fa0b1023abbf3fc5e4": "bdf386a0cdce90662a7993c3c2047a7d51d87dd2841eb02b8c4b7b341a22e259",
+      "62d70a2ce5a077d8010ce9fe": "2a70fa28724aac278dae972f1bd16f54796d6131bf3e47a6a8e3e27fd213e1a1",
+      "6eb38943804944cf6cfbb4ed": "7f0ba72901b62888e906b4f41035bc9a24dac084f9f6afef884aa42aab0995b0",
+      "7567be6ff4d583433092c972": "e2da65ba94a26481b118b2d8fe84b3e86af0cee9200d552035dfe80aa777ba4e",
+      "7c49f2961aec4917ed955bd7": "c66e38404219d59f4cc4968eda3dd4c23b6d81271c136a18f567dad6b8b803c6",
+      "7fa24663abc3348858407cd5": "95ef7595b6b6c02c0e066a605e5fd51b1f637e4ca9e10608ddad0f5b677aa7a4",
+      "8862878198e6198ef77c1f28": "0cbb4fb1df2dbf29615a89335fcdea2af3b8bc50317578723aaa298c5821ab3c",
+      "8f04699d8cada26b1b7ebcc5": "0a12ca8e5d570a0957c10d8af00f029fa9a5cf1c6deced7800668b1c03aa6829",
+      "90bd5ed8d7c0859a6fbe41a1": "5d1a01a0eb5fb23412c0b1655d5fb3662e2fd574034b52e5cbf01a5e7224cc74",
+      "9a13e148e0a434d148bef242": "284ae6093d84f56a9a9f5532992501f626a0143285719b126a3349322c6bb06c",
+      "ad7314b738ea597d93ae3b23": "782dfaa6b78b482156c24a9da992857c9ce3c3723cdbd938ef388065813a5117",
+      "b192bf0ffab5454aaf50901a": "22373c2432ad0b8429fdc68275dd811e30085ab680101d564344fdf0893e771b",
+      "b1c897ef75ecfb0802a40206": "447c8af3c697553bd1406ae14ad2cd4ce8bb028ca635a59ca6bbfed9421bb10a",
+      "d4d45cf60920c4360e003cf1": "3f6a011204f0903fb32af000a136ca74f34a1f9f7398fdf3e798aeba618f71e2",
+      "dadf707dc4833496ce962762": "0c56f31692cbecca5e73c912ad88dcdd5e756ee586bfb9db6c4294bca371d712",
+      "e0fcd50974c10678a3e2fb44": "8e1a7f2c62417d4f8d065fefc83b56349cf206138a069ead79664bd21722aa34",
+      "eaf04cb03551645c38d72842": "99fe83178497978b7a8bb01310881d620c2754bfc1d702f96610ab2f15b7014c",
+      "ec7e3577667dbf0846b7b09f": "dbab1dab4c3b82d6709a64aac83fcdaa2fde0b0555da6761ff65b7ccfe644921",
+      "f7c71bd7cd44e3d3cfd50614": "fac8585b78a0f0900a3b763706bcd9914696a6b698a9d22cf9da1c822fe7c349",
+      "f82d1cd9016de1cdd797e170": "b69973bbf0062fa133787acd5aead73b34bc88845724a472ebaa1ddc9ee5d161"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-a/sources",
+  "cells": {
+    "094759e3ffb8236db086b566": [
+      "corpus/qualification/workflow.yaml#/graph",
+      "dp:2"
+    ],
+    "0dfaae8a980c43d6afea14bc": [
+      "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "dp:2"
+    ],
+    "0e0de76a45b1ce5cc0a55a2d": [
+      "corpus/qualification/routines/deliver.yaml#/inputs",
+      "dp:2"
+    ],
+    "0ed30157350f8c23d6297b75": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "dp:2"
+    ],
+    "19723157905da0f5874e77db": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "dp:2"
+    ],
+    "21b5df21a5c696fcaa898fbf": [
+      "corpus/qualification/techniques/produce.md#/rules",
+      "dp:2"
+    ],
+    "3e979fb0c7e3eb5836c3cb1a": [
+      "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "dp:2"
+    ],
+    "48da822c85267d96ea48c4c2": [
+      "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "dp:2"
+    ],
+    "501147c7c9cf63d456cc367b": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "dp:2"
+    ],
+    "51923b360aa3ef1a7585fbf4": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/id",
+      "dp:2"
+    ],
+    "5453a725eb6086baaa72c972": [
+      "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "dp:2"
+    ],
+    "569231fa0b1023abbf3fc5e4": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "dp:2"
+    ],
+    "62d70a2ce5a077d8010ce9fe": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "dp:2"
+    ],
+    "6eb38943804944cf6cfbb4ed": [
+      "corpus/qualification/techniques/produce.md#/capability",
+      "dp:2"
+    ],
+    "7567be6ff4d583433092c972": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "dp:2"
+    ],
+    "7c49f2961aec4917ed955bd7": [
+      "corpus/qualification/routines/deliver.yaml#/outputs",
+      "dp:2"
+    ],
+    "7fa24663abc3348858407cd5": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "dp:2"
+    ],
+    "8862878198e6198ef77c1f28": [
+      "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "dp:2"
+    ],
+    "8f04699d8cada26b1b7ebcc5": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "dp:2"
+    ],
+    "90bd5ed8d7c0859a6fbe41a1": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "dp:2"
+    ],
+    "9a13e148e0a434d148bef242": [
+      "corpus/qualification/workflow.yaml#/graph/run",
+      "dp:2"
+    ],
+    "ad7314b738ea597d93ae3b23": [
+      "corpus/qualification/routines/deliver.yaml#/outputs/report",
+      "dp:2"
+    ],
+    "b192bf0ffab5454aaf50901a": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+      "dp:2"
+    ],
+    "b1c897ef75ecfb0802a40206": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1",
+      "dp:2"
+    ],
+    "d4d45cf60920c4360e003cf1": [
+      "corpus/qualification/techniques/produce.md#/rules/line-11",
+      "dp:2"
+    ],
+    "dadf707dc4833496ce962762": [
+      "corpus/qualification/techniques/produce.md#/capability/line-2",
+      "dp:2"
+    ],
+    "e0fcd50974c10678a3e2fb44": [
+      "corpus/qualification/workflow.yaml#/graph/run/done",
+      "dp:2"
+    ],
+    "eaf04cb03551645c38d72842": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "dp:2"
+    ],
+    "ec7e3577667dbf0846b7b09f": [
+      "corpus/qualification/activities/run.yaml#/steps",
+      "dp:2"
+    ],
+    "f7c71bd7cd44e3d3cfd50614": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "dp:2"
+    ],
+    "f82d1cd9016de1cdd797e170": [
+      "corpus/qualification/routines/deliver.yaml#/steps",
+      "dp:2"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "dp:2": {
+      "end": 11,
+      "family": "2. Provide a terminating workflow path",
+      "hash": "78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5",
+      "id": "dp:2",
+      "label": "DP-02",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.",
+      "title": "2. Provide a terminating workflow path"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "094759e3ffb8236db086b566": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 4
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d79d5143821192a2c3b7835b58ae2135aaac63f356708803221ecfc68d996098",
+      "reason": "The workflow graph has the run activity and its done exit with destination null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "0dfaae8a980c43d6afea14bc": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "58a2d3e70ddde85ea92f719fa06a225b46ebbc3033f644d690d92e725fad3504",
+      "reason": "The routine input declaration is envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "0e0de76a45b1ce5cc0a55a2d": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e8d564c660c0ba27a5664b181d7727a96abb898f1dea3e276ab6dbff2daadecf",
+      "reason": "The routine Inputs list declares the sole name envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "0ed30157350f8c23d6297b75": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "ef0fb0de1849bc835f83c1d36bb7a2f7fc9375e3393647f0296802aa8f10adb6",
+      "reason": "The ancestor Capability describes constraining inherited delivery. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "19723157905da0f5874e77db": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "b2c90a26caa9b85146ec",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "fingerprint": "c139c929adbbeb67f9e21d38d05e6e85852699ac1932279d81ec4bb974a50cec",
+      "reason": "The complete routine declares envelope input, report: emit.report output, and the emit-to-produce call. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "21b5df21a5c696fcaa898fbf": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "c1a31c884d37b219876b161713a8539460b1dceae32cf551d33bb057e1852865",
+      "reason": "The leaf Rules contain ID retention, the clause validate the report before each emission, and Destination is archive. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "3e979fb0c7e3eb5836c3cb1a": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "204df30891cd2852f30bdcb04fccd8d74a24c9b50b85ea73c010049fa0052a1b",
+      "reason": "This leaf declaration states Destination is archive. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "48da822c85267d96ea48c4c2": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "baddf90f1dfeadf0c244332d65b1035c892871b8a82179e45331e4c66609e0a4",
+      "reason": "The graph-entry relationship resolves the run activity. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "501147c7c9cf63d456cc367b": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "1467d20436e386c2c23983f31b1fe8b2bd9f01b27d7d213bfde0f903937aabe8",
+      "reason": "The concrete routine invocation names deliver. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "51923b360aa3ef1a7585fbf4": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5306e708c49b4f3c4a4ec39a47b4e92eee7b37c3922023e6958fba4b2e9d3f83",
+      "reason": "The activity step identifier is delivery. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "5453a725eb6086baaa72c972": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "af1f5d832de33a00f00fdf6a40062f4e4809d23ac268a8e2ff6aa83abf840c84",
+      "reason": "The graph-entry relationship identifies the run/done binding context. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "569231fa0b1023abbf3fc5e4": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "bf8cfdd4794d164184a2b81de55ccc84076441b6ca52bc47a52219773c070dca",
+      "reason": "The emit step calls produce and is referenced by the routine output emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "62d70a2ce5a077d8010ce9fe": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "adf448757ebbaa39cb2ba11a3635f600aeea7f213471bb86497471228b9916ba",
+      "reason": "This ancestor Capability sentence says Constrain inherited delivery. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "6eb38943804944cf6cfbb4ed": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "79f7d47f025098758f1cdcacc86cca8c80df8c59445570d205538942203a84f8",
+      "reason": "The leaf Capability describes producing a report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "7567be6ff4d583433092c972": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5c66a75774d652a1c4a58212e373b1b7d014302479a749685378c53efd807592",
+      "reason": "The step id emit is the step-id endpoint of the routine output reference emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "7c49f2961aec4917ed955bd7": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2b86c03e1acabe8144c3f11d21ec8adf7927852baf89f53ca4c15c368a72b618",
+      "reason": "The routine Outputs map exports report from emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "7fa24663abc3348858407cd5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "24e595a200b3c4674194b371022d6b35c6c8c07994b6066943215fc964ed8dcf",
+      "reason": "The routine binding names deliver and supplies argument key envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "8862878198e6198ef77c1f28": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "333af111b3d3a874a9f4c4262e30394e0cf1ba7b2036deddb44cee56b0279d16",
+      "reason": "The initialActivity relationship connects qualification to run. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "8f04699d8cada26b1b7ebcc5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "ad39730429db90f13a76cc003db1bef0da10ff581bb17f90a1a84a19119b6cef",
+      "reason": "The argument map has the sole key envelope, with value sealed. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "90bd5ed8d7c0859a6fbe41a1": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "06848c147d8a0b15aca1de2b4e935077dd21e1e55261a37be86436cc25cda699",
+      "reason": "The emit step technique reference names produce, the declaration endpoint for emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "9a13e148e0a434d148bef242": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2478115a27cd0d1679e2cdc6ee63bdc5adb6baf17932cda0dacb1725f9b24c4e",
+      "reason": "The graph run entry has done: null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "ad7314b738ea597d93ae3b23": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f9e15564606928172bbac83d631672ab4b61e4adecd96c2b415611b6b5f23091",
+      "reason": "The routine report binding references emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "b192bf0ffab5454aaf50901a": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "354768dd7e48ef3b416952f96fceafa81cc7f15066ba5c407854659af1c2e7f5",
+      "reason": "This second Rules clause states: validate the report before each emission. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "b1c897ef75ecfb0802a40206": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "ab25b3955e8b6221467c638201b9a9e8d3b72ceeca170b7c3f6016a9a2b74bd8",
+      "reason": "This first Rules clause directs retention of the report ID. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "d4d45cf60920c4360e003cf1": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "31d1a3dd9ac844219c3de098b29681b634dbaf65fa8d424a5c3414861c64a413",
+      "reason": "This Rules line contains two independently testable clauses: Retain the report ID; validate the report before each emission. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "dadf707dc4833496ce962762": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "cac2a1da31f8ca7e161e89cd6893ba8366ade3835ad751f41b82429fe74a87b8",
+      "reason": "This leaf Capability sentence says Produce a report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "e0fcd50974c10678a3e2fb44": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2a2a2b9927e065f3c28730736968d2816c8fd45a2fdd259437f8c2368a6d3e15",
+      "reason": "The graph exit done has destination null. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    "eaf04cb03551645c38d72842": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "6db26a33d9ba0c4499970e591a28648b3c3c90ebab4cd0774a231390fe55f116",
+      "reason": "The delivery step invokes deliver with argument key envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "ec7e3577667dbf0846b7b09f": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "a30fa1dfdb9987b409fdd546be4d1cb9c32aa5304d319bbb1410263ca0db31bf",
+      "reason": "The activity steps invoke deliver with argument key envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "f7c71bd7cd44e3d3cfd50614": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "680c4c5456b4b8f9160b",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "820434cf2750cfe1395c72ae04e1bec76bf9f6aeeea7f1e12f7b0fb5b65abe27",
+      "reason": "The argument key is envelope and its opaque value is sealed. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    "f82d1cd9016de1cdd797e170": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "697233202616811944df",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "3f7989ef859ee661ee46c3810424090e9e6995f67d409e0d3ed507b5edaeeb9f",
+      "reason": "The routine steps define emit as a call to produce, resolving the step used by emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery": {
+      "address": "/steps/id=delivery",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "kind": "section",
+      "label": "/steps/id=delivery",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/id": {
+      "address": "/steps/id=delivery/id",
+      "end": 3,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/id",
+      "kind": "item",
+      "label": "/steps/id=delivery/id",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine": {
+      "address": "/steps/id=delivery/routine",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments": {
+      "address": "/steps/id=delivery/routine/arguments",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine/arguments",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope": {
+      "address": "/steps/id=delivery/routine/arguments/envelope",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/arguments/envelope",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name": {
+      "address": "/steps/id=delivery/routine/name",
+      "end": 5,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/name",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs": {
+      "address": "/outputs",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs/report": {
+      "address": "/outputs/report",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+      "kind": "item",
+      "label": "/outputs/report",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit": {
+      "address": "/steps/id=emit",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "kind": "section",
+      "label": "/steps/id=emit",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id": {
+      "address": "/steps/id=emit/id",
+      "end": 5,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "kind": "item",
+      "label": "/steps/id=emit/id",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique": {
+      "address": "/steps/id=emit/technique",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "kind": "item",
+      "label": "/steps/id=emit/technique",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 6,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/produce.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/produce.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules": {
+      "address": "/rules",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 10,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11": {
+      "address": "/rules/line-11",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11",
+      "kind": "item",
+      "label": "/rules/line-11",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1": {
+      "address": "/rules/line-11/clause-1",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1",
+      "kind": "item",
+      "label": "/rules/line-11/clause-1",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2": {
+      "address": "/rules/line-11/clause-2",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+      "kind": "item",
+      "label": "/rules/line-11/clause-2",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-12": {
+      "address": "/rules/line-12",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "kind": "item",
+      "label": "/rules/line-12",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 12,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#/graph": {
+      "address": "/graph",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph",
+      "kind": "section",
+      "label": "/graph",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 4,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run": {
+      "address": "/graph/run",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run",
+      "kind": "section",
+      "label": "/graph/run",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run/done": {
+      "address": "/graph/run/done",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run/done",
+      "kind": "item",
+      "label": "/graph/run/done",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {envelope: sealed}"
+    },
+    {
+      "end": 5,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 1,
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination"
+    },
+    {
+      "end": 11,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect."
+    },
+    {
+      "end": 12,
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### report\n\n## Protocol\n- Validate the report, then emit it.\n\n## Rules\n- Retain the report ID; validate the report before each emission.\n- Destination is archive."
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 5,
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: null"
+    },
+    {
+      "end": 5,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "start": 1,
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive."
+    }
+  ],
+  "supplemental": {}
+}

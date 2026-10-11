@@ -1,0 +1,105 @@
+{
+  "assignment": "1384940538ef3c801aeb",
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+  "records": [
+    {
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "status": "A",
+      "reason": "produce.md#@element: The complete leaf declares output report, instruction Validate the report, then emit it, a separate emission Rules clause, and Destination archive. DP-01 applies because this leaf row contains its Destination declaration. The qualification/run/deliver call chain selects the ancestor archive requirement; the declared values require comparison during evaluation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "a93639cc3c5c1ad866587c2e"
+      ],
+      "status": "N",
+      "reason": "run.yaml#/id: The activity declaration identifier is run. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "bf312e511dcc8f4eda77a41a"
+      ],
+      "status": "N",
+      "reason": "deliver.yaml#/id: The routine declaration identifier is deliver. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "status": "N",
+      "reason": "run.yaml#@element: The run activity contains delivery invoking deliver with argument key envelope. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    }
+  ]
+}

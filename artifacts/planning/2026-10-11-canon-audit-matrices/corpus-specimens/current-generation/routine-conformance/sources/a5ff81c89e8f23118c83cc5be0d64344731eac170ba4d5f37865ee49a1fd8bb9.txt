@@ -1,0 +1,25 @@
+id: positive-case
+version: 1.1.0
+name: Positive Case
+description: Refer to the orphan scan over files the graph records unreferenced symbols in.
+variables:
+  reads:
+    - positive_changed_files
+  writes:
+    - name: positive_orphan_candidates
+      type: array
+      description: Symbols in the files the graph holds that nothing references.
+required: true
+steps:
+  - kind: routine
+    id: scan-held-files
+    routine: gitnexus::orphan-scan
+    with:
+      changed_files: "{positive_changed_files}"
+    outputs:
+      orphan_candidates: positive_orphan_candidates
+exits:
+  - id: scanned
+    isDefault: true
+outcome:
+  - The run's literal graph query narrowed to the named files and landed the symbols among them that nothing references

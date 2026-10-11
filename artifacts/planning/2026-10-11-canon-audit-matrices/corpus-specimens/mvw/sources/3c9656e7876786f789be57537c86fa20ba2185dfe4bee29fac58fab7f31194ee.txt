@@ -1,0 +1,266 @@
+id: post-update-review
+version: 1.12.0
+name: Post-Update Review
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
+variables:
+  reads:
+    - component_git_dir
+    - host_repo_path
+    - planning_folder_path
+    - pr_number
+    - scope_manifest
+    - target_path
+    - verified_findings
+    - workflow_branch
+  writes:
+    - name: addressed_count
+      type: number
+      description: Scope-manifest items confirmed addressed by scope-verification.
+      defaultValue: 0
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: body
+      type: string
+      description: "Pull-request body: the change stated in a short paragraph, the manifest's entries as the file breakdown, and a link to the planning folder for the artifacts behind the change."
+    - name: conformance_finding_count
+      type: number
+      description: Count of convention-conformance divergences from audit-conformance.
+      defaultValue: 0
+    - name: conformance_findings_path
+      type: string
+      description: Absolute path to the persisted conformance-findings artifact when findings exist.
+      defaultValue: ""
+    - name: drafted_files
+      type: array
+      description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
+    - name: expressiveness_finding_count
+      type: number
+      description: Count of expressiveness findings from audit-expressiveness.
+      defaultValue: 0
+    - name: expressiveness_findings_path
+      type: string
+      description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+      defaultValue: ""
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: needs_recommit
+      type: boolean
+      description: True when post-update remedia edits are pending publication to the open pull request.
+      defaultValue: false
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: pr_number
+      type: string
+      description: Number of the pull request opened for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: pushed_branch
+      type: string
+      description: The branch that was pushed (`{remote_name}/{branch}` form or the branch name when verification only needs the local name).
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: review_findings_count
+      type: number
+      description: Total number of compliance findings identified during review.
+      defaultValue: 0
+    - name: title
+      type: string
+      description: Pull-request title naming the target workflow and whether the change creates or modifies it.
+    - name: total_count
+      type: number
+      description: Total scope-manifest items checked by scope-verification.
+      defaultValue: 0
+    - name: unaddressed_count
+      type: number
+      description: Scope-manifest items still unaddressed after scope-verification.
+      defaultValue: 0
+required: true
+steps:
+  - kind: technique
+    id: reload-updated-workflow
+    technique: reload-workflow
+  - kind: technique
+    id: audit-expressiveness
+    technique: audit-expressiveness
+  - kind: technique
+    id: audit-conformance
+    technique: audit-conformance
+  - kind: technique
+    id: audit-principles
+    technique: audit-principles
+  - kind: technique
+    id: audit-anti-patterns
+    technique: audit-anti-patterns
+  - kind: technique
+    id: audit-schema-validation
+    technique: audit-schema-validation
+  - kind: technique
+    id: scope-audit
+    technique: scope-audit
+  - kind: technique
+    id: summarize-findings
+    technique: summarize-findings
+  - kind: technique
+    id: save-review-snapshot
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: post-update-review.md
+        artifact_content: findings_summary
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
+  - kind: action
+    id: post-update-clean
+    when: review_findings_count == 0
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set false — this pass's audit is already clean; do not enter remedia from a sticky prior value.
+      - action: set
+        target: needs_recommit
+        message: Set false — clean audit this pass means no remedia edits are pending recommit; clear any sticky prior value.
+      - action: message
+        message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
+  - kind: action
+    id: classify-post-update-fixes
+    when: review_findings_count > 0
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set true when review_findings_count is greater than 0 so the remedia while-loop runs. False only when the summary is already clean.
+      - action: set
+        target: needs_recommit
+        message: Set true — remedia edits already-committed files, so the publish tail below commits, pushes, and refreshes the pull request.
+      - action: message
+        message: "Post-update review complete. {review_findings_count} findings — remediating automatically ([post-update review]({report_path}))."
+  - kind: loop
+    id: post-update-remedia-cycle
+    name: Post-Update Remedia Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: needs_audit_fixes
+      operator: ==
+      value: true
+    maxIterations: 3
+    steps:
+      - kind: technique
+        id: remedia-yaml-authoring
+        technique: yaml-authoring
+      - kind: technique
+        id: remedia-audit-schema
+        technique: audit-schema-validation
+      - kind: technique
+        id: remedia-apply-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: remedia-audit-expressiveness
+        technique: audit-expressiveness
+      - kind: technique
+        id: remedia-audit-conformance
+        technique: audit-conformance
+      - kind: technique
+        id: remedia-audit-principles
+        technique: audit-principles
+      - kind: technique
+        id: remedia-audit-anti-patterns
+        technique: audit-anti-patterns
+      - kind: technique
+        id: remedia-revalidate-schema
+        technique: audit-schema-validation
+      - kind: technique
+        id: remedia-summarize
+        technique: summarize-findings
+      - kind: action
+        id: remedia-reassess
+        actions:
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the audits and summarize-findings, set true iff review_findings_count is still greater than 0; false when every pass comes back at 0 findings.
+  - kind: action
+    id: remedia-still-dirty
+    when: needs_audit_fixes == true
+    actions:
+      - action: message
+        message: "Post-update remedia exhausted with findings remaining ([post-update review]({report_path}))."
+  - kind: technique
+    id: republish-verify-scope-manifest
+    technique: scope-verification
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-verify-planning-readme
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: workflow-design/readme-seed
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-stage-and-commit
+    technique: git::commit-regular-files
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-verify-commit
+    technique: commit-verification
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-push-branch
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-pr-description
+    technique: publish-workflow-pr
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-pull-request
+    technique:
+      name: github::create-pr
+      inputs:
+        repo_path: target_path
+        branch_name: workflow_branch
+        base_branch: workflows
+        as_draft: false
+    when: needs_recommit == true
+  - kind: action
+    id: republish-complete
+    when: needs_recommit == true
+    actions:
+      - action: set
+        target: needs_recommit
+        message: Set false — the remedia edits are committed, pushed, and reflected in the pull request.
+      - action: message
+        message: "Post-update remediation published to [PR #{pr_number}]({pr_url})."
+exits:
+  - id: needs-audit-fixes
+    when: needs_audit_fixes == true
+  - id: review-clean
+    when: review_findings_count == 0 && needs_recommit == false && needs_audit_fixes == false
+    isDefault: true
+outcome:
+  - The committed update is either clean or automatically remediated — findings never wait on an accept/iterate/revert choice
+  - Remediation edits reach the open pull request from here, so a finding costs one audit rather than a second pass over the whole definition tree
+  - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

@@ -1,0 +1,141 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "c4dd19d2820d21800c12",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-map-verify-two-1",
+  "records": [
+    {
+      "items": [
+        "9839de920cafa86c93f9e319",
+        "16ed4220394232ac66e84453",
+        "a6cc9c95bd8a15eec9337ab9",
+        "7616d539ed6effba75237723",
+        "a700a3294be653eb8e533547",
+        "cc4fea783a74407b8fdb654e",
+        "d9b55f0b6cbe3ed6ab868ed5",
+        "4da9396f20f50a18673256c5",
+        "36c8e451b93d39512aae352f",
+        "54a73e1bf111128988cf03fe",
+        "7d5cdef67a14fe0a0e70a8ff",
+        "8b3b602b6703003326b8df8d",
+        "8d0f33a043c7068e8c998046",
+        "98b55e096e4899353322814f",
+        "a0e70a1645458e99657058ca"
+      ],
+      "status": "verified",
+      "reason": "Verified N: the listed activity, routine and technique rows supply local declarations, steps, contracts or call/inheritance context rather than a workflow start or graph edge. DP-02 expressly states that activity and routine steps add no graph exits and defines termination as a whole-workflow invariant. These rows do not independently create a path-to-null test. Assigned rows: corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/report, corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8, corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53, corpus/qualification/techniques/TECHNIQUE.md#@element, corpus/qualification/activities/run.yaml#/id, corpus/qualification/activities/run.yaml#@element, corpus/qualification/techniques/produce.md#@element, corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8, corpus/qualification/routines/deliver.yaml#/id.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "status": "verified",
+      "reason": "Verified N: workflow line 1 only names qualification. It supplies neither initialActivity nor a graph entry/exit; DP-02 requires the reachable path invariant. The initialActivity, graph and whole-workflow rows remain independently applicable, so the label exclusion does not bypass termination assessment. Assigned rows: corpus/qualification/workflow.yaml#/id.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "verified",
+      "reason": "Verified A: each listed workflow row supplies initialActivity, a graph entry/exit, a graph relationship or the whole workflow. DP-02 requires assessment of their complete reachable graph for a finite path to null. Activity name resolution alone cannot decide that invariant, and either a terminating edge or a self-loop remains within the criterion scope. Assigned rows: corpus/qualification/workflow.yaml#/initialActivity, corpus/qualification/workflow.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

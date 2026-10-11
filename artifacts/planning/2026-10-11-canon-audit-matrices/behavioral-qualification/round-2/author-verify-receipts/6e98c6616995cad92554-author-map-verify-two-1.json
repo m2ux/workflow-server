@@ -1,0 +1,154 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b",
+  "assignment": "6e98c6616995cad92554",
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-map-verify-two-1",
+  "records": [
+    {
+      "items": [
+        "fc60645fdab03b4f360b972e",
+        "ece85719689c1a3411d52a12",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "f1186a7f61ea9f6493402006",
+        "23d52f087c143d67f67da445"
+      ],
+      "status": "verified",
+      "reason": "Verified A: AP-02 contract (1) compares the concrete run.delivery invocation argument-key set at activity line 6 with deliver Inputs at routine line 2. These rows expose the invocation, selector, key container/key, declared input endpoint, containing element or direct call relationship. The captured exact key names must be compared during evaluation even when they match; sealed is an opaque value. Assigned rows: corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "03b141fa3c167d6b5347f32a",
+        "a30b577290e3406e29334f7b",
+        "6dff2018269cdd7f6ce3a242",
+        "923c5917ea2c9d4abe29e519",
+        "a03eed5b1543ec6c3d53b66c",
+        "185e903ef3c4ae26da231a32",
+        "30d521174c6c7f6c4a8579ad",
+        "94b820a882f196103f835741",
+        "8020bba4283a65b31df0f113",
+        "f0755acc68e9a62e580665a3",
+        "e3964a7ca7f68e7c40793e11",
+        "fc47360bf214ca94a9c2f752",
+        "e8a18028e34e1ace5d01fcf3",
+        "4c3a69d6842d941bb1b4ae64",
+        "883f9febadc76de8d4b64dd6",
+        "547682eae905cf61fddd33be",
+        "0f13f165ba007a4540cef470",
+        "5fb3f06992383a0be7318734",
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "status": "verified",
+      "reason": "Verified N after inspecting the listed rows: none supplies an activity routine argument-key contract, routine Inputs endpoint, routine step.output export, its referenced emit step/technique endpoint or a called-technique output declaration. Their artifact prose, retention/destination constraints, unrelated identifiers, graph structure and inheritance-only context are outside AP-02 binding forms. This conclusion does not infer validity from a clean declaration. Assigned rows: corpus/qualification/activities/run.yaml#/steps/id=delivery/id, corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-1, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b, corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2, corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8, corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "82c8e910cc4b4df96a89e369",
+        "790b168511688f3580f49f17",
+        "e6707d2a492bbb28eafc3a21",
+        "387b3abcf94e6a19aabbf992",
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "status": "verified",
+      "reason": "Verified A: AP-02 contract (2) resolves routine line 3 emit.report through emit at lines 5-6 to the produce Outputs heading at line 5. These rows supply that exported binding, its named step/technique resolution endpoint, output-name declaration or containing element. An exact match remains applicable; Markdown report mentions elsewhere do not supply this binding. Assigned rows: corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

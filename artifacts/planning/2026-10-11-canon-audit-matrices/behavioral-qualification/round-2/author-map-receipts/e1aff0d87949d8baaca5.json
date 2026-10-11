@@ -1,0 +1,309 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "e1aff0d87949d8baaca5",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_two",
+  "attempt": "author-map-independent-2",
+  "records": [
+    {
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "status": "N",
+      "reason": "The routine steps resolve emit.report through step emit to technique produce. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "status": "N",
+      "reason": "The emit step resolves the step-id part of the routine output binding and calls produce. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "status": "N",
+      "reason": "The step identifier emit is the step-id selected by the binding emit.report. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "status": "N",
+      "reason": "The technique reference produce selects the output declaration authority for emit.report. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "status": "N",
+      "reason": "This relationship resolves initialActivity run and belongs to the reachable workflow path. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "status": "N",
+      "reason": "This relationship resolves the graph entry run, whose exits must be assessed in the complete workflow graph. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "status": "N",
+      "reason": "This relationship locates the run.done graph exit; activity resolution alone cannot settle termination. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "status": "N",
+      "reason": "The routine Inputs list declares envelope, the key-set contract for concrete activity invocations. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "status": "N",
+      "reason": "The routine input entry declares envelope, a member of the required invocation key set. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "status": "N",
+      "reason": "The ancestor Rules section declares that Destination must be archive. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "status": "N",
+      "reason": "The ancestor constraint declares that Destination must be archive. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "status": "A",
+      "reason": "The leaf Protocol section contains the report emission instruction on line 8. AP-01 scopes each report-emitting Protocol instruction and Rules clause, including directives that require validation. The presence or absence of validation determines later evaluation, not applicability; compound clauses remain independently testable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "A",
+      "reason": "The leaf Protocol instruction on line 8 explicitly addresses report emission and validation. AP-01 scopes each report-emitting Protocol instruction and Rules clause, including directives that require validation. The presence or absence of validation determines later evaluation, not applicability; compound clauses remain independently testable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "status": "N",
+      "reason": "The routine Outputs object binds exported report to emit.report. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "status": "N",
+      "reason": "The exported routine output report is bound to emit.report. AP-01 Detect reaches imperative emission instructions in a technique Protocol or Rules clause. This row is a declaration, description, structural identifier, or relationship, without an emission directive of its own; the criterion expressly distinguishes headings, output declarations, destination declarations, calls, bindings, graph labels and Capability prose.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "d6625489e75ccf4514f0",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8",
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519",
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3",
+        "a406c04573c91f8ad82577e3",
+        "8bfa310664405693e5cee00b",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "The captured call chain is qualification initial/graph run -> run activity delivery -> deliver routine emit -> produce. In that executing workflow the applicable ancestor is qualification/techniques/TECHNIQUE.md, whose Rules require archive. The leaf declares Destination is archive. The values agree; the ancestor declaration is the requirement, not a second conflicting leaf. This same chain and comparison hold for every assigned row.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

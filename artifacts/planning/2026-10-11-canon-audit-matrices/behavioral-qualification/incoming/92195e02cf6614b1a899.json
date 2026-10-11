@@ -1,0 +1,293 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "92195e02cf6614b1a899",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b"
+      ],
+      "reason": "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the packet argument. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "4c9b9e3283acb76acd0c593c"
+      ],
+      "reason": "run.yaml#/steps/id=delivery: The delivery step invokes deliver and supplies the packet argument. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "eb0acb5f69509bc093ccb4c4"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/id: This scalar names the activity step delivery; it does not declare an argument key or exported output. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f71acc678543f1dedd6da64"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine: The routine object names deliver and supplies the packet argument. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "85d58778322169b7eb358fb2"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments: The invocation arguments have the single key packet; sealed is its opaque value. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "460145b3f2b47abf7cc6997a"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments/packet: The invocation argument key is packet and its opaque value is sealed. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/name: The routine name deliver selects the declaration whose Inputs list is envelope. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "produce.md#/rules: The leaf Rules retain the report ID, emit the report without validation, and declare Destination public. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "produce.md#/rules/line-11: The compound rule retains the report ID in its first clause and says to emit the report without validation in its second. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "produce.md#/rules/line-11/clause-1: Only the first semicolon-separated clause is this row: Retain the report ID. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "produce.md#/rules/line-11/clause-2: Only the second semicolon-separated clause is this row: emit the report without validation. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "reason": "produce.md#/rules/line-12: The leaf declaration says Destination is public. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "reason": "TECHNIQUE.md#/rules: The ancestor TECHNIQUE Rules declare Destination must be archive. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "TECHNIQUE.md#/rules/line-5: The ancestor destination constraint requires archive; it is not a leaf destination declaration. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "TECHNIQUE.md#@element: The complete ancestor declares its capability and the required archive destination, with no leaf destination or binding. AP-01 requires an emission directive; this retention or destination declaration does not direct emission, as the criterion explicitly distinguishes.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

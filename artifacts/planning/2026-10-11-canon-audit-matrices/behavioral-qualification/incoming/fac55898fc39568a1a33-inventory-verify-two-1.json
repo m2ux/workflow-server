@@ -1,0 +1,296 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "fac55898fc39568a1a33",
+  "attempt": "inventory-verify-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "The complete 21-line catalog contains one Controlled Qualification family and exactly two named entries, emission-without-validation and broken-binding, through the final line. Their Detect, Do not flag and Fix wording is captured in the two AP criteria. The family is also present as supplemental ap:controlled-qualification. No later family or entry is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "The complete five-line convention source contains the single Evidence scope heading. Its complete body is present as supplemental cc:evidence-scope. It directs use of complete captured definitions, four controlled criteria and the explicit execution relationship; it does not claim engine-schema or full-project-canon conformance. The selected guards obligation is present, without asserting its outcome.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "The complete 11-line source contains exactly two numbered principles: inherited destination and terminating workflow path. Both complete numbered units are present as dp:1 and dp:2, including the declaration/relationship limits and whole-workflow termination scope. No later heading is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "All 10 activity rows cover id, the delivery step and its id, routine/name, argument container, the packet key, whole element and the deliver call. The native invocation at lines 3-6 resolves to routines/deliver.yaml. The complete file has no additional step, binding, clause or reference.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "All 12 routine rows cover id, envelope input, exported report binding to emit.report, emit step/id/produce call, whole element, direct technique relationship and the explicit execution instance. The latter records qualification/run/delivery/deliver/emit and all five workflow/activity/routine/leaf/ancestor sources. Declaration and instantiation are separate; no nested call or binding is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "All five ancestor rows cover Capability and its text, Rules and the archive constraint, and the whole element. The complete file contains one constraint and no additional clause or call. It is selected as inherited context; the leaf relationship explicitly retains this endpoint.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "All 13 leaf rows cover Capability, the summary output section, Protocol and its line-8 instruction, Rules, line 11 plus both independently testable semicolon clauses, line 12 Destination, whole element and ancestor relationship. Retention and emission clauses remain distinct. The complete 12-line file has no additional paragraph, instruction, binding or reference.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "All 10 workflow rows cover id, initialActivity, graph/run/done containers and exit, whole element and each native graph reference. Initial run and the run graph key resolve to activities/run.yaml; done targets run. The self-loop target supplies its own additional graph:run relationship at /graph/run/done. These are inventory observations, not a termination judgment.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "The full captured canon home is correctly outside the definition surface: it is not a touched definition and contains no definition reference requiring closure. It remains included in the canon inventory. Its unselected manifest membership and empty reference list match the complete source. The complete 21-line catalog contains one Controlled Qualification family and exactly two named entries, emission-without-validation and broken-binding, through the final line. Their Detect, Do not flag and Fix wording is captured in the two AP criteria. The family is also present as supplemental ap:controlled-qualification. No later family or entry is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "The full captured canon home is correctly outside the definition surface: it is not a touched definition and contains no definition reference requiring closure. It remains included in the canon inventory. Its unselected manifest membership and empty reference list match the complete source. The complete five-line convention source contains the single Evidence scope heading. Its complete body is present as supplemental cc:evidence-scope. It directs use of complete captured definitions, four controlled criteria and the explicit execution relationship; it does not claim engine-schema or full-project-canon conformance. The selected guards obligation is present, without asserting its outcome.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "The full captured canon home is correctly outside the definition surface: it is not a touched definition and contains no definition reference requiring closure. It remains included in the canon inventory. Its unselected manifest membership and empty reference list match the complete source. The complete 11-line source contains exactly two numbered principles: inherited destination and terminating workflow path. Both complete numbered units are present as dp:1 and dp:2, including the declaration/relationship limits and whole-workflow termination scope. No later heading is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "The manifest correctly selects this file as a touched seed. The captured workflow, activity, routine, leaf and ancestor form the complete concrete call/inheritance closure. All 10 activity rows cover id, the delivery step and its id, routine/name, argument container, the packet key, whole element and the deliver call. The native invocation at lines 3-6 resolves to routines/deliver.yaml. The complete file has no additional step, binding, clause or reference.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

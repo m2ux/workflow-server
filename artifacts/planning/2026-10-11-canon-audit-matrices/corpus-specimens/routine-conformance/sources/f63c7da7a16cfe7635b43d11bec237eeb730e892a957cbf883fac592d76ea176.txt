@@ -1,0 +1,31 @@
+id: behavioral-synthesis-pass
+version: 2.0.0
+name: Behavioral Synthesis Pass
+description: Run the behavioral synthesis lens against each behavioral unit's artifacts.
+variables:
+  reads:
+    - analysis_units
+    - behavioral_output_paths
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: current_unit
+      type: object
+      description: Current analysis unit during iteration loop
+techniques:
+  - scatter-gather
+steps:
+  - kind: routine
+    id: behavioral-synthesis
+    routine: per-unit-pass
+    with:
+      pass_operation: behavioral-pipeline::synthesis
+      prior_artifact_paths: behavioral_output_paths
+      unit_pipeline_mode: behavioral
+    outputs:
+      all_artifact_paths: all_artifact_paths
+      current_unit: current_unit
+exits:
+  - id: done
+    isDefault: true

@@ -1,0 +1,99 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "24598b152cffcb11f399",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a0e70a1645458e99657058ca"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "reason": "DP-02 concerns the initialActivity-to-null graph path. This row only declares the workflow identifier; it supplies neither an entry/exit nor the whole graph, and identifier matching does not prove termination. Row: /id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "DP-02 requires a finite initialActivity-to-null path in the complete workflow graph. This row supplies an entry, graph edge, graph relationship or the whole workflow; its decision requires the entire captured graph. Row: /initialActivity.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "DP-02 requires a finite initialActivity-to-null path in the complete workflow graph. This row supplies an entry, graph edge, graph relationship or the whole workflow; its decision requires the entire captured graph. Row: @element.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6"
+}

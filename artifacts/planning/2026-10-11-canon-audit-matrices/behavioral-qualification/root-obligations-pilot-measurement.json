@@ -1,0 +1,8 @@
+{
+  "packet_bytes": 5954,
+  "receipt_bytes": 1538,
+  "elapsed_seconds": 22.579774,
+  "items": 1,
+  "observed_by": "/root",
+  "evidence": "Complete pilot packet plus check-observation and fixture-guard returned in root tool call at 07:16:01 UTC. Actual check exited0; no semantic pass inferred."
+}

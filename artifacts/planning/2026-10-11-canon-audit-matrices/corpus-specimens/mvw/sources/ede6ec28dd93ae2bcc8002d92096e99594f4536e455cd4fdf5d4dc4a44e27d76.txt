@@ -1,0 +1,54 @@
+---
+metadata:
+  version: 2.2.0
+---
+
+## Capability
+
+Outermost git host repository for a workspace path, derived from git rather than from prose. Answers *which repository owns this checkout*, never *which component is being worked on* — git.host-is-derived-component-is-named.
+
+## Inputs
+
+### workspace_path
+
+*(optional)* Directory that is the starting point for the ascent.
+
+#### default
+
+`.`
+
+## Outputs
+
+### target_repo
+
+`owner/repo` of the host repository. Unset when the workspace is not a git repo or the host has no origin remote.
+
+### host_repo_path
+
+Absolute path of the outermost repository that claims the workspace checkout — the workspace's own toplevel when nothing claims it.
+
+### component_hint
+
+Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the workspace path already sits inside. Unset when the ascent crossed nothing, or crossed only infrastructure boundaries (an infrastructure submodule, or the engineering worktree).
+
+## Protocol
+
+### 1. Resolve the Innermost Toplevel
+
+- Resolve the innermost toplevel: `git -C {workspace_path} rev-parse --show-toplevel`. When the command fails, the workspace is not a git repo — leave every output unset and stop, so the caller takes its documented fallback.
+
+### 2. Ascend to the Outermost Superproject
+
+- Ascend while the current toplevel's parent directory is itself a git repository and either test holds. Each successful test moves the current toplevel to that parent; the outermost superproject wins. Record each boundary crossed. Emit `{host_repo_path}` and `{component_hint}` per their Output criteria.
+  > - The parent's `.gitmodules` declares the current toplevel as a submodule `path`. The boundary is infrastructure when git.infrastructure-submodule-paths says so.
+  > - The current toplevel is a linked worktree of that parent: `git rev-parse --git-common-dir` in both checkouts names one directory, and the worktree's path relative to the parent is an infrastructure engineering path (git.infrastructure-engineering-path). That boundary is infrastructure.
+
+### 3. Read the Origin Remote
+
+- Read `git -C {host_repo_path} remote get-url origin` and emit `{target_repo}`, accepting both the SSH form (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`) and dropping any trailing `.git`. When the host has no origin remote, leave `{target_repo}` unset and stop — the fallback case again.
+
+## Rules
+
+### prose-sources-are-fallback-only
+
+The workspace `AGENTS.md` / `CLAUDE.md` and the user are fallback sources for `{target_repo}`, never primary ones. They apply only where this derivation yields nothing — a workspace that is not a git repo, or a host with no origin remote. A repository taken from prose while git could have answered is the defect this technique exists to remove.

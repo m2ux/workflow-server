@@ -1,0 +1,42 @@
+[
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "0873c0e437fc6280dc80",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/0873c0e437fc6280dc80-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "12767cd0b5923faa3e80",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/12767cd0b5923faa3e80-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "386e8d82f2c800c9e4b9",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/386e8d82f2c800c9e4b9-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "40a0a0b174a6c3b198d8",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/40a0a0b174a6c3b198d8-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "c589f862ba824a17da94",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/c589f862ba824a17da94-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "f3a8f3d1e3e5b6b1761d",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/f3a8f3d1e3e5b6b1761d-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "fab544238c1f09490706",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/fab544238c1f09490706-inventory-verify-two-1.json"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "fac55898fc39568a1a33",
+    "file": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/inventory-receipts/fac55898fc39568a1a33-inventory-verify-two-1.json"
+  }
+]

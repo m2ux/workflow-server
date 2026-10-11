@@ -1,0 +1,91 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "f2f93841d6a8f12bf709",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Supply envelope as the delivery invocation's argument key.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery supplies argument key packet, but deliver requires envelope."
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e",
+        "ece85719689c1a3411d52a12",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "f1186a7f61ea9f6493402006",
+        "23d52f087c143d67f67da445",
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33",
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "The concrete delivery invocation supplies exactly {packet}, while deliver Inputs requires [envelope]. With no optional parameters or aliases, the required input is unbound and the supplied key is outside the contract. This is a structurally broken live invocation. The activity belongs to scope.paths, establishing diff attribution without a Git-base claim. Assigned rows: corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/activities/run.yaml#@element.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Bind outputs.report to emit.summary, the output declared by produce.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369",
+        "790b168511688f3580f49f17",
+        "e6707d2a492bbb28eafc3a21",
+        "387b3abcf94e6a19aabbf992",
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "The routine export report is bound to emit.report. Resolving emit selects produce, whose complete Outputs section declares only summary; report is absent. The output binding cannot resolve and is structurally broken. The consumer break depends on the producer's declared changed output contract in scope.paths, so origin is diff without asserting historical base equality. Assigned rows: corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

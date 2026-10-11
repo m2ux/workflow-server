@@ -1,0 +1,27 @@
+{
+  "actor": "/root",
+  "assignment": "cb12452fe57451b3ce9c",
+  "attempt": "deliberate-negative-candidate",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "Protocol instructions are operational context; emission validation is assigned only to Rules clauses.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

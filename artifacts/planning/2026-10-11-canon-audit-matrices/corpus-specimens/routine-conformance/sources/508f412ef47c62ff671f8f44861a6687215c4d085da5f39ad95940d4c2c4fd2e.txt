@@ -1,0 +1,40 @@
+id: analysis
+version: 1.5.0
+name: Analysis
+description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
+variables:
+  reads:
+    - analysis_type
+    - planning_folder_path
+  writes:
+    - name: analysis_document
+      type: string
+      description: Path to the analysis document produced during the analysis activity
+steps:
+  - kind: technique
+    id: analyze-completion
+    technique: analyze-initiative-context::analyze-completion
+    when: "analysis_type == completion"
+  - kind: technique
+    id: analyze-context
+    technique: analyze-initiative-context::analyze-context
+    when: "analysis_type == context"
+  - kind: checkpoint
+    id: analysis-confirmed
+    message: The initiative's starting-point context is captured in [analysis document]({analysis_document}).
+    options:
+      - id: proceed
+        label: Context is correct, proceed
+        effect:
+          exit: done
+      - id: revise
+        label: Revise analysis
+        effect:
+          exit: revise
+exits:
+  - id: done
+    isDefault: true
+  - id: revise
+outcome:
+  - Later planning rests on a validated understanding of the initiative's starting point - either existing progress or fresh-start context
+  - User has confirmed the captured context is accurate, so package planning can proceed without re-litigating assumptions

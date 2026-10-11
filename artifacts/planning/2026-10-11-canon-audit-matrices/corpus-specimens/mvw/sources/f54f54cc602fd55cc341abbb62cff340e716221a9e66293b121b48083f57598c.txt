@@ -1,0 +1,39 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the symptom trace under text the graph ranks and a suspect the graph holds.
+variables:
+  reads:
+    - positive_suspect_symbol
+    - positive_symptom_text
+  writes:
+    - name: positive_query_report
+      type: object
+      description: The execution flows the symptom's text ranked into, the symbols those flows run, and the definitions reached outside any flow.
+    - name: positive_context_report
+      type: object
+      description: The suspect's callers, callees and flow membership.
+    - name: positive_suspect_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the suspect participates in.
+    - name: positive_call_chains
+      type: array
+      description: Every chain of calls reaching the suspect within two hops, each with the caller it starts at and how many hops it takes.
+required: true
+steps:
+  - kind: routine
+    id: trace-held-suspect
+    routine: gitnexus::symptom-trace
+    with:
+      symptom_text: "{positive_symptom_text}"
+      suspect_symbol: "{positive_suspect_symbol}"
+    outputs:
+      query_report: positive_query_report
+      context_report: positive_context_report
+      suspect_flow_traces: positive_suspect_flow_traces
+      call_chains: positive_call_chains
+exits:
+  - id: traced
+    isDefault: true
+outcome:
+  - The run ranked the symptom into flows, read the suspect's connections, traced every flow the suspect runs and landed the call chains reaching it

@@ -1,0 +1,404 @@
+{
+  "actor": "/root/qualify_verify_audit_one",
+  "assignment": "c0ee82a53a4ae24c18a1",
+  "attempt": "independent-current-verify-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "afeb129e1e03e4f353693950"
+      ],
+      "reason": "N: The routine-to-technique relationship resolves emit to produce. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7b47769dd43afb09823a4b14"
+      ],
+      "reason": "N: The execution relationship binds qualification/run/delivery/deliver/emit to produce and its ancestor. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee"
+      ],
+      "reason": "N: Ancestor Capability describes constraining inherited delivery. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "720f7eeadf6be862dd39b7ab"
+      ],
+      "reason": "N: The ancestor Capability sentence describes inherited delivery constraints. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e00abe344b2cf11c702b34f1"
+      ],
+      "reason": "N: The leaf Outputs section declares summary. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "b055cfe76040cd42f5d207a8"
+      ],
+      "reason": "N: The leaf output heading declares summary. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e192558242a4ed960c5d7a46"
+      ],
+      "reason": "N: Capability describes the service Produce a report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "reason": "N: The Capability sentence describes producing a report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "N: The ancestor contains a Capability description and archive destination constraint. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "0782b255d289b2d8aaa260a8"
+      ],
+      "reason": "N: run is the activity identifier. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2ec151da2546cd9066780932"
+      ],
+      "reason": "N: deliver declares envelope input, report: emit.report and the emit-to-produce call. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "3641b7b9d54d55df0cc22cb1"
+      ],
+      "reason": "N: The workflow initialActivity is run. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "5551fe05b667e60209399004"
+      ],
+      "reason": "N: The workflow starts at run and its sole exit is done: run. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "6d000a7587cb7a720d3ce09a"
+      ],
+      "reason": "N: The complete activity invokes deliver with the sole argument key packet. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8ab5a44208c83cc6801721f8"
+      ],
+      "reason": "N: The inheritance relationship connects produce to qualification TECHNIQUE.md. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9156a757fd93955348ca5766"
+      ],
+      "reason": "N: deliver is the routine identifier. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ca0a66d25c90e652baa92f28"
+      ],
+      "reason": "N: qualification is the workflow identifier. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "A: The complete leaf declares summary, two emission directives and Destination is public. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e42353cfc8fe3169b809b996"
+      ],
+      "reason": "N: The run/delivery-to-deliver relationship carries argument key packet. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

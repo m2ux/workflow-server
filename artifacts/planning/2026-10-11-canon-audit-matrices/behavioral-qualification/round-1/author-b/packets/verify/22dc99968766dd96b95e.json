@@ -1,0 +1,1155 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_verify_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "verify": {
+          "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            8
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 43643,
+      "output_tokens_estimate": 9728,
+      "work_seconds_estimate": 95
+    },
+    "id": "22dc99968766dd96b95e",
+    "items": [
+      "b6ad6f9e4c3bf6bcd7517234",
+      "3dd8981b7cf70f3489f0cb9a",
+      "b7876638c82ca7835e6ecd54",
+      "8b527c51fa312ce306f5d8f4",
+      "cf440ff1717daba3ba33af52",
+      "af24593c352cedfdf9a972fa",
+      "eb3d9f625d45294630564c36",
+      "15ee43746437cfdf860b1519",
+      "263ad09bd2d440e2a894ee63",
+      "65dd3d64e8c54c7713685121",
+      "665c1a7ad6f6a7650e3f374a",
+      "69c0652ae2e85de91e1e5de4",
+      "8bfa310664405693e5cee00b",
+      "91a7785154a1a018658ccae8",
+      "9fff88eaae065adb66759e66",
+      "a406c04573c91f8ad82577e3",
+      "a93639cc3c5c1ad866587c2e",
+      "bf312e511dcc8f4eda77a41a",
+      "fd8572c700cc4625bf5e2e78"
+    ],
+    "mappings": {
+      "15ee43746437cfdf860b1519": "0cc83d0b60bd985af576d1fffb33c20201097a0fd1fe17fe8a746e6cc1457f2b",
+      "263ad09bd2d440e2a894ee63": "e9ad7d46df61a5ea62a24edc10e0059be2a17b749500f990b193bfd182a9376f",
+      "3dd8981b7cf70f3489f0cb9a": "324d49c2b8c530adf7952d77dfc2a47cf2abb6a4a347f99fe0664b6fbfc36a07",
+      "65dd3d64e8c54c7713685121": "41639541608d0653f2f74dc994d1646a75dd1a5f08e59f1c2bcb7ef58b3d4b5e",
+      "665c1a7ad6f6a7650e3f374a": "993d6182fb5e4cc6e337373deb6b536bb1ea71378bb25eed1d384d5bf6d6db51",
+      "69c0652ae2e85de91e1e5de4": "f7b04775bddf1961bcde118e43483a13694fc597828e9d6240e68c05a96a0699",
+      "8b527c51fa312ce306f5d8f4": "3654090a7b9dfe6ab9f905c923e137a3ef090ebf520372c714fca36d0b4ca9ce",
+      "8bfa310664405693e5cee00b": "6ad020b8b390bf2d89364319366dfee98ba77828854445c5f9270ce6c538ddfd",
+      "91a7785154a1a018658ccae8": "b96d456ea35fb333b486ef8bbfc8626aa2f63161f48bc5207ea1d827d0ea2d8d",
+      "9fff88eaae065adb66759e66": "fe357ea54b1b26f1c5d545797144b5446b3c15bf7e5e6a483d7c0ea1fd676a51",
+      "a406c04573c91f8ad82577e3": "2cea56b5be59aea2969ea0c807264a15857e095b4d1f311e3158fa8a3c4d9240",
+      "a93639cc3c5c1ad866587c2e": "41e417c87eac6e37ac9629607f9432212ad9aa9c02e07cd5f41f0f88bdcca1c2",
+      "af24593c352cedfdf9a972fa": "f5c17fa6bc07a86b69f4f229cb5f05c37961791c008b5a1f63e34fb0479ab1ed",
+      "b6ad6f9e4c3bf6bcd7517234": "abdfb78d59cb022d0b54e3e8de99462b65a93d7570cfdc7012d9e371b842fc73",
+      "b7876638c82ca7835e6ecd54": "46eed2b295773540ddb732dddc4e82e2a94285d16be7fc344d2342962a04b525",
+      "bf312e511dcc8f4eda77a41a": "e3069ba026e5d9f3b455de46784d29b292144f4e6c6a285a53d01f0b4c257a27",
+      "cf440ff1717daba3ba33af52": "98908a3df68e1619fed285fd58f1fafaa2ba06b97bbe11ee5e3c0355f940cd5d",
+      "eb3d9f625d45294630564c36": "9156ad9841cacbf3ea3e63e27927c477137dbf3cbfa28c94ce6cef9dd8eb8e0b",
+      "fd8572c700cc4625bf5e2e78": "dab167ff6911543e084d1ed97b1a829c02f0b24d61930a19adbcb0da12572908"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b/sources",
+  "cells": {
+    "15ee43746437cfdf860b1519": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "dp:1"
+    ],
+    "263ad09bd2d440e2a894ee63": [
+      "corpus/qualification/workflow.yaml#@element",
+      "dp:1"
+    ],
+    "3dd8981b7cf70f3489f0cb9a": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "dp:1"
+    ],
+    "65dd3d64e8c54c7713685121": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "dp:1"
+    ],
+    "665c1a7ad6f6a7650e3f374a": [
+      "corpus/qualification/workflow.yaml#/initialActivity",
+      "dp:1"
+    ],
+    "69c0652ae2e85de91e1e5de4": [
+      "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "dp:1"
+    ],
+    "8b527c51fa312ce306f5d8f4": [
+      "corpus/qualification/techniques/produce.md#/outputs/summary",
+      "dp:1"
+    ],
+    "8bfa310664405693e5cee00b": [
+      "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "dp:1"
+    ],
+    "91a7785154a1a018658ccae8": [
+      "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "dp:1"
+    ],
+    "9fff88eaae065adb66759e66": [
+      "corpus/qualification/workflow.yaml#/id",
+      "dp:1"
+    ],
+    "a406c04573c91f8ad82577e3": [
+      "corpus/qualification/techniques/produce.md#@element",
+      "dp:1"
+    ],
+    "a93639cc3c5c1ad866587c2e": [
+      "corpus/qualification/activities/run.yaml#/id",
+      "dp:1"
+    ],
+    "af24593c352cedfdf9a972fa": [
+      "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "dp:1"
+    ],
+    "b6ad6f9e4c3bf6bcd7517234": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "dp:1"
+    ],
+    "b7876638c82ca7835e6ecd54": [
+      "corpus/qualification/techniques/produce.md#/outputs",
+      "dp:1"
+    ],
+    "bf312e511dcc8f4eda77a41a": [
+      "corpus/qualification/routines/deliver.yaml#/id",
+      "dp:1"
+    ],
+    "cf440ff1717daba3ba33af52": [
+      "corpus/qualification/routines/deliver.yaml#/inputs",
+      "dp:1"
+    ],
+    "eb3d9f625d45294630564c36": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "dp:1"
+    ],
+    "fd8572c700cc4625bf5e2e78": [
+      "corpus/qualification/activities/run.yaml#@element",
+      "dp:1"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "dp:1": {
+      "end": 8,
+      "family": "1. Honor the executing workflow's inherited destination",
+      "hash": "68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3",
+      "id": "dp:1",
+      "label": "DP-01",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 5,
+      "text": "## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n",
+      "title": "1. Honor the executing workflow's inherited destination"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "15ee43746437cfdf860b1519": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "ac6b0c84ca9a8f73c49c0d93282eccbd95b09b600e610c8c973cb64da7152916",
+      "reason": "DP-01 explicitly includes call and inheritance relationships. This row carries qualification to run, deliver and produce, or binds produce to the ancestor archive requirement. Row: @relationship/50a64427faa3df96.",
+      "status": "A"
+    },
+    "263ad09bd2d440e2a894ee63": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "423fc9cbd5a6b452be5c6c8228fd0f7472ff7a6959665fcd4396eda321d687b3",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: @element.",
+      "status": "N"
+    },
+    "3dd8981b7cf70f3489f0cb9a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d95fbf3fa3d5933b4ef6832dc6f20c621da6b53fbeed9b4d244ce7d67588f2f6",
+      "reason": "DP-01 excludes the ancestor constraint from conflicting leaf destinations. This row belongs to ancestor TECHNIQUE.md; it declares archive as the inherited requirement and is not a leaf instance. Row: /capability/line-2.",
+      "status": "N"
+    },
+    "65dd3d64e8c54c7713685121": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "444d7685025c4aa089a2020df8b3ab80841741b6f3a633d6366f13ade562fcb7",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: @element.",
+      "status": "N"
+    },
+    "665c1a7ad6f6a7650e3f374a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5012687b2dddaba8898cd6778f10eb2ab9194bc3fa3aa7626bfe2d0a31dd3a39",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /initialActivity.",
+      "status": "N"
+    },
+    "69c0652ae2e85de91e1e5de4": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "f167c3d12fc38a1e2dd5393f7888f4f3d78952347431bd8d8dc17a7c0a4e343b",
+      "reason": "DP-01 excludes the ancestor constraint from conflicting leaf destinations. This row belongs to ancestor TECHNIQUE.md; it declares archive as the inherited requirement and is not a leaf instance. Row: @element.",
+      "status": "N"
+    },
+    "8b527c51fa312ce306f5d8f4": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 5
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "a72dd4a5fadfa6f6127beaeeabb79301d40e575ba9512c70948bae8d8bf99af5",
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /outputs/summary.",
+      "status": "N"
+    },
+    "8bfa310664405693e5cee00b": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b9642bf3885d04455e6903a6cdd985a25d22704174ddd09d8e95c2b61c8667de",
+      "reason": "DP-01 explicitly includes call and inheritance relationships. This row carries qualification to run, deliver and produce, or binds produce to the ancestor archive requirement. Row: @relationship/f075d23fadb959c8.",
+      "status": "A"
+    },
+    "91a7785154a1a018658ccae8": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "f096fd07c6bbd303f6dc",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "25852266203754a1dff02569ed934731f4f65639afceacba3319e321ab15ef29",
+      "reason": "DP-01 explicitly includes call and inheritance relationships. This row carries qualification to run, deliver and produce, or binds produce to the ancestor archive requirement. Row: @relationship/5a93bb0629055f53.",
+      "status": "A"
+    },
+    "9fff88eaae065adb66759e66": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1eafe871c5c2357baff0",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "1d1e3118c3ece8a59def46f56145d8cba046c52e26021da67f20677de43fb5ca",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /id.",
+      "status": "N"
+    },
+    "a406c04573c91f8ad82577e3": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1eafe871c5c2357baff0",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "7679359ba8f95c294eedd4306faffdafa391240fe9942caadc75b88bbfc0d1f1",
+      "reason": "DP-01 scopes the leaf Destination declaration. This row contains that declaration at produce line 12, requiring comparison with the executing qualification ancestor at TECHNIQUE.md line 5. Row: @element.",
+      "status": "A"
+    },
+    "a93639cc3c5c1ad866587c2e": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1eafe871c5c2357baff0",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "7478abe9df5dabb64429e6b4f233d312c60c5e7efc9339fbc8e9a3772768eed3",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /id.",
+      "status": "N"
+    },
+    "af24593c352cedfdf9a972fa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e8578a1f90d66fb737ad5f85bb40a7bb6e94202db4d0c6b6bcd0e4367433643a",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /inputs/0.",
+      "status": "N"
+    },
+    "b6ad6f9e4c3bf6bcd7517234": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "9efb65f12707ddd15ae5bfb1acc90435c0ff8075d18fea051580ac7af99aba50",
+      "reason": "DP-01 excludes the ancestor constraint from conflicting leaf destinations. This row belongs to ancestor TECHNIQUE.md; it declares archive as the inherited requirement and is not a leaf instance. Row: /capability.",
+      "status": "N"
+    },
+    "b7876638c82ca7835e6ecd54": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 4
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "61c498bb87b73dafd30f90e94c44483eb929e85ea490aa339ddeccd1aff3dc3c",
+      "reason": "DP-01 concerns Destination declarations and explicit call/inheritance relationships. This row contains neither; the separate Destination declaration is produce line 12. Row: /outputs.",
+      "status": "N"
+    },
+    "bf312e511dcc8f4eda77a41a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1eafe871c5c2357baff0",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b9404ee9fe3785241d79951b2e697b398be87c86e114b5a5374e0cb28acc25de",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /id.",
+      "status": "N"
+    },
+    "cf440ff1717daba3ba33af52": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "605338e5267b3fbe76694d82a887985dabc3f78e9d8bfb666abbd0824d88467a",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: /inputs.",
+      "status": "N"
+    },
+    "eb3d9f625d45294630564c36": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "ee6fb6f03f59efba33cb",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "f28a4f8cf39979fe8494dc5b8e1a408386022d0513ade78e20040d47893335cf",
+      "reason": "DP-01 explicitly includes call and inheritance relationships. This row carries qualification to run, deliver and produce, or binds produce to the ancestor archive requirement. Row: @relationship/3a2f0d25e0e017f7.",
+      "status": "A"
+    },
+    "fd8572c700cc4625bf5e2e78": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "1eafe871c5c2357baff0",
+      "attempt": "author-map-current-2",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "c8590c81da053a7fab4122f648afc9a4251e3050124d5e4c3d72d50432b1dfc9",
+      "reason": "DP-01 excludes independent checks of files without a leaf Destination declaration. The complete source contains activity/routine/workflow structure, with no leaf Destination; its relationship rows are mapped separately. Row: @element.",
+      "status": "N"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/activities/run.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/routines/deliver.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "consumer",
+      "section": "id",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7": {
+      "address": "@relationship/3a2f0d25e0e017f7",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "kind": "relationship",
+      "label": "produce",
+      "origin": "consumer",
+      "relationship": {
+        "address": "/steps/id=emit/technique",
+        "context": [],
+        "label": "produce",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96": {
+      "address": "@relationship/50a64427faa3df96",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "kind": "relationship",
+      "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+      "origin": "consumer",
+      "relationship": {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/workflow.yaml"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "context",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs": {
+      "address": "/outputs",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs/summary": {
+      "address": "/outputs/summary",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs/summary",
+      "kind": "section",
+      "label": "/outputs/summary",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@element": {
+      "address": "@element",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8": {
+      "address": "@relationship/f075d23fadb959c8",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "kind": "relationship",
+      "label": "declared contract context",
+      "origin": "touched",
+      "relationship": {
+        "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+        "context": [],
+        "label": "declared contract context",
+        "source": "corpus/qualification/techniques/produce.md",
+        "target": "corpus/qualification/techniques/TECHNIQUE.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/workflow.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/initialActivity": {
+      "address": "/initialActivity",
+      "end": 2,
+      "id": "corpus/qualification/workflow.yaml#/initialActivity",
+      "kind": "item",
+      "label": "/initialActivity",
+      "origin": "touched",
+      "section": "initialActivity",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 2,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 5,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "start": 1,
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive."
+    },
+    {
+      "end": 8,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 1,
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n"
+    },
+    {
+      "end": 12,
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public."
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 6,
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"
+    },
+    {
+      "end": 5,
+      "hash": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run"
+    }
+  ],
+  "supplemental": {}
+}

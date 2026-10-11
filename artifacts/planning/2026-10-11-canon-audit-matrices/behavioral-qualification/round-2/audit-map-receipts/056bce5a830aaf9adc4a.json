@@ -1,0 +1,344 @@
+{
+  "assignment": "056bce5a830aaf9adc4a",
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+  "records": [
+    {
+      "items": [
+        "30d521174c6c7f6c4a8579ad"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#@relationship/27bf829b0e84c593: This graph relationship is the run.done -> run self-loop back to the run activity. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "94b820a882f196103f835741"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The initialActivity relationship connects qualification to run; the activity invokes deliver. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "8020bba4283a65b31df0f113"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The graph-entry relationship connects the run graph node to the run activity. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "f0755acc68e9a62e580665a3"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: This graph-entry relationship is attached to run.done, whose destination is run. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "82c8e910cc4b4df96a89e369"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/steps: The routine steps resolve emit to technique produce, whose declared output is summary. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "790b168511688f3580f49f17"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/steps/id=emit: The emit step calls produce, whose declared output is summary. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/steps/id=emit/id: The step identifier emit is the producer named by the routine output binding emit.report. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/steps/id=emit/technique: The technique reference produce resolves the producer whose Outputs heading declares summary. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "e3964a7ca7f68e7c40793e11"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/graph: The graph contains run with the done exit directed to run. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "fc47360bf214ca94a9c2f752"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/graph/run: The run graph entry has one done exit directed to run. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "e8a18028e34e1ace5d01fcf3"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/graph/run/done: The done exit value is run in the run graph node. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "1682a187cf7dd36419e2a143"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/outputs: The routine Outputs section exports report through emit.report. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/outputs/report: The exported routine report is bound to emit.report. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "547682eae905cf61fddd33be"
+      ],
+      "status": "N",
+      "reason": "produce.md#/protocol: The leaf Protocol contains the instruction: Emit the report without validation. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "0f13f165ba007a4540cef470"
+      ],
+      "status": "N",
+      "reason": "produce.md#/protocol/line-8: This Protocol instruction says: Emit the report without validation. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

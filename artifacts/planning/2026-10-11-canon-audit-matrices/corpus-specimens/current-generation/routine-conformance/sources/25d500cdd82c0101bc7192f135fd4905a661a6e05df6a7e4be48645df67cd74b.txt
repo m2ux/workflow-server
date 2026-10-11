@@ -1,0 +1,25 @@
+id: replace-label-family
+version: 1.0.0
+name: Replace Label Family
+description: Bind the label-family replacement.
+variables:
+  reads:
+    - target_repo
+required: true
+steps:
+  - kind: technique
+    id: replace-one-family
+    technique:
+      name: github::replace-label-family
+      inputs:
+        target_repo: "{target_repo}"
+        issue_number: "924"
+        label_family: throwaway
+        label_value: two
+      outputs:
+        family_label: confirmed_family_label
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The family replacement resolved under github::replace-label-family

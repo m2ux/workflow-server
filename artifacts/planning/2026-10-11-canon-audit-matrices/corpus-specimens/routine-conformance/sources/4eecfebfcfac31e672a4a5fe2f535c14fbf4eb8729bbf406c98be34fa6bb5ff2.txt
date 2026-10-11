@@ -1,0 +1,30 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the API change gate over a route no graph holds.
+variables:
+  reads:
+    - negative_route_path
+  writes:
+    - name: negative_api_impact_report
+      type: object
+      description: The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole.
+    - name: negative_api_change_approved
+      type: boolean
+      description: Whether the measured consumer surface was accepted at the gate. True where the measurement named no mismatch, the rating being low enough that no gate was presented.
+      defaultValue: true
+required: true
+steps:
+  - kind: routine
+    id: gate-absent-route
+    routine: gitnexus::api-change-gate
+    with:
+      route_path: "{negative_route_path}"
+    outputs:
+      api_impact_report: negative_api_impact_report
+      api_change_approved: negative_api_change_approved
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a route the graph does not hold named no consumer and no mismatch, so the gate was never presented and the approval kept its seeded value — the fallback the run promises rather than a failure

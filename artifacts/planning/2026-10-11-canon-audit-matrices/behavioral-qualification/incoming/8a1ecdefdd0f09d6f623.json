@@ -1,0 +1,187 @@
+{
+  "actor": "/root",
+  "assignment": "8a1ecdefdd0f09d6f623",
+  "attempt": "root-audit-confirm-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:3aae9366a0811871a6d6"
+      ],
+      "reason": "Resolve the unchanged routine output report to emit.report, emit to produce, then inspect Outputs: the sole declared name is summary. report is absent. AP-02(2) fails across the changed producer and unchanged consumer; Critical Live reproduces.",
+      "status": "confirmed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:41617381ad956865a6c4"
+      ],
+      "reason": "Independently split line11 at the semicolon: retain-ID is one clause; the second explicitly emits without validation. AP-01 requires validation in each emitting clause, so no neighboring instruction excuses it. High Live reproduces for the emitted artifact.",
+      "status": "confirmed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:5a059f1a79deba79c1ab"
+      ],
+      "reason": "Follow qualification/run delivery to deliver/emit and produce with the captured ancestor TECHNIQUE.md. The ancestor requires archive; the leaf line12 directs public. The concrete leaf violates DP1 and can direct a wrong destination, so High Live reproduces.",
+      "status": "confirmed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:dcd0b646057689c3fd1a"
+      ],
+      "reason": "Resolve activity delivery to deliver: argument keys are {packet}, but its exact required Inputs set is {envelope}. The fixture has no optional inputs or aliases. AP-02(1) therefore fails structurally at this concrete invocation; Critical Live reproduces.",
+      "status": "confirmed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:e7c48d2d7b7d2bcb3311"
+      ],
+      "reason": "Start at initialActivity run. Its only graph exit done returns to run; the complete graph contains no null destination or other reachable node. DP2 cannot obtain a finite terminating path. Critical Live reproduces independently of matching activity IDs.",
+      "status": "confirmed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "finding:fd098b2de08c78f94906"
+      ],
+      "reason": "Protocol line8 explicitly directs emission without validation. AP-01 requires validation of that artifact in every emitting instruction. This instruction independently violates that contract, separate from the Rules clause; High Live reproduces.",
+      "status": "confirmed"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

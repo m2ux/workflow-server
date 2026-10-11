@@ -1,0 +1,206 @@
+{
+  "actor": "/root/qualify_verify_one",
+  "assignment": "9333c5d7da6ffacbbcec",
+  "attempt": "author-verify-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b",
+        "4c9b9e3283acb76acd0c593c",
+        "eb0acb5f69509bc093ccb4c4",
+        "8f71acc678543f1dedd6da64",
+        "85d58778322169b7eb358fb2",
+        "460145b3f2b47abf7cc6997a",
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "reason": "The complete corpus/qualification/activities/run.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "Each named row contains the second semicolon-separated clause at produce line 11. That clause governs report emission and must independently undergo AP1 evaluation. The retention clause cannot excuse or remove its applicability. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "The exact named clause is Retain the report ID. AP1 explicitly excludes retention clauses that do not direct emission; the sibling emission clause is separately applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "reason": "The exact row declares destination public. AP1 expressly excludes destination declarations from emitting instructions, irrespective of their conformance with a different criterion. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be",
+        "bbb0ef5214ae8bbcce715c65",
+        "71fd5507f4b74e2ec91c2b3e",
+        "f2a200e38a51bc411ee5e057",
+        "2e52133101ac058519a8aa51",
+        "8d0a1adc7b4ff87710b48af6",
+        "8f64e24f8a4caa9482d28228",
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "reason": "The complete corpus/qualification/routines/deliver.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ff07daa2c799e9750e2df8bc",
+        "f30ba6f42d4230bf27814f3a",
+        "ca06cc90126da20e026a0486",
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "Each named row is a call, graph or inheritance relationship. AP1 expressly excludes these constructs from emitting instructions. A leaf instruction cited as context remains represented by its own instruction/section rows; the relationship itself issues no emission directive. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "343988e91c335d3bdef76586",
+        "cc39f8b8ebb2b96169d05005",
+        "b1f517596f87f82a15830709"
+      ],
+      "reason": "The complete corpus/qualification/workflow.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77",
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "The complete corpus/qualification/techniques/TECHNIQUE.md source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "Each named row contains the Protocol instruction at produce line 8. It directs report emission, so AP1 applies; the presence or absence of validation determines evaluation and does not justify exclusion. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

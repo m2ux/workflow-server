@@ -1,0 +1,74 @@
+id: primary-scan
+version: 2.0.0
+name: Primary Scan
+description: Gather the per-submodule scanner branches and merge their findings.
+variables:
+  reads:
+    - merge_complete
+    - planning_folder_path
+    - scanner_assignments
+    - sub_workflow_scan_outputs
+    - verification_complete
+techniques:
+  - scatter-gather
+  - execute-cicd-audit
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting primary scan — gathering the per-submodule scanner branches
+  - kind: technique
+    id: gather-all-scanners
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: sub_workflow_scan_outputs
+        expected_ids: scanner_assignments
+  - kind: technique
+    id: verify-dispatch-completeness
+    technique: dispatch-scanners::verify-dispatch-completeness
+  - kind: technique
+    id: collect-scanner-results
+    technique: dispatch-scanners::collect-results
+  - kind: technique
+    id: list-scanner-output-files
+    technique: dispatch-scanners::list-output-files
+  - kind: technique
+    id: verify-scanner-output-files
+    technique: orchestration-patterns::verify-output-files
+  - kind: technique
+    id: compose-verification-agent
+    technique: dispatch-scanners::compose-verification-brief
+  - kind: technique
+    id: dispatch-verification-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-gap-redispatch
+    technique: dispatch-scanners::compose-gap-briefs
+  - kind: technique
+    id: act-on-gap-report
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: compose-merge-agent
+    technique: dispatch-scanners::compose-merge-brief
+  - kind: technique
+    id: dispatch-merge-agent
+    technique: orchestration-patterns::dispatch-workers
+  - kind: technique
+    id: validate-reconciliation
+    technique: dispatch-scanners::verify-reconciliation
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Primary scan complete — all findings merged and reconciled
+exits:
+  - id: scan-verified
+    when: verification_complete == true && merge_complete == true
+    isDefault: true
+outcome:
+  - Every in-scope workflow file has been scanned for all seven vulnerability classes, with independent verification that no file or pattern was skipped
+  - "The audit speaks with one voice: a single deduplicated, cross-correlated finding set where every scanner finding is reconciled and accounted for"
+  - Findings are trustworthy and complete enough to drive severity scoring and the final report

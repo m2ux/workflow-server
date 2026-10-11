@@ -1,0 +1,33 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the diff taint pass over an index holding nothing staged.
+variables:
+  reads:
+    - negative_diff_scope
+  writes:
+    - name: negative_introduced_flows
+      type: array
+      description: Findings with a hop on a symbol the change moved, each naming that symbol.
+    - name: negative_inherited_flows
+      type: array
+      description: Findings anchored at a changed symbol whose every hop sits outside the change.
+    - name: negative_taint_unmeasured
+      type: boolean
+      description: Whether the graph carried no taint layer, so the partition settles nothing.
+required: true
+steps:
+  - kind: routine
+    id: pass-empty-index
+    routine: gitnexus::diff-taint-pass
+    with:
+      diff_scope: "{negative_diff_scope}"
+    outputs:
+      introduced_flows: negative_introduced_flows
+      inherited_flows: negative_inherited_flows
+      taint_unmeasured: negative_taint_unmeasured
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - The same run under an index holding nothing staged landed an empty change set, so the per-symbol pass ran zero times, both lists landed empty and the unmeasured flag stayed false with no layer read attempted — the fallback the run promises rather than a failure or an absent layer

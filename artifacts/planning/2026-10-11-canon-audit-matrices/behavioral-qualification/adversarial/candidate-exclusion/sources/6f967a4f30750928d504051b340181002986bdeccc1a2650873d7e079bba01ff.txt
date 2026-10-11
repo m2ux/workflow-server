@@ -1,0 +1,7 @@
+{
+  "check": "controlled qualification structural guard",
+  "root": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+  "sources": 8,
+  "criteria": 4,
+  "errors": []
+}

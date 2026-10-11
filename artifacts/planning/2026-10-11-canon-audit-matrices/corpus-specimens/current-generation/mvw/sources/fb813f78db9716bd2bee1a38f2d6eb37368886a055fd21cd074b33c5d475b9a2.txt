@@ -1,0 +1,30 @@
+id: probe-area
+version: 1.0.0
+name: Probe Area
+description: Run the bounded, catalog-selected probes for one investigation area.
+variables:
+  reads:
+    - cargo_available
+    - current_area
+    - gitnexus_available
+    - node_binary_available
+    - planning_folder_path
+    - probe_budget_per_area
+    - repo_name
+    - target_repo_path
+  writes:
+    - name: area_evidence_records
+      type: object
+      description: This area's evidence record — its executed probes, their anchors, and the failure-class obligations each discharges.
+required: true
+steps:
+  - kind: technique
+    id: probe-area
+    technique: evidence-probes::probe-area
+exits:
+  - id: probed
+    isDefault: true
+outcome:
+  - This area receives bounded, catalog-selected probes in a context that saw only this area, so its evidence is not shaped by what a neighbouring area happened to turn up first
+  - A toolchain gap degrades this area's probes to fallbacks or recorded blocked validations without stopping the areas beside it
+  - This area's probe accounting is captured at collection time, so the report's reconciliation is checkable per area rather than in aggregate

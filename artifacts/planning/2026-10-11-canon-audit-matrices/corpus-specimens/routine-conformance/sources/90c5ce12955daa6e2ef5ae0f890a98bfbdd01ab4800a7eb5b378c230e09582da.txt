@@ -1,0 +1,38 @@
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Analyse the goal (and optional context) into an ordered work-units list. Each record carries an id and a brief, which is a fan's collection by construction: bind this at the activity whose exit the graph fans to run one worker per unit, or read the same list in a `forEach` loop where the units are cheap enough to share one context.
+
+## Inputs
+
+### planning_context
+
+*(optional)* Additional context (paths, prior findings, constraints) that shapes decomposition.
+
+### effort_cap
+
+*(optional)* Maximum number of work units to emit. When set, prefer fewer, broader units over exceeding the cap.
+
+## Outputs
+
+### work_units
+
+Ordered array of `{ id, brief, tools_hint? }`. `id` is a stable slug; `brief` is a self-contained worker instruction; `tools_hint` names suggested tools when useful.
+
+## Protocol
+
+### 1. Choose the Subtasks
+
+- Read `{work_goal}` and `{planning_context}`; decide the minimum set of independent subtasks that cover the goal without overlap.
+
+### 2. Emit Them in Order
+
+- Emit `{work_units}` in execution preference order. Honour `{effort_cap}` when present.
+
+### 3. Hold Each Brief to Standing Alone
+
+- Each `brief` must be executable without sibling briefs or the parent's chain of thought.

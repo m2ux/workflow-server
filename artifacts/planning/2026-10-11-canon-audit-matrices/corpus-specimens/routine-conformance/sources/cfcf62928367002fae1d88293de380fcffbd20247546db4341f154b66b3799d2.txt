@@ -1,0 +1,44 @@
+---
+metadata:
+  version: 3.2.0
+---
+
+## Capability
+
+The assumption lifecycle a work package runs on: what an assumption is, the categories it is classified into, and the log that holds its outcome.
+
+## Inputs
+
+### assumption_source
+
+The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
+
+### assumption_categories
+
+The categories an assumption is classified into.
+
+### assumptions_log
+
+*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template), if one exists
+
+## Outputs
+
+### assumptions_log
+
+Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) updated with review outcomes — grows as the work progresses
+
+
+
+## Rules
+
+### elevate-implicit
+
+An implicit decision is recorded as an assumption and validated before the work rests on it.
+
+### assembled-entries-carry-their-evidence
+
+An assembled open-assumption entry carries the partial evidence reconcile and challenge produced in its technical context. Where the assumption names a symbol the graph holds, its reversibility is read from that symbol's connectivity through [gitnexus](/gitnexus/techniques/TECHNIQUE.md)::[context](/gitnexus/techniques/context.md)(*name*: the symbol the assumption names): many callers and broad flow participation make the decision path-committing, and an isolated symbol makes it easily reversible.
+
+### assumptions-log-is-the-record
+
+Every assumption's category, agent position and resolution status lives in the assumptions log, so a later reader settles an outcome from the log rather than from the transcript that produced it.

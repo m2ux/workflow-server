@@ -1,0 +1,27 @@
+{
+  "evaluate": {
+    "evidence": "Round1 Author remaining72 cells used458.099seconds and25449receiptbytes; AP01 six-cell return4895bytes. Conservative bytes/token1 with worst-observed output margin. Accepted completed work retained.",
+    "output_tokens_per_item": 1024,
+    "seconds_per_item": 8
+  },
+  "inventory": {
+    "evidence": "Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.",
+    "output_tokens_per_item": 1600,
+    "seconds_per_item": 18
+  },
+  "map": {
+    "evidence": "Round 1 required-work pilots: 49 cells in 186.767 seconds and 201.295 seconds; returned JSON 17806 and 41952 bytes. Conservative one-byte token upper bound plus margin yields 1024 output tokens per cell and 6 seconds per cell. Pilot receipts and transcripts are retained; source/tool refresh requires current judgments. One child slot is allocated to each mode's queue within the three-child pool.",
+    "output_tokens_per_item": 1100,
+    "seconds_per_item": 6
+  },
+  "obligations": {
+    "evidence": "Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json",
+    "output_tokens_per_item": 2048,
+    "seconds_per_item": 30
+  },
+  "verify": {
+    "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+    "output_tokens_per_item": 512,
+    "seconds_per_item": 5
+  }
+}

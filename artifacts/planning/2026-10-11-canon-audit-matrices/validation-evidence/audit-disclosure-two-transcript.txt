@@ -1,0 +1,1286 @@
+READ 01: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md
+---
+name: workflow-canon
+description: >-
+  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions ("write a new activity", "apply this finding"), audit them against the design canon ("audit workflow X", "why is this an anti-pattern?"), review integrations ("check these branches together", "assess integration readiness"), or revise this skill ("update the workflow-canon skill").
+hooks:
+  PostToolUse:
+    - matcher: "Edit|Write|MultiEdit"
+      hooks:
+        - type: command
+          command: "python3 \"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\""
+---
+
+# Workflow Canon
+
+Workflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.
+
+- **Work**  Intended outcomes, requirements and constraints.
+- **Design**  Architecture, responsibilities, definitions and contracts.
+- **Canon**  The project's authoritative design criteria and conventions.
+- **Evidence**  Observations supporting design decisions, with their limits stated.
+
+## Modes
+
+Read the selected mode's file in full, then follow its links as each step needs them:
+
+- **[Author](references/author-mode.md)**
+  - Authoring definitions and specified changes
+  - Closing confirmed findings with their prescribed fixes
+  - Mapped draft walks and verification of written changes
+- **[Audit](references/audit-mode.md)**
+  - Canon questions and conformance of existing definitions
+  - Attribution and verification of findings
+  - Applicability matrices with independent verification
+  - Complete coverage reports
+- **[Review](references/review-mode.md)**
+  - Scope and revision pairings for integrations
+  - Tracing design and architecture through declarations and consumers
+  - Coverage matched to affected branches and languages
+  - Evidence for findings and readiness
+- **[Revise](references/revise-mode.md)**
+  - Changes to this skill's own files
+  - Conformance with shared and local skill guidelines
+
+## Rules
+
+- **Measured claims.**
+  Counts, revision identities and check outcomes come from command output or preserved run evidence.
+- **One home.**
+  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.
+- **Linked sections.**
+  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
+- **Planning.**
+  When creating or using artifacts, all modes follow [Planning](references/planning.md).
+- **Commands.**
+  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.
+
+## Dependencies
+
+- **Git and repository search**
+  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.
+- **GitHub CLI**
+  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.
+- **Project instructions, documentation and runtimes**
+  Branch ownership, canon homes, schemas and validation tools for the affected product.
+- **Node and npm**
+  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.
+- **Docker and Compose**
+  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.
+- **Python 3.10+**
+  The definition edit hook, audit inventory/state/dispatch scripts and their tests.
+- **Paired YAML parser**
+  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.
+- **Agent host and sandbox**
+  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
+- **Claude Code hooks**
+  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.
+- **Workflow resource access**
+  A running workflow's resource tool can supply canon sections and report guides when available.
+READ 02: rg -n 'workflow-canon|canon.*audit|audit.*canon' /home/mike1/.codex/memories/MEMORY.md
+24:- workflow-canon, integration-review, Review and report only, config/branches, docker, main, workflows, workspace, engine/corpus pairing, hooks frontmatter, progressive disclosure, PR-1295
+READ 03: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md
+# Audit Mode
+
+Reviews existing definitions through independently verified change-surface matrices, evidence-backed evaluation, finding confirmation and a complete coverage gate. A single canon question uses the bounded procedure below.
+
+## Prerequisites
+
+Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).
+
+## Canon Question
+
+For a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.
+
+## Procedure
+
+1. **Scope the surface.**
+   - Read the [criteria context](canon-context.md#criteria).
+   - Resolve [scope](canon-context.md#scope), then follow the shared [change-surface lifecycle](change-surface.md).
+2. **Run the checks first.**
+   - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.
+   - Capture structural check outcomes now for inventory review; submit their typed observations during the obligations phase after the map is verified. AP/DP evaluation waits for that gate.
+3. **Map and verify.**
+   - Capture the full inventory and four section matrices, decide applicability and independently verify every decision through the shared lifecycle. Resolve all discrepancies before evaluation.
+4. **Evaluate.**
+   - Use [bounded assignments](audit-dispatch.md#phases) for the verified applicable cells and supporting obligations. The coordinator reconciles typed returns and preserves pending work.
+5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).
+6. **Verify findings.**
+   - Dispatch independent confirmation through the [obligations phase](audit-dispatch.md#phases). Only confirmed findings drive fixes.
+7. **Report.**
+   - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.
+   - Report in the layout [Which Report](reporting.md#which-report) names.
+8. **File a mechanised Detect.**
+   - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.
+   - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.
+
+## Attribution
+
+- **`diff`**
+  A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.
+- **`pre-existing`**
+  The same construct and evidence at the base ref, independent of an I/O contract change on this surface.
+- **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.
+- **`fix`**
+  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
+
+## Rules
+
+- **Remediation.**
+  Confirmed findings go to [Author](author-mode.md) when fixing them is within the user's request. A review-only request reports the finding and any criterion correction without editing definitions, canon entries or exemption surfaces.
+- **Continue.**
+  Reconcile each return and continue the required residual through [dispatch](audit-dispatch.md#phases). An empty findings list is not coverage evidence.
+- **Stop.**
+  Use the shared [completion predicate](change-surface.md#completion). A user stop preserves an incomplete, resumable run.
+READ 04: rg -n '^#{1,6} ' skills/workflow-canon/references/canon-context.md
+1:# Canon Context
+5:## Prerequisites
+9:## Terms
+17:## Criteria
+23:## Scope
+29:## Homes
+43:## Checks
+47:## Edit Hook
+READ 05: sed -n '5,16p' skills/workflow-canon/references/canon-context.md (Prerequisites and Terms)
+## Prerequisites
+
+Read the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.
+
+## Terms
+
+- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.
+- **Entry**
+  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
+- **Walk**  Applying each unit to every file on the surface and recording its status.
+- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).
+
+READ 06: sed -n '17,28p' skills/workflow-canon/references/canon-context.md (Criteria and Scope)
+## Criteria
+
+Use the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).
+
+Follow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).
+
+## Scope
+
+Resolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.
+
+Resolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.
+
+READ 07: rg -n '^#{1,6} ' skills/workflow-canon/references/commands.md skills/workflow-canon/references/definition-scope.md
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md:1:# Definition Scope
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md:5:## Scope
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:1:# Commands
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:3:## Conventions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:20:## Audit Command Conventions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:31:## Audit Surface
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:33:### Initialize Audit Surface
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:43:### Check Audit Status
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:53:### Render Audit Surface
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:63:### Plan Audit Assignments
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:73:### Bind Audit Agent
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:83:### Write Audit Packet
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:93:### Submit Audit Results
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:103:### Reset Audit Cells
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:113:### Refresh Audit Surface
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:123:### Retry Audit Assignment
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:133:### Run Audit Script Tests
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:143:## Revisions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:145:### Resolve Ref
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:153:## Review Inputs
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:155:### Fetch Pull Request
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:165:### Fetch Requirements
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:173:### Fetch Branches
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:182:### Compare Revisions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:196:### Create Review Worktree
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:204:### Prepare Integration Result
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:217:### Abort Review Merge
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:225:### Read Captured File
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:233:### Read Captured Section
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:244:### Fetch Check Evidence
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:258:### Refresh Revisions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:267:## Project Checks
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:269:### Run Project Check
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:281:## Skill Revision
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:283:### Create Skill Worktree
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:292:### Run Skill Checks
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:304:### Commit Skill Changes
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:316:### Push Skill Branch
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:329:### Open Skill Pull Request
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:337:## Install Engine Dependencies
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:347:## Run Engine Checks
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:359:## Run Delivery Gate
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:367:## Check Engine Documentation
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:380:## Run Corpus Checks
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:392:## Run Option Coverage
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:404:## Count Running Sessions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:414:## Check Shell Syntax
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:422:## Validate Compose
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:432:## Build Review Image
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:445:## Exercise Review Container
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:460:## Restart Review Container
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:468:## Stop Review Container
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:476:## Check Skill Summaries
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:486:## Canon Check Conventions
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:497:### Guard Obligations
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:514:## Checkouts
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:516:### Find the Server Checkout
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:526:### Check the Corpus Tree
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:537:### Provision the Corpus
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:545:## Corpus
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:547:### List Units
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:559:### List Units for a Construct
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:571:### Fetch Unit
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:579:### Find Consumers
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:590:## Checks
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:592:### Run Guard Suite
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:603:### Run Guards on the Delta
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:613:## Edit Guard
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:615:### Run the Edit Guard
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md:638:### Run the Edit Guard Tests
+READ 08: cat skills/workflow-canon/references/change-surface.md skills/workflow-canon/references/planning.md
+# Change Surface
+
+Author and Audit use the same captured inventory, applicability matrices and evidence gates. Scripts establish structural coverage; independent agents establish semantic accuracy.
+
+## Capture
+
+1. **Locate the record.**
+   Resolve the shared [planning record](planning.md), corpus root and paired engine. Each run has its own directory beneath that record. Read the [audit command conventions](commands.md#audit-command-conventions) before the first audit command.
+2. **Declare the scope.**
+   Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.
+3. **Capture the bytes.**
+   [Initialize the surface](commands.md#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+4. **Check the proposed inventory.**
+   Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+
+## Identity
+
+- **Items.**
+  Rows use the source path and native section, rule, input, output or step identifier. Nested steps retain their full ancestry and duplicate occurrences. Positional prose, paragraphs and candidate clauses use revision-bound source addresses. Independently testable constraints sharing one line need separate clause rows; verifiers add any missed boundary through the scope input's `rows` list. Whole-section, whole-element, missing-structure and relationship rows retain checks that span items.
+- **Relationships.**
+  Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.
+- **Supporting material.**
+  Resource and README rows belong to Workflow / Supporting Material under their actual namespace and source path. A namespace without a workflow definition remains a namespace. Shared content has one content row; referencing elements have relationship rows.
+- **Criteria.**
+  AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.
+
+## Applicability
+
+Use [mapping assignments](audit-dispatch.md#phases) to decide every cell in the full row × AP/DP product. Each cell links to source evidence and exactly one disposition:
+
+| Status | Evidence |
+| --- | --- |
+| `A` | The criterion's scope and the construct that makes it apply |
+| `N` | The criterion's excluding wording and source facts satisfying it |
+| `U` | The evidence or decision still missing |
+
+Shared reasons name the exact assigned row set and hold for every member. A clean result or a Do not flag exception is an evaluation under an applicable criterion; it does not by itself establish inapplicability. Blank cells are unresolved. Table pagination preserves every logical pair exactly once.
+
+After all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](commands.md#reset-audit-cells) or [refresh](commands.md#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](commands.md#check-audit-status) successfully.
+
+## Evaluation
+
+Assign the verified applicable cells through [dispatch](audit-dispatch.md#phases). Workers follow the complete [walk rules](walk-rules.md), read the full source and required relationship context, and return evidence for each pass, finding or blockage. Reconcile returns through the typed [receipt](audit-dispatch.md#returns). Whole-file reads, supplemental units, selected project checks and independent finding confirmation are separate obligations. A command result carries its command, working directory, exit status and captured output; an unmeasured check stays blocked.
+
+The calling mode owns remediation authority. Corrections to definitions return through Author's draft procedure. Review-only audits report findings. Workers have read authority; authorized edits are serialized by the coordinator or assigned disjoint file ownership before execution.
+
+## Completion
+
+The audit is complete only when the current inventory is independently verified, every AP/DP cell has independently verified applicability, every applicable cell has an evidence-backed pass or finding, and every whole-file read, supplemental unit, required check and finding confirmation is settled. Unknown, disputed, stale, unread, unmeasured or blocked work keeps it incomplete. Every required item has one reconciled primary result; retries cannot overwrite accepted items. Use [status requiring completion](commands.md#check-audit-status) for the final claim.
+
+Coverage completion and conformance are separate. Confirmed violations can have complete coverage; [reporting](reporting.md#report-context) determines their bands and verdict. A user stop or resource limit leaves a saved incomplete run with its residual, never a finished audit.
+
+## Freshness and Resume
+
+- **Source generations.**
+  Any corpus membership/byte change, scope correction, canon change, parser/engine change or audit-tool change blocks use of the captured generation. [Refresh](commands.md#refresh-audit-surface) captures the current generation and invalidates all its mapping, verification and evaluation evidence because cross-element dependency reach can exceed local source rows. An identical generation preserves its pending work. Archived state and immutable returns retain prior evidence.
+- **Mapping corrections.**
+  [Reset](commands.md#reset-audit-cells) invalidates a selected mapping and its verification/evaluation, including intersecting assignments. A reason or evidence edit changes the mapping fingerprint. Renewed evaluation waits for the entire current map to be verified.
+- **Interrupted workers.**
+  Accepted partial work remains recorded. [Retry](commands.md#retry-audit-assignment) retires an assignment and [planning](commands.md#plan-audit-assignments) assigns its unresolved residual. A fresh agent can continue after the coordinator checks captured identities and current status.
+- **Author byte agreement.**
+  Before applying a verified draft, compare its captured source hashes with the bytes to write. After writing, capture the actual working tree and run its selected checks. Reuse evidence only for an identical generation; changed roots, contracts or candidate bytes require their current verification. A draft-only request makes no commit-completion claim.
+
+## Artifacts
+
+| Artifact | Role |
+| --- | --- |
+| `audit-state.json` | Coordinator-owned inventory, evidence, assignments and history |
+| `change-surface-{workflow,technique,routine,activity}.md` | Section matrices, including explicit empty types |
+| `audit-evidence.md` | Cell reasons, independent receipts and evidence links |
+| `audit-coverage.md` | Inventory, criterion aliases, assignments and residuals |
+| `sources/` | Captured source and check-output bytes |
+| `worker-results/` | Immutable typed returns by assignment and attempt |
+| `generations/` | Prior state when the captured generation changes |
+| `audit-report.md` | Generated standalone findings and completion status |
+
+For a workflow-owned report, follow [Workflow Reports](reporting.md#workflow-reports) and transfer the generated counts, residuals and links into that guide's layout. The generated coverage remains authoritative.
+# Planning
+
+A planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.
+
+## Location
+
+- **Instructions.**
+  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.
+- **Resolution.**
+  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.
+
+## Records
+
+- **Naming.**
+  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.
+- **Continuity.**
+  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.
+- **Authority.**
+  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.
+READ 09: sed -n '3,30p' skills/workflow-canon/references/commands.md (Conventions and Audit Command Conventions)
+## Conventions
+
+Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
+
+- **Locations.**
+  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.
+- **Execution.**
+  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.
+- **Remote access.**
+  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.
+- **Evidence.**
+  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.
+- **Substitution.**
+  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
+- **Authored text.**
+  Commit messages and PR bodies go through files.
+
+## Audit Command Conventions
+
+- **Runtime.**
+  Read [Conventions](#conventions) first. Use Python 3.10+ and Node with the paired engine's installed `yaml` package. Resolve `<skill-root>`, `<corpus-root>`, `<engine-root>` and the shared planning `<run>` directory to absolute paths. Apply the host's sandbox rules.
+- **Ownership.**
+  The coordinator invokes mutations sequentially; workers return files. Preserve failures and output in the planning record.
+- **Inputs.**
+  JSON files follow the [scope](../templates/audit-scope.json), [budget](../templates/audit-budgets.json) and [receipt](../templates/audit-receipt.json) contracts. Fill actual limits and measured calibration. Scope can include `base`, additional `rows` with source/address/section/start/end/context, and `relationships` with source/target/address/label/context.
+- **Exit status.**
+  Exit 0 means the operation succeeded; status with `--require` returns 2 when the requested gate is incomplete; exit 1 means invalid input or unavailable operation. Rendering and planning do not establish audit completion.
+
+READ 10: sed -n '5,200p' skills/workflow-canon/references/definition-scope.md (Scope; only remaining section)
+## Scope
+
+- **Base ref.**  The ref the change is measured against.
+- **Surface files.**
+  `workflow.yaml`, `activities/`, `techniques/`, `routines/`, `resources/`, READMEs of the target.
+- **Touched.**
+  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.
+- **I/O contract.**
+  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.
+  - Activity inputs, outputs, and step binds that name those ids.
+  - Routine parameters, outputs, internals, nested reference sites and technique arguments.
+  - Renames, additions, removals, optionality flips, and type or shape changes.
+- **Reference.**
+  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.
+  - Sweep the workflows tree. Resolve each to a file path.
+  - Resolve routine references and their full instantiation chains, graph entries, ancestors and shared resources through [surface identity](change-surface.md#identity).
+- **Closure.**
+  Every activity or technique that references a touched file whose I/O contract changed, in this workflow and others.
+- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.
+- **Consumers.**
+  - References other workflows hold into the target. Always computed.
+  - A consumer joins the change surface when the file it names is on it.
+  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.
+- **Reference workflows.**  Siblings of similar type, as convention conformance requires.
+- **Prior residual.**
+  - `unread` paths in the latest findings register in the shared [planning record](planning.md).
+  - Reconcile captured identities through [freshness](change-surface.md#freshness-and-resume). A deleted path remains a base-side obligation when the selected comparison includes it.
+  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.
+- **Second entry.**
+  - Where a graph gives one activity two entry points, both are on the surface.
+  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
+
+Hunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.
+READ 11: sed -n '29,46p' skills/workflow-canon/references/canon-context.md (Homes and Checks)
+## Homes
+
+Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
+
+| Home | Authority |
+| --- | --- |
+| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |
+| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |
+| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |
+| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |
+| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
+
+Locate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+## Checks
+
+Read [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. A full audit prefers [Run Guards on the Delta](commands.md#run-guards-on-the-delta); draft and post-write checks use [Run Guard Suite](commands.md#run-guard-suite). A step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Select broader consumer coverage from [Workflows Coverage](coverage.md#workflows-coverage) when shared constructs are affected.
+
+READ 12: cat skills/workflow-canon/references/canon-map.md skills/workflow-canon/references/walk-rules.md
+# Canon Map
+
+How each home is enumerated, and where a judgement already made is recorded.
+
+## Unit Inventory
+
+Read the enumeration from the home at the commit audited, with [List units](commands.md#list-units).
+
+| Home | Unit |
+|------|------|
+| Anti-Patterns | One `##` family; each `###` entry inside it |
+| Design Principles | One `##` |
+| Convention Conformance | One `##` |
+| Guards | One registry entry in `guards/guards.ts` |
+
+- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
+
+## Prior Judgments
+
+An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
+
+| Authority | Where | Records |
+|-----------|-------|---------|
+| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |
+| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |
+| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |
+
+`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
+
+## File Kinds
+
+Author and Audit establish applicability through the shared [matrix contract](change-surface.md#applicability). The complete [unit inventory](#unit-inventory) supplies the matrix and supplemental obligations. Fires-on metadata, when available, is a prioritization hint.
+# Walk Rules
+
+These govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.
+
+## Order
+
+- **Entry-major.**
+  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.
+- **Compound headings.**
+  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.
+  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.
+
+## Evidence
+
+- **The construct.**
+  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.
+- **Identifiers.**
+  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.
+- **Search hits.**
+  - A search hit is a site. Read the construct around it, and cite that construct.
+  - An empty search leaves open a construct the pattern did not name.
+- **Probes.**
+  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.
+- **Consumers.**
+  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.
+- **Forms.**
+  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.
+- **Hand-checks.**
+  - An empty hand-check is `blocked` until it has reported a case already in the corpus.
+  - Take a set the entry names from that entry's wording.
+
+## Candidates and Fixes
+
+- **Falling candidates.**
+  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.
+- **Unread paths.**
+  `unread` paths are outside the remediation scope.
+  - An audit walks them under [Rules](audit-mode.md#rules).
+- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.
+- **Ledgers, fixtures and snapshots.**
+  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.
+READ 13: rg -n '^#{1,6} ' skills/workflow-canon/references/audit-dispatch.md skills/workflow-canon/references/reporting.md
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:1:# Reporting
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:5:## Report Context
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:9:### Bands
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:19:### Severity
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:32:### Finding Rows
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:48:### Coverage Ledger
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:60:### File Coverage
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:73:### Coverage Header
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:77:## Which Report
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:81:## Standalone
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:86:# Canon Audit — `{target}`
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:98:## Change surface
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:106:## Findings
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:111:## Coverage
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:113:## File Coverage
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:121:## Known
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md:126:## Workflow Reports
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md:1:# Audit Dispatch
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md:5:## Phases
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md:19:## Sizing
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md:31:## Returns
+READ 14: sed -n '43,52p;103,132p;145,152p' skills/workflow-canon/references/commands.md (Check Audit Status; Reset Audit Cells; Refresh Audit Surface; Retry Audit Assignment; Resolve Ref)
+### Check Audit Status
+
+Reconcile current evidence, rendered views and outstanding obligations.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>
+```
+
+### Reset Audit Cells
+
+Reopen selected decisions and invalidate dependent evidence and assignments.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Supply a JSON array of cell IDs and the correction reason.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'
+```
+
+### Refresh Audit Surface
+
+Capture current inputs and invalidate a changed generation.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py refresh --run <run>
+```
+
+### Retry Audit Assignment
+
+Retire interrupted ownership so its unresolved work can be planned again.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
+```
+
+### Resolve Ref
+
+Read the full commit identity for a captured ref.
+
+```bash
+git rev-parse <ref>
+```
+
+READ 15: cat skills/workflow-canon/templates/audit-scope.json skills/workflow-canon/templates/audit-budgets.json skills/workflow-canon/templates/audit-receipt.json
+{
+  "paths": ["corpus/example/techniques/operation.md"],
+  "checks": ["guards"],
+  "rows": [],
+  "relationships": []
+}
+{
+  "context_tokens": null,
+  "reserve_tokens": null,
+  "safety_tokens": null,
+  "output_tokens": null,
+  "work_seconds": null,
+  "slots": null,
+  "bytes_per_token": null,
+  "calibration": {
+    "map": {"output_tokens_per_item": null, "seconds_per_item": null, "evidence": ""}
+  }
+}
+{
+  "assignment": "copy-from-packet",
+  "snapshot": "copy-from-packet",
+  "actor": "host-bound-agent-id",
+  "attempt": "attempt-1",
+  "records": [
+    {
+      "items": ["copy-owned-item-id"],
+      "status": "U",
+      "reason": "Identify the missing evidence; supply a source-derived judgment when settled.",
+      "evidence": [{"source": "copy-source-key", "start": 1, "end": 1}]
+    }
+  ]
+}
+READ 16: sed -n '5,18p' skills/workflow-canon/references/audit-dispatch.md (Phases)
+## Phases
+
+| Phase | Required Work | Independent Role |
+| --- | --- | --- |
+| `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |
+| `map` | Every row × AP/DP cell | Mapping author recorded per cell |
+| `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |
+| `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |
+| `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |
+
+Inventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.
+
+Use [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, criteria, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.
+
+READ 17: sed -n '19,80p' skills/workflow-canon/references/audit-dispatch.md (Sizing and Returns; no later section)
+## Sizing
+
+Record actual host context/output limits, available child slots, prompt/tool reserve, safety reserve and work limit in the [budget input](../templates/audit-budgets.json). Reserve the coordinator and occupied slots once. The input contains estimates, never a promise of runtime capacity.
+
+Calibrate each phase separately with a bounded pilot from its required work. Record measured packet/output sizes and elapsed time; retain useful pilot results. A pilot's maximum input and output must already fit the declared host limits. Unknown host limits block dispatch. Use the host tokenizer when available; the CLI's explicit bytes-per-token proxy requires a conservative ratio and safety reserve.
+
+For each slice, the planner counts the serialized packet, including source/canon context, identifiers, mapping reasons and assignment metadata. It estimates output and elapsed work from the recorded phase calibration. It requires input + output ≤ context − prompt/tool reserve − safety reserve, output ≤ output limit, and work ≤ work limit. Output is counted once in the context equation. Use an effective combined context limit consistent with the host's input/output accounting.
+
+Bundles group criterion, source and section, with relationship context retained. Oversized bundles split into bounded item groups; a single item that cannot fit blocks dispatch. Largest bundles are packed first, preferring shared context. Each phase's assignments are disjoint and exactly cover its unassigned residual. The final list determines agent count `N`; free slots `K` determine concurrency `min(K,N)` and a lower bound of `ceil(N/K)` waves. Zero slots blocks dispatch. Lower concurrency changes elapsed time, never coverage.
+
+The coordinator observes actual work. When a worker exceeds its calibrated cost, retain accepted evidence, retire its unfinished assignment, recalibrate and plan the remaining work. Shared source context may overlap; primary items and file write ownership do not. Inventory closure is partitioned by manifest source so a large surface can fan out without one whole-corpus input packet.
+
+## Returns
+
+Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+
+- **Identity.**
+  Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+- **Evidence.**
+  Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite both the row and the actual criterion, plus required context sources. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+- **Statuses.**
+  Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+- **Findings.**
+  A `finding` record contains `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location` under its `finding` object, with the evidence spans on the record. Follow [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+- **Check observations.**
+  A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+- **Partial work.**
+  A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+READ 18: sed -n '5,80p' skills/workflow-canon/references/reporting.md (Report Context including subsections; Which Report)
+## Report Context
+
+Read this section before selecting a report layout.
+
+### Bands
+
+| Band | Holds | Target |
+|---|---|---|
+| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |
+| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |
+| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
+
+State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
+
+### Severity
+
+Severity ranks urgency inside a band. The band says whether the finding gates.
+
+| Severity | Fires when |
+|----------|-----------|
+| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |
+| `High` | An entry fires on a construct the change ships, and the defect propagates. Re-derive before it drives a fix |
+| `Medium` | An entry fires and the defect stays in that construct. Spot-confirm |
+| `Low` | Hygiene with no consumer consequence |
+
+An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
+
+### Finding Rows
+
+| Column | Carries |
+|--------|---------|
+| ID | Stable within the report |
+| Band | `Live`, `Contract`, or `Hygiene` |
+| Severity | The scale above |
+| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |
+| Location | File and field, at the depth the evidence sits |
+| Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
+| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |
+| Known | Set when a prior pass accepted this key |
+| Fix | The action the entry prescribes, in one line |
+
+A row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.
+
+### Coverage Ledger
+
+The generated [coverage state](change-surface.md#artifacts) accounts for every row–criterion cell, inventory, file read and supplemental obligation. The findings report summarizes divergences and links to that complete ledger.
+
+| Column | Carries |
+|--------|---------|
+| Home | The criteria home |
+| Unit | The section title or anchor, as the home spells it |
+| Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |
+
+Derive unknown, unverified, unevaluated and supplemental residuals from current state. Preserve each residual's identifiers. Display counts summarize those lists.
+
+### File Coverage
+
+Independent of the unit ledger: every unit can be `walked` while the surface stays unopened.
+
+| Disposition | Means |
+|-------------|-------|
+| `read` | The whole file was inspected |
+| `unread` | Anything else |
+
+A scan hit is `read` only when the file was then inspected whole. A scan is evidence for a finding, not a path disposition. `read` and `unread` sum to the enumeration; where they do not, the report states the list that was walked.
+
+List the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.
+
+### Coverage Header
+
+Use `finished` only when the shared [completion predicate](change-surface.md#completion) holds; otherwise use `in progress`. Include the captured generation, row and AP/DP counts, verified applicability, applicable-cell evaluations, unread sources and unresolved supporting obligations. Every count reconciles to the generated state.
+
+## Which Report
+
+Inside workflow-authoring or workflow-design, use [Workflow Reports](#workflow-reports). Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).
+
+READ 19: sed -n '63,102p;486,513p;579,612p' skills/workflow-canon/references/commands.md (Plan, Bind, Packet, Submit; Canon Check Conventions with Guard Obligations; Find Consumers; Guard Suite and Delta)
+### Plan Audit Assignments
+
+Compute disjoint residual assignments under declared budgets.
+
+- Read [Audit Command Conventions](#audit-command-conventions) and [Sizing](audit-dispatch.md#sizing). Select `inventory`, `map`, `verify`, `evaluate` or `obligations`. Unknown limits, unmet gates or indivisible oversized context refuse dispatch.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py plan --run <run> --phase <phase> --budgets <budgets.json>
+```
+
+### Bind Audit Agent
+
+Bind an assignment to its actual host agent identity.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Independent roles cannot own their authored work; retired assignments require a new residual plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py bind --run <run> --assignment <id> --actor <host-agent-id>
+```
+
+### Write Audit Packet
+
+Write captured context and ownership for one agent.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Give the packet and [return contract](audit-dispatch.md#returns) to the bound host agent. Serialized size must fit the plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py packet --run <run> --assignment <id> --out <packet.json>
+```
+
+### Submit Audit Results
+
+Validate a typed return and preserve its immutable receipt.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
+```
+
+## Canon Check Conventions
+
+- **Branch point.**
+  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.
+- **Exit status.**
+  Capture the check's own exit status before filtering output; a pipe reports the filter's status.
+- **Guard outcomes.**
+  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.
+- **Option coverage.**
+  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.
+
+### Guard Obligations
+
+- **Binding fidelity.**
+  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
+  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
+- **Suppressions.**
+  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
+  - Count the findings at the site before calling an entry redundant.
+- **New guards.**
+  - Prove a new guard against the corpus at the commit before the fix it was written for.
+  - A carve-out that follows from the entry belongs in the guard's condition.
+  - Take a file's kind from its declaration, and name in the check the kinds it admits.
+- **Definition changes.**
+  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
+  - The suppression of a binding finding it closed is the entry that goes stale on that commit.
+
+
+### Find Consumers
+
+Lists the references other workflows hold into the target.
+
+- Run from the corpus root.
+- Resolve each hit's binds and Apply links from there.
+
+```bash
+rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
+```
+
+## Checks
+
+### Run Guard Suite
+
+Runs the guard registry, or a named subset.
+
+- The caller supplies the canon check conventions, including guard obligations.
+
+```bash
+WORKFLOWS_DIR=<corpus> npm run check:all
+WORKFLOWS_DIR=<corpus> npm run check:all -- --only <id>,<id>
+```
+
+### Run Guards on the Delta
+
+Runs the guard suite at the merge-base and on this tree, and attributes each failure by the difference.
+
+- The caller supplies the canon check conventions, including guard obligations.
+
+```bash
+WORKFLOWS_DIR=<corpus> npm run check:delta -- --base <base-ref>
+```
+
+READ 20: sed -n '81,125p' skills/workflow-canon/references/reporting.md (Standalone)
+## Standalone
+
+In the chat, or in a file the user named:
+
+~~~markdown
+# Canon Audit — `{target}`
+
+**Status:** in progress | finished · **Base ref:** `{ref}` · **Snapshot:** `{hash}` · **Coverage:** N rows × N AP/DP criteria — N of N mappings independently verified, N of N applicable cells evaluated · **Change surface:** N files (touched: N · context: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
+
+**Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: **N files `unread`** of N, **N criteria units `blocked`** of N. Live and Contract converge to zero over the coverage measured. Hygiene ratchets against the prior pass's N.
+
+| Band | Open | Known | Prior pass |
+|------|-----:|------:|-----------:|
+| Live | N | N | N |
+| Contract | N | N | N |
+| Hygiene | N | N | N |
+
+## Change surface
+
+| Path | How it joined |
+|------|----------------|
+| `{path}` | touched |
+| `{path}` | closure — references `{contract-path}` |
+| `{path}` | consumer of a change-surface file |
+
+## Findings
+
+| ID | Band | Severity | Entry | Location | Evidence | Origin | Fix |
+|----|------|----------|-------|----------|----------|--------|-----|
+
+## Coverage
+
+## File Coverage
+
+read N · unread N.
+
+| Disposition | Paths |
+|-------------|-------|
+| `unread` | `{path}` |
+
+## Known
+~~~
+
+Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. Every header figure reconciles against the generated ledger. Status is the [coverage header](#coverage-header). Live or Contract at zero over partial coverage is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
+
+READ 21: rg --files -g AGENTS.md .project/workflows .worktrees/engine-pin .worktrees/skill/canon-audit-matrices
+/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin/AGENTS.md
+/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/AGENTS.md
+READ 22: cat .worktrees/engine-pin/AGENTS.md
+# Project Instructions
+
+Project instructions for this repository.
+
+- **Here:** rules that change what an agent does on an ordinary turn. A how-to for one kind of task lives in the doc that task already has.
+- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.
+- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
+- When building, testing, or changing a checkout, follow [development.md](docs/development.md).
+
+## Worktrees
+
+- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.
+- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.
+- Provision, rename, and a corpus-only sweep: [guards/README.md](guards/README.md#running-guards-in-a-worktree).
+
+
+
+## Dependencies
+
+- **Never delete the lockfile or run** `npm update`**.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.
+- Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).
+
+
+
+## Boundaries
+
+- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
+- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).
+
+
+
+## Issues and PRs
+
+- **Shape:** See the reference example: [#394](https://github.com/m2ux/workflow-server/issues/394)
+- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.
+- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations ("references", not "refs"), no anti-pattern numbers, no code tokens unless the token is the subject.
+- **No file:line citations in the body.** Evidence reads as prose.
+- **Spell out jargon.** "Phase 0/1/2" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.
+- **One paragraph per stage, and no section that restates another.** Where a "what was verified" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.
+- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.
+- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.
+- **Code lives on** `main`**, definitions on** `workflows`**.** They are separate long-lived branches, so a change to code and a change to definitions never share a branch.
+- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+
+
+
+## Testing
+
+Commands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).
+
+- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.
+
+
+
+## Where to look
+
+[docs/README.md](docs/README.md) is the index. Open the page for the task. 
+
+A **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.
+
+Engineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).READ 23: cat .worktrees/skill/canon-audit-matrices/AGENTS.md
+# Workspace Instructions
+
+- **Here:** how work is conducted, how prose is written, and the local code index.
+- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
+
+## Project Instructions
+
+- You must adopt all content from .project/<folder> *when* working on content in that folder:
+  - .project/main/[AGENTS.md](http://AGENTS.md)
+
+- Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.
+- Follow the folder naming pattern at: /.engineering/artifacts/planning/ and use to store *all* planning artifacts
+
+
+
+## Design principles
+
+- No backward compatibility. Remove obsolete paths rather than adding compatibility layers, fallbacks, or migrations.
+- Simplest implementation that fully meets requirements — no speculative abstraction, configuration, or indirection.
+- Grow in layers: smallest version that works end to end, then build on a product that already works.
+- Never trade working for unfinished.
+- Modular components, separated concerns (see SOLID)
+- Prefer established libraries to reimplementing. Check a library's docs and types before assuming it lacks a capability.
+- Exhaust existing dependencies before adding a package.
+- Decide for the long term. No stopgap meant to be replaced later.
+- Obey SOLID principles (Single responsibility, Open–closed, Liskov substitution, Interface segregation, Dependency inversion) when making changes to both source and documentation.
+
+
+
+## Code and Documentation
+
+- Follow existing patterns
+- Clear, professional language
+- No process attribution in comments (“Added by agent”).
+- **Describe the design, not the change to it.** Definitions, code and doc comments, and **commit subjects** state the system as it is, present tense, without naming what they replaced (eg write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`). For an absent value, say what holds when it is missing. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”.
+  - A live hazard survives, stated as an invariant: *a marker is unreadable to a context that never received the bytes* — not *this is why the old rule forbade it*.
+  - Exceptions: issue and PR bodies, and commit bodies. A reviewer needs the before-state; nothing that persists past merge does.
+  - After a behaviour change, grep out surviving descriptions of the old one — doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A stale claim reads as current fact.
+- **Prefer removing the thing that needs a prohibition.** Prose warning "do not also use X" usually means two paths now do one job. Retire one and the warning goes, along with the validation that policed the overlap.
+
+
+
+## User Interaction
+
+- Words cost tokens! Be as succinct as possible *without* compromising fidelity.
+- First and foremost your job is to *maximise* fidelity while *minimising* cognitive load
+- Reponses should use plain language and be as succinct as possible
+- Prefer bullet points instead of large blocks of prose when responding to the user
+- For responses that concern system design should split by area of concern in the system eg corpus, guards, tests, source. 
+- Each area of conern should be titled and sub-divided into a bulletted list of problem/solution pairs with one plain-language paragraph for each of the problem solution. Jargon should be disambiguated. Use two space seperators between title items.
+- When user input is required to reconcile outstanding issues or design choices, present the user a sequence of questions, one-at-a-time, interview-style. Each question should have multiple choice answers with a recommended option. Each question should be preceded by a plain-language paragraph worded to aid the decision kaing process.
+- Always treat user requests at the start of a new chat as an incomplete specification. Use the interview style to illicit further information fromf the user until you are confident you have sufficient understanding to properly proceed.
+
+
+
+## Commits and pushes
+
+- Commit and push upon completion of any discrete user request to the current branch
+- **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.
+- **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.
+- **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.
+- **A pull request delivering initiative work starts its title with the epic reference:** `[I07:E00] Purpose`.
+
+
+
+## Task management
+
+- Complete **one** task at a time unless the user asks for multiple.
+- For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.
+- Request permission before starting a new task or making changes outside the current request.
+- *ALWAYS* use a local work-tree when working on a branch
+READ 24: rg --files corpus/specimens/mvw (corpus root)
+corpus/specimens/mvw/workflow.yaml
+corpus/specimens/mvw/README.md
+corpus/specimens/mvw/activities/01-dispatch.yaml
+corpus/specimens/mvw/routines/record-dispatch.yaml
+corpus/specimens/mvw/techniques/note-ran.md
+READ 24 STDERR NOTE: the host shell returned these three startup diagnostics before the recorded pipeline output; they are preserved here without repeating the read.
+Failed to create stream fd: Operation not permitted
+Failed to create stream fd: Operation not permitted
+Failed to create stream fd: Operation not permitted
+READ 25: git -C .project/workflows rev-parse HEAD
+e70b44778f71d9d699f746f78a16b892531c82d3
+READ 26: git -C .worktrees/engine-pin rev-parse HEAD
+e889276ae7c49a6b5cd37b4928d5f983e76c9770
+READ 27: git -C .worktrees/skill/canon-audit-matrices rev-parse HEAD
+741626a96d9e854429798b68b05ae73d012d1ce5
+READ 28: git -C .project/workflows status --short -- corpus/specimens/mvw corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md
+READ 29: cat corpus/specimens/mvw/workflow.yaml corpus/specimens/mvw/README.md corpus/specimens/mvw/activities/01-dispatch.yaml corpus/specimens/mvw/routines/record-dispatch.yaml corpus/specimens/mvw/techniques/note-ran.md (scope inspection, no canon evaluation)
+$schema: ../../../schemas/workflow.schema.json
+id: mvw
+version: 1.0.0
+title: Minimum Viable Workflow
+description: >-
+  The live sidecar's first walk: evidence that this instance can dispatch.
+author: m2ux
+tags:
+  - specimen
+  - mvw
+techniques:
+  activity:
+    - variable-binding
+initialActivity: dispatch
+graph:
+  dispatch:
+    dispatched: __terminal__
+# Minimum Viable Workflow
+
+The live sidecar's first walk: one orchestrator, one activity, one routine, one technique.
+
+A miss here is a miss on the instance.
+
+Walk it as `workflow_id: mvw`.
+
+## Copying from it
+
+Take this when a live instance needs a cheap dispatch that still loads a routine and a technique. This specimen holds one of each. Extra activities, loops, fans, checkpoints or a second technique belong on a different specimen.
+id: dispatch
+version: 1.0.0
+name: Dispatch
+description: Dispatch once.
+required: true
+variables:
+  writes:
+    - name: dispatch_recorded
+      type: boolean
+      description: True once the dispatch has executed.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-dispatch
+    outputs:
+      dispatch_recorded: dispatch_recorded
+exits:
+  - id: dispatched
+    isDefault: true
+outcome:
+  - The dispatch has executed ({dispatch_recorded})
+id: record-dispatch
+version: 1.0.0
+name: Record Dispatch
+description: Record that one activity dispatched.
+outputs:
+  - id: dispatch_recorded
+    type: boolean
+    description: True once the dispatch technique has executed.
+steps:
+  - kind: technique
+    id: record
+    technique: note-ran
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Record that this dispatch executed.
+
+## Outputs
+
+### dispatch_recorded
+
+True once this dispatch has executed.
+
+## Protocol
+
+### 1. Record
+
+- Set `{dispatch_recorded}` to true. That is the whole of the work.
+READ 30: rg -n 'specimens/mvw|mvw::|mvw/' corpus/ -g '*.md' -g '*.yaml' (Find Consumers)
+READ 31: git -C .worktrees/skill/canon-audit-matrices status --short -- skills/workflow-canon
+ M skills/workflow-canon/SKILL.md
+ M skills/workflow-canon/references/audit-mode.md
+ M skills/workflow-canon/references/author-mode.md
+ M skills/workflow-canon/references/canon-context.md
+ M skills/workflow-canon/references/canon-map.md
+ M skills/workflow-canon/references/commands.md
+ M skills/workflow-canon/references/definition-scope.md
+ M skills/workflow-canon/references/guidelines.md
+ M skills/workflow-canon/references/reporting.md
+?? skills/workflow-canon/references/audit-dispatch.md
+?? skills/workflow-canon/references/change-surface.md
+?? skills/workflow-canon/scripts/audit_common.py
+?? skills/workflow-canon/scripts/audit_dispatch.py
+?? skills/workflow-canon/scripts/audit_inventory.py
+?? skills/workflow-canon/scripts/audit_render.py
+?? skills/workflow-canon/scripts/audit_state.py
+?? skills/workflow-canon/scripts/audit_surface.py
+?? skills/workflow-canon/scripts/audit_yaml.mjs
+?? skills/workflow-canon/templates/audit-budgets.json
+?? skills/workflow-canon/templates/audit-receipt.json
+?? skills/workflow-canon/templates/audit-scope.json
+?? skills/workflow-canon/test/audit_fixtures.py
+?? skills/workflow-canon/test/corpus_specimens.py
+?? skills/workflow-canon/test/fixtures/
+?? skills/workflow-canon/test/test_audit_inventory.py
+?? skills/workflow-canon/test/test_audit_regressions.py
+?? skills/workflow-canon/test/test_audit_surface.py
+READ 32: rg -n 'mvw|record-dispatch|note-ran' corpus/ -g '*.md' -g '*.yaml' (expanded identifier search after empty path-pattern result)
+corpus/specimens/README.md:5:They sit here, under `corpus/`, so they travel with the other definitions. This folder is a grouping — it organises the tree and names nothing of its own. Each child directory that holds a `workflow.yaml` is a workflow; open the directory for what it currently holds. `mvw` is the sidecar's first walk: one orchestrator, one activity, one routine, one technique.
+corpus/specimens/mvw/workflow.yaml:2:id: mvw
+corpus/specimens/mvw/workflow.yaml:10:  - mvw
+corpus/specimens/mvw/README.md:7:Walk it as `workflow_id: mvw`.
+corpus/specimens/mvw/routines/record-dispatch.yaml:1:id: record-dispatch
+corpus/specimens/mvw/routines/record-dispatch.yaml:12:    technique: note-ran
+corpus/specimens/mvw/activities/01-dispatch.yaml:14:    routine: record-dispatch
+READ 33: rg --files corpus/ -g '*variable-binding*' (declared shared technique context)
+corpus/meta/techniques/variable-binding.md
+SEPARATE NARROW QUESTION: What does single-rule-authority mean?
+READ 34: sed -n '571,578p' skills/workflow-canon/references/commands.md (Fetch Unit; prerequisites already read)
+### Fetch Unit
+
+Reads one section or entry of a home.
+
+- **On disk.**
+  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
+- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
+
+READ 35: rg -n -i 'single.rule.authority' corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md
+corpus/canon/resources/anti-patterns.md:326:### AP-22. single-rule-authority
+corpus/canon/resources/anti-patterns.md:346:**Do not flag:** An orchestrator-only rule (`single-rule-authority`). Placement by audience is `rule-audience-bucket`.
+corpus/canon/resources/anti-patterns.md:908:**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, a transition, a decision, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
+corpus/canon/resources/anti-patterns.md:1746:**Do not flag:** Triggers that cannot both hold. A pair already ordered, by a precedence clause or a group key (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`). Mutually exclusive prescriptions (`no-contradictory-rules`). A carve-out that names the entry it excepts.
+corpus/canon/resources/anti-patterns.md:1792:**Detect:** One tool is named for the same capability in two or more technique bodies, and no technique declares that product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which technique a caller would bind.
+corpus/canon/resources/anti-patterns.md:1974:**Do not flag:** A single constraint stated with the failure mode that makes it matter. Paragraphs or bullets elaborating one constraint across the cases it covers, each case subordinate to the named invariant. Length alone settles nothing. A rule scoped to one protocol step (`no-one-step-rules`). One invariant with two homes (`single-rule-authority`). Two entries whose triggers intersect (`overlapping-rule-scopes`).
+READ 36: sed -n '547,558p' skills/workflow-canon/references/commands.md (List Units)
+### List Units
+
+Lists a home's `##` units, then its `###` entries, with their line numbers.
+
+- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.
+- Run from the corpus root.
+
+```bash
+rg -n "^## " corpus/canon/resources/anti-patterns.md
+rg -n "^### " corpus/canon/resources/anti-patterns.md
+```
+
+READ 37: rg -n '^## ' corpus/canon/resources/anti-patterns.md (locate the owning family and catalog context)
+15:## Creation Rules
+58:## Structural
+110:## Interaction
+162:## Schema Expressiveness
+286:## Rule Hygiene
+374:## Description Hygiene
+570:## Coupling
+922:## Tool-Technique-Doc Consistency
+998:## Execution
+1086:## Output Economy
+1318:## Canon Hygiene
+1382:## Technique Protocol
+1602:## Draft Hygiene
+READ 38: rg -n '^### ' corpus/canon/resources/anti-patterns.md | sed -n '/single-rule-authority/,+1p' (entry boundaries)
+326:### AP-22. single-rule-authority
+338:### AP-23. worker-rule-reach
+READ 39: sed -n '1,60p' corpus/canon/resources/anti-patterns.md (catalog introduction; locating required entry identity and catalog context)
+---
+name: anti-patterns
+description: Specific smell instances in authored workflow content — Detect / Do not flag / Fix. Covering stance lives in design-principles.
+metadata:
+  order: 2
+  legacy_id: 2
+---
+
+# Overview
+
+This catalogue lists **smells**: specific instances of bad patterns already present in authored workflow content. Each titled entry is one invariant, stated as a Detect / Do not flag / Fix test an auditor applies after the fact.
+
+[Design principles](./design-principles.md) hold the broader *prefer / before* stance that avoids these smells and related failures. One principle may cover many entries. This file does not host positive authoring primers.
+
+## Creation Rules
+
+An add or an edit lands only after [Succinctness](#succinctness).
+
+### Smell not stance
+
+An entry detects one observable defect. The name is the smell (`avoidance-voice-in-definitions`). The prefer/before stance stays in [design-principles](./design-principles.md). Fix may cite that one principle.
+
+### Entry identity
+
+Title: `### AP-XX. name`. **AP-XX** is file order, zero-padded. Cite the kebab name in backticks. Do not cite the number or the entry count.
+
+### Audit technique boundary
+
+An audit technique loads the subsection and applies it. It does not restate the detect or the fix.
+
+### Entry intro
+
+Two lines, then a blank line: a quoted exemplar, then one sentence naming the failure. No gloss on the quote and no `>` note under it.
+
+### Detect triad
+
+**Detect**, **Do not flag**, and **Fix**, each its own block. Detect is the structural mismatch and its test. Do not flag is each carve-out. Fix is the remediation in application order.
+
+### Keep audit signals
+
+A cut keeps every Detect signal, carve-out, and Fix branch.
+
+### Resist over-fit
+
+The test fires on a foreign workflow on the same schema. A concrete name sits on the exemplar, and at most once inside Detect. It is not a required match.
+
+Banned shapes: a blacklist standing in for the test; a step that applies only to this catalogue or one repo's files; a framework the auditor must re-derive; a sibling Detect restated; a second prohibition under one name.
+
+Fix is delete, migrate, encode, or rename. A repo path in Fix is an example.
+
+### Succinctness
+
+Say each part once. Delete a sentence that repeats a part, a sibling, or the covering principle, including a count, a session trace, a supersession note, or a mnemonic. A cross-reference names the sibling and stops. If the deletion loses no signal, carve-out, or Fix step, the sentence goes.
+
+
+# Catalog
+
+## Structural
+
+File and packaging smells.
+READ 40: rg -n '^### ' corpus/canon/resources/anti-patterns.md | sed -n '/^2[89][0-9]:/p' (Rule Hygiene introductory boundary)
+290:### AP-19. no-rule-protocol-restatement
+READ 41: sed -n '326,337p' corpus/canon/resources/anti-patterns.md (single-rule-authority complete entry)
+### AP-22. single-rule-authority
+
+"This rule appears in the technique AND the activity AND the workflow" / "two entries in one `## Rules` block, bridged by `(same stance as …)`"
+
+The same rule has more than one home — across levels, or twice within one rules block.
+
+**Detect:** One invariant, two homes. Across levels: the same orchestrator-only rule (variable management, routing, commit policy, mode handling), or a rule that does not need worker reach, appears at workflow, activity, and technique. Within one rules block: two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The tell is a bridge — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that reconciles two homes.
+
+**Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.
+
+**Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates. Within a block, keep the statement with the wider consumer set, fold in any rationale or extra tier the other carried, drop the bridge, and repoint every citation of the deleted entry.
+
+READ 42: sed -n '286,289p' corpus/canon/resources/anti-patterns.md (Rule Hygiene family context)
+## Rule Hygiene
+
+Rule smells.
+
+READ 43: rg -n '^### ' corpus/canon/resources/anti-patterns.md | sed -n '/worker-rule-reach/,+1p' (required exclusion context boundaries)
+338:### AP-23. worker-rule-reach
+350:### AP-24. no-contradictory-rules
+READ 44: sed -n '338,349p' corpus/canon/resources/anti-patterns.md (worker-rule-reach required exclusion context)
+### AP-23. worker-rule-reach
+
+"prefer gitnexus over grep" lifted to `workflow.yaml` / duplicated across techniques for worker visibility
+
+A worker-directed rule is mis-placed where workers never receive it.
+
+**Detect:** A behavioural rule workers must read is present only under `rules.workflow` (workers never receive `workflow.yaml`), or an audit flags per-technique copies of a worker-directed rule as hygiene violations.
+
+**Do not flag:** An orchestrator-only rule (`single-rule-authority`). Placement by audience is `rule-audience-bucket`.
+
+**Fix:** Keep a worker-directed rule on the activity or the technique. A copy on each technique that must reach the worker is that reach. Consolidate only into a shared technique that every affected activity loads.
+

@@ -1,0 +1,24 @@
+id: plan-pins
+version: 1.0.0
+name: Plan Pins
+description: Name the revision each checkout is brought to — one of each kind the operation resolves, and one it cannot.
+variables:
+  reads:
+    - component_git_dir
+    - default_branch
+    - left_checkout
+    - right_checkout
+  writes:
+    - name: checkout_pins
+      type: array
+      description: The roster the readiness run walks, in the order the pins land.
+required: true
+steps:
+  - kind: technique
+    id: name-the-pins
+    technique: plan-pins
+exits:
+  - id: planned
+    isDefault: true
+outcome:
+  - Every kind of name the pin operation resolves has an entry, and so does a name it cannot, so the run that follows answers for each

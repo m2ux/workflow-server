@@ -1,0 +1,38 @@
+id: doc-heading-lookup
+version: 1.0.0
+name: Doc Heading Lookup
+description: >-
+  Name the graph covering a documentation tree, building one where the inventory covers it with
+  none, then find the sections whose heading text matches a pattern.
+
+inputs:
+  - id: tree_path
+    description: Filesystem path of the documentation tree the headings are read from.
+  - id: heading_pattern
+    description: Regular expression matched against whole heading text.
+
+outputs:
+  - id: heading_matches
+    type: array
+    description: Each matching heading with the file it sits in.
+  - id: repo_name
+    type: string
+    optional: true
+    description: The graph the search addressed, which a report naming these matches names too.
+
+steps:
+  - kind: routine
+    id: name-graph
+    routine: gitnexus::graph-for-tree
+    with:
+      tree_path: "{tree_path}"
+    outputs:
+      repo_name: repo_name
+  - kind: technique
+    id: find-headings
+    technique:
+      name: gitnexus::heading-search
+      inputs:
+        heading_pattern: heading_pattern
+      outputs:
+        heading_matches: heading_matches

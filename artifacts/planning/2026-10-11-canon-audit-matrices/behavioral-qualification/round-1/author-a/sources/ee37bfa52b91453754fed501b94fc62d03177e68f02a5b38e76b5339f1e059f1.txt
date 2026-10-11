@@ -1,0 +1,6 @@
+id: deliver
+inputs: [envelope]
+outputs: {report: emit.report}
+steps:
+  - id: emit
+    technique: produce

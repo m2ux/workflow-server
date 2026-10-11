@@ -1,0 +1,90 @@
+{
+  "assignment": "51ded0c9fdf28fe88dcf",
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+  "records": [
+    {
+      "items": [
+        "9156a757fd93955348ca5766"
+      ],
+      "status": "N",
+      "reason": "deliver.yaml#/id: The routine declaration identifier is deliver. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "ca0a66d25c90e652baa92f28"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/id: The workflow declaration identifier is qualification. AP-01 is scoped to technique Protocol instructions and Rules clauses. This YAML orchestration, identifier or binding is outside that instruction scope; it supplies no emission directive.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "status": "A",
+      "reason": "produce.md#@element: The complete leaf declares output report, instruction Validate the report, then emit it, a separate emission Rules clause, and Destination archive. AP-01 applies to this emitting Protocol instruction or Rules clause, including its containing row. Requiring validation remains an applicable contract; it is not grounds for N.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "e42353cfc8fe3169b809b996"
+      ],
+      "status": "N",
+      "reason": "run.yaml#@relationship/5a93bb0629055f53: The concrete activity call supplies envelope to deliver, whose input is envelope and whose emit step calls produce. This row represents a call or inheritance relationship, not the target leaf instruction. AP-01 excludes calls and bindings from constructs that themselves direct emission.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

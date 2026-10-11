@@ -1,0 +1,75 @@
+id: finalize-specification
+version: 1.8.0
+name: Finalize Specification
+description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts.
+variables:
+  reads:
+    - source_paths
+    - spec_basename
+    - target_doc_path
+  writes:
+    - name: change_summary_path
+      type: string
+      description: Absolute path to the written change summary
+      defaultValue: ""
+    - name: final_specification_path
+      type: string
+      description: Absolute path to the staged final specification
+      defaultValue: ""
+    - name: finalization_accepted
+      type: boolean
+      description: Whether the staged specification and change summary are accepted
+      defaultValue: false
+    - name: update_pass_kind
+      type: string
+      description: Which apply this pass performs
+      values:
+        - initial
+        - correction
+        - revision
+      defaultValue: initial
+required: true
+steps:
+  - kind: technique
+    id: finalize-specification
+    technique: finalize-specification
+    actions:
+      - action: message
+        message: "The validation-passed specification and an account of every applied change are staged in the planning folder ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
+  - kind: action
+    id: enforce-staging-boundary
+    actions:
+      - action: validate
+        target: final_specification_path
+        message: "The final specification is not staged under the planning folder. Write `{final_specification}` to `{planning_folder_path}` and re-run."
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: requirements-refinement/README#planning-artifact-to-guide-map
+  - kind: checkpoint
+    id: finalization-confirmed
+    message: "The final specification {spec_basename} and the change summary are staged ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
+    options:
+      - id: accepted
+        label: Accept — staged
+        description: Final specification and change summary are accepted.
+        effect:
+          setVariable:
+            finalization_accepted: true
+      - id: revise
+        label: Revise
+        description: The final specification or change summary needs revision.
+        effect:
+          setVariable:
+            finalization_accepted: false
+            update_pass_kind: revision
+exits:
+  - id: accepted
+    when: finalization_accepted == true
+  - id: revision-requested
+    isDefault: true
+outcome:
+  - A staged specification sits alongside a human-readable account of what changed
+  - The staged result is explicitly accepted

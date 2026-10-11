@@ -1,0 +1,313 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "8bfc7f1fc79695a5614b",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "2228315b4ed81fce11373514"
+      ],
+      "reason": "deliver.yaml#/steps: The routine steps resolve emit to technique produce, whose declared output is summary. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "2160f33c3a701883bf507397"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit: The emit step calls produce, whose declared output is summary. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b707f101a68f594abdbb9fc8"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/id: The step identifier emit is the producer named by the routine output binding emit.report. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "d5d35100c716e2ed184e7476"
+      ],
+      "reason": "deliver.yaml#/steps/id=emit/technique: The technique reference produce resolves the producer whose Outputs heading declares summary. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "f442830158e33a5d097e4514"
+      ],
+      "reason": "workflow.yaml#@relationship/27bf829b0e84c593: This graph relationship is the run.done -> run self-loop back to the run activity. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98"
+      ],
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The initialActivity relationship connects qualification to run; the activity invokes deliver. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "32efcf3836cf4d26fc113577"
+      ],
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The graph-entry relationship connects the run graph node to the run activity. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: This graph-entry relationship is attached to run.done, whose destination is run. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "67bbb2cf737f1d39490640e1"
+      ],
+      "reason": "workflow.yaml#/graph: The graph contains run with the done exit directed to run. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "9aa00375bff5d32993c718d0"
+      ],
+      "reason": "workflow.yaml#/graph/run: The run graph entry has one done exit directed to run. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "46e28f2007abc40979497fc9"
+      ],
+      "reason": "workflow.yaml#/graph/run/done: The done exit value is run in the run graph node. This workflow identity or graph row has no leaf Destination declaration. Its activity graph connection is not the leaf call or inheritance contract; DP-01 excludes independent checks on files without a leaf declaration.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "533e91f3401233d0974551eb"
+      ],
+      "reason": "produce.md#/protocol: The leaf Protocol contains the instruction: Emit the report without validation. This leaf row contains no Destination declaration or inheritance relationship. DP-01 reaches the separate line-12 destination and its containing rows, not this instruction, service description or output name.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "fbafce4f79dd46979495549a"
+      ],
+      "reason": "produce.md#/protocol/line-8: This Protocol instruction says: Emit the report without validation. This leaf row contains no Destination declaration or inheritance relationship. DP-01 reaches the separate line-12 destination and its containing rows, not this instruction, service description or output name.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "ab40e04b150dd3790c5764db"
+      ],
+      "reason": "deliver.yaml#/outputs: The routine Outputs section exports report through emit.report. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "791a31ca8731b94c89d67e5c"
+      ],
+      "reason": "deliver.yaml#/outputs/report: The exported routine report is bound to emit.report. This activity or routine declaration has no leaf Destination. DP-01 excludes independent checks on such files; its rule is carried by the separately captured call and inheritance relationships to produce.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

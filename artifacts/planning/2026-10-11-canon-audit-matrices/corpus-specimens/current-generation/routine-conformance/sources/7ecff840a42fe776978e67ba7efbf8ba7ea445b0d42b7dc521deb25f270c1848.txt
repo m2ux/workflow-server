@@ -1,0 +1,45 @@
+id: api-change-gate
+version: 1.0.0
+name: API Change Gate
+description: >-
+  Measure what a route handler's change reaches before it lands, and stop for a decision where the
+  measurement names consumers reading a key the route does not return.
+
+inputs:
+  - id: route_path
+    description: The route about to change, whose consumers and response keys the measurement reaches.
+
+outputs:
+  - id: api_impact_report
+    type: object
+    description: The route's consumers, the response keys each reads, the middleware wrapping the handler, the execution flows it opens, and a risk level over the whole.
+  - id: api_change_approved
+    type: boolean
+    description: Whether the measured consumer surface was accepted at the gate. True where the measurement named no mismatch, the rating being low enough that no gate was presented.
+
+steps:
+  - kind: technique
+    id: measure
+    technique:
+      name: gitnexus::api-impact
+      inputs:
+        route_path: route_path
+      outputs:
+        api_impact_report: api_impact_report
+  - kind: checkpoint
+    id: accept-consumer-surface
+    when: api_impact_report.mismatches
+    message: "Changing {route_path} reaches consumers that read a key it does not return: {api_impact_report.mismatches}, each with the confidence its attribution earns."
+    options:
+      - id: proceed
+        label: Proceed with the change
+        description: The reads that will break are understood and the change goes ahead against them.
+        effect:
+          setVariable:
+            api_change_approved: true
+      - id: hold
+        label: Hold the change
+        description: The response keeps the keys its consumers read, or those consumers move first.
+        effect:
+          setVariable:
+            api_change_approved: false

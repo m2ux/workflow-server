@@ -1,0 +1,21 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_context_report
+    - negative_impact_report
+    - positive_context_report
+    - positive_impact_report
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell the measured surface from the unresolved fallback

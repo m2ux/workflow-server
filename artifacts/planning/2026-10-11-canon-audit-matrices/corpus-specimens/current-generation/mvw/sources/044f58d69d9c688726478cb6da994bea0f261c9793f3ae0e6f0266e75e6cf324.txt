@@ -1,0 +1,373 @@
+id: strategic-review
+version: 2.22.0
+name: Strategic Review
+description: Review the implementation to ensure changes are minimal and focused.
+variables:
+  reads:
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - component_path
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - issue_platform
+    - issue_url
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - push_remote
+    - requirements
+    - review_summary
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: scope_findings
+      type: array
+      description: Affected execution flows falling outside the requirements, each with the changed symbol that reaches it.
+      defaultValue: []
+    - name: orphan_candidates
+      type: array
+      description: Symbols in the changed files that nothing references — over-engineering and dead-code candidates.
+      defaultValue: []
+    - name: package_diagram_source
+      type: array
+      description: The functional areas the change reaches, each with its members, which the package diagram is drawn from.
+      defaultValue: []
+    - name: sequence_diagram_source
+      type: array
+      description: The ordered step trace of each execution flow the change runs through, which the sequence diagrams are drawn from.
+      defaultValue: []
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: deferred_item_rows
+      type: array
+      description: Deferrals to append to the out-of-scope register, each with what was set aside and why.
+      defaultValue: []
+    - name: deferred_items_register
+      type: string
+      description: The out-of-scope deferrals register as it stands after this activity's rows.
+      defaultValue: ""
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request for this work package (alongside pr_number).
+      defaultValue: ""
+    - name: raised_findings_scope
+      type: string
+      description: How much of the findings set the posted review carries to the pull request author.
+      values:
+        - all
+        - selected
+        - none
+      defaultValue: all
+    - name: recommended_strategic_option
+      type: string
+      description: The action the agent recommends after its strategic-review analysis.
+      values:
+        - fix-findings
+        - raise-findings
+        - acceptable
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
+    - name: resign_unsigned_commits_requested
+      type: boolean
+      description: Whether the unsigned commits in the branch range are to be re-signed.
+      defaultValue: false
+    - name: review_passed
+      type: boolean
+      description: Whether strategic review passed.
+      defaultValue: false
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
+    - name: strategic_findings_disposition
+      type: string
+      description: What the user decided about the strategic-review findings. Absent until the findings gate settles one.
+      values:
+        - acceptable
+        - fix-all
+        - fix-selected
+        - deferred
+        - re-review
+    - name: strategic_findings_summary
+      type: string
+      description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
+      defaultValue: ""
+    - name: strategic_review_findings
+      type: array
+      description: The findings the scope and artifact review produced, each under the designator its report defines.
+    - name: unsigned_commit_list_summary
+      type: string
+      description: Short human-readable summary of the unsigned commits; empty when every commit is signed.
+      defaultValue: ""
+    - name: unsigned_commits_in_pr
+      type: boolean
+      description: True when any commit in the branch range lacks a valid GPG signature.
+      defaultValue: false
+required: true
+steps:
+  - kind: technique
+    id: read-live-pr-body
+    technique:
+      name: github::view-pr
+      inputs:
+        repo_path: component_git_dir
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
+  - kind: technique
+    id: verify-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    condition:
+      type: simple
+      variable: pr_number
+      operator: exists
+  - kind: routine
+    id: check-scope-discipline
+    routine: gitnexus::scope-discipline-check
+    with:
+      requirements_scope: "{requirements}"
+    outputs:
+      scope_findings: scope_findings
+  - kind: routine
+    id: scan-orphans
+    routine: gitnexus::orphan-scan
+    outputs:
+      orphan_candidates: orphan_candidates
+  - kind: technique
+    id: review-strategy
+    technique: review-scope
+  - kind: technique
+    id: refresh-pr-body
+    technique:
+      name: update-pr::render
+      inputs:
+        pr_template_variant: final
+    when: is_review_mode != true && stealth_mode != true
+  - kind: checkpoint
+    id: unsigned-commits-prompt
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: unsigned_commits_in_pr
+          operator: ==
+          value: true
+    message: "Commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Re-signing rewrites branch history and may require a force-with-lease push."
+    options:
+      - id: resign-all
+        label: Yes — re-sign all unsigned commits
+        description: Every unsigned commit in the range carries a signature afterwards
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: true
+      - id: decline-resign
+        label: No — proceed without re-signing
+        description: The history stands as it is, with its unsigned commits noted
+        effect:
+          setVariable:
+            resign_unsigned_commits_requested: false
+  - kind: technique
+    id: resign-unsigned-commits
+    technique: resign-commits
+    when: is_review_mode != true && resign_unsigned_commits_requested == true
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        canonical_home_map: work-package/canonical-home-map
+        guide_map: work-package/README#planning-artifact-to-guide-map
+  - kind: technique
+    id: verify-readme
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: work-package/readme-seed
+  - kind: technique
+    id: ensure-changes-folder-entry
+    technique: changes-folder
+  - kind: technique
+    id: verify-change-fragment
+    technique: verify-fragment
+    actions:
+      - action: validate
+        target: fragment_references_issue != false
+        message: "Change fragment for this work package does not reference `{issue_url}`. Add a `Closes: #{issue_number}` line (GitHub) or the full `{issue_url}` (when sibling fragments use that style) to the fragment body, commit, and re-run."
+        condition:
+          type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+  - kind: technique
+    id: document-findings
+    technique: document-findings
+  - kind: technique
+    id: register-deferred-findings
+    technique: manage-registers::append-deferred-item
+  - kind: technique
+    id: document-cleanup-recommendations
+    technique: recommend-cleanup
+    when: is_review_mode == true
+  - kind: technique
+    id: apply-cleanup
+    technique: apply-cleanup
+    when: is_review_mode != true
+  - kind: routine
+    id: source-package-diagram
+    routine: gitnexus::package-diagram-source
+    outputs:
+      diagram_source: package_diagram_source
+  - kind: routine
+    id: source-sequence-diagrams
+    routine: gitnexus::sequence-diagram-source
+    outputs:
+      diagram_source: sequence_diagram_source
+  - kind: technique
+    id: create-architecture-summary
+    technique: summarize-architecture
+  - kind: technique
+    id: analyze-strategic-findings
+    technique:
+      name: strategic-findings-analysis
+      inputs:
+        is_review_mode: "{is_review_mode}"
+  - kind: checkpoint
+    id: review-findings
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
+    message: |-
+      Strategic review complete.
+
+      Findings:
+      {strategic_findings_summary}
+
+      Recommended action: {recommended_strategic_option}.
+    options:
+      - id: acceptable
+        label: All acceptable
+        description: Findings noted but no changes needed
+        effect:
+          setVariable:
+            review_passed: true
+            strategic_findings_disposition: acceptable
+      - id: fix-findings
+        label: Fix findings before proceeding
+        description: Every finding is addressed before the change goes further
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-all
+      - id: selective-fixes
+        label: Fix selected findings
+        description: The reply names the findings to address, by priority; the report keeps the rest
+        effect:
+          setVariable:
+            strategic_findings_disposition: fix-selected
+      - id: defer-findings
+        label: Defer findings
+        description: Note findings for future but proceed now
+        effect:
+          setVariable:
+            review_passed: true
+            strategic_findings_disposition: deferred
+      - id: more-review
+        label: Need more review
+        description: Additional areas need examination before any disposition is settled
+        effect:
+          setVariable:
+            strategic_findings_disposition: re-review
+  - kind: checkpoint
+    id: findings-delivery
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
+    message: |-
+      Strategic review findings. Every finding is the pull-request author's to act on.
+
+      Findings:
+      {strategic_findings_summary}
+
+      Recommended action: {recommended_strategic_option}.
+    options:
+      - id: raise-all
+        label: Raise all findings to the author
+        description: The posted review carries every finding
+        effect:
+          setVariable:
+            review_passed: true
+            raised_findings_scope: all
+      - id: raise-selected
+        label: Raise selected findings
+        description: The posted review carries the findings named in the reply; the report keeps the rest
+        effect:
+          setVariable:
+            review_passed: true
+            raised_findings_scope: selected
+      - id: raise-none
+        label: Raise none
+        description: The report keeps every finding and the posted review carries none of them
+        effect:
+          setVariable:
+            review_passed: true
+            raised_findings_scope: none
+exits:
+  - id: review-mode
+    when: is_review_mode == true
+  - id: review-passed
+    when: review_passed == true
+  - id: needs-more-review
+    when: strategic_findings_disposition == 're-review'
+  - id: review-failed
+    isDefault: true
+outcome:
+  - Changes validated as minimal and focused
+  - Investigation artifacts and over-engineering removed
+  - A record of scope and quality findings exists for reviewers to act on
+  - Stakeholders have an architecture overview to understand the change
+  - The change is traceable to its issue from the project's release notes, where the repo carries a root changes/ convention

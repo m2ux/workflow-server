@@ -1,0 +1,138 @@
+id: validate
+version: 3.11.0
+name: Verify & Validate Design
+description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+variables:
+  reads:
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - component_path
+    - failures
+    - host_repo_path
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - project_type
+    - requirements
+    - run_local_validation
+    - target_path
+    - target_repo
+    - test_status
+  writes:
+    - name: coverage_gaps
+      type: array
+      description: Changed symbols no test file calls.
+      defaultValue: []
+    - name: update_candidates
+      type: array
+      description: Changed symbols a test file calls against a signature or behaviour the change moved.
+      defaultValue: []
+    - name: classified_findings
+      type: array
+      description: "The input findings, each carrying its assigned severity, its `action_tier`, and its `impact_axis` where one applies."
+    - name: code_findings_actionable
+      type: boolean
+      description: Whether any code-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: mark_progress_na
+      type: boolean
+      description: True when the activity's Progress row records cancelled/N/A rather than complete.
+      defaultValue: false
+    - name: test_findings_actionable
+      type: boolean
+      description: Whether any test-suite finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: validation_results
+      type: object
+      description: Aggregate validation envelope from the cargo suite, carrying each check's status and the run's overall verdict.
+required: true
+steps:
+  - kind: action
+    id: mark-validation-na
+    when: run_local_validation == false
+    actions:
+      - action: set
+        target: mark_progress_na
+        value: true
+  - kind: technique
+    id: preflight
+    technique: cargo::preflight
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: validate
+        target: missing_prerequisites.length == 0
+        message: "Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}"
+  - kind: technique
+    id: run-suite
+    technique:
+      name: cargo::run-suite
+      inputs:
+        build_scope: --workspace
+    when: project_type == 'rust-substrate' && run_local_validation == true
+  - kind: technique
+    id: document-failures
+    technique:
+      name: findings-classification
+      inputs:
+        findings_to_classify: "{validation_results.failed_checks}"
+    when: is_review_mode == true && project_type == 'rust-substrate' && run_local_validation == true
+  - kind: routine
+    id: map-diff-coverage
+    routine: gitnexus::diff-coverage-map
+    when: is_review_mode == true
+    outputs:
+      coverage_gaps: coverage_gaps
+      update_candidates: update_candidates
+  - kind: technique
+    id: assess-test-coverage
+    technique: review-test-suite
+    when: is_review_mode == true
+  - kind: loop
+    id: fix-revalidate-cycle
+    name: Fix and Revalidate Cycle
+    loopType: while
+    when: is_review_mode != true
+    continueWhile:
+      type: and
+      conditions:
+        - type: simple
+          variable: run_local_validation
+          operator: ==
+          value: true
+        - type: simple
+          variable: project_type
+          operator: ==
+          value: rust-substrate
+        - type: simple
+          variable: validation_results.validation_passed
+          operator: ==
+          value: false
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: analyze-failure
+        technique:
+          name: validate-build::analyze-failure
+          inputs:
+            check_id: "{validation_results.first_failure.check_id}"
+            failure_diagnostics: "{validation_results.first_failure.diagnostics}"
+      - kind: technique
+        id: apply-fix
+        technique:
+          name: validate-build::apply-fix
+          inputs:
+            check_id: "{validation_results.first_failure.check_id}"
+      - kind: technique
+        id: revalidate
+        technique:
+          name: cargo::run-suite
+          inputs:
+            build_scope: --workspace
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The suite's verdict on the change is established, or recorded as unavailable in this environment
+  - The build stands green where the suite ran here

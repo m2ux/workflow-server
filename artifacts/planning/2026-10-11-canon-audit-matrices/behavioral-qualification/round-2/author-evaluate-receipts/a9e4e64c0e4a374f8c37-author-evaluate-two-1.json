@@ -1,0 +1,52 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b",
+  "assignment": "a9e4e64c0e4a374f8c37",
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "items": [
+        "3f2fc1d2f91b27a5d46f0504",
+        "8862878198e6198ef77c1f28",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972",
+        "094759e3ffb8236db086b566",
+        "9a13e148e0a434d148bef242",
+        "e0fcd50974c10678a3e2fb44",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "finding",
+      "reason": "The complete five-line workflow sets initialActivity to run, contains only graph node run, and sets its sole done exit to run. Following every reachable edge repeats run; no null destination exists. Activity/routine steps supply no graph exits in this dialect. The workflow path is structurally nonterminating, a Live/Critical violation. The workflow is a declared changed definition in scope.paths, establishing diff origin. Assigned rows: corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b, corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/workflow.yaml#/initialActivity, corpus/qualification/workflow.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "Critical",
+          "origin": "diff",
+          "summary": "The sole run.done exit returns to run, leaving no finite path from initialActivity to null.",
+          "fix": "Provide a reachable terminating exit, for example set graph.run.done to null.",
+          "entry": "2. Provide a terminating workflow path",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done"
+        }
+      ]
+    }
+  ]
+}

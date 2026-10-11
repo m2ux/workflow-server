@@ -1,0 +1,269 @@
+{
+  "actor": "/root/qualify_verify_one",
+  "assignment": "22dc99968766dd96b95e",
+  "attempt": "author-verify-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b6ad6f9e4c3bf6bcd7517234",
+        "3dd8981b7cf70f3489f0cb9a",
+        "69c0652ae2e85de91e1e5de4"
+      ],
+      "reason": "The full source is ancestor TECHNIQUE.md, which supplies the archive requirement and is not a leaf instance. DP1 explicitly distinguishes that declaration from a conflicting leaf destination. The source remains comparison context for applicable leaf/relationship rows. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b7876638c82ca7835e6ecd54",
+        "8b527c51fa312ce306f5d8f4"
+      ],
+      "reason": "The named leaf rows describe Capability, Outputs, Protocol or the retention/emission Rules line. None is the separate Destination declaration at line 12 or an explicit call/inheritance relationship. DP1 scopes those latter constructs; full-source evidence supports this exclusion. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "cf440ff1717daba3ba33af52",
+        "af24593c352cedfdf9a972fa",
+        "65dd3d64e8c54c7713685121",
+        "bf312e511dcc8f4eda77a41a"
+      ],
+      "reason": "The complete corpus/qualification/routines/deliver.yaml source has no leaf Destination declaration. DP1 explicitly excludes independent checks of such files; applicable relationship rows separately carry the executing context to produce. This N decision does not assert that any leaf destination passes. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "Each named relationship is a link in qualification -> run/delivery -> deliver/emit -> produce or the produce-to-TECHNIQUE.md inheritance link. DP1 explicitly carries the inherited rule through these relationships to the concrete leaf. Full execution and ancestor evidence supports the exact A reasons. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "263ad09bd2d440e2a894ee63",
+        "665c1a7ad6f6a7650e3f374a",
+        "9fff88eaae065adb66759e66"
+      ],
+      "reason": "The complete corpus/qualification/workflow.yaml source has no leaf Destination declaration. DP1 explicitly excludes independent checks of such files; applicable relationship rows separately carry the executing context to produce. This N decision does not assert that any leaf destination passes. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "Each named relationship is a link in qualification -> run/delivery -> deliver/emit -> produce or the produce-to-TECHNIQUE.md inheritance link. DP1 explicitly carries the inherited rule through these relationships to the concrete leaf. Full execution and ancestor evidence supports the exact A reasons. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "Each named relationship is a link in qualification -> run/delivery -> deliver/emit -> produce or the produce-to-TECHNIQUE.md inheritance link. DP1 explicitly carries the inherited rule through these relationships to the concrete leaf. Full execution and ancestor evidence supports the exact A reasons. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "Each named row contains produce Destination public at line 12. DP1 requires comparison with the archive constraint of the executing qualification ancestor at TECHNIQUE.md line 5. Applicability is independent of whether those values agree. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a93639cc3c5c1ad866587c2e",
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "reason": "The complete corpus/qualification/activities/run.yaml source has no leaf Destination declaration. DP1 explicitly excludes independent checks of such files; applicable relationship rows separately carry the executing context to produce. This N decision does not assert that any leaf destination passes. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

@@ -1,0 +1,344 @@
+{
+  "assignment": "df405bd5c16d0d2d70b3",
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+  "records": [
+    {
+      "items": [
+        "5fb3f06992383a0be7318734"
+      ],
+      "status": "N",
+      "reason": "TECHNIQUE.md#/capability: The ancestor Capability describes its service as Constrain inherited delivery. This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "status": "N",
+      "reason": "TECHNIQUE.md#/capability/line-2: Constrain inherited delivery is the ancestor Capability description. This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "620325a4c3f62c9867a7df90"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/inputs: The routine Inputs list contains exactly envelope. AP-02 contract (1) uses this exact Inputs list as the required key set for each concrete deliver invocation; the declaration is an endpoint of that binding contract.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#/inputs/0: The sole routine input entry is envelope. AP-02 contract (1) uses this exact Inputs list as the required key set for each concrete deliver invocation; the declaration is an endpoint of that binding contract.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "ac42c54bb5e18cc6005d1df7"
+      ],
+      "status": "N",
+      "reason": "TECHNIQUE.md#/rules: The ancestor TECHNIQUE Rules declare Destination must be archive. This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "bfde9ab405ad9faa2bc4b5ac"
+      ],
+      "status": "N",
+      "reason": "TECHNIQUE.md#/rules/line-5: The ancestor destination constraint requires archive; it is not a leaf destination declaration. This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "b34f6249f0f9b31107491750"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#@relationship/3a2f0d25e0e017f7: The deliver-to-produce call resolves emit.report through emit; produce declares summary and Destination public. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "status": "A",
+      "reason": "deliver.yaml#@relationship/50a64427faa3df96: The execution relationship carries qualification -> run#delivery -> deliver#emit -> produce, the packet argument, export emit.report, and the ancestor archive destination. AP-02 applies to both binding contracts carried by this instantiated call chain: activity arguments against routine Inputs and emit.report against the resolved produce Outputs declaration.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "c986d23bf9fe92ac15ab723d"
+      ],
+      "status": "A",
+      "reason": "produce.md#/outputs: The leaf Outputs heading declares the name summary, consumed by deliver export emit.report. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "fef2366b0f34a7eda42dc08d"
+      ],
+      "status": "A",
+      "reason": "produce.md#/outputs/summary: The leaf output declaration is summary; the routine export refers to emit.report. AP-02 contract (2) applies to the emit.report export or this explicitly named producer/output endpoint. The entry requires resolution of emit and produce before comparing the exported output with the declared name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "4d029f4ed7a941dc5b13bafa"
+      ],
+      "status": "N",
+      "reason": "TECHNIQUE.md#@element: The complete ancestor declares its capability and the required archive destination, with no leaf destination or binding. This ancestor capability/destination contract declares neither routine argument keys nor an exported step.output producer/output endpoint; neither AP-02 binding form occurs.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "a1bbb96005ca910edd02b943"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/id: The workflow declaration identifier is qualification. This declaration or activity-step identifier is not an invocation argument key, routine input, exported step.output binding or its referenced producer step. Neither AP-02 binding contract is present in this row.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "b331b3631bac4371bfebf008"
+      ],
+      "status": "A",
+      "reason": "run.yaml#@element: The run activity contains delivery invoking deliver with argument key packet. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "b93fc9705f0d802bdff5440b"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/initialActivity: The workflow initialActivity is run and its graph supplies run.done -> run. A workflow graph node, exit or activity reference is neither a routine invocation argument contract nor a routine step.output export, the two AP-02 scopes.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "bfa09024c94a6bc76d51c631"
+      ],
+      "status": "N",
+      "reason": "deliver.yaml#/id: The routine declaration identifier is deliver. This declaration or activity-step identifier is not an invocation argument key, routine input, exported step.output binding or its referenced producer step. Neither AP-02 binding contract is present in this row.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

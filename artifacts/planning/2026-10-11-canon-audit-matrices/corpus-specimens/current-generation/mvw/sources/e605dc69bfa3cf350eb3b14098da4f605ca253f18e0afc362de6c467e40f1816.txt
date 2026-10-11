@@ -1,0 +1,27 @@
+id: empty-diff-case
+version: 1.0.0
+name: Empty Diff Case
+description: Refer to the change risk assessment over a held symbol and an index holding nothing staged.
+variables:
+  reads:
+    - empty_diff_diff_scope
+    - empty_diff_target
+  writes:
+    - name: empty_diff_change_risk_verdict
+      type: object
+      description: One rating for the change, the counts it rests on, and the flows a reviewer exercises to cover it.
+required: true
+steps:
+  - kind: routine
+    id: assess-empty-diff
+    routine: gitnexus::change-risk-assessment
+    with:
+      target: "{empty_diff_target}"
+      diff_scope: "{empty_diff_diff_scope}"
+    outputs:
+      change_risk_verdict: empty_diff_change_risk_verdict
+exits:
+  - id: assessed
+    isDefault: true
+outcome:
+  - The same run under a held symbol and an index holding nothing staged measured the symbol's blast radius while the diff half landed no changed symbol, so the verdict rests on the symbol's rating alone and states that the diff rating is absent — the fallback the run promises for a diff that moved nothing, distinct from a symbol the graph does not hold

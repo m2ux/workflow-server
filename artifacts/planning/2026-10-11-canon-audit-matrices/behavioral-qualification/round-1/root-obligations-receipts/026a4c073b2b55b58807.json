@@ -1,0 +1,79 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-a",
+  "assignment": "026a4c073b2b55b58807",
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef",
+  "actor": "/root",
+  "attempt": "root-supporting-1",
+  "records": [
+    {
+      "items": [
+        "read:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "read",
+      "reason": "Read the entire activity: delivery invokes deliver with an explicit argument map. The exact argument names and referenced routine remain available to the AP-02 evaluations.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "read:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "read",
+      "reason": "Read the entire unchanged routine: envelope input, report exported from emit.report, and emit invoking produce. Its declaration and concrete invocation are distinct mapped contexts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "read:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "read",
+      "reason": "Read the complete inherited contract: capability text and the archive destination rule. The leaf declaration and explicit call-chain context carry this rule to DP1 evaluation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "read:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "read",
+      "reason": "Read Capability, Outputs, Protocol and both Rules through line12, including each semicolon-separated clause and the destination. This read disposition does not settle any semantic evaluation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "read:corpus/qualification/workflow.yaml"
+      ],
+      "status": "read",
+      "reason": "Read initialActivity and the complete run graph including its sole done destination. Whole-graph termination is covered by DP2 evaluations.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}

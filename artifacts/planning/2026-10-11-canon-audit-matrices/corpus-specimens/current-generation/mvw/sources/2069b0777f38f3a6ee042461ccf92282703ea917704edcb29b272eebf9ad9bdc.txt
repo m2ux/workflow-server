@@ -1,0 +1,69 @@
+$schema: ../../schemas/workflow.schema.json
+id: workflow-design
+version: 1.39.0
+title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
+description: >-
+  DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already in flight can finish; it is removed once none remain. Guide agents through creating, updating, or reviewing workflow definitions.
+author: m2ux
+tags:
+  - deprecated
+  - workflow-creation
+  - workflow-review
+  - workflow-design
+  - schema-validation
+  - design-principles
+  - elicitation
+  - conventions
+rules:
+  activity:
+    - The target specification's design dimensions are elicited once and carried forward as the run's own record, so a later activity reads the specification rather than re-deriving it
+techniques:
+  activity:
+    - variable-binding
+variables:
+  # This workflow batches its open judgements into the commit gate rather than interviewing them
+  # mid-flow, so the borrowed record operation's per-assumption outcome has no producer here. It is a
+  # constant, owned by the file that runs the borrowed operation.
+  - name: assumption_outcome
+    type: string
+    description: What the gate that decided an assumption gave it — always empty in this workflow.
+    defaultValue: ""
+  # Seeded with the session and named by the shared contract of the operations this workflow
+  # borrows, so the file owns the name and no activity produces it.
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to.
+  - name: scope_manifest
+    type: array
+    description: List of files to create, modify, or remove with full paths and actions.
+  - name: assumptions_log
+    type: object
+    description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
+initialActivity: intake-and-context
+graph:
+  intake-and-context:
+    review-scope-confirmed: quality-review
+    context-established: requirements-refinement
+  requirements-refinement:
+    update: impact-analysis
+    create: pattern-analysis
+    refine: requirements-refinement
+  pattern-analysis:
+    done: scope-and-draft
+  impact-analysis:
+    done: scope-and-draft
+  scope-and-draft:
+    done: quality-review
+    redraft: scope-and-draft
+  quality-review:
+    done: validate-and-commit
+    has-blocker: scope-and-draft
+    fix-issues: intake-and-context
+  validate-and-commit:
+    update: post-update-review
+    create: retrospective
+    correct-assumptions: requirements-refinement
+    return-to-draft: scope-and-draft
+  post-update-review:
+    needs-audit-fixes: intake-and-context
+    review-clean: retrospective

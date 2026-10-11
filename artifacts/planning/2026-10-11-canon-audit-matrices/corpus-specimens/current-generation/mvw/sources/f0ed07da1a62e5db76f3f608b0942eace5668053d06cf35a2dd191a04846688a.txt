@@ -1,0 +1,69 @@
+id: component-scan
+version: 1.0.0
+name: Component Scan
+description: >-
+  Read the components a workspace's host repository declares, measure them against the roster of
+  trees to index, and answer with the components no roster entry covers and the entries no declared
+  component answers.
+
+inputs:
+  - id: index_roster
+    description: >-
+      The roster's entries, both the trees it marks for indexing and the ones it holds out, each
+      naming the path it covers.
+  - id: workspace_path
+    description: >-
+      Directory the ascent to the host repository starts from. The host is derived from git rather
+      than named, so a path anywhere inside the checkout answers.
+  - id: planning_folder_path
+    description: The session's planning folder, which every operation of the git library this run composes carries as a shared input.
+
+outputs:
+  - id: roster_coverage_report
+    type: object
+    description: >-
+      The components the host declares that the roster does not cover, the roster entries no
+      declared component answers, and the paths the host marks as infrastructure.
+  - id: target_repo
+    type: string
+    optional: true
+    description: The owner and repository name the host's origin carries, which this run takes no answer from.
+  - id: component_hint
+    type: string
+    optional: true
+    description: The component the workspace path already sits inside, which this run takes no answer from.
+
+internals:
+  - id: host_repo_path
+    description: The repository the ascent resolved as the host, whose declared submodules the scan reads.
+  - id: declared_components
+    description: One entry per submodule the host declares, with its path, its infrastructure mark and whether its working tree is populated.
+
+steps:
+  - kind: technique
+    id: resolve-host
+    technique:
+      name: git::resolve-host-repo
+      inputs:
+        workspace_path: workspace_path
+      outputs:
+        host_repo_path: host_repo_path
+        target_repo: target_repo
+        component_hint: component_hint
+  - kind: technique
+    id: list-declared
+    technique:
+      name: git::list-components
+      inputs:
+        host_repo_path: host_repo_path
+      outputs:
+        declared_components: declared_components
+  - kind: technique
+    id: judge-coverage
+    technique:
+      name: gitnexus::judge-roster-coverage
+      inputs:
+        declared_components: declared_components
+        index_roster: index_roster
+      outputs:
+        roster_coverage_report: roster_coverage_report

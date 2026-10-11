@@ -1,0 +1,597 @@
+{
+  "qualification": "prior Workflow Canon Author-mode baseline",
+  "skill_root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon",
+  "skill_revision": "741626a96d9e854429798b68b05ae73d012d1ce5",
+  "skill_revision_verified_by_local_git": true,
+  "mode": "Author, read-only pre-application draft walk",
+  "authority": "Review captured controlled-dialect sources; report findings and prescribed fixes without edits.",
+  "planning_record": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices",
+  "transcript": "/tmp/baseline-author-transcript.txt",
+  "method": {
+    "instruction_path": [
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/SKILL.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/author-mode.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/planning.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Prerequisites L5-8",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Terms L9-16",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Criteria L17-22",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Scope L23-28",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/design-flow.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Conventions L3-19",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Homes L29-42",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-map.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/walk-rules.md",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/definition-scope.md#Scope L5-35",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#List Units L424-435",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#List Units for a Construct L436-447",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Fetch Unit L448-455",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Resolve Ref L22-29",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Find Consumers L456-466",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Checks L43-51",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md#Report Context L5-82",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Canon Check Conventions L363-390",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Run Guard Suite L469-479",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Run Option Coverage L269-280"
+    ],
+    "walk_order": [
+      "AP-01. emission-without-validation",
+      "AP-02. broken-binding",
+      "Honor the executing workflow's inherited destination",
+      "Provide a terminating workflow path"
+    ],
+    "draft_stop": "Author step 5; no definition write, findings register, post-write pass, or commit gate is claimed.",
+    "scope_derivation": "The three specified paths plus the resolved deliver routine and inherited TECHNIQUE authority cover all captured execution relationships.",
+    "classification_source": "Prior references/reporting.md Report Context, including Bands and Severity.",
+    "negative_case_confirmation": "Each unit was also observed firing on a concrete captured construct in case b; the clean case a assessment is not an empty unexercised hand-check.",
+    "blindness": "Expected outcomes, fixture README, current skill instructions, audit-state files, current reports, other agents receipts, and coordinator cases were not read. Only coordinator-authorized structural observation files and their output were added to the two input captures."
+  },
+  "cases": [
+    {
+      "case": "a",
+      "input": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-a.json",
+      "input_sha256": "deb2989310bdc4b3cb3ab93208633cae1eb6200138865cb76a57eee978366a5d",
+      "coverage_status": "finished for the supplied controlled criteria and captured source scope",
+      "scope": {
+        "specified_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/produce.md"
+        ],
+        "contract_closure": [
+          "corpus/qualification/routines/deliver.yaml"
+        ],
+        "inherited_authority": [
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "external_consumers": "None supplied in the complete controlled capture; no wider-corpus claim."
+      },
+      "criterion_coverage": [
+        {
+          "entry": "AP-01. emission-without-validation",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "anchor": "AP-01. emission-without-validation",
+          "lines": [
+            7,
+            13
+          ],
+          "status": "walked",
+          "result": "satisfied",
+          "finding_ids": [],
+          "assessment": "Applied independently to produce Protocol line 8, Rules line 11 retention and emission clauses, and Rules line 12 destination; examined ancestor Rules and all other source constructs against the exclusions. Protocol and emitting Rules clause require report validation before emission.",
+          "excluded_constructs": "Capability descriptions, headings, output declarations, the retention-only clause, destination declarations, graph labels, bindings, and routine calls do not direct emission under this entry."
+        },
+        {
+          "entry": "AP-02. broken-binding",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "anchor": "AP-02. broken-binding",
+          "lines": [
+            15,
+            21
+          ],
+          "status": "walked",
+          "result": "satisfied",
+          "finding_ids": [],
+          "assessment": "Resolved the activity delivery invocation to deliver, compared argument keys with [envelope], then resolved output binding emit.report through step emit to produce. Argument keys are {envelope}; the declared producer output is report. Both contracts match.",
+          "excluded_constructs": "The value sealed is opaque. Markdown mentions of report do not declare bindings. The exported routine binding name report need not match the technique output name."
+        },
+        {
+          "entry": "Honor the executing workflow's inherited destination",
+          "home": "corpus/canon/resources/design-principles.md",
+          "anchor": "1. Honor the executing workflow's inherited destination",
+          "lines": [
+            5,
+            7
+          ],
+          "status": "walked",
+          "result": "satisfied",
+          "finding_ids": [],
+          "assessment": "Followed qualification initialActivity run -> delivery routine deliver -> step emit technique produce. Its executing workflow inherits qualification/techniques/TECHNIQUE.md Rules requiring archive. The leaf destination is archive and matches.",
+          "excluded_constructs": "The ancestor constraint is authority, not a conflicting leaf declaration. Files without a leaf destination declaration have no independent destination test."
+        },
+        {
+          "entry": "Provide a terminating workflow path",
+          "home": "corpus/canon/resources/design-principles.md",
+          "anchor": "2. Provide a terminating workflow path",
+          "lines": [
+            9,
+            11
+          ],
+          "status": "walked",
+          "result": "satisfied",
+          "finding_ids": [],
+          "assessment": "The complete graph has initialActivity run and edge run.done -> null; the path run -> null terminates.",
+          "excluded_constructs": "Matching activity IDs alone does not prove termination. Activity and routine steps do not create graph exits in this dialect."
+        }
+      ],
+      "source_coverage": [
+        {
+          "path": "corpus/canon/resources/anti-patterns.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled criterion authority",
+          "bytes": 2055,
+          "line_count": 21,
+          "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/canon/resources/convention-conformance.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled evidence-scope convention",
+          "bytes": 411,
+          "line_count": 5,
+          "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/canon/resources/design-principles.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled criterion authority",
+          "bytes": 1352,
+          "line_count": 11,
+          "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/activities/run.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 101,
+          "line_count": 6,
+          "sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/routines/deliver.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "routine contract and producer consumer closure",
+          "bytes": 105,
+          "line_count": 6,
+          "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/techniques/TECHNIQUE.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "inherited destination authority",
+          "bytes": 85,
+          "line_count": 5,
+          "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/techniques/produce.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 207,
+          "line_count": 12,
+          "sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/workflow.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 68,
+          "line_count": 5,
+          "sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+          "hash_verified": true
+        }
+      ],
+      "coverage_counts": {
+        "controlled_criteria_total": 4,
+        "walked": 4,
+        "blocked": 0,
+        "sources_total": 8,
+        "read": 8,
+        "unread": 0
+      },
+      "findings": [],
+      "finding_counts": {
+        "total": 0,
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0,
+        "Critical": 0,
+        "High": 0,
+        "Medium": 0,
+        "Low": 0
+      },
+      "preserve": [
+        "Report-ID retention",
+        "Opaque invocation value sealed",
+        "The routine exported binding name report, which may differ from a producer output name",
+        "The inherited archive destination requirement",
+        "A finite path from initialActivity to a null graph destination"
+      ],
+      "guard_observation": {
+        "provenance": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-observation.json",
+        "observation": {
+          "command": [
+            "/usr/bin/python3",
+            "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+            "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a",
+            "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+          ],
+          "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+          "exit_code": 0,
+          "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-output.txt",
+          "output_bytes": 269,
+          "elapsed_seconds": 0.11438447999535128
+        },
+        "output": {
+          "check": "controlled qualification structural guard",
+          "root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a",
+          "sources": 8,
+          "criteria": 4,
+          "errors": []
+        },
+        "output_sha256": "712330f46599568fb7b8df66bfdbc5205981a1700199f253d441340ed0267f5d",
+        "interpretation": "Measured controlled-dialect structural pass; it does not establish semantic satisfaction of the four controlled criteria or full engine conformance."
+      },
+      "limitations": [
+        "This is a read-only Author-mode draft assessment against the four supplied controlled criteria, stopping at Author step 5. Definitions and audit state were not edited.",
+        "The captured dialect expressly excludes full project canon and engine schema conformance. The observed structural guard is a controlled qualification check only; full engine guards and engine option coverage were not run.",
+        "The supplied criteria contain no Fires-on metadata. All four were selected directly from the complete captured canon and applied; no project list-fires-on command result is claimed.",
+        "No separate live sibling or repository-wide consumer tree was supplied. Coverage is exhaustive over the captured sources and their explicit call and inheritance relationships, not an uncaptured corpus.",
+        "Captured input hashes identify the assessed candidates. No candidate branch diff or runtime execution was supplied, so findings are not assigned a diff versus pre-existing origin."
+      ],
+      "measured_work": {
+        "input_bytes": 6014,
+        "captured_source_bytes": 4384,
+        "recorded_case_read_and_verification_output_bytes": 10427,
+        "recorded_case_read_and_verification_operation_seconds": 0.0002676360309123993,
+        "recorded_case_operations": 9,
+        "structural_guard_elapsed_seconds": 0.11438447999535128,
+        "structural_guard_output_bytes": 269,
+        "wall_time_attribution": "The two cases were assessed together; wall elapsed is reported once in shared measured_work rather than allocated between cases."
+      }
+    },
+    {
+      "case": "b",
+      "input": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-b.json",
+      "input_sha256": "6b7891161483ff91c34f0f1ed080318d17fe378fb453349a90c0bc370ba90de9",
+      "coverage_status": "finished for the supplied controlled criteria and captured source scope",
+      "scope": {
+        "specified_paths": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/produce.md"
+        ],
+        "contract_closure": [
+          "corpus/qualification/routines/deliver.yaml"
+        ],
+        "inherited_authority": [
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "external_consumers": "None supplied in the complete controlled capture; no wider-corpus claim."
+      },
+      "criterion_coverage": [
+        {
+          "entry": "AP-01. emission-without-validation",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "anchor": "AP-01. emission-without-validation",
+          "lines": [
+            7,
+            13
+          ],
+          "status": "walked",
+          "result": "violated",
+          "finding_ids": [
+            "B-01",
+            "B-02"
+          ],
+          "assessment": "Applied independently to produce Protocol line 8, Rules line 11 retention and emission clauses, and Rules line 12 destination; examined ancestor Rules and all other source constructs against the exclusions. Protocol line 8 and Rules line 11 second clause each explicitly permit unvalidated report emission.",
+          "excluded_constructs": "Capability descriptions, headings, output declarations, the retention-only clause, destination declarations, graph labels, bindings, and routine calls do not direct emission under this entry."
+        },
+        {
+          "entry": "AP-02. broken-binding",
+          "home": "corpus/canon/resources/anti-patterns.md",
+          "anchor": "AP-02. broken-binding",
+          "lines": [
+            15,
+            21
+          ],
+          "status": "walked",
+          "result": "violated",
+          "finding_ids": [
+            "B-03",
+            "B-04"
+          ],
+          "assessment": "Resolved the activity delivery invocation to deliver, compared argument keys with [envelope], then resolved output binding emit.report through step emit to produce. Argument keys are {packet}; the declared producer output is summary. Both binding contracts fail independently.",
+          "excluded_constructs": "The value sealed is opaque. Markdown mentions of report do not declare bindings. The exported routine binding name report need not match the technique output name."
+        },
+        {
+          "entry": "Honor the executing workflow's inherited destination",
+          "home": "corpus/canon/resources/design-principles.md",
+          "anchor": "1. Honor the executing workflow's inherited destination",
+          "lines": [
+            5,
+            7
+          ],
+          "status": "walked",
+          "result": "violated",
+          "finding_ids": [
+            "B-05"
+          ],
+          "assessment": "Followed qualification initialActivity run -> delivery routine deliver -> step emit technique produce. Its executing workflow inherits qualification/techniques/TECHNIQUE.md Rules requiring archive. The leaf destination is public and conflicts.",
+          "excluded_constructs": "The ancestor constraint is authority, not a conflicting leaf declaration. Files without a leaf destination declaration have no independent destination test."
+        },
+        {
+          "entry": "Provide a terminating workflow path",
+          "home": "corpus/canon/resources/design-principles.md",
+          "anchor": "2. Provide a terminating workflow path",
+          "lines": [
+            9,
+            11
+          ],
+          "status": "walked",
+          "result": "violated",
+          "finding_ids": [
+            "B-06"
+          ],
+          "assessment": "The complete graph has initialActivity run and sole edge run.done -> run. The only reachable node is run, and no reachable null destination exists.",
+          "excluded_constructs": "Matching activity IDs alone does not prove termination. Activity and routine steps do not create graph exits in this dialect."
+        }
+      ],
+      "source_coverage": [
+        {
+          "path": "corpus/canon/resources/anti-patterns.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled criterion authority",
+          "bytes": 2055,
+          "line_count": 21,
+          "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/canon/resources/convention-conformance.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled evidence-scope convention",
+          "bytes": 411,
+          "line_count": 5,
+          "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/canon/resources/design-principles.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "controlled criterion authority",
+          "bytes": 1352,
+          "line_count": 11,
+          "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/activities/run.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 99,
+          "line_count": 6,
+          "sha256": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/routines/deliver.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "routine contract and producer consumer closure",
+          "bytes": 105,
+          "line_count": 6,
+          "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/techniques/TECHNIQUE.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "inherited destination authority",
+          "bytes": 85,
+          "line_count": 5,
+          "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/techniques/produce.md",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 202,
+          "line_count": 12,
+          "sha256": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+          "hash_verified": true
+        },
+        {
+          "path": "corpus/qualification/workflow.yaml",
+          "status": "read",
+          "extent": "complete captured file",
+          "role": "specified change surface",
+          "bytes": 67,
+          "line_count": 5,
+          "sha256": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+          "hash_verified": true
+        }
+      ],
+      "coverage_counts": {
+        "controlled_criteria_total": 4,
+        "walked": 4,
+        "blocked": 0,
+        "sources_total": 8,
+        "read": 8,
+        "unread": 0
+      },
+      "findings": [
+        {
+          "id": "B-03",
+          "entry": "AP-02. broken-binding",
+          "location": "corpus/qualification/activities/run.yaml:6 steps[0].routine.arguments",
+          "summary": "The delivery invocation passes the key packet, while deliver declares the sole input envelope. The concrete invocation fails the exact argument-key contract.",
+          "evidence": "arguments: {packet: sealed}; deliver inputs: [envelope]",
+          "fix": "Set the invocation arguments to {envelope: sealed}, matching the exact routine input name while retaining its opaque value.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_basis": "The invocation is structurally broken under the controlled binding contract and cannot provide the declared input."
+        },
+        {
+          "id": "B-04",
+          "entry": "AP-02. broken-binding",
+          "location": "corpus/qualification/routines/deliver.yaml:3 outputs.report",
+          "summary": "The routine exports emit.report, but its emit step calls produce, whose only declared output is summary. The binding references an absent producer output.",
+          "evidence": "outputs: {report: emit.report}; steps[0].id: emit; steps[0].technique: produce; produce Outputs heading: summary",
+          "fix": "Bind the exported report to emit.summary. The exported binding name report may remain because its name need not match the technique output name.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_basis": "An output reference to a name absent from its resolved producer is structurally broken; the untouched routine joins the contract closure."
+        },
+        {
+          "id": "B-06",
+          "entry": "Provide a terminating workflow path",
+          "location": "corpus/qualification/workflow.yaml:2 initialActivity and graph.run.done at line 5",
+          "summary": "The initial activity is run and its only exit returns to run. No reachable graph edge has a null destination, so the workflow has no finite terminating path.",
+          "evidence": "initialActivity: run; graph.run.done: run; run is the only graph key",
+          "fix": "Set graph.run.done to null, giving the initial activity a finite terminating path.",
+          "band": "Live",
+          "severity": "Critical",
+          "classification_basis": "The whole graph lacks the termination structure required by the controlled workflow invariant, independently of the narrow structural guard."
+        },
+        {
+          "id": "B-01",
+          "entry": "AP-01. emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:8 Protocol instruction",
+          "summary": "The Protocol explicitly directs emission of the report without validation.",
+          "evidence": "Emit the report without validation.",
+          "fix": "Require validation of the report before this emission, for example: Validate the report, then emit it.",
+          "band": "Live",
+          "severity": "High",
+          "classification_basis": "The shipping instruction directly permits unvalidated output and propagates that behavior to its executing routine."
+        },
+        {
+          "id": "B-02",
+          "entry": "AP-01. emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:11 Rules, second semicolon-separated clause",
+          "summary": "The Rules clause explicitly permits report emission without validation. The preceding report-ID retention clause does not excuse the emitting clause.",
+          "evidence": "Retain the report ID; emit the report without validation.",
+          "fix": "Preserve report-ID retention and require validation before every emission: Retain the report ID; validate the report before each emission.",
+          "band": "Live",
+          "severity": "High",
+          "classification_basis": "This independent emitting clause directs unvalidated behavior beyond its own prose; validation elsewhere would not excuse it."
+        },
+        {
+          "id": "B-05",
+          "entry": "Honor the executing workflow's inherited destination",
+          "location": "corpus/qualification/techniques/produce.md:12 Rules destination declaration",
+          "summary": "The executing leaf declares public, but its qualification workflow ancestor requires archive. The run activity and deliver routine carry that inherited destination requirement to produce.",
+          "evidence": "produce: Destination is public.; qualification/techniques/TECHNIQUE.md: Destination must be archive.; run -> deliver -> produce",
+          "fix": "Set the leaf declaration to Destination is archive, satisfying the inherited required destination.",
+          "band": "Live",
+          "severity": "High",
+          "classification_basis": "The leaf declaration selects the wrong destination for its executing workflow and propagates the contract violation into delivery."
+        }
+      ],
+      "finding_counts": {
+        "total": 6,
+        "Live": 6,
+        "Contract": 0,
+        "Hygiene": 0,
+        "Critical": 3,
+        "High": 3,
+        "Medium": 0,
+        "Low": 0
+      },
+      "preserve": [
+        "Report-ID retention",
+        "Opaque invocation value sealed",
+        "The routine exported binding name report, which may differ from a producer output name",
+        "The inherited archive destination requirement",
+        "A finite path from initialActivity to a null graph destination"
+      ],
+      "guard_observation": {
+        "provenance": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-observation.json",
+        "observation": {
+          "command": [
+            "/usr/bin/python3",
+            "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+            "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b",
+            "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+          ],
+          "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+          "exit_code": 0,
+          "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt",
+          "output_bytes": 269,
+          "elapsed_seconds": 0.11567819901392795
+        },
+        "output": {
+          "check": "controlled qualification structural guard",
+          "root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b",
+          "sources": 8,
+          "criteria": 4,
+          "errors": []
+        },
+        "output_sha256": "c0aa43baf5a90a223463ca0a8e820c9fd4cef547602bb2b1eff1cf2ef34e00dd",
+        "interpretation": "Measured controlled-dialect structural pass; it does not establish semantic satisfaction of the four controlled criteria or full engine conformance."
+      },
+      "limitations": [
+        "This is a read-only Author-mode draft assessment against the four supplied controlled criteria, stopping at Author step 5. Definitions and audit state were not edited.",
+        "The captured dialect expressly excludes full project canon and engine schema conformance. The observed structural guard is a controlled qualification check only; full engine guards and engine option coverage were not run.",
+        "The supplied criteria contain no Fires-on metadata. All four were selected directly from the complete captured canon and applied; no project list-fires-on command result is claimed.",
+        "No separate live sibling or repository-wide consumer tree was supplied. Coverage is exhaustive over the captured sources and their explicit call and inheritance relationships, not an uncaptured corpus.",
+        "Captured input hashes identify the assessed candidates. No candidate branch diff or runtime execution was supplied, so findings are not assigned a diff versus pre-existing origin."
+      ],
+      "measured_work": {
+        "input_bytes": 6006,
+        "captured_source_bytes": 4376,
+        "recorded_case_read_and_verification_output_bytes": 10410,
+        "recorded_case_read_and_verification_operation_seconds": 0.00015586099470965564,
+        "recorded_case_operations": 9,
+        "structural_guard_elapsed_seconds": 0.11567819901392795,
+        "structural_guard_output_bytes": 269,
+        "wall_time_attribution": "The two cases were assessed together; wall elapsed is reported once in shared measured_work rather than allocated between cases."
+      }
+    }
+  ],
+  "measured_work": {
+    "started_at_utc": "2026-10-11T06:54:35.062385+00:00",
+    "assessment_completed_at_utc": "2026-10-11T07:00:21.326365+00:00",
+    "wall_elapsed_seconds": 346.26398,
+    "recorded_operations": 43,
+    "prior_instruction_read_operations": 23,
+    "prior_instruction_read_output_bytes": 32053,
+    "prior_instruction_read_seconds": 0.005038154078647494,
+    "captured_input_read_output_bytes": 12020,
+    "total_recorded_read_search_verification_command_output_bytes": 56900,
+    "total_recorded_operation_seconds": 0.01139087209594436,
+    "transcript_bytes_before_result_receipt": 68790,
+    "measurement_limits": "Operation seconds measure local reads, section extraction, searches, and verification. Wall elapsed includes reasoning and tool turnaround. Guard timings are preserved coordinator observations and are not counted as new agent executions."
+  }
+}

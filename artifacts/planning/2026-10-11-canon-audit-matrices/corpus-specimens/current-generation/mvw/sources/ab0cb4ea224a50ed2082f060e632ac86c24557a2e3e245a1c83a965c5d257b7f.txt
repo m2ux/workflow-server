@@ -1,0 +1,38 @@
+id: apply-mitigations
+version: 2.2.0
+name: Apply Accepted Mitigations
+description: Apply accepted mitigations to the target document.
+variables:
+  reads:
+    - current_finding
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - mitigation_plan_path
+    - target_name
+    - target_path
+  writes:
+    - name: evaluation_findings
+      type: array
+      description: The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier
+steps:
+  - kind: technique
+    id: apply-changes
+    technique: resolve-findings::apply-changes
+    actions:
+      - action: message
+        message: |-
+          {applied_changes}
+
+          The target is [{target_name}]({target_path}); the plan it was applied from is [the mitigation plan]({mitigation_plan_path}).
+  - kind: technique
+    id: commit-changes
+    technique:
+      name: git::commit-regular-files
+      inputs:
+        paths: changed_paths
+        commit_message: "docs({target_name}): apply evaluation mitigations"
+        branch: current
+outcome:
+  - The target document now reflects every accepted mitigation, applied in priority order and committed
+  - The user can trust that each change landed correctly, with verification confirming what was modified

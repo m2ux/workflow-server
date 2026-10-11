@@ -1,0 +1,108 @@
+id: report-generation
+version: 3.9.0
+name: Report Generation
+description: Consolidate findings into the final audit report.
+variables:
+  reads:
+    - decomposition_results
+    - dispatch_complete
+    - dispatch_results
+    - domain_map
+    - ensemble_enabled
+    - gitnexus_available
+    - has_reference_report
+    - merge_complete
+    - planning_folder_path
+    - reconciliation_table
+    - target_commit
+    - target_submodule
+    - verification_complete
+    - verification_report
+  writes:
+    - name: reconciliation_table
+      type: object
+      description: Per-agent finding-count reconciliation, carrying an `unaccounted` count that is zero when the merge is lossless.
+      defaultValue: {}
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting report generation — consolidating findings from all phases
+  - kind: action
+    id: enforce-report-gates
+    actions:
+      - action: validate
+        target: dispatch_complete
+        condition:
+          type: simple
+          variable: dispatch_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until every assigned primary agent was dispatched and returned (dispatch completeness gate)
+      - action: validate
+        target: verification_complete
+        condition:
+          type: simple
+          variable: verification_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until the verification sub-agent (V) has run and set verification_complete
+      - action: validate
+        target: merge_complete
+        condition:
+          type: simple
+          variable: merge_complete
+          operator: ==
+          value: true
+        message: Report generation is blocked until the merge sub-agent (M) has run and set merge_complete
+      - action: validate
+        target: verification_report
+        message: Report generation is blocked until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent (coverage gate)
+      - action: validate
+        target: reconciliation_table.unaccounted == 0
+        message: Report generation is blocked until the merge reconciliation table shows zero Unaccounted findings for every agent (finding-count reconciliation gate)
+  - kind: technique
+    id: integrate-adversarial-results
+    technique:
+      name: merge-findings
+      inputs:
+        merge_strategy: integrate
+        finding_sources: decomposition_results
+        existing_table: merge_table
+  - kind: technique
+    id: apply-severity
+    technique: score-severity
+  - kind: technique
+    id: coverage-gate
+    technique:
+      name: verify-sub-agent-output
+      inputs:
+        agent_results: dispatch_results
+        expected_outputs: domain_map
+  - kind: technique
+    id: write-report
+    when: dispatch_complete == true && verification_complete == true && merge_complete == true
+    technique:
+      name: write-report
+      inputs:
+        merge_table: scored_findings
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Report generation complete — audit report finalized
+exits:
+  - id: ensemble
+    when: ensemble_enabled == true
+  - id: has-reference-report
+    when: has_reference_report == true
+  - id: complete
+    isDefault: true
+outcome:
+  - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
+  - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in

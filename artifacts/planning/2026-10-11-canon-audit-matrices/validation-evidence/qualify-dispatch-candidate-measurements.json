@@ -1,0 +1,73 @@
+{
+  "assignment": "557788b6b6a57a89051f",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a/corrected-packets/557788b6b6a57a89051f.json",
+  "script_changes": [
+    "audit_dispatch.py"
+  ],
+  "old_script_sha256": "d03af7c3894f91a2bcfd5116a9a2fb5d2bc2189303988c2c0bc3b6df78458cbe",
+  "candidate_script_sha256": "7d6b6f2f2f9e721cb461c004d5235cd9f6957c1f1ef0b1e6e70a322205c6b168",
+  "mapping_citation_occurrences": 18,
+  "unique_evidence_sources": 6,
+  "old_excerpt_count": 3,
+  "candidate_excerpt_count": 6,
+  "old_packet_file_bytes": 14835,
+  "old_serialized_packet_bytes": 14834,
+  "candidate_serialized_packet_bytes": 16742,
+  "candidate_file_bytes_with_one_newline": 16743,
+  "old_estimated_input_tokens": 15445,
+  "candidate_estimated_input_tokens": 17353,
+  "estimated_output_tokens": 1536,
+  "estimated_work_seconds": 15,
+  "usable_context_tokens": 208400,
+  "original_budget": {
+    "bytes_per_token": 1,
+    "context_tokens": 258400,
+    "output_tokens": 16000,
+    "reserve_tokens": 20000,
+    "safety_tokens": 30000,
+    "slots": 1,
+    "work_seconds": 600
+  },
+  "old_fits": true,
+  "candidate_fits": true,
+  "remaining_context_tokens": 189511,
+  "candidate_context": {
+    "corpus/qualification/activities/run.yaml": [
+      [
+        1,
+        6
+      ]
+    ],
+    "corpus/qualification/workflow.yaml": [
+      [
+        1,
+        5
+      ]
+    ],
+    "corpus/canon/resources/design-principles.md": [
+      [
+        1,
+        11
+      ]
+    ],
+    "corpus/qualification/routines/deliver.yaml": [
+      [
+        1,
+        6
+      ]
+    ],
+    "corpus/qualification/techniques/TECHNIQUE.md": [
+      [
+        1,
+        5
+      ]
+    ],
+    "corpus/qualification/techniques/produce.md": [
+      [
+        1,
+        12
+      ]
+    ]
+  }
+}

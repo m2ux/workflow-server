@@ -1,0 +1,49 @@
+id: prism-audit
+version: 3.0.0
+title: Security Audit Workflow
+description: Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. Audit-specific customisation is isolated here, keeping the prism workflow generic.
+author: m2ux
+tags:
+  - audit
+  - security
+  - prism
+  - codebase-analysis
+  - vulnerability-assessment
+  - report-generation
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: audit_description
+    type: string
+    description: User's description of what to audit and any specific focus areas or concerns
+    required: true
+  - name: target_path
+    type: string
+    description: Path to the codebase or directory to audit
+    required: true
+  - name: audit_output_path
+    type: string
+    description: Directory the audit artifacts are written to
+    required: true
+  - name: completed_analyses
+    type: array
+    description: "Array of completed prism runs, each read from that run's RUN-MANIFEST.json: { report_path, definitive_findings_path, status } plus the run's scope reference"
+  - name: all_analysis_artifact_paths
+    type: array
+    description: Accumulated paths to all analysis artifacts across triggered prism workflows, taken from each run's manifest
+  - name: audit_report_path
+    type: string
+    description: Path to the final AUDIT-REPORT.md
+initialActivity: scope-definition
+graph:
+  scope-definition:
+    done: prompt-generation
+    adjust: scope-definition
+  prompt-generation:
+    done: execute-analysis
+    abort: deliver-audit
+  execute-analysis:
+    done: audit-finalize
+  audit-finalize:
+    done: deliver-audit

@@ -1,0 +1,65 @@
+id: prism-evaluate
+version: 3.1.0
+title: Evaluation Workflow
+description: Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses.
+author: m2ux
+tags:
+  - evaluation
+  - analysis
+  - prism
+  - multi-dimensional
+  - proposals
+  - documents
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: evaluation_description
+    type: string
+    description: What to evaluate, the evaluation's goals, and its focus areas or concerns
+    required: true
+  - name: target_path
+    type: string
+    description: Path to the document, proposal, codebase, or artifact set to evaluate
+    required: true
+  - name: evaluation_output_path
+    type: string
+    description: Directory the evaluation artifacts are written to
+    required: true
+  - name: evaluation_target_type
+    type: string
+    description: The kind of thing being evaluated.
+    values:
+      - document
+      - document-set
+      - codebase
+      - mixed
+  - name: current_finding
+    type: object
+    description: The finding under consideration
+  - name: finding_disposition
+    type: string
+    description: What the dialogue decided about the finding under discussion.
+    values:
+      - accept
+      - modify
+      - skip
+      - discuss
+initialActivity: scope-definition
+graph:
+  scope-definition:
+    scope-confirmed: dimension-planning
+    adjust: scope-definition
+  dimension-planning:
+    dimensions-confirmed: execute-analysis
+    adjust: dimension-planning
+  execute-analysis:
+    done: consolidate-report
+  consolidate-report:
+    done: deliver-results
+  deliver-results:
+    resolution-requested: resolution-dialogue
+    delivered: __terminal__
+  resolution-dialogue:
+    mitigations-requested: apply-mitigations
+    resolved: __terminal__

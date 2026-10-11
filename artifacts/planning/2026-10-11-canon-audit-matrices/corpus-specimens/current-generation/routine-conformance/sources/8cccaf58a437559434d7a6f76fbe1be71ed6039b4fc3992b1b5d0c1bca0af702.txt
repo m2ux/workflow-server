@@ -1,0 +1,51 @@
+id: positive-case
+version: 1.0.0
+name: Positive Case
+description: Refer to the area comprehension over a concept the graph's flows rank into.
+variables:
+  reads:
+    - positive_repo_path
+    - positive_search_query
+    - positive_tree_path
+  writes:
+    - name: repo_name
+      type: string
+      description: The graph every answer in this run came from, which a report naming those answers names too.
+    - name: positive_index_stats
+      type: object
+      description: File, symbol and process counts the graph holds.
+    - name: positive_index_stale
+      type: boolean
+      description: Whether the graph is still behind the tree after the rebuild, which is the age every answer below carries.
+    - name: positive_query_report
+      type: object
+      description: The execution flows the area's concept lands in, the symbols those flows run, and the definitions reached outside any flow.
+    - name: positive_symbol_contexts
+      type: array
+      description: Per named symbol, its callers, callees and flow membership.
+      defaultValue: []
+    - name: positive_flow_traces
+      type: array
+      description: The ordered step trace of each execution flow the area's concept ranked into.
+      defaultValue: []
+required: true
+steps:
+  - kind: routine
+    id: comprehend-ranked-area
+    routine: gitnexus::area-comprehension
+    with:
+      search_query: "{positive_search_query}"
+      tree_path: "{positive_tree_path}"
+      repo_path: "{positive_repo_path}"
+    outputs:
+      repo_name: repo_name
+      index_stats: positive_index_stats
+      index_stale: positive_index_stale
+      query_report: positive_query_report
+      symbol_contexts: positive_symbol_contexts
+      flow_traces: positive_flow_traces
+exits:
+  - id: comprehended
+    isDefault: true
+outcome:
+  - The run named the graph, brought it current, landed the flows a ranked concept falls in, and read a connection report per symbol and a trace per flow across its two per-item passes

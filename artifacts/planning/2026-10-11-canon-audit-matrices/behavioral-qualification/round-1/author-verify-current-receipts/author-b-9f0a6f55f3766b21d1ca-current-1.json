@@ -1,0 +1,166 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "9f0a6f55f3766b21d1ca",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_verify_one",
+  "attempt": "author-verify-current-1",
+  "records": [
+    {
+      "items": [
+        "9839de920cafa86c93f9e319",
+        "7e07755f91a05aa3f3a47b42",
+        "a700a3294be653eb8e533547",
+        "cc4fea783a74407b8fdb654e",
+        "8d0f33a043c7068e8c998046",
+        "98b55e096e4899353322814f"
+      ],
+      "status": "verified",
+      "reason": "Each named row belongs to an activity, routine, technique, ancestor or nested call/inheritance relationship. DP2 limits termination to the workflow graph and expressly says activity/routine steps add no exits. Complete context is preserved, including any workflow used only as call context. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "a6cc9c95bd8a15eec9337ab9",
+        "7616d539ed6effba75237723",
+        "19723157905da0f5874e77db",
+        "a0e70a1645458e99657058ca"
+      ],
+      "status": "verified",
+      "reason": "Each named row belongs to an activity, routine, technique, ancestor or nested call/inheritance relationship. DP2 limits termination to the workflow graph and expressly says activity/routine steps add no exits. Complete context is preserved, including any workflow used only as call context. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "d9b55f0b6cbe3ed6ab868ed5",
+        "4da9396f20f50a18673256c5",
+        "54a73e1bf111128988cf03fe"
+      ],
+      "status": "verified",
+      "reason": "Each named row belongs to an activity, routine, technique, ancestor or nested call/inheritance relationship. DP2 limits termination to the workflow graph and expressly says activity/routine steps add no exits. Complete context is preserved, including any workflow used only as call context. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "36c8e451b93d39512aae352f",
+        "7d5cdef67a14fe0a0e70a8ff",
+        "8b3b602b6703003326b8df8d"
+      ],
+      "status": "verified",
+      "reason": "Each named row belongs to an activity, routine, technique, ancestor or nested call/inheritance relationship. DP2 limits termination to the workflow graph and expressly says activity/routine steps add no exits. Complete context is preserved, including any workflow used only as call context. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "status": "verified",
+      "reason": "This row declares only workflow id qualification. It supplies no graph entry or exit. DP2 states that matching identifiers does not establish termination; separate entry, graph and whole-workflow rows remain applicable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "verified",
+      "reason": "Each named row supplies the workflow entry, graph structure/exit, graph relationship or whole element. DP2 requires a complete initialActivity-to-null path assessment. The captured graph starts at run and has done -> run; the full graph is evidence, and local identifier agreement cannot decide the invariant. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,612 @@
+{
+  "actor": "/root/qualify_verify_audit_one",
+  "assignment": "62f39cd854533f110b6b",
+  "attempt": "independent-current-verify-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b"
+      ],
+      "reason": "N: Activity steps invoke deliver with the sole argument key envelope. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "4c9b9e3283acb76acd0c593c"
+      ],
+      "reason": "N: The delivery step invokes deliver with the sole argument key envelope. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "eb0acb5f69509bc093ccb4c4"
+      ],
+      "reason": "N: delivery is the activity step identifier. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f71acc678543f1dedd6da64"
+      ],
+      "reason": "N: The routine invocation selects deliver and supplies envelope: sealed. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "85d58778322169b7eb358fb2"
+      ],
+      "reason": "N: The argument map contains only envelope: sealed. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e7190e6183add8a7b67d408d"
+      ],
+      "reason": "N: envelope is the argument key; sealed is an opaque value. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "reason": "N: The invocation names deliver, selecting its input contract. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "A: Rules contain report-ID retention, an emission clause and Destination is archive. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "A: The Rules line has separate retention and report-emission clauses. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "N: The first Rules clause only requires retaining the report ID. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "A: The second Rules clause is: validate the report before each emission. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "reason": "N: The leaf declares Destination is archive. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "reason": "N: Routine steps define emit as the produce call used by emit.report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "reason": "N: Step emit calls produce and is referenced by emit.report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "reason": "N: emit is the step-id endpoint of the emit.report output reference. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "reason": "N: The referenced emit step selects technique produce. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "343988e91c335d3bdef76586"
+      ],
+      "reason": "N: The complete graph contains run/done with destination null. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cc39f8b8ebb2b96169d05005"
+      ],
+      "reason": "N: The run graph entry contains done: null. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "b1f517596f87f82a15830709"
+      ],
+      "reason": "N: The graph exit done has destination null. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "reason": "N: The initialActivity relationship connects qualification to run. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "reason": "N: The graph-key relationship resolves run to the run activity. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "N: The graph-entry relationship records the run/done activity context. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "reason": "N: Routine Inputs contain only envelope. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "reason": "N: The routine input name is envelope. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "reason": "N: Ancestor Rules declare Destination must be archive. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "N: The ancestor destination constraint requires archive. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "A: The Protocol section contains: Validate the report, then emit it. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "A: The Protocol instruction is: Validate the report, then emit it. AP-01 requires checking each emitting instruction or clause; requiring validation does not exclude it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "reason": "N: Routine Outputs export report from emit.report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "reason": "N: The routine report binding references emit.report. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "N: The ancestor contains a Capability description and archive destination constraint. AP-01 concerns imperative Protocol/Rules emission instructions; this construct is not one.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

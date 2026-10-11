@@ -1,0 +1,1181 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_verify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "verify": {
+          "evidence": "Round 1 independent verification pilot: all 49 decisions including 39 exclusions, 97302 input bytes, 15775 returned bytes, 190.580 seconds. Conservative one-byte token upper bound plus margin; one allocated child slot.",
+          "output_tokens_per_item": 512,
+          "seconds_per_item": 5
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            1,
+            6
+          ],
+          [
+            15,
+            21
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 47263,
+      "output_tokens_estimate": 9728,
+      "work_seconds_estimate": 95
+    },
+    "id": "5f07ca0f34dc64677b2b",
+    "items": [
+      "620325a4c3f62c9867a7df90",
+      "85e68983cef9c8b0f9a7bf33",
+      "ac42c54bb5e18cc6005d1df7",
+      "bfde9ab405ad9faa2bc4b5ac",
+      "b34f6249f0f9b31107491750",
+      "8669d4026237cb94e83e2158",
+      "c986d23bf9fe92ac15ab723d",
+      "fef2366b0f34a7eda42dc08d",
+      "4d029f4ed7a941dc5b13bafa",
+      "588e9afc6de79e4e15622316",
+      "a1bbb96005ca910edd02b943",
+      "b331b3631bac4371bfebf008",
+      "b93fc9705f0d802bdff5440b",
+      "bfa09024c94a6bc76d51c631",
+      "ca1e1515076ec0147e7b8338",
+      "ce1c6885d9fe828ffb2d4802",
+      "eeab805ea4653756496776b5",
+      "fa0e42c99b24fa8b70e1b4c5",
+      "fa301823ccd44ed9374ce575"
+    ],
+    "mappings": {
+      "4d029f4ed7a941dc5b13bafa": "277117ea5c22402cd0eedc9823c037020e2f32ab84f1aa5149da5356d7d48956",
+      "588e9afc6de79e4e15622316": "7c2560fff56638755f3eca84f69ee8676d92c2503bb3d518c840885c98ce5b1e",
+      "620325a4c3f62c9867a7df90": "f3e8cf87715ed825ca262a3b702a323670cabe38f0f19ebd0d3fe0f57791ab25",
+      "85e68983cef9c8b0f9a7bf33": "f14e32314c325cabcd9aae92d02eecfa2a760885cf3abcb5910fad788d645562",
+      "8669d4026237cb94e83e2158": "168fa4a6959a3c03ac7a0e14cf0c62cff707ca56f502a40f1bd059ffbcf1797c",
+      "a1bbb96005ca910edd02b943": "7ab9c2ff3f125049b031c0b39e58866b5a1d0f12db1dbd823e05255f273e1318",
+      "ac42c54bb5e18cc6005d1df7": "a0077191da2ff5d4e946de4a15e28e8981a1662ee32d9fd2f5f3d17597f9ba94",
+      "b331b3631bac4371bfebf008": "8fdd09a314ad83780eaf66df009b6b43da26eba800109e08f4aeaeb4035d4504",
+      "b34f6249f0f9b31107491750": "034b7ce23994ec978bd38c37f582ad1155b72dce8ba444508279d0da0a3c3016",
+      "b93fc9705f0d802bdff5440b": "21a02d4e927dadc784b07a2a10a01baea358a60bb5dfe7006428ff1171ee6c9b",
+      "bfa09024c94a6bc76d51c631": "274a62fa9e6b402a40aff05b1644133a36dd8d9b6272fecc4ef0fc2f6b3c86ea",
+      "bfde9ab405ad9faa2bc4b5ac": "f4bd4d41ae9ca34a2ab1225b8a0aeeb3bfd472a34a8fa5576a1c48bbb124c7a3",
+      "c986d23bf9fe92ac15ab723d": "9e447ecca818ff5a8c51d7df9822e8bedc448c550d135e072de29b2e15ba620c",
+      "ca1e1515076ec0147e7b8338": "cc95725c01ad3f2500b028a7353468d2c7f813bfe4d5b0a50adfc99fd207d311",
+      "ce1c6885d9fe828ffb2d4802": "702ba2ff3899a9e820099c90f1815bd3ec3f3715a697ccdb4500016f83bf3bb7",
+      "eeab805ea4653756496776b5": "b96fa31fe1b13f4f2fbb3eb7ff242523ebf802837c449367270b073ee3f216ae",
+      "fa0e42c99b24fa8b70e1b4c5": "dc509bcce312ef6dff4f4d91fad50fa66531d59f4f29f5e0291f58c8580f8dca",
+      "fa301823ccd44ed9374ce575": "7cb3eb00608e7ba72bf38c37de5a09f8a61c7ac390a35d958a6e4aa8de004d76",
+      "fef2366b0f34a7eda42dc08d": "087bf96d546f574a8a05137a9af4ff135c99e1ae7106cd56749a3cd832618b6e"
+    },
+    "phase": "verify",
+    "returned": [],
+    "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-b/sources",
+  "cells": {
+    "4d029f4ed7a941dc5b13bafa": [
+      "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "ap:broken-binding"
+    ],
+    "588e9afc6de79e4e15622316": [
+      "corpus/qualification/activities/run.yaml#/id",
+      "ap:broken-binding"
+    ],
+    "620325a4c3f62c9867a7df90": [
+      "corpus/qualification/routines/deliver.yaml#/inputs",
+      "ap:broken-binding"
+    ],
+    "85e68983cef9c8b0f9a7bf33": [
+      "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "ap:broken-binding"
+    ],
+    "8669d4026237cb94e83e2158": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "ap:broken-binding"
+    ],
+    "a1bbb96005ca910edd02b943": [
+      "corpus/qualification/workflow.yaml#/id",
+      "ap:broken-binding"
+    ],
+    "ac42c54bb5e18cc6005d1df7": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/rules",
+      "ap:broken-binding"
+    ],
+    "b331b3631bac4371bfebf008": [
+      "corpus/qualification/activities/run.yaml#@element",
+      "ap:broken-binding"
+    ],
+    "b34f6249f0f9b31107491750": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "ap:broken-binding"
+    ],
+    "b93fc9705f0d802bdff5440b": [
+      "corpus/qualification/workflow.yaml#/initialActivity",
+      "ap:broken-binding"
+    ],
+    "bfa09024c94a6bc76d51c631": [
+      "corpus/qualification/routines/deliver.yaml#/id",
+      "ap:broken-binding"
+    ],
+    "bfde9ab405ad9faa2bc4b5ac": [
+      "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5",
+      "ap:broken-binding"
+    ],
+    "c986d23bf9fe92ac15ab723d": [
+      "corpus/qualification/techniques/produce.md#/outputs",
+      "ap:broken-binding"
+    ],
+    "ca1e1515076ec0147e7b8338": [
+      "corpus/qualification/techniques/produce.md#@element",
+      "ap:broken-binding"
+    ],
+    "ce1c6885d9fe828ffb2d4802": [
+      "corpus/qualification/workflow.yaml#@element",
+      "ap:broken-binding"
+    ],
+    "eeab805ea4653756496776b5": [
+      "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "ap:broken-binding"
+    ],
+    "fa0e42c99b24fa8b70e1b4c5": [
+      "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "ap:broken-binding"
+    ],
+    "fa301823ccd44ed9374ce575": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "ap:broken-binding"
+    ],
+    "fef2366b0f34a7eda42dc08d": [
+      "corpus/qualification/techniques/produce.md#/outputs/summary",
+      "ap:broken-binding"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "ap:broken-binding": {
+      "end": 21,
+      "family": "Controlled Qualification",
+      "hash": "7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8",
+      "id": "ap:broken-binding",
+      "label": "AP-02",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.",
+      "title": "AP-02. broken-binding"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "4d029f4ed7a941dc5b13bafa": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "ea9e4819f6813a892f935b109523da715e7779d84cf4fd66c435a4944701e245",
+      "reason": "The complete TECHNIQUE.md ancestor declares its capability and Destination must be archive constraint. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "588e9afc6de79e4e15622316": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "51dd5b5d3971055b86ca",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "91f627292453464806f4732b604484a8516c1bfe135eecb87d7a005ba582e1f3",
+      "reason": "The activity id is run. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "620325a4c3f62c9867a7df90": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "99a8b57a77306c0d9914bb25f0e1e61031822ebfa8e3f8603b7061a23a201691",
+      "reason": "The routine Inputs list declares the sole name envelope. AP-02 makes the routine Inputs list the declaration endpoint for each concrete invocation argument-key set. The run/delivery invocation supplies the corresponding call site, so this declaration must be compared in that relationship context.",
+      "status": "A"
+    },
+    "85e68983cef9c8b0f9a7bf33": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b9a74e62e89b8e19626dba3e33d43d709779cf127d8831c27f4826ce3859e1ac",
+      "reason": "The routine input declaration is envelope. AP-02 makes the routine Inputs list the declaration endpoint for each concrete invocation argument-key set. The run/delivery invocation supplies the corresponding call site, so this declaration must be compared in that relationship context.",
+      "status": "A"
+    },
+    "8669d4026237cb94e83e2158": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "2205b2b418414a3f750b06d325ecfaeff1dcdfc7878659a63ee165245966e58b",
+      "reason": "The explicit qualification/run/delivery/deliver/emit relationship carries the concrete invocation, report export, and inherited destination. AP-02 requires both the concrete invocation argument comparison and resolution of the routine output through emit to produce. This explicit execution relationship supplies both binding contracts and their endpoints.",
+      "status": "A"
+    },
+    "a1bbb96005ca910edd02b943": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "5762844ee6cd51d60542b1bd8a03eb938f134402e077ac83b4768bf89c44fe3e",
+      "reason": "The workflow id is qualification. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "ac42c54bb5e18cc6005d1df7": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 4
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "b88e15e5d54efd6818cbc3cb60b2f4eb98df11548468219d10340cbbd45b26c4",
+      "reason": "The ancestor Rules declare Destination must be archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "b331b3631bac4371bfebf008": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "6118e051b0386c1887f12a208a8a4739a93d3843d642cf7e6e68e1c45449042f",
+      "reason": "The complete activity declares one deliver invocation with argument key packet. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    "b34f6249f0f9b31107491750": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e051b6cf72e32d54bd59debf46af5eb0bd6f648f0814b456a2cab24c10ef37cb",
+      "reason": "The routine-to-produce relationship resolves the emit step and its output declaration. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    "b93fc9705f0d802bdff5440b": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "dc9e01b2b98f4fa08d2193da56ffece37baea512396c4d3d9e9b9b0587a5f22a",
+      "reason": "The workflow initialActivity is run. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "bfa09024c94a6bc76d51c631": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "44fb8b02867ee4437c2317aed694fb7d1c8216f34da4e2ce7ad270d237a7d78f",
+      "reason": "The routine id is deliver. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "bfde9ab405ad9faa2bc4b5ac": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "9be368fb9dee695632066a7551a91eb21578c2b0b665482869f4cca99d5ba889",
+      "reason": "This ancestor rule declares the inherited required destination archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "c986d23bf9fe92ac15ab723d": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 4
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "defb424bfd5e6f1b2441451e78abe868eb8a25cff81cf1ba9d956f6c2b8c4849",
+      "reason": "The leaf Outputs section declares the output name summary. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    "ca1e1515076ec0147e7b8338": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "44fa9d40229685f039c6",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "fingerprint": "8233184791a4d3db177bffa570ace33fb6ceed582117a2a14d53778c74d897ab",
+      "reason": "The complete produce leaf declares output summary, a Protocol emission instruction, a Rules emission clause, and Destination is public. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    "ce1c6885d9fe828ffb2d4802": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "44fa9d40229685f039c6",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "2a825e292ed9fd486fc00402465f39b80ced82713b50881cbb4f9457e7609e4b",
+      "reason": "The complete workflow has initialActivity run and graph run/done: run. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "eeab805ea4653756496776b5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "44fa9d40229685f039c6",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "d531df18c333b686aa1adcb32bd78ff470fc5012641d3375142dc31923e93cae",
+      "reason": "This activity-to-deliver relationship carries the invocation with argument key packet. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    "fa0e42c99b24fa8b70e1b4c5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "44fa9d40229685f039c6",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "631c48a44666b0320faa858a5d40c6f29c7d0e2946cc6d42cb14482d8e80c51e",
+      "reason": "This inheritance relationship connects produce to qualification/techniques/TECHNIQUE.md. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    "fa301823ccd44ed9374ce575": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "44fa9d40229685f039c6",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "e281fc5845a5a0087f26ac7f9cc7c60474abb4faa84cdb8eb653f8aed0922b98",
+      "reason": "The complete routine declares envelope input, report: emit.report output, and the emit-to-produce call. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    "fef2366b0f34a7eda42dc08d": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "73e49d1b7b18a172365e",
+      "attempt": "current-map-1",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "fingerprint": "dbe080910c7b83d9af7cfb1907b5777dddae80efe53375907520079bf5a80c68",
+      "reason": "The leaf output heading declares summary. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/activities/run.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/routines/deliver.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "consumer",
+      "section": "id",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7": {
+      "address": "@relationship/3a2f0d25e0e017f7",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "kind": "relationship",
+      "label": "produce",
+      "origin": "consumer",
+      "relationship": {
+        "address": "/steps/id=emit/technique",
+        "context": [],
+        "label": "produce",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96": {
+      "address": "@relationship/50a64427faa3df96",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "kind": "relationship",
+      "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+      "origin": "consumer",
+      "relationship": {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/workflow.yaml"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules": {
+      "address": "/rules",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5": {
+      "address": "/rules/line-5",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5",
+      "kind": "item",
+      "label": "/rules/line-5",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "context",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs": {
+      "address": "/outputs",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs/summary": {
+      "address": "/outputs/summary",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs/summary",
+      "kind": "section",
+      "label": "/outputs/summary",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@element": {
+      "address": "@element",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8": {
+      "address": "@relationship/f075d23fadb959c8",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "kind": "relationship",
+      "label": "declared contract context",
+      "origin": "touched",
+      "relationship": {
+        "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+        "context": [],
+        "label": "declared contract context",
+        "source": "corpus/qualification/techniques/produce.md",
+        "target": "corpus/qualification/techniques/TECHNIQUE.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/workflow.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/initialActivity": {
+      "address": "/initialActivity",
+      "end": 2,
+      "id": "corpus/qualification/workflow.yaml#/initialActivity",
+      "kind": "item",
+      "label": "/initialActivity",
+      "origin": "touched",
+      "section": "initialActivity",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 2,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 6,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 1,
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n"
+    },
+    {
+      "end": 21,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares."
+    },
+    {
+      "end": 5,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "start": 1,
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive."
+    },
+    {
+      "end": 12,
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public."
+    },
+    {
+      "end": 6,
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"
+    },
+    {
+      "end": 5,
+      "hash": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run"
+    }
+  ],
+  "supplemental": {}
+}

@@ -1,0 +1,70 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignments": 3,
+  "inventory_obligations": 16,
+  "mapping_verifications": 1,
+  "verified": 17,
+  "disputed": 0,
+  "inventory_rows": 50,
+  "matrix_criteria": 4,
+  "supplemental_units": 2,
+  "required_check_obligations": 1,
+  "source_hashes_reused_after_exact_byte_check": 8,
+  "packet_bytes_total": 104160,
+  "returned_bytes_total": 18436,
+  "largest_return_bytes": 8789,
+  "largest_bounded_read_bytes": 7610,
+  "total_preparation_to_return_seconds": 172.3908052444458,
+  "required_context_failures": [],
+  "irrelevant_context_reads": [],
+  "forbidden_context_reads": [],
+  "limitations": [
+    "These receipts verify the 16 owned inventory/scope obligations and one Protocol applicability mapping only. They do not establish full map verification, evaluation, obligation completion or fixture conformance.",
+    "The three assignments share original-source context, reused only after all eight source hashes and bytes matched the prior complete reads.",
+    "Per-assignment timing spans its first bounded packet read through return and includes shared semantic review."
+  ],
+  "per_assignment": [
+    {
+      "assignment": "f8fd2824841d023a9332",
+      "phase": "inventory",
+      "snapshot": "ef29a3e65c47ae330493a92d5618f13b36393586d6321ab8962a3a0a46c5167e",
+      "items": 10,
+      "verified": 10,
+      "packet_bytes": 54646,
+      "returned_bytes": 8789,
+      "first_packet_read_to_return_seconds": 163.52309203147888,
+      "work_seconds_limit": 600,
+      "output_capacity_bytes": 16000,
+      "context_capacity_bytes": 208400,
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/corrected-receipts/f8fd2824841d023a9332.json"
+    },
+    {
+      "assignment": "e8980cbbcafa22ed8061",
+      "phase": "inventory",
+      "snapshot": "ef29a3e65c47ae330493a92d5618f13b36393586d6321ab8962a3a0a46c5167e",
+      "items": 6,
+      "verified": 6,
+      "packet_bytes": 40854,
+      "returned_bytes": 8338,
+      "first_packet_read_to_return_seconds": 137.54153513908386,
+      "work_seconds_limit": 600,
+      "output_capacity_bytes": 16000,
+      "context_capacity_bytes": 208400,
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/corrected-receipts/e8980cbbcafa22ed8061.json"
+    },
+    {
+      "assignment": "fdaa4e7d8a2f8ec26e0c",
+      "phase": "verify",
+      "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+      "items": 1,
+      "verified": 1,
+      "packet_bytes": 8660,
+      "returned_bytes": 1309,
+      "first_packet_read_to_return_seconds": 128.80264973640442,
+      "work_seconds_limit": 600,
+      "output_capacity_bytes": 16000,
+      "context_capacity_bytes": 208400,
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/corrected-receipts/fdaa4e7d8a2f8ec26e0c.json"
+    }
+  ]
+}

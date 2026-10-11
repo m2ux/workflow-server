@@ -1,0 +1,79 @@
+id: structural-pass
+version: 2.6.0
+name: Structural Analysis Pass
+description: Run the assigned structural analysis for each analysis unit.
+variables:
+  reads:
+    - analysis_units
+    - lens_name
+    - pipeline_mode
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: behavioral_output_paths
+      type: object
+      description: Map of role label (ERRORS, COSTS, CHANGES, PROMISES) to file path for behavioral mode artifacts
+    - name: current_unit
+      type: object
+      description: Current analysis unit during iteration loop
+techniques:
+  - scatter-gather
+steps:
+  - kind: loop
+    id: unit-cycle
+    name: Analysis Unit Cycle
+    loopType: forEach
+    variable: current_unit
+    over: analysis_units
+    maxIterations: 100
+    steps:
+      - kind: technique
+        id: run-structural
+        technique:
+          name: structural-analysis
+          inputs:
+            target_content: "{current_unit.target}"
+        when: (current_unit.pipeline_mode == "single" && current_unit.lens_name == "l12") || current_unit.pipeline_mode == "full-prism"
+      - kind: technique
+        id: run-single-lens
+        technique:
+          name: single-lens-analysis
+          inputs:
+            lens_name: "{current_unit.lens_name}"
+            target_content: "{current_unit.target}"
+        when: current_unit.pipeline_mode == 'single' && current_unit.lens_name != 'l12'
+      - kind: technique
+        id: run-portfolio
+        technique:
+          name: portfolio-analysis
+          inputs:
+            target_content: "{current_unit.target}"
+            selected_lenses: current_unit.lenses
+        when: current_unit.pipeline_mode == 'portfolio'
+      - kind: technique
+        id: dispatch-behavioral-lenses
+        technique:
+          name: behavioral-pipeline::independent-lenses
+          inputs:
+            target_content: "{current_unit.target}"
+        when: current_unit.pipeline_mode == 'behavioral'
+      - kind: action
+        id: collect-behavioral-paths
+        actions:
+          - action: set
+            target: behavioral_output_paths
+            description: Map of role label to behavioral artifact path.
+      - kind: action
+        id: report-unit-paths
+        actions:
+          - action: set
+            target: all_artifact_paths
+            description: Accumulated artifact paths across units.
+exits:
+  - id: full-prism
+    when: pipeline_mode == "full-prism"
+  - id: behavioral
+    when: pipeline_mode == "behavioral"
+  - id: structural-only
+    isDefault: true

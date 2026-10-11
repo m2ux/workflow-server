@@ -1,0 +1,27 @@
+{
+  "actor": "/root",
+  "assignment": "b5d684457a9856173bec",
+  "attempt": "root-supporting-1",
+  "records": [
+    {
+      "check": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+        ],
+        "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test",
+        "exit_code": 0,
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-a/fixture-guard.txt"
+      },
+      "evidence": [],
+      "items": [
+        "check:guards"
+      ],
+      "reason": "The recorded controlled structural guard exits0, parses eight sources and recognizes four criteria with no structural errors. This is the fixture guard only; semantic findings are separately reconciled.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

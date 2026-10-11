@@ -1,0 +1,125 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "7cb1bbb89b2a094429a5",
+  "attempt": "audit-corrected-verify-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98"
+      ],
+      "reason": "initialActivity selects run in qualification. The captured run invokes deliver, whose emit calls produce under ancestor archive. The revised A reason correctly applies DP-01 to this executing relationship; absence of a leaf declaration in the workflow excludes only an independent file check. Full-chain citations support the reason.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "32efcf3836cf4d26fc113577"
+      ],
+      "reason": "The qualification graph-entry relationship binds node run to the run activity. The captured run invokes deliver, whose emit calls produce under ancestor archive. The revised A reason correctly applies DP-01 to this executing relationship; absence of a leaf declaration in the workflow excludes only an independent file check. Full-chain citations support the reason.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "The graph-entry relationship at run.done identifies its executing run activity. The captured run invokes deliver, whose emit calls produce under ancestor archive. The revised A reason correctly applies DP-01 to this executing relationship; absence of a leaf declaration in the workflow excludes only an independent file check. Full-chain citations support the reason.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

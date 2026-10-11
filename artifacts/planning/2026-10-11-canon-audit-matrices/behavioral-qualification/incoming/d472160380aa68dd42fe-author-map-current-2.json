@@ -1,0 +1,368 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "d472160380aa68dd42fe",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ec7e3577667dbf0846b7b09f"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "eaf04cb03551645c38d72842"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "51923b360aa3ef1a7585fbf4"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery/id.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7fa24663abc3348858407cd5"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery/routine.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8f04699d8cada26b1b7ebcc5"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery/routine/arguments.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f7c71bd7cd44e3d3cfd50614"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery/routine/arguments/envelope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "501147c7c9cf63d456cc367b"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /steps/id=delivery/routine/name.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "21b5df21a5c696fcaa898fbf"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /rules.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "d4d45cf60920c4360e003cf1"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /rules/line-11.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b1c897ef75ecfb0802a40206"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /rules/line-11/clause-1.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b192bf0ffab5454aaf50901a"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /rules/line-11/clause-2.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "3e979fb0c7e3eb5836c3cb1a"
+      ],
+      "reason": "DP-02 scopes a whole-workflow graph invariant and says activity/routine steps add no exits. This activity, routine, technique or nested call/inheritance row does not declare workflow graph transitions. Row: /rules/line-12.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 4
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "DP-02 requires a finite initialActivity-to-null path in the complete workflow graph. This row supplies an entry, graph edge, graph relationship or the whole workflow; its decision requires the entire captured graph. Row: /graph.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "DP-02 requires a finite initialActivity-to-null path in the complete workflow graph. This row supplies an entry, graph edge, graph relationship or the whole workflow; its decision requires the entire captured graph. Row: /graph/run.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "DP-02 requires a finite initialActivity-to-null path in the complete workflow graph. This row supplies an entry, graph edge, graph relationship or the whole workflow; its decision requires the entire captured graph. Row: /graph/run/done.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6"
+}

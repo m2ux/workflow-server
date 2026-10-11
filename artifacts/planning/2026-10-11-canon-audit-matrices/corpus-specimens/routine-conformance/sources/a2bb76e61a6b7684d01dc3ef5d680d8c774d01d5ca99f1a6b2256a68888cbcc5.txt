@@ -1,0 +1,23 @@
+id: list-labels
+version: 1.0.0
+name: List Labels
+description: Bind the repository label list.
+variables:
+  reads:
+    - target_repo
+required: true
+steps:
+  - kind: technique
+    id: list-repository-labels
+    technique:
+      name: github::list-labels
+      inputs:
+        target_repo: "{target_repo}"
+        issue_number: "924"
+      outputs:
+        label_records: listed_labels
+exits:
+  - id: reached
+    isDefault: true
+outcome:
+  - The label list operation resolved under github::list-labels

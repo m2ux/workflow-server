@@ -1,0 +1,697 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "e846407120f5be094f4d",
+  "attempt": "audit-verify-two-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "330d9855c61f1fa6db1e92b2"
+      ],
+      "reason": "run /steps contains delivery invoking deliver with envelope. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a5b35e7460c5ba032ea3ab9c"
+      ],
+      "reason": "The delivery step invokes deliver with envelope. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a09b4b5068e60047e85b9d20"
+      ],
+      "reason": "delivery /id names the activity step. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "4e129aea04e56ac3f5e18eac"
+      ],
+      "reason": "The delivery routine object names deliver and supplies envelope. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "235d809af28915c83b47a336"
+      ],
+      "reason": "delivery arguments has the single key envelope; sealed is opaque. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "cb6557b6c858a3df047947ff"
+      ],
+      "reason": "The invocation argument key is envelope. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "cced7364e2269714c048fe3b"
+      ],
+      "reason": "delivery routine/name selects deliver. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba"
+      ],
+      "reason": "Leaf /rules contains the emission clause and Destination archive. A follows from the leaf Destination declaration; compare it with the executing qualification ancestor requirement.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "69a9fd68e24025b700e9bbb1"
+      ],
+      "reason": "Rule line 11 combines retention with: validate the report before each emission. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "9e2179b4c1fbfc73dc6b4981"
+      ],
+      "reason": "Only clause 1 is owned here: Retain the report ID. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "acca57d9a610cd2900940f11"
+      ],
+      "reason": "Only clause 2 is owned here: validate the report before each emission. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "355ce3ec841005b898e3d8d3"
+      ],
+      "reason": "Leaf rule line 12 declares Destination archive. A follows from the leaf Destination declaration; compare it with the executing qualification ancestor requirement.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "2228315b4ed81fce11373514"
+      ],
+      "reason": "deliver /steps resolves emit to produce. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "2160f33c3a701883bf507397"
+      ],
+      "reason": "The emit step calls produce. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b707f101a68f594abdbb9fc8"
+      ],
+      "reason": "The producer step ID emit is named by emit.report. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "d5d35100c716e2ed184e7476"
+      ],
+      "reason": "The emit technique reference selects produce. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98"
+      ],
+      "reason": "The initialActivity relationship selects run in qualification. N wrongly excludes a link in qualification -> run -> deliver -> produce. DP-01 requires call relationships to carry inheritance; its independent-file exclusion does not exclude this execution relationship.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "32efcf3836cf4d26fc113577"
+      ],
+      "reason": "The graph-entry relationship binds qualification graph node run to the run activity. N wrongly excludes a link in qualification -> run -> deliver -> produce. DP-01 requires call relationships to carry inheritance; its independent-file exclusion does not exclude this execution relationship.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "The graph-entry relationship at run.done identifies the executing run activity. N wrongly excludes a link in qualification -> run -> deliver -> produce. DP-01 requires call relationships to carry inheritance; its independent-file exclusion does not exclude this execution relationship.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "67bbb2cf737f1d39490640e1"
+      ],
+      "reason": "The workflow graph contains run.done pointing to null. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "9aa00375bff5d32993c718d0"
+      ],
+      "reason": "The run graph entry has the single done exit to null. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "46e28f2007abc40979497fc9"
+      ],
+      "reason": "The run.done graph exit points to null. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "36ee15fe5284f5e03e6afdc4"
+      ],
+      "reason": "Leaf /capability describes Produce a report. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b82b83027689277cdcc2042f"
+      ],
+      "reason": "The leaf Capability paragraph describes producing a report. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "533e91f3401233d0974551eb"
+      ],
+      "reason": "Leaf /protocol contains: Validate the report, then emit it. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "fbafce4f79dd46979495549a"
+      ],
+      "reason": "Protocol line 8 directs: Validate the report, then emit it. N holds: this construct contains neither a Destination declaration nor its inheritance relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "ab40e04b150dd3790c5764db"
+      ],
+      "reason": "deliver /outputs binds exported report to emit.report. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "791a31ca8731b94c89d67e5c"
+      ],
+      "reason": "deliver /outputs/report contains the emit.report binding. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b3f616c2c1a987217e5cf61b"
+      ],
+      "reason": "Ancestor /rules declares the required archive destination. N holds: DP-01 treats this ancestor as inherited context, not a leaf destination to check independently.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "67ae926240e520bfdb63b1a3"
+      ],
+      "reason": "The ancestor line-5 rule requires archive. N holds: DP-01 treats this ancestor as inherited context, not a leaf destination to check independently.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "263ad09bd2d440e2a894ee63"
+      ],
+      "reason": "The qualification workflow starts at run and has only run.done -> null. N holds: DP-01 excludes independent file checks without a leaf Destination; this row is a declaration, not the captured relationship.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

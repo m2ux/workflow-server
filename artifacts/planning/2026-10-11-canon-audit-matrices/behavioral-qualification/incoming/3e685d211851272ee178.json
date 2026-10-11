@@ -1,0 +1,323 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "3e685d211851272ee178",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7c49f2961aec4917ed955bd7"
+      ],
+      "reason": "deliver.yaml#/outputs: The routine Outputs section exports report through emit.report. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "ad7314b738ea597d93ae3b23"
+      ],
+      "reason": "deliver.yaml#/outputs/report: The exported routine report is bound to emit.report. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9839de920cafa86c93f9e319"
+      ],
+      "reason": "produce.md#/outputs: The leaf Outputs heading declares the name summary, consumed by deliver export emit.report. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7e07755f91a05aa3f3a47b42"
+      ],
+      "reason": "produce.md#/outputs/summary: The leaf output declaration is summary; the routine export refers to emit.report. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a6cc9c95bd8a15eec9337ab9"
+      ],
+      "reason": "deliver.yaml#@relationship/3a2f0d25e0e017f7: The deliver-to-produce call resolves emit.report through emit; produce declares summary and Destination public. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7616d539ed6effba75237723"
+      ],
+      "reason": "deliver.yaml#@relationship/50a64427faa3df96: The execution relationship carries qualification -> run#delivery -> deliver#emit -> produce, the packet argument, export emit.report, and the ancestor archive destination. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a700a3294be653eb8e533547"
+      ],
+      "reason": "produce.md#/protocol: The leaf Protocol contains the instruction: Emit the report without validation. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "cc4fea783a74407b8fdb654e"
+      ],
+      "reason": "produce.md#/protocol/line-8: This Protocol instruction says: Emit the report without validation. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "d9b55f0b6cbe3ed6ab868ed5"
+      ],
+      "reason": "TECHNIQUE.md#/rules: The ancestor TECHNIQUE Rules declare Destination must be archive. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "4da9396f20f50a18673256c5"
+      ],
+      "reason": "TECHNIQUE.md#/rules/line-5: The ancestor destination constraint requires archive; it is not a leaf destination declaration. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "19723157905da0f5874e77db"
+      ],
+      "reason": "deliver.yaml#@element: The complete deliver routine declares input envelope, exports report through emit.report, and calls produce in emit. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "36c8e451b93d39512aae352f"
+      ],
+      "reason": "run.yaml#@relationship/5a93bb0629055f53: The concrete activity call supplies packet to deliver, whose input is envelope and whose emit step calls produce. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7d5cdef67a14fe0a0e70a8ff"
+      ],
+      "reason": "run.yaml#/id: The activity declaration identifier is run. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8b3b602b6703003326b8df8d"
+      ],
+      "reason": "run.yaml#@element: The run activity contains delivery invoking deliver with argument key packet. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8d0f33a043c7068e8c998046"
+      ],
+      "reason": "produce.md#@element: The complete leaf declares output summary, instruction Emit the report without validation, a separate emission Rules clause, and Destination public. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

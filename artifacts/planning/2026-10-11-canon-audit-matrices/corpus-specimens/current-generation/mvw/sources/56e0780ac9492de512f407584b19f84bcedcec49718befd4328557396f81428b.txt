@@ -1,0 +1,40 @@
+---
+metadata:
+  version: 1.4.0
+---
+
+## Capability
+
+Shared inputs and specification-fidelity invariants for every requirements-refinement technique.
+
+## Inputs
+
+### planning_folder_path
+
+Absolute path to this run's planning folder.
+
+### source_paths
+
+Filesystem paths of the source documents being processed, each a meeting transcript or an unstructured document. A single-document run carries one entry.
+
+### target_doc_path
+
+Filesystem path to the canonical requirements specification being augmented or created.
+
+### correction_iteration
+
+Count of correction passes performed so far.
+
+#### default
+
+`0`
+
+## Rules
+
+### specification-protocol-preserved
+
+The [section structure](../resources/specification-protocol.md#section-structure), [requirement-entry format](../resources/specification-protocol.md#requirement-entry-format), [identifier schemes](../resources/specification-protocol.md#identifier-schemes), and [status conventions](../resources/specification-protocol.md#status-conventions) are preserved verbatim.
+
+### artifacts-write-under-planning-folder
+
+Each technique writes its artifact under `{planning_folder_path}`.

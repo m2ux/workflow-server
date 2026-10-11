@@ -1,0 +1,111 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "265eba4ad51570d148e8",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-current-1",
+  "records": [
+    {
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "finding",
+      "reason": "AP-01 fails for the Protocol instruction at line 8: it explicitly emits the report without validation. It must satisfy validation independently of Rules. This emission directive is Live/High because it propagates unvalidated artifact behavior; origin diff follows the touched technique. Assigned rows: corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "High",
+          "origin": "diff",
+          "entry": "emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:8 (Protocol instruction)",
+          "summary": "The Protocol instruction explicitly emits the report without validation.",
+          "fix": "Require validation of the report before its emission in this Protocol instruction."
+        }
+      ]
+    },
+    {
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "status": "finding",
+      "reason": "AP-01 fails for Rules line 11 clause 2: it explicitly emits the report without validation. Clause 1 only retains the report ID and cannot satisfy the second clause's obligation. This emission directive is Live/High because it propagates unvalidated artifact behavior; origin diff follows the touched technique. Assigned rows: corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "High",
+          "origin": "diff",
+          "entry": "emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:11 (Rules clause 2)",
+          "summary": "Rules clause 2 explicitly emits the report without validation.",
+          "fix": "Require validation of the report before its emission in Rules clause 2."
+        }
+      ]
+    },
+    {
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "status": "finding",
+      "reason": "AP-01 exposes two distinct violations in the whole technique: Protocol line 8 and Rules line 11 clause 2 each explicitly emit the report without validation. Each directive must satisfy the criterion independently, so neither the common artifact nor the retention clause merges or excuses them. Both are Live/High propagating emission defects, with origin diff from the touched technique. Assigned rows: corpus/qualification/techniques/produce.md#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "High",
+          "origin": "diff",
+          "entry": "emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:8 (Protocol instruction)",
+          "summary": "The Protocol instruction explicitly emits the report without validation.",
+          "fix": "Require validation of the report before its emission in this Protocol instruction."
+        },
+        {
+          "band": "Live",
+          "severity": "High",
+          "origin": "diff",
+          "entry": "emission-without-validation",
+          "location": "corpus/qualification/techniques/produce.md:11 (Rules clause 2)",
+          "summary": "Rules clause 2 explicitly emits the report without validation.",
+          "fix": "Require validation of the report before its emission in Rules clause 2."
+        }
+      ]
+    }
+  ]
+}

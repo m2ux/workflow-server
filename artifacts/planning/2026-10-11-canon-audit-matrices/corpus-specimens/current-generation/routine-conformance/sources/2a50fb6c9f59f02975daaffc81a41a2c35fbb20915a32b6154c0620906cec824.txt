@@ -1,0 +1,60 @@
+id: folder-setup
+version: 1.6.0
+name: Planning Folder Setup
+description: Create planning folder structure with initial documentation skeletons, and settle which analysis the next activity performs
+variables:
+  reads:
+    - initiative_name
+    - planning_folder_path
+  writes:
+    - name: analysis_type
+      type: string
+      description: Whether this roadmap continues previous work or opens a new initiative.
+      values:
+        - completion
+        - context
+    - name: planning_folder_path
+      type: string
+      description: Path to the planning folder for this initiative
+steps:
+  - kind: technique
+    id: create-folder
+    technique: workflow-engine::derive-planning-slug
+  - kind: technique
+    id: setup-planning-folder
+    technique: setup-planning-folder
+  - kind: checkpoint
+    id: analysis-type-selection
+    message: The analysis {initiative_name} receives depends on whether it continues previous work or opens a new initiative.
+    options:
+      - id: continuing
+        label: Continuing previous work
+        description: Perform completion analysis of existing progress
+        effect:
+          setVariable:
+            analysis_type: completion
+      - id: new-initiative
+        label: New initiative
+        description: Perform context analysis for a fresh start
+        effect:
+          setVariable:
+            analysis_type: context
+  - kind: checkpoint
+    id: folder-created
+    message: The planning folder and its entry-point scaffolds stand at [planning folder]({planning_folder_path}).
+    options:
+      - id: proceed
+        label: Proceed with analysis
+        effect:
+          exit: done
+      - id: adjust
+        label: Adjust structure
+        effect:
+          exit: adjust
+exits:
+  - id: done
+    isDefault: true
+  - id: adjust
+outcome:
+  - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in
+  - The analysis activity holds the {analysis_type} it branches on before it is dispatched

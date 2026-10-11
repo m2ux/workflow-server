@@ -1,0 +1,2309 @@
+CURRENT AUTHOR INVENTORY START 2026-10-11T11:15:02.180487+00:00
+ACTOR /root/qualify_author_one; prior fixture exposure disclosed; independent of inventory author /root and current mapper /root/qualify_audit_two. Current-generation decisions only; no receipt import.
+SOURCE /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md BYTES 7260
+# Audit Dispatch
+
+The coordinator plans and reconciles bounded work; host agents read captured evidence and return judgments. Apply the [change-surface lifecycle](change-surface.md) before using these phases.
+
+## Phases
+
+| Phase | Required Work | Independent Role |
+| --- | --- | --- |
+| `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |
+| `map` | Every row × AP/DP cell | Mapping author recorded per cell |
+| `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |
+| `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |
+| `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |
+
+Inventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.
+
+Use [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, AP/DP and supplemental criteria, required checks, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.
+
+## Sizing
+
+Record actual host context/output limits, available child slots, prompt/tool reserve, safety reserve and work limit in the [budget input](../templates/audit-budgets.json). Reserve the coordinator and occupied slots once. The input contains estimates, never a promise of runtime capacity.
+
+Calibrate each phase separately with a bounded pilot from its required work. Record measured packet/output sizes and elapsed time; retain useful pilot results. A pilot's maximum input and output must already fit the declared host limits. Unknown host limits block dispatch. Use the host tokenizer when available; the CLI's explicit bytes-per-token proxy requires a conservative ratio and safety reserve.
+
+For each slice, the planner counts the serialized packet, including source/canon context, identifiers, mapping reasons and assignment metadata. Verification and evaluation include the exact source spans cited by their mappings, merged with required row and criterion context. It estimates output and elapsed work from the recorded phase calibration. It requires input + output ≤ context − prompt/tool reserve − safety reserve, output ≤ output limit, and work ≤ work limit. Output is counted once in the context equation. Use an effective combined context limit consistent with the host's input/output accounting.
+
+Read packet fields and source excerpts in batches within the host's tool-return limit. Retain all owned identifiers, reasons and relationship context across those batches. Reuse source bytes already read at the same hash; retrieve every missing portion of a truncated return before making a judgment.
+
+Bundles group criterion, source and section, with relationship context retained. Oversized bundles split into bounded item groups; a single item that cannot fit blocks dispatch. Largest bundles are packed first within their criterion or obligation kind, preferring shared context. This keeps an entry's walk together and bounds the planner's packing search. Each phase's assignments are disjoint and exactly cover its unassigned residual. The final list determines agent count `N`; free slots `K` determine concurrency `min(K,N)` and a lower bound of `ceil(N/K)` waves. Zero slots blocks dispatch. Lower concurrency changes elapsed time, never coverage.
+
+The coordinator observes actual work. When a worker exceeds its calibrated cost, retain accepted evidence, retire its unfinished assignment, recalibrate and plan the remaining work. Shared source context may overlap; primary items and file write ownership do not. Inventory closure is partitioned by manifest source so a large surface can fan out without one whole-corpus input packet.
+
+## Returns
+
+Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+
+- **Identity.**
+  Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+- **Evidence.**
+  Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+- **Statuses.**
+  Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+- **Findings.**
+  A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. Before returning findings, read [bands](reporting.md#bands), [severity](reporting.md#severity), [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+- **Check observations.**
+  A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+- **Partial work.**
+  A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+
+
+QUEUE CHUNK 1/2
+CURRENT AUTHOR INVENTORY QUEUES 2026-10-11T11:15:51.708043+00:00
+[{"round":"round-1","index":0,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"e18e861382270af9c26d","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/e18e861382270af9c26d.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a"},"assignment":{"actor":"/root/qualify_author_one","id":"e18e861382270af9c26d","items":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"phase":"inventory","returned":[],"snapshot":"57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23","status":"pending"},"packet_bytes":52087,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":8,"criteria":4,"diagnostics":0,"mappings":0,"obligations":10,"required_checks":1,"rows":49,"scope":5,"source_excerpts":8,"supplemental":2}},{"round":"round-1","index":1,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"924ff826b6e5b5b404cf","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/924ff826b6e5b5b404cf.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a"},"assignment":{"actor":"/root/qualify_author_one","id":"924ff826b6e5b5b404cf","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"],"phase":"inventory","returned":[],"snapshot":"57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23","status":"pending"},"packet_bytes":38287,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":6,"criteria":2,"diagnostics":0,"mappings":0,"obligations":6,"required_checks":1,"rows":49,"scope":5,"source_excerpts":0,"supplemental":0}},{"round":"round-1","index":2,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"cdc165c72d8156e649bc","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cdc165c72d8156e649bc.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b"},"assignment":{"actor":"/root/qualify_author_one","id":"cdc165c72d8156e649bc","items":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"phase":"inventory","returned":[],"snapshot":"533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467","status":"pending"},"packet_bytes":53159,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":8,"criteria":4,"diagnostics":0,"mappings":0,"obligations":10,"required_checks":1,"rows":50,"scope":5,"source_excerpts":8,"supplemental":2}},{"round":"round-1","index":3,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"cf782be6101bfda08d04","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cf782be6101bfda08d04.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b"},"assignment":{"actor":"/root/qualify_author_one","id":"cf782be6101bfda08d04","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"],"phase":"inventory","returned":[],"snapshot":"533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467","status":"pending"},"packet_bytes":39367,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":6,"criteria":2,"diagnostics":0,"mappings":0,"obligations":6,"required_checks":1,"rows":50,"scope":5,"source_excerpts":0,"supplemental":0}},{"round":"round-2","index":0,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"1a2f4774199f7b564911","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/inventory/1a2f4774199f7b564911.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"},"assignment":{"actor":"/root/qualify_author_one","id":"1a2f4774199f7b564911","items":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce
+
+QUEUE CHUNK 2/2
+.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"phase":"inventory","returned":[],"snapshot":"b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea","status":"pending"},"packet_bytes":52087,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":8,"criteria":4,"diagnostics":0,"mappings":0,"obligations":10,"required_checks":1,"rows":49,"scope":5,"source_excerpts":8,"supplemental":2}},{"round":"round-2","index":1,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"5c88f854017bfdccbd5e","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/inventory/5c88f854017bfdccbd5e.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"},"assignment":{"actor":"/root/qualify_author_one","id":"5c88f854017bfdccbd5e","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"],"phase":"inventory","returned":[],"snapshot":"b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea","status":"pending"},"packet_bytes":38287,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":6,"criteria":2,"diagnostics":0,"mappings":0,"obligations":6,"required_checks":1,"rows":49,"scope":5,"source_excerpts":0,"supplemental":0}},{"round":"round-2","index":2,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"ab9559f165c1a6337f24","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/inventory/ab9559f165c1a6337f24.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"},"assignment":{"actor":"/root/qualify_author_one","id":"ab9559f165c1a6337f24","items":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"phase":"inventory","returned":[],"snapshot":"090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2","status":"pending"},"packet_bytes":53159,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":8,"criteria":4,"diagnostics":0,"mappings":0,"obligations":10,"required_checks":1,"rows":50,"scope":5,"source_excerpts":8,"supplemental":2}},{"round":"round-2","index":3,"queue_entry":{"actor":"/root/qualify_author_one","assignment":"a5aa00a174f571eb17f0","check_observation":null,"mode":"author","packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/inventory/a5aa00a174f571eb17f0.json","phase":"inventory","run":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"},"assignment":{"actor":"/root/qualify_author_one","id":"a5aa00a174f571eb17f0","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"],"phase":"inventory","returned":[],"snapshot":"090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2","status":"pending"},"packet_bytes":39367,"field_counts":{"assignment":10,"authority":80,"captured_sources":173,"cells":0,"corpus_manifest":6,"criteria":2,"diagnostics":0,"mappings":0,"obligations":6,"required_checks":1,"rows":50,"scope":5,"source_excerpts":0,"supplemental":0}}]
+
+CURRENT INVENTORY LIFECYCLE READING 2026-10-11T11:16:49.160456+00:00
+SOURCE /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md
+1: # Change Surface
+3: Author and Audit use the same captured inventory, applicability matrices and evidence gates. Scripts establish structural coverage; independent agents establish semantic accuracy.
+5: ## Capture
+13: 4. **Check the proposed inventory.**
+14:    Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+16: ## Identity
+21:   Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.
+25:   AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.
+27: ## Applicability
+41: ## Evaluation
+47: ## Completion
+49: The audit is complete only when the current inventory is independently verified, every AP/DP cell has independently verified applicability, every applicable cell has an evidence-backed pass or finding, and every whole-file read, supplemental unit, required check and finding confirmation is settled. Unknown, disputed, stale, unread, unmeasured or blocked work keeps it incomplete. Every required item has one reconciled primary result; retries cannot overwrite accepted items. Use [status requiring completion](commands.md#check-audit-status) for the final claim.
+53: ## Freshness and Resume
+66: ## Artifacts
+70: | `audit-state.json` | Coordinator-owned inventory, evidence, assignments and history |
+73: | `audit-coverage.md` | Inventory, criterion aliases, assignments and residuals |
+
+BOUND ISSUE: combined reference read measured 8188 characters; assertion prevented any returned content. Split into complete smaller reads; no truncation.
+CURRENT INVENTORY REQUIREMENTS 2026-10-11T11:17:14.582028+00:00
+SOURCE /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md:5-25
+## Capture
+
+1. **Locate the record.**
+   Resolve the shared [planning record](planning.md), corpus root and paired engine. Each run has its own directory beneath that record. Read the [audit command conventions](commands.md#audit-command-conventions) before the first audit command.
+2. **Declare the scope.**
+   Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.
+3. **Capture the bytes.**
+   [Initialize the surface](commands.md#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+4. **Check the proposed inventory.**
+   Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+
+## Identity
+
+- **Items.**
+  Rows use the source path and native section, rule, input, output or step identifier. Nested steps retain their full ancestry and duplicate occurrences. Positional prose, paragraphs and candidate clauses use revision-bound source addresses. Independently testable constraints sharing one line need separate clause rows; verifiers add any missed boundary through the scope input's `rows` list. Whole-section, whole-element, missing-structure and relationship rows retain checks that span items.
+- **Relationships.**
+  Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.
+- **Supporting material.**
+  Resource and README rows belong to Workflow / Supporting Material under their actual namespace and source path. A namespace without a workflow definition remains a namespace. Shared content has one content row; referencing elements have relationship rows.
+- **Criteria.**
+  AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.
+SOURCE /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-map.md:1-33
+# Canon Map
+
+How each home is enumerated, and where a judgement already made is recorded.
+
+## Unit Inventory
+
+Read the enumeration from the home at the commit audited, with [List units](commands.md#list-units).
+
+| Home | Unit |
+|------|------|
+| Anti-Patterns | One `##` family; each `###` entry inside it |
+| Design Principles | One `##` |
+| Convention Conformance | One `##` |
+| Guards | One registry entry in `guards/guards.ts` |
+
+- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
+
+## Prior Judgments
+
+An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
+
+| Authority | Where | Records |
+|-----------|-------|---------|
+| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |
+| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |
+| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |
+
+`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
+
+## File Kinds
+
+Author and Audit establish applicability through the shared [matrix contract](change-surface.md#applicability). The complete [unit inventory](#unit-inventory) supplies the matrix and supplemental obligations. Fires-on metadata, when available, is a prioritization hint.
+
+CURRENT INVENTORY WALK REQUIREMENTS 2026-10-11T11:17:27.496664+00:00
+SOURCE /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/walk-rules.md
+# Walk Rules
+
+These govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.
+
+## Order
+
+- **Entry-major.**
+  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.
+- **Compound headings.**
+  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.
+  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.
+
+## Evidence
+
+- **The construct.**
+  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.
+- **Identifiers.**
+  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.
+- **Search hits.**
+  - A search hit is a site. Read the construct around it, and cite that construct.
+  - An empty search leaves open a construct the pattern did not name.
+- **Probes.**
+  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.
+- **Consumers.**
+  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.
+- **Forms.**
+  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.
+- **Hand-checks.**
+  - An empty hand-check is `blocked` until it has reported a case already in the corpus.
+  - Take a set the entry names from that entry's wording.
+
+## Candidates and Fixes
+
+- **Falling candidates.**
+  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.
+- **Unread paths.**
+  `unread` paths are outside the remediation scope.
+  - An audit walks them under [Rules](audit-mode.md#rules).
+- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.
+- **Ledgers, fixtures and snapshots.**
+  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.
+
+
+CURRENT CAPTURE FULL ORIGINALS round-1 author-a 2026-10-11T11:17:57.687368+00:00
+{"source": "corpus/canon/resources/anti-patterns.md", "sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025", "bytes": 2055, "lines": 21}
+1: # Controlled qualification anti-patterns
+2: 
+3: These two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.
+4: 
+5: ## Controlled Qualification
+6: 
+7: ### AP-01. emission-without-validation
+8: 
+9: Detect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.
+10: 
+11: Do not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.
+12: 
+13: Fix: Require validation of the same artifact before emission in every emitting instruction and clause.
+14: 
+15: ### AP-02. broken-binding
+16: 
+17: Detect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.
+18: 
+19: Do not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.
+20: 
+21: Fix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.
+{"source": "corpus/canon/resources/convention-conformance.md", "sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39", "bytes": 411, "lines": 5}
+1: # Controlled qualification conventions
+2: 
+3: ## Evidence scope
+4: 
+5: Use the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.
+{"source": "corpus/canon/resources/design-principles.md", "sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121", "bytes": 1352, "lines": 11}
+1: # Controlled qualification design principles
+2: 
+3: These two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.
+4: 
+5: ## 1. Honor the executing workflow's inherited destination
+6: 
+7: A leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.
+8: 
+9: ## 2. Provide a terminating workflow path
+10: 
+11: A workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.
+{"source": "corpus/qualification/activities/run.yaml", "sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a", "bytes": 101, "lines": 6}
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {envelope: sealed}
+{"source": "corpus/qualification/routines/deliver.yaml", "sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1", "bytes": 105, "lines": 6}
+1: id: deliver
+2: inputs: [envelope]
+3: outputs: {report: emit.report}
+4: steps:
+5:   - id: emit
+6:     technique: produce
+{"source": "corpus/qualification/techniques/TECHNIQUE.md", "sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b", "bytes": 85, "lines": 5}
+1: ## Capability
+2: Constrain inherited delivery.
+3: 
+4: ## Rules
+5: - Destination must be archive.
+{"source": "corpus/qualification/techniques/produce.md", "sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77", "bytes": 207, "lines": 12}
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### report
+6: 
+7: ## Protocol
+8: - Validate the report, then emit it.
+9: 
+10: ## Rules
+11: - Retain the report ID; validate the report before each emission.
+12: - Destination is archive.
+{"source": "corpus/qualification/workflow.yaml", "sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771", "bytes": 68, "lines": 5}
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: null
+
+CURRENT CAPTURE HASH AGREEMENT AND NEW BYTES 2026-10-11T11:18:21.513777+00:00
+CASE round-1 author-a
+{"source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"full_lines":21,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/convention-conformance.md","sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","bytes":411,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"full_lines":11,"reused_exact_hash":true}
+{"source":"corpus/qualification/activities/run.yaml","sha256":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","bytes":101,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/produce.md","sha256":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","bytes":207,"full_lines":12,"reused_exact_hash":true}
+{"source":"corpus/qualification/workflow.yaml","sha256":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","bytes":68,"full_lines":5,"reused_exact_hash":true}
+CASE round-1 author-b
+{"source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"full_lines":21,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/convention-conformance.md","sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","bytes":411,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"full_lines":11,"reused_exact_hash":true}
+{"source":"corpus/qualification/activities/run.yaml","sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","bytes":99,"full_lines":6,"reused_exact_hash":false}
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {packet: sealed}
+{"source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/produce.md","sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","bytes":202,"full_lines":12,"reused_exact_hash":false}
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### summary
+6: 
+7: ## Protocol
+8: - Emit the report without validation.
+9: 
+10: ## Rules
+11: - Retain the report ID; emit the report without validation.
+12: - Destination is public.
+{"source":"corpus/qualification/workflow.yaml","sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","bytes":67,"full_lines":5,"reused_exact_hash":false}
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: run
+CASE round-2 author-a
+{"source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"full_lines":21,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/convention-conformance.md","sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","bytes":411,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"full_lines":11,"reused_exact_hash":true}
+{"source":"corpus/qualification/activities/run.yaml","sha256":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","bytes":101,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/produce.md","sha256":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","bytes":207,"full_lines":12,"reused_exact_hash":true}
+{"source":"corpus/qualification/workflow.yaml","sha256":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","bytes":68,"full_lines":5,"reused_exact_hash":true}
+CASE round-2 author-b
+{"source":"corpus/canon/resources/anti-patterns.md","sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","bytes":2055,"full_lines":21,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/convention-conformance.md","sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","bytes":411,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/canon/resources/design-principles.md","sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","bytes":1352,"full_lines":11,"reused_exact_hash":true}
+{"source":"corpus/qualification/activities/run.yaml","sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","bytes":99,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/routines/deliver.yaml","sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","bytes":105,"full_lines":6,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/TECHNIQUE.md","sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","bytes":85,"full_lines":5,"reused_exact_hash":true}
+{"source":"corpus/qualification/techniques/produce.md","sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","bytes":202,"full_lines":12,"reused_exact_hash":true}
+{"source":"corpus/qualification/workflow.yaml","sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","bytes":67,"full_lines":5,"reused_exact_hash":true}
+
+CURRENT INVENTORY PACKET round-1/0 READ 2026-10-11T11:19:10.608689+00:00 PACKET_BYTES 52087 PROJECTION_CHARS 27339 CHUNK 1/4
+{"assignment":{"actor":"/root/qualify_author_one","budgets":{"bytes_per_token":1,"calibration":{"inventory":{"evidence":"Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.","output_tokens_per_item":1600,"seconds_per_item":18}},"context_tokens":258400,"output_tokens":16000,"reserve_tokens":20000,"safety_tokens":30000,"slots":1,"work_seconds":600},"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,21]],"corpus/canon/resources/convention-conformance.md":[[1,5]],"corpus/canon/resources/design-principles.md":[[1,11]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":53242,"output_tokens_estimate":16000,"work_seconds_estimate":180},"id":"e18e861382270af9c26d","items":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"mappings":{},"phase":"inventory","returned":[],"snapshot":"57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23","status":"pending"},"authority":"Read captured sources and return evidence; the coordinator owns state and edits.","captured_sources":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/sources","cells":{},"corpus_manifest":{"corpus/canon/resources/anti-patterns.md":{"deleted":false,"hash":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","references":[],"seed":false,"selected":false},"corpus/canon/resources/convention-conformance.md":{"deleted":false,"hash":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","references":[],"seed":false,"selected":false},"corpus/canon/resources/design-principles.md":{"deleted":false,"hash":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","references":[],"seed":false,"selected":false},"corpus/qualification/activities/run.yaml":{"deleted":false,"hash":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","references":[{"address":"/steps/id=delivery/routine/name","context":[],"label":"deliver","source":"corpus/qualification/activities/run.yaml","target":"corpus/qualification/routines/deliver.yaml"}],"seed":true,"selected":true},"corpus/qualification/routines/deliver.yaml":{"deleted":false,"hash":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","references":[{"address":"/steps/id=emit/technique","context":[],"label":"produce","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"},{"address":"execution/qualification/run/delivery/deliver/emit","context":["corpus/qualification/activities/run.yaml","corpus/qualification/techniques/TECHNIQUE.md","corpus/qualification/workflow.yaml"],"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"}],"seed":false,"selected":true},"corpus/qualification/techniques/TECHNIQUE.md":{"deleted":false,"hash":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","references":[],"seed":false,"selected":true},"corpus/qualification/techniques/produce.md":{"deleted":false,"hash":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","references":[{"address":"ancestor/corpus/qualification/techniques/TECHNIQUE.md","context":[],"label":"declared contract context","source":"corpus/qualification/techniques/produce.md","target":"corpus/qualification/techniques/TECHNIQUE.md"}],"seed":true,"selected":true},"corpus/qualification/workflow.yaml":{"deleted":false,"hash":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","references":[{"address":"/initialActivity","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},{"address":"/graph/run","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},{"address":"/graph/run/done","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"}],"seed":true,"selected":true}},"criteria":{"ap:broken-binding":{"end":21,"family":"Controlled Qualification","hash":"7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8","id":"ap:broken-binding","label":"AP-02","source":"corpus/canon/resources/anti-patterns.md","start":15,"title":"AP-02. broken-binding","text_is_exact_received_source_span":true},"ap:emission-without-validation":{"end":14,"family":"Controlled Qualification","hash":"594d1861f288aaefb98e51a8222a1ab4e84743c06655b95fcd32ba6e9eb8d2c9","id":"ap:emission-without-validation","label":"AP-01","source":"corpus/canon/resources/anti-patterns.md","start":7,"title":"AP-01. emission-without-validation","text_is_exact_received_source_span":true},"dp:1":{"end":8,"family":"1. Honor the executing workflow's inherited destination","hash":"68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3","id":"dp:1","label":"DP-01","source":"corpus/canon/resources/design-principles.md","start":5,"title":"1. Honor the executing workflow's inherited destination","text_is_exact_received_source_span":true},"dp:2":{"end":11,"family":"2. Provide a terminating workflow path","hash":"78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5","id":"dp:2","label":"DP-02","source":"corpus/canon/resources/design-principles.md","start":9,"title":"2. Provide a terminating workflow path","text_is_exact_received_source_span":true}},"diagnostics":[],"mappings":{},"obligations":{"inventory:canon:corpus/canon/resources/anti-patterns.md":{"kind":"inventory","sources":["corpus/canon/resources/anti-patterns.md"]},"inventory:canon:corpus/canon/resources/convention-conformance.md":{"kind":"inventory","sources":["corpus/canon/resources/convention-conformance.md"]},"inventory:canon:corpus/canon/resources/design-principles.md":{"kind":"inventory","sources":["corpus/canon/resources/design-principles.md"]},"inventory:corpus/qualification/activities/run.yaml":{"kind":"inventory","sources":["corpus/qualification/activities/run.yaml"]},"inventory:corpus/qualification/routines/deliver.yaml":{"kind":
+
+CURRENT INVENTORY PACKET round-1/0 READ 2026-10-11T11:19:20.417019+00:00 PACKET_BYTES 52087 PROJECTION_CHARS 27339 CHUNK 2/4
+"inventory","sources":["corpus/qualification/routines/deliver.yaml"]},"inventory:corpus/qualification/techniques/TECHNIQUE.md":{"kind":"inventory","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},"inventory:corpus/qualification/techniques/produce.md":{"kind":"inventory","sources":["corpus/qualification/techniques/produce.md"]},"inventory:corpus/qualification/workflow.yaml":{"kind":"inventory","sources":["corpus/qualification/workflow.yaml"]},"inventory:scope:corpus/canon/resources/anti-patterns.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/anti-patterns.md"]},"inventory:scope:corpus/canon/resources/convention-conformance.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/convention-conformance.md"]}},"required_checks":["check:guards"],"scope":{"checks":["guards"],"paths":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/produce.md"],"qualification_mode":"author","relationships":[{"address":"execution/qualification/run/delivery/deliver/emit","context":["corpus/qualification/workflow.yaml","corpus/qualification/activities/run.yaml","corpus/qualification/techniques/TECHNIQUE.md"],"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"}],"repeat":1},"supplemental":{"ap:controlled-qualification":{"end":21,"family":"Controlled Qualification","hash":"a6a6755ca0c552b50ac702d7cf2b3a62f0fb89d9031242b12af4d9fa490bf858","id":"ap:controlled-qualification","label":"Controlled Qualification","source":"corpus/canon/resources/anti-patterns.md","start":5,"title":"Controlled Qualification","text_is_exact_received_source_span":true},"cc:evidence-scope":{"end":5,"family":"Evidence scope","hash":"be1bc9ee60e8cea76dcb79ee82c5c75d1d45cdaceb4a7a1bef60e66fa8cb32bd","id":"cc:evidence-scope","label":"Evidence scope","source":"corpus/canon/resources/convention-conformance.md","start":3,"title":"Evidence scope","text_is_exact_received_source_span":true}},"row_shared_dictionary":[{"source":"corpus/qualification/activities/run.yaml","kind":"item","origin":"touched","section":"id","source_kind":"activity","type":"activity","sources":["corpus/qualification/activities/run.yaml"]},{"source":"corpus/qualification/activities/run.yaml","kind":"section","origin":"touched","section":"steps","source_kind":"activity","type":"activity","sources":["corpus/qualification/activities/run.yaml"]},{"source":"corpus/qualification/activities/run.yaml","kind":"item","origin":"touched","section":"steps","source_kind":"activity","type":"activity","sources":["corpus/qualification/activities/run.yaml"]},{"source":"corpus/qualification/activities/run.yaml","kind":"element","origin":"touched","section":"Whole Element","source_kind":"activity","type":"activity","sources":["corpus/qualification/activities/run.yaml"]},{"source":"corpus/qualification/activities/run.yaml","kind":"relationship","origin":"touched","section":"Relationships","source_kind":"activity","type":"activity","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"item","origin":"consumer","section":"id","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"section","origin":"consumer","section":"inputs","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"item","origin":"consumer","section":"inputs","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"section","origin":"consumer","section":"outputs","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"item","origin":"consumer","section":"outputs","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"section","origin":"consumer","section":"steps","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"item","origin":"consumer","section":"steps","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"element","origin":"consumer","section":"Whole Element","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"relationship","origin":"consumer","section":"Relationships","source_kind":"routine","type":"routine","sources":["corpus/qualification/routines/deliver.yaml","corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/routines/deliver.yaml","kind":"relationship","origin":"consumer","section":"Relationships","source_kind":"routine","type":"routine","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/routines/deliver.yaml","corpus/qualification/techniques/TECHNIQUE.md","corpus/qualification/techniques/produce.md","corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/techniques/TECHNIQUE.md","kind":"section","origin":"context","section":"capability","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},{"source":"corpus/qualification/techniques/TECHNIQUE.md","kind":"item","origin":"context","section":"capability","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},{"source":"corpus/qualification/techniques/TECHNIQUE.md","kind":"section","origin":"context","section":"rules","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},{"source":"corpus/qualification/techniques/TECHNIQUE.md","kind":"item","origin":"context","section":"rules","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},{"source":"corpus/qualification/techniques/TECHNIQUE.md","kind":"element","origin":"context","section":"Whole Element","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"section","origin":"touched","section":"capability","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"item","origin":"touched","section":"capability","source_kind":"technique","type":"technique","sources":["corpus/qu
+
+CURRENT INVENTORY PACKET round-1/0 READ 2026-10-11T11:19:27.496844+00:00 PACKET_BYTES 52087 PROJECTION_CHARS 27339 CHUNK 3/4
+alification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"section","origin":"touched","section":"outputs","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"section","origin":"touched","section":"protocol","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"item","origin":"touched","section":"protocol","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"section","origin":"touched","section":"rules","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"item","origin":"touched","section":"rules","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"element","origin":"touched","section":"Whole Element","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/techniques/produce.md","kind":"relationship","origin":"touched","section":"Relationships","source_kind":"technique","type":"technique","sources":["corpus/qualification/techniques/TECHNIQUE.md","corpus/qualification/techniques/produce.md"]},{"source":"corpus/qualification/workflow.yaml","kind":"section","origin":"touched","section":"graph","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/workflow.yaml","kind":"item","origin":"touched","section":"graph","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/workflow.yaml","kind":"item","origin":"touched","section":"id","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/workflow.yaml","kind":"item","origin":"touched","section":"initialActivity","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/workflow.yaml","kind":"element","origin":"touched","section":"Whole Element","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/workflow.yaml"]},{"source":"corpus/qualification/workflow.yaml","kind":"relationship","origin":"touched","section":"Relationships","source_kind":"workflow","type":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"]}],"rows_id_equals_key":{"corpus/qualification/activities/run.yaml#/id":{"address":"/id","end":1,"label":"/id","start":1,"shared_ref":0},"corpus/qualification/activities/run.yaml#/steps":{"address":"/steps","end":6,"label":"/steps","start":3,"shared_ref":1},"corpus/qualification/activities/run.yaml#/steps/id=delivery":{"address":"/steps/id=delivery","end":6,"label":"/steps/id=delivery","start":3,"shared_ref":1},"corpus/qualification/activities/run.yaml#/steps/id=delivery/id":{"address":"/steps/id=delivery/id","end":3,"label":"/steps/id=delivery/id","start":3,"shared_ref":2},"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine":{"address":"/steps/id=delivery/routine","end":6,"label":"/steps/id=delivery/routine","start":5,"shared_ref":1},"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments":{"address":"/steps/id=delivery/routine/arguments","end":6,"label":"/steps/id=delivery/routine/arguments","start":6,"shared_ref":1},"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope":{"address":"/steps/id=delivery/routine/arguments/envelope","end":6,"label":"/steps/id=delivery/routine/arguments/envelope","start":6,"shared_ref":2},"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name":{"address":"/steps/id=delivery/routine/name","end":5,"label":"/steps/id=delivery/routine/name","start":5,"shared_ref":2},"corpus/qualification/activities/run.yaml#@element":{"address":"@element","end":6,"label":"@element","start":1,"shared_ref":3},"corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53":{"address":"@relationship/5a93bb0629055f53","end":6,"label":"deliver","relationship":{"address":"/steps/id=delivery/routine/name","context":[],"label":"deliver","source":"corpus/qualification/activities/run.yaml","target":"corpus/qualification/routines/deliver.yaml"},"start":1,"shared_ref":4},"corpus/qualification/routines/deliver.yaml#/id":{"address":"/id","end":1,"label":"/id","start":1,"shared_ref":5},"corpus/qualification/routines/deliver.yaml#/inputs":{"address":"/inputs","end":2,"label":"/inputs","start":2,"shared_ref":6},"corpus/qualification/routines/deliver.yaml#/inputs/0":{"address":"/inputs/0","end":2,"label":"/inputs/0","start":2,"shared_ref":7},"corpus/qualification/routines/deliver.yaml#/outputs":{"address":"/outputs","end":3,"label":"/outputs","start":3,"shared_ref":8},"corpus/qualification/routines/deliver.yaml#/outputs/report":{"address":"/outputs/report","end":3,"label":"/outputs/report","start":3,"shared_ref":9},"corpus/qualification/routines/deliver.yaml#/steps":{"address":"/steps","end":6,"label":"/steps","start":5,"shared_ref":10},"corpus/qualification/routines/deliver.yaml#/steps/id=emit":{"address":"/steps/id=emit","end":6,"label":"/steps/id=emit","start":5,"shared_ref":10},"corpus/qualification/routines/deliver.yaml#/steps/id=emit/id":{"address":"/steps/id=emit/id","end":5,"label":"/steps/id=emit/id","start":5,"shared_ref":11},"corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique":{"address":"/steps/id=emit/technique","end":6,"label":"/steps/id=emit/technique","start":6,"shared_ref":11},"corpus/qualification/routines/deliver.yaml#@element":{"address":"@element","end":6,"label":"@element","start":1,"shared_ref":12},"corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7":{"address":"@relationship/3a2f0d25e0e017f7","end":6,"label":"produce","relationship":{"address":"/steps/id=emit/technique","context":[],"label":"produce","source":"corpus/qualification/routines/deliver.yaml","target":"corpus/qualification/techniques/produce.md"},"start":1,"shared_ref":13},"corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96":{"address":"@relationship/50a64427faa3df96","end":6,"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","relationship":{"address":"execution/qualification/run/delivery/deliver/emit","context":["corpus/qualification/activities/run.yaml","corpus/qualification/techniques/TECHNIQUE.md","corpus/qualification/workflow.yaml"],"label":"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination","source":"corpus/qualification/routines/deliver.yaml","tar
+
+CURRENT INVENTORY PACKET round-1/0 READ 2026-10-11T11:19:34.981278+00:00 PACKET_BYTES 52087 PROJECTION_CHARS 27339 CHUNK 4/4
+get":"corpus/qualification/techniques/produce.md"},"start":1,"shared_ref":14},"corpus/qualification/techniques/TECHNIQUE.md#/capability":{"address":"/capability","end":3,"label":"/capability","start":1,"shared_ref":15},"corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2":{"address":"/capability/line-2","end":2,"label":"/capability/line-2","start":2,"shared_ref":16},"corpus/qualification/techniques/TECHNIQUE.md#/rules":{"address":"/rules","end":5,"label":"/rules","start":4,"shared_ref":17},"corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5":{"address":"/rules/line-5","end":5,"label":"/rules/line-5","start":5,"shared_ref":18},"corpus/qualification/techniques/TECHNIQUE.md#@element":{"address":"@element","end":5,"label":"@element","start":1,"shared_ref":19},"corpus/qualification/techniques/produce.md#/capability":{"address":"/capability","end":3,"label":"/capability","start":1,"shared_ref":20},"corpus/qualification/techniques/produce.md#/capability/line-2":{"address":"/capability/line-2","end":2,"label":"/capability/line-2","start":2,"shared_ref":21},"corpus/qualification/techniques/produce.md#/outputs":{"address":"/outputs","end":6,"label":"/outputs","start":4,"shared_ref":22},"corpus/qualification/techniques/produce.md#/outputs/report":{"address":"/outputs/report","end":6,"label":"/outputs/report","start":5,"shared_ref":22},"corpus/qualification/techniques/produce.md#/protocol":{"address":"/protocol","end":9,"label":"/protocol","start":7,"shared_ref":23},"corpus/qualification/techniques/produce.md#/protocol/line-8":{"address":"/protocol/line-8","end":8,"label":"/protocol/line-8","start":8,"shared_ref":24},"corpus/qualification/techniques/produce.md#/rules":{"address":"/rules","end":12,"label":"/rules","start":10,"shared_ref":25},"corpus/qualification/techniques/produce.md#/rules/line-11":{"address":"/rules/line-11","end":11,"label":"/rules/line-11","start":11,"shared_ref":26},"corpus/qualification/techniques/produce.md#/rules/line-11/clause-1":{"address":"/rules/line-11/clause-1","end":11,"label":"/rules/line-11/clause-1","start":11,"shared_ref":26},"corpus/qualification/techniques/produce.md#/rules/line-11/clause-2":{"address":"/rules/line-11/clause-2","end":11,"label":"/rules/line-11/clause-2","start":11,"shared_ref":26},"corpus/qualification/techniques/produce.md#/rules/line-12":{"address":"/rules/line-12","end":12,"label":"/rules/line-12","start":12,"shared_ref":26},"corpus/qualification/techniques/produce.md#@element":{"address":"@element","end":12,"label":"@element","start":1,"shared_ref":27},"corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8":{"address":"@relationship/f075d23fadb959c8","end":12,"label":"declared contract context","relationship":{"address":"ancestor/corpus/qualification/techniques/TECHNIQUE.md","context":[],"label":"declared contract context","source":"corpus/qualification/techniques/produce.md","target":"corpus/qualification/techniques/TECHNIQUE.md"},"start":1,"shared_ref":28},"corpus/qualification/workflow.yaml#/graph":{"address":"/graph","end":5,"label":"/graph","start":4,"shared_ref":29},"corpus/qualification/workflow.yaml#/graph/run":{"address":"/graph/run","end":5,"label":"/graph/run","start":5,"shared_ref":29},"corpus/qualification/workflow.yaml#/graph/run/done":{"address":"/graph/run/done","end":5,"label":"/graph/run/done","start":5,"shared_ref":30},"corpus/qualification/workflow.yaml#/id":{"address":"/id","end":1,"label":"/id","start":1,"shared_ref":31},"corpus/qualification/workflow.yaml#/initialActivity":{"address":"/initialActivity","end":2,"label":"/initialActivity","start":2,"shared_ref":32},"corpus/qualification/workflow.yaml#@element":{"address":"@element","end":5,"label":"@element","start":1,"shared_ref":33},"corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877":{"address":"@relationship/3b27fd01db44f877","end":5,"label":"graph:run","relationship":{"address":"/initialActivity","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"start":1,"shared_ref":34},"corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55":{"address":"@relationship/475a98faaf5b9a55","end":5,"label":"graph-entry:run","relationship":{"address":"/graph/run","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"start":1,"shared_ref":34},"corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b":{"address":"@relationship/aa4b84de66a9776b","end":5,"label":"graph-entry:run","relationship":{"address":"/graph/run/done","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"start":1,"shared_ref":34}},"source_excerpts_exact_received_hash_reuse":[{"end":21,"hash":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","source":"corpus/canon/resources/anti-patterns.md","start":1},{"end":5,"hash":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","source":"corpus/canon/resources/convention-conformance.md","start":1},{"end":11,"hash":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"hash":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a","source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"hash":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"hash":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"hash":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77","source":"corpus/qualification/techniques/produce.md","start":1},{"end":5,"hash":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771","source":"corpus/qualification/workflow.yaml","start":1}]}
+
+CURRENT INVENTORY COMPLETE DELTA round-1/1 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/e18e861382270af9c26d.json","reference_packet_bytes":52087,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/924ff826b6e5b5b404cf.json","current_packet_bytes":38287,"read_time":"2026-10-11T11:20:50.871931+00:00","complete_field_deltas":{"assignment":{"base_sha256":"af82f1ad9dc7a473fef1e690afdc6222e5680a4c2a50c0e33ee7044eee52f267","remove":[],"set":{"estimate":{"context":{},"input_tokens_estimate":39195,"output_tokens_estimate":9600,"work_seconds_estimate":108},"id":"924ff826b6e5b5b404cf","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"]}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"exact_current_packet_reuse_sha256":"9c3d751d9d4c06e8631a3adb780fa4763aaa100053cfa209cf3a7e8ed54a3011"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"base_sha256":"e4ff26e35a8b7313cf107698afc3dc53f093ab5e0c78f3083c295f4ed67ad8fa","remove":["corpus/canon/resources/anti-patterns.md","corpus/canon/resources/convention-conformance.md"],"set":{}},"criteria":{"base_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2","remove":["ap:broken-binding","ap:emission-without-validation"],"set":{}},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"base_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022","remove":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"set":{"inventory:scope:corpus/canon/resources/design-principles.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/design-principles.md"]},"inventory:scope:corpus/qualification/activities/run.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/activities/run.yaml"]},"inventory:scope:corpus/qualification/routines/deliver.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/routines/deliver.yaml"]},"inventory:scope:corpus/qualification/techniques/TECHNIQUE.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},"inventory:scope:corpus/qualification/techniques/produce.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/produce.md"]},"inventory:scope:corpus/qualification/workflow.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/workflow.yaml"]}}},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"648f71c0ced03020e4d80ef700a5a662692e1a1ffc7775d7c6635cfc66a52769"},"scope":{"exact_current_packet_reuse_sha256":"b7484e8dd374f7a1e2881d322a5bdbc6416e7dcc11fc44f57562ddfd4e8dbbc1"},"source_excerpts":{"replace":[]},"supplemental":{"base_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04","remove":["ap:controlled-qualification","cc:evidence-scope"],"set":{}}},"full_capture_hash_checks":[]}
+
+CURRENT INVENTORY COMPLETE DELTA round-1/2 CHUNK 1/2
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/e18e861382270af9c26d.json","reference_packet_bytes":52087,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cdc165c72d8156e649bc.json","current_packet_bytes":53159,"read_time":"2026-10-11T11:21:07.146609+00:00","complete_field_deltas":{"assignment":{"base_sha256":"af82f1ad9dc7a473fef1e690afdc6222e5680a4c2a50c0e33ee7044eee52f267","remove":[],"set":{"estimate":{"context":{"corpus/canon/resources/anti-patterns.md":[[1,21]],"corpus/canon/resources/convention-conformance.md":[[1,5]],"corpus/canon/resources/design-principles.md":[[1,11]],"corpus/qualification/activities/run.yaml":[[1,6]],"corpus/qualification/routines/deliver.yaml":[[1,6]],"corpus/qualification/techniques/TECHNIQUE.md":[[1,5]],"corpus/qualification/techniques/produce.md":[[1,12]],"corpus/qualification/workflow.yaml":[[1,5]]},"input_tokens_estimate":54314,"output_tokens_estimate":16000,"work_seconds_estimate":180},"id":"cdc165c72d8156e649bc","snapshot":"533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"replace":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/sources"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"base_sha256":"e4ff26e35a8b7313cf107698afc3dc53f093ab5e0c78f3083c295f4ed67ad8fa","remove":[],"set":{"corpus/qualification/activities/run.yaml":{"deleted":false,"hash":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","references":[{"address":"/steps/id=delivery/routine/name","context":[],"label":"deliver","source":"corpus/qualification/activities/run.yaml","target":"corpus/qualification/routines/deliver.yaml"}],"seed":true,"selected":true},"corpus/qualification/techniques/produce.md":{"deleted":false,"hash":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","references":[{"address":"ancestor/corpus/qualification/techniques/TECHNIQUE.md","context":[],"label":"declared contract context","source":"corpus/qualification/techniques/produce.md","target":"corpus/qualification/techniques/TECHNIQUE.md"}],"seed":true,"selected":true},"corpus/qualification/workflow.yaml":{"deleted":false,"hash":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","references":[{"address":"/initialActivity","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},{"address":"/graph/run","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},{"address":"/graph/run/done","context":[],"label":"graph-entry:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},{"address":"/graph/run/done","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"}],"seed":true,"selected":true}}},"criteria":{"exact_current_packet_reuse_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2"},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"exact_current_packet_reuse_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022"},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"base_sha256":"648f71c0ced03020e4d80ef700a5a662692e1a1ffc7775d7c6635cfc66a52769","remove":["corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope","corpus/qualification/techniques/produce.md#/outputs/report"],"set":{"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet":{"address":"/steps/id=delivery/routine/arguments/packet","end":6,"id":"corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet","kind":"item","label":"/steps/id=delivery/routine/arguments/packet","origin":"touched","section":"steps","source":"corpus/qualification/activities/run.yaml","source_kind":"activity","sources":["corpus/qualification/activities/run.yaml"],"start":6,"type":"activity"},"corpus/qualification/techniques/produce.md#/outputs/summary":{"address":"/outputs/summary","end":6,"id":"corpus/qualification/techniques/produce.md#/outputs/summary","kind":"section","label":"/outputs/summary","origin":"touched","section":"outputs","source":"corpus/qualification/techniques/produce.md","source_kind":"technique","sources":["corpus/qualification/techniques/produce.md"],"start":5,"type":"technique"},"corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593":{"address":"@relationship/27bf829b0e84c593","end":5,"id":"corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593","kind":"relationship","label":"graph:run","origin":"touched","relationship":{"address":"/graph/run/done","context":[],"label":"graph:run","source":"corpus/qualification/workflow.yaml","target":"corpus/qualification/activities/run.yaml"},"section":"Relationships","source":"corpus/qualification/workflow.yaml","source_kind":"workflow","sources":["corpus/qualification/activities/run.yaml","corpus/qualification/workflow.yaml"],"start":1,"type":"workflow"}}},"scope":{"exact_current_packet_reuse_sha256":"b7484e8dd374f7a1e2881d322a5bdbc6416e7dcc11fc44f57562ddfd4e8dbbc1"},"source_excerpts":{"replace":[{"end":21,"hash":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025","source":"corpus/canon/resources/anti-patterns.md","start":1},{"end":5,"hash":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39","source":"corpus/canon/resources/convention-conformance.md","start":1},{"end":11,"hash":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121","source":"corpus/canon/resources/design-principles.md","start":1},{"end":6,"hash":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813","source":"corpus/qualification/activities/run.yaml","start":1},{"end":6,"hash":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1","source":"corpus/qualification/routines/deliver.yaml","start":1},{"end":5,"hash":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b","source":"corpus/qualification/techniques/TECHNIQUE.md","start":1},{"end":12,"hash":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729","source":"corpus/qualification/techniques/
+
+CURRENT INVENTORY COMPLETE DELTA round-1/2 CHUNK 2/2
+produce.md","start":1},{"end":5,"hash":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1","source":"corpus/qualification/workflow.yaml","start":1}]},"supplemental":{"exact_current_packet_reuse_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04"}},"full_capture_hash_checks":[{"source":"corpus/canon/resources/anti-patterns.md","bytes":2055,"sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025"},{"source":"corpus/canon/resources/convention-conformance.md","bytes":411,"sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39"},{"source":"corpus/canon/resources/design-principles.md","bytes":1352,"sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121"},{"source":"corpus/qualification/activities/run.yaml","bytes":99,"sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813"},{"source":"corpus/qualification/routines/deliver.yaml","bytes":105,"sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"},{"source":"corpus/qualification/techniques/TECHNIQUE.md","bytes":85,"sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b"},{"source":"corpus/qualification/techniques/produce.md","bytes":202,"sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729"},{"source":"corpus/qualification/workflow.yaml","bytes":67,"sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1"}]}
+
+CURRENT INVENTORY COMPLETE DELTA round-1/3 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cdc165c72d8156e649bc.json","reference_packet_bytes":53159,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cf782be6101bfda08d04.json","current_packet_bytes":39367,"read_time":"2026-10-11T11:22:43.767487+00:00","complete_field_deltas":{"assignment":{"base_sha256":"b77d9aab23bb2998f1beafca63e6503aa07c13a641c37b7124b22a1010b259ef","remove":[],"set":{"estimate":{"context":{},"input_tokens_estimate":40275,"output_tokens_estimate":9600,"work_seconds_estimate":108},"id":"cf782be6101bfda08d04","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"]}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"exact_current_packet_reuse_sha256":"65dbfe600cd38fb8b24c78a9aac23ab96e9fce886d306e2b4ba97df63f8b0ed2"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"base_sha256":"a4b220cefc792dc379bd1f2a5b47b0db17b1683ab958e9d693d412177d169ccf","remove":["corpus/canon/resources/anti-patterns.md","corpus/canon/resources/convention-conformance.md"],"set":{}},"criteria":{"base_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2","remove":["ap:broken-binding","ap:emission-without-validation"],"set":{}},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"base_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022","remove":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"set":{"inventory:scope:corpus/canon/resources/design-principles.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/design-principles.md"]},"inventory:scope:corpus/qualification/activities/run.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/activities/run.yaml"]},"inventory:scope:corpus/qualification/routines/deliver.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/routines/deliver.yaml"]},"inventory:scope:corpus/qualification/techniques/TECHNIQUE.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},"inventory:scope:corpus/qualification/techniques/produce.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/produce.md"]},"inventory:scope:corpus/qualification/workflow.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/workflow.yaml"]}}},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"feb89fb70624177923677766b63068908821bcde660f7422f7990c3be1b7fbd8"},"scope":{"exact_current_packet_reuse_sha256":"b7484e8dd374f7a1e2881d322a5bdbc6416e7dcc11fc44f57562ddfd4e8dbbc1"},"source_excerpts":{"replace":[]},"supplemental":{"base_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04","remove":["ap:controlled-qualification","cc:evidence-scope"],"set":{}}},"full_capture_hash_checks":[]}
+
+CURRENT INVENTORY COMPLETE DELTA round-2/0 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/e18e861382270af9c26d.json","reference_packet_bytes":52087,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/inventory/1a2f4774199f7b564911.json","current_packet_bytes":52087,"read_time":"2026-10-11T11:22:53.261879+00:00","complete_field_deltas":{"assignment":{"base_sha256":"af82f1ad9dc7a473fef1e690afdc6222e5680a4c2a50c0e33ee7044eee52f267","remove":[],"set":{"id":"1a2f4774199f7b564911","snapshot":"b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"replace":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/sources"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"exact_current_packet_reuse_sha256":"e4ff26e35a8b7313cf107698afc3dc53f093ab5e0c78f3083c295f4ed67ad8fa"},"criteria":{"exact_current_packet_reuse_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2"},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"exact_current_packet_reuse_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022"},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"648f71c0ced03020e4d80ef700a5a662692e1a1ffc7775d7c6635cfc66a52769"},"scope":{"base_sha256":"b7484e8dd374f7a1e2881d322a5bdbc6416e7dcc11fc44f57562ddfd4e8dbbc1","remove":[],"set":{"repeat":2}},"source_excerpts":{"exact_current_packet_reuse_sha256":"ffc97da989f5c179d666abb24aa248028f26d272a515147099d4ee64dea8353e"},"supplemental":{"exact_current_packet_reuse_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04"}},"full_capture_hash_checks":[{"source":"corpus/canon/resources/anti-patterns.md","bytes":2055,"sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025"},{"source":"corpus/canon/resources/convention-conformance.md","bytes":411,"sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39"},{"source":"corpus/canon/resources/design-principles.md","bytes":1352,"sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121"},{"source":"corpus/qualification/activities/run.yaml","bytes":101,"sha256":"21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a"},{"source":"corpus/qualification/routines/deliver.yaml","bytes":105,"sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"},{"source":"corpus/qualification/techniques/TECHNIQUE.md","bytes":85,"sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b"},{"source":"corpus/qualification/techniques/produce.md","bytes":207,"sha256":"53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77"},{"source":"corpus/qualification/workflow.yaml","bytes":68,"sha256":"02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771"}]}
+
+CURRENT INVENTORY COMPLETE DELTA round-2/1 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/inventory/1a2f4774199f7b564911.json","reference_packet_bytes":52087,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/inventory/5c88f854017bfdccbd5e.json","current_packet_bytes":38287,"read_time":"2026-10-11T11:23:01.553069+00:00","complete_field_deltas":{"assignment":{"base_sha256":"b6373ed50b470aa2f0b52fef0f15417fdcda6513e37994a5f2eeccee1c6c3ae6","remove":[],"set":{"estimate":{"context":{},"input_tokens_estimate":39195,"output_tokens_estimate":9600,"work_seconds_estimate":108},"id":"5c88f854017bfdccbd5e","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"]}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"exact_current_packet_reuse_sha256":"6ea4d1035fe663c4d27bccba401b9a588e44cf9f8cad2e0f001069915a3e17bf"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"base_sha256":"e4ff26e35a8b7313cf107698afc3dc53f093ab5e0c78f3083c295f4ed67ad8fa","remove":["corpus/canon/resources/anti-patterns.md","corpus/canon/resources/convention-conformance.md"],"set":{}},"criteria":{"base_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2","remove":["ap:broken-binding","ap:emission-without-validation"],"set":{}},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"base_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022","remove":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"set":{"inventory:scope:corpus/canon/resources/design-principles.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/design-principles.md"]},"inventory:scope:corpus/qualification/activities/run.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/activities/run.yaml"]},"inventory:scope:corpus/qualification/routines/deliver.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/routines/deliver.yaml"]},"inventory:scope:corpus/qualification/techniques/TECHNIQUE.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},"inventory:scope:corpus/qualification/techniques/produce.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/produce.md"]},"inventory:scope:corpus/qualification/workflow.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/workflow.yaml"]}}},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"648f71c0ced03020e4d80ef700a5a662692e1a1ffc7775d7c6635cfc66a52769"},"scope":{"exact_current_packet_reuse_sha256":"540f1761d4080784af7bd1b587cde92d38b89028f1f39f07d0b42c214a8a1a85"},"source_excerpts":{"replace":[]},"supplemental":{"base_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04","remove":["ap:controlled-qualification","cc:evidence-scope"],"set":{}}},"full_capture_hash_checks":[]}
+
+CURRENT INVENTORY COMPLETE DELTA round-2/2 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cdc165c72d8156e649bc.json","reference_packet_bytes":53159,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/inventory/ab9559f165c1a6337f24.json","current_packet_bytes":53159,"read_time":"2026-10-11T11:23:10.597337+00:00","complete_field_deltas":{"assignment":{"base_sha256":"b77d9aab23bb2998f1beafca63e6503aa07c13a641c37b7124b22a1010b259ef","remove":[],"set":{"id":"ab9559f165c1a6337f24","snapshot":"090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2"}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"replace":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/sources"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"exact_current_packet_reuse_sha256":"a4b220cefc792dc379bd1f2a5b47b0db17b1683ab958e9d693d412177d169ccf"},"criteria":{"exact_current_packet_reuse_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2"},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"exact_current_packet_reuse_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022"},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"feb89fb70624177923677766b63068908821bcde660f7422f7990c3be1b7fbd8"},"scope":{"base_sha256":"b7484e8dd374f7a1e2881d322a5bdbc6416e7dcc11fc44f57562ddfd4e8dbbc1","remove":[],"set":{"repeat":2}},"source_excerpts":{"exact_current_packet_reuse_sha256":"e5c3f6f57db18d244e9ce52b36c2a329946b7db18125a1c8a221f31916ca2a14"},"supplemental":{"exact_current_packet_reuse_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04"}},"full_capture_hash_checks":[{"source":"corpus/canon/resources/anti-patterns.md","bytes":2055,"sha256":"0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025"},{"source":"corpus/canon/resources/convention-conformance.md","bytes":411,"sha256":"4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39"},{"source":"corpus/canon/resources/design-principles.md","bytes":1352,"sha256":"6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121"},{"source":"corpus/qualification/activities/run.yaml","bytes":99,"sha256":"e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813"},{"source":"corpus/qualification/routines/deliver.yaml","bytes":105,"sha256":"ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"},{"source":"corpus/qualification/techniques/TECHNIQUE.md","bytes":85,"sha256":"dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b"},{"source":"corpus/qualification/techniques/produce.md","bytes":202,"sha256":"27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729"},{"source":"corpus/qualification/workflow.yaml","bytes":67,"sha256":"be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1"}]}
+
+CURRENT INVENTORY COMPLETE DELTA round-2/3 CHUNK 1/1
+{"reference_current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/inventory/ab9559f165c1a6337f24.json","reference_packet_bytes":53159,"current_packet":"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/inventory/a5aa00a174f571eb17f0.json","current_packet_bytes":39367,"read_time":"2026-10-11T11:23:18.617816+00:00","complete_field_deltas":{"assignment":{"base_sha256":"7f9c7b5b7f0e6eb2c87c645ef40e6dfc0b13b6748ed2fd833e34c9e173b7b7d3","remove":[],"set":{"estimate":{"context":{},"input_tokens_estimate":40275,"output_tokens_estimate":9600,"work_seconds_estimate":108},"id":"a5aa00a174f571eb17f0","items":["inventory:scope:corpus/canon/resources/design-principles.md","inventory:scope:corpus/qualification/activities/run.yaml","inventory:scope:corpus/qualification/routines/deliver.yaml","inventory:scope:corpus/qualification/techniques/TECHNIQUE.md","inventory:scope:corpus/qualification/techniques/produce.md","inventory:scope:corpus/qualification/workflow.yaml"]}},"authority":{"exact_current_packet_reuse_sha256":"38d77faf88e1dc351234ce8a54b125870a4cc610eef11cc04a7b4db5960b3eee"},"captured_sources":{"exact_current_packet_reuse_sha256":"3fcf034798423ae83d36836691b7f7c8270acb9e5eb0cf95cf00dac2fd016559"},"cells":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"corpus_manifest":{"base_sha256":"a4b220cefc792dc379bd1f2a5b47b0db17b1683ab958e9d693d412177d169ccf","remove":["corpus/canon/resources/anti-patterns.md","corpus/canon/resources/convention-conformance.md"],"set":{}},"criteria":{"base_sha256":"07e29dc4234a05094e0edd92ca835d9e5ec7438809767facc33ca8fd0606d8d2","remove":["ap:broken-binding","ap:emission-without-validation"],"set":{}},"diagnostics":{"exact_current_packet_reuse_sha256":"4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"},"mappings":{"exact_current_packet_reuse_sha256":"44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"},"obligations":{"base_sha256":"d999d61df62608fcd6899b3da9125d3d9b8063663f44c3334f2f1fd023c47022","remove":["inventory:canon:corpus/canon/resources/anti-patterns.md","inventory:canon:corpus/canon/resources/convention-conformance.md","inventory:canon:corpus/canon/resources/design-principles.md","inventory:corpus/qualification/activities/run.yaml","inventory:corpus/qualification/routines/deliver.yaml","inventory:corpus/qualification/techniques/TECHNIQUE.md","inventory:corpus/qualification/techniques/produce.md","inventory:corpus/qualification/workflow.yaml","inventory:scope:corpus/canon/resources/anti-patterns.md","inventory:scope:corpus/canon/resources/convention-conformance.md"],"set":{"inventory:scope:corpus/canon/resources/design-principles.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/canon/resources/design-principles.md"]},"inventory:scope:corpus/qualification/activities/run.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/activities/run.yaml"]},"inventory:scope:corpus/qualification/routines/deliver.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/routines/deliver.yaml"]},"inventory:scope:corpus/qualification/techniques/TECHNIQUE.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/TECHNIQUE.md"]},"inventory:scope:corpus/qualification/techniques/produce.md":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/techniques/produce.md"]},"inventory:scope:corpus/qualification/workflow.yaml":{"context_mode":"manifest","kind":"inventory","sources":["corpus/qualification/workflow.yaml"]}}},"required_checks":{"exact_current_packet_reuse_sha256":"a90ab2d348d3c9d5a87fec5606166da2ee4880bf7bcaa70a6dc75db8583c567d"},"rows":{"exact_current_packet_reuse_sha256":"feb89fb70624177923677766b63068908821bcde660f7422f7990c3be1b7fbd8"},"scope":{"exact_current_packet_reuse_sha256":"540f1761d4080784af7bd1b587cde92d38b89028f1f39f07d0b42c214a8a1a85"},"source_excerpts":{"replace":[]},"supplemental":{"base_sha256":"d1f335fd4b4ad30a5d4697c447078b5021d7606361a0b0ba8b8b3950d3b97e04","remove":["ap:controlled-qualification","cc:evidence-scope"],"set":{}}},"full_capture_hash_checks":[]}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/e18e861382270af9c26d-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+  "assignment": "e18e861382270af9c26d",
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The complete 21-line canon home has one family, Controlled Qualification, and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both AP identities, aliases, Detect/Do not flag/Fix text, and the full family supplemental unit are present through the final line; no additional entry or family is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The complete five-line canon home contains one unit, Evidence scope, at lines 3-5. The supplemental cc:evidence-scope reproduces that entire unit. It explicitly limits these definitions to the four controlled criteria and supplies execution context without claiming engine-schema or full-project-canon conformance. Required check:guards is present as an obligation, not a measured result.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The complete 11-line canon home contains exactly two numbered principles: inherited Destination at lines 5-8 and a terminating workflow path at lines 9-11. Both numbered DP identities and exact complete criterion texts are present. Their scope includes executing call/inheritance context and whole-workflow graph analysis; neither principle is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The nine native rows cover id, steps, the full delivery-step ancestry, its id, routine object, routine/name, arguments object and concrete envelope key, plus the whole element. The tenth row records delivery calling deliver at the actual name field. All six source lines and both call endpoints are accounted for.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The ten native rows cover id, Inputs container and envelope item, Outputs container and report binding, steps container and emit ancestry, step id, technique selector, and the whole element. Two relationship rows capture emit calling produce and the explicit qualification/run/delivery/deliver/emit instance with workflow, activity and ancestor context. All 12 proposed rows are justified.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The five rows cover Capability heading and its paragraph, Rules heading and the archive constraint, and the whole element. The complete five-line ancestor is contract context for the executing produce leaf. No independent clauses or source sections are omitted.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The 12 native rows cover Capability and paragraph, Outputs and report heading, Protocol and line-8 instruction, Rules, the line-11 compound instruction, its separate retention and emission/validation clauses, line-12 Destination, and the whole element. The thirteenth row explicitly links produce to its ancestor TECHNIQUE.md. These account for every original heading, instruction and independent semicolon clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The six native rows cover id, initialActivity, graph, run, run.done, and the whole element. Initial selection, graph-entry ownership and done-exit ownership are distinct relationship rows. The actual done destination is null. The null value adds no next-activity reference, yielding nine rows and three relationships.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The manifest identifies this complete canon home as unselected and non-seed, with no definition-call references. Its AP entries and family supplemental unit are captured by canon inventory. It is not one of the declared definition paths and adds no missing definition row or closure target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The manifest identifies this complete convention home as unselected and non-seed, with no definition-call references. Evidence scope is preserved as a supplemental unit. It contributes the controlled-dialect boundary and introduces no omitted definition target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-1", "case": "author-a", "assignment": "e18e861382270af9c26d", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/e18e861382270af9c26d-current-author-inventory-1.json", "packet_bytes": 52087, "receipt_bytes": 9858, "items": 10, "verified": 10, "disputed": 0, "rows_checked": 49, "relationships_checked": 7, "written_at": "2026-10-11T11:25:27.008826+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/924ff826b6e5b5b404cf-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+  "assignment": "924ff826b6e5b5b404cf",
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The manifest identifies this complete principle home as unselected and non-seed, with no definition-call references. Both principles are present in the canon inventory. Their named fixture context is represented by the explicit execution relationship; they introduce no additional uncaptured definition.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The activity is a selected seed from scope.paths. Its sole routine reference resolves delivery to captured deliver, and incoming workflow references resolve the declared run activity. The full manifest accounts for both directions; no additional call target appears in its six source lines.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The routine is selected closure, not a seed: run/delivery calls deliver and deliver consumes the changed produce output contract through emit. Its direct produce reference and explicit execution relationship preserve both endpoints, the output-binding site and all workflow/activity/ancestor context. Its Inputs and export are inventoried; no target is unresolved.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The ancestor is selected context, not a seed. The leaf inheritance relationship and explicit executing qualification context require this TECHNIQUE.md. Its full contents are captured and its Rules have rows; it declares no further call or ancestor target in this controlled scope.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The technique is a selected seed from scope.paths. Deliver/emit is its captured consumer, and the explicit leaf-to-ancestor relationship retains qualification TECHNIQUE.md. The complete call instance includes workflow and activity context. Every source named by those references is selected and captured.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-a verification: The workflow is a selected seed from scope.paths. initialActivity and every graph key/exit resolve to run; the done value is null and does not introduce another target. The manifest includes the activity and the complete downstream invocation/ancestor context. No further workflow destination appears in the full source.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-1", "case": "author-a", "assignment": "924ff826b6e5b5b404cf", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/924ff826b6e5b5b404cf-current-author-inventory-1.json", "packet_bytes": 38287, "receipt_bytes": 6951, "items": 6, "verified": 6, "disputed": 0, "rows_checked": 49, "relationships_checked": 7, "written_at": "2026-10-11T11:25:27.009163+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/cdc165c72d8156e649bc-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b",
+  "assignment": "cdc165c72d8156e649bc",
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The complete 21-line canon home has one family, Controlled Qualification, and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both AP identities, aliases, Detect/Do not flag/Fix text, and the full family supplemental unit are present through the final line; no additional entry or family is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The complete five-line canon home contains one unit, Evidence scope, at lines 3-5. The supplemental cc:evidence-scope reproduces that entire unit. It explicitly limits these definitions to the four controlled criteria and supplies execution context without claiming engine-schema or full-project-canon conformance. Required check:guards is present as an obligation, not a measured result.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The complete 11-line canon home contains exactly two numbered principles: inherited Destination at lines 5-8 and a terminating workflow path at lines 9-11. Both numbered DP identities and exact complete criterion texts are present. Their scope includes executing call/inheritance context and whole-workflow graph analysis; neither principle is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The nine native rows cover id, steps, the full delivery-step ancestry, its id, routine object, routine/name, arguments object and concrete packet key, plus the whole element. The tenth row records delivery calling deliver at the actual name field. All six source lines and both call endpoints are accounted for.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The ten native rows cover id, Inputs container and envelope item, Outputs container and report binding, steps container and emit ancestry, step id, technique selector, and the whole element. Two relationship rows capture emit calling produce and the explicit qualification/run/delivery/deliver/emit instance with workflow, activity and ancestor context. All 12 proposed rows are justified.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The five rows cover Capability heading and its paragraph, Rules heading and the archive constraint, and the whole element. The complete five-line ancestor is contract context for the executing produce leaf. No independent clauses or source sections are omitted.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The 12 native rows cover Capability and paragraph, Outputs and summary heading, Protocol and line-8 instruction, Rules, the line-11 compound instruction, its separate retention and emission/validation clauses, line-12 Destination, and the whole element. The thirteenth row explicitly links produce to its ancestor TECHNIQUE.md. These account for every original heading, instruction and independent semicolon clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The six native rows cover id, initialActivity, graph, run, run.done, and the whole element. Initial selection, graph-entry ownership and done-exit ownership are distinct relationship rows. The actual done destination is run. The run destination adds the separate next-activity relationship to run, yielding ten rows and four relationships.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The manifest identifies this complete canon home as unselected and non-seed, with no definition-call references. Its AP entries and family supplemental unit are captured by canon inventory. It is not one of the declared definition paths and adds no missing definition row or closure target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The manifest identifies this complete convention home as unselected and non-seed, with no definition-call references. Evidence scope is preserved as a supplemental unit. It contributes the controlled-dialect boundary and introduces no omitted definition target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-1", "case": "author-b", "assignment": "cdc165c72d8156e649bc", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/cdc165c72d8156e649bc-current-author-inventory-1.json", "packet_bytes": 53159, "receipt_bytes": 9879, "items": 10, "verified": 10, "disputed": 0, "rows_checked": 50, "relationships_checked": 8, "written_at": "2026-10-11T11:25:27.009851+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/cf782be6101bfda08d04-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b",
+  "assignment": "cf782be6101bfda08d04",
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The manifest identifies this complete principle home as unselected and non-seed, with no definition-call references. Both principles are present in the canon inventory. Their named fixture context is represented by the explicit execution relationship; they introduce no additional uncaptured definition.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The activity is a selected seed from scope.paths. Its sole routine reference resolves delivery to captured deliver, and incoming workflow references resolve the declared run activity. The full manifest accounts for both directions; no additional call target appears in its six source lines.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The routine is selected closure, not a seed: run/delivery calls deliver and deliver consumes the changed produce output contract through emit. Its direct produce reference and explicit execution relationship preserve both endpoints, the output-binding site and all workflow/activity/ancestor context. Its Inputs and export are inventoried; no target is unresolved.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The ancestor is selected context, not a seed. The leaf inheritance relationship and explicit executing qualification context require this TECHNIQUE.md. Its full contents are captured and its Rules have rows; it declares no further call or ancestor target in this controlled scope.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The technique is a selected seed from scope.paths. Deliver/emit is its captured consumer, and the explicit leaf-to-ancestor relationship retains qualification TECHNIQUE.md. The complete call instance includes workflow and activity context. Every source named by those references is selected and captured.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-1/author-b verification: The workflow is a selected seed from scope.paths. initialActivity and every graph key/exit resolve to run; the done value run is preserved as a separate next-activity reference. The manifest includes the activity and the complete downstream invocation/ancestor context. No further workflow destination appears in the full source.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-1", "case": "author-b", "assignment": "cf782be6101bfda08d04", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-inventory-receipts/cf782be6101bfda08d04-current-author-inventory-1.json", "packet_bytes": 39367, "receipt_bytes": 6960, "items": 6, "verified": 6, "disputed": 0, "rows_checked": 50, "relationships_checked": 8, "written_at": "2026-10-11T11:25:27.010109+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/1a2f4774199f7b564911-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a",
+  "assignment": "1a2f4774199f7b564911",
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The complete 21-line canon home has one family, Controlled Qualification, and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both AP identities, aliases, Detect/Do not flag/Fix text, and the full family supplemental unit are present through the final line; no additional entry or family is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The complete five-line canon home contains one unit, Evidence scope, at lines 3-5. The supplemental cc:evidence-scope reproduces that entire unit. It explicitly limits these definitions to the four controlled criteria and supplies execution context without claiming engine-schema or full-project-canon conformance. Required check:guards is present as an obligation, not a measured result.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The complete 11-line canon home contains exactly two numbered principles: inherited Destination at lines 5-8 and a terminating workflow path at lines 9-11. Both numbered DP identities and exact complete criterion texts are present. Their scope includes executing call/inheritance context and whole-workflow graph analysis; neither principle is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The nine native rows cover id, steps, the full delivery-step ancestry, its id, routine object, routine/name, arguments object and concrete envelope key, plus the whole element. The tenth row records delivery calling deliver at the actual name field. All six source lines and both call endpoints are accounted for.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The ten native rows cover id, Inputs container and envelope item, Outputs container and report binding, steps container and emit ancestry, step id, technique selector, and the whole element. Two relationship rows capture emit calling produce and the explicit qualification/run/delivery/deliver/emit instance with workflow, activity and ancestor context. All 12 proposed rows are justified.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The five rows cover Capability heading and its paragraph, Rules heading and the archive constraint, and the whole element. The complete five-line ancestor is contract context for the executing produce leaf. No independent clauses or source sections are omitted.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The 12 native rows cover Capability and paragraph, Outputs and report heading, Protocol and line-8 instruction, Rules, the line-11 compound instruction, its separate retention and emission/validation clauses, line-12 Destination, and the whole element. The thirteenth row explicitly links produce to its ancestor TECHNIQUE.md. These account for every original heading, instruction and independent semicolon clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The six native rows cover id, initialActivity, graph, run, run.done, and the whole element. Initial selection, graph-entry ownership and done-exit ownership are distinct relationship rows. The actual done destination is null. The null value adds no next-activity reference, yielding nine rows and three relationships.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The manifest identifies this complete canon home as unselected and non-seed, with no definition-call references. Its AP entries and family supplemental unit are captured by canon inventory. It is not one of the declared definition paths and adds no missing definition row or closure target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The manifest identifies this complete convention home as unselected and non-seed, with no definition-call references. Evidence scope is preserved as a supplemental unit. It contributes the controlled-dialect boundary and introduces no omitted definition target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-2", "case": "author-a", "assignment": "1a2f4774199f7b564911", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/1a2f4774199f7b564911-current-author-inventory-1.json", "packet_bytes": 52087, "receipt_bytes": 9858, "items": 10, "verified": 10, "disputed": 0, "rows_checked": 49, "relationships_checked": 7, "written_at": "2026-10-11T11:25:42.667732+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/5c88f854017bfdccbd5e-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a",
+  "assignment": "5c88f854017bfdccbd5e",
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The manifest identifies this complete principle home as unselected and non-seed, with no definition-call references. Both principles are present in the canon inventory. Their named fixture context is represented by the explicit execution relationship; they introduce no additional uncaptured definition.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The activity is a selected seed from scope.paths. Its sole routine reference resolves delivery to captured deliver, and incoming workflow references resolve the declared run activity. The full manifest accounts for both directions; no additional call target appears in its six source lines.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The routine is selected closure, not a seed: run/delivery calls deliver and deliver consumes the changed produce output contract through emit. Its direct produce reference and explicit execution relationship preserve both endpoints, the output-binding site and all workflow/activity/ancestor context. Its Inputs and export are inventoried; no target is unresolved.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The ancestor is selected context, not a seed. The leaf inheritance relationship and explicit executing qualification context require this TECHNIQUE.md. Its full contents are captured and its Rules have rows; it declares no further call or ancestor target in this controlled scope.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The technique is a selected seed from scope.paths. Deliver/emit is its captured consumer, and the explicit leaf-to-ancestor relationship retains qualification TECHNIQUE.md. The complete call instance includes workflow and activity context. Every source named by those references is selected and captured.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-a verification: The workflow is a selected seed from scope.paths. initialActivity and every graph key/exit resolve to run; the done value is null and does not introduce another target. The manifest includes the activity and the complete downstream invocation/ancestor context. No further workflow destination appears in the full source.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-2", "case": "author-a", "assignment": "5c88f854017bfdccbd5e", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/5c88f854017bfdccbd5e-current-author-inventory-1.json", "packet_bytes": 38287, "receipt_bytes": 6951, "items": 6, "verified": 6, "disputed": 0, "rows_checked": 49, "relationships_checked": 7, "written_at": "2026-10-11T11:25:42.668115+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/ab9559f165c1a6337f24-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b",
+  "assignment": "ab9559f165c1a6337f24",
+  "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The complete 21-line canon home has one family, Controlled Qualification, and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both AP identities, aliases, Detect/Do not flag/Fix text, and the full family supplemental unit are present through the final line; no additional entry or family is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The complete five-line canon home contains one unit, Evidence scope, at lines 3-5. The supplemental cc:evidence-scope reproduces that entire unit. It explicitly limits these definitions to the four controlled criteria and supplies execution context without claiming engine-schema or full-project-canon conformance. Required check:guards is present as an obligation, not a measured result.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The complete 11-line canon home contains exactly two numbered principles: inherited Destination at lines 5-8 and a terminating workflow path at lines 9-11. Both numbered DP identities and exact complete criterion texts are present. Their scope includes executing call/inheritance context and whole-workflow graph analysis; neither principle is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The nine native rows cover id, steps, the full delivery-step ancestry, its id, routine object, routine/name, arguments object and concrete packet key, plus the whole element. The tenth row records delivery calling deliver at the actual name field. All six source lines and both call endpoints are accounted for.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The ten native rows cover id, Inputs container and envelope item, Outputs container and report binding, steps container and emit ancestry, step id, technique selector, and the whole element. Two relationship rows capture emit calling produce and the explicit qualification/run/delivery/deliver/emit instance with workflow, activity and ancestor context. All 12 proposed rows are justified.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The five rows cover Capability heading and its paragraph, Rules heading and the archive constraint, and the whole element. The complete five-line ancestor is contract context for the executing produce leaf. No independent clauses or source sections are omitted.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The 12 native rows cover Capability and paragraph, Outputs and summary heading, Protocol and line-8 instruction, Rules, the line-11 compound instruction, its separate retention and emission/validation clauses, line-12 Destination, and the whole element. The thirteenth row explicitly links produce to its ancestor TECHNIQUE.md. These account for every original heading, instruction and independent semicolon clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The six native rows cover id, initialActivity, graph, run, run.done, and the whole element. Initial selection, graph-entry ownership and done-exit ownership are distinct relationship rows. The actual done destination is run. The run destination adds the separate next-activity relationship to run, yielding ten rows and four relationships.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The manifest identifies this complete canon home as unselected and non-seed, with no definition-call references. Its AP entries and family supplemental unit are captured by canon inventory. It is not one of the declared definition paths and adds no missing definition row or closure target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The manifest identifies this complete convention home as unselected and non-seed, with no definition-call references. Evidence scope is preserved as a supplemental unit. It contributes the controlled-dialect boundary and introduces no omitted definition target.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-2", "case": "author-b", "assignment": "ab9559f165c1a6337f24", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/ab9559f165c1a6337f24-current-author-inventory-1.json", "packet_bytes": 53159, "receipt_bytes": 9879, "items": 10, "verified": 10, "disputed": 0, "rows_checked": 50, "relationships_checked": 8, "written_at": "2026-10-11T11:25:42.668860+00:00"}
+
+CURRENT-GENERATION DERIVED TYPED RECEIPT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/a5aa00a174f571eb17f0-current-author-inventory-1.json
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b",
+  "assignment": "a5aa00a174f571eb17f0",
+  "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+  "actor": "/root/qualify_author_one",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The manifest identifies this complete principle home as unselected and non-seed, with no definition-call references. Both principles are present in the canon inventory. Their named fixture context is represented by the explicit execution relationship; they introduce no additional uncaptured definition.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The activity is a selected seed from scope.paths. Its sole routine reference resolves delivery to captured deliver, and incoming workflow references resolve the declared run activity. The full manifest accounts for both directions; no additional call target appears in its six source lines.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The routine is selected closure, not a seed: run/delivery calls deliver and deliver consumes the changed produce output contract through emit. Its direct produce reference and explicit execution relationship preserve both endpoints, the output-binding site and all workflow/activity/ancestor context. Its Inputs and export are inventoried; no target is unresolved.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The ancestor is selected context, not a seed. The leaf inheritance relationship and explicit executing qualification context require this TECHNIQUE.md. Its full contents are captured and its Rules have rows; it declares no further call or ancestor target in this controlled scope.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The technique is a selected seed from scope.paths. Deliver/emit is its captured consumer, and the explicit leaf-to-ancestor relationship retains qualification TECHNIQUE.md. The complete call instance includes workflow and activity context. Every source named by those references is selected and captured.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "Current-generation round-2/author-b verification: The workflow is a selected seed from scope.paths. initialActivity and every graph key/exit resolve to run; the done value run is preserved as a separate next-activity reference. The manifest includes the activity and the complete downstream invocation/ancestor context. No further workflow destination appears in the full source.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}
+CURRENT RECEIPT MEASUREMENTS
+{"round": "round-2", "case": "author-b", "assignment": "a5aa00a174f571eb17f0", "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-inventory-receipts/a5aa00a174f571eb17f0-current-author-inventory-1.json", "packet_bytes": 39367, "receipt_bytes": 6960, "items": 6, "verified": 6, "disputed": 0, "rows_checked": 50, "relationships_checked": 8, "written_at": "2026-10-11T11:25:42.669146+00:00"}
+
+CURRENT AUTHOR INVENTORY FINAL READ-ONLY VALIDATION AND MEASUREMENTS
+{
+  "task": "Current-generation Author inventory verification",
+  "actor": "/root/qualify_author_one",
+  "start": "2026-10-11T11:15:02.180487+00:00",
+  "end": "2026-10-11T11:27:02.041750+00:00",
+  "elapsed_seconds": 719.861,
+  "assignments": 8,
+  "verified": 64,
+  "disputed": 0,
+  "counts": {
+    "items": 64,
+    "records": 64,
+    "packet_bytes": 365800,
+    "receipt_bytes": 67296
+  },
+  "receipts": [
+    {
+      "round": "round-1",
+      "assignment": "e18e861382270af9c26d",
+      "packet_bytes": 52087,
+      "receipt_bytes": 9858,
+      "items": 10,
+      "output_estimate": 16000
+    },
+    {
+      "round": "round-1",
+      "assignment": "924ff826b6e5b5b404cf",
+      "packet_bytes": 38287,
+      "receipt_bytes": 6951,
+      "items": 6,
+      "output_estimate": 9600
+    },
+    {
+      "round": "round-1",
+      "assignment": "cdc165c72d8156e649bc",
+      "packet_bytes": 53159,
+      "receipt_bytes": 9879,
+      "items": 10,
+      "output_estimate": 16000
+    },
+    {
+      "round": "round-1",
+      "assignment": "cf782be6101bfda08d04",
+      "packet_bytes": 39367,
+      "receipt_bytes": 6960,
+      "items": 6,
+      "output_estimate": 9600
+    },
+    {
+      "round": "round-2",
+      "assignment": "1a2f4774199f7b564911",
+      "packet_bytes": 52087,
+      "receipt_bytes": 9858,
+      "items": 10,
+      "output_estimate": 16000
+    },
+    {
+      "round": "round-2",
+      "assignment": "5c88f854017bfdccbd5e",
+      "packet_bytes": 38287,
+      "receipt_bytes": 6951,
+      "items": 6,
+      "output_estimate": 9600
+    },
+    {
+      "round": "round-2",
+      "assignment": "ab9559f165c1a6337f24",
+      "packet_bytes": 53159,
+      "receipt_bytes": 9879,
+      "items": 10,
+      "output_estimate": 16000
+    },
+    {
+      "round": "round-2",
+      "assignment": "a5aa00a174f571eb17f0",
+      "packet_bytes": 39367,
+      "receipt_bytes": 6960,
+      "items": 6,
+      "output_estimate": 9600
+    }
+  ],
+  "case_inventories": [
+    {
+      "case": "round-1/author-a",
+      "rows": 49,
+      "relationships": 7,
+      "criteria": 4,
+      "supplemental_units": 2,
+      "required_checks": [
+        "check:guards"
+      ]
+    },
+    {
+      "case": "round-1/author-b",
+      "rows": 50,
+      "relationships": 8,
+      "criteria": 4,
+      "supplemental_units": 2,
+      "required_checks": [
+        "check:guards"
+      ]
+    },
+    {
+      "case": "round-2/author-a",
+      "rows": 49,
+      "relationships": 7,
+      "criteria": 4,
+      "supplemental_units": 2,
+      "required_checks": [
+        "check:guards"
+      ]
+    },
+    {
+      "case": "round-2/author-b",
+      "rows": 50,
+      "relationships": 8,
+      "criteria": 4,
+      "supplemental_units": 2,
+      "required_checks": [
+        "check:guards"
+      ]
+    }
+  ],
+  "captured_sources": {
+    "per_case_files_checked": 32,
+    "per_case_content_bytes": 17520,
+    "unique_content_hashes": 11,
+    "unique_content_bytes": 4752
+  },
+  "validation": "All 64 owned inventory IDs returned exactly once in their current run; exact snapshots/actor; full-source spans valid; every receipt below its own output estimate and 16000-byte limit.",
+  "bounded_reads": [
+    "Every instruction, packet projection and original-source return stayed below 8000 characters.",
+    "One combined instruction projection measured 8188 characters; assertion prevented output, then both complete split reads returned. No truncation or missing portions.",
+    "Complete current packet fields reused only after exact equality checks; all current captures verified by content hash. No prior receipt import."
+  ],
+  "reading_observations": [
+    "The four scope-only packets have no source_excerpts. Their originals remain available in the same current capture and were read through the paired main inventory packet.",
+    "The full canon-map prior-judgment section and walk-rules remediation guidance were broader than this inventory-only assignment; no referenced prior judgment files were opened.",
+    "The captured Evidence scope convention supplies the controlled resolution/inheritance context; no claim of engine-schema or full-project-canon completeness is made."
+  ],
+  "limitations": [
+    "Prior fixture exposure is disclosed. This verifier is independent of inventory author /root and current mapper /root/qualify_audit_two, but is not fixture-naive.",
+    "Inventory verified against the complete supplied captured manifest and original source bytes; no uncaptured fixture roots, hidden outcomes, baselines, or other workers findings were accessed.",
+    "This task does not establish applicability, evaluations, measured check outcomes or completion of supporting obligations.",
+    "Only own receipts and the required transcript were written; canonical state and source definitions were not mutated."
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "6cb523f86d0d4a9c365c",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The second Rules clause explicitly emits the report without validation."
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "The second semicolon-separated Rules clause says emit the report without validation. The first clause, Retain the report ID, is a legitimate retention constraint but does not excuse the separate emitting clause. The destination rule does not direct emission. The explicit validation bypass in the touched Rules instruction propagates to emitted reports.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emission in the Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The Protocol instruction explicitly emits the report without validation."
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "The Protocol instruction says Emit the report without validation, explicitly permitting emission of that same artifact without a prior check. No Do not flag exception covers this imperative; any validation elsewhere would not excuse it. This touched instruction propagates the defect to emitted reports.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emission in the Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The Protocol instruction explicitly emits the report without validation."
+        },
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The second Rules clause explicitly emits the report without validation."
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "The complete leaf contains two distinct explicit emission directives without validation: the Protocol instruction at line 8 and the second Rules clause at line 11. They are independently failing instructions. The first Rules retention clause, output declaration, capability description, and destination rule do not excuse either directive. Both violations propagate to emitted reports.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

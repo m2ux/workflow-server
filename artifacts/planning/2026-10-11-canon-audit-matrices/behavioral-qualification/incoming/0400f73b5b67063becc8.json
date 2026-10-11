@@ -1,0 +1,291 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "0400f73b5b67063becc8",
+  "attempt": "audit-two-evaluate-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "b34f6249f0f9b31107491750"
+      ],
+      "reason": "deliver.yaml#@relationship/3a2f0d25e0e017f7: deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Use the exact envelope input key in the delivery invocation of deliver.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The delivery invocation supplies packet, but deliver requires envelope."
+        },
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "deliver.yaml#@relationship/50a64427faa3df96: The concrete run.delivery call supplies {packet}, while deliver Inputs is [envelope]. The unequal exact key sets break this invocation; sealed is opaque. deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "c986d23bf9fe92ac15ab723d"
+      ],
+      "reason": "produce.md#/outputs: deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "fef2366b0f34a7eda42dc08d"
+      ],
+      "reason": "produce.md#/outputs/summary: deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "reason": "produce.md#@element: deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Use the exact envelope input key in the delivery invocation of deliver.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The delivery invocation supplies packet, but deliver requires envelope."
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "reason": "run.yaml#@relationship/5a93bb0629055f53: The concrete run.delivery call supplies {packet}, while deliver Inputs is [envelope]. The unequal exact key sets break this invocation; sealed is opaque.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Use the exact envelope input key in the delivery invocation of deliver.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The delivery invocation supplies packet, but deliver requires envelope."
+        },
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the routine export to emit.summary, which the called technique declares.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The deliver report export binds emit.report although produce declares only summary."
+        }
+      ],
+      "items": [
+        "fa301823ccd44ed9374ce575"
+      ],
+      "reason": "deliver.yaml#@element: The concrete run.delivery call supplies {packet}, while deliver Inputs is [envelope]. The unequal exact key sets break this invocation; sealed is opaque. deliver exports report from emit.report. Step emit calls produce, whose only Outputs declaration is summary; the referenced report output is absent. The touched producer contract leaves this routine consumer binding stale.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

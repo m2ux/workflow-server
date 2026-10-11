@@ -1,0 +1,124 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b",
+  "assignment": "9b471c7b4abbd72ee3dd",
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd",
+  "actor": "/root/qualify_author_two",
+  "attempt": "author-map-independent-2",
+  "records": [
+    {
+      "items": [
+        "9fff88eaae065adb66759e66"
+      ],
+      "status": "N",
+      "reason": "The workflow identifier declares qualification; it does not define a path or exit. DP-01 checks a leaf Destination declaration and explicit call or inheritance relationships carrying that constraint to the leaf instance. This row contains no leaf Destination declaration and is not such an instance relationship; unrelated content is not an independent destination check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "status": "A",
+      "reason": "The whole leaf declares output names, a Protocol emission instruction, a Rules emission clause, and its Destination. DP-01 applies to the leaf Destination declaration. The captured qualification workflow executes run, which invokes deliver emit and then produce; qualification techniques TECHNIQUE.md supplies the inherited required Destination. The declared leaf value requires comparison with that ancestor during evaluation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "a93639cc3c5c1ad866587c2e"
+      ],
+      "status": "N",
+      "reason": "The activity identifier declares run. DP-01 checks a leaf Destination declaration and explicit call or inheritance relationships carrying that constraint to the leaf instance. This row contains no leaf Destination declaration and is not such an instance relationship; unrelated content is not an independent destination check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "bf312e511dcc8f4eda77a41a"
+      ],
+      "status": "N",
+      "reason": "The routine identifier declares deliver; this row contains no input declaration or output-step binding. DP-01 checks a leaf Destination declaration and explicit call or inheritance relationships carrying that constraint to the leaf instance. This row contains no leaf Destination declaration and is not such an instance relationship; unrelated content is not an independent destination check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "status": "N",
+      "reason": "The whole activity includes its concrete deliver invocation and argument-key set. DP-01 checks a leaf Destination declaration and explicit call or inheritance relationships carrying that constraint to the leaf instance. This row contains no leaf Destination declaration and is not such an instance relationship; unrelated content is not an independent destination check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "14e778094467da7a0c72",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-evaluate-current-1",
+  "records": [
+    {
+      "items": [
+        "f442830158e33a5d097e4514",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97",
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3",
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8",
+        "a406c04573c91f8ad82577e3"
+      ],
+      "status": "finding",
+      "reason": "DP-01 fails: the qualification/run/delivery/deliver/emit execution context resolves produce under qualification's techniques ancestor. Ancestor line 5 requires archive; leaf line 12 declares public. Each assigned relationship carries that same inherited requirement to the leaf. The actual defect is the leaf declaration, not the ancestor or relationship row. Live/High reflects a propagating destination violation; origin diff follows the touched leaf. Assigned rows: corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b, corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8, corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53, corpus/qualification/techniques/produce.md#@element.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "severity": "High",
+          "origin": "diff",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "location": "corpus/qualification/techniques/produce.md:12 (Rules Destination)",
+          "summary": "The leaf declares Destination is public while the executing qualification ancestor requires archive.",
+          "fix": "Set the leaf Destination to archive to satisfy the inherited requirement."
+        }
+      ]
+    }
+  ]
+}

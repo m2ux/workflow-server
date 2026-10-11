@@ -1,0 +1,16 @@
+[
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "557788b6b6a57a89051f",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a/corrected-packets/557788b6b6a57a89051f.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "e853b1fd4256ecdd81d6",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b/corrected-packets/e853b1fd4256ecdd81d6.json",
+    "phase": "verify",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b"
+  }
+]

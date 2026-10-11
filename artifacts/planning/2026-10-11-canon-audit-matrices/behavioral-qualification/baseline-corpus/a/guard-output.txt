@@ -1,0 +1,7 @@
+{
+  "check": "controlled qualification structural guard",
+  "root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a",
+  "sources": 8,
+  "criteria": 4,
+  "errors": []
+}

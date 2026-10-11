@@ -1,0 +1,292 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b",
+  "assignment": "27288e513c441223c9ba",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_verify_one",
+  "attempt": "current-1",
+  "records": [
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "The complete original catalog has exactly emission-without-validation at lines 7-14 and broken-binding at 15-21 within the Controlled Qualification family beginning at line 5. The two proposed AP identities, aliases and full Detect/Do not flag/Fix spans match. The current supplemental projection now contains ap:controlled-qualification at 5-21, so the independently enumerated family is accounted for as well.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "Complete heading enumeration yields Evidence scope at lines 3-5. The current supplemental candidate cc:evidence-scope preserves that unit and its scope limitation to four controlled criteria. The required-check projection explicitly includes check:guards, matching scope.checks. The formerly unavailable family/convention/check inventory evidence is present in this current generation; no engine-schema or full-project-canon completeness is asserted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "Complete original heading enumeration yields exactly DP1, Honor the executing workflow inherited destination, at 5-8 and DP2, Provide a terminating workflow path, at 9-11. Their proposed identities retain the numbered titles, full wording and exclusions. No later principle or additional captured criterion is omitted.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "The original six-line activity contains run and its one delivery routine invocation: name deliver and argument-key packet. The proposed native key row names packet, and the section/item/whole-element rows cover every YAML construct. The declaration relationship reaches deliver and the separate concrete execution relationship retains qualification/run/delivery/deliver/emit. No additional invocation or independently testable binding is missing.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "verified",
+      "reason": "The original routine declares input envelope, output report bound to emit.report, and step emit calling produce. All native input/output/step items, section rows and the whole element are proposed. Declaration and concrete execution relationships are distinct and retain the activity, workflow, ancestor and leaf. The leaf declares summary; the inventory preserves the actual binding and declaration names for later evaluation rather than changing either. No reference endpoint is unknown.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "The ancestor has Capability with one descriptive sentence and Rules with the archive constraint. Both sections, both item rows and the whole element are proposed; ancestor context is included in the explicit execution chain. The controlled convention imposes no mandatory Inputs, Outputs or Protocol heading here, so absent headings do not add an unsupported structure requirement.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "verified",
+      "reason": "The original leaf has Capability, Outputs/summary, Protocol line 8, and Rules lines 11-12. The proposal preserves the named output, whole sections, whole element, Protocol item, Rules line 11 and its two separate semicolon clauses, and destination public on line 12. The inheritance relationship reaches TECHNIQUE.md. Retention and emission/validation are independently represented. No controlled requirement mandates an absent Inputs section.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "status": "verified",
+      "reason": "The workflow contains qualification, initialActivity run and a single graph exit run/done -> run. All native fields, graph sections, exit item and whole-workflow row are proposed. Owning-activity relationships are separate from the next-activity value relationship where that value is run. The complete graph remains available to test the DP2 invariant, including absence of another path; no extra source activity or exit is hidden.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "status": "verified",
+      "reason": "This complete captured source is the anti-pattern home, not an operational definition or additional consumer. Its unselected manifest status is correct while its two entries and family remain criterion context. There are no operational references requiring closure from these bytes.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "status": "verified",
+      "reason": "This complete captured source owns the Evidence scope convention. It names no additional definition or consumer to select. Its unselected operational status and retained supplemental context agree with the declared controlled dialect.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "status": "verified",
+      "reason": "The two-principle home is canon context. Its destination rule names the existing qualification execution chain and ancestor, all of which are already selected; its graph rule adds no source file. Unselected operational status is correct and does not remove either captured principle.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 11
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "status": "verified",
+      "reason": "The explicit scope seed run.yaml invokes deliver with key packet. That routine is captured and selected, and qualification owns the initial run activity. The complete six-line activity introduces no other call, source path or consumer. Its concrete instantiation is present independently of the routine declaration.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}

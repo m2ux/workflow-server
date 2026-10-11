@@ -1,0 +1,465 @@
+id: scope-and-draft
+version: 1.16.0
+name: Scope and Draft
+description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
+variables:
+  reads:
+    - impact_analysis_path
+    - operation_type
+    - pattern_adoption
+    - planning_folder_path
+    - pr_number
+    - preservation_required
+    - verified_findings
+    - workflow_id
+  writes:
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations from audit-anti-patterns.
+      defaultValue: 0
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: component_git_dir
+      type: string
+      description: Absolute path of the workflows library's git working tree under the checkout.
+      defaultValue: ""
+    - name: current_file
+      type: object
+      description: Current file being drafted during the content drafting loop.
+    - name: draft_attestation_path
+      type: string
+      description: Absolute path to the persisted draft-attestation artifact.
+      defaultValue: ""
+    - name: drafted_files
+      type: array
+      description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
+    - name: drafting_plan_path
+      type: string
+      description: Absolute path to the persisted per-file drafting-plan artifact.
+      defaultValue: ""
+    - name: file_review_note_path
+      type: string
+      description: Absolute path to the persisted per-file review-note artifact.
+      defaultValue: ""
+    - name: has_critical_finding
+      type: boolean
+      description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
+      defaultValue: false
+    - name: has_unflagged_removals
+      type: boolean
+      description: True when content drafting detects removals not flagged during impact analysis.
+      defaultValue: false
+    - name: host_repo_path
+      type: string
+      description: Absolute path to the host repository the session belongs to.
+    - name: file_approach_disposition
+      type: string
+      description: What the reader decided about the drafting approach for the current file. Absent until an approach is presented.
+      values:
+        - confirmed
+        - revise
+    - name: file_draft_disposition
+      type: string
+      description: What the reader decided about the drafted content of the current file. Absent until a draft is reviewed.
+      values:
+        - accepted
+        - revise
+        - redraft
+    - name: removal_disposition
+      type: string
+      description: What the review decided about an unflagged removal. Absent until one is reviewed.
+      values:
+        - flagged
+        - restored
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings from audit-principles.
+      defaultValue: 0
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: scope_manifest
+      type: array
+      description: List of files to create, modify, or remove with full paths and actions.
+    - name: scope_manifest_confirmed
+      type: boolean
+      description: Whether the complete file manifest has been confirmed.
+      defaultValue: false
+    - name: scope_manifest_path
+      type: string
+      description: Absolute path to the persisted scope-manifest artifact.
+      defaultValue: ""
+    - name: target_path
+      type: string
+      description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+      defaultValue: ""
+    - name: workflow_branch
+      type: string
+      description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}).
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional.
+      defaultValue: false
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: derive-workflows-target-path
+    technique: git::derive-workflows-target-path
+    when: operation_type != 'review'
+  - kind: technique
+    id: ensure-workflow-worktree
+    technique: prepare-workflow-branch
+    when: operation_type != 'review'
+  - kind: technique
+    id: scope-definition
+    technique: scope-definition
+  - kind: technique
+    id: persist-scope-manifest
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: scope-manifest.md
+        artifact_content: scope_manifest
+        target_dir: planning_folder_path
+  - kind: checkpoint
+    id: scope-and-structure-confirmed
+    message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Yes, scope and structure are correct
+        description: File manifest and implementation order are accurate.
+        effect:
+          setVariable:
+            scope_manifest_confirmed: true
+      - id: revise
+        label: Needs revision
+        description: File manifest or implementation order requires adjustment.
+  - kind: technique
+    id: present-solution-overview
+    technique:
+      name: work-package::stakeholder-overview
+      inputs:
+        readme_section_heading: "## Solution Overview"
+        source_material: the confirmed scope manifest and the structural design for the target workflow
+    actions:
+      - action: message
+        message: "Solution Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#solution-overview))"
+  - kind: loop
+    id: file-drafting-loop
+    name: File Drafting Loop
+    loopType: forEach
+    variable: current_file
+    over: scope_manifest
+    maxIterations: 50
+    when: scope_manifest_confirmed == true
+    steps:
+      - kind: technique
+        id: assemble-file-approach
+        technique:
+          name: assemble-file-approach
+          inputs:
+            pattern_adoption: pattern_adoption
+            preservation_required: preservation_required
+      - kind: technique
+        id: persist-drafting-plan
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: drafting-plan.md
+            artifact_content: drafting_plan
+            target_dir: planning_folder_path
+      - kind: checkpoint
+        id: file-approach-confirmed
+        condition:
+          type: simple
+          variable: operation_type
+          operator: "!="
+          value: update
+        message: "Drafting approach for '{current_file}' ([drafting plan]({drafting_plan_path}))."
+        defaultOption: confirmed
+        autoAdvanceMs: 30000
+        options:
+          - id: confirmed
+            label: Yes, proceed with this approach
+            description: Drafting approach for this file is approved.
+            effect:
+              setVariable:
+                file_approach_disposition: confirmed
+          - id: revise
+            label: Change approach
+            description: Drafting approach for this file requires revision.
+            effect:
+              setVariable:
+                file_approach_disposition: revise
+      - kind: technique
+        id: revise-file-approach
+        technique: assemble-file-approach
+        when: file_approach_disposition == 'revise'
+      - kind: technique
+        id: yaml-authoring
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
+      - kind: technique
+        id: review-drafted-file
+        technique: review-drafted-file
+      - kind: technique
+        id: persist-file-review-note
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: file-review-note.md
+            artifact_content: file_review_note
+            target_dir: planning_folder_path
+      - kind: checkpoint
+        id: file-review
+        condition:
+          type: simple
+          variable: operation_type
+          operator: "!="
+          value: update
+        message: "Drafted content for '{current_file}' ([file review note]({file_review_note_path}))."
+        defaultOption: accepted
+        autoAdvanceMs: 30000
+        options:
+          - id: accepted
+            label: Accepted
+            description: Drafted file content is accurate as presented.
+            effect:
+              setVariable:
+                file_draft_disposition: accepted
+          - id: revise
+            label: Needs revision
+            description: Drafted file content requires targeted changes.
+            effect:
+              setVariable:
+                file_draft_disposition: revise
+          - id: redraft
+            label: Redraft from scratch
+            description: Drafted file content requires a fresh approach from scratch.
+            effect:
+              setVariable:
+                file_draft_disposition: redraft
+      - kind: technique
+        id: re-author-drafted-file
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
+        when: file_draft_disposition == 'revise' || file_draft_disposition == 'redraft'
+      - kind: checkpoint
+        id: preservation-check
+        condition:
+          type: and
+          conditions:
+            - type: simple
+              variable: operation_type
+              operator: ==
+              value: update
+            - type: simple
+              variable: has_unflagged_removals
+              operator: ==
+              value: true
+        message: "Content removal detected that was not flagged during impact analysis ([file review note]({file_review_note_path}), [impact analysis]({impact_analysis_path}))."
+        options:
+          - id: proceed
+            label: Proceed with changes
+            description: Detected removals are intentional and the modifications stand.
+            effect:
+              setVariable:
+                removal_disposition: flagged
+          - id: preserve-more
+            label: Preserve more content
+            description: Some content flagged for removal must be preserved.
+            effect:
+              setVariable:
+                removal_disposition: restored
+          - id: rewrite
+            label: Rewrite approach
+            description: File-level approach requires a different framing entirely.
+            effect:
+              setVariable:
+                removal_disposition: restored
+      - kind: technique
+        id: apply-removal-disposition
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
+        when: has_unflagged_removals == true && removal_disposition == 'restored'
+  - kind: technique
+    id: review-draft-yaml
+    technique: review-draft-yaml
+  - kind: technique
+    id: persist-draft-attestation
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: draft-attestation.md
+        artifact_content: reviewed_blocks
+        target_dir: planning_folder_path
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        canonical_home_map: workflow-design/techniques#canonical-home-map
+        guide_map: workflow-design/README#planning-artifact-to-guide-map
+  - kind: technique
+    id: pre-attestation-audit-principles
+    technique: audit-principles
+    when: operation_type == 'update'
+  - kind: technique
+    id: pre-attestation-audit-anti-patterns
+    technique: audit-anti-patterns
+    when: operation_type == 'update'
+  - kind: action
+    id: classify-pre-attestation-findings
+    when: operation_type == 'update'
+    actions:
+      - action: set
+        target: principle_finding_count
+        message: Count of verified findings reported by `audit-principles` in `principle_findings`; 0 when the audit reports none.
+      - action: set
+        target: anti_pattern_finding_count
+        message: Count of verified findings reported by `audit-anti-patterns` in `anti_pattern_findings`; 0 when the audit reports none.
+      - action: set
+        target: needs_audit_fixes
+        message: Set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is greater than 0; false when both are 0.
+      - action: set
+        target: has_critical_finding
+        message: Set true iff any verified pre-attestation finding (from `audit-principles` or `audit-anti-patterns`) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+  - kind: loop
+    id: pre-attestation-fix-cycle
+    name: Pre-Attestation Fix Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: needs_audit_fixes
+      operator: "=="
+      value: true
+    maxIterations: 2
+    steps:
+      - kind: technique
+        id: apply-pre-attestation-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: re-audit-principles
+        technique: audit-principles
+      - kind: technique
+        id: re-audit-anti-patterns
+        technique: audit-anti-patterns
+      - kind: action
+        id: reassess-pre-attestation-findings
+        actions:
+          - action: set
+            target: principle_finding_count
+            message: Re-count verified findings reported by `audit-principles` after the fix pass; 0 when the audit reports none.
+          - action: set
+            target: anti_pattern_finding_count
+            message: Re-count verified findings reported by `audit-anti-patterns` after the fix pass; 0 when the audit reports none.
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the pre-attestation audits, set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is still greater than 0; false when both are 0.
+          - action: set
+            target: has_critical_finding
+            message: After re-running the pre-attestation audits, set true iff any remaining finding is Critical severity.
+  - kind: action
+    id: pre-attestation-findings-remain
+    when: operation_type == 'update' && needs_audit_fixes == true
+    actions:
+      - action: message
+        message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after the fix cycle — [principle findings]({principle_findings_path}), [anti-pattern findings]({anti_pattern_findings_path})."
+  - kind: checkpoint
+    id: pre-attestation-blocker
+    condition:
+      type: simple
+      variable: has_critical_finding
+      operator: "=="
+      value: true
+    message: "A Critical pre-attestation finding remains after the fix cycle — a schema-invalid or structurally broken construct. Drafted content must not be attested while it stands."
+    options:
+      - id: redraft
+        label: Return to drafting
+        description: Re-enter the drafting loop to correct the Critical finding before attestation.
+        effect:
+          exit: redraft
+      - id: attest-with-deferral
+        label: Attest, recording the finding as a deferral
+        description: The Critical finding stands as a recorded deferral rather than a blocker.
+        effect:
+          setVariable:
+            has_critical_finding: false
+  - kind: checkpoint
+    id: draft-attestation
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
+    message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — drafted content is understood and intentional
+        description: Every drafted block is reviewed and approved as presented
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+        effect:
+          exit: redraft
+  - kind: checkpoint
+    id: batch-review-attested
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — all changes understood and intentional
+        description: Full modification set and every drafted block are approved
+      - id: revise-specific
+        label: Revise a specific file
+        description: One particular file requires further modification.
+        effect:
+          exit: redraft
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+        effect:
+          exit: redraft
+      - id: redraft-all
+        label: Redraft all changes
+        description: Entire drafting pass requires restart from scratch.
+        effect:
+          exit: redraft
+exits:
+  - id: done
+    isDefault: true
+  - id: redraft
+    immediate: true
+outcome:
+  - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
+  - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written
+  - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
+  - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content
+  - Planning artifacts conform to the design canonical-home map and template line budgets before quality-review audits
+  - In update mode, anti-pattern and design-principle audits run before attestation, so no content is batch-reviewed without first passing the canon

@@ -2,7 +2,7 @@
 
 ## Evidence Status
 
-This document specifies implementation checks. Those checks have not run: the current request produces the plan. Planning verification is recorded separately under [Planning Review](#planning-review).
+This document specifies implementation checks. Current implementation results and retained evidence are recorded in [Implementation](implementation.md). Planning verification is recorded separately under [Planning Review](#planning-review).
 
 ## Inspected Inputs
 
@@ -76,7 +76,7 @@ Validation uses the completed CLI lifecycle and agent behavior, not a string tes
 | Invalid definitions still need an audit. | Raw-source spans and diagnostics preserve auditable defects; only unresolved inventory or applicability blocks the map gate. |
 | Draft evaluation needs bytes before the working-tree edit. | Author captures candidate bytes, verifies and evaluates them, applies those exact bytes, then checks byte agreement and project checks. |
 | Assignment estimates need units and a precise count. | Context/output use tokens, work uses measured seconds, phases calibrate independently, and assignment count comes from the final partition. |
-| Technique ancestry depends on execution context. | Relationship identity includes the executing workflow and full routine-site chain; fixtures exercise different caller contexts. |
+| Technique composition and execution context both affect relationship evidence. | Relationship identity includes the defining namespace, executing workflow and full routine-site chain; the implementation checks actual engine composition and distinct caller contexts. |
 | Tool version does not identify modified tooling. | Snapshot identity includes the tooling revision and modified-file hashes. |
 | Shared context prevents an additive pre-packing estimate from being a guaranteed lower bound. | The optional work-count formula is absent; final budget-compliant assignments determine the count. |
 

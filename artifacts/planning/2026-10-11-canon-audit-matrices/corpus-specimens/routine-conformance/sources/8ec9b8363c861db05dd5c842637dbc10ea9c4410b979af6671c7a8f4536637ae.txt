@@ -1,0 +1,23 @@
+id: report-cases
+version: 1.0.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - negative_heading_matches
+    - negative_heading_pattern
+    - negative_tree_path
+    - positive_heading_matches
+    - positive_heading_pattern
+    - positive_tree_path
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - Both bindings of the run are named with what each landed, so a reader can tell the matched headings from the empty fallback

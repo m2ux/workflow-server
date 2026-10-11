@@ -1,0 +1,34 @@
+id: deliver-result
+version: 3.4.0
+name: Deliver Result
+description: Emit the run manifest, then present the final report to the user.
+variables:
+  reads:
+    - all_artifact_paths
+    - analysis_units
+    - definitive_findings_path
+    - pipeline_mode
+    - report_path
+  writes:
+    - name: run_manifest_path
+      type: string
+      description: File path to the generated RUN-MANIFEST.json artifact — records the run's produced artifacts and completion status; the single file a triggering workflow reads to locate results and confirm completion
+    - name: run_status
+      type: string
+      description: How far the run got, as recorded in the manifest.
+      values:
+        - complete
+        - partial
+        - error
+steps:
+  - kind: technique
+    id: emit-run-manifest
+    technique: emit-run-manifest
+  - kind: technique
+    id: link-report-references
+    technique: link-report-references
+  - kind: action
+    id: deliver-report
+    actions:
+      - action: message
+        message: "Run `{run_status}` — [report]({report_path}), [definitive findings]({definitive_findings_path}), [run manifest]({run_manifest_path})."

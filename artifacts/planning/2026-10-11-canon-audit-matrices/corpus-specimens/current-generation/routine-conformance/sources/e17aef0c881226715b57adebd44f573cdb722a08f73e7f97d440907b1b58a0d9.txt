@@ -1,0 +1,211 @@
+id: complete
+version: 1.14.0
+name: Complete Work Package
+description: Wrap up the work package at the terminal state its mode reaches — a merged pull request on the implementation path, a posted review awaiting the author's disposition on the review path.
+variables:
+  reads:
+    - branch_name
+    - changed_files
+    - component_git_dir
+    - component_name
+    - component_path
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - planning_folder_path
+    - pr_number
+    - problem_complexity
+    - problem_statement
+    - requirements
+    - target_path
+    - target_repo
+    - worktree_created
+  writes:
+    - name: public_api_symbols
+      type: array
+      description: The exported symbols present in the diff, each with the file and kind the graph records.
+      defaultValue: []
+    - name: artifact_publish_ref
+      type: string
+      description: Engineering checkout's branch name.
+      defaultValue: ""
+    - name: broken_artifact_links
+      type: array
+      description: Planning-folder links that do not resolve, each { file, link, target, class }.
+      defaultValue: []
+    - name: completion_document_path
+      type: string
+      description: Path to the close-out document.
+      defaultValue: ""
+    - name: current_deferred_item
+      type: object
+      description: The deferred-items register row under consideration.
+    - name: deferred_item_issue_number
+      type: string
+      description: Key of the issue raised for the row under consideration.
+      defaultValue: ""
+    - name: deferred_item_issue_url
+      type: string
+      description: Address of the issue raised for the row under consideration.
+      defaultValue: ""
+    - name: has_unraised_deferred_items
+      type: boolean
+      description: Whether the register holds at least one row naming no issue yet.
+      defaultValue: false
+    - name: open_deferred_items
+      type: array
+      description: Register rows whose Follow-up cell holds no issue link, each carrying its ID, item and rationale.
+      defaultValue: []
+    - name: documented_apis
+      type: array
+      description: The public/exported APIs in the diff, each carrying inline documentation.
+    - name: public_api_symbols
+      type: array
+      description: The exported symbols in the diff that require documentation — the doc-comment work list.
+    - name: publishable_files
+      type: array
+      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
+    - name: raise_current_deferred_item
+      type: boolean
+      description: Whether the row under consideration is approved for raising.
+      defaultValue: false
+    - name: worktree_created
+      type: boolean
+      description: True when a worktree at `{target_path}` was created or reused by this run.
+      defaultValue: false
+required: true
+steps:
+  - kind: technique
+    id: create-adr
+    technique: create-adr
+    when: is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")
+  - kind: technique
+    id: update-adr-status
+    technique: finalize-documentation::update-adr
+    when: is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")
+  - kind: technique
+    id: finalize-test-plan
+    technique: finalize-documentation::finalize-test-plan
+    when: is_review_mode != true
+  - kind: technique
+    id: collect-deferred-items
+    technique: raise-deferred-items::collect
+    when: is_review_mode != true
+  - kind: loop
+    id: deferred-item-raise-loop
+    name: Deferred Item Raise Loop
+    loopType: forEach
+    variable: current_deferred_item
+    over: open_deferred_items
+    when: is_review_mode != true && has_unraised_deferred_items == true
+    steps:
+      - kind: checkpoint
+        id: deferred-item-raise#{current_deferred_item.id}
+        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.rationale}"
+        options:
+          - id: raise
+            label: Raise an issue
+            description: Create a tracker issue for this item and link it from the register row
+            effect:
+              setVariable:
+                raise_current_deferred_item: true
+          - id: skip
+            label: Leave unraised
+            description: Keep the row open with its dash, for a later package to raise
+            effect:
+              setVariable:
+                raise_current_deferred_item: false
+      - kind: technique
+        id: raise-deferred-item-issue
+        technique:
+          name: create-issue::create-github
+          inputs:
+            issue_type: task
+            issue_subject: current_deferred_item
+          outputs:
+            issue_number: deferred_item_issue_number
+            issue_url: deferred_item_issue_url
+        when: raise_current_deferred_item == true
+      - kind: technique
+        id: record-deferred-item-issue
+        technique: raise-deferred-items::record
+        when: raise_current_deferred_item == true
+  - kind: technique
+    id: create-complete-doc
+    technique: finalize-documentation::create-complete-doc
+  - kind: technique
+    id: render-token-usage
+    technique: finalize-documentation::render-token-usage
+  - kind: routine
+    id: enumerate-public-api
+    routine: gitnexus::public-api-enum
+    when: is_review_mode != true
+    outputs:
+      public_api_symbols: public_api_symbols
+  - kind: technique
+    id: ensure-docs
+    technique: finalize-documentation::ensure-docs
+    when: is_review_mode != true
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
+  - kind: technique
+    id: conduct-retrospective
+    technique: conduct-retrospective::retrospective
+  - kind: action
+    id: announce-retrospective
+    actions:
+      - action: message
+        message: "Retrospective written to the [close-out document]({completion_document_path}), within the item budget."
+  - kind: technique
+    id: verify-artifact-links
+    technique: manage-artifacts::verify-artifact-links
+    actions:
+      - action: validate
+        target: broken_artifact_links == []
+        message: "Planning artifacts carry links that do not resolve: {broken_artifact_links}. Repoint each to a target that resolves at the publish ref, then re-run."
+  - kind: technique
+    id: resolve-close-out-publish
+    technique: resolve-artifact-publish
+    when: is_review_mode == true
+  - kind: technique
+    id: publish-close-out-artifacts
+    technique:
+      name: manage-git::artifact-commits
+      inputs:
+        activity_name: complete
+        issue_key: issue_number
+        files: publishable_files
+        branch: artifact_publish_ref
+    when: is_review_mode == true
+  - kind: technique
+    id: remove-worktree
+    technique: manage-git::remove-worktree
+    when: worktree_created == true
+  - kind: technique
+    id: select-next
+    technique: conduct-retrospective::select-next
+    actions:
+      - action: message
+        message: |-
+          Hand-off for the next work package:
+
+          {next_work_package_context}
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Work package workflow complete
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The key design decision is durably recorded for future reference when complexity is moderate or complex
+  - Project documentation reflects the delivered change
+  - A reader of the close-out learns what was delivered, what it cost, and what remains, on both the implementation and review paths
+  - Lessons learned are captured to improve future work packages
+  - Every link a reader follows out of the planning folder resolves at the ref the artifacts are published on
+  - The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces
+  - Reference monorepo left untouched
+  - A review run ends with its review posted and the author's disposition outstanding
+  - Ready for next work package

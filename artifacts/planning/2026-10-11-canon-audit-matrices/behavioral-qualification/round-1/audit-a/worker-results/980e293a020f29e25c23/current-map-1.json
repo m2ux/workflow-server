@@ -1,0 +1,428 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "980e293a020f29e25c23",
+  "attempt": "current-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "The activity steps invoke deliver with argument key envelope. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "reason": "The delivery step invokes deliver with argument key envelope. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "reason": "The activity step identifier is delivery. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "reason": "The routine binding names deliver and supplies argument key envelope. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "reason": "The argument map has the sole key envelope, with value sealed. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f45b86c19f25461cbe667622"
+      ],
+      "reason": "The argument key is envelope and its opaque value is sealed. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "reason": "The concrete routine invocation names deliver. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a30b577290e3406e29334f7b"
+      ],
+      "reason": "The leaf Rules contain ID retention, the clause validate the report before each emission, and Destination is archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "6dff2018269cdd7f6ce3a242"
+      ],
+      "reason": "This Rules line contains two independently testable clauses: Retain the report ID; validate the report before each emission. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "923c5917ea2c9d4abe29e519"
+      ],
+      "reason": "This first Rules clause directs retention of the report ID. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a03eed5b1543ec6c3d53b66c"
+      ],
+      "reason": "This second Rules clause states: validate the report before each emission. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "185e903ef3c4ae26da231a32"
+      ],
+      "reason": "This leaf declaration states Destination is archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "94b820a882f196103f835741"
+      ],
+      "reason": "The initialActivity relationship connects qualification to run. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8020bba4283a65b31df0f113"
+      ],
+      "reason": "The graph-entry relationship resolves the run activity. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f0755acc68e9a62e580665a3"
+      ],
+      "reason": "The graph-entry relationship identifies the run/done binding context. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

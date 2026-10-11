@@ -1,0 +1,57 @@
+$schema: ../../../schemas/workflow.schema.json
+id: gitnexus-group-concept-search-conformance
+version: 1.1.0
+title: GitNexus Group Concept Search Conformance Workflow
+description: >-
+  Hold the gitnexus group-concept-search run to three cases. The positive case binds a configured
+  group and a concept its members' execution flows carry, so the run reads the inventory, ranks
+  every member and lands a merged ranking with results. The negative case binds the same group and a
+  concept no member carries, so the run reads the same inventory and lands a ranking whose results
+  are empty across every member — the fallback it promises for a concept the group does not hold,
+  distinct from a member missing from the group's status. The unknown-group case binds a group name
+  the inventory does not list, so the ranked search answers with an error naming the missing group
+  and the ranking carries no results.
+author: m2ux
+tags:
+  - gitnexus
+  - conformance
+  - routine
+  - cases
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: positive_group_name
+    type: string
+    description: A configured repository group whose members the positive case ranks.
+    defaultValue: mcp-servers
+  - name: positive_search_query
+    type: string
+    description: A concept the group's members carry, so the positive case lands results.
+    defaultValue: technique loader
+  - name: negative_group_name
+    type: string
+    description: A configured repository group whose members the negative case ranks.
+    defaultValue: mcp-servers
+  - name: negative_search_query
+    type: string
+    description: A concept no member carries, so the negative case lands empty results across the group.
+    defaultValue: zzqx quiddity nonesuch
+  - name: unknown_group_group_name
+    type: string
+    description: A group name no configuration holds, so the unknown-group case's ranked search answers with an error naming it.
+    defaultValue: no-such-group
+  - name: unknown_group_search_query
+    type: string
+    description: A concept the configured groups' members carry, so what the unknown-group case lands is settled by the group name and not the concept.
+    defaultValue: technique loader
+initialActivity: positive-case
+graph:
+  positive-case:
+    searched: negative-case
+  negative-case:
+    searched: unknown-group-case
+  unknown-group-case:
+    searched: report-cases
+  report-cases:
+    reported: __terminal__

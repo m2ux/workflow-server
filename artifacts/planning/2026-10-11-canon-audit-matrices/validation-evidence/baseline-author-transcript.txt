@@ -1,0 +1,1255 @@
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/SKILL.md ===
+UTC: 2026-10-11T06:54:35.062385+00:00
+BYTES: 4339
+ELAPSED_SECONDS: 4.785400233231485e-05
+---
+name: workflow-canon
+description: >-
+  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions ("write a new activity", "apply this finding"), audit them against the design canon ("audit workflow X", "why is this an anti-pattern?"), review integrations ("check these branches together", "assess integration readiness"), or revise this skill ("update the workflow-canon skill").
+hooks:
+  PostToolUse:
+    - matcher: "Edit|Write|MultiEdit"
+      hooks:
+        - type: command
+          command: "python3 \"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\""
+---
+
+# Workflow Canon
+
+Workflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.
+
+- **Work**  Intended outcomes, requirements and constraints.
+- **Design**  Architecture, responsibilities, definitions and contracts.
+- **Canon**  The project's authoritative design criteria and conventions.
+- **Evidence**  Observations supporting design decisions, with their limits stated.
+
+## Modes
+
+Read the selected mode's file in full, then follow its links as each step needs them:
+
+- **[Author](references/author-mode.md)**
+  - Authoring definitions and specified changes
+  - Closing confirmed findings with their prescribed fixes
+  - Draft walks and verification of written changes
+- **[Audit](references/audit-mode.md)**
+  - Canon questions and conformance of existing definitions
+  - Attribution and verification of findings
+  - Reports with coverage ledgers
+- **[Review](references/review-mode.md)**
+  - Scope and revision pairings for integrations
+  - Tracing design and architecture through declarations and consumers
+  - Coverage matched to affected branches and languages
+  - Evidence for findings and readiness
+- **[Revise](references/revise-mode.md)**
+  - Changes to this skill's own files
+  - Conformance with shared and local skill guidelines
+
+## Rules
+
+- **Measured claims.**
+  Counts, revision identities and check outcomes come from command output or preserved run evidence.
+- **One home.**
+  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.
+- **Linked sections.**
+  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
+- **Planning.**
+  When creating or using artifacts, all modes follow [Planning](references/planning.md).
+- **Commands.**
+  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.
+
+## Dependencies
+
+- **Git and repository search**
+  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.
+- **GitHub CLI**
+  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.
+- **Project instructions, documentation and runtimes**
+  Branch ownership, canon homes, schemas and validation tools for the affected product.
+- **Node and npm**
+  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.
+- **Docker and Compose**
+  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.
+- **Python 3.10+**
+  The definition edit hook and its tests.
+- **Agent host and sandbox**
+  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
+- **Claude Code hooks**
+  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.
+- **Workflow resource access**
+  A running workflow's resource tool can supply canon sections and report guides when available.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/author-mode.md ===
+UTC: 2026-10-11T06:54:50.213956+00:00
+BYTES: 3476
+ELAPSED_SECONDS: 5.539599806070328e-05
+# Author Mode
+
+Writes definition content: a new definition, or a specified change to existing ones, such as a work item, a finding, or a defect with a location. A finding is closed with the Fix its entry states.
+
+## Prerequisites
+
+Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms) and [criteria](canon-context.md#criteria).
+
+## Procedure
+
+1. **Resolve to files.**
+   - List every file the change adds or edits. A new definition also edits each file that wires it in, such as `workflow.yaml` or the activity that binds it.
+   - Add the I/O-contract closure and consumers per the shared [scope](canon-context.md#scope).
+   - For a specified change, the surface is the specification, not the diff. Confirm it still holds against the tree: the construct is where it says, the count is what it says, the absence is an absence.
+   - What has moved is reported first. Where nothing remains to change, that is the finding.
+2. **Read what binds.**
+   - Read the [design flow](design-flow.md). Structure is synthesised from expected behaviour. Exposed behaviour is derived from that structure and compared with the expected behaviour. A failed comparison reformulates the structure, the expected behaviour, or the function.
+   - Use [List Units for a Construct](commands.md#list-units-for-a-construct) to identify every unit that binds each construct the draft writes, then fetch and follow those units.
+   - When the change answers a finding, follow that entry's Fix and Do not flag.
+3. **Open a live sibling.**  Conformance compares against those files.
+4. **Preserve.**  Name what the entries require the change to preserve.
+5. **Walk the draft, then write.**
+   - Each fix is a draft of its own: its replacement text is walked before it is written.
+   - Walk the prescribing entry, when there is one, then the units selected for the constructs the draft writes, splitting compound headings under the required walk rules.
+   - Rewrite while an entry still fires.
+   - Then run the selected [checks](canon-context.md#checks).
+6. **Check what the pass wrote.**
+   - Re-walk the lines this pass wrote, diffed against the commit the audit read or else the branch point, entry-major under the units selected for the constructs the draft writes. Read each file whole for context.
+   - Add the closure of any I/O contract the pass changed.
+   - A hit is a `fix` finding, per Audit's [Attribution](audit-mode.md#attribution). Close it by step 5 before any report, then check only the lines that closing wrote.
+7. **Stop on oscillation.**
+   - Stop when an entry fires on text written to satisfy it, or when a round's `fix` findings do not fall below the round before.
+   - Report the entries in conflict to the user as a canon defect, with the text each one rejected.
+8. **Audit.**
+   - A change that answers an audit of this base has its audit once step 6 finds nothing.
+   - Any other change takes an [Audit](audit-mode.md) from the branch point, each touched file whole. A finding there means the draft walk was skipped or the entry was misread.
+   - A draft not yet bound for a commit stops at step 5, and writes no findings register.
+
+## Rules
+
+- **Commit gate.**  A definition change commits only once the procedure's audit is complete.
+- **Scope.**
+  Changes close the specified requirement or confirmed finding, including its affected consumers. Canon defects that prevent convergence are reported with the conflicting entries.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/planning.md ===
+UTC: 2026-10-11T06:54:50.214075+00:00
+BYTES: 1288
+ELAPSED_SECONDS: 3.051900421269238e-05
+# Planning
+
+A planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.
+
+## Location
+
+- **Instructions.**
+  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.
+- **Resolution.**
+  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.
+
+## Records
+
+- **Naming.**
+  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.
+- **Continuity.**
+  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.
+- **Authority.**
+  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Prerequisites L5-8 ===
+UTC: 2026-10-11T06:55:12.255861+00:00
+BYTES: 154
+ELAPSED_SECONDS: 0.0002019669918809086
+## Prerequisites
+
+Read the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Terms L9-16 ===
+UTC: 2026-10-11T06:55:12.256015+00:00
+BYTES: 422
+ELAPSED_SECONDS: 8.000200614333153e-05
+## Terms
+
+- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.
+- **Entry**
+  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
+- **Walk**  Applying each unit to every file on the surface and recording its status.
+- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Criteria L17-22 ===
+UTC: 2026-10-11T06:55:12.256118+00:00
+BYTES: 430
+ELAPSED_SECONDS: 7.22259865142405e-05
+## Criteria
+
+Use the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).
+
+Follow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Scope L23-28 ===
+UTC: 2026-10-11T06:55:12.256212+00:00
+BYTES: 476
+ELAPSED_SECONDS: 6.665399996563792e-05
+## Scope
+
+Resolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.
+
+Resolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/design-flow.md ===
+UTC: 2026-10-11T06:55:12.256262+00:00
+BYTES: 3144
+ELAPSED_SECONDS: 2.4537002900615335e-05
+# Design Flow
+
+How a definition is designed. A requirement becomes a function and an expected behaviour. Structure is synthesised from that behaviour. The behaviour the structure exposes is compared with the expected behaviour, and the structure can be reformulated.
+
+The process steps are the function–behaviour–structure ontology of Gero and Kannengiesser, as Figure 3 of Nouwens, *Researching Sensemaking and Situational Architecting* (EEWC 2021, CC BY 4.0). A single arrow is a transformation. A double arrow is a comparison.
+
+```mermaid
+flowchart LR
+  R["R · requirement"] -->|1| F["F · function"]
+  F -->|1| Be["Be · expected behaviour"]
+  Be -->|2| S["S · structure"]
+  S -->|3| Bs["Bs · behaviour from structure"]
+  Be <-->|4| Bs
+  S -->|5| D["D · design description"]
+  S -->|6| S
+  S -->|7| Be
+  S -->|8| F
+```
+
+| Mark | Name | In a definition |
+| --- | --- | --- |
+| R | Requirement | The need the definition answers |
+| F | Function | What the definition is for |
+| Be | Expected behaviour | The behaviour a stakeholder can perceive |
+| Bs | Behaviour from structure | The behaviour a walk or a test derives |
+| S | Structure | Routines, techniques, resources, and activities |
+| D | Design description | The written definition |
+
+| Step | Arrow | What the designer does |
+| --- | --- | --- |
+| 1 | R → F → Be | A requirement becomes a function, and that function becomes the expected behaviour |
+| 2 | Be → S | Expected behaviour is synthesised into structure |
+| 3 | S → Bs | Exposed behaviour is derived from the structure |
+| 4 | Be ↔ Bs | Expected behaviour is compared with exposed behaviour |
+| 5 | S → D | Structure is written as the design description |
+| 6 | S → S | Structure is reformulated |
+| 7 | S → Be | Expected behaviour is reformulated |
+| 8 | S → F | Function is reformulated |
+
+Teleological language and ontological language share no terms. There is no procedure that derives a structure from a purpose. Step 2 is a synthesis. Steps 6, 7, and 8 are the same synthesis run again when the comparison fails.
+
+## Two Cycles
+
+Nouwens combines that ontology with the distinction between stakeholder and designer (Figure 4 of the same paper). One cycle elicits the requirement. The other designs the artefact and matches its exposed behaviour to the expected behaviour.
+
+```mermaid
+flowchart LR
+  stakeholder["stakeholder"] -->|expresses need to| designer["designer"]
+  designer -->|has identified need for| function["function"]
+  function -->|described as| expected["(expected) behaviour"]
+  expected -->|as perceived by| stakeholder
+  expected -.->|designed as| artefact["(designed) artefact"]
+  artefact -->|exposes| exposed["(exposed) behaviour"]
+  exposed -.->|conforms to| expected
+```
+
+- **Requirements elicitation.**
+  The stakeholder expresses a need. The designer identifies a function and describes it as expected behaviour. The stakeholder perceives that behaviour.
+- **Iterative design.**
+  Expected behaviour is designed as an artefact. The artefact exposes behaviour. That exposed behaviour is compared with the expected behaviour, and the design repeats until they conform.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Conventions L3-19 ===
+UTC: 2026-10-11T06:55:28.348641+00:00
+BYTES: 1492
+ELAPSED_SECONDS: 0.00023257400607690215
+## Conventions
+
+Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
+
+- **Locations.**
+  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.
+- **Execution.**
+  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.
+- **Remote access.**
+  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.
+- **Evidence.**
+  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.
+- **Substitution.**
+  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
+- **Authored text.**
+  Commit messages and PR bodies go through files.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Homes L29-42 ===
+UTC: 2026-10-11T06:55:28.348861+00:00
+BYTES: 1253
+ELAPSED_SECONDS: 0.00011028401786461473
+## Homes
+
+Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
+
+| Home | Authority |
+| --- | --- |
+| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |
+| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |
+| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |
+| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |
+| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
+
+Locate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-map.md ===
+UTC: 2026-10-11T06:55:28.348922+00:00
+BYTES: 2084
+ELAPSED_SECONDS: 2.692901762202382e-05
+# Canon Map
+
+How each home is enumerated, and where a judgement already made is recorded.
+
+## Unit Inventory
+
+Read the enumeration from the home at the commit audited, with [List units](commands.md#list-units).
+
+| Home | Unit |
+|------|------|
+| Anti-Patterns | One `##` family; each `###` entry inside it |
+| Design Principles | One `##` |
+| Convention Conformance | One `##` |
+| Guards | One registry entry in `guards/guards.ts` |
+
+- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
+
+## Prior Judgments
+
+An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
+
+| Authority | Where | Records |
+|-----------|-------|---------|
+| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |
+| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |
+| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |
+
+`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
+
+## File Kinds
+
+A unit binds the constructs its Fires-on line names. Author runs [List units for a construct](commands.md#list-units-for-a-construct) once for each construct a draft writes, and loads the units it prints. Audit walks every unit the [unit inventory](#unit-inventory) names, whatever the lines say. On an Audit, `not-applicable` records a unit's own wording that excludes the file in hand.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/walk-rules.md ===
+UTC: 2026-10-11T06:55:28.348975+00:00
+BYTES: 2329
+ELAPSED_SECONDS: 2.370402216911316e-05
+# Walk Rules
+
+These govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.
+
+## Order
+
+- **Entry-major.**
+  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.
+- **Compound headings.**
+  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.
+  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.
+
+## Evidence
+
+- **The construct.**
+  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.
+- **Identifiers.**
+  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.
+- **Search hits.**
+  - A search hit is a site. Read the construct around it, and cite that construct.
+  - An empty search leaves open a construct the pattern did not name.
+- **Probes.**
+  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.
+- **Consumers.**
+  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.
+- **Forms.**
+  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.
+- **Hand-checks.**
+  - An empty hand-check is `blocked` until it has reported a case already in the corpus.
+  - Take a set the entry names from that entry's wording.
+
+## Candidates and Fixes
+
+- **Falling candidates.**
+  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.
+- **Unread paths.**
+  `unread` paths are outside the remediation scope.
+  - An audit walks them under [Rules](audit-mode.md#rules).
+- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.
+- **Ledgers, fixtures and snapshots.**
+  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/definition-scope.md#Scope L5-35 ===
+UTC: 2026-10-11T06:55:28.349085+00:00
+BYTES: 2121
+ELAPSED_SECONDS: 7.857600576244295e-05
+## Scope
+
+- **Base ref.**  The ref the change is measured against.
+- **Surface files.**
+  `workflow.yaml`, `activities/`, `techniques/`, `resources/`, READMEs of the target.
+- **Touched.**
+  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.
+- **I/O contract.**
+  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.
+  - Activity inputs, outputs, and step binds that name those ids.
+  - Renames, additions, removals, optionality flips, and type or shape changes.
+- **Reference.**
+  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.
+  - Sweep the workflows tree. Resolve each to a file path.
+- **Closure.**
+  Every activity or technique that references a touched file whose I/O contract changed, in this workflow and others.
+- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.
+- **Consumers.**
+  - References other workflows hold into the target. Always computed.
+  - A consumer joins the change surface when the file it names is on it.
+  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.
+- **Reference workflows.**  Siblings of similar type, as convention conformance requires.
+- **Prior residual.**
+  - `unread` paths in the latest findings register in the shared [planning record](planning.md).
+  - Re-derive the enumeration at this commit and inherit dispositions by path. A path absent from the tree leaves the worklist.
+  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.
+- **Second entry.**
+  - Where a graph gives one activity two entry points, both are on the surface.
+  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
+
+Hunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#List Units L424-435 ===
+UTC: 2026-10-11T06:55:48.736142+00:00
+BYTES: 336
+ELAPSED_SECONDS: 0.0005127500044181943
+### List Units
+
+Lists a home's `##` units, then its `###` entries, with their line numbers.
+
+- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.
+- Run from the corpus root.
+
+```bash
+rg -n "^## " corpus/canon/resources/anti-patterns.md
+rg -n "^### " corpus/canon/resources/anti-patterns.md
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#List Units for a Construct L436-447 ===
+UTC: 2026-10-11T06:55:48.736899+00:00
+BYTES: 482
+ELAPSED_SECONDS: 0.0006830840138718486
+### List Units for a Construct
+
+Prints every canon unit that fires on one construct id, with its file and line.
+
+- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.
+- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.
+- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.
+
+```bash
+npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Fetch Unit L448-455 ===
+UTC: 2026-10-11T06:55:48.737332+00:00
+BYTES: 261
+ELAPSED_SECONDS: 0.0004006169911008328
+### Fetch Unit
+
+Reads one section or entry of a home.
+
+- **On disk.**
+  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
+- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Resolve Ref L22-29 ===
+UTC: 2026-10-11T06:55:48.737459+00:00
+BYTES: 101
+ELAPSED_SECONDS: 9.312000474892557e-05
+### Resolve Ref
+
+Read the full commit identity for a captured ref.
+
+```bash
+git rev-parse <ref>
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Find Consumers L456-466 ===
+UTC: 2026-10-11T06:55:48.737965+00:00
+BYTES: 229
+ELAPSED_SECONDS: 0.0004802919866051525
+### Find Consumers
+
+Lists the references other workflows hold into the target.
+
+- Run from the corpus root.
+- Resolve each hit's binds and Apply links from there.
+
+```bash
+rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/canon-context.md#Checks L43-51 ===
+UTC: 2026-10-11T06:55:48.738090+00:00
+BYTES: 1130
+ELAPSED_SECONDS: 0.00010152801405638456
+## Checks
+
+Read [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. A full audit prefers [Run Guards on the Delta](commands.md#run-guards-on-the-delta); draft and post-write checks use [Run Guard Suite](commands.md#run-guard-suite). A step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Select broader consumer coverage from [Workflows Coverage](coverage.md#workflows-coverage) when shared constructs are affected.
+
+### Edit Hook
+
+The registered hook uses Python 3.10+ and the workspace's `.project/main` checkout with installed `tsx`. Its integration refs are the corpus tree's latest fetched `origin/workflows` and `origin/iNN/workflows`; it measures against their nearest merge-base. Read [Run the Edit Guard](commands.md#run-the-edit-guard) when handling its result or invoking it explicitly. The hook's operational contract also applies to a host without automatic registration.
+
+When the hook returns a failure, close the introduced defect or state why the result is unmeasured before the next edit.
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-a.json ===
+UTC: 2026-10-11T06:56:02.923032+00:00
+BYTES: 6014
+ELAPSED_SECONDS: 4.7856010496616364e-05
+{
+  "scope": {
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ]
+  },
+  "sources": {
+    "corpus/canon/resources/anti-patterns.md": {
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.\n",
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025"
+    },
+    "corpus/canon/resources/convention-conformance.md": {
+      "text": "# Controlled qualification conventions\n\n## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.\n",
+      "hash": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39"
+    },
+    "corpus/canon/resources/design-principles.md": {
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n\n## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.\n",
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121"
+    },
+    "corpus/qualification/activities/run.yaml": {
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {envelope: sealed}\n",
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a"
+    },
+    "corpus/qualification/routines/deliver.yaml": {
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce\n",
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md": {
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive.\n",
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b"
+    },
+    "corpus/qualification/techniques/produce.md": {
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### report\n\n## Protocol\n- Validate the report, then emit it.\n\n## Rules\n- Retain the report ID; validate the report before each emission.\n- Destination is archive.\n",
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77"
+    },
+    "corpus/qualification/workflow.yaml": {
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: null\n",
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771"
+    }
+  },
+  "authority": "Review captured controlled-dialect sources; report findings without edits."
+}
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-b.json ===
+UTC: 2026-10-11T06:56:02.923141+00:00
+BYTES: 6006
+ELAPSED_SECONDS: 2.143500023521483e-05
+{
+  "scope": {
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ]
+  },
+  "sources": {
+    "corpus/canon/resources/anti-patterns.md": {
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.\n",
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025"
+    },
+    "corpus/canon/resources/convention-conformance.md": {
+      "text": "# Controlled qualification conventions\n\n## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.\n",
+      "hash": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39"
+    },
+    "corpus/canon/resources/design-principles.md": {
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n\n## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.\n",
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121"
+    },
+    "corpus/qualification/activities/run.yaml": {
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}\n",
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813"
+    },
+    "corpus/qualification/routines/deliver.yaml": {
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce\n",
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md": {
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive.\n",
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b"
+    },
+    "corpus/qualification/techniques/produce.md": {
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public.\n",
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729"
+    },
+    "corpus/qualification/workflow.yaml": {
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run\n",
+      "hash": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1"
+    }
+  },
+  "authority": "Review captured controlled-dialect sources; report findings without edits."
+}
+
+=== END READ ===
+
+=== SEARCH PRIOR SKILL REPORT VOCABULARY ===
+UTC: 2026-10-11T06:56:57.872321+00:00
+ARGV: ['rg', '-n', 'severity|Live|Hygiene|Critical', '/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references', '-g', '*.md']
+CWD: /home/mike1/projects/dev/workflow-server
+EXIT_CODE: 0
+BYTES: 3969
+ELAPSED_SECONDS: 0.003915718989446759
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:13:| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:15:| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:17:State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:25:| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:28:| `Low` | Hygiene with no consumer consequence |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:37:| Band | `Live`, `Contract`, or `Hygiene` |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:96:**Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: **N files `unread`** of N, **N criteria units `blocked`** of N. Live and Contract converge to zero over the coverage measured. Hygiene ratchets against the prior pass's N.
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:100:| Live | N | N | N |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:102:| Hygiene | N | N | N |
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md:130:Omit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. The header's units × paths bound every figure under it, and each header figure reconciles against a list in the body. Status is the [coverage header](#coverage-header). Live or Contract at zero over a partial grid is a statement about that part. A Live or Contract count that rose says a fix moved a defect.
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/review-mode.md:72:Group findings by area of concern and order them by severity. Each finding states its trigger, expected behavior and source, observed behavior or reproduction, consequence, owning branch, suggested correction and confidence. Cite code and definitions with commit-pinned links where available. Distinguish a confirmed defect from a suspected one or an evidence gap; classify severity by consequence using the project's scale.
+/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/audit-mode.md:35:   - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.
+
+=== END SEARCH ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/reporting.md#Report Context L5-82 ===
+UTC: 2026-10-11T06:57:15.340207+00:00
+BYTES: 3970
+ELAPSED_SECONDS: 0.000253752019489184
+## Report Context
+
+Read this section before selecting a report layout.
+
+### Bands
+
+| Band | Holds | Target |
+|---|---|---|
+| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |
+| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |
+| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
+
+State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
+
+### Severity
+
+Severity ranks urgency inside a band. The band says whether the finding gates.
+
+| Severity | Fires when |
+|----------|-----------|
+| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |
+| `High` | An entry fires on a construct the change ships, and the defect propagates. Re-derive before it drives a fix |
+| `Medium` | An entry fires and the defect stays in that construct. Spot-confirm |
+| `Low` | Hygiene with no consumer consequence |
+
+An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
+
+### Finding Rows
+
+| Column | Carries |
+|--------|---------|
+| ID | Stable within the report |
+| Band | `Live`, `Contract`, or `Hygiene` |
+| Severity | The scale above |
+| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |
+| Location | File and field, at the depth the evidence sits |
+| Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
+| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |
+| Known | Set when a prior pass accepted this key |
+| Fix | The action the entry prescribes, in one line |
+
+A row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.
+
+### Coverage Ledger
+
+Divergences only. A unit walked cleanly has no row.
+
+| Column | Carries |
+|--------|---------|
+| Home | The criteria home |
+| Unit | The section title or anchor, as the home spells it |
+| Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |
+
+Total the `blocked` rows. That figure is the unit residual. A family `blocked` over most of the surface counts once, however many entries it holds. One row per unwalked unit of every home, accounted from the headings at the commit audited ([canon-map](canon-context.md#criteria)). A ledger that cannot account for every unit is a partial walk. Its status is the [coverage header](#coverage-header).
+
+### File Coverage
+
+Independent of the unit ledger: every unit can be `walked` while the surface stays unopened.
+
+| Disposition | Means |
+|-------------|-------|
+| `read` | The whole file was inspected |
+| `unread` | Anything else |
+
+A scan hit is `read` only when the file was then inspected whole. A scan is evidence for a finding, not a path disposition. `read` and `unread` sum to the enumeration; where they do not, the report states the list that was walked.
+
+List the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.
+
+### Coverage Header
+
+Whether the audit is finished.
+
+- **In progress.**
+  A header that still has unread paths or blocked criteria, including when its ledger does not account for every unit.
+  - The note is not the finished audit.
+- **Finished.**
+  Every change-surface path is `read`, and every criterion is `walked` or `not-applicable`.
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Canon Check Conventions L363-390 ===
+UTC: 2026-10-11T06:57:15.340848+00:00
+BYTES: 1774
+ELAPSED_SECONDS: 0.0005574779934249818
+## Canon Check Conventions
+
+- **Branch point.**
+  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.
+- **Exit status.**
+  Capture the check's own exit status before filtering output; a pipe reports the filter's status.
+- **Guard outcomes.**
+  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.
+- **Option coverage.**
+  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.
+
+### Guard Obligations
+
+- **Binding fidelity.**
+  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
+  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
+- **Suppressions.**
+  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
+  - Count the findings at the site before calling an entry redundant.
+- **New guards.**
+  - Prove a new guard against the corpus at the commit before the fix it was written for.
+  - A carve-out that follows from the entry belongs in the guard's condition.
+  - Take a file's kind from its declaration, and name in the check the kinds it admits.
+- **Definition changes.**
+  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
+  - The suppression of a binding finding it closed is the entry that goes stale on that commit.
+
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Run Guard Suite L469-479 ===
+UTC: 2026-10-11T06:57:15.341421+00:00
+BYTES: 262
+ELAPSED_SECONDS: 0.0005381049995776266
+### Run Guard Suite
+
+Runs the guard registry, or a named subset.
+
+- The caller supplies the canon check conventions, including guard obligations.
+
+```bash
+WORKFLOWS_DIR=<corpus> npm run check:all
+WORKFLOWS_DIR=<corpus> npm run check:all -- --only <id>,<id>
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/baseline-skill/skills/workflow-canon/references/commands.md#Run Option Coverage L269-280 ===
+UTC: 2026-10-11T06:57:15.341814+00:00
+BYTES: 500
+ELAPSED_SECONDS: 0.00036620598984882236
+## Run Option Coverage
+
+Walk the current corpus roster and compare checkpoint reachability with its exceptions.
+
+- Read the roster first and supply its walked IDs as a literal comma-separated value.
+- An omitted scope walks the full roster. [Workflows Coverage](coverage.md#workflows-coverage) determines when a literal `WF_COVERAGE_SCOPE` narrows the walk.
+
+```bash
+jq -r '.walked | join(",")' <corpus>/walks/roster.json
+WORKFLOWS_DIR=<corpus> WF_WALKED=<walked-ids> npm run test:coverage-walk
+```
+
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-observation.json ===
+UTC: 2026-10-11T06:57:15.341875+00:00
+BYTES: 776
+ELAPSED_SECONDS: 3.748098970390856e-05
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+  ],
+  "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+  "exit_code": 0,
+  "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-output.txt",
+  "output_bytes": 269,
+  "elapsed_seconds": 0.11438447999535128
+}
+
+=== END READ ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-observation.json ===
+UTC: 2026-10-11T06:57:15.341924+00:00
+BYTES: 776
+ELAPSED_SECONDS: 2.159600262530148e-05
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+  ],
+  "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+  "exit_code": 0,
+  "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt",
+  "output_bytes": 269,
+  "elapsed_seconds": 0.11567819901392795
+}
+
+=== END READ ===
+
+=== VERIFY INPUT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-a.json ===
+UTC: 2026-10-11T06:57:51.421415+00:00
+BYTES: 2697
+ELAPSED_SECONDS: 0.0001223860017489642
+{
+  "case": "a",
+  "input_sha256": "deb2989310bdc4b3cb3ab93208633cae1eb6200138865cb76a57eee978366a5d",
+  "sources": [
+    {
+      "path": "corpus/canon/resources/anti-patterns.md",
+      "bytes": 2055,
+      "line_count": 21,
+      "declared_sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "actual_sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "matches": true
+    },
+    {
+      "path": "corpus/canon/resources/convention-conformance.md",
+      "bytes": 411,
+      "line_count": 5,
+      "declared_sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "actual_sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "matches": true
+    },
+    {
+      "path": "corpus/canon/resources/design-principles.md",
+      "bytes": 1352,
+      "line_count": 11,
+      "declared_sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "actual_sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/activities/run.yaml",
+      "bytes": 101,
+      "line_count": 6,
+      "declared_sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "actual_sha256": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/routines/deliver.yaml",
+      "bytes": 105,
+      "line_count": 6,
+      "declared_sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "actual_sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/techniques/TECHNIQUE.md",
+      "bytes": 85,
+      "line_count": 5,
+      "declared_sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "actual_sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/techniques/produce.md",
+      "bytes": 207,
+      "line_count": 12,
+      "declared_sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "actual_sha256": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/workflow.yaml",
+      "bytes": 68,
+      "line_count": 5,
+      "declared_sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "actual_sha256": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "matches": true
+    }
+  ]
+}
+=== END VERIFY ===
+
+=== SOURCE case=a corpus/qualification/activities/run.yaml ===
+UTC: 2026-10-11T06:57:51.421486+00:00
+BYTES: 119
+ELAPSED_SECONDS: 4.70600207336247e-06
+RAW_SOURCE_BYTES: 101
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {envelope: sealed}
+
+=== END SOURCE ===
+
+=== SOURCE case=a corpus/qualification/routines/deliver.yaml ===
+UTC: 2026-10-11T06:57:51.421510+00:00
+BYTES: 123
+ELAPSED_SECONDS: 5.151989171281457e-06
+RAW_SOURCE_BYTES: 105
+1: id: deliver
+2: inputs: [envelope]
+3: outputs: {report: emit.report}
+4: steps:
+5:   - id: emit
+6:     technique: produce
+
+=== END SOURCE ===
+
+=== SOURCE case=a corpus/qualification/techniques/TECHNIQUE.md ===
+UTC: 2026-10-11T06:57:51.421531+00:00
+BYTES: 100
+ELAPSED_SECONDS: 2.3720203898847103e-06
+RAW_SOURCE_BYTES: 85
+1: ## Capability
+2: Constrain inherited delivery.
+3: 
+4: ## Rules
+5: - Destination must be archive.
+
+=== END SOURCE ===
+
+=== SOURCE case=a corpus/qualification/techniques/produce.md ===
+UTC: 2026-10-11T06:57:51.421547+00:00
+BYTES: 246
+ELAPSED_SECONDS: 3.3940013963729143e-06
+RAW_SOURCE_BYTES: 207
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### report
+6: 
+7: ## Protocol
+8: - Validate the report, then emit it.
+9: 
+10: ## Rules
+11: - Retain the report ID; validate the report before each emission.
+12: - Destination is archive.
+
+=== END SOURCE ===
+
+=== SOURCE case=a corpus/qualification/workflow.yaml ===
+UTC: 2026-10-11T06:57:51.421559+00:00
+BYTES: 83
+ELAPSED_SECONDS: 2.0570005290210247e-06
+RAW_SOURCE_BYTES: 68
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: null
+
+=== END SOURCE ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a/guard-output.txt ===
+UTC: 2026-10-11T06:57:51.421619+00:00
+BYTES: 269
+ELAPSED_SECONDS: 4.22320154029876e-05
+{
+  "check": "controlled qualification structural guard",
+  "root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/a",
+  "sources": 8,
+  "criteria": 4,
+  "errors": []
+}
+
+=== END READ ===
+
+=== VERIFY INPUT /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-input-b.json ===
+UTC: 2026-10-11T06:57:51.421710+00:00
+BYTES: 2696
+ELAPSED_SECONDS: 7.427297532558441e-05
+{
+  "case": "b",
+  "input_sha256": "6b7891161483ff91c34f0f1ed080318d17fe378fb453349a90c0bc370ba90de9",
+  "sources": [
+    {
+      "path": "corpus/canon/resources/anti-patterns.md",
+      "bytes": 2055,
+      "line_count": 21,
+      "declared_sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "actual_sha256": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "matches": true
+    },
+    {
+      "path": "corpus/canon/resources/convention-conformance.md",
+      "bytes": 411,
+      "line_count": 5,
+      "declared_sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "actual_sha256": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "matches": true
+    },
+    {
+      "path": "corpus/canon/resources/design-principles.md",
+      "bytes": 1352,
+      "line_count": 11,
+      "declared_sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "actual_sha256": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/activities/run.yaml",
+      "bytes": 99,
+      "line_count": 6,
+      "declared_sha256": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "actual_sha256": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/routines/deliver.yaml",
+      "bytes": 105,
+      "line_count": 6,
+      "declared_sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "actual_sha256": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/techniques/TECHNIQUE.md",
+      "bytes": 85,
+      "line_count": 5,
+      "declared_sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "actual_sha256": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/techniques/produce.md",
+      "bytes": 202,
+      "line_count": 12,
+      "declared_sha256": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "actual_sha256": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "matches": true
+    },
+    {
+      "path": "corpus/qualification/workflow.yaml",
+      "bytes": 67,
+      "line_count": 5,
+      "declared_sha256": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "actual_sha256": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "matches": true
+    }
+  ]
+}
+=== END VERIFY ===
+
+=== SOURCE case=b corpus/qualification/activities/run.yaml ===
+UTC: 2026-10-11T06:57:51.421733+00:00
+BYTES: 117
+ELAPSED_SECONDS: 2.8730137273669243e-06
+RAW_SOURCE_BYTES: 99
+1: id: run
+2: steps:
+3:   - id: delivery
+4:     routine:
+5:       name: deliver
+6:       arguments: {packet: sealed}
+
+=== END SOURCE ===
+
+=== SOURCE case=b corpus/qualification/routines/deliver.yaml ===
+UTC: 2026-10-11T06:57:51.421756+00:00
+BYTES: 123
+ELAPSED_SECONDS: 2.295011654496193e-06
+RAW_SOURCE_BYTES: 105
+1: id: deliver
+2: inputs: [envelope]
+3: outputs: {report: emit.report}
+4: steps:
+5:   - id: emit
+6:     technique: produce
+
+=== END SOURCE ===
+
+=== SOURCE case=b corpus/qualification/techniques/TECHNIQUE.md ===
+UTC: 2026-10-11T06:57:51.421769+00:00
+BYTES: 100
+ELAPSED_SECONDS: 1.8909922800958157e-06
+RAW_SOURCE_BYTES: 85
+1: ## Capability
+2: Constrain inherited delivery.
+3: 
+4: ## Rules
+5: - Destination must be archive.
+
+=== END SOURCE ===
+
+=== SOURCE case=b corpus/qualification/techniques/produce.md ===
+UTC: 2026-10-11T06:57:51.421782+00:00
+BYTES: 241
+ELAPSED_SECONDS: 2.810003934428096e-06
+RAW_SOURCE_BYTES: 202
+1: ## Capability
+2: Produce a report.
+3: 
+4: ## Outputs
+5: ### summary
+6: 
+7: ## Protocol
+8: - Emit the report without validation.
+9: 
+10: ## Rules
+11: - Retain the report ID; emit the report without validation.
+12: - Destination is public.
+
+=== END SOURCE ===
+
+=== SOURCE case=b corpus/qualification/workflow.yaml ===
+UTC: 2026-10-11T06:57:51.421793+00:00
+BYTES: 82
+ELAPSED_SECONDS: 1.6170088201761246e-06
+RAW_SOURCE_BYTES: 67
+1: id: qualification
+2: initialActivity: run
+3: graph:
+4:   run:
+5:     done: run
+
+=== END SOURCE ===
+
+=== READ /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt ===
+UTC: 2026-10-11T06:57:51.421835+00:00
+BYTES: 269
+ELAPSED_SECONDS: 2.7070986106991768e-05
+{
+  "check": "controlled qualification structural guard",
+  "root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b",
+  "sources": 8,
+  "criteria": 4,
+  "errors": []
+}
+
+=== END READ ===
+
+=== COMMAND resolve-prior-revision ===
+UTC: 2026-10-11T06:57:51.423881+00:00
+BYTES: 41
+ELAPSED_SECONDS: 0.0020135020022280514
+ARGV: ['git', 'rev-parse', '--verify', '741626a96d9e854429798b68b05ae73d012d1ce5^{commit}']
+CWD: /home/mike1/projects/dev/workflow-server
+EXIT_CODE: 0
+741626a96d9e854429798b68b05ae73d012d1ce5
+
+=== END COMMAND ===
+
+=== RESULT RECEIPT ===
+{
+  "result_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-author-results.json",
+  "result_bytes": 35021,
+  "result_sha256": "c02936bac087bfe6b9a587de063cbfe6edc0e6ab5b1bf081ebff2967835b84aa",
+  "counts": {
+    "a": {
+      "total": 0,
+      "Live": 0,
+      "Contract": 0,
+      "Hygiene": 0,
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0
+    },
+    "b": {
+      "total": 6,
+      "Live": 6,
+      "Contract": 0,
+      "Hygiene": 0,
+      "Critical": 3,
+      "High": 3,
+      "Medium": 0,
+      "Low": 0
+    }
+  },
+  "measured_work": {
+    "started_at_utc": "2026-10-11T06:54:35.062385+00:00",
+    "assessment_completed_at_utc": "2026-10-11T07:00:21.326365+00:00",
+    "wall_elapsed_seconds": 346.26398,
+    "recorded_operations": 43,
+    "prior_instruction_read_operations": 23,
+    "prior_instruction_read_output_bytes": 32053,
+    "prior_instruction_read_seconds": 0.005038154078647494,
+    "captured_input_read_output_bytes": 12020,
+    "total_recorded_read_search_verification_command_output_bytes": 56900,
+    "total_recorded_operation_seconds": 0.01139087209594436,
+    "transcript_bytes_before_result_receipt": 68790,
+    "measurement_limits": "Operation seconds measure local reads, section extraction, searches, and verification. Wall elapsed includes reasoning and tool turnaround. Guard timings are preserved coordinator observations and are not counted as new agent executions."
+  },
+  "validation": "JSON readback succeeds; requested finding fields, criterion coverage, and source coverage are present."
+}
+=== END RESULT RECEIPT ===

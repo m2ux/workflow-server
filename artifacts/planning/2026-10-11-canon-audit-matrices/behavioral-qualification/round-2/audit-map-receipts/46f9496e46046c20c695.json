@@ -1,0 +1,324 @@
+{
+  "assignment": "46f9496e46046c20c695",
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b",
+  "records": [
+    {
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the packet argument. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps/id=delivery: The delivery step invokes deliver and supplies the packet argument. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "status": "N",
+      "reason": "run.yaml#/steps/id=delivery/id: This scalar names the activity step delivery; it does not declare an argument key or exported output. This declaration or activity-step identifier is not an invocation argument key, routine input, exported step.output binding or its referenced producer step. Neither AP-02 binding contract is present in this row.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps/id=delivery/routine: The routine object names deliver and supplies the packet argument. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments: The invocation arguments have the single key packet; sealed is its opaque value. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "f1186a7f61ea9f6493402006"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments/packet: The invocation argument key is packet and its opaque value is sealed. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "status": "A",
+      "reason": "run.yaml#/steps/id=delivery/routine/name: The routine name deliver selects the declaration whose Inputs list is envelope. AP-02 contract (1) applies to this concrete invocation or its argument/target constituent: its key set must be compared with deliver Inputs. Both a matching and a different key set remain applicable.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "a30b577290e3406e29334f7b"
+      ],
+      "status": "N",
+      "reason": "produce.md#/rules: The leaf Rules retain the report ID, emit the report without validation, and declare Destination public. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "6dff2018269cdd7f6ce3a242"
+      ],
+      "status": "N",
+      "reason": "produce.md#/rules/line-11: The compound rule retains the report ID in its first clause and says to emit the report without validation in its second. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "923c5917ea2c9d4abe29e519"
+      ],
+      "status": "N",
+      "reason": "produce.md#/rules/line-11/clause-1: Only the first semicolon-separated clause is this row: Retain the report ID. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "a03eed5b1543ec6c3d53b66c"
+      ],
+      "status": "N",
+      "reason": "produce.md#/rules/line-11/clause-2: Only the second semicolon-separated clause is this row: emit the report without validation. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "185e903ef3c4ae26da231a32"
+      ],
+      "status": "N",
+      "reason": "produce.md#/rules/line-12: The leaf declaration says Destination is public. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "4c3a69d6842d941bb1b4ae64"
+      ],
+      "status": "N",
+      "reason": "produce.md#/capability: The leaf Capability describes the service Produce a report. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "883f9febadc76de8d4b64dd6"
+      ],
+      "status": "N",
+      "reason": "produce.md#/capability/line-2: Produce a report is the Capability description, outside Protocol and Rules. This Markdown service, instruction or rule is not a binding or an Outputs name declaration. AP-02 explicitly excludes artifact mentions from its two binding contracts.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "588e9afc6de79e4e15622316"
+      ],
+      "status": "N",
+      "reason": "run.yaml#/id: The activity declaration identifier is run. This declaration or activity-step identifier is not an invocation argument key, routine input, exported step.output binding or its referenced producer step. Neither AP-02 binding contract is present in this row.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

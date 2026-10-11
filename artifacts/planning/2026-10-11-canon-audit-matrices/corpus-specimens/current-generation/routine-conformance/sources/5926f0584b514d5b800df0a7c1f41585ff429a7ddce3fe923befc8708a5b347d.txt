@@ -1,0 +1,19 @@
+id: commit-and-submit
+version: 1.3.0
+name: Commit and Submit
+description: Submit changes as a pull request.
+variables:
+  reads:
+    - change_set
+    - next_index
+    - upstream_path
+required: true
+steps:
+  - kind: technique
+    id: submit-update
+    technique: submit-update
+    actions:
+      - action: message
+        message: "The prism update is open for review: {pull_request_url}"
+outcome:
+  - The prism update is in front of a reviewer as an open pull request — ready for review and merge

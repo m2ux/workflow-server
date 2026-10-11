@@ -1,0 +1,51 @@
+id: consolidate-evidence
+version: 1.0.0
+name: Consolidate Evidence
+description: Where the area probes converge — read their records whole and consolidate them into one ordered evidence log.
+variables:
+  reads:
+    - investigation_areas
+    - planning_folder_path
+    - probe_area_outputs
+    - probe_budget_per_area
+    - target_repo_path
+  writes:
+    - name: candidate_findings
+      type: array
+      description: All candidate findings aggregated across areas in area order, each tied to its area and anchors — the adjudication input.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: technique
+    id: gather-the-areas
+    technique:
+      name: orchestration-patterns::gather-results
+      inputs:
+        dispatched_results: probe_area_outputs
+        expected_ids: investigation_areas
+  - kind: technique
+    id: consolidate-evidence
+    technique: evidence-probes::consolidate-evidence
+  - kind: action
+    id: enforce-consolidation-gate
+    actions:
+      - action: validate
+        message: Consolidation is blocked until the evidence log holds exactly one evidence record per approved investigation area, in plan order (gather completeness gate)
+      - action: validate
+        message: Consolidation is blocked until every area's executed-probe count is within probe_budget_per_area, with any overage recorded explicitly (bounded-probes gate)
+      - action: validate
+        message: Consolidation is blocked until every failure-class obligation carried by an area's in-scope and coupled subsystems is discharged in that area's record — confirmed, refuted with proof, inconclusive, or recorded blocked (failure-class coverage gate)
+      - action: validate
+        message: Consolidation is blocked when any correlation-class or atomicity-class obligation is refuted without meeting the proof bar — a P7 join-key discharge table or a P8a/P8b caller-path anchor showing the failure mode cannot occur (discharge-quality gate)
+  - kind: action
+    id: finalize-activity
+    actions:
+      - action: log
+        message: Evidence probes complete — per-area evidence consolidated with probe accounting
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Per-area evidence arrives in one place in plan order, each area in the slot its own probe landed it in, so adjudication reads a complete and ordered evidence base
+  - An area missing from the container is visible as a missing slot rather than as a shorter log, which is what makes the completeness gate checkable

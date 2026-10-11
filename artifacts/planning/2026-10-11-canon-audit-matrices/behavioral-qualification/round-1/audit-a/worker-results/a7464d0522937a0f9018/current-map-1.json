@@ -1,0 +1,114 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "a7464d0522937a0f9018",
+  "attempt": "current-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "The complete produce leaf declares output report, a Protocol emission instruction, a Rules emission clause, and Destination is archive. DP-01 applies to the leaf Destination declaration and the explicit call or inheritance relationships carrying qualification -> run -> deliver -> produce and its qualification TECHNIQUE.md ancestor. Applicability does not decide whether the values agree.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a93639cc3c5c1ad866587c2e"
+      ],
+      "reason": "The activity id is run. DP-01 excludes independent checks of files without a leaf Destination declaration. This activity, routine, or workflow row has none; explicit call relationships carry the rule to the leaf instance.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "bf312e511dcc8f4eda77a41a"
+      ],
+      "reason": "The routine id is deliver. DP-01 excludes independent checks of files without a leaf Destination declaration. This activity, routine, or workflow row has none; explicit call relationships carry the rule to the leaf instance.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "reason": "The complete activity declares one deliver invocation with argument key envelope. DP-01 excludes independent checks of files without a leaf Destination declaration. This activity, routine, or workflow row has none; explicit call relationships carry the rule to the leaf instance.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

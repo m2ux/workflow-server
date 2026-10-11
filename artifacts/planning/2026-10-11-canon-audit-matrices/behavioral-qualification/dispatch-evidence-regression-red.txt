@@ -1,0 +1,58 @@
+Started UTC: 2026-10-11T10:59:14.327903+00:00
+Cwd: /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices
+Command: CANON_TEST_ENGINE=/home/mike1/projects/dev/workflow-server python3 -m unittest discover -s skills/workflow-canon/test -p test_audit_surface.py -k MappingEvidenceContextTests -v
+Exit code: 1
+Production script SHA256 before: d03af7c3894f91a2bcfd5116a9a2fb5d2bc2189303988c2c0bc3b6df78458cbe
+Production script SHA256 after: d03af7c3894f91a2bcfd5116a9a2fb5d2bc2189303988c2c0bc3b6df78458cbe
+
+test_known_mapping_evidence_can_exceed_dispatch_budget (test_audit_surface.MappingEvidenceContextTests.test_known_mapping_evidence_can_exceed_dispatch_budget) ... 
+  test_known_mapping_evidence_can_exceed_dispatch_budget (test_audit_surface.MappingEvidenceContextTests.test_known_mapping_evidence_can_exceed_dispatch_budget) (phase='verify') ... FAIL
+  test_known_mapping_evidence_can_exceed_dispatch_budget (test_audit_surface.MappingEvidenceContextTests.test_known_mapping_evidence_can_exceed_dispatch_budget) (phase='evaluate') ... FAIL
+test_mapping_evidence_spans_are_in_verification_and_evaluation_packets (test_audit_surface.MappingEvidenceContextTests.test_mapping_evidence_spans_are_in_verification_and_evaluation_packets) ... 
+  test_mapping_evidence_spans_are_in_verification_and_evaluation_packets (test_audit_surface.MappingEvidenceContextTests.test_mapping_evidence_spans_are_in_verification_and_evaluation_packets) (phase='verify') ... FAIL
+  test_mapping_evidence_spans_are_in_verification_and_evaluation_packets (test_audit_surface.MappingEvidenceContextTests.test_mapping_evidence_spans_are_in_verification_and_evaluation_packets) (phase='evaluate') ... FAIL
+
+======================================================================
+FAIL: test_known_mapping_evidence_can_exceed_dispatch_budget (test_audit_surface.MappingEvidenceContextTests.test_known_mapping_evidence_can_exceed_dispatch_budget) (phase='verify')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/test_audit_surface.py", line 195, in test_known_mapping_evidence_can_exceed_dispatch_budget
+    with self.assertRaisesRegex(AuditError, 'Indivisible context exceeds declared budgets'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AuditError not raised
+
+======================================================================
+FAIL: test_known_mapping_evidence_can_exceed_dispatch_budget (test_audit_surface.MappingEvidenceContextTests.test_known_mapping_evidence_can_exceed_dispatch_budget) (phase='evaluate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/test_audit_surface.py", line 195, in test_known_mapping_evidence_can_exceed_dispatch_budget
+    with self.assertRaisesRegex(AuditError, 'Indivisible context exceeds declared budgets'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: AuditError not raised
+
+======================================================================
+FAIL: test_mapping_evidence_spans_are_in_verification_and_evaluation_packets (test_audit_surface.MappingEvidenceContextTests.test_mapping_evidence_spans_are_in_verification_and_evaluation_packets) (phase='verify')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/test_audit_surface.py", line 162, in test_mapping_evidence_spans_are_in_verification_and_evaluation_packets
+    self.assertEqual(result['assignment']['estimate']['context'].get(source),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     [[2, 5], [7, 7]])
+                     ^^^^^^^^^^^^^^^^^
+AssertionError: None != [[2, 5], [7, 7]]
+
+======================================================================
+FAIL: test_mapping_evidence_spans_are_in_verification_and_evaluation_packets (test_audit_surface.MappingEvidenceContextTests.test_mapping_evidence_spans_are_in_verification_and_evaluation_packets) (phase='evaluate')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/test_audit_surface.py", line 162, in test_mapping_evidence_spans_are_in_verification_and_evaluation_packets
+    self.assertEqual(result['assignment']['estimate']['context'].get(source),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     [[2, 5], [7, 7]])
+                     ^^^^^^^^^^^^^^^^^
+AssertionError: None != [[2, 5], [7, 7]]
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.454s
+
+FAILED (failures=4)

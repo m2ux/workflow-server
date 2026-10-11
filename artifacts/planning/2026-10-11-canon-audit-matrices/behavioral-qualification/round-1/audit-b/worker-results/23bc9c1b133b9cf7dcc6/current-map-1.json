@@ -1,0 +1,368 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "23bc9c1b133b9cf7dcc6",
+  "attempt": "current-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "reason": "The routine steps define emit as a call to produce, resolving the step used by emit.report. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "reason": "The emit step calls produce and is referenced by the routine output emit.report. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "reason": "The step id emit is the step-id endpoint of the routine output reference emit.report. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 6
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "reason": "The emit step technique reference names produce, the declaration endpoint for emit.report. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ff07daa2c799e9750e2df8bc"
+      ],
+      "reason": "The done: run graph relationship returns to the run activity. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "reason": "The initialActivity relationship connects qualification to run. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "reason": "The graph-entry relationship resolves the run activity. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "The graph-entry relationship identifies the run/done binding context. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 4
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "343988e91c335d3bdef76586"
+      ],
+      "reason": "The workflow graph has the run activity and its done exit with destination run. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "cc39f8b8ebb2b96169d05005"
+      ],
+      "reason": "The graph run entry has done: run. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 5
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b1f517596f87f82a15830709"
+      ],
+      "reason": "The graph exit done has destination run. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "reason": "The routine Inputs list declares the sole name envelope. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "reason": "The routine input declaration is envelope. AP-01 scopes its Detect to imperative technique Protocol emission instructions and Rules emission clauses. This row supplies an identifier, declaration, capability, retention/destination constraint, or relationship rather than such an imperative; those non-emitting constructs are outside that scope.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 9,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 7
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "The leaf Protocol section contains the instruction: Emit the report without validation. AP-01 applies to imperative Protocol instructions and Rules clauses concerning emission. This row contains such an instruction or clause, which must be tested separately even when it requires validation; a clean result does not make it inapplicable.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 8,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 8
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "This Protocol instruction states: Emit the report without validation. AP-01 applies to imperative Protocol instructions and Rules clauses concerning emission. This row contains such an instruction or clause, which must be tested separately even when it requires validation; a clean result does not make it inapplicable.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

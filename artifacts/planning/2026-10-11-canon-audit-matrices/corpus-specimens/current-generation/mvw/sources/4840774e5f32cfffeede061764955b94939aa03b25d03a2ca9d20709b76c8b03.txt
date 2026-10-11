@@ -1,0 +1,31 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the reference surface over a path the index records no file at.
+variables:
+  reads:
+    - negative_target_files
+    - negative_tree_path
+  writes:
+    - name: negative_referencing_files
+      type: array
+      description: Per target file, the paths of the files holding a link that resolves to it — empty by construction.
+    - name: repo_name
+      type: string
+      description: The graph each read addressed, which a report naming these referencers names too.
+required: true
+steps:
+  - kind: routine
+    id: surface-absent-file
+    routine: gitnexus::doc-reference-surface
+    with:
+      tree_path: "{negative_tree_path}"
+      target_files: "{negative_target_files}"
+    outputs:
+      referencing_files: negative_referencing_files
+      repo_name: repo_name
+exits:
+  - id: surfaced
+    isDefault: true
+outcome:
+  - The same run under a path the index records no file at named the graph and landed an empty set, the fallback the read promises rather than a failure

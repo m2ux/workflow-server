@@ -1,0 +1,275 @@
+[
+  {
+    "assignment": "3295bf9cec4fa57ced48",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory",
+    "results": [
+      {
+        "items": [
+          "inventory:scope:corpus/qualification/routines/deliver.yaml"
+        ],
+        "status": "disputed",
+        "reason": "The manifest marks deliver selected=false although it is directly called by run, consumes produce through emit and exports emit.report. It is also the explicit execution relationship source. It therefore belongs to the invocation and consumer closure even though it is not a seed. Its complete declaration, native rows and both call/instantiation relationships must participate in the inventory."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "status": "verified",
+        "reason": "The complete ancestor declares the archive destination at line 5. The selected produce source has a declared-contract relationship to this selected ancestor, so the directly required inherited source is included. The ancestor has no additional outgoing reference in its five lines; the omitted executing routine is separately disputed under its own and the affected seed closure obligations."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/qualification/techniques/produce.md"
+        ],
+        "status": "disputed",
+        "reason": "The producer seed and its ancestor are selected, but its caller/consumer deliver is unselected. Deliver line 3 consumes the leaf output through emit.report and line 6 calls produce; the explicit qualification/run/delivery/deliver/emit relationship is absent from the candidate rows. AP-02 requires that consumer binding and resolved producer, and DP-01 requires the full executing relationship. Include deliver and its instantiated context in this producer closure."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/qualification/workflow.yaml"
+        ],
+        "status": "disputed",
+        "reason": "The workflow seed and direct run activity are selected, but their execution chain reaches run#delivery -> deliver#emit -> produce while deliver is unselected and the declared execution relationship has no row. The requested workflow closure includes invoked definitions and full instantiation chains, not only graph endpoints. Restore the routine source, its binding rows and the explicit execution relationship with the already captured ancestor context."
+      }
+    ]
+  },
+  {
+    "assignment": "3bee1fd1e3f08073b847",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory",
+    "results": [
+      {
+        "items": [
+          "inventory:canon:corpus/canon/resources/anti-patterns.md"
+        ],
+        "status": "verified",
+        "reason": "The complete captured anti-pattern catalog contains the Controlled Qualification family and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both entries, including Detect, exclusions and Fix, are present in criteria; the family is present in supplemental. No later family or entry remains after line 21."
+      },
+      {
+        "items": [
+          "inventory:canon:corpus/canon/resources/convention-conformance.md"
+        ],
+        "status": "verified",
+        "reason": "The complete conventions source has one level-two section, Evidence scope at lines 3-5. The supplemental cc:evidence-scope entry captures that section completely, including complete definitions, four controlled criteria, explicit execution relationship, and unresolved unknowns. This verifies enumeration, not compliance with those requirements."
+      },
+      {
+        "items": [
+          "inventory:canon:corpus/canon/resources/design-principles.md"
+        ],
+        "status": "disputed",
+        "reason": "The captured home contains two level-two principles: inherited destination at lines 5-8 and Provide a terminating workflow path at lines 9-11. The candidate criteria contain only dp:1; dp:2 and its whole-workflow termination criterion are absent. Add the complete second principle and restore its row-product cells before accepting canon completeness."
+      },
+      {
+        "items": [
+          "inventory:corpus/qualification/activities/run.yaml"
+        ],
+        "status": "verified",
+        "reason": "The six source lines account for the native /id, /steps, delivery step, delivery/id, routine object, routine/name, arguments object and packet argument rows, plus the whole activity. The immediate deliver relationship records the actual invocation at /steps/id=delivery/routine/name and includes both source and target. These ten activity-owned rows match the captured source; the separately owned routine and scope omissions are not verified here."
+      },
+      {
+        "items": [
+          "inventory:corpus/qualification/routines/deliver.yaml"
+        ],
+        "status": "disputed",
+        "reason": "No routine-owned row appears in the candidate despite the captured deliver declaration. Missing native rows are /id, /inputs, /inputs/0, /outputs, /outputs/report, /steps, /steps/id=emit, /steps/id=emit/id, /steps/id=emit/technique and @element. Also missing are the emit-to-produce call relationship and the explicit qualification/run/delivery/deliver/emit instantiation with workflow, activity and ancestor context. The source declares input envelope, export emit.report and technique produce; AP-02 and DP-01 require these binding and inheritance endpoints."
+      },
+      {
+        "items": [
+          "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "status": "verified",
+        "reason": "The ancestor has two sections only: Capability with its line-2 description and Rules with the line-5 archive requirement. The candidate has both section rows, both content rows and the whole-element row. Its complete source contains no other clause, output declaration or outbound call requiring another ancestor-owned row."
+      },
+      {
+        "items": [
+          "inventory:corpus/qualification/techniques/produce.md"
+        ],
+        "status": "disputed",
+        "reason": "The candidate retains the compound Rules line and clause-1 but omits /rules/line-11/clause-2. Line 11 has two independently testable clauses: Retain the report ID; emit the report without validation. AP-01 explicitly requires each semicolon-separated clause to be reviewed independently, so the whole-line row and first retention clause cannot stand in for the second emission clause. Restore the missing clause row at line 11 while retaining the section and whole-element rows."
+      },
+      {
+        "items": [
+          "inventory:corpus/qualification/workflow.yaml"
+        ],
+        "status": "verified",
+        "reason": "The complete workflow provides id qualification, initialActivity run and graph/run/done -> run. Native rows cover the id, initialActivity, graph, run entry, done exit and whole workflow; graph relationships retain the initial entry, graph-node membership, exit-bearing graph entry and explicit self-loop occurrence. Those workflow-owned constructs are represented, with the activity endpoint present. The source-set closure defect is handled by the scope obligation."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/canon/resources/anti-patterns.md"
+        ],
+        "status": "verified",
+        "reason": "The catalog is captured as the anti-pattern authority and is neither a requested qualification definition seed nor a caller or consumer of a qualification definition. Its unselected manifest state is appropriate for definition-row scope; both named criteria and its family are separately inventoried from the complete captured source."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/canon/resources/convention-conformance.md"
+        ],
+        "status": "verified",
+        "reason": "This source is the captured Evidence scope authority, not a qualification workflow definition or a caller of one. Its unselected definition-manifest state is consistent with its separate supplemental-canon inventory obligation; its full five-line content is available."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/canon/resources/design-principles.md"
+        ],
+        "status": "verified",
+        "reason": "The design-principle home is an authoritative captured canon input rather than a requested qualification definition or a caller/consumer. Leaving it unselected for definition rows is consistent with its separate canon inventory. The missing dp:2 criterion is a canon-enumeration dispute, not a reason to invent definition rows for this resource."
+      },
+      {
+        "items": [
+          "inventory:scope:corpus/qualification/activities/run.yaml"
+        ],
+        "status": "disputed",
+        "reason": "The seed activity is selected, but its explicit delivery invocation at lines 3-6 targets deliver while the candidate manifest marks that routine unselected. The activity input contract cannot be covered without the routine Inputs declaration, and the explicit execution chain also passes through deliver#emit. Restore that invoked definition and the complete chain to the selected closure; selecting the caller alone does not close this responsibility."
+      }
+    ]
+  },
+  {
+    "assignment": "b193f57538fc16c1546f",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion",
+    "results": [
+      {
+        "items": [
+          "7f339716e8d7474fb2512654"
+        ],
+        "status": "disputed",
+        "reason": "The N reason claims emission validation belongs only to Rules and excludes Protocol as operational context. AP-01 Detect at line 9 explicitly covers a technique Protocol instruction or Rules clause. Produce Protocol line 8 directs Emit the report without validation, so this is precisely an emitting Protocol instruction, not a heading, declaration, call or Capability description. The applicability must be A; the candidate exclusion is contradicted by both the source and complete criterion. This is an applicability dispute, not an evaluation finding."
+      }
+    ]
+  },
+  {
+    "run": "candidate-inventory",
+    "require_map_exit": 2,
+    "output": {
+      "mapping_ready": false,
+      "complete": false,
+      "rows": 37,
+      "criteria": 3,
+      "cells": 111,
+      "unknown": 111,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "unmeasured",
+      "snapshot": "e90322aaca818955bf472ef52aca5d625ef04e86a3682b3e87c23834ca9bf32a",
+      "inventory_missing": 7,
+      "obligations_missing": 8,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    }
+  },
+  {
+    "run": "candidate-exclusion",
+    "require_map_exit": 2,
+    "output": {
+      "mapping_ready": false,
+      "complete": false,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 1,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 6,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "unmeasured",
+      "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 1
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 3,
+          "invalidated": 2
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 3,
+          "invalidated": 2
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 3,
+          "invalidated": 0
+        }
+      }
+    }
+  }
+]

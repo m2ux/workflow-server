@@ -1,0 +1,40 @@
+id: narrow-to-changed
+version: 1.0.0
+name: Narrow to Changed
+description: >-
+  Put the change's file list into a graph query as a path predicate, then run that query — the
+  rows that come back already sit in the files this work touched.
+
+inputs:
+  - id: cypher_query
+    description: A Cypher query that returns symbol_name and file_path. Each arm of a UNION ALL is its own MATCH.
+  - id: changed_files
+    description: The files the change under review touches.
+
+outputs:
+  - id: matched_symbols
+    type: array
+    description: Rows of the query that sit in {changed_files}, each with the symbol and the file the graph records.
+
+internals:
+  - id: constrained_query
+    description: The input query with each MATCH restricted to {changed_files}.
+
+steps:
+  - kind: technique
+    id: constrain
+    technique:
+      name: gitnexus::constrain-to-changed-files
+      inputs:
+        cypher_query: cypher_query
+        changed_files: changed_files
+      outputs:
+        cypher_query: constrained_query
+  - kind: technique
+    id: query
+    technique:
+      name: gitnexus::cypher
+      inputs:
+        cypher_query: constrained_query
+      outputs:
+        result_rows: matched_symbols

@@ -1,0 +1,50 @@
+id: implementation
+version: 1.4.0
+name: Implementation
+description: Execute each planned work package in priority order by triggering the work-package workflow
+variables:
+  reads:
+    - completed_packages
+    - initiative_name
+    - parent_workflow
+    - planning_folder_path
+    - priority_order
+  writes:
+    - name: completed_packages
+      type: array
+      description: List of completed work packages
+    - name: current_package
+      type: object
+      description: Currently active work package being planned or implemented
+    - name: overall_progress
+      type: string
+      description: Progress indicator (e.g., '3/7 complete')
+    - name: remaining_packages
+      type: array
+      description: Ordered list of work packages not yet started (derived from priority order)
+techniques:
+  - scatter-gather
+triggers:
+  - workflow: work-package
+    description: Each iteration starts the work-package workflow for one planned package
+    passContext:
+      - current_package
+      - initiative_name
+      - parent_workflow
+steps:
+  - kind: technique
+    id: initialize-iteration
+    technique: orchestrate-package-execution::initialize-iteration
+  - kind: loop
+    id: package-iteration
+    name: Package Iteration
+    loopType: forEach
+    variable: current_package
+    over: remaining_packages
+    steps:
+      - kind: technique
+        id: execute-package
+        technique: orchestrate-package-execution::execute-package
+outcome:
+  - Every planned package is delivered as merged, reviewed work, so the initiative's intended capability is fully in place
+  - Progress tracking reflects a finished initiative, giving stakeholders a trustworthy completion signal

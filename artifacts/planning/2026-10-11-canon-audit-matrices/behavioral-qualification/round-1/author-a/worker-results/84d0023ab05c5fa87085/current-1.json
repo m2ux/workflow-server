@@ -1,0 +1,134 @@
+{
+  "actor": "/root/qualify_verify_one",
+  "assignment": "84d0023ab05c5fa87085",
+  "attempt": "current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "deliver.yaml is required closure because run invokes it and its emit step calls touched produce. The captured export is emit.report and the captured leaf declares report; preserving this pair makes the actual contract available for evaluation. The routine declaration, invocation, executing workflow and ancestor context are all selected, with no further nested routine in its complete source.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "TECHNIQUE.md is required ancestor context for the leaf in the executing qualification workflow. The manifest selects it and preserves produce-to-ancestor plus concrete execution relationships. Its complete source adds no further target, so closure stops here.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "produce.md is an explicit seed with output declaration report. deliver is its actual consumer, run instantiates deliver, and qualification plus TECHNIQUE.md supply execution and inheritance context. All five operational sources are selected in the full manifest reviewed with the companion current packet; the remaining three sources are canon-only. No unselected operational consumer remains.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "qualification is a scope seed whose initialActivity and graph owner resolve to captured run. The sole exit value is null; this introduces no new source beyond the already selected run activity. The complete workflow, concrete routine path and inherited ancestor are present, and the empty diagnostic set agrees with resolvable targets.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6"
+}

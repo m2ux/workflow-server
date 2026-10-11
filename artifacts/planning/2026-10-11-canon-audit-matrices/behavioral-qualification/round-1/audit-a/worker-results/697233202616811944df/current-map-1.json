@@ -1,0 +1,368 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "697233202616811944df",
+  "attempt": "current-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f82d1cd9016de1cdd797e170"
+      ],
+      "reason": "The routine steps define emit as a call to produce, resolving the step used by emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "569231fa0b1023abbf3fc5e4"
+      ],
+      "reason": "The emit step calls produce and is referenced by the routine output emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 5
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7567be6ff4d583433092c972"
+      ],
+      "reason": "The step id emit is the step-id endpoint of the routine output reference emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 6
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "90bd5ed8d7c0859a6fbe41a1"
+      ],
+      "reason": "The emit step technique reference names produce, the declaration endpoint for emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8862878198e6198ef77c1f28"
+      ],
+      "reason": "The initialActivity relationship connects qualification to run. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "48da822c85267d96ea48c4c2"
+      ],
+      "reason": "The graph-entry relationship resolves the run activity. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "The graph-entry relationship identifies the run/done binding context. DP-02 applies to the workflow path from initialActivity through graph exits. This graph or entry construct must be assessed against the complete workflow invariant, with all reachable exits considered; matching one activity name cannot establish termination.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "0e0de76a45b1ce5cc0a55a2d"
+      ],
+      "reason": "The routine Inputs list declares the sole name envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "0dfaae8a980c43d6afea14bc"
+      ],
+      "reason": "The routine input declaration is envelope. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "0ed30157350f8c23d6297b75"
+      ],
+      "reason": "The ancestor Capability describes constraining inherited delivery. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "62d70a2ce5a077d8010ce9fe"
+      ],
+      "reason": "This ancestor Capability sentence says Constrain inherited delivery. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "6eb38943804944cf6cfbb4ed"
+      ],
+      "reason": "The leaf Capability describes producing a report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 2
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "dadf707dc4833496ce962762"
+      ],
+      "reason": "This leaf Capability sentence says Produce a report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7c49f2961aec4917ed955bd7"
+      ],
+      "reason": "The routine Outputs map exports report from emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 3
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ad7314b738ea597d93ae3b23"
+      ],
+      "reason": "The routine report binding references emit.report. DP-02 is scoped to the workflow graph from initialActivity to a null destination. This activity, routine, technique, or local relationship supplies no workflow graph exit; the criterion explicitly states activity and routine steps do not add such exits.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

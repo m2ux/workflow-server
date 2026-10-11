@@ -1,0 +1,83 @@
+id: measured-pass
+version: 1.0.0
+name: Measured Pass
+description: >-
+  Take one target at a time under the measurement the site supplies, recording what each target
+  measured and following the target that measurement names next, until it names none.
+
+inputs:
+  - id: initial_target
+    description: The target the run opens with.
+  - id: probe_operation
+    kind: technique
+    default: count-entries
+    description: The measurement each pass applies to the target it holds.
+  - id: component_path
+    description: Path of the component being probed, relative to the host repository, which every target is named against.
+
+outputs:
+  - id: pass_measurements
+    type: array
+    description: One entry per target that measured something, in the order the passes ran.
+
+internals:
+  - id: current_target
+    description: The target the run holds, which every step of a pass reads and the advance at its end replaces.
+  - id: empty_target
+    description: A target the measurement found nothing under, which the announcement after it reads.
+
+steps:
+  - kind: action
+    id: open-the-run
+    actions:
+      - action: set
+        target: current_target
+        value: "{initial_target}"
+  - kind: loop
+    id: probe-cycle
+    name: Probe Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: current_target
+      operator: "!="
+      value: null
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: measure
+        technique:
+          name: probe_operation
+          inputs:
+            probe_target: current_target
+      - kind: action
+        id: record-measurement
+        when: probe_result.entry_count > 0
+        actions:
+          - action: set
+            target: pass_measurements
+            description: What this target measured, appended to the run's ordered list.
+      - kind: action
+        id: note-empty-target
+        when: probe_result.entry_count == 0
+        actions:
+          - action: set
+            target: empty_target
+            value: "{current_target}"
+      - kind: action
+        id: announce-empty-target
+        when: empty_target
+        actions:
+          # The note is read once and cleared in the same step, so the announcement belongs to the
+          # pass that made it and no later pass repeats it.
+          - action: message
+            message: "Nothing under {empty_target}, so this pass recorded no measurement for it."
+          - action: set
+            target: empty_target
+            value: null
+      - kind: action
+        id: advance-target
+        actions:
+          - action: set
+            target: current_target
+            value: "{probe_result.next_target}"

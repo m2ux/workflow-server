@@ -1,0 +1,240 @@
+id: validate-and-commit
+version: 1.10.0
+name: Validate and Commit
+description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
+variables:
+  reads:
+    - assumptions_log
+    - compliance_report
+    - component_git_dir
+    - draft_attestation_path
+    - has_open_assumptions
+    - host_repo_path
+    - impact_analysis_path
+    - operation_type
+    - planning_folder_path
+    - pr_number
+    - scope_manifest
+    - scope_manifest_path
+    - specification_path
+    - target_path
+    - workflow_branch
+    - workflow_id
+  writes:
+    - name: addressed_count
+      type: number
+      description: Scope-manifest items confirmed addressed by scope-verification.
+      defaultValue: 0
+    - name: body
+      type: string
+      description: "Pull-request body: the change stated in a short paragraph, the manifest's entries as the file breakdown, and a link to the planning folder for the artifacts behind the change."
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: pr_number
+      type: string
+      description: Number of the pull request opened for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: pushed_branch
+      type: string
+      description: The branch that was pushed (`{remote_name}/{branch}` form or the branch name when verification only needs the local name).
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: title
+      type: string
+      description: Pull-request title naming the target workflow and whether the change creates or modifies it.
+    - name: total_count
+      type: number
+      description: Total scope-manifest items checked by scope-verification.
+      defaultValue: 0
+    - name: unaddressed_count
+      type: number
+      description: Scope-manifest items still unaddressed after scope-verification.
+      defaultValue: 0
+required: true
+steps:
+  - kind: technique
+    id: save-compliance-report
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: compliance-review.md
+        artifact_content: compliance_report
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: report_path
+    when: operation_type == 'review'
+  - kind: technique
+    id: commit-report
+    technique: git::commit-regular-files
+    when: operation_type == 'review'
+  - kind: technique
+    id: run-schema-validation
+    technique: audit-schema-validation
+    when: operation_type != 'review'
+  - kind: action
+    id: validation-clean
+    when: operation_type != 'review' && fail_count == 0
+    actions:
+      - action: message
+        message: "Schema validation passed — {pass_count} file(s), 0 failed."
+  - kind: checkpoint
+    id: validation-passed
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: fail_count
+          operator: ">"
+          value: 0
+    message: "Schema validation results: {pass_count} passed, {fail_count} failed."
+    defaultOption: proceed
+    autoAdvanceMs: 30000
+    options:
+      - id: proceed
+        label: Proceed to commit
+        description: Validation outcomes are acceptable for commit
+      - id: fix
+        label: Fix failures first
+        description: Validation failures must be addressed before committing.
+        effect:
+          exit: return-to-draft
+  - kind: technique
+    id: verify-scope-manifest
+    technique: scope-verification
+    when: operation_type != 'review'
+  - kind: action
+    id: scope-complete
+    when: operation_type != 'review' && unaddressed_count == 0
+    actions:
+      - action: message
+        message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed ([scope manifest]({scope_manifest_path}))."
+  - kind: checkpoint
+    id: scope-verified
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: unaddressed_count
+          operator: ">"
+          value: 0
+    message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining) ([scope manifest]({scope_manifest_path}))."
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Scope is complete enough
+        description: Remaining gaps are acceptable for commit
+      - id: fix
+        label: Address remaining items
+        description: Some scope-manifest items remain unaddressed and require attention.
+        effect:
+          exit: return-to-draft
+  - kind: technique
+    id: verify-planning-readme
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: workflow-design/readme-seed
+    when: operation_type != 'review'
+  - kind: technique
+    id: readme-authoring
+    technique: readme-authoring
+    when: operation_type != 'review'
+  - kind: checkpoint
+    id: approve-to-commit
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+    message: "Approve commit for workflow '{workflow_id}' ([design specification]({specification_path}), [assumptions log]({assumptions_log}) open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
+    options:
+      - id: approved
+        label: Approved — commit
+        description: The batched design surfaces are reviewed and approved for commit.
+      - id: correct-assumptions
+        label: Correct open judgements
+        description: Open design judgements need correction before commit; return with assumption feedback.
+        effect:
+          exit: correct-assumptions
+      - id: return-to-draft
+        label: Return to drafting
+        description: The changes are not ready; return to scope-and-draft for revision.
+        effect:
+          exit: return-to-draft
+  - kind: technique
+    id: stage-and-commit
+    technique: git::commit-regular-files
+    when: operation_type != 'review'
+  - kind: technique
+    id: verify-commit
+    technique: commit-verification
+  - kind: technique
+    id: push-branch
+    technique:
+      name: git::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
+    when: operation_type != 'review'
+  - kind: technique
+    id: compose-workflow-pr-description
+    technique: publish-workflow-pr
+    when: operation_type != 'review'
+  - kind: technique
+    id: create-pr
+    technique:
+      name: github::create-pr
+      inputs:
+        repo_path: target_path
+        branch_name: workflow_branch
+        base_branch: workflows
+        as_draft: true
+    when: operation_type != 'review'
+  - kind: technique
+    id: mark-ready
+    technique:
+      name: github::mark-ready
+      inputs:
+        repo_path: target_path
+    when: operation_type != 'review'
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Workflow design complete — changes committed and a pull request opened against the workflows branch (create/update), or the compliance report committed (review)
+exits:
+  - id: update
+    when: operation_type == "update"
+  - id: create
+    isDefault: true
+  - id: correct-assumptions
+    immediate: true
+  - id: return-to-draft
+    immediate: true
+outcome:
+  - Every YAML file passes schema validation, so the workflow is guaranteed loadable and the server will run it without surprise
+  - Nothing planned is left undone — every scope-manifest item is accounted for before the work lands
+  - Gate 2 (`approve-to-commit`) batches design specification, open judgements, impact, draft attestation, and planning README for a single interactive commit decision
+  - The work is committed from the session `{target_path}` worktree on `{workflow_branch}`, with a PR opened against `workflows`

@@ -1,0 +1,152 @@
+{
+  "assignment": {
+    "actor": "/root",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "obligations": {
+          "evidence": "Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json",
+          "output_tokens_per_item": 2048,
+          "seconds_per_item": 30
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            5,
+            21
+          ]
+        ],
+        "corpus/canon/resources/convention-conformance.md": [
+          [
+            3,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 9487,
+      "output_tokens_estimate": 4096,
+      "work_seconds_estimate": 60
+    },
+    "id": "10d8be2cdc734f812b5d",
+    "items": [
+      "unit:ap:controlled-qualification",
+      "unit:cc:evidence-scope"
+    ],
+    "mappings": {},
+    "phase": "obligations",
+    "returned": [],
+    "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b/sources",
+  "cells": {},
+  "corpus_manifest": {
+    "corpus/canon/resources/anti-patterns.md": {
+      "deleted": false,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "references": [],
+      "seed": false,
+      "selected": false
+    },
+    "corpus/canon/resources/convention-conformance.md": {
+      "deleted": false,
+      "hash": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "references": [],
+      "seed": false,
+      "selected": false
+    }
+  },
+  "criteria": {},
+  "diagnostics": [],
+  "mappings": {},
+  "obligations": {
+    "unit:ap:controlled-qualification": {
+      "criterion": {
+        "end": 21,
+        "family": "Controlled Qualification",
+        "hash": "a6a6755ca0c552b50ac702d7cf2b3a62f0fb89d9031242b12af4d9fa490bf858",
+        "id": "ap:controlled-qualification",
+        "label": "Controlled Qualification",
+        "source": "corpus/canon/resources/anti-patterns.md",
+        "start": 5,
+        "text": "## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.",
+        "title": "Controlled Qualification"
+      },
+      "kind": "unit",
+      "sources": [
+        "corpus/canon/resources/anti-patterns.md"
+      ]
+    },
+    "unit:cc:evidence-scope": {
+      "criterion": {
+        "end": 5,
+        "family": "Evidence scope",
+        "hash": "be1bc9ee60e8cea76dcb79ee82c5c75d1d45cdaceb4a7a1bef60e66fa8cb32bd",
+        "id": "cc:evidence-scope",
+        "label": "Evidence scope",
+        "source": "corpus/canon/resources/convention-conformance.md",
+        "start": 3,
+        "text": "## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.",
+        "title": "Evidence scope"
+      },
+      "kind": "unit",
+      "sources": [
+        "corpus/canon/resources/convention-conformance.md"
+      ]
+    }
+  },
+  "required_checks": [],
+  "rows": {},
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 2
+  },
+  "source_excerpts": [
+    {
+      "end": 21,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 5,
+      "text": "## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares."
+    },
+    {
+      "end": 5,
+      "hash": "4ddbeecb525a65e353b11d9640f59e57175f7fa2925b91bc2252d1ceba6d3f39",
+      "source": "corpus/canon/resources/convention-conformance.md",
+      "start": 3,
+      "text": "## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance."
+    }
+  ],
+  "supplemental": {}
+}

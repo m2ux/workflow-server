@@ -1,0 +1,116 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a",
+  "assignment": "7167a6ce204a67b6b2ae",
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-map-verify-two-1",
+  "records": [
+    {
+      "items": [
+        "ec7e3577667dbf0846b7b09f",
+        "eaf04cb03551645c38d72842",
+        "51923b360aa3ef1a7585fbf4",
+        "7fa24663abc3348858407cd5",
+        "8f04699d8cada26b1b7ebcc5",
+        "f7c71bd7cd44e3d3cfd50614",
+        "501147c7c9cf63d456cc367b",
+        "21b5df21a5c696fcaa898fbf",
+        "d4d45cf60920c4360e003cf1",
+        "b1c897ef75ecfb0802a40206",
+        "b192bf0ffab5454aaf50901a",
+        "3e979fb0c7e3eb5836c3cb1a",
+        "f82d1cd9016de1cdd797e170",
+        "569231fa0b1023abbf3fc5e4",
+        "7567be6ff4d583433092c972",
+        "90bd5ed8d7c0859a6fbe41a1",
+        "0e0de76a45b1ce5cc0a55a2d",
+        "0dfaae8a980c43d6afea14bc",
+        "0ed30157350f8c23d6297b75",
+        "62d70a2ce5a077d8010ce9fe",
+        "6eb38943804944cf6cfbb4ed",
+        "dadf707dc4833496ce962762",
+        "7c49f2961aec4917ed955bd7",
+        "ad7314b738ea597d93ae3b23",
+        "19723157905da0f5874e77db"
+      ],
+      "status": "verified",
+      "reason": "Verified N: the listed activity, routine and technique rows supply local declarations, steps, contracts or call/inheritance context rather than a workflow start or graph edge. DP-02 expressly states that activity and routine steps add no graph exits and defines termination as a whole-workflow invariant. These rows do not independently create a path-to-null test. Assigned rows: corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/id, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name, corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-1, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2, corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/routines/deliver.yaml#@element.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "094759e3ffb8236db086b566",
+        "9a13e148e0a434d148bef242",
+        "e0fcd50974c10678a3e2fb44",
+        "8862878198e6198ef77c1f28",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972"
+      ],
+      "status": "verified",
+      "reason": "Verified A: each listed workflow row supplies initialActivity, a graph entry/exit, a graph relationship or the whole workflow. DP-02 requires assessment of their complete reachable graph for a finite path to null. Activity name resolution alone cannot decide that invariant, and either a terminating edge or a self-loop remains within the criterion scope. Assigned rows: corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

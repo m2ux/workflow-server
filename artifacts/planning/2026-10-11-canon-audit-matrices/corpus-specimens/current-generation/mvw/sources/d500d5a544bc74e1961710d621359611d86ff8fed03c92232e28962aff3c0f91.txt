@@ -1,0 +1,146 @@
+id: quality-review
+version: 1.4.0
+name: Quality Review
+description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
+variables:
+  reads:
+    - component_git_dir
+    - current_file
+    - host_repo_path
+    - impact_analysis_path
+    - planning_folder_path
+    - pr_number
+    - remediation_round
+    - schema_conforms
+    - target_path
+    - target_workflow_ids
+    - verified_findings
+  writes:
+    - name: audit_findings
+      type: array
+      description: One entry per criteria violation, each carrying its entry name, location, evidence, severity, origin and known marking.
+    - name: schema_conforms
+      type: boolean
+      description: True when the file just authored parses and conforms to its schema.
+      defaultValue: false
+    - name: changed_files
+      type: array
+      description: The change surface for the bound target — whole touched files closed under I/O-contract referencers.
+      defaultValue: []
+    - name: consumer_surface
+      type: array
+      description: One entry per reference another workflow holds into the target, resolved against the change surface.
+    - name: coverage_ledger
+      type: array
+      description: One row per enumeration unit, each carrying its home, its anchor, its status and its evidence rows.
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: impact_analysis
+      type: object
+      description: The removals inventory carrying a row for every reduction a remediation round applied, each naming the round that raised it.
+    - name: impact_analysis_path
+      type: string
+      description: Absolute path to the persisted impact-analysis artifact.
+      defaultValue: ""
+    - name: known_finding_keys
+      type: array
+      description: One key per already-accepted finding, pairing its criteria entry name with the location it was recorded against.
+    - name: register_sections
+      type: array
+      description: Per-target register sections accumulated across the sweep, each carrying that target's findings, coverage, validation result and change-surface membership.
+      defaultValue: []
+    - name: target_workflow_id
+      type: string
+      description: The workflow id currently being authored, updated or audited.
+    - name: touched_files
+      type: array
+      description: Every path under the target whose bytes differ from the base ref, each entry a whole file.
+    - name: yaml_file
+      type: string
+      description: The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
+required: true
+steps:
+  - kind: loop
+    id: author-fixes-until-valid
+    name: Author Fixes Until Valid
+    loopType: doWhile
+    continueWhile:
+      type: simple
+      variable: schema_conforms
+      operator: ==
+      value: false
+    maxIterations: 5
+    when: remediation_round > 0
+    steps:
+      - kind: technique
+        id: author-fixes
+        technique:
+          name: workflow-definition::yaml-authoring
+          inputs:
+            selected_findings: verified_findings
+  - kind: technique
+    id: record-fixes
+    technique:
+      name: workflow-definition::apply-audit-fixes
+      inputs:
+        selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
+    id: inventory-remediation-removals
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: impact-analysis.md
+        artifact_content: impact_analysis
+      outputs:
+        written_artifact: impact_analysis_path
+    when: remediation_round > 0
+  - kind: technique
+    id: load-known-findings
+    technique: workflow-definition::load-known-findings
+  - kind: technique
+    id: survey-reference-workflows
+    technique:
+      name: workflow-engine::list-workflows
+      outputs:
+        workflow_catalog: reference_workflows
+  - kind: loop
+    id: target-sweep-loop
+    name: Target Sweep Loop
+    loopType: forEach
+    variable: target_workflow_id
+    over: target_workflow_ids
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: rebind-target-baseline
+        technique: workflow-definition::reload-workflow
+      - kind: technique
+        id: resolve-consumer-surface
+        technique: workflow-definition::resolve-consumer-surface
+      - kind: technique
+        id: inventory-prose-fields
+        technique: workflow-definition::inventory-prose-fields
+      - kind: technique
+        id: sweep-canon
+        technique: workflow-definition::audit-canon
+      - kind: technique
+        id: validate-schema
+        technique: workflow-definition::audit-schema-validation
+        actions:
+          - action: set
+            target: register_sections
+            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), `{fail_count}`, and the target's change-surface membership from `{touched_files}`, `{changed_files}` and `{consumer_surface}` as they stand for this iteration. Appends; never replaces a prior target's section."
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from
+  - The change surface is whole touched files closed under I/O-contract referencers, so Detect is never limited to diff hunks and silent bind sites still join the walk
+  - A violation reachable only through another workflow's reference into the target is reachable, because the consumer surface is part of what the walk covers
+  - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
+  - Walked units that reach the change surface carry field-level evidence on each whole file, so a narrative "walked" claim without Detect is a coverage gap
+  - The definition guards run against the tree this run edits as a mechanical net separate from canon coverage
+  - A remediation round inventories every reduction it applies, naming the round against the row, or refuses the reduction and restores the content — so a fix cannot widen what the run removes without the record saying so

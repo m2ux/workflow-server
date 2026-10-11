@@ -1,0 +1,237 @@
+{
+  "actor": "/root/qualify_verify_one",
+  "assignment": "2aed4b761ede805c84da",
+  "attempt": "author-verify-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "afeb129e1e03e4f353693950",
+        "7b47769dd43afb09823a4b14"
+      ],
+      "reason": "Each named row is a call, graph or inheritance relationship. AP1 expressly excludes these constructs from emitting instructions. A leaf instruction cited as context remains represented by its own instruction/section rows; the relationship itself issues no emission directive. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee",
+        "720f7eeadf6be862dd39b7ab",
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "The complete corpus/qualification/techniques/TECHNIQUE.md source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e00abe344b2cf11c702b34f1",
+        "b055cfe76040cd42f5d207a8"
+      ],
+      "reason": "The named rows declare output summary and contain no Protocol instruction or Rules emission clause. AP1 explicitly excludes output declarations. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e192558242a4ed960c5d7a46",
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "reason": "The named Capability rows describe Produce a report. AP1 explicitly treats capability descriptions as service descriptions rather than imperative emission instructions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "0782b255d289b2d8aaa260a8",
+        "6d000a7587cb7a720d3ce09a"
+      ],
+      "reason": "The complete corpus/qualification/activities/run.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2ec151da2546cd9066780932",
+        "9156a757fd93955348ca5766"
+      ],
+      "reason": "The complete corpus/qualification/routines/deliver.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "3641b7b9d54d55df0cc22cb1",
+        "5551fe05b667e60209399004",
+        "ca0a66d25c90e652baa92f28"
+      ],
+      "reason": "The complete corpus/qualification/workflow.yaml source contains only identifiers, call/binding/graph structure or an ancestor capability/destination constraint. None of these rows is a technique Protocol instruction or Rules clause directing artifact emission; AP1 names these exclusions. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8ab5a44208c83cc6801721f8"
+      ],
+      "reason": "Each named row is a call, graph or inheritance relationship. AP1 expressly excludes these constructs from emitting instructions. A leaf instruction cited as context remains represented by its own instruction/section rows; the relationship itself issues no emission directive. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "The complete leaf contains report-emission instructions at Protocol line 8 and Rules line 11 clause 2. AP1 therefore applies to the whole element while keeping those instructions separately accountable. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e42353cfc8fe3169b809b996"
+      ],
+      "reason": "Each named row is a call, graph or inheritance relationship. AP1 expressly excludes these constructs from emitting instructions. A leaf instruction cited as context remains represented by its own instruction/section rows; the relationship itself issues no emission directive. The exact mapped disposition, reason and evidence were independently checked and agree with these source facts.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

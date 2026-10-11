@@ -1,0 +1,63 @@
+id: positive-case
+version: 1.2.0
+name: Positive Case
+description: Prepare a throwaway group holding two checkouts, one of them behind its graph, and refer to the group refresh over it.
+variables:
+  writes:
+    - name: positive_stale_member_graph_name
+      type: string
+      description: Name of the prepared checkout's graph, that checkout trailing its working tree by a commit, which joins the group as its stale member.
+    - name: positive_group_name
+      type: string
+      description: The throwaway group the run refreshes, whose members are the checkouts this case prepared.
+    - name: positive_current_member_graph_name
+      type: string
+      description: Name of the second prepared member's graph, which stands at its tree's head.
+    - name: positive_group_freshness_report
+      type: object
+      description: The group's name, when its contract registry last synced, and one freshness entry per member, keyed by the name the registry gives it.
+    - name: positive_contract_registry_stats
+      type: object
+      description: What the rebuilt registry holds — the contracts extracted per member, and how many cross-link to another member.
+    - name: positive_member_rebuild_stats
+      type: object
+      description: The counts the graph of the member rebuilt last holds afterwards. Held here so a rebuild's answer does not land under the name a direct index read writes.
+    - name: positive_unrebuildable_members
+      type: array
+      description: The members this run leaves behind — stale, and with no graph to name the tree a rebuild would walk.
+    - name: positive_contract_report
+      type: object
+      description: Each contract the rebuilt registry holds with the member publishing it, its kind, and the member it cross-links to.
+required: true
+steps:
+  - kind: technique
+    id: prepare-stale-member
+    technique:
+      name: conformance::prepare-stale-fixture
+      outputs:
+        stale_fixture_graph_name: positive_stale_member_graph_name
+  - kind: technique
+    id: prepare-group
+    technique:
+      name: conformance::prepare-conformance-group
+      inputs:
+        stale_member_graph_name: positive_stale_member_graph_name
+      outputs:
+        conformance_group_name: positive_group_name
+        current_member_graph_name: positive_current_member_graph_name
+  - kind: routine
+    id: refresh-covered-group
+    routine: gitnexus::group-refresh
+    with:
+      group_name: "{positive_group_name}"
+    outputs:
+      group_freshness_report: positive_group_freshness_report
+      contract_registry_stats: positive_contract_registry_stats
+      member_rebuild_stats: positive_member_rebuild_stats
+      unrebuildable_members: positive_unrebuildable_members
+      contract_report: positive_contract_report
+exits:
+  - id: refreshed
+    isDefault: true
+outcome:
+  - The run read every member's freshness, rebuilt the one member standing behind its tree, rebuilt the registry and read it back, with no member left behind

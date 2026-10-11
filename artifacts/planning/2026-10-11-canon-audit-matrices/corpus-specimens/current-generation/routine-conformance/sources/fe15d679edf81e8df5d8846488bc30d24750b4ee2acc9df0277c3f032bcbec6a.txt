@@ -1,0 +1,78 @@
+id: impact-analysis
+version: 1.7.0
+name: Impact Analysis
+description: Impact assessment of proposed changes against an existing workflow's files, transitions, and references.
+variables:
+  reads:
+    - component_git_dir
+    - operation_type
+    - planning_folder_path
+    - pr_number
+    - target_path
+  writes:
+    - name: impact_analysis_path
+      type: string
+      description: Absolute path to the persisted impact-analysis artifact.
+      defaultValue: ""
+    - name: preservation_required
+      type: boolean
+      description: Whether the reader asked for flagged content to survive the change, so drafting frames each file to keep it. False while no removal has been reviewed, which is the whole of the create path — that route reaches drafting without visiting this activity.
+      defaultValue: false
+    - name: removal_count
+      type: number
+      description: Count of content removals inventoried by impact-analysis.
+      defaultValue: 0
+required: false
+steps:
+  - kind: technique
+    id: impact-analysis
+    technique: impact-analysis
+    when: operation_type == 'update'
+  - kind: technique
+    id: persist-impact-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: impact-analysis.md
+        artifact_content: impact_analysis
+        target_dir: planning_folder_path
+    when: operation_type == 'update'
+  - kind: action
+    id: impact-no-removals
+    when: removal_count == 0
+    actions:
+      - action: message
+        message: "Impact analysis complete — no content removals flagged ([impact analysis]({impact_analysis_path}))."
+  - kind: checkpoint
+    id: impact-and-preservation-confirmed
+    condition:
+      type: simple
+      variable: removal_count
+      operator: ">"
+      value: 0
+    message: "Impact analysis: {removal_count} removal(s) flagged ([impact analysis]({impact_analysis_path}))."
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Impact and removals look correct
+        description: Impact scope is accurate and every flagged removal is intentional
+        effect:
+          setVariable:
+            preservation_required: false
+      - id: revise-impact
+        label: Revise impact scope
+        description: Impact scope is incomplete or over-inclusive.
+      - id: preserve
+        label: Preserve some flagged content
+        description: Some flagged content must be preserved rather than removed.
+        effect:
+          setVariable:
+            preservation_required: true
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written
+  - Transition chains and technique/resource references are known-intact, so the update won't silently orphan or break the workflow's wiring
+  - No content disappears by accident — every flagged removal is one the user consciously approved (or there were none)

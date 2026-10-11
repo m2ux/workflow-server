@@ -1,0 +1,891 @@
+id: start-work-package
+version: 3.28.0
+name: Start Work Package
+description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+variables:
+  reads:
+    - base_branch
+    - branch_name
+    - component_git_dir
+    - issue_request
+    - issue_title
+    - issue_type
+    - jira_issue_key
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - review_summary
+    - target_path
+    - target_repo
+    - user_request
+  writes:
+    - name: base_branch
+      type: string
+      description: The branch the pull request targets, as the platform reports it.
+      defaultValue: ""
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: branch_name
+      type: string
+      description: Feature branch name.
+    - name: component_git_dir
+      type: string
+      description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
+    - name: component_hint
+      type: string
+      description: Basename of the component the session was opened inside.
+    - name: component_name
+      type: string
+      description: Basename of the component being worked on (e.g., 'midnight-node').
+      defaultValue: ""
+    - name: component_path
+      type: string
+      description: Path of the component being worked on, relative to the host repository.
+      defaultValue: .
+    - name: default_branch
+      type: string
+      description: The component's default branch, read off the remote HEAD. Feature branches are created off it, and sync back from it.
+    - name: existing_pr_number
+      type: string
+      description: PR number of the draft pull request already open for this branch.
+      defaultValue: ""
+    - name: github_issue_found
+      type: boolean
+      description: Whether a GitHub issue linked to the Jira ticket was found in the target repo.
+      defaultValue: false
+    - name: gitnexus_indexed
+      type: boolean
+      description: Whether the component under work has a usable GitNexus index.
+      defaultValue: false
+    - name: head_sha
+      type: string
+      description: Commit sha at the head of the pull request's branch.
+      defaultValue: ""
+    - name: headless_mode
+      type: boolean
+      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
+      defaultValue: false
+    - name: host_repo_path
+      type: string
+      description: Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+    - name: is_review_mode
+      type: boolean
+      description: True when the work package reviews an existing PR instead of producing a new implementation.
+      defaultValue: false
+    - name: issue_cancelled
+      type: boolean
+      description: Whether issue creation was cancelled by user.
+      defaultValue: false
+    - name: issue_number
+      type: string
+      description: GitHub or Jira issue number.
+    - name: issue_platform
+      type: string
+      description: The issue tracker this work package's ticket lives in.
+      values:
+        - github
+        - jira
+    - name: issue_present
+      type: boolean
+      description: Whether the user supplied an issue reference for this work package.
+      defaultValue: false
+    - name: issue_record
+      type: object
+      description: The tracked issue as its platform returned it.
+    - name: issue_skipped
+      type: boolean
+      description: Whether issue creation was skipped by user.
+      defaultValue: false
+    - name: issue_type
+      type: string
+      description: What kind of change the ticket records.
+      values:
+        - feature
+        - bug
+        - task
+        - enhancement
+        - epic
+    - name: issue_type_ambiguous
+      type: boolean
+      description: Whether the tracked issue's own signals leave its type unsettled.
+      defaultValue: false
+    - name: issue_url
+      type: string
+      description: URL of the tracker issue for this work package (alongside issue_number).
+      defaultValue: ""
+    - name: jira_project
+      type: string
+      description: Whether the Jira project came from the project list ('selected') or from the user directly ('specified').
+    - name: needs_github_issue_creation
+      type: boolean
+      description: Whether a GitHub issue should be created to mirror the Jira ticket.
+      defaultValue: false
+    - name: needs_issue_creation
+      type: boolean
+      description: Whether a new issue needs to be created.
+      defaultValue: false
+    - name: pr_body
+      type: string
+      description: The pull request's description body as the platform returned it.
+      defaultValue: ""
+    - name: pr_exists
+      type: boolean
+      description: Whether a PR already exists for the current branch.
+      defaultValue: false
+    - name: pr_number
+      type: string
+      description: Pull request number.
+    - name: pr_skipped
+      type: boolean
+      description: Whether PR creation was skipped by user.
+      defaultValue: false
+    - name: pr_url
+      type: string
+      description: URL of the pull request for this work package (alongside pr_number).
+      defaultValue: ""
+    - name: prior_feedback_triage
+      type: object
+      description: Triage of the reviewed PR's existing comments and review threads, one row per thread with its Confirmed, Refuted or Superseded disposition and the author and class of the original.
+      defaultValue: {}
+    - name: project_type
+      type: string
+      description: The build system and dependency set the target tree is detected as.
+      values:
+        - rust-substrate
+        - other
+    - name: rating_cap
+      type: string
+      description: The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
+      defaultValue: ""
+    - name: review_mode_ambiguous
+      type: boolean
+      description: True when review vs create intent cannot be derived confidently from the request.
+      defaultValue: false
+    - name: review_pr_captured
+      type: boolean
+      description: Whether the PR reference has been captured in review mode.
+      defaultValue: false
+    - name: review_pr_missing
+      type: boolean
+      description: True when review mode is active but no PR number or URL could be derived.
+      defaultValue: false
+    - name: review_pr_url
+      type: string
+      description: URL of the PR being reviewed (review mode only).
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
+    - name: squash_merge_supported
+      type: boolean
+      description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).
+      defaultValue: false
+    - name: stakeholder_overview
+      type: string
+      description: The two-paragraph plain-language overview of the problem.
+    - name: target_path
+      type: string
+      description: Feature worktree path for edits, builds, and PR ops.
+    - name: target_repo
+      type: string
+      description: GitHub repository as owner/repo.
+    - name: use_existing_pr
+      type: boolean
+      description: Whether to use an existing PR instead of creating a new one.
+      defaultValue: false
+    - name: worktree_created
+      type: boolean
+      description: True when a worktree at `{target_path}` was created or reused by this run.
+      defaultValue: false
+required: true
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting issue management
+  - kind: technique
+    id: detect-review-mode
+    technique: review-mode-detection
+  - kind: action
+    id: announce-derived-review-mode
+    when: is_review_mode == true && review_mode_ambiguous != true
+    actions:
+      - action: message
+        message: "Review mode derived from the request."
+  - kind: action
+    id: announce-derived-review-pr
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+    actions:
+      - action: message
+        message: "Review PR derived as #{pr_number}."
+  - kind: checkpoint
+    id: review-mode-detection
+    condition:
+      type: simple
+      variable: review_mode_ambiguous
+      operator: ==
+      value: true
+    message: Review vs new-implementation intent is unclear from the request.
+    options:
+      - id: confirm-review
+        label: Yes, review existing PR
+        description: Review an existing implementation
+        effect:
+          setVariable:
+            is_review_mode: true
+            review_mode_ambiguous: false
+      - id: new-implementation
+        label: No, new implementation
+        description: This is new work, not a review
+        effect:
+          setVariable:
+            is_review_mode: false
+            review_mode_ambiguous: false
+  - kind: action
+    id: mark-review-pr-captured
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+    actions:
+      - action: set
+        target: review_pr_captured
+        value: true
+  - kind: checkpoint
+    id: review-pr-reference
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_missing
+          operator: ==
+          value: true
+    message: "Review mode needs a PR reference (number or URL)."
+    options:
+      - id: pr-provided
+        label: PR reference provided
+        description: Proceed with the specified PR
+        effect:
+          setVariable:
+            review_pr_captured: true
+            review_pr_missing: false
+      - id: cancel-review
+        label: Cancel review mode
+        description: Switch to standard work package mode
+        effect:
+          setVariable:
+            is_review_mode: false
+            review_pr_missing: false
+  - kind: technique
+    id: capture-pr-reference
+    technique: review-mode-detection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_pr_captured
+          operator: ==
+          value: true
+        - type: simple
+          variable: branch_name
+          operator: notExists
+  - kind: action
+    id: mark-run-headless
+    when: is_review_mode == true
+    actions:
+      - action: set
+        target: headless_mode
+        value: true
+  - kind: technique
+    id: ingest-prior-feedback
+    technique: review-existing-feedback
+    when: is_review_mode == true
+  - kind: technique
+    id: derive-host-repo
+    technique: git::resolve-host-repo
+  - kind: technique
+    id: resolve-repo-root
+    technique: repo-root-resolution
+  - kind: technique
+    id: read-reviewed-pr-body
+    technique:
+      name: github::view-pr
+      inputs:
+        repo_path: component_git_dir
+    when: is_review_mode == true
+  - kind: technique
+    id: verify-reviewed-pr-body
+    technique:
+      name: update-pr::verify-body
+      inputs:
+        rendered_pr_body: pr_body
+    when: is_review_mode == true
+  - kind: technique
+    id: update-repo-submodules
+    technique: manage-git::update-repo-submodules
+    condition:
+      type: simple
+      variable: host_repo_path
+      operator: exists
+  - kind: action
+    id: verify-signing-precondition
+    actions:
+      - action: validate
+        target: signing.configured == true
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing).
+  - kind: routine
+    id: analyze-repo-with-gitnexus
+    routine: ensure-graph-index
+    with:
+      repo_path: "{component_git_dir}"
+    outputs:
+      gitnexus_indexed: gitnexus_indexed
+  - kind: technique
+    id: detect-merge-strategy
+    technique: manage-git::detect-merge-strategy
+  - kind: technique
+    id: detect-project-type
+    technique: project-type-detection
+  - kind: action
+    id: announce-project-type
+    actions:
+      - action: message
+        message: "Project type: {project_type}."
+  - kind: technique
+    id: check-issue
+    technique: issue-reference-detection
+  - kind: checkpoint
+    id: issue-verification
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_present
+          operator: ==
+          value: false
+    message: No GitHub or Jira issue is associated with this work package.
+    options:
+      - id: provide-existing
+        label: Provide existing issue
+        description: "Share the issue number or URL (GitHub #N or Jira PROJ-N)"
+        effect:
+          setVariable:
+            needs_issue_creation: false
+      - id: create-issue
+        label: Create new issue
+        description: Create a new issue in GitHub or Jira
+        effect:
+          setVariable:
+            needs_issue_creation: true
+      - id: skip-issue
+        label: Skip issue
+        description: Proceed without (not recommended for non-trivial work)
+        effect:
+          setVariable:
+            issue_skipped: true
+  - kind: checkpoint
+    id: platform-selection
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+    message: The new issue needs a tracker to live in.
+    options:
+      - id: github
+        label: GitHub
+        description: Create issue in GitHub repository
+        effect:
+          setVariable:
+            issue_platform: github
+      - id: jira
+        label: Jira
+        description: Create issue in Jira project
+        effect:
+          setVariable:
+            issue_platform: jira
+  - kind: technique
+    id: detect-provided-issue-reference
+    technique: issue-reference-detection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_present
+          operator: ==
+          value: false
+        - type: simple
+          variable: needs_issue_creation
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: notExists
+  - kind: technique
+    id: verify-jira-issue
+    technique:
+      name: atlassian::get-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+    when: issue_platform == 'jira'
+    actions:
+      - action: validate
+        target: cloudId != null
+        message: Atlassian cloudId is not resolved, so no Jira operation can run. Resolve the cloudId for the site and re-run.
+  - kind: technique
+    id: verify-github-issue
+    technique:
+      name: github::view-issue
+      inputs:
+        repo_path: component_git_dir
+    when: issue_platform == 'github'
+  - kind: technique
+    id: search-github-issue
+    technique:
+      name: github::list-issues
+      inputs:
+        repo_path: component_git_dir
+        search_text: "{jira_issue_key}"
+    when: issue_platform == 'jira'
+    actions:
+      - action: set
+        target: github_issue_found
+        description: true if a GitHub issue referencing jira_issue_key was found, false otherwise
+  - kind: checkpoint
+    id: github-issue-missing
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: ==
+          value: jira
+        - type: simple
+          variable: github_issue_found
+          operator: ==
+          value: false
+    message: No GitHub issue mirrors Jira ticket {jira_issue_key}, so the pull request has nothing to trace to in the target repo.
+    defaultOption: create
+    autoAdvanceMs: 30000
+    options:
+      - id: create
+        label: Create GitHub issue
+        description: Create a GitHub issue in the target repo mirroring the Jira ticket
+        effect:
+          setVariable:
+            needs_github_issue_creation: true
+      - id: skip
+        label: Skip — use Jira ticket only
+        description: Proceed without a GitHub issue
+        effect:
+          setVariable:
+            needs_github_issue_creation: false
+  - kind: technique
+    id: create-github-issue-for-jira
+    technique:
+      name: create-issue::create-github
+    when: needs_github_issue_creation == true
+  - kind: checkpoint
+    id: jira-project-selection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: issue_platform
+          operator: ==
+          value: jira
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
+    message: The new Jira issue needs a project to live in.
+    options:
+      - id: select
+        label: Select from list
+        description: Choose from available projects
+        effect:
+          setVariable:
+            jira_project: selected
+      - id: specify
+        label: Specify project key
+        description: Provide a specific project key
+        effect:
+          setVariable:
+            jira_project: specified
+  - kind: technique
+    id: derive-issue-type
+    technique: issue-type-detection
+    when: is_review_mode != true && needs_issue_creation != true && issue_skipped != true
+  - kind: checkpoint
+    id: issue-type-selection
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
+        - type: simple
+          variable: issue_type_ambiguous
+          operator: ==
+          value: true
+    message: The drafted issue's type is unsettled.
+    options:
+      - id: feature
+        label: Feature / Story
+        description: User-facing capability with clear value
+        effect:
+          setVariable:
+            issue_type: feature
+            issue_type_ambiguous: false
+      - id: bug
+        label: Bug
+        description: Defect in existing functionality
+        effect:
+          setVariable:
+            issue_type: bug
+            issue_type_ambiguous: false
+      - id: task
+        label: Task
+        description: Technical work not directly user-facing
+        effect:
+          setVariable:
+            issue_type: task
+            issue_type_ambiguous: false
+      - id: enhancement
+        label: Enhancement
+        description: Improvement to existing functionality
+        effect:
+          setVariable:
+            issue_type: enhancement
+            issue_type_ambiguous: false
+      - id: epic
+        label: Epic (Jira only)
+        description: Large feature spanning multiple stories/tasks
+        effect:
+          setVariable:
+            issue_type: epic
+            issue_type_ambiguous: false
+  - kind: checkpoint
+    id: issue-review
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
+    message: The drafted issue stands ready as written.
+    options:
+      - id: create
+        label: Create issue
+      - id: edit
+        label: Edit issue
+        description: Make changes before creating
+      - id: cancel
+        label: Cancel issue creation
+        description: Do not create the issue
+        effect:
+          setVariable:
+            issue_cancelled: true
+  - kind: technique
+    id: create-github-issue
+    technique: create-issue::create-github
+    when: needs_issue_creation == true && issue_platform == 'github'
+  - kind: technique
+    id: create-jira-issue
+    technique: create-issue::create-jira
+    when: needs_issue_creation == true && issue_platform == 'jira'
+  - kind: technique
+    id: lookup-current-user
+    technique: atlassian::user-info
+    when: issue_platform == 'jira' && issue_skipped != true
+  - kind: technique
+    id: assign-issue-jira
+    technique:
+      name: atlassian::edit-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+        fields: "{ assignee: { accountId: {accountId} } }"
+    when: issue_skipped != true && issue_platform == 'jira'
+  - kind: technique
+    id: transition-issue-jira
+    technique:
+      name: atlassian::transition-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+    when: issue_skipped != true && issue_platform == 'jira'
+  - kind: technique
+    id: assign-issue-github
+    technique:
+      name: github::assign-issue
+      inputs:
+        repo_path: component_git_dir
+        assignee: "@me"
+    when: issue_skipped != true && issue_platform == 'github'
+  - kind: technique
+    id: initialize-planning-folder
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        seed_profile: work-package/readme-seed
+        is_review_mode: "{is_review_mode}"
+  - kind: technique
+    id: present-problem-overview
+    technique:
+      name: stakeholder-overview
+      inputs:
+        readme_section_heading: "## Problem Overview"
+        source_material: "{issue_record}"
+    actions:
+      - action: message
+        message: |-
+          [Problem Overview]({planning_folder_path}/README.md#problem-overview) — plain-language summary for stakeholder reference
+
+          {stakeholder_overview}
+  - kind: technique
+    id: derive-branch-and-target-path
+    technique:
+      name: naming-conventions
+      inputs:
+        issue_title: "{issue_title}"
+  - kind: technique
+    id: create-component-worktree
+    technique: git::create-worktree
+    when: is_review_mode != true
+  - kind: technique
+    id: create-review-worktree
+    technique:
+      name: git::create-worktree
+      inputs:
+        create_branch: false
+    when: is_review_mode == true
+  - kind: technique
+    id: check-branch
+    technique: manage-git::verify-feature-branch
+    actions:
+      - action: validate
+        target: on_feature_branch != false
+        message: "The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run."
+  - kind: technique
+    id: check-pr
+    technique:
+      name: github::list-prs
+      inputs:
+        repo_path: component_git_dir
+    when: is_review_mode != true
+    actions:
+      - action: set
+        target: pr_exists
+        description: true when list-prs returned a PR for the current branch head, false otherwise
+      - action: set
+        target: existing_pr_number
+        description: PR number from the list-prs result when one was found
+      - action: set
+        target: use_existing_pr
+        description: true when pr_exists and an already-bound pr_number equals existing_pr_number (continue this work); otherwise leave the default false so pr-check can ask
+      - action: set
+        target: pr_number
+        description: When use_existing_pr was set true by a pr_number/existing_pr_number match, bind pr_number from existing_pr_number; otherwise leave unchanged
+  - kind: action
+    id: announce-auto-use-existing-pr
+    when: pr_exists == true && use_existing_pr == true
+    actions:
+      - action: message
+        message: "Continuing with existing PR #{existing_pr_number} (already bound for this branch)."
+  - kind: checkpoint
+    id: pr-check
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: pr_exists
+          operator: ==
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: "!="
+          value: true
+    message: "PR #{existing_pr_number} is already open for this branch."
+    options:
+      - id: use-existing
+        label: Use existing PR
+        description: Continue with the existing pull request
+        effect:
+          setVariable:
+            use_existing_pr: true
+            pr_number: "{existing_pr_number}"
+      - id: create-new
+        label: Create new PR
+        description: Create a new draft pull request
+        effect:
+          setVariable:
+            use_existing_pr: false
+  - kind: checkpoint
+    id: pr-creation
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_cancelled
+          operator: "!="
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: "!="
+          value: true
+    message: "Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet."
+    defaultOption: proceed
+    autoAdvanceMs: 30000
+    options:
+      - id: proceed
+        label: Create draft PR
+        description: Open a draft pull request from the feature branch, linked to the issue
+        effect:
+          setVariable:
+            pr_skipped: false
+      - id: skip-pr
+        label: Skip PR for now
+        description: Continue without a pull request (can create later)
+        effect:
+          setVariable:
+            pr_skipped: true
+  - kind: technique
+    id: create-pr
+    technique:
+      name: update-pr::create-pr
+      inputs:
+        issue_number: "{issue_number}"
+        issue_platform: "{issue_platform}"
+    when: is_review_mode != true && use_existing_pr == false && pr_skipped != true
+    actions:
+      - action: set
+        target: pr_exists
+        value: true
+        description: Mark PR as existing once successfully created.
+  - kind: technique
+    id: link-pr-to-ticket-jira
+    technique:
+      name: atlassian::comment-jira-issue
+      inputs:
+        issueIdOrKey: "{issue_number}"
+        commentBody: "Pull Request: {pr_url}"
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: ==
+          value: jira
+  - kind: technique
+    id: link-pr-to-ticket-github
+    technique:
+      name: github::view-issue
+      inputs:
+        repo_path: component_git_dir
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: pr_number
+          operator: exists
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: ==
+          value: github
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Issue management complete - issue verified/created, PR ready
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - Issue exists or is created in appropriate platform
+  - Issue transitioned to In Progress and assigned to current user
+  - A feature branch off {default_branch} carries the work
+  - Draft PR created, assigned to current GitHub user, and linked to issue
+  - PR reference recorded on the issue via the platform's native PR linkage

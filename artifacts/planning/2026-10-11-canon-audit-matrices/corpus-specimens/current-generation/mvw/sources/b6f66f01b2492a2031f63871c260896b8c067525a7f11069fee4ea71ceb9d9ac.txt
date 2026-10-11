@@ -1,0 +1,51 @@
+id: review-changes
+version: 1.4.0
+name: Review Changes
+description: Present discovered changes for approval and apply any exclusion adjustments before import.
+variables:
+  reads:
+    - change_set
+    - next_index
+    - upstream_path
+  writes:
+    - name: change_summary
+      type: string
+      description: Categorized change table with per-prism detail for new entries and the referencing files each rename or deletion breaks.
+    - name: change_set
+      type: object
+      description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
+required: true
+steps:
+  - kind: technique
+    id: compose-summary
+    technique: review-change-set::compose-summary
+  - kind: action
+    id: show-change-summary
+    actions:
+      - action: message
+        message: "{change_summary}"
+  - kind: checkpoint
+    id: change-review
+    message: "The upstream change set, categorized, with what each rename and deletion breaks."
+    options:
+      - id: confirm
+        label: Confirm — apply all changes
+        description: Import all discovered changes as listed
+      - id: adjust-exclusions
+        label: Adjust exclusions
+        description: Exclude specific prisms before importing
+      - id: abort
+        label: Abort
+        description: Do not import any changes
+        effect:
+          exit: abort
+  - kind: technique
+    id: apply-exclusions
+    technique: review-change-set::apply-exclusions
+exits:
+  - id: done
+    isDefault: true
+  - id: abort
+    immediate: true
+outcome:
+  - User-approved change set ready for import

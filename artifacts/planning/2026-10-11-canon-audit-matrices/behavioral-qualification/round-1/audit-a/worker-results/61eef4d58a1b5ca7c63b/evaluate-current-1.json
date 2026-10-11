@@ -1,0 +1,39 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "61eef4d58a1b5ca7c63b",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566",
+        "9a13e148e0a434d148bef242",
+        "e0fcd50974c10678a3e2fb44",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60",
+        "8862878198e6198ef77c1f28",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "Reading the complete workflow gives initialActivity run and the sole graph exit run.done: null. The finite path run -> null is reachable from the initial activity. Every assigned graph, entry, or relationship row is evaluated against this whole-workflow path, not just matching individual activity IDs.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

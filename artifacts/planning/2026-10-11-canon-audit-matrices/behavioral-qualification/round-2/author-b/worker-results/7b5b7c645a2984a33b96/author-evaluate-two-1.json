@@ -1,0 +1,110 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "7b5b7c645a2984a33b96",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "fix": "Require validation of the report before emission in this Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 emits the report without validation."
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "Rules line 11 contains two independent clauses. The first retains the report ID; the second explicitly says emit the report without validation. The second clause violates AP-01 independently and allows an unchecked report to leave the producer (Live/High). Retention does not satisfy validation. The changed leaf in scope.paths establishes diff origin. Assigned rows: corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "fix": "Require validation of the report before emitting it in this Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Protocol instruction emits the report without validation."
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "Protocol line 8 explicitly directs emission of the report without validation. This instruction independently violates AP-01 and allows an unchecked report to leave the producer (Live/High). The changed leaf in scope.paths establishes diff origin. Assigned rows: corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "fix": "Require validation of the report before emitting it in this Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Protocol instruction emits the report without validation."
+        },
+        {
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "fix": "Require validation of the report before emission in this Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 emits the report without validation."
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "The full leaf has two distinct failing constructs: Protocol line 8 explicitly emits without validation, and Rules line 11 clause 2 independently emits without validation. AP-01 requires each instruction and semicolon-separated clause to satisfy the ordering itself, so both violations remain distinct. Each permits unchecked report emission (Live/High), and both occur in the declared changed leaf (diff). Assigned rows: corpus/qualification/techniques/produce.md#@element.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

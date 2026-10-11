@@ -1,0 +1,85 @@
+{
+  "assignment": "b0538131fb3b8e20c6c0",
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "audit-map-1",
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a",
+  "records": [
+    {
+      "items": [
+        "a0e70a1645458e99657058ca"
+      ],
+      "status": "N",
+      "reason": "deliver.yaml#/id: The routine declaration identifier is deliver. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "status": "N",
+      "reason": "workflow.yaml#/id: The workflow declaration identifier is qualification. This scalar only names the workflow; it is neither its initialActivity nor a graph edge. DP-02 is a whole-workflow reachability invariant, not an identifier equality check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "status": "A",
+      "reason": "workflow.yaml#/initialActivity: The workflow initialActivity is run and its graph supplies run.done -> null. DP-02 applies to the workflow root/graph construct represented here. The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "status": "A",
+      "reason": "workflow.yaml#@element: The complete qualification workflow starts at run and has the sole graph exit run.done -> null. DP-02 applies to the workflow root/graph construct represented here. The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

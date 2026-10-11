@@ -1,0 +1,53 @@
+id: verify
+version: 1.4.0
+name: Verify Consistency
+description: Check for consistency issues across resources, techniques, and documentation.
+variables:
+  reads:
+    - change_set
+    - next_index
+    - upstream_path
+  writes:
+    - name: has_issues
+      type: boolean
+      description: Whether verification found consistency issues requiring fixes
+      defaultValue: false
+required: true
+steps:
+  - kind: technique
+    id: verify-prism-consistency
+    technique: verify-prism-consistency
+  - kind: checkpoint
+    id: verification-result
+    message: |-
+      Consistency verification across resources, techniques, and documentation:
+
+      {verification_report}
+    options:
+      - id: accept
+        label: Accept — proceed to submit
+        description: No issues, or the issues are minor enough to submit over
+        effect:
+          setVariable:
+            has_issues: false
+      - id: fix-issues
+        label: Fix issues
+        description: Return to apply-updates to address the findings
+        effect:
+          setVariable:
+            has_issues: true
+      - id: abort
+        label: Abort
+        description: Stop the workflow without submitting
+        effect:
+          exit: abort
+exits:
+  - id: has-issues
+    when: has_issues == true
+  - id: verified
+    when: has_issues == false
+    isDefault: true
+  - id: abort
+    immediate: true
+outcome:
+  - All resources, techniques, and documentation are consistent

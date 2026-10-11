@@ -1,0 +1,159 @@
+id: plan-prepare
+version: 1.12.0
+name: Plan & Prepare
+description: Design the approach, create the work package plan, and prepare for implementation.
+variables:
+  reads:
+    - assumption_outcome
+    - branch_name
+    - component_git_dir
+    - default_branch
+    - host_repo_path
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - problem_statement
+    - requirements
+    - review_summary
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: assumptions_log
+      type: object
+      description: The assumptions log — every assumption with its category, agent position and resolution status, and the record of truth for assumption outcomes.
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumption was deferred to stakeholders.
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions requiring stakeholder input remain.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: The residual open assumptions awaiting a stakeholder judgement.
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
+    - name: stakeholder_overview
+      type: string
+      description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
+required: true
+techniques:
+  - scatter-gather
+steps:
+  - kind: action
+    id: env-prerequisites
+    actions:
+      - action: validate
+        target: workflows.worktree.present == true
+        message: "The workflows worktree is missing. Add it per SETUP.md."
+      - action: validate
+        target: target_path != null
+        message: "`{target_path}` is unset, so there is no worktree to plan against."
+      - action: validate
+        target: host_repo_path != null
+        message: "`{host_repo_path}` is unset, so the repository root is unresolved."
+      - action: validate
+        target: planning_folder_path.writable == true
+        message: "`{planning_folder_path}` is not writable. Confirm the path exists and is writable."
+      - action: validate
+        target: gh.auth.status == 0
+        message: gh CLI is not authenticated.
+        condition:
+          type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+      - action: validate
+        target: gpg.agent.reachable == true
+        message: GPG agent is not reachable.
+  - kind: technique
+    id: create-plan
+    technique: plan
+  - kind: technique
+    id: create-test-plan
+    technique: create-test-plan
+  - kind: technique
+    id: present-solution-overview
+    technique:
+      name: stakeholder-overview
+      inputs:
+        readme_section_heading: "## Solution Overview"
+    actions:
+      - action: message
+        message: |-
+          **Solution Overview** — plain-language summary for stakeholder reference
+
+          {stakeholder_overview}
+  - kind: technique
+    id: collect-assumptions
+    technique:
+      name: review-assumptions::collect
+      inputs:
+        assumption_categories: Design Approach, Task Breakdown, Dependency Assumptions, Test Strategy, Scope Decisions
+  - kind: technique
+    id: update-assumptions-log
+    technique: review-assumptions::record
+  - kind: routine
+    id: assumption-convergence
+    routine: converge-assumptions
+    outputs:
+      assumptions_log: assumptions_log
+      has_resolvable_assumptions: has_resolvable_assumptions
+      has_open_assumptions: has_open_assumptions
+      open_assumptions: open_assumptions
+  - kind: technique
+    id: create-todos
+    technique: create-todos
+  - kind: technique
+    id: sync-branch
+    technique: manage-git::sync-branch
+  - kind: technique
+    id: update-pr
+    technique:
+      name: update-pr::render
+      inputs:
+        pr_template_variant: initial
+    when: is_review_mode != true && stealth_mode != true
+  - kind: checkpoint
+    id: approach-confirmed
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
+    message: "The approach the [plan]({plan_document}) is built on, summarised above."
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Approach confirmed
+        description: Proceed with this approach
+      - id: revise
+        label: Revise approach
+        description: Adjust the approach before planning continues
+        effect:
+          exit: revise
+exits:
+  - id: done
+    isDefault: true
+  - id: revise
+    immediate: true
+outcome:
+  - A sequenced approach the implement activity can execute against task by task, put to the user for a decision before implementation begins
+  - A defined verification strategy that validation will run the implementation against
+  - Reviewers and stakeholders can see the intended approach on the PR before any code is written

@@ -1,0 +1,62 @@
+id: scope-definition
+version: 1.6.0
+name: Define Audit Scope
+description: Collect the audit target, description, and output path.
+variables:
+  reads:
+    - audit_description
+    - audit_output_path
+    - target_path
+  writes:
+    - name: audit_description
+      type: string
+      description: User's description of what to audit and any specific focus areas or concerns
+      required: true
+    - name: audit_output_path
+      type: string
+      description: Directory the audit artifacts are written to
+      required: true
+    - name: target_path
+      type: string
+      description: Path to the codebase or directory to audit
+      required: true
+steps:
+  - kind: technique
+    id: collect-inputs
+    technique: collect-inputs
+  - kind: technique
+    id: validate-target
+    technique: validate-target
+  - kind: routine
+    id: index-codebase
+    routine: gitnexus::index-refresh
+    with:
+      repo_path: "{target_path}"
+  - kind: technique
+    id: summarize-scope
+    technique: summarize-scope
+  - kind: checkpoint
+    id: confirm-scope
+    message: |-
+      The audit scope and configuration, for confirmation:
+
+      {scope_summary}
+    options:
+      - id: accept
+        label: Proceed
+        description: The target, description and output path are confirmed as they stand
+      - id: adjust
+        label: Adjust scope
+        description: Modify the target, description, or output path before proceeding
+        effect:
+          exit: adjust
+  - kind: technique
+    id: create-output-directory
+    technique: create-output-folder
+outcome:
+  - Analysis can begin against a user-confirmed, validated target with a place to land its outputs
+  - The target's call graph is indexed, so the prompt can be grounded in what actually calls what
+exits:
+  - id: done
+    isDefault: true
+  - id: adjust

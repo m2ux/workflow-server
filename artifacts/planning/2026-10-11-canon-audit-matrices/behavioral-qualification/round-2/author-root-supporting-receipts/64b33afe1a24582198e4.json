@@ -1,0 +1,37 @@
+{
+  "actor": "/root",
+  "assignment": "64b33afe1a24582198e4",
+  "attempt": "root-supporting-round-2",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "unit:ap:controlled-qualification"
+      ],
+      "reason": "Walked the controlled AP family: it scopes interpretation to explicit instruction and binding constructs and identifies each distinct failing construct once. All AP-01/AP-02 cells retain those complete criteria; overlapping section and element detections reconcile through stable findings.",
+      "status": "walked"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "unit:cc:evidence-scope"
+      ],
+      "reason": "Walked Evidence scope against the captured definitions and all four controlled criteria. Source lines identify the two instruction clauses; YAML addresses and explicit execution relationships retain the binding and inherited call-chain context. Every current applicability decision is independently settled. Findings retain the controlled-dialect boundary and do not assert engine-schema or full-project-canon conformance.",
+      "status": "walked"
+    }
+  ],
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b",
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

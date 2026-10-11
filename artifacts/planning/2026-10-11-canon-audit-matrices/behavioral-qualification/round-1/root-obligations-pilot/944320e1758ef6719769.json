@@ -1,0 +1,28 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a",
+  "assignment": "944320e1758ef6719769",
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6",
+  "actor": "/root",
+  "attempt": "root-check-pilot-1",
+  "records": [
+    {
+      "items": [
+        "check:guards"
+      ],
+      "status": "pass",
+      "reason": "The captured controlled qualification structural guard exits 0 with eight sources, four criteria and no parser or required-structure errors. This observation covers the selected fixture guard; semantic AP/DP judgments remain separate mapped work.",
+      "evidence": [],
+      "check": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+        ],
+        "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test",
+        "exit_code": 0,
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a/fixture-guard.txt"
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+---
+metadata:
+  version: 1.6.1
+---
+
+## Capability
+
+Scope-discipline and artifact-hygiene findings across the feature-branch diff for the strategic review document.
+
+## Inputs
+
+### orphan_candidates
+
+*(optional)* Symbols in the changed files that nothing references — over-engineering and dead-code candidates for user decision.
+
+### scope_findings
+
+*(optional)* Affected flows falling outside the intended scope, each with the changed symbol that reaches it.
+
+### pr_number
+
+*(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
+
+### body_conforms
+
+*(optional)* Whether the live pull-request body satisfies every conformance criterion in the pr-description guide. Absent where no pull request exists.
+
+### body_findings
+
+*(optional)* Each way the live body departs from that guide, one entry per failed criterion. Empty where the body conforms, absent where no pull request exists.
+
+## Outputs
+
+### strategic_review_doc
+
+The strategic review document holding categorized findings — scope creep, orphaned symbols, investigation artifacts, over-engineering, and PR-body conformance entries. Same artifact the group root declares.
+
+### unsigned_commits_in_pr
+
+Boolean — `true` when any commit in the `{base_branch}..HEAD` range carries no valid GPG signature (`%G?` reports `N` or `B`).
+
+### unsigned_commit_list_summary
+
+Short human-readable summary of the unsigned commits (hash + subject, one per line); empty when all commits are signed.
+
+## Protocol
+
+### 1. Load Guidance
+
+- Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
+- Identify the base branch `{base_branch}`: when `{pr_number}` is set, Apply [view-pr](/github/techniques/view-pr.md)(*repo_path*=`{component_git_dir}`) and take it from the op output; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch `{base_branch}`:
+
+  ```bash
+  # For each file in {changed_files}, ask: Is this change necessary for the solution?
+  git diff {base_branch}...HEAD -- <file>
+  ```
+
+- Assess each changed file against [Per-file necessity](../../resources/strategic-review.md#per-file-necessity)
+
+### 2. Examine Scope
+
+- Review changes for scope and relevance to work package
+- Document any changes unrelated to requirements as scope creep
+- If the PR contains changes unrelated to the work package, document them and flag for user decision
+
+### 3. Scope Discipline Check
+
+- Flag every entry of `{scope_findings}` — an execution flow the change reaches from outside `{requirements}` — as scope creep for user decision.
+  > Where it does not arrive, compare the changed files against the requirements by reading, and say the comparison was made that way.
+
+### 4. Orphan Check
+
+- Surface every entry of `{orphan_candidates}` — a symbol this work introduced or touched that nothing references — as an over-engineering candidate.
+  > An entry point, an export a consumer outside the tree calls and a symbol a macro body reaches each read as unreferenced, so confirm the symbol has no caller before recording it.
+- Where the leanness audit ran, over-engineering is its finding and its designator: cite the entry rather than restating the defect, and record only what this pass reached beyond it. That audit judges proportionality against the review taxonomy and this pass judges scope against the requirements, so a defect both reach is one defect seen from two angles rather than two findings.
+
+### 5. Identify Artifacts
+
+- Probe each area of the [Speculative Changes Audit](../../resources/strategic-review.md#speculative-changes-audit)
+- Classify every candidate per the group's `finding-categories`
+
+### 6. Minimality Check
+
+- Answer the five [Minimality Check](../../resources/strategic-review.md#minimality-check) questions; record each question answered "No" as a finding for the `{strategic_review_doc}`, with the action from the "If No" column as the cleanup it warrants
+
+### 7. Scan Commit Signatures
+
+- Scan the branch range for signature status: `git log --format='%h %G? %s' {base_branch}..HEAD`.
+- Set `{unsigned_commits_in_pr}` `true` and build `{unsigned_commit_list_summary}` from the commits reporting `N` or `B`; otherwise set it `false` with an empty summary.
+
+### 8. Record Pr Body Conformance
+
+- Where `{body_conforms}` is false, record each `{body_findings}` entry in the `{strategic_review_doc}` under 'PR body conformance'.
+  > - A finding an earlier conformance check already stated is cited by its designator rather than restated; a body edited since that check is re-judged whole.
+  > - Where `{body_conforms}` is absent, no pull request exists and the section is omitted.
+

@@ -1,0 +1,558 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "8d4a36b86152cc3c4123",
+  "attempt": "audit-two-evaluate-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "f442830158e33a5d097e4514"
+      ],
+      "reason": "workflow.yaml#@relationship/27bf829b0e84c593: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98"
+      ],
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "32efcf3836cf4d26fc113577"
+      ],
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba"
+      ],
+      "reason": "produce.md#/rules: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "355ce3ec841005b898e3d8d3"
+      ],
+      "reason": "produce.md#/rules/line-12: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36"
+      ],
+      "reason": "deliver.yaml#@relationship/3a2f0d25e0e017f7: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "deliver.yaml#@relationship/50a64427faa3df96: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "produce.md#@relationship/f075d23fadb959c8: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "run.yaml#@relationship/5a93bb0629055f53: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to its inherited required archive value.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The executing produce leaf declares public, conflicting with its inherited archive destination."
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "produce.md#@element: The executing qualification -> run -> deliver -> produce chain inherits Destination archive from qualification/techniques/TECHNIQUE.md. The leaf line-12 declaration is public, conflicting with archive.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

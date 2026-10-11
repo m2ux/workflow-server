@@ -1,0 +1,2143 @@
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md
+---
+name: workflow-canon
+description: >-
+  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions ("write a new activity", "apply this finding"), audit them against the design canon ("audit workflow X", "why is this an anti-pattern?"), review integrations ("check these branches together", "assess integration readiness"), or revise this skill ("update the workflow-canon skill").
+hooks:
+  PostToolUse:
+    - matcher: "Edit|Write|MultiEdit"
+      hooks:
+        - type: command
+          command: "python3 \"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\""
+---
+
+# Workflow Canon
+
+Workflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.
+
+- **Work**  Intended outcomes, requirements and constraints.
+- **Design**  Architecture, responsibilities, definitions and contracts.
+- **Canon**  The project's authoritative design criteria and conventions.
+- **Evidence**  Observations supporting design decisions, with their limits stated.
+
+## Modes
+
+Read the selected mode's file in full, then follow its links as each step needs them:
+
+- **[Author](references/author-mode.md)**
+  - Authoring definitions and specified changes
+  - Closing confirmed findings with their prescribed fixes
+  - Mapped draft walks and verification of written changes
+- **[Audit](references/audit-mode.md)**
+  - Canon questions and conformance of existing definitions
+  - Attribution and verification of findings
+  - Independently verified applicability matrices and complete coverage reports
+- **[Review](references/review-mode.md)**
+  - Scope and revision pairings for integrations
+  - Tracing design and architecture through declarations and consumers
+  - Coverage matched to affected branches and languages
+  - Evidence for findings and readiness
+- **[Revise](references/revise-mode.md)**
+  - Changes to this skill's own files
+  - Conformance with shared and local skill guidelines
+
+## Rules
+
+- **Measured claims.**
+  Counts, revision identities and check outcomes come from command output or preserved run evidence.
+- **One home.**
+  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.
+- **Linked sections.**
+  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.
+- **Planning.**
+  When creating or using artifacts, all modes follow [Planning](references/planning.md).
+- **Commands.**
+  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.
+
+## Dependencies
+
+- **Git and repository search**
+  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.
+- **GitHub CLI**
+  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.
+- **Project instructions, documentation and runtimes**
+  Branch ownership, canon homes, schemas and validation tools for the affected product.
+- **Node and npm**
+  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.
+- **Docker and Compose**
+  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.
+- **Python 3.10+**
+  The definition edit hook, audit inventory/state/dispatch scripts and their tests.
+- **Paired YAML parser**
+  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.
+- **Agent host and sandbox**
+  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
+- **Claude Code hooks**
+  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.
+- **Workflow resource access**
+  A running workflow's resource tool can supply canon sections and report guides when available.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/author-mode.md
+# Author Mode
+
+Writes definition content: a new definition, or a specified change to existing ones, such as a work item, a finding, or a defect with a location. A finding is closed with the Fix its entry states.
+
+## Prerequisites
+
+Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms) and [criteria](canon-context.md#criteria).
+
+## Procedure
+
+1. **Resolve to files.**
+   - List every file the change adds or edits. A new definition also edits each file that wires it in, such as `workflow.yaml` or the activity that binds it.
+   - Add the I/O-contract closure and consumers per the shared [scope](canon-context.md#scope).
+   - For a specified change, the surface is the specification, not the diff. Confirm it still holds against the tree: the construct is where it says, the count is what it says, the absence is an absence.
+   - What has moved is reported first. Where nothing remains to change, that is the finding.
+2. **Read what binds.**
+   - Read the [design flow](design-flow.md). Structure is synthesised from expected behaviour. Exposed behaviour is derived from that structure and compared with the expected behaviour. A failed comparison reformulates the structure, the expected behaviour, or the function.
+   - Read the shared [change-surface lifecycle](change-surface.md). Intended items can have provisional planning rows; applicability and evaluation bind captured draft bytes.
+   - When the change answers a finding, follow that entry's Fix and Do not flag.
+3. **Open a live sibling.**  Conformance compares against those files.
+4. **Preserve.**  Name what the entries require the change to preserve.
+5. **Walk the draft, then write.**
+   - Each fix is a draft of its own: its replacement text is walked before it is written.
+   - Capture the candidate in an isolated corpus tree, create all four matrices, and follow the shared lifecycle through independent inventory and mapping verification before evaluating the draft. Prioritize the prescribing entry without dropping any AP/DP cell.
+   - Rewrite while an entry still fires.
+   - Apply the evaluated bytes through [Author Byte Agreement](change-surface.md#freshness-and-resume), then run the selected [checks](canon-context.md#checks).
+6. **Check what the pass wrote.**
+   - Reconcile actual bytes and affected consumers using [freshness](change-surface.md#freshness-and-resume). Every correction receives its current inventory, mapping verification and evaluation.
+   - A hit is a `fix` finding, per Audit's [Attribution](audit-mode.md#attribution). Close it by step 5 before any report.
+7. **Stop on oscillation.**
+   - Stop when an entry fires on text written to satisfy it, or when a round's `fix` findings do not fall below the round before.
+   - Report the entries in conflict to the user as a canon defect, with the text each one rejected.
+8. **Audit.**
+   - Reconcile the current run through the shared [completion gate](change-surface.md#completion) and [report selection](reporting.md#which-report).
+   - A draft-only request stops with its measured draft coverage and writes no findings register for a commit.
+
+## Rules
+
+- **Commit gate.**  A definition change commits only once the procedure's audit is complete.
+- **Scope.**
+  Changes close the specified requirement or confirmed finding, including its affected consumers. Canon defects that prevent convergence are reported with the conflicting entries.
+COMMAND: rg -n headings in references/canon-context.md
+1:# Canon Context
+5:## Prerequisites
+9:## Terms
+17:## Criteria
+23:## Scope
+29:## Homes
+43:## Checks
+47:### Edit Hook
+COMMAND: sed -n 5,22p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+## Prerequisites
+
+Read the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.
+
+## Terms
+
+- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.
+- **Entry**
+  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
+- **Walk**  Applying each unit to every file on the surface and recording its status.
+- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).
+
+## Criteria
+
+Use the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).
+
+Follow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).
+
+COMMAND: rg -n headings in references/commands.md
+1:# Commands
+3:## Conventions
+20:## Audit Command Conventions
+31:## Audit Surface
+33:### Initialize Audit Surface
+43:### Check Audit Status
+53:### Render Audit Surface
+63:### Plan Audit Assignments
+73:### Bind Audit Agent
+83:### Write Audit Packet
+93:### Submit Audit Results
+103:### Reset Audit Cells
+113:### Refresh Audit Surface
+123:### Retry Audit Assignment
+133:### Run Audit Script Tests
+143:## Revisions
+145:### Resolve Ref
+153:## Review Inputs
+155:### Fetch Pull Request
+165:### Fetch Requirements
+173:### Fetch Branches
+182:### Compare Revisions
+196:### Create Review Worktree
+204:### Prepare Integration Result
+217:### Abort Review Merge
+225:### Read Captured File
+233:### Read Captured Section
+244:### Fetch Check Evidence
+258:### Refresh Revisions
+267:## Project Checks
+269:### Run Project Check
+281:## Skill Revision
+283:### Create Skill Worktree
+292:### Run Skill Checks
+304:### Commit Skill Changes
+316:### Push Skill Branch
+329:### Open Skill Pull Request
+337:## Install Engine Dependencies
+347:## Run Engine Checks
+359:## Run Delivery Gate
+367:## Check Engine Documentation
+380:## Run Corpus Checks
+392:## Run Option Coverage
+404:## Count Running Sessions
+414:## Check Shell Syntax
+422:## Validate Compose
+432:## Build Review Image
+445:## Exercise Review Container
+460:## Restart Review Container
+468:## Stop Review Container
+476:## Check Skill Summaries
+486:## Canon Check Conventions
+497:### Guard Obligations
+514:## Checkouts
+516:### Find the Server Checkout
+526:### Check the Corpus Tree
+537:### Provision the Corpus
+545:## Corpus
+547:### List Units
+559:### List Units for a Construct
+571:### Fetch Unit
+579:### Find Consumers
+590:## Checks
+592:### Run Guard Suite
+603:### Run Guards on the Delta
+613:## Edit Guard
+615:### Run the Edit Guard
+638:### Run the Edit Guard Tests
+COMMAND: sed -n 23,42p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+## Scope
+
+Resolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.
+
+Resolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.
+
+## Homes
+
+Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
+
+| Home | Authority |
+| --- | --- |
+| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |
+| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |
+| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |
+| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |
+| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
+
+Locate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+COMMAND: sed -n 3,19p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+## Conventions
+
+Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
+
+- **Locations.**
+  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.
+- **Execution.**
+  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.
+- **Remote access.**
+  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.
+- **Evidence.**
+  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.
+- **Substitution.**
+  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
+- **Authored text.**
+  Commit messages and PR bodies go through files.
+
+COMMAND: rg -n headings in references/definition-scope.md
+1:# Definition Scope
+5:## Scope
+COMMAND: sed -n 5,200p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md
+## Scope
+
+- **Base ref.**  The ref the change is measured against.
+- **Surface files.**
+  `workflow.yaml`, `activities/`, `techniques/`, `routines/`, `resources/`, READMEs of the target.
+- **Touched.**
+  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.
+- **I/O contract.**
+  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.
+  - Activity inputs, outputs, and step binds that name those ids.
+  - Routine parameters, outputs, internals, nested reference sites and technique arguments.
+  - Renames, additions, removals, optionality flips, and type or shape changes.
+- **Reference.**
+  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.
+  - Sweep the workflows tree. Resolve each to a file path.
+  - Resolve routine references and their full instantiation chains, graph entries, ancestors and shared resources through [surface identity](change-surface.md#identity).
+- **Closure.**
+  Every activity or technique that references a touched file whose I/O contract changed, in this workflow and others.
+- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.
+- **Consumers.**
+  - References other workflows hold into the target. Always computed.
+  - A consumer joins the change surface when the file it names is on it.
+  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.
+- **Reference workflows.**  Siblings of similar type, as convention conformance requires.
+- **Prior residual.**
+  - `unread` paths in the latest findings register in the shared [planning record](planning.md).
+  - Reconcile captured identities through [freshness](change-surface.md#freshness-and-resume). A deleted path remains a base-side obligation when the selected comparison includes it.
+  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.
+- **Second entry.**
+  - Where a graph gives one activity two entry points, both are on the surface.
+  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.
+
+Hunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md
+# Planning
+
+A planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.
+
+## Location
+
+- **Instructions.**
+  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.
+- **Resolution.**
+  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.
+
+## Records
+
+- **Naming.**
+  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.
+- **Continuity.**
+  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.
+- **Authority.**
+  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.
+COMMAND: sed -n 145,152p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Resolve Ref
+
+Read the full commit identity for a captured ref.
+
+```bash
+git rev-parse <ref>
+```
+
+COMMAND: rg --files -g AGENTS.md /home/mike1/projects/dev/workflow-server/.project/workflows /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin
+/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin/AGENTS.md
+COMMAND: git -C /home/mike1/projects/dev/workflow-server/.project/workflows rev-parse HEAD
+e70b44778f71d9d699f746f78a16b892531c82d3
+COMMAND: git -C /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin rev-parse HEAD
+e889276ae7c49a6b5cd37b4928d5f983e76c9770
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/design-flow.md
+# Design Flow
+
+How a definition is designed. A requirement becomes a function and an expected behaviour. Structure is synthesised from that behaviour. The behaviour the structure exposes is compared with the expected behaviour, and the structure can be reformulated.
+
+The process steps are the function–behaviour–structure ontology of Gero and Kannengiesser, as Figure 3 of Nouwens, *Researching Sensemaking and Situational Architecting* (EEWC 2021, CC BY 4.0). A single arrow is a transformation. A double arrow is a comparison.
+
+```mermaid
+flowchart LR
+  R["R · requirement"] -->|1| F["F · function"]
+  F -->|1| Be["Be · expected behaviour"]
+  Be -->|2| S["S · structure"]
+  S -->|3| Bs["Bs · behaviour from structure"]
+  Be <-->|4| Bs
+  S -->|5| D["D · design description"]
+  S -->|6| S
+  S -->|7| Be
+  S -->|8| F
+```
+
+| Mark | Name | In a definition |
+| --- | --- | --- |
+| R | Requirement | The need the definition answers |
+| F | Function | What the definition is for |
+| Be | Expected behaviour | The behaviour a stakeholder can perceive |
+| Bs | Behaviour from structure | The behaviour a walk or a test derives |
+| S | Structure | Routines, techniques, resources, and activities |
+| D | Design description | The written definition |
+
+| Step | Arrow | What the designer does |
+| --- | --- | --- |
+| 1 | R → F → Be | A requirement becomes a function, and that function becomes the expected behaviour |
+| 2 | Be → S | Expected behaviour is synthesised into structure |
+| 3 | S → Bs | Exposed behaviour is derived from the structure |
+| 4 | Be ↔ Bs | Expected behaviour is compared with exposed behaviour |
+| 5 | S → D | Structure is written as the design description |
+| 6 | S → S | Structure is reformulated |
+| 7 | S → Be | Expected behaviour is reformulated |
+| 8 | S → F | Function is reformulated |
+
+Teleological language and ontological language share no terms. There is no procedure that derives a structure from a purpose. Step 2 is a synthesis. Steps 6, 7, and 8 are the same synthesis run again when the comparison fails.
+
+## Two Cycles
+
+Nouwens combines that ontology with the distinction between stakeholder and designer (Figure 4 of the same paper). One cycle elicits the requirement. The other designs the artefact and matches its exposed behaviour to the expected behaviour.
+
+```mermaid
+flowchart LR
+  stakeholder["stakeholder"] -->|expresses need to| designer["designer"]
+  designer -->|has identified need for| function["function"]
+  function -->|described as| expected["(expected) behaviour"]
+  expected -->|as perceived by| stakeholder
+  expected -.->|designed as| artefact["(designed) artefact"]
+  artefact -->|exposes| exposed["(exposed) behaviour"]
+  exposed -.->|conforms to| expected
+```
+
+- **Requirements elicitation.**
+  The stakeholder expresses a need. The designer identifies a function and describes it as expected behaviour. The stakeholder perceives that behaviour.
+- **Iterative design.**
+  Expected behaviour is designed as an artefact. The artefact exposes behaviour. That exposed behaviour is compared with the expected behaviour, and the design repeats until they conform.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md
+# Change Surface
+
+Author and Audit use the same captured inventory, applicability matrices and evidence gates. Scripts establish structural coverage; independent agents establish semantic accuracy.
+
+## Capture
+
+1. **Locate the record.**
+   Resolve the shared [planning record](planning.md), corpus root and paired engine. Each run has its own directory beneath that record. Read the [audit command conventions](commands.md#audit-command-conventions) before the first audit command.
+2. **Declare the scope.**
+   Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.
+3. **Capture the bytes.**
+   [Initialize the surface](commands.md#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.
+4. **Check the proposed inventory.**
+   Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.
+
+## Identity
+
+- **Items.**
+  Rows use the source path and native section, rule, input, output or step identifier. Nested steps retain their full ancestry and duplicate occurrences. Positional prose, paragraphs and candidate clauses use revision-bound source addresses. Independently testable constraints sharing one line need separate clause rows; verifiers add any missed boundary through the scope input's `rows` list. Whole-section, whole-element, missing-structure and relationship rows retain checks that span items.
+- **Relationships.**
+  Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.
+- **Supporting material.**
+  Resource and README rows belong to Workflow / Supporting Material under their actual namespace and source path. A namespace without a workflow definition remains a namespace. Shared content has one content row; referencing elements have relationship rows.
+- **Criteria.**
+  AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.
+
+## Applicability
+
+Use [mapping assignments](audit-dispatch.md#phases) to decide every cell in the full row × AP/DP product. Each cell links to source evidence and exactly one disposition:
+
+| Status | Evidence |
+| --- | --- |
+| `A` | The criterion's scope and the construct that makes it apply |
+| `N` | The criterion's excluding wording and source facts satisfying it |
+| `U` | The evidence or decision still missing |
+
+Shared reasons name the exact assigned row set and hold for every member. A clean result or a Do not flag exception is an evaluation under an applicable criterion; it does not by itself establish inapplicability. Blank cells are unresolved. Table pagination preserves every logical pair exactly once.
+
+After all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](commands.md#reset-audit-cells) or [refresh](commands.md#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](commands.md#check-audit-status) successfully.
+
+## Evaluation
+
+Assign the verified applicable cells through [dispatch](audit-dispatch.md#phases). Workers follow the complete [walk rules](walk-rules.md), read the full source and required relationship context, and return evidence for each pass, finding or blockage. Reconcile returns through the typed [receipt](audit-dispatch.md#returns). Whole-file reads, supplemental units, selected project checks and independent finding confirmation are separate obligations. A command result carries its command, working directory, exit status and captured output; an unmeasured check stays blocked.
+
+The calling mode owns remediation authority. Corrections to definitions return through Author's draft procedure. Review-only audits report findings. Workers have read authority; authorized edits are serialized by the coordinator or assigned disjoint file ownership before execution.
+
+## Completion
+
+The audit is complete only when the current inventory is independently verified, every AP/DP cell has independently verified applicability, every applicable cell has an evidence-backed pass or finding, and every whole-file read, supplemental unit, required check and finding confirmation is settled. Unknown, disputed, stale, unread, unmeasured or blocked work keeps it incomplete. Every required item has one reconciled primary result; retries cannot overwrite accepted items. Use [status requiring completion](commands.md#check-audit-status) for the final claim.
+
+Coverage completion and conformance are separate. Confirmed violations can have complete coverage; [reporting](reporting.md#report-context) determines their bands and verdict. A user stop or resource limit leaves a saved incomplete run with its residual, never a finished audit.
+
+## Freshness and Resume
+
+- **Source generations.**
+  Any corpus membership/byte change, scope correction, canon change, parser/engine change or audit-tool change blocks use of the captured generation. [Refresh](commands.md#refresh-audit-surface) captures the current generation and invalidates all its mapping, verification and evaluation evidence because cross-element dependency reach can exceed local source rows. An identical generation preserves its pending work. Archived state and immutable returns retain prior evidence.
+- **Mapping corrections.**
+  [Reset](commands.md#reset-audit-cells) invalidates a selected mapping and its verification/evaluation, including intersecting assignments. A reason or evidence edit changes the mapping fingerprint. Renewed evaluation waits for the entire current map to be verified.
+- **Interrupted workers.**
+  Accepted partial work remains recorded. [Retry](commands.md#retry-audit-assignment) retires an assignment and [planning](commands.md#plan-audit-assignments) assigns its unresolved residual. A fresh agent can continue after the coordinator checks captured identities and current status.
+- **Author byte agreement.**
+  Before applying a verified draft, compare its captured source hashes with the bytes to write. After writing, capture the actual working tree and run its selected checks. Reuse evidence only for an identical generation; changed roots, contracts or candidate bytes require their current verification. A draft-only request makes no commit-completion claim.
+
+## Artifacts
+
+| Artifact | Role |
+| --- | --- |
+| `audit-state.json` | Coordinator-owned inventory, evidence, assignments and history |
+| `change-surface-{workflow,technique,routine,activity}.md` | Section matrices, including explicit empty types |
+| `audit-evidence.md` | Cell reasons, independent receipts and evidence links |
+| `audit-coverage.md` | Inventory, criterion aliases, assignments and residuals |
+| `sources/` | Captured source and check-output bytes |
+| `worker-results/` | Immutable typed returns by assignment and attempt |
+| `generations/` | Prior state when the captured generation changes |
+| `audit-report.md` | Generated standalone findings and completion status |
+
+For a workflow-owned report, follow [Workflow Reports](reporting.md#workflow-reports) and transfer the generated counts, residuals and links into that guide's layout. The generated coverage remains authoritative.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin/AGENTS.md
+# Project Instructions
+
+Project instructions for this repository.
+
+- **Here:** rules that change what an agent does on an ordinary turn. A how-to for one kind of task lives in the doc that task already has.
+- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.
+- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.
+- When building, testing, or changing a checkout, follow [development.md](docs/development.md).
+
+## Worktrees
+
+- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.
+- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.
+- Provision, rename, and a corpus-only sweep: [guards/README.md](guards/README.md#running-guards-in-a-worktree).
+
+
+
+## Dependencies
+
+- **Never delete the lockfile or run** `npm update`**.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.
+- Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).
+
+
+
+## Boundaries
+
+- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.
+- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).
+
+
+
+## Issues and PRs
+
+- **Shape:** See the reference example: [#394](https://github.com/m2ux/workflow-server/issues/394)
+- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.
+- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations ("references", not "refs"), no anti-pattern numbers, no code tokens unless the token is the subject.
+- **No file:line citations in the body.** Evidence reads as prose.
+- **Spell out jargon.** "Phase 0/1/2" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.
+- **One paragraph per stage, and no section that restates another.** Where a "what was verified" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.
+- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.
+- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.
+- **Code lives on** `main`**, definitions on** `workflows`**.** They are separate long-lived branches, so a change to code and a change to definitions never share a branch.
+- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.
+
+
+
+## Testing
+
+Commands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).
+
+- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.
+
+
+
+## Where to look
+
+[docs/README.md](docs/README.md) is the index. Open the page for the task. 
+
+A **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.
+
+Engineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).COMMAND: cat /home/mike1/projects/dev/workflow-server/.project/workflows/corpus/specimens/mvw/techniques/note-ran.md
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Record that this dispatch executed.
+
+## Outputs
+
+### dispatch_recorded
+
+True once this dispatch has executed.
+
+## Protocol
+
+### 1. Record
+
+- Set `{dispatch_recorded}` to true. That is the whole of the work.
+COMMAND: sed -n 579,589p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Find Consumers
+
+Lists the references other workflows hold into the target.
+
+- Run from the corpus root.
+- Resolve each hit's binds and Apply links from there.
+
+```bash
+rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
+```
+
+COMMAND: rg -n note-ran corpus (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+corpus/specimens/mvw/routines/record-dispatch.yaml:12:    technique: note-ran
+COMMAND: rg --files corpus/specimens/mvw (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+corpus/specimens/mvw/workflow.yaml
+corpus/specimens/mvw/README.md
+corpus/specimens/mvw/activities/01-dispatch.yaml
+corpus/specimens/mvw/routines/record-dispatch.yaml
+corpus/specimens/mvw/techniques/note-ran.md
+COMMAND: cat corpus/specimens/mvw/routines/record-dispatch.yaml corpus/specimens/mvw/activities/01-dispatch.yaml corpus/specimens/mvw/workflow.yaml corpus/specimens/mvw/README.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+id: record-dispatch
+version: 1.0.0
+name: Record Dispatch
+description: Record that one activity dispatched.
+outputs:
+  - id: dispatch_recorded
+    type: boolean
+    description: True once the dispatch technique has executed.
+steps:
+  - kind: technique
+    id: record
+    technique: note-ran
+id: dispatch
+version: 1.0.0
+name: Dispatch
+description: Dispatch once.
+required: true
+variables:
+  writes:
+    - name: dispatch_recorded
+      type: boolean
+      description: True once the dispatch has executed.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-dispatch
+    outputs:
+      dispatch_recorded: dispatch_recorded
+exits:
+  - id: dispatched
+    isDefault: true
+outcome:
+  - The dispatch has executed ({dispatch_recorded})
+$schema: ../../../schemas/workflow.schema.json
+id: mvw
+version: 1.0.0
+title: Minimum Viable Workflow
+description: >-
+  The live sidecar's first walk: evidence that this instance can dispatch.
+author: m2ux
+tags:
+  - specimen
+  - mvw
+techniques:
+  activity:
+    - variable-binding
+initialActivity: dispatch
+graph:
+  dispatch:
+    dispatched: __terminal__
+# Minimum Viable Workflow
+
+The live sidecar's first walk: one orchestrator, one activity, one routine, one technique.
+
+A miss here is a miss on the instance.
+
+Walk it as `workflow_id: mvw`.
+
+## Copying from it
+
+Take this when a live instance needs a cheap dispatch that still loads a routine and a technique. This specimen holds one of each. Extra activities, loops, fans, checkpoints or a second technique belong on a different specimen.
+COMMAND: rg -n record-dispatch|specimens/mvw/|dispatch_recorded corpus -g *.md -g *.yaml (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+corpus/specimens/mvw/activities/01-dispatch.yaml:8:    - name: dispatch_recorded
+corpus/specimens/mvw/activities/01-dispatch.yaml:14:    routine: record-dispatch
+corpus/specimens/mvw/activities/01-dispatch.yaml:16:      dispatch_recorded: dispatch_recorded
+corpus/specimens/mvw/activities/01-dispatch.yaml:21:  - The dispatch has executed ({dispatch_recorded})
+corpus/specimens/mvw/routines/record-dispatch.yaml:1:id: record-dispatch
+corpus/specimens/mvw/routines/record-dispatch.yaml:6:  - id: dispatch_recorded
+corpus/specimens/mvw/techniques/note-ran.md:12:### dispatch_recorded
+corpus/specimens/mvw/techniques/note-ran.md:20:- Set `{dispatch_recorded}` to true. That is the whole of the work.
+COMMAND: sed -n 20,42p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+## Audit Command Conventions
+
+- **Runtime.**
+  Read [Conventions](#conventions) first. Use Python 3.10+ and Node with the paired engine's installed `yaml` package. Resolve `<skill-root>`, `<corpus-root>`, `<engine-root>` and the shared planning `<run>` directory to absolute paths. Apply the host's sandbox rules.
+- **Ownership.**
+  The coordinator invokes mutations sequentially; workers return files. Preserve failures and output in the planning record.
+- **Inputs.**
+  JSON files follow the [scope](../templates/audit-scope.json), [budget](../templates/audit-budgets.json) and [receipt](../templates/audit-receipt.json) contracts. Fill actual limits and measured calibration. Scope can include `base`, additional `rows` with source/address/section/start/end/context, and `relationships` with source/target/address/label/context.
+- **Exit status.**
+  Exit 0 means the operation succeeded; status with `--require` returns 2 when the requested gate is incomplete; exit 1 means invalid input or unavailable operation. Rendering and planning do not establish audit completion.
+
+## Audit Surface
+
+### Initialize Audit Surface
+
+Capture source bytes and render all four matrices with unresolved cells.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Paths are relative to a root containing `corpus/`. Use the actual inventory author identity and a new run directory.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py init --root <corpus-root> --engine <engine-root> --scope <scope.json> --actor <host-agent-id> --run <run>
+```
+
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-scope.json
+{
+  "paths": ["corpus/example/techniques/operation.md"],
+  "checks": ["guards"],
+  "rows": [],
+  "relationships": []
+}
+COMMAND: rg -n headings in references/audit-dispatch.md
+1:# Audit Dispatch
+5:## Phases
+19:## Sizing
+31:## Returns
+COMMAND: sed -n 5,60p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md
+## Phases
+
+| Phase | Required Work | Independent Role |
+| --- | --- | --- |
+| `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |
+| `map` | Every row × AP/DP cell | Mapping author recorded per cell |
+| `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |
+| `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |
+| `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |
+
+Inventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.
+
+Use [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, criteria, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.
+
+## Sizing
+
+Record actual host context/output limits, available child slots, prompt/tool reserve, safety reserve and work limit in the [budget input](../templates/audit-budgets.json). Reserve the coordinator and occupied slots once. The input contains estimates, never a promise of runtime capacity.
+
+Calibrate each phase separately with a bounded pilot from its required work. Record measured packet/output sizes and elapsed time; retain useful pilot results. A pilot's maximum input and output must already fit the declared host limits. Unknown host limits block dispatch. Use the host tokenizer when available; the CLI's explicit bytes-per-token proxy requires a conservative ratio and safety reserve.
+
+For each slice, the planner counts the serialized packet, including source/canon context, identifiers, mapping reasons and assignment metadata. It estimates output and elapsed work from the recorded phase calibration. It requires input + output ≤ context − prompt/tool reserve − safety reserve, output ≤ output limit, and work ≤ work limit. Output is counted once in the context equation. Use an effective combined context limit consistent with the host's input/output accounting.
+
+Bundles group criterion, source and section, with relationship context retained. Oversized bundles split into bounded item groups; a single item that cannot fit blocks dispatch. Largest bundles are packed first, preferring shared context. Each phase's assignments are disjoint and exactly cover its unassigned residual. The final list determines agent count `N`; free slots `K` determine concurrency `min(K,N)` and a lower bound of `ceil(N/K)` waves. Zero slots blocks dispatch. Lower concurrency changes elapsed time, never coverage.
+
+The coordinator observes actual work. When a worker exceeds its calibrated cost, retain accepted evidence, retire its unfinished assignment, recalibrate and plan the remaining work. Shared source context may overlap; primary items and file write ownership do not. Inventory closure is partitioned by manifest source so a large surface can fan out without one whole-corpus input packet.
+
+## Returns
+
+Return a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.
+
+- **Identity.**
+  Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.
+- **Evidence.**
+  Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite both the row and the actual criterion, plus required context sources. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.
+- **Statuses.**
+  Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.
+- **Findings.**
+  A `finding` record contains `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location` under its `finding` object, with the evidence spans on the record. Follow [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.
+- **Check observations.**
+  A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.
+- **Partial work.**
+  A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-map.md
+# Canon Map
+
+How each home is enumerated, and where a judgement already made is recorded.
+
+## Unit Inventory
+
+Read the enumeration from the home at the commit audited, with [List units](commands.md#list-units).
+
+| Home | Unit |
+|------|------|
+| Anti-Patterns | One `##` family; each `###` entry inside it |
+| Design Principles | One `##` |
+| Convention Conformance | One `##` |
+| Guards | One registry entry in `guards/guards.ts` |
+
+- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.
+- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.
+
+## Prior Judgments
+
+An entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.
+
+| Authority | Where | Records |
+|-----------|-------|---------|
+| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |
+| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |
+| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |
+
+`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.
+
+## File Kinds
+
+Author and Audit establish applicability through the shared [matrix contract](change-surface.md#applicability). The complete [unit inventory](#unit-inventory) supplies the matrix and supplemental obligations. Fires-on metadata, when available, is a prioritization hint.
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/walk-rules.md
+# Walk Rules
+
+These govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.
+
+## Order
+
+- **Entry-major.**
+  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.
+- **Compound headings.**
+  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.
+  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.
+
+## Evidence
+
+- **The construct.**
+  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.
+- **Identifiers.**
+  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.
+- **Search hits.**
+  - A search hit is a site. Read the construct around it, and cite that construct.
+  - An empty search leaves open a construct the pattern did not name.
+- **Probes.**
+  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.
+- **Consumers.**
+  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.
+- **Forms.**
+  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.
+- **Hand-checks.**
+  - An empty hand-check is `blocked` until it has reported a case already in the corpus.
+  - Take a set the entry names from that entry's wording.
+
+## Candidates and Fixes
+
+- **Falling candidates.**
+  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.
+- **Unread paths.**
+  `unread` paths are outside the remediation scope.
+  - An audit walks them under [Rules](audit-mode.md#rules).
+- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.
+- **Ledgers, fixtures and snapshots.**
+  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.
+COMMAND: sed -n 43,100p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+## Checks
+
+Read [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. A full audit prefers [Run Guards on the Delta](commands.md#run-guards-on-the-delta); draft and post-write checks use [Run Guard Suite](commands.md#run-guard-suite). A step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Select broader consumer coverage from [Workflows Coverage](coverage.md#workflows-coverage) when shared constructs are affected.
+
+### Edit Hook
+
+The registered hook uses Python 3.10+ and the workspace's `.project/main` checkout with installed `tsx`. Its integration refs are the corpus tree's latest fetched `origin/workflows` and `origin/iNN/workflows`; it measures against their nearest merge-base. Read [Run the Edit Guard](commands.md#run-the-edit-guard) when handling its result or invoking it explicitly. The hook's operational contract also applies to a host without automatic registration.
+
+When the hook returns a failure, close the introduced defect or state why the result is unmeasured before the next edit.
+COMMAND: sed -n 43,102p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Check Audit Status
+
+Reconcile current evidence, rendered views and outstanding obligations.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>
+```
+
+### Render Audit Surface
+
+Regenerate matrices, evidence and reports from canonical state.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Changed source evidence requires refresh.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py render --run <run>
+```
+
+### Plan Audit Assignments
+
+Compute disjoint residual assignments under declared budgets.
+
+- Read [Audit Command Conventions](#audit-command-conventions) and [Sizing](audit-dispatch.md#sizing). Select `inventory`, `map`, `verify`, `evaluate` or `obligations`. Unknown limits, unmet gates or indivisible oversized context refuse dispatch.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py plan --run <run> --phase <phase> --budgets <budgets.json>
+```
+
+### Bind Audit Agent
+
+Bind an assignment to its actual host agent identity.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Independent roles cannot own their authored work; retired assignments require a new residual plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py bind --run <run> --assignment <id> --actor <host-agent-id>
+```
+
+### Write Audit Packet
+
+Write captured context and ownership for one agent.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Give the packet and [return contract](audit-dispatch.md#returns) to the bound host agent. Serialized size must fit the plan.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py packet --run <run> --assignment <id> --out <packet.json>
+```
+
+### Submit Audit Results
+
+Validate a typed return and preserve its immutable receipt.
+
+- Read [Audit Command Conventions](#audit-command-conventions). Invalid returns cannot partially change state; valid partial results leave the residual incomplete.
+
+```bash
+python3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>
+```
+
+COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-budgets.json /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-receipt.json
+{
+  "context_tokens": null,
+  "reserve_tokens": null,
+  "safety_tokens": null,
+  "output_tokens": null,
+  "work_seconds": null,
+  "slots": null,
+  "bytes_per_token": null,
+  "calibration": {
+    "map": {"output_tokens_per_item": null, "seconds_per_item": null, "evidence": ""}
+  }
+}
+{
+  "assignment": "copy-from-packet",
+  "snapshot": "copy-from-packet",
+  "actor": "host-bound-agent-id",
+  "attempt": "attempt-1",
+  "records": [
+    {
+      "items": ["copy-owned-item-id"],
+      "status": "U",
+      "reason": "Identify the missing evidence; supply a source-derived judgment when settled.",
+      "evidence": [{"source": "copy-source-key", "start": 1, "end": 1}]
+    }
+  ]
+}
+COMMAND: sed -n 486,513p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+## Canon Check Conventions
+
+- **Branch point.**
+  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.
+- **Exit status.**
+  Capture the check's own exit status before filtering output; a pipe reports the filter's status.
+- **Guard outcomes.**
+  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.
+- **Option coverage.**
+  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.
+
+### Guard Obligations
+
+- **Binding fidelity.**
+  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.
+  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.
+- **Suppressions.**
+  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.
+  - Count the findings at the site before calling an entry redundant.
+- **New guards.**
+  - Prove a new guard against the corpus at the commit before the fix it was written for.
+  - A carve-out that follows from the entry belongs in the guard's condition.
+  - Take a file's kind from its declaration, and name in the check the kinds it admits.
+- **Definition changes.**
+  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.
+  - The suppression of a binding finding it closed is the entry that goes stale on that commit.
+
+
+COMMAND: sed -n 547,558p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### List Units
+
+Lists a home's `##` units, then its `###` entries, with their line numbers.
+
+- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.
+- Run from the corpus root.
+
+```bash
+rg -n "^## " corpus/canon/resources/anti-patterns.md
+rg -n "^### " corpus/canon/resources/anti-patterns.md
+```
+
+COMMAND: sed -n 571,578p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Fetch Unit
+
+Reads one section or entry of a home.
+
+- **On disk.**
+  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
+- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
+
+COMMAND: sed -n 592,602p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Run Guard Suite
+
+Runs the guard registry, or a named subset.
+
+- The caller supplies the canon check conventions, including guard obligations.
+
+```bash
+WORKFLOWS_DIR=<corpus> npm run check:all
+WORKFLOWS_DIR=<corpus> npm run check:all -- --only <id>,<id>
+```
+
+COMMAND: rg --files corpus/specimens (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+corpus/specimens/gitnexus-group-refresh-conformance/workflow.yaml
+corpus/specimens/gitnexus-group-refresh-conformance/README.md
+corpus/specimens/gitnexus-group-refresh-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-group-refresh-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-group-refresh-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-group-refresh-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-group-refresh-conformance/resources/README.md
+corpus/specimens/gitnexus-symptom-trace-conformance/workflow.yaml
+corpus/specimens/gitnexus-symptom-trace-conformance/README.md
+corpus/specimens/gitnexus-symptom-trace-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-symptom-trace-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-symptom-trace-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-layer-conformance/workflow.yaml
+corpus/specimens/gitnexus-symptom-trace-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-layer-conformance/README.md
+corpus/specimens/gitnexus-symptom-trace-conformance/resources/README.md
+corpus/specimens/gitnexus-layer-conformance/activities/02-read-the-layer.yaml
+corpus/specimens/gitnexus-graph-for-tree-conformance/workflow.yaml
+corpus/specimens/gitnexus-layer-conformance/activities/01-trace-and-check.yaml
+corpus/specimens/gitnexus-layer-conformance/activities/04-report-conformance.yaml
+corpus/specimens/gitnexus-graph-for-tree-conformance/README.md
+corpus/specimens/gitnexus-layer-conformance/activities/03-read-the-absent-layer.yaml
+corpus/specimens/gitnexus-layer-conformance/techniques/report-layer-conformance.md
+corpus/specimens/gitnexus-graph-for-tree-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-graph-for-tree-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-graph-for-tree-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-radius-conformance/workflow.yaml
+corpus/specimens/gitnexus-radius-conformance/README.md
+corpus/specimens/gitnexus-graph-for-tree-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-layer-conformance/resources/conformance-report.md
+corpus/specimens/gitnexus-layer-conformance/resources/README.md
+corpus/specimens/gitnexus-graph-for-tree-conformance/resources/README.md
+corpus/specimens/gitnexus-radius-conformance/activities/01-measure-reach.yaml
+corpus/specimens/gitnexus-radius-conformance/activities/02-report-conformance.yaml
+corpus/specimens/gitnexus-radius-conformance/activities/README.md
+corpus/specimens/gitnexus-orphan-scan-conformance/workflow.yaml
+corpus/specimens/gitnexus-area-comprehension-conformance/workflow.yaml
+corpus/specimens/gitnexus-orphan-scan-conformance/README.md
+corpus/specimens/gitnexus-area-comprehension-conformance/README.md
+corpus/specimens/gitnexus-radius-conformance/techniques/README.md
+corpus/specimens/gitnexus-radius-conformance/techniques/report-radius-conformance.md
+corpus/specimens/gitnexus-orphan-scan-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-orphan-scan-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-orphan-scan-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-public-api-enum-conformance/workflow.yaml
+corpus/specimens/gitnexus-public-api-enum-conformance/README.md
+corpus/specimens/gitnexus-radius-conformance/resources/conformance-report.md
+corpus/specimens/gitnexus-radius-conformance/resources/README.md
+corpus/specimens/gitnexus-area-comprehension-conformance/activities/03-stale-graph-case.yaml
+corpus/specimens/gitnexus-area-comprehension-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-area-comprehension-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-area-comprehension-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-public-api-enum-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-orphan-scan-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-public-api-enum-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-public-api-enum-conformance/activities/01-positive-case.yaml
+corpus/specimens/fan-conformance/workflow.yaml
+corpus/specimens/fan-conformance/README.md
+corpus/specimens/gitnexus-area-comprehension-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-public-api-enum-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-area-comprehension-conformance/resources/README.md
+corpus/specimens/gitnexus-orphan-scan-conformance/resources/README.md
+corpus/specimens/gitnexus-public-api-enum-conformance/resources/README.md
+corpus/specimens/gitnexus-diff-coverage-map-conformance/workflow.yaml
+corpus/specimens/gitnexus-diff-coverage-map-conformance/README.md
+corpus/specimens/fan-conformance/activities/01-plan-conformance.yaml
+corpus/specimens/fan-conformance/activities/04-choose-probes.yaml
+corpus/specimens/fan-conformance/activities/10-report-conformance.yaml
+corpus/specimens/fan-conformance/activities/06-survey-tree.yaml
+corpus/specimens/fan-conformance/activities/README.md
+corpus/specimens/fan-conformance/activities/02-survey-files.yaml
+corpus/specimens/fan-conformance/activities/08-note-probe.yaml
+corpus/specimens/fan-conformance/activities/07-open-notes.yaml
+corpus/specimens/fan-conformance/activities/03-survey-history.yaml
+corpus/specimens/fan-conformance/activities/05-probe-directory.yaml
+corpus/specimens/fan-conformance/activities/09-merge-notes.yaml
+corpus/specimens/gitnexus-doc-reference-surface-conformance/workflow.yaml
+corpus/specimens/gitnexus-doc-reference-surface-conformance/README.md
+corpus/specimens/gitnexus-diff-coverage-map-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-diff-coverage-map-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-diff-coverage-map-conformance/activities/01-positive-case.yaml
+corpus/specimens/github-library-conformance/workflow.yaml
+corpus/specimens/github-library-conformance/README.md
+corpus/specimens/gitnexus-doc-reference-surface-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-diff-coverage-map-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-doc-reference-surface-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-doc-reference-surface-conformance/activities/01-positive-case.yaml
+corpus/specimens/fan-conformance/techniques/plan-conformance.md
+corpus/specimens/fan-conformance/techniques/README.md
+corpus/specimens/fan-conformance/techniques/TECHNIQUE.md
+corpus/specimens/fan-conformance/techniques/survey-files.md
+corpus/specimens/fan-conformance/techniques/survey-history.md
+corpus/specimens/fan-conformance/techniques/probe-directory.md
+corpus/specimens/gitnexus-diff-coverage-map-conformance/resources/README.md
+corpus/specimens/fan-conformance/techniques/choose-probes.md
+corpus/specimens/fan-conformance/techniques/note-probe.md
+corpus/specimens/fan-conformance/techniques/open-notes.md
+corpus/specimens/fan-conformance/techniques/survey-tree.md
+corpus/specimens/fan-conformance/techniques/report-conformance.md
+corpus/specimens/gitnexus-doc-reference-surface-conformance/techniques/report-cases.md
+corpus/specimens/github-library-conformance/activities/05-write-project-field.yaml
+corpus/specimens/github-library-conformance/activities/03-find-project.yaml
+corpus/specimens/github-library-conformance/activities/01-list-labels.yaml
+corpus/specimens/github-library-conformance/activities/04-read-project-field.yaml
+corpus/specimens/github-library-conformance/activities/02-replace-label-family.yaml
+corpus/specimens/git-pin-conformance/workflow.yaml
+corpus/specimens/git-pin-conformance/README.md
+corpus/specimens/fan-conformance/resources/conformance-report.md
+corpus/specimens/fan-conformance/resources/README.md
+corpus/specimens/gitnexus-api-change-gate-conformance/workflow.yaml
+corpus/specimens/gitnexus-doc-reference-surface-conformance/resources/README.md
+corpus/specimens/gitnexus-api-change-gate-conformance/README.md
+corpus/specimens/gitnexus-diff-taint-pass-conformance/workflow.yaml
+corpus/specimens/gitnexus-diff-taint-pass-conformance/README.md
+corpus/specimens/git-pin-conformance/activities/02-plan-pins.yaml
+corpus/specimens/git-pin-conformance/activities/01-materialise-checkouts.yaml
+corpus/specimens/git-pin-conformance/activities/README.md
+corpus/specimens/git-pin-conformance/activities/03-pin-checkouts.yaml
+corpus/specimens/git-pin-conformance/activities/04-report-conformance.yaml
+corpus/specimens/gitnexus-api-change-gate-conformance/activities/03-multi-verb-case.yaml
+corpus/specimens/gitnexus-api-change-gate-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-api-change-gate-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-api-change-gate-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-tool-surface-conformance/workflow.yaml
+corpus/specimens/git-pin-conformance/techniques/README.md
+corpus/specimens/gitnexus-tool-surface-conformance/README.md
+corpus/specimens/git-pin-conformance/techniques/plan-pins.md
+corpus/specimens/git-pin-conformance/techniques/report-pin-conformance.md
+corpus/specimens/gitnexus-api-change-gate-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-diff-taint-pass-conformance/activities/03-absent-layer-case.yaml
+corpus/specimens/gitnexus-diff-taint-pass-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-diff-taint-pass-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-diff-taint-pass-conformance/activities/01-positive-case.yaml
+corpus/specimens/git-pin-conformance/resources/conformance-report.md
+corpus/specimens/git-pin-conformance/resources/README.md
+corpus/specimens/gitnexus-tool-surface-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-tool-surface-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-tool-surface-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-diff-taint-pass-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-api-change-gate-conformance/resources/README.md
+corpus/specimens/gitnexus-tool-surface-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-diff-taint-pass-conformance/resources/README.md
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/workflow.yaml
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/README.md
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/workflow.yaml
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/README.md
+corpus/specimens/gitnexus-restructure-surface-conformance/workflow.yaml
+corpus/specimens/gitnexus-restructure-surface-conformance/README.md
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-tool-surface-conformance/resources/README.md
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-restructure-surface-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-restructure-surface-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-restructure-surface-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/techniques/report-cases.md
+corpus/specimens/readme-links-conformance/workflow.yaml
+corpus/specimens/readme-links-conformance/README.md
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/techniques/report-cases.md
+corpus/specimens/readme-links-conformance/activities/01-seed-links.yaml
+corpus/specimens/gitnexus-sequence-diagram-source-conformance/resources/README.md
+corpus/specimens/readme-links-conformance/activities/README.md
+corpus/specimens/gitnexus-restructure-surface-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-doc-heading-lookup-conformance/resources/README.md
+corpus/specimens/gitnexus-scope-discipline-check-conformance/workflow.yaml
+corpus/specimens/gitnexus-scope-discipline-check-conformance/README.md
+corpus/specimens/gitnexus-index-refresh-conformance/workflow.yaml
+corpus/specimens/gitnexus-index-refresh-conformance/README.md
+corpus/specimens/routine-conformance/workflow.yaml
+corpus/specimens/routine-conformance/README.md
+corpus/specimens/gitnexus-restructure-surface-conformance/resources/README.md
+corpus/specimens/gitnexus-scope-discipline-check-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-scope-discipline-check-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-scope-discipline-check-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-index-refresh-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-index-refresh-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-index-refresh-conformance/activities/03-unindexed-tree-case.yaml
+corpus/specimens/gitnexus-index-refresh-conformance/activities/01-positive-case.yaml
+corpus/specimens/routine-conformance/activities/01-plan-probes.yaml
+corpus/specimens/routine-conformance/activities/02-count-pass.yaml
+corpus/specimens/routine-conformance/activities/README.md
+corpus/specimens/routine-conformance/activities/03-size-pass.yaml
+corpus/specimens/routine-conformance/activities/04-report-conformance.yaml
+corpus/specimens/gitnexus-narrow-to-changed-conformance/workflow.yaml
+corpus/specimens/gitnexus-narrow-to-changed-conformance/README.md
+corpus/specimens/gitnexus-scope-discipline-check-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-index-refresh-conformance/techniques/report-cases.md
+corpus/specimens/routine-conformance/routines/measured-pass.yaml
+corpus/specimens/gitnexus-scope-discipline-check-conformance/resources/README.md
+corpus/specimens/gitnexus-narrow-to-changed-conformance/activities/03-union-case.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/workflow.yaml
+corpus/specimens/routine-conformance/techniques/measure-size.md
+corpus/specimens/routine-conformance/techniques/count-entries.md
+corpus/specimens/routine-conformance/techniques/README.md
+corpus/specimens/routine-conformance/techniques/TECHNIQUE.md
+corpus/specimens/routine-conformance/techniques/plan-probes.md
+corpus/specimens/routine-conformance/techniques/report-conformance.md
+corpus/specimens/gitnexus-narrow-to-changed-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-narrow-to-changed-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-narrow-to-changed-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/README.md
+corpus/specimens/gitnexus-index-refresh-conformance/resources/README.md
+corpus/specimens/routine-conformance/resources/conformance-report.md
+corpus/specimens/routine-conformance/resources/README.md
+corpus/specimens/gitnexus-guarded-rename-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/activities/03-ambiguous-name-case.yaml
+corpus/specimens/gitnexus-narrow-to-changed-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/workflow.yaml
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/README.md
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-guarded-rename-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/activities/03-low-rating-case.yaml
+corpus/specimens/contract-composition/workflow.yaml
+corpus/specimens/contract-composition/README.md
+corpus/specimens/gitnexus-narrow-to-changed-conformance/resources/README.md
+corpus/specimens/contract-composition/activities/01-pair.yaml
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-guarded-rename-conformance/resources/README.md
+corpus/specimens/gitnexus-api-surface-review-conformance/workflow.yaml
+corpus/specimens/gitnexus-api-surface-review-conformance/README.md
+corpus/specimens/gitnexus-pre-edit-impact-gate-conformance/resources/README.md
+corpus/specimens/gitnexus-api-surface-review-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-api-surface-review-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-api-surface-review-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-group-concept-search-conformance/workflow.yaml
+corpus/specimens/gitnexus-group-concept-search-conformance/README.md
+corpus/specimens/gitnexus-api-surface-review-conformance/techniques/report-cases.md
+corpus/specimens/namespace-conformance/workflow.yaml
+corpus/specimens/namespace-conformance/README.md
+corpus/specimens/gitnexus-group-concept-search-conformance/activities/03-unknown-group-case.yaml
+corpus/specimens/gitnexus-group-concept-search-conformance/activities/02-negative-case.yaml
+corpus/specimens/contract-composition/techniques/pair/beta.md
+corpus/specimens/gitnexus-group-concept-search-conformance/activities/04-report-cases.yaml
+corpus/specimens/contract-composition/techniques/pair/alpha.md
+corpus/specimens/gitnexus-group-concept-search-conformance/activities/01-positive-case.yaml
+corpus/specimens/contract-composition/techniques/pair/TECHNIQUE.md
+corpus/specimens/contract-composition/techniques/TECHNIQUE.md
+corpus/specimens/gitnexus-api-surface-review-conformance/resources/README.md
+corpus/specimens/namespace-conformance/activities/02-reach-by-path.yaml
+corpus/specimens/namespace-conformance/activities/01-reach-by-name.yaml
+corpus/specimens/gitnexus-package-diagram-source-conformance/workflow.yaml
+corpus/specimens/gitnexus-group-concept-search-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-package-diagram-source-conformance/README.md
+corpus/specimens/mvw/workflow.yaml
+corpus/specimens/mvw/README.md
+corpus/specimens/gitnexus-change-risk-assessment-conformance/workflow.yaml
+corpus/specimens/gitnexus-change-risk-assessment-conformance/README.md
+corpus/specimens/gitnexus-group-concept-search-conformance/resources/README.md
+corpus/specimens/mvw/activities/01-dispatch.yaml
+corpus/specimens/gitnexus-package-diagram-source-conformance/activities/03-report-cases.yaml
+corpus/specimens/gitnexus-package-diagram-source-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-package-diagram-source-conformance/activities/01-positive-case.yaml
+corpus/specimens/mvw/routines/record-dispatch.yaml
+corpus/specimens/gitnexus-change-risk-assessment-conformance/activities/02-negative-case.yaml
+corpus/specimens/gitnexus-change-risk-assessment-conformance/activities/03-empty-diff-case.yaml
+corpus/specimens/gitnexus-change-risk-assessment-conformance/activities/04-report-cases.yaml
+corpus/specimens/gitnexus-change-risk-assessment-conformance/activities/01-positive-case.yaml
+corpus/specimens/gitnexus-package-diagram-source-conformance/techniques/report-cases.md
+corpus/specimens/mvw/techniques/note-ran.md
+corpus/specimens/README.md
+corpus/specimens/gitnexus-change-risk-assessment-conformance/resources/README.md
+corpus/specimens/gitnexus-change-risk-assessment-conformance/techniques/report-cases.md
+corpus/specimens/gitnexus-package-diagram-source-conformance/resources/README.md
+corpus/specimens/shared-probe/techniques/TECHNIQUE.md
+corpus/specimens/shared-probe/techniques/measure-entries.md
+COMMAND: rg -n ^##|^### corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+corpus/canon/resources/convention-conformance.md:12:## Reference Conventions
+corpus/canon/resources/design-principles.md:19:## 1. Workflows Ossify Patterns
+corpus/canon/resources/design-principles.md:23:## 2. Internalize Before Producing
+corpus/canon/resources/design-principles.md:27:## 3. Define Complete Scope Before Execution
+corpus/canon/resources/design-principles.md:31:## 4. Clarify Before Assuming
+corpus/canon/resources/design-principles.md:35:## 5. Maximize Schema Expressiveness
+corpus/canon/resources/design-principles.md:39:## 6. One Authoritative Home
+corpus/canon/resources/design-principles.md:43:## 7. Convention Over Invention
+corpus/canon/resources/design-principles.md:47:## 8. Confirm Before Irreversible Changes
+corpus/canon/resources/design-principles.md:51:## 9. Encode Constraints as Structure
+corpus/canon/resources/design-principles.md:55:## 10. Non-Destructive Updates
+corpus/canon/resources/design-principles.md:59:## 11. Complete Documentation Structure
+corpus/canon/resources/design-principles.md:63:## 12. Output Economy
+corpus/canon/resources/design-principles.md:67:## 13. Separate Contract from Procedure
+corpus/canon/resources/design-principles.md:71:## 14. Single Source of Truth
+corpus/canon/resources/design-principles.md:75:## 15. Phase by Sequenced Outcome
+corpus/canon/resources/design-principles.md:79:## 16. Distinguish Designators from Parameters
+corpus/canon/resources/design-principles.md:83:## 17. Document in Positive Present
+corpus/canon/resources/design-principles.md:87:## 18. Prefer Shared Capability
+corpus/canon/resources/design-principles.md:91:## 19. Name Symbols Affirmatively
+corpus/canon/resources/design-principles.md:95:## 20. Keep Orchestration in Structure
+corpus/canon/resources/design-principles.md:99:## 21. Match the Harness Surface
+corpus/canon/resources/design-principles.md:103:## 22. Modular Over Inline
+corpus/canon/resources/design-principles.md:107:## 23. Close the Loop
+corpus/canon/resources/design-principles.md:111:## 24. Keep Session Interaction in Activities
+corpus/canon/resources/design-principles.md:115:## 25. Bind Sibling Techniques as Steps
+corpus/canon/resources/design-principles.md:119:## 26. A Technique Is a Reading
+corpus/canon/resources/design-principles.md:123:## 27. State Contract Contribution
+corpus/canon/resources/design-principles.md:127:## 28. Creation Guide for Generated Documents
+corpus/canon/resources/design-principles.md:131:## 29. Cite Resource Policy; Do Not Restate It
+corpus/canon/resources/design-principles.md:135:## 30. Resources Stay Abstract
+corpus/canon/resources/design-principles.md:139:## 31. Isolate Conditional Branches as Notes
+corpus/canon/resources/design-principles.md:143:## 32. Cite Resources at Section Grain
+corpus/canon/resources/design-principles.md:147:## 33. Pre-Session Prose Stands Alone
+corpus/canon/resources/design-principles.md:151:## 34. Edit the Owner
+corpus/canon/resources/design-principles.md:155:## 35. Prefer Removing the Thing That Needs a Prohibition
+corpus/canon/resources/design-principles.md:159:## 36. A Technique Names Only What Its Reader Holds
+corpus/canon/resources/design-principles.md:163:## 37. An I/O Contract Names the Value
+corpus/canon/resources/design-principles.md:167:## 38. A Relocation Records the Outcome It Keeps
+corpus/canon/resources/design-principles.md:171:## 39. A Phase Heading Names the Outcome
+corpus/canon/resources/design-principles.md:175:## 40. Fan-Out Lives at the Layer That Runs the Work
+corpus/canon/resources/design-principles.md:179:## 41. A Phase States Answers the Tool Has Returned
+corpus/canon/resources/design-principles.md:183:## 42. A Routine Holds the Codified Path
+corpus/canon/resources/design-principles.md:187:## 43. An Activity Reuses Activities
+corpus/canon/resources/design-principles.md:191:## 44. A Resource Splits for Section Delivery
+corpus/canon/resources/design-principles.md:195:## 45. A Rule States One Invariant
+corpus/canon/resources/design-principles.md:199:## 46. A Consumer Binds the Contract
+corpus/canon/resources/design-principles.md:203:## 47. A Calibrated Surface Extends by Wrapping
+corpus/canon/resources/anti-patterns.md:15:## Creation Rules
+corpus/canon/resources/anti-patterns.md:19:### Smell not stance
+corpus/canon/resources/anti-patterns.md:23:### Entry identity
+corpus/canon/resources/anti-patterns.md:27:### Audit technique boundary
+corpus/canon/resources/anti-patterns.md:31:### Entry intro
+corpus/canon/resources/anti-patterns.md:35:### Detect triad
+corpus/canon/resources/anti-patterns.md:39:### Keep audit signals
+corpus/canon/resources/anti-patterns.md:43:### Resist over-fit
+corpus/canon/resources/anti-patterns.md:51:### Succinctness
+corpus/canon/resources/anti-patterns.md:58:## Structural
+corpus/canon/resources/anti-patterns.md:62:### AP-01. no-inline-content
+corpus/canon/resources/anti-patterns.md:74:### AP-02. schema-is-constraint
+corpus/canon/resources/anti-patterns.md:86:### AP-03. no-partial-implementation
+corpus/canon/resources/anti-patterns.md:98:### AP-04. no-invented-naming
+corpus/canon/resources/anti-patterns.md:110:## Interaction
+corpus/canon/resources/anti-patterns.md:114:### AP-05. atomic-checkpoints
+corpus/canon/resources/anti-patterns.md:126:### AP-06. no-assumption-execution
+corpus/canon/resources/anti-patterns.md:138:### AP-07. scope-reverify-completion
+corpus/canon/resources/anti-patterns.md:150:### AP-08. one-question-per-message
+corpus/canon/resources/anti-patterns.md:162:## Schema Expressiveness
+corpus/canon/resources/anti-patterns.md:166:### AP-09. checkpoint-not-prose
+corpus/canon/resources/anti-patterns.md:178:### AP-10. loop-not-prose
+corpus/canon/resources/anti-patterns.md:190:### AP-11. decision-not-prose
+corpus/canon/resources/anti-patterns.md:202:### AP-12. artifact-not-buried
+corpus/canon/resources/anti-patterns.md:214:### AP-13. variable-for-approval
+corpus/canon/resources/anti-patterns.md:226:### AP-14. mode-as-state
+corpus/canon/resources/anti-patterns.md:238:### AP-15. procedure-in-protocol
+corpus/canon/resources/anti-patterns.md:250:### AP-16. technique-inputs-declared
+corpus/canon/resources/anti-patterns.md:262:### AP-17. bound-step-no-description
+corpus/canon/resources/anti-patterns.md:274:### AP-18. no-monolith-masking-steps
+corpus/canon/resources/anti-patterns.md:286:## Rule Hygiene
+corpus/canon/resources/anti-patterns.md:290:### AP-19. no-rule-protocol-restatement
+corpus/canon/resources/anti-patterns.md:302:### AP-20. rule-group-disambiguation
+corpus/canon/resources/anti-patterns.md:314:### AP-21. grouped-rule-keys
+corpus/canon/resources/anti-patterns.md:326:### AP-22. single-rule-authority
+corpus/canon/resources/anti-patterns.md:338:### AP-23. worker-rule-reach
+corpus/canon/resources/anti-patterns.md:350:### AP-24. no-contradictory-rules
+corpus/canon/resources/anti-patterns.md:362:### AP-25. no-one-step-rules
+corpus/canon/resources/anti-patterns.md:374:## Description Hygiene
+corpus/canon/resources/anti-patterns.md:378:### AP-26. no-rationale-in-description
+corpus/canon/resources/anti-patterns.md:390:### AP-27. validate-message-economy
+corpus/canon/resources/anti-patterns.md:402:### AP-28. no-sequence-in-description
+corpus/canon/resources/anti-patterns.md:414:### AP-29. no-user-env-mutation
+corpus/canon/resources/anti-patterns.md:426:### AP-30. role-rules-not-description
+corpus/canon/resources/anti-patterns.md:438:### AP-31. no-hand-authored-artifacts
+corpus/canon/resources/anti-patterns.md:450:### AP-32. outcome-names-value
+corpus/canon/resources/anti-patterns.md:462:### AP-33. no-set-of-technique-output
+corpus/canon/resources/anti-patterns.md:474:### AP-34. no-valueless-control-set
+corpus/canon/resources/anti-patterns.md:486:### AP-35. no-intra-step-input-set
+corpus/canon/resources/anti-patterns.md:498:### AP-36. techniques-list-disjoint
+corpus/canon/resources/anti-patterns.md:510:### AP-37. rule-audience-bucket
+corpus/canon/resources/anti-patterns.md:522:### AP-38. no-duplicate-technique-steps
+corpus/canon/resources/anti-patterns.md:534:### AP-39. hoist-universal-techniques
+corpus/canon/resources/anti-patterns.md:546:### AP-40. readme-orients-not-transcribes
+corpus/canon/resources/anti-patterns.md:558:### AP-41. avoidance-voice-in-definitions
+corpus/canon/resources/anti-patterns.md:570:## Coupling
+corpus/canon/resources/anti-patterns.md:574:### AP-42. io-agnostic-contract
+corpus/canon/resources/anti-patterns.md:586:### AP-43. canonical-artifact-ids
+corpus/canon/resources/anti-patterns.md:598:### AP-44. artifact-name-in-io
+corpus/canon/resources/anti-patterns.md:610:### AP-45. no-opaque-artifact-path-array
+corpus/canon/resources/anti-patterns.md:622:### AP-46. no-resource-caller-backlink
+corpus/canon/resources/anti-patterns.md:634:### AP-47. no-redundant-link-label
+corpus/canon/resources/anti-patterns.md:646:### AP-48. brace-output-references
+corpus/canon/resources/anti-patterns.md:658:### AP-49. no-delivery-mechanism-narration
+corpus/canon/resources/anti-patterns.md:670:### AP-50. no-tool-usage-prescription
+corpus/canon/resources/anti-patterns.md:682:### AP-51. canonical-technique-reference
+corpus/canon/resources/anti-patterns.md:694:### AP-52. brace-declared-ids
+corpus/canon/resources/anti-patterns.md:706:### AP-53. dotted-rule-address
+corpus/canon/resources/anti-patterns.md:718:### AP-54. anchored-protocol-references
+corpus/canon/resources/anti-patterns.md:730:### AP-55. hoist-shared-inputs
+corpus/canon/resources/anti-patterns.md:742:### AP-56. paren-invocation-args
+corpus/canon/resources/anti-patterns.md:754:### AP-57. escape-literal-dollar
+corpus/canon/resources/anti-patterns.md:766:### AP-58. snake-case-symbols
+corpus/canon/resources/anti-patterns.md:778:### AP-59. constraint-as-blockquote
+corpus/canon/resources/anti-patterns.md:790:### AP-60. local-rule-as-note
+corpus/canon/resources/anti-patterns.md:802:### AP-61. factor-repeated-paths
+corpus/canon/resources/anti-patterns.md:814:### AP-62. bind-protocol-locals
+corpus/canon/resources/anti-patterns.md:826:### AP-63. backtick-code-tokens
+corpus/canon/resources/anti-patterns.md:838:### AP-64. boolean-id-shape
+corpus/canon/resources/anti-patterns.md:850:### AP-65. collection-id-shape
+corpus/canon/resources/anti-patterns.md:862:### AP-66. io-id-shape
+corpus/canon/resources/anti-patterns.md:874:### AP-67. rule-slug-shape
+corpus/canon/resources/anti-patterns.md:886:### AP-68. technique-stage-agnostic
+corpus/canon/resources/anti-patterns.md:898:### AP-69. no-activity-prose-rules
+corpus/canon/resources/anti-patterns.md:910:### AP-70. capability-group-placement
+corpus/canon/resources/anti-patterns.md:922:## Tool-Technique-Doc Consistency
+corpus/canon/resources/anti-patterns.md:926:### AP-71. no-false-resource-delivery
+corpus/canon/resources/anti-patterns.md:938:### AP-72. complete-bootstrap-path
+corpus/canon/resources/anti-patterns.md:950:### AP-73. consistent-tool-names
+corpus/canon/resources/anti-patterns.md:962:### AP-74. no-duplicated-guidance
+corpus/canon/resources/anti-patterns.md:974:### AP-75. describe-tool-value
+corpus/canon/resources/anti-patterns.md:986:### AP-76. no-redundant-tools
+corpus/canon/resources/anti-patterns.md:998:## Execution
+corpus/canon/resources/anti-patterns.md:1002:### AP-77. impl-before-confirmed-approach
+corpus/canon/resources/anti-patterns.md:1014:### AP-78. follow-through-on-recommend
+corpus/canon/resources/anti-patterns.md:1026:### AP-79. structure-backed-constraints
+corpus/canon/resources/anti-patterns.md:1038:### AP-80. preserve-readme-content
+corpus/canon/resources/anti-patterns.md:1050:### AP-81. verify-format-literacy
+corpus/canon/resources/anti-patterns.md:1062:### AP-82. work-through-activities
+corpus/canon/resources/anti-patterns.md:1074:### AP-83. accept-correction
+corpus/canon/resources/anti-patterns.md:1086:## Output Economy
+corpus/canon/resources/anti-patterns.md:1090:### AP-84. single-closeout-artifact
+corpus/canon/resources/anti-patterns.md:1102:### AP-85. link-dont-copy-sections
+corpus/canon/resources/anti-patterns.md:1114:### AP-86. exception-only-verdict-tables
+corpus/canon/resources/anti-patterns.md:1126:### AP-87. omit-null-sections
+corpus/canon/resources/anti-patterns.md:1138:### AP-88. one-decision-one-checkpoint
+corpus/canon/resources/anti-patterns.md:1150:### AP-89. checkpoint-requires-decision
+corpus/canon/resources/anti-patterns.md:1162:### AP-90. no-guide-wrapper-ceremony
+corpus/canon/resources/anti-patterns.md:1174:### AP-91. lifecycle-row-update
+corpus/canon/resources/anti-patterns.md:1186:### AP-92. resource-fills-not-does
+corpus/canon/resources/anti-patterns.md:1198:### AP-93. canonical-fact-home
+corpus/canon/resources/anti-patterns.md:1210:### AP-94. link-only-input-slots
+corpus/canon/resources/anti-patterns.md:1222:### AP-95. enforce-output-discipline
+corpus/canon/resources/anti-patterns.md:1234:### AP-96. artifact-audience-declared
+corpus/canon/resources/anti-patterns.md:1246:### AP-97. link-named-artifacts
+corpus/canon/resources/anti-patterns.md:1258:### AP-98. no-next-step-narration
+corpus/canon/resources/anti-patterns.md:1270:### AP-99. statement-not-question
+corpus/canon/resources/anti-patterns.md:1282:### AP-100. runtime-rules-only
+corpus/canon/resources/anti-patterns.md:1294:### AP-101. no-caption-only-message
+corpus/canon/resources/anti-patterns.md:1306:### AP-102. no-technique-resource-dual-home
+corpus/canon/resources/anti-patterns.md:1318:## Canon Hygiene
+corpus/canon/resources/anti-patterns.md:1322:### AP-103. cited-home-owns-claim
+corpus/canon/resources/anti-patterns.md:1334:### AP-104. operative-criteria-need-a-home
+corpus/canon/resources/anti-patterns.md:1346:### AP-105. no-shadow-audit-pass
+corpus/canon/resources/anti-patterns.md:1358:### AP-106. canon-layer-cites-not-restates
+corpus/canon/resources/anti-patterns.md:1370:### AP-107. bind-site-is-orchestration-truth
+corpus/canon/resources/anti-patterns.md:1382:## Technique Protocol
+corpus/canon/resources/anti-patterns.md:1386:### AP-108. numbered-protocol-phases
+corpus/canon/resources/anti-patterns.md:1398:### AP-109. technique-outputs-declared
+corpus/canon/resources/anti-patterns.md:1410:### AP-110. duplicate-shared-capability
+corpus/canon/resources/anti-patterns.md:1422:### AP-111. contract-not-procedure
+corpus/canon/resources/anti-patterns.md:1434:### AP-112. no-derived-state-shadow
+corpus/canon/resources/anti-patterns.md:1446:### AP-113. session-interaction-in-technique
+corpus/canon/resources/anti-patterns.md:1458:### AP-114. pass-orchestration-in-technique
+corpus/canon/resources/anti-patterns.md:1470:### AP-115. platform-semantics-in-capability
+corpus/canon/resources/anti-patterns.md:1482:### AP-116. no-template-creation-guide
+corpus/canon/resources/anti-patterns.md:1494:### AP-117. no-engine-mechanics-as-rules
+corpus/canon/resources/anti-patterns.md:1506:### AP-118. no-bind-mechanics-as-prose
+corpus/canon/resources/anti-patterns.md:1518:### AP-119. procedure-in-io-contract
+corpus/canon/resources/anti-patterns.md:1530:### AP-120. procedure-in-capability
+corpus/canon/resources/anti-patterns.md:1542:### AP-121. rule-as-protocol-step
+corpus/canon/resources/anti-patterns.md:1554:### AP-122. prompt-restates-owned-mechanics
+corpus/canon/resources/anti-patterns.md:1566:### AP-123. capability-as-op-inventory
+corpus/canon/resources/anti-patterns.md:1578:### AP-124. alternate-ops-as-protocol-sequence
+corpus/canon/resources/anti-patterns.md:1590:### AP-125. technique-ref-in-io-contract
+corpus/canon/resources/anti-patterns.md:1602:## Draft Hygiene
+corpus/canon/resources/anti-patterns.md:1606:### MR-1. cut-comment-jsdoc-verbosity
+corpus/canon/resources/anti-patterns.md:1618:### MR-2. no-dense-prose-after-config-examples
+corpus/canon/resources/anti-patterns.md:1630:### MR-3. worktree-root-placeholders
+corpus/canon/resources/anti-patterns.md:1642:### MR-4. no-parallel-runbook-when-setup-covers-it
+corpus/canon/resources/anti-patterns.md:1654:### AP-126. variable-description-one-line
+corpus/canon/resources/anti-patterns.md:1666:### AP-127. bag-value-as-literal
+corpus/canon/resources/anti-patterns.md:1678:### AP-128. unproduced-value-read
+corpus/canon/resources/anti-patterns.md:1690:### AP-129. stale-restatement-after-change
+corpus/canon/resources/anti-patterns.md:1702:### AP-130. artifact-name-is-filename
+corpus/canon/resources/anti-patterns.md:1714:### AP-131. resource-id-names-its-content
+corpus/canon/resources/anti-patterns.md:1726:### AP-132. deployment-path-in-capability
+corpus/canon/resources/anti-patterns.md:1738:### AP-133. overlapping-rule-scopes
+corpus/canon/resources/anti-patterns.md:1750:### AP-134. whole-resource-for-one-section
+corpus/canon/resources/anti-patterns.md:1762:### AP-135. tool-contract-restated-in-protocol
+corpus/canon/resources/anti-patterns.md:1774:### AP-136. phase-cited-by-ordinal
+corpus/canon/resources/anti-patterns.md:1786:### AP-137. unowned-harness-capability
+corpus/canon/resources/anti-patterns.md:1798:### AP-138. output-without-destination
+corpus/canon/resources/anti-patterns.md:1810:### AP-139. framing-outside-any-section
+corpus/canon/resources/anti-patterns.md:1822:### AP-140. declared-input-never-read
+corpus/canon/resources/anti-patterns.md:1834:### AP-141. apply-omits-declared-input
+corpus/canon/resources/anti-patterns.md:1846:### AP-142. branch-on-undeclared-threshold
+corpus/canon/resources/anti-patterns.md:1858:### AP-143. inherited-rules-re-enumerated
+corpus/canon/resources/anti-patterns.md:1870:### AP-144. reference-without-provenance
+corpus/canon/resources/anti-patterns.md:1882:### AP-145. pre-session-prose-defers-to-the-framework
+corpus/canon/resources/anti-patterns.md:1894:### AP-146. instruction-narrates-an-actor
+corpus/canon/resources/anti-patterns.md:1906:### AP-147. rule-binds-beyond-its-operation
+corpus/canon/resources/anti-patterns.md:1918:### AP-148. inherited-input-re-declared
+corpus/canon/resources/anti-patterns.md:1930:### AP-149. schema-semantics-restated
+corpus/canon/resources/anti-patterns.md:1942:### AP-150. engine-internals-narrated
+corpus/canon/resources/anti-patterns.md:1954:### AP-151. value-set-in-prose
+corpus/canon/resources/anti-patterns.md:1966:### AP-152. one-invariant-per-rule
+corpus/canon/resources/anti-patterns.md:1978:### AP-153. call-omits-conditionally-required-argument
+corpus/canon/resources/anti-patterns.md:1990:### AP-154. call-omits-required-argument
+corpus/canon/resources/anti-patterns.md:2002:### AP-155. call-names-an-undeclared-argument
+corpus/canon/resources/anti-patterns.md:2014:### AP-156. protocol-phase-as-list-item
+corpus/canon/resources/anti-patterns.md:2026:### AP-157. unreachable-operation-reference
+corpus/canon/resources/anti-patterns.md:2038:### AP-158. produce-path-without-a-reading
+corpus/canon/resources/anti-patterns.md:2050:### AP-159. construct-folder-without-a-readme
+corpus/canon/resources/anti-patterns.md:2062:### AP-160. relocation-without-a-preserved-outcome
+corpus/canon/resources/anti-patterns.md:2074:### AP-161. unproducible-declared-value
+COMMAND: rg -n routine|inherit src --glob *resolve* --glob *routine* --glob *loader* (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+src/loaders/routine-loader.ts:2: * Reading routine definitions off disk (#704).
+src/loaders/routine-loader.ts:4: * Separate from `routine-resolver.ts`, which is synchronous and pure over a `RoutineLookup` so the
+src/loaders/routine-loader.ts:6: * the filesystem half: discovery of a workflow's `routines/` directory, and the closure that
+src/loaders/routine-loader.ts:16:import { type Routine, safeValidateRoutine } from '../schema/routine.schema.js';
+src/loaders/routine-loader.ts:25:} from './routine-resolver.js';
+src/loaders/routine-loader.ts:27:/** The directory a workflow declares its routines in, beside `activities/`. */
+src/loaders/routine-loader.ts:28:export const ROUTINES_DIR = 'routines';
+src/loaders/routine-loader.ts:34: * Read a workflow's `routines/` directory: one file per routine, named for the routine it declares,
+src/loaders/routine-loader.ts:35: * with no position number because a routine holds no place in an order.
+src/loaders/routine-loader.ts:39: * the routine by its filename while the definition publishes its declaration. Returns an empty map
+src/loaders/routine-loader.ts:40: * where the workflow has no `routines/`, so a corpus that declares none costs one `existsSync`.
+src/loaders/routine-loader.ts:47:  const { routines, invalid } = await readRoutineFiles(workflowDir, workflowId, index);
+src/loaders/routine-loader.ts:50:  return routines;
+src/loaders/routine-loader.ts:54: * Read each routine file of a workflow on its own: the routines that load, and, by name, why each
+src/loaders/routine-loader.ts:62:): Promise<{ routines: Map<string, Routine>; invalid: Map<string, string> }> {
+src/loaders/routine-loader.ts:63:  const routines = new Map<string, Routine>();
+src/loaders/routine-loader.ts:66:  if (!dir) return { routines, invalid };
+src/loaders/routine-loader.ts:67:  const routinesPath = join(dir, ROUTINES_DIR);
+src/loaders/routine-loader.ts:68:  if (!existsSync(routinesPath)) return { routines, invalid };
+src/loaders/routine-loader.ts:70:  for (const file of await readdir(routinesPath)) {
+src/loaders/routine-loader.ts:76:      validation = safeValidateRoutine(parseDefinition(await readFile(join(routinesPath, file), 'utf-8')));
+src/loaders/routine-loader.ts:82:      invalid.set(name, `${site} is not a valid routine: ${formatZodIssues(validation.error.issues)}`);
+src/loaders/routine-loader.ts:87:        + `but sits in a file named '${name}' — a reference reaches a routine by its filename, so the two names have to match.`);
+src/loaders/routine-loader.ts:95:      // The step checks speak of the body they walk; the site names the routine file instead.
+src/loaders/routine-loader.ts:100:    routines.set(name, validation.data);
+src/loaders/routine-loader.ts:102:  return { routines, invalid };
+src/loaders/routine-loader.ts:108: * the references the routines themselves make, so a nested reference into a third workflow resolves.
+src/loaders/routine-loader.ts:129:  // A routine may refer to another, so reading one workflow's routines can name a workflow nothing
+src/loaders/routine-loader.ts:137:      loaded.set(id, files.routines);
+src/loaders/routine-loader.ts:141:      for (const routine of loaded.get(id)?.values() ?? []) {
+src/loaders/routine-loader.ts:142:        for (const ref of collectNestedRoutineRefs(routine)) noteRef(ref);
+src/loaders/routine-loader.ts:152: * Every workflow in the corpus that declares at least one routine, with what it declares, and the
+src/loaders/routine-loader.ts:153: * workflows whose `routines/` could not be read.
+src/loaders/routine-loader.ts:158: * wants that workflow's routines whole; a load reads through `buildRoutineLookup`, which keeps each
+src/loaders/routine-loader.ts:171:      const routines = await readWorkflowRoutines(workflowDir, id, index);
+src/loaders/routine-loader.ts:172:      if (routines.size > 0) byWorkflow.set(id, routines);
+src/loaders/technique-loader.ts:31: * This is the composed value: own fields plus inherited blocks. Role-facing delivery and
+src/loaders/technique-loader.ts:33: * ancestor scopes in `inherits`. `projectTechniqueToYaml` serialises this merged record.
+src/loaders/technique-loader.ts:48:  if (technique.inherited_inputs !== undefined) ordered['inherited_inputs'] = technique.inherited_inputs;
+src/loaders/technique-loader.ts:51:  if (technique.inherited_outputs !== undefined) ordered['inherited_outputs'] = technique.inherited_outputs;
+src/loaders/technique-loader.ts:185:/** Scope note on a contract block and on in-memory `inherited_*`. Claims only what is always
+src/loaders/technique-loader.ts:186: *  true of contract-inherited entries — a group-contract input may still be a prior step's
+src/loaders/technique-loader.ts:198:  /** Scopes this technique inherits from; each id is a key of the bundle's `contracts` map. */
+src/loaders/technique-loader.ts:214: * `contracts`, and the body names those scopes in `inherits`. The bundle's `rules` list carries
+src/loaders/technique-loader.ts:217:export function inheritContractBlock(scope: InheritScope): Record<string, unknown> {
+src/loaders/technique-loader.ts:231:    contracts[scope.id] = inheritContractBlock(scope);
+src/loaders/technique-loader.ts:236: * Wire projection of one composed technique: own interface, own rules, and `inherits` naming the
+src/loaders/technique-loader.ts:251:    if (key === 'inherited_inputs' || key === 'inherited_outputs' || key === 'rules') continue;
+src/loaders/technique-loader.ts:288:  if (scopes.length > 0) body['inherits'] = scopes.map((s) => s.id);
+src/loaders/technique-loader.ts:465:/* Technique composition — root-contract inheritance (R4)                      */
+src/loaders/technique-loader.ts:504: *     value under `inherited_inputs`/`inherited_outputs` with a scope note (B2, #166). Role-facing
+src/loaders/technique-loader.ts:505: *     wire delivery names those ancestors in `inherits` and carries each block once under
+src/loaders/technique-loader.ts:579:  // delivered under a marked `inherited_*` block so a consumer can tell shared contract scope
+src/loaders/technique-loader.ts:584:  const inheritedInputs = (inputs ?? []).filter((i) => !ownInputIds.has(i.id));
+src/loaders/technique-loader.ts:586:  const inheritedOutputs = (outputs ?? []).filter((o) => !ownOutputIds.has(o.id));
+src/loaders/technique-loader.ts:589:  // procedure — a rule set — has no `{id}` to resolve and no step binding it, so the inherited
+src/loaders/technique-loader.ts:598:  if (inheritedInputs.length && !bindsNothing) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
+src/loaders/technique-loader.ts:600:  if (inheritedOutputs.length && !bindsNothing) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
+src/loaders/technique-loader.ts:631:/** A composed technique plus the scopes its wire body names in `inherits`. */
+src/loaders/technique-loader.ts:769: * that scope in `inherits`. `rules` carries what is left: the role's own rules, declared
+src/schema/routine.schema.ts:4: * Every name a routine body reads or writes is a declared input, output or internal, so its contract
+src/schema/routine.schema.ts:5: * derives, its walk starts from its inputs, and its artifact check runs once per routine. A routine
+src/schema/routine.schema.ts:16:  'a routine id is kebab-case (`assumption-interview`) and carries no `::` — a routine name has no group grammar',
+src/schema/routine.schema.ts:17:).describe('Kebab-case routine identifier without `::`.');
+src/schema/routine.schema.ts:20:  id: VariableNameSchema.describe('Parameter name within the routine body.'),
+src/schema/routine.schema.ts:21:  description: z.string().describe('What the parameter is for, in the routine\'s own vocabulary.'),
+src/schema/routine.schema.ts:33:  id: VariableNameSchema.describe('Output name within the routine body, bound to a session variable at each use.'),
+src/schema/routine.schema.ts:37:  optional: z.literal(true).optional().describe('Declare `true` to allow this output to remain unbound, where it stays local to that use of the routine; omission requires an output binding, save for an id that is also an input, which its argument binds.'),
+src/schema/routine.schema.ts:42:  id: VariableNameSchema.describe('Name local to the routine body at each use, outside the workflow variable set.'),
+src/schema/routine.schema.ts:44:}).strict().describe('Named value shared by steps within one use of a routine.');
+src/schema/routine.schema.ts:48:  id: RoutineIdSchema.describe('Unique kebab-case routine identifier, without `::`.'),
+src/schema/routine.schema.ts:49:  version: SemanticVersionSchema.describe('Semantic version of the routine'),
+src/schema/routine.schema.ts:50:  name: z.string().describe('Human-readable routine name'),
+src/schema/routine.schema.ts:55:  internals: z.array(RoutineInternalSchema).optional().describe('Names for values shared between the routine\'s steps, local to each use.'),
+src/schema/routine.schema.ts:58:}).strict().describe('Reusable steps with declared inputs, outputs, and internals.').superRefine((routine, ctx) => {
+src/schema/routine.schema.ts:59:  // An id the routine both reads and updates names the variable each site supplies, so a default
+src/schema/routine.schema.ts:61:  const outputIds = new Set((routine.outputs ?? []).map((output) => output.id));
+src/schema/routine.schema.ts:62:  (routine.inputs ?? []).forEach((input, index) => {
+src/schema/routine.schema.ts:73:  const parameters = new Set((routine.inputs ?? []).filter(isOperationInput).map((input) => input.id));
+src/schema/routine.schema.ts:90:  visit(routine.steps, ['steps']);
+src/schema/routine.schema.ts:95:/** The parameters a routine declares whose argument is a technique reference. */
+src/schema/routine.schema.ts:96:export function operationInputs(routine: Routine): string[] {
+src/schema/routine.schema.ts:97:  return (routine.inputs ?? []).filter(isOperationInput).map((input) => input.id);
+src/schema/routine.schema.ts:103:/** Every name in scope inside a routine's body: its inputs, its outputs and its internals. */
+src/schema/routine.schema.ts:104:export function routineScope(routine: Routine): {
+src/schema/routine.schema.ts:110:    inputs: new Map((routine.inputs ?? []).map((i) => [i.id, i])),
+src/schema/routine.schema.ts:111:    outputs: new Map((routine.outputs ?? []).map((o) => [o.id, o])),
+src/schema/routine.schema.ts:112:    internals: new Map((routine.internals ?? []).map((n) => [n.id, n])),
+src/loaders/workflow-loader.ts:16:import { collectRoutineRefs, materializeActivityRoutines } from './routine-resolver.js';
+src/loaders/workflow-loader.ts:17:import { buildRoutineLookup } from './routine-loader.js';
+src/loaders/workflow-loader.ts:58:   * unqualified technique and routine references to their source workflow.
+src/loaders/workflow-loader.ts:69:   * Activity id → the activity as authored, still carrying its `kind: routine` steps (#704).
+src/loaders/workflow-loader.ts:72:   * what makes a reference a boundary: a derivation handed spliced steps meets the routine's body
+src/loaders/workflow-loader.ts:76:   * An activity carrying no routine reference is the SAME object in both forms: materialisation is
+src/loaders/workflow-loader.ts:79:   * only where a routine is used.
+src/loaders/workflow-loader.ts:263:    // Resolution scope per activity: local activities resolve a bare routine name against this
+src/loaders/workflow-loader.ts:313:    // Materialise routine references (#704): a `kind: routine` step is replaced by the routine's
+src/loaders/workflow-loader.ts:319:    // reference is copied — materialisation is what mutates, so a routine-free activity has nothing
+src/loaders/workflow-loader.ts:322:    const routineRefs = (workflow.activities ?? []).flatMap((activity) => collectRoutineRefs(activity));
+src/loaders/workflow-loader.ts:323:    if (routineRefs.length > 0) {
+src/loaders/workflow-loader.ts:324:      const routineLookup = await buildRoutineLookup(
+src/loaders/workflow-loader.ts:327:        routineRefs,
+src/loaders/workflow-loader.ts:334:          materializeActivityRoutines(activity, routineLookup, activitySourceWorkflow.get(activity.id) ?? workflowId);
+src/loaders/workflow-loader.ts:341:          logWarn('Excluding activity with unresolvable routines', { workflowId, activityId: activity.id, error: message });
+src/loaders/workflow-loader.ts:372:    // they have to agree. Checked after materialisation: a checkpoint a routine contributed carries
+src/loaders/workflow-loader.ts:696: * The keys are techniques rather than the `persist-activity` routine that orders them, because
+src/loaders/workflow-loader.ts:697: * routines materialise before this runs and the branch arrives carrying the steps they stand for.
+src/loaders/routine-resolver.ts:4: * A `kind: routine` step names a routine, binds its inputs under `with` and its outputs under
+src/loaders/routine-resolver.ts:6: * routine's body, prefixes every identifier inside it, and splices the result in place of the
+src/loaders/routine-resolver.ts:15: * argument in a routine file arrives at the step in the form the agent reads as a reference, and
+src/loaders/routine-resolver.ts:21: *   - `namespace::name` — resolved ONLY in that namespace's routines (no fallback). The namespace is
+src/loaders/routine-resolver.ts:24: *   - `name` — the declaring workflow's routines first, then meta's.
+src/loaders/routine-resolver.ts:25: *   - an empty segment fails, there being no directory or routine of no name.
+src/loaders/routine-resolver.ts:27: * Every terminal state of a reference but `Checked` fails. None is a warning — a routine that
+src/loaders/routine-resolver.ts:61:import { type Routine, isOperationInput, routineScope } from '../schema/routine.schema.js';
+src/loaders/routine-resolver.ts:69: * Sync routine lookup by workflow id: routine name → definition. Undefined when absent. `invalid`,
+src/loaders/routine-resolver.ts:70: * on a lookup read off disk, names a routine file that failed to load, so a reference to it reports
+src/loaders/routine-resolver.ts:84:/** The separator between a workflow prefix and a routine name. */
+src/loaders/routine-resolver.ts:93: * The last segment is the routine, and every segment before it spells the namespace holding it: a
+src/loaders/routine-resolver.ts:94: * routine lives one file deep in a flat `routines/` directory, so there is no group level competing
+src/loaders/routine-resolver.ts:96: * by a path contributes one segment per directory, so `support::gitnexus::probe` is the routine
+src/loaders/routine-resolver.ts:104:      `${context}: routine reference '${ref}' carries an empty segment — a routine name is `
+src/loaders/routine-resolver.ts:122:/** Resolve a routine reference to its definition. */
+src/loaders/routine-resolver.ts:131:    const routine = lookup(workflowId)?.get(name);
+src/loaders/routine-resolver.ts:132:    if (routine !== undefined) return routine;
+src/loaders/routine-resolver.ts:134:    // would run a different routine under the name the author wrote.
+src/loaders/routine-resolver.ts:137:      throw new RoutineResolutionError(`${context}: routine '${ref}' failed to load — ${failure}`);
+src/loaders/routine-resolver.ts:141:    `${context}: unresolved routine '${ref}' — no routines/${name}.yaml in `
+src/loaders/routine-resolver.ts:151: * What one name in a routine's scope becomes at a reference site.
+src/loaders/routine-resolver.ts:178:/** Everything one reference site puts over one routine's body. */
+src/loaders/routine-resolver.ts:213:const FOLD_OPERAND = 'routine_fold_operand';
+src/loaders/routine-resolver.ts:341: *     written — UNLESS the routine declares that exact name, in which case it is the parameter
+src/loaders/routine-resolver.ts:342: *     standing in the value's place and the site's literal replaces it. A routine declares every name
+src/loaders/routine-resolver.ts:432: * A parameter stands in the position a technique reference occupies, and a routine declares every
+src/loaders/routine-resolver.ts:445:/** Rewrite every field of one step that can name a value in the routine's scope. */
+src/loaders/routine-resolver.ts:497:  // A nested reference's own maps: left unsubstituted, the inner routine's declarations would be
+src/loaders/routine-resolver.ts:499:  if (step.kind === 'routine') {
+src/loaders/routine-resolver.ts:530: * reach one routine and spell their innermost reference the same way: two loops in one activity may
+src/loaders/routine-resolver.ts:541: * A step inside a materialised routine body already carries its own reference's prefix in its id, so
+src/loaders/routine-resolver.ts:545: * The collapse is a prefix test, so it misses the case where a host container sits above the routine
+src/loaders/routine-resolver.ts:574: * The substitution one reference site puts over one routine's body, and the refusals that reading
+src/loaders/routine-resolver.ts:579:  routine: Routine,
+src/loaders/routine-resolver.ts:584:  const scope = routineScope(routine);
+src/loaders/routine-resolver.ts:592:      `${context}: argument '${argument}' names no input of routine '${routine.id}' — it declares `
+src/loaders/routine-resolver.ts:600:      `${context}: output binding '${bound}' names no output of routine '${routine.id}' — it declares `
+src/loaders/routine-resolver.ts:608:      techniques.set(id, operationArgument(argument ?? input.default, id, routine.id, context));
+src/loaders/routine-resolver.ts:625:    // An id the routine declares as both an input and an output is one variable it reads and then
+src/loaders/routine-resolver.ts:631:        `${context}: '${id}' is both an input and an output of routine '${routine.id}', so the site names the variable `
+src/loaders/routine-resolver.ts:632:        + `the routine reads and updates with a braced argument, as '{<name>}' — this site binds ${bound === undefined ? 'neither' : `only the output, to '${bound}'`}.`,
+src/loaders/routine-resolver.ts:639:          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+src/loaders/routine-resolver.ts:640:          + `names the variable the routine reads and updates — bind it braced, as '{<name>}', rather than as a literal.`,
+src/loaders/routine-resolver.ts:646:          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+src/loaders/routine-resolver.ts:647:          + `names a whole variable the routine updates — '${argument}' addresses a member of one.`,
+src/loaders/routine-resolver.ts:652:          `${context}: '${id}' is both an input and an output of routine '${routine.id}', and this site `
+src/loaders/routine-resolver.ts:660:    // of the routine, as an internal is, and reaches no host variable.
+src/loaders/routine-resolver.ts:663:      `${context}: output '${id}' of routine '${routine.id}' is left unbound — bind it under `
+src/loaders/routine-resolver.ts:686:  routineId: string,
+src/loaders/routine-resolver.ts:691:      `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds no argument — `
+src/loaders/routine-resolver.ts:698:      `${context}: input '${id}' of routine '${routineId}' declares 'kind: technique' and this site binds '${String(argument)}' — `
+src/loaders/routine-resolver.ts:708: * `chain` carries the routine ids on the path to this reference, so a cycle fails naming the chain
+src/loaders/routine-resolver.ts:718:  const routine = resolveRoutine(lookup, sourceWorkflowId, step.routine, context);
+src/loaders/routine-resolver.ts:719:  if (chain.includes(routine.id)) {
+src/loaders/routine-resolver.ts:721:      `${context}: routine reference cycle ${[...chain, routine.id].join(' -> ')} — nesting is allowed, recursion is not.`,
+src/loaders/routine-resolver.ts:729:  const binding = bindReference(step, routine, activityId, site, context);
+src/loaders/routine-resolver.ts:730:  const body = structuredClone(routine.steps) as Step[];
+src/loaders/routine-resolver.ts:734:  const expanded = expandStepList(substituted, scope, [...chain, routine.id], site);
+src/loaders/routine-resolver.ts:793:    if (step.kind === 'routine') {
+src/loaders/routine-resolver.ts:808: * Materialise every routine reference in an activity (top-level and loop bodies), scoped to the
+src/loaders/routine-resolver.ts:840:      // and over a routine when its file is read, so a spliced step arrives carrying one.
+src/loaders/routine-resolver.ts:844:          `Activity '${activity.id}': ${scopeLabel} has duplicate step id '${id}' after materialising a routine `
+src/loaders/routine-resolver.ts:860: * Materialise routine references in RAW activity YAML, for the delivery path that hands the worker
+src/loaders/routine-resolver.ts:863: * Each `kind: routine` step block is replaced, at its own indentation, by the steps it stands for,
+src/loaders/routine-resolver.ts:864: * serialised to YAML. The surrounding lines stay byte-identical, so an activity carrying no routine
+src/loaders/routine-resolver.ts:904:    if (block === null || kind !== 'routine') {
+src/loaders/routine-resolver.ts:951: * Cheap textual pre-scan for a routine reference in raw activity YAML — the delivery path's fast
+src/loaders/routine-resolver.ts:952: * gate, keeping routine-free activities (every corpus activity today) off the splice path entirely
+src/loaders/routine-resolver.ts:956:  return /^\s*(?:- )?kind:[ \t]*["']?routine\b/m.test(rawDefinition);
+src/loaders/routine-resolver.ts:960: * The routine names raw activity YAML references, for pre-loading the lookup the splice needs. May
+src/loaders/routine-resolver.ts:961: * over-match a `routine:` key outside a reference step; an extra workflow read is the whole cost,
+src/loaders/routine-resolver.ts:968:  const re = /^\s*routine:[ \t]*(["']?)([^"'#\n]+?)\1[ \t]*(?:#.*)?$/gm;
+src/loaders/routine-resolver.ts:974:/** Every routine reference step an activity's steps carry, at any depth. */
+src/loaders/routine-resolver.ts:979:      if (step.kind === 'routine') sites.push(step);
+src/loaders/routine-resolver.ts:987:/** Every routine reference an activity's steps make, for lookup pre-loading. */
+src/loaders/routine-resolver.ts:989:  return collectRoutineSteps(activity).map((step) => step.routine);
+src/loaders/routine-resolver.ts:993: * A routine's body with one site's technique arguments standing in its technique positions.
+src/loaders/routine-resolver.ts:995: * What a caller derives a contract from, for a routine whose body binds a technique by argument:
+src/loaders/routine-resolver.ts:1011:/** Every routine reference a routine's own body makes, for transitive lookup pre-loading. */
+src/loaders/routine-resolver.ts:1012:export function collectNestedRoutineRefs(routine: Routine): string[] {
+src/loaders/routine-resolver.ts:1013:  return collectRoutineRefs({ steps: routine.steps as Step[] });
+COMMAND: rg -n headings in docs/development.md (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1:# Development guide
+5:## What you need
+9:## Getting a working checkout
+22:## Commands
+41:## Dependencies
+49:## Project structure
+79:## Testing
+94:## Corpus-coupled baselines
+106:## Sessions in flight
+118:## What runs on a pull request
+122:## The two branches
+130:# edit definitions
+138:## Authoring definitions
+COMMAND: git -C /home/mike1/projects/dev/workflow-server/.project/workflows status --short -- corpus/specimens/mvw
+COMMAND: cat corpus/specimens/routine-conformance/routines/measured-pass.yaml corpus/specimens/routine-conformance/activities/02-count-pass.yaml corpus/specimens/routine-conformance/techniques/count-entries.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+id: measured-pass
+version: 1.0.0
+name: Measured Pass
+description: >-
+  Take one target at a time under the measurement the site supplies, recording what each target
+  measured and following the target that measurement names next, until it names none.
+
+inputs:
+  - id: initial_target
+    description: The target the run opens with.
+  - id: probe_operation
+    kind: technique
+    default: count-entries
+    description: The measurement each pass applies to the target it holds.
+  - id: component_path
+    description: Path of the component being probed, relative to the host repository, which every target is named against.
+
+outputs:
+  - id: pass_measurements
+    type: array
+    description: One entry per target that measured something, in the order the passes ran.
+
+internals:
+  - id: current_target
+    description: The target the run holds, which every step of a pass reads and the advance at its end replaces.
+  - id: empty_target
+    description: A target the measurement found nothing under, which the announcement after it reads.
+
+steps:
+  - kind: action
+    id: open-the-run
+    actions:
+      - action: set
+        target: current_target
+        value: "{initial_target}"
+  - kind: loop
+    id: probe-cycle
+    name: Probe Cycle
+    loopType: while
+    continueWhile:
+      type: simple
+      variable: current_target
+      operator: "!="
+      value: null
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: measure
+        technique:
+          name: probe_operation
+          inputs:
+            probe_target: current_target
+      - kind: action
+        id: record-measurement
+        when: probe_result.entry_count > 0
+        actions:
+          - action: set
+            target: pass_measurements
+            description: What this target measured, appended to the run's ordered list.
+      - kind: action
+        id: note-empty-target
+        when: probe_result.entry_count == 0
+        actions:
+          - action: set
+            target: empty_target
+            value: "{current_target}"
+      - kind: action
+        id: announce-empty-target
+        when: empty_target
+        actions:
+          # The note is read once and cleared in the same step, so the announcement belongs to the
+          # pass that made it and no later pass repeats it.
+          - action: message
+            message: "Nothing under {empty_target}, so this pass recorded no measurement for it."
+          - action: set
+            target: empty_target
+            value: null
+      - kind: action
+        id: advance-target
+        actions:
+          - action: set
+            target: current_target
+            value: "{probe_result.next_target}"
+id: count-pass
+version: 1.0.0
+name: Count Pass
+description: Walk the targets counting what each one holds.
+variables:
+  reads:
+    - component_path
+    - initial_target
+  writes:
+    - name: entry_counts
+      type: array
+      description: One entry per target the counting pass measured, in the order it walked them.
+required: true
+steps:
+  - kind: routine
+    id: counting
+    routine: measured-pass
+    with:
+      probe_operation: count-entries
+    outputs:
+      pass_measurements: entry_counts
+exits:
+  - id: passed
+    isDefault: true
+outcome:
+  - Every target the counting measurement named has been walked and counted, so the report has one measurement per target this pass reached
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Count what one directory holds, and name the next directory under it to measure.
+
+## Inputs
+
+### probe_target
+
+Directory to measure, relative to `{component_path}`.
+
+## Outputs
+
+### probe_result
+
+What this pass measured, and where it sends the run next.
+
+#### entry_count
+
+How many entries `{probe_target}` holds directly — files and directories, excluding anything git ignores.
+
+#### next_target
+
+The first subdirectory of `{probe_target}` in name order, relative to `{component_path}`, and null where it holds none.
+
+## Protocol
+
+### 1. Count The Entries
+
+- List what git tracks directly under `{probe_target}` and record the count as `{probe_result.entry_count}`. A directory git tracks nothing under counts zero.
+
+### 2. Name What Follows
+
+- Take the subdirectories of `{probe_target}` in name order and record the first as `{probe_result.next_target}`, null where there are none. One subdirectory per pass is what keeps the walk to the iteration bound the run declares.
+COMMAND: sed -n 138,190p docs/development.md (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+## Authoring definitions
+
+How to add a workflow is the [authoring guide](https://github.com/m2ux/workflow-server/blob/workflows/docs/README.md). The file contract is the [technique protocol](technique.md). The schema the server loads stays in this tree: [schemas](schemas.md).
+COMMAND: sed -n 122,148p src/loaders/routine-resolver.ts (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+/** Resolve a routine reference to its definition. */
+export function resolveRoutine(
+  lookup: RoutineLookup,
+  currentWorkflowId: string,
+  ref: string,
+  context: string,
+): Routine {
+  const { workflowIds, name } = candidateWorkflows(ref, currentWorkflowId, context);
+  for (const workflowId of workflowIds) {
+    const routine = lookup(workflowId)?.get(name);
+    if (routine !== undefined) return routine;
+    // A file of that name that failed to load still shadows the next scope's: falling through
+    // would run a different routine under the name the author wrote.
+    const failure = lookup.invalid?.(workflowId, name);
+    if (failure !== undefined) {
+      throw new RoutineResolutionError(`${context}: routine '${ref}' failed to load — ${failure}`);
+    }
+  }
+  throw new RoutineResolutionError(
+    `${context}: unresolved routine '${ref}' — no routines/${name}.yaml in `
+    + `${workflowIds.map((w) => `'${w}'`).join(' or ')}.`,
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Substitution
+// ---------------------------------------------------------------------------
+COMMAND: sed -n 622,676p src/loaders/routine-resolver.ts (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+
+  for (const [id, output] of scope.outputs) {
+    const bound = step.outputs?.[id];
+    // An id the routine declares as both an input and an output is one variable it reads and then
+    // updates, so a site names that variable once. An argument and an output binding that name two
+    // different variables, or a literal argument with nowhere to write, would send the body's reads
+    // and writes to different places.
+    if (scope.inputs.has(id) && step.with?.[id] === undefined) {
+      throw new RoutineResolutionError(
+        `${context}: '${id}' is both an input and an output of routine '${routine.id}', so the site names the variable `
+        + `the routine reads and updates with a braced argument, as '{<name>}' — this site binds ${bound === undefined ? 'neither' : `only the output, to '${bound}'`}.`,
+      );
+    }
+    const argued = scope.inputs.has(id) ? map.get(id) : undefined;
+    if (argued !== undefined && step.with?.[id] !== undefined) {
+      if (argued.kind !== 'name') {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+          + `names the variable the routine reads and updates — bind it braced, as '{<name>}', rather than as a literal.`,
+        );
+      }
+      const argument = String(step.with[id]);
+      if (argument.slice(1, -1).includes('.')) {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', so its argument `
+          + `names a whole variable the routine updates — '${argument}' addresses a member of one.`,
+        );
+      }
+      if (bound !== undefined && bound !== argued.name) {
+        throw new RoutineResolutionError(
+          `${context}: '${id}' is both an input and an output of routine '${routine.id}', and this site `
+          + `binds the input to '${argued.name}' and the output to '${bound}' — name one variable for both.`,
+        );
+      }
+      continue;
+    }
+    if (bound !== undefined) { map.set(id, { kind: 'name', name: bound }); continue; }
+    // An optional output no site receives is still the body's to write, so it is local to this use
+    // of the routine, as an internal is, and reaches no host variable.
+    if (output.optional) { map.set(id, { kind: 'name', name: internalName(activityId, referencePath, id) }); continue; }
+    throw new RoutineResolutionError(
+      `${context}: output '${id}' of routine '${routine.id}' is left unbound — bind it under `
+      + `'outputs', or declare 'optional: true' on the output to say a site may leave it out.`,
+    );
+  }
+
+  for (const id of scope.internals.keys()) {
+    map.set(id, { kind: 'name', name: internalName(activityId, referencePath, id) });
+  }
+
+  return { names: map, techniques };
+}
+
+/**
+ * The technique reference a site supplies for one parameter.
+COMMAND: cp /tmp/author-disclosure-one-transcript.txt /tmp/author-disclosure-one-transcript-snapshot.txt
+COMMAND: rg -n ^COMMAND: /tmp/author-disclosure-one-transcript-snapshot.txt
+1:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md
+79:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/author-mode.md
+121:COMMAND: rg -n headings in references/canon-context.md
+130:COMMAND: sed -n 5,22p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+149:COMMAND: rg -n headings in references/commands.md
+218:COMMAND: sed -n 23,42p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+239:COMMAND: sed -n 3,19p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+257:COMMAND: rg -n headings in references/definition-scope.md
+260:COMMAND: sed -n 5,200p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md
+294:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md
+314:COMMAND: sed -n 145,152p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+323:COMMAND: rg --files -g AGENTS.md /home/mike1/projects/dev/workflow-server/.project/workflows /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin
+325:COMMAND: git -C /home/mike1/projects/dev/workflow-server/.project/workflows rev-parse HEAD
+327:COMMAND: git -C /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin rev-parse HEAD
+329:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/design-flow.md
+390:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md
+468:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin/AGENTS.md
+550:COMMAND: sed -n 579,589p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+562:COMMAND: rg -n note-ran corpus (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+564:COMMAND: rg --files corpus/specimens/mvw (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+570:COMMAND: cat corpus/specimens/mvw/routines/record-dispatch.yaml corpus/specimens/mvw/activities/01-dispatch.yaml corpus/specimens/mvw/workflow.yaml corpus/specimens/mvw/README.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+632:COMMAND: rg -n record-dispatch|specimens/mvw/|dispatch_recorded corpus -g *.md -g *.yaml (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+641:COMMAND: sed -n 20,42p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+665:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-scope.json
+672:COMMAND: rg -n headings in references/audit-dispatch.md
+677:COMMAND: sed -n 5,60p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md
+720:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-map.md
+754:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/walk-rules.md
+796:COMMAND: sed -n 43,100p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+806:COMMAND: sed -n 43,102p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+867:COMMAND: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-budgets.json /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-receipt.json
+894:COMMAND: sed -n 486,513p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+923:COMMAND: sed -n 547,558p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+936:COMMAND: sed -n 571,578p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+945:COMMAND: sed -n 592,602p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+957:COMMAND: rg --files corpus/specimens (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+1230:COMMAND: rg -n ^##|^### corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+1465:COMMAND: rg -n routine|inherit src --glob *resolve* --glob *routine* --glob *loader* (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1655:COMMAND: rg -n headings in docs/development.md (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1669:COMMAND: git -C /home/mike1/projects/dev/workflow-server/.project/workflows status --short -- corpus/specimens/mvw
+1670:COMMAND: cat corpus/specimens/routine-conformance/routines/measured-pass.yaml corpus/specimens/routine-conformance/activities/02-count-pass.yaml corpus/specimens/routine-conformance/techniques/count-entries.md (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+1818:COMMAND: sed -n 138,190p docs/development.md (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1822:COMMAND: sed -n 122,148p src/loaders/routine-resolver.ts (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1850:COMMAND: sed -n 622,676p src/loaders/routine-resolver.ts (cwd: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin)
+1906:COMMAND: cp /tmp/author-disclosure-one-transcript.txt /tmp/author-disclosure-one-transcript-snapshot.txt
+COMMAND: wc -l -c /tmp/author-disclosure-one-transcript-snapshot.txt
+  1906 133746 /tmp/author-disclosure-one-transcript-snapshot.txt
+COMMAND: sed -n 518,562p /tmp/author-disclosure-one-transcript-snapshot.txt
+
+- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.
+
+
+
+## Where to look
+
+[docs/README.md](docs/README.md) is the index. Open the page for the task. 
+
+A **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.
+
+Engineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md).COMMAND: cat /home/mike1/projects/dev/workflow-server/.project/workflows/corpus/specimens/mvw/techniques/note-ran.md
+---
+metadata:
+  version: 1.0.0
+---
+
+## Capability
+
+Record that this dispatch executed.
+
+## Outputs
+
+### dispatch_recorded
+
+True once this dispatch has executed.
+
+## Protocol
+
+### 1. Record
+
+- Set `{dispatch_recorded}` to true. That is the whole of the work.
+COMMAND: sed -n 579,589p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+### Find Consumers
+
+Lists the references other workflows hold into the target.
+
+- Run from the corpus root.
+- Resolve each hit's binds and Apply links from there.
+
+```bash
+rg -n "work-package/" corpus/ -g "*.md" -g "*.yaml"
+```
+
+COMMAND: rg -n note-ran corpus (cwd: /home/mike1/projects/dev/workflow-server/.project/workflows)
+COMMAND: sed -n 121,240p /tmp/author-disclosure-one-transcript-snapshot.txt
+COMMAND: rg -n headings in references/canon-context.md
+1:# Canon Context
+5:## Prerequisites
+9:## Terms
+17:## Criteria
+23:## Scope
+29:## Homes
+43:## Checks
+47:### Edit Hook
+COMMAND: sed -n 5,22p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+## Prerequisites
+
+Read the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.
+
+## Terms
+
+- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.
+- **Entry**
+  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.
+- **Walk**  Applying each unit to every file on the surface and recording its status.
+- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).
+
+## Criteria
+
+Use the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).
+
+Follow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).
+
+COMMAND: rg -n headings in references/commands.md
+1:# Commands
+3:## Conventions
+20:## Audit Command Conventions
+31:## Audit Surface
+33:### Initialize Audit Surface
+43:### Check Audit Status
+53:### Render Audit Surface
+63:### Plan Audit Assignments
+73:### Bind Audit Agent
+83:### Write Audit Packet
+93:### Submit Audit Results
+103:### Reset Audit Cells
+113:### Refresh Audit Surface
+123:### Retry Audit Assignment
+133:### Run Audit Script Tests
+143:## Revisions
+145:### Resolve Ref
+153:## Review Inputs
+155:### Fetch Pull Request
+165:### Fetch Requirements
+173:### Fetch Branches
+182:### Compare Revisions
+196:### Create Review Worktree
+204:### Prepare Integration Result
+217:### Abort Review Merge
+225:### Read Captured File
+233:### Read Captured Section
+244:### Fetch Check Evidence
+258:### Refresh Revisions
+267:## Project Checks
+269:### Run Project Check
+281:## Skill Revision
+283:### Create Skill Worktree
+292:### Run Skill Checks
+304:### Commit Skill Changes
+316:### Push Skill Branch
+329:### Open Skill Pull Request
+337:## Install Engine Dependencies
+347:## Run Engine Checks
+359:## Run Delivery Gate
+367:## Check Engine Documentation
+380:## Run Corpus Checks
+392:## Run Option Coverage
+404:## Count Running Sessions
+414:## Check Shell Syntax
+422:## Validate Compose
+432:## Build Review Image
+445:## Exercise Review Container
+460:## Restart Review Container
+468:## Stop Review Container
+476:## Check Skill Summaries
+486:## Canon Check Conventions
+497:### Guard Obligations
+514:## Checkouts
+516:### Find the Server Checkout
+526:### Check the Corpus Tree
+537:### Provision the Corpus
+545:## Corpus
+547:### List Units
+559:### List Units for a Construct
+571:### Fetch Unit
+579:### Find Consumers
+590:## Checks
+592:### Run Guard Suite
+603:### Run Guards on the Delta
+613:## Edit Guard
+615:### Run the Edit Guard
+638:### Run the Edit Guard Tests
+COMMAND: sed -n 23,42p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+## Scope
+
+Resolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.
+
+Resolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.
+
+## Homes
+
+Read homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.
+
+| Home | Authority |
+| --- | --- |
+| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |
+| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |
+| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |
+| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |
+| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |
+
+Locate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.
+
+COMMAND: sed -n 3,19p /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+## Conventions
+
+TRANSCRIPT SELF-INSPECTION
+
+All source read stdout was recorded by tee. A source without a trailing newline joins the engine AGENTS.md ending to the following note-ran command label at snapshot line 528; neither read content is missing.
+
+Two corpus searches ran with the default login shell. Their returned stderr each contained these three lines before their recorded command/output:
+
+Failed to create stream fd: Operation not permitted
+
+Failed to create stream fd: Operation not permitted
+
+Failed to create stream fd: Operation not permitted
+
+The affected commands were rg -n note-ran corpus and rg --files corpus/specimens/mvw. Subsequent commands used login:false and these messages stopped.
+
+The only concurrent reads were Commands heading enumeration and Canon Context Scope/Homes; the transcript records their actual completion order. No source content interleaved.
+
+The commands.md 43,102 range unnecessarily included Render Audit Surface at lines 53-62. This is an execution error in this qualification, not a required unrelated mode. Under the stated criterion the reading-path attempt fails.
+
+A five-command functions.exec output was truncated by the outer tool output budget. Its complete stdout remains in this transcript; no semantic claim is based on the truncated search hit content.
+
+No corpus or skill file was changed. No audit surface was initialized, no semantic audit judgment was submitted, and no audit-completion claim was made.

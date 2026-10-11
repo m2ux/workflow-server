@@ -1,0 +1,9 @@
+Evidence omits a required source or criterion
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/qualify_agents.py", line 117, in <module>
+    main()
+    ~~~~^^
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/qualify_agents.py", line 108, in main
+    raise RuntimeError(str(path) + ': receipt rejected')
+RuntimeError: /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-map-current-receipts/033b949a6ba361d13622-author-map-current-1.json: receipt rejected
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices /home/mike1/projects/dev/workflow-server/.engineering (name more with SBX_EXTRA_ROOTS=dir1:dir2)

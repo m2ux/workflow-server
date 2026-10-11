@@ -1,0 +1,44 @@
+$schema: ../../schemas/workflow.schema.json
+id: ponytail
+version: 2.1.0
+title: Ponytail Lean-Coding Workflow
+description: Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
+author: m2ux
+tags:
+  - refactoring
+  - over-engineering
+  - code-review
+  - simplification
+  - yagni
+rules:
+  universal:
+    - "safety-floor-never-simplified: No rung is climbed at the cost of an obligation the ladder places on its safety floor."
+    - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected."
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: task_description
+    type: string
+    description: The coding task, change, or audit target to be made lean
+    required: true
+  - name: target_path
+    type: string
+    description: Path to the code or repo under the lazy lens
+    defaultValue: "."
+  - name: artifact_dir
+    type: string
+    description: Directory the pass writes its artifacts into
+    defaultValue: .ponytail
+initialActivity: intake-and-scope
+graph:
+  intake-and-scope:
+    done: apply-ladder
+  apply-ladder:
+    safety-floor-cleared: over-engineering-review
+    safety-floor-breached: __terminal__
+  over-engineering-review:
+    repo-wide: repo-audit
+    single-pass: harvest-debt-and-report
+  repo-audit:
+    done: harvest-debt-and-report

@@ -1,0 +1,178 @@
+{
+  "cases": [
+    {
+      "applicable": 46,
+      "cells": 196,
+      "complete": true,
+      "conformance": "clean-live-and-contract",
+      "criteria": 4,
+      "findings": 0,
+      "reference_matches": {},
+      "rows": 49,
+      "run": "round-1/author-a",
+      "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6"
+    },
+    {
+      "applicable": 48,
+      "cells": 200,
+      "complete": true,
+      "conformance": "findings",
+      "criteria": 4,
+      "findings": 6,
+      "reference_matches": {
+        "Q01": [
+          "c6bb654766beae15f273"
+        ],
+        "Q02": [
+          "334477bfa3468fcc37ed"
+        ],
+        "Q03": [
+          "7c940b88b10568c5d21c"
+        ],
+        "Q04": [
+          "590a852c166e0d259cd9"
+        ],
+        "Q05": [
+          "4ff195aedfa85a555034"
+        ],
+        "Q06": [
+          "c9abd3edddcf719d0230"
+        ]
+      },
+      "rows": 50,
+      "run": "round-1/author-b",
+      "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+    },
+    {
+      "applicable": 46,
+      "cells": 196,
+      "complete": true,
+      "conformance": "clean-live-and-contract",
+      "criteria": 4,
+      "findings": 0,
+      "reference_matches": {},
+      "rows": 49,
+      "run": "round-1/audit-a",
+      "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+    },
+    {
+      "applicable": 48,
+      "cells": 200,
+      "complete": true,
+      "conformance": "findings",
+      "criteria": 4,
+      "findings": 6,
+      "reference_matches": {
+        "Q01": [
+          "fd098b2de08c78f94906"
+        ],
+        "Q02": [
+          "41617381ad956865a6c4"
+        ],
+        "Q03": [
+          "e7c48d2d7b7d2bcb3311"
+        ],
+        "Q04": [
+          "3aae9366a0811871a6d6"
+        ],
+        "Q05": [
+          "dcd0b646057689c3fd1a"
+        ],
+        "Q06": [
+          "5a059f1a79deba79c1ab"
+        ]
+      },
+      "rows": 50,
+      "run": "round-1/audit-b",
+      "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+    },
+    {
+      "applicable": 46,
+      "cells": 196,
+      "complete": true,
+      "conformance": "clean-live-and-contract",
+      "criteria": 4,
+      "findings": 0,
+      "reference_matches": {},
+      "rows": 49,
+      "run": "round-2/author-a",
+      "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c"
+    },
+    {
+      "applicable": 48,
+      "cells": 200,
+      "complete": true,
+      "conformance": "findings",
+      "criteria": 4,
+      "findings": 6,
+      "reference_matches": {
+        "Q01": [
+          "824b509f81b70557e7a5"
+        ],
+        "Q02": [
+          "dd675695eb31994c3135"
+        ],
+        "Q03": [
+          "b30983a50d84c0f4b198"
+        ],
+        "Q04": [
+          "f6d4d01ecd70b1f006d1"
+        ],
+        "Q05": [
+          "cd392222567362c171b1"
+        ],
+        "Q06": [
+          "02de51aa542251fe6655"
+        ]
+      },
+      "rows": 50,
+      "run": "round-2/author-b",
+      "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+    },
+    {
+      "applicable": 46,
+      "cells": 196,
+      "complete": true,
+      "conformance": "clean-live-and-contract",
+      "criteria": 4,
+      "findings": 0,
+      "reference_matches": {},
+      "rows": 49,
+      "run": "round-2/audit-a",
+      "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+    },
+    {
+      "applicable": 48,
+      "cells": 200,
+      "complete": true,
+      "conformance": "findings",
+      "criteria": 4,
+      "findings": 6,
+      "reference_matches": {
+        "Q01": [
+          "799587e858016f356c0f"
+        ],
+        "Q02": [
+          "516c436d7c33aa7d338a"
+        ],
+        "Q03": [
+          "d765c831b249d39c8c9e"
+        ],
+        "Q04": [
+          "ee22b8014c1628abf8c1"
+        ],
+        "Q05": [
+          "5f7166a15951ef23a91c"
+        ],
+        "Q06": [
+          "b9b7c63a8a2957cdc670"
+        ]
+      },
+      "rows": 50,
+      "run": "round-2/audit-b",
+      "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+    }
+  ],
+  "reference_sha256": "33393f80d126ea7054a637cea716308883944953cbbd5ea1d8fcf12c343eea36",
+  "scope": "Controlled four-criterion live qualification; full-canon semantic audits are separate."
+}

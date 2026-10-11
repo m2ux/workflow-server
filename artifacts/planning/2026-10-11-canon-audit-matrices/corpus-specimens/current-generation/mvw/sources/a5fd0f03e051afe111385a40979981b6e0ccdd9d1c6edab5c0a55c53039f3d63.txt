@@ -1,0 +1,42 @@
+id: finalize-roadmap
+version: 1.5.0
+name: Finalize Roadmap
+description: Complete roadmap documentation with timeline, navigation, and success criteria
+variables:
+  reads:
+    - package_plans
+    - planning_folder_path
+    - priority_order
+  writes:
+    - name: timeline_estimate
+      type: string
+      description: Overall timeline estimate for the initiative
+steps:
+  - kind: technique
+    id: finalize-roadmap-docs
+    technique: document-roadmap
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: work-packages/README#planning-artifact-to-guide-map
+  - kind: checkpoint
+    id: roadmap-complete
+    message: The roadmap is complete — packages sequenced with navigation and success criteria, over an estimated span of {timeline_estimate}.
+    options:
+      - id: begin
+        label: Begin implementation
+        effect:
+          exit: done
+      - id: refine
+        label: Refine roadmap
+        effect:
+          exit: refine
+exits:
+  - id: done
+    isDefault: true
+  - id: refine
+outcome:
+  - Anyone picking up the initiative can navigate it end-to-end - sequenced packages, timeline, and success criteria in one entry point
+  - The plan is complete enough to gate the start of implementation, with no open planning questions blocking execution

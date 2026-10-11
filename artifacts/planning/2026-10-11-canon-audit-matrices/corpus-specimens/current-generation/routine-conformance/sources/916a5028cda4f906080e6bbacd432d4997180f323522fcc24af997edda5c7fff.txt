@@ -1,0 +1,65 @@
+id: end-workflow
+version: 4.7.0
+name: End Workflow
+description: Close out the client workflow.
+variables:
+  reads:
+    - client_workflow_completed
+    - component_path
+    - host_repo_path
+    - planning_folder_path
+    - target_workflow_id
+    - target_workflow_outcomes
+  writes:
+    - name: client_workflow_completed
+      type: boolean
+      description: Whether the dispatched client workflow has reached workflow_complete
+      defaultValue: false
+required: true
+steps:
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
+  - kind: technique
+    id: revise-session-metrics
+    technique: workflow-engine::revise-session-metrics
+    when: client_workflow_completed == true && planning_folder_path != ''
+  - kind: technique
+    id: verify-outcomes
+    technique:
+      name: workflow-engine::verify-outcomes
+      inputs:
+        outcomes: target_workflow_outcomes
+  - kind: technique
+    id: generate-summary
+    technique:
+      name: workflow-engine::generate-summary
+      inputs:
+        workflow_definition: target_workflow_id
+  - kind: checkpoint
+    id: completion-confirmed
+    message: Session summary presented above. Confirm closure or return to the workflow to address remaining items.
+    options:
+      - id: confirm
+        label: Confirm closure
+        description: Mark the session complete and exit
+      - id: return
+        label: Return to workflow
+        description: Some outcomes are unmet — re-dispatch the orchestrator to address them
+        effect:
+          setVariable:
+            client_workflow_completed: false
+          exit: return
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Workflow session closed
+outcome:
+  - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
+  - Session-trace and token-usage artifacts include the client terminal activity after that activity has exited
+  - The completed session can be resumed or audited later because its final state is durably preserved
+exits:
+  - id: completed
+    isDefault: true
+  - id: return

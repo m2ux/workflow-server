@@ -1,0 +1,25 @@
+id: pair
+version: 1.0.0
+name: Pair
+description: Run both operations of the shared group.
+required: true
+variables:
+  writes:
+    - name: first_noted
+      type: boolean
+      description: True once the first operation has executed.
+    - name: second_noted
+      type: boolean
+      description: True once the second operation has executed.
+steps:
+  - kind: technique
+    id: first
+    technique: pair::alpha
+  - kind: technique
+    id: second
+    technique: pair::beta
+exits:
+  - id: paired
+    isDefault: true
+outcome:
+  - Both operations have executed ({first_noted}, {second_noted})

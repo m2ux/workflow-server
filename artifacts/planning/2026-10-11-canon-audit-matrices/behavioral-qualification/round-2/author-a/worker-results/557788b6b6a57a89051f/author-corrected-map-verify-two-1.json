@@ -1,0 +1,49 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "557788b6b6a57a89051f",
+  "attempt": "author-corrected-map-verify-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 4
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "Verified A for all three relationships. The initialActivity selection, graph run entry, and its done exit identify run as the executing activity. Its delivery step names deliver, whose emit step names produce. The captured execution relationship binds that leaf instance to qualification and its ancestor TECHNIQUE.md; the leaf has a Destination declaration. DP1 explicitly carries the inherited destination requirement along these execution relationships, so the exclusion for independent files lacking a leaf declaration does not exclude these rows. Assigned rows: corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c"
+}

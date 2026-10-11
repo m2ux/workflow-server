@@ -1,0 +1,27 @@
+{
+  "actor": "/root",
+  "assignment": "f47fc833833fe334a8f1",
+  "attempt": "corrected-protocol-applicability",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "AP-01 explicitly covers each Protocol instruction directing emission. This line directs emission without validation and is neither a heading nor a declaration; its applicability is A regardless of the later evaluation result.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d"
+}

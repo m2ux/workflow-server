@@ -1,0 +1,261 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "3bee1fd1e3f08073b847",
+  "attempt": "independent-adversarial-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "The complete captured anti-pattern catalog contains the Controlled Qualification family and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both entries, including Detect, exclusions and Fix, are present in criteria; the family is present in supplemental. No later family or entry remains after line 21.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "The complete conventions source has one level-two section, Evidence scope at lines 3-5. The supplemental cc:evidence-scope entry captures that section completely, including complete definitions, four controlled criteria, explicit execution relationship, and unresolved unknowns. This verifies enumeration, not compliance with those requirements.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "The captured home contains two level-two principles: inherited destination at lines 5-8 and Provide a terminating workflow path at lines 9-11. The candidate criteria contain only dp:1; dp:2 and its whole-workflow termination criterion are absent. Add the complete second principle and restore its row-product cells before accepting canon completeness.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "The six source lines account for the native /id, /steps, delivery step, delivery/id, routine object, routine/name, arguments object and packet argument rows, plus the whole activity. The immediate deliver relationship records the actual invocation at /steps/id=delivery/routine/name and includes both source and target. These ten activity-owned rows match the captured source; the separately owned routine and scope omissions are not verified here.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "No routine-owned row appears in the candidate despite the captured deliver declaration. Missing native rows are /id, /inputs, /inputs/0, /outputs, /outputs/report, /steps, /steps/id=emit, /steps/id=emit/id, /steps/id=emit/technique and @element. Also missing are the emit-to-produce call relationship and the explicit qualification/run/delivery/deliver/emit instantiation with workflow, activity and ancestor context. The source declares input envelope, export emit.report and technique produce; AP-02 and DP-01 require these binding and inheritance endpoints.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "The ancestor has two sections only: Capability with its line-2 description and Rules with the line-5 archive requirement. The candidate has both section rows, both content rows and the whole-element row. Its complete source contains no other clause, output declaration or outbound call requiring another ancestor-owned row.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "The candidate retains the compound Rules line and clause-1 but omits /rules/line-11/clause-2. Line 11 has two independently testable clauses: Retain the report ID; emit the report without validation. AP-01 explicitly requires each semicolon-separated clause to be reviewed independently, so the whole-line row and first retention clause cannot stand in for the second emission clause. Restore the missing clause row at line 11 while retaining the section and whole-element rows.",
+      "status": "disputed"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "The complete workflow provides id qualification, initialActivity run and graph/run/done -> run. Native rows cover the id, initialActivity, graph, run entry, done exit and whole workflow; graph relationships retain the initial entry, graph-node membership, exit-bearing graph entry and explicit self-loop occurrence. Those workflow-owned constructs are represented, with the activity endpoint present. The source-set closure defect is handled by the scope obligation.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "The catalog is captured as the anti-pattern authority and is neither a requested qualification definition seed nor a caller or consumer of a qualification definition. Its unselected manifest state is appropriate for definition-row scope; both named criteria and its family are separately inventoried from the complete captured source.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "This source is the captured Evidence scope authority, not a qualification workflow definition or a caller of one. Its unselected definition-manifest state is consistent with its separate supplemental-canon inventory obligation; its full five-line content is available.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "The design-principle home is an authoritative captured canon input rather than a requested qualification definition or a caller/consumer. Leaving it unselected for definition rows is consistent with its separate canon inventory. The missing dp:2 criterion is a canon-enumeration dispute, not a reason to invent definition rows for this resource.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "The seed activity is selected, but its explicit delivery invocation at lines 3-6 targets deliver while the candidate manifest marks that routine unselected. The activity input contract cannot be covered without the routine Inputs declaration, and the explicit execution chain also passes through deliver#emit. Restore that invoked definition and the complete chain to the selected closure; selecting the caller alone does not close this responsibility.",
+      "status": "disputed"
+    }
+  ],
+  "snapshot": "e90322aaca818955bf472ef52aca5d625ef04e86a3682b3e87c23834ca9bf32a"
+}

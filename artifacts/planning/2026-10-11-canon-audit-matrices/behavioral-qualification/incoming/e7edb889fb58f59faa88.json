@@ -1,0 +1,36 @@
+{
+  "actor": "/root",
+  "assignment": "e7edb889fb58f59faa88",
+  "attempt": "root-supporting-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "unit:ap:controlled-qualification"
+      ],
+      "reason": "Read the complete AP family: its two Detect, Do not flag and Fix contracts are AP-01 and AP-02 already in the matrix. No extra family-level constraint exists. Instruction clauses, exact input names and routine output resolution remain covered by their mapped evaluations.",
+      "status": "walked"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3
+        }
+      ],
+      "items": [
+        "unit:cc:evidence-scope"
+      ],
+      "reason": "The controlled conventions require full captured definitions, all four criteria, source lines and YAML binding addresses, and the explicit execution/inheritance relationship. Those sources and addresses are present; applicability is independently settled for every cell. Reports identify this as toy-dialect qualification and make no engine/full-canon conformance claim.",
+      "status": "walked"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

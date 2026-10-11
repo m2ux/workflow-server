@@ -1,0 +1,124 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "80877f21eebdbe8147bc",
+  "attempt": "evaluate-current-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e",
+        "ece85719689c1a3411d52a12",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "f45b86c19f25461cbe667622",
+        "23d52f087c143d67f67da445",
+        "b331b3631bac4371bfebf008",
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "reason": "The sole concrete run/delivery invocation supplies the argument-key set {envelope}; deliver Inputs is exactly [envelope]. The sets agree. sealed is an opaque value, and this dialect has no optional inputs or aliases. Each assigned row is an invocation signature or its declaration endpoint for this same comparison.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d",
+        "82c8e910cc4b4df96a89e369",
+        "790b168511688f3580f49f17",
+        "e6707d2a492bbb28eafc3a21",
+        "387b3abcf94e6a19aabbf992",
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "8835c0ddec51d397d30590e7",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "reason": "The routine export is report: emit.report. Resolving step emit gives technique produce, whose complete Outputs section declares report. The referenced output exists; the exported routine name is not an additional output-name restriction. Each assigned row is this reference, its step, its declaration endpoint, or their relationship.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5",
+        "fa301823ccd44ed9374ce575",
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "The sole concrete run/delivery invocation supplies the argument-key set {envelope}; deliver Inputs is exactly [envelope]. The sets agree. sealed is an opaque value, and this dialect has no optional inputs or aliases. Each assigned row is an invocation signature or its declaration endpoint for this same comparison. The routine export is report: emit.report. Resolving step emit gives technique produce, whose complete Outputs section declares report. The referenced output exists; the exported routine name is not an additional output-name restriction. Each assigned row is this reference, its step, its declaration endpoint, or their relationship.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef"
+}

@@ -1,0 +1,85 @@
+id: scope-definition
+version: 1.4.0
+name: Define Evaluation Scope
+description: Collect the evaluation target, description, and output path.
+variables:
+  reads:
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - target_path
+  writes:
+    - name: dimensions
+      type: array
+      description: The evaluation dimensions, each { name, description, focus_areas }
+    - name: evaluation_description
+      type: string
+      description: What to evaluate, the evaluation's goals, and its focus areas or concerns
+      required: true
+    - name: evaluation_output_path
+      type: string
+      description: Directory the evaluation artifacts are written to
+      required: true
+    - name: evaluation_target_type
+      type: string
+      description: The kind of thing being evaluated.
+      values:
+        - document
+        - document-set
+        - codebase
+        - mixed
+    - name: lens_overrides
+      type: object
+      description: Lens overrides keyed by dimension name, each { pipeline_mode, lenses }
+    - name: scope_confirmed
+      type: boolean
+      description: Whether the user confirmed the evaluation scope
+      defaultValue: false
+    - name: target_name
+      type: string
+      description: The target's base name.
+    - name: target_path
+      type: string
+      description: Path to the document, proposal, codebase, or artifact set to evaluate
+      required: true
+steps:
+  - kind: technique
+    id: collect-inputs
+    technique: plan-evaluation::collect-scope
+  - kind: technique
+    id: classify-target
+    technique: plan-evaluation::classify-target
+  - kind: technique
+    id: derive-dimensions
+    technique: plan-evaluation::derive-dimensions
+  - kind: technique
+    id: create-output-directory
+    technique: plan-evaluation::create-output-folder
+  - kind: technique
+    id: summarize-scope
+    technique: plan-evaluation::summarize-scope
+  - kind: checkpoint
+    id: confirm-scope
+    message: |-
+      The evaluation scope, dimensions, and configuration, for confirmation before dimension planning:
+
+      {scope_summary}
+    options:
+      - id: accept
+        label: Proceed
+        description: Begin planning the dimension-to-lens mapping
+        effect:
+          setVariable:
+            scope_confirmed: true
+      - id: adjust
+        label: Adjust scope
+        description: Modify the target, description, dimensions, or output path before proceeding
+        effect:
+          exit: adjust
+outcome:
+  - Evaluation scope confirmed with validated target path, target type, and dimensions
+exits:
+  - id: scope-confirmed
+    when: scope_confirmed == true
+    isDefault: true
+  - id: adjust

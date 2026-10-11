@@ -1,0 +1,12 @@
+id: record-dispatch
+version: 1.0.0
+name: Record Dispatch
+description: Record that one activity dispatched.
+outputs:
+  - id: dispatch_recorded
+    type: boolean
+    description: True once the dispatch technique has executed.
+steps:
+  - kind: technique
+    id: record
+    technique: note-ran

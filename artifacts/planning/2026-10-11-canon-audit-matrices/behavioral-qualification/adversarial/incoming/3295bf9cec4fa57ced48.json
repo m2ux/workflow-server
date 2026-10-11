@@ -1,0 +1,174 @@
+{
+  "assignment": "3295bf9cec4fa57ced48",
+  "snapshot": "e90322aaca818955bf472ef52aca5d625ef04e86a3682b3e87c23834ca9bf32a",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "independent-adversarial-1",
+  "records": [
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "status": "disputed",
+      "reason": "The manifest marks deliver selected=false although it is directly called by run, consumes produce through emit and exports emit.report. It is also the explicit execution relationship source. It therefore belongs to the invocation and consumer closure even though it is not a seed. Its complete declaration, native rows and both call/instantiation relationships must participate in the inventory.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "status": "verified",
+      "reason": "The complete ancestor declares the archive destination at line 5. The selected produce source has a declared-contract relationship to this selected ancestor, so the directly required inherited source is included. The ancestor has no additional outgoing reference in its five lines; the omitted executing routine is separately disputed under its own and the affected seed closure obligations.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "status": "disputed",
+      "reason": "The producer seed and its ancestor are selected, but its caller/consumer deliver is unselected. Deliver line 3 consumes the leaf output through emit.report and line 6 calls produce; the explicit qualification/run/delivery/deliver/emit relationship is absent from the candidate rows. AP-02 requires that consumer binding and resolved producer, and DP-01 requires the full executing relationship. Include deliver and its instantiated context in this producer closure.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3,
+          "end": 5
+        }
+      ]
+    },
+    {
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "status": "disputed",
+      "reason": "The workflow seed and direct run activity are selected, but their execution chain reaches run#delivery -> deliver#emit -> produce while deliver is unselected and the declared execution relationship has no row. The requested workflow closure includes invoked definitions and full instantiation chains, not only graph endpoints. Restore the routine source, its binding rows and the explicit execution relationship with the already captured ancestor context.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        },
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}

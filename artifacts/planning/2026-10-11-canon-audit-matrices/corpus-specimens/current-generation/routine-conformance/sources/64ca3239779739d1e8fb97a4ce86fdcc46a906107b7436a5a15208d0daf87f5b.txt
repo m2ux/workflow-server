@@ -1,0 +1,24 @@
+id: pin-checkouts
+version: 1.0.0
+name: Pin Checkouts
+description: Bring both checkouts to the revisions the roster names, through the shared readiness run.
+variables:
+  reads:
+    - checkout_pins
+    - planning_folder_path
+  writes:
+    - name: checkout_readiness
+      type: array
+      description: Where each pin landed, or why it was refused, one entry per roster entry in roster order.
+required: true
+steps:
+  - kind: routine
+    id: readying
+    routine: git::ready-checkouts
+    outputs:
+      checkout_readiness: checkout_readiness
+exits:
+  - id: pinned
+    isDefault: true
+outcome:
+  - Each roster entry has an answer — the commit landed and the form its name resolved as, or the refusal — so the report can hold what was asked beside what was done

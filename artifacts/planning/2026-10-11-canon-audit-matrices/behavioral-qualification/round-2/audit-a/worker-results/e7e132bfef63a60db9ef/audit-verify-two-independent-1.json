@@ -1,0 +1,385 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "e7e132bfef63a60db9ef",
+  "attempt": "audit-verify-two-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9839de920cafa86c93f9e319"
+      ],
+      "reason": "Leaf /outputs declares report; deliver binds emit.report. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "16ed4220394232ac66e84453"
+      ],
+      "reason": "Leaf /outputs/report declares report. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a6cc9c95bd8a15eec9337ab9"
+      ],
+      "reason": "The deliver-to-produce relationship resolves emit.report against output report. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7616d539ed6effba75237723"
+      ],
+      "reason": "The execution relationship instantiates qualification/run/delivery/deliver/emit/produce. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a700a3294be653eb8e533547"
+      ],
+      "reason": "Leaf /protocol contains: Validate the report, then emit it. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "cc4fea783a74407b8fdb654e"
+      ],
+      "reason": "Protocol line 8 directs: Validate the report, then emit it. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "d9b55f0b6cbe3ed6ab868ed5"
+      ],
+      "reason": "Ancestor /rules declares the required archive destination. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "4da9396f20f50a18673256c5"
+      ],
+      "reason": "The ancestor line-5 rule requires archive. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "36c8e451b93d39512aae352f"
+      ],
+      "reason": "The run-to-deliver relationship binds argument envelope to input envelope. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "54a73e1bf111128988cf03fe"
+      ],
+      "reason": "The ancestor element contains Capability and its archive requirement. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7d5cdef67a14fe0a0e70a8ff"
+      ],
+      "reason": "run /id names the activity. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8b3b602b6703003326b8df8d"
+      ],
+      "reason": "The run element contains the concrete deliver invocation with envelope. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8d0f33a043c7068e8c998046"
+      ],
+      "reason": "The produce element declares output report, emitting instructions and Destination archive. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "98b55e096e4899353322814f"
+      ],
+      "reason": "The inheritance relationship links produce Destination archive to ancestor archive. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "a0e70a1645458e99657058ca"
+      ],
+      "reason": "deliver /id names the routine declaration. N holds: DP-02 concerns the workflow initialActivity and graph; this declaration or call supplies no graph exit.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "reason": "workflow /id names qualification. N holds: a workflow identifier supplies neither the initial activity nor a graph transition; DP-02 is a reachability invariant.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "initialActivity selects run; its done exit points to null. A holds: DP-02 requires this initialActivity/graph construct to be assessed with the complete reachable graph for a finite terminating path.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "The qualification workflow starts at run and has only run.done -> null. A holds: DP-02 requires this initialActivity/graph construct to be assessed with the complete reachable graph for a finite terminating path.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

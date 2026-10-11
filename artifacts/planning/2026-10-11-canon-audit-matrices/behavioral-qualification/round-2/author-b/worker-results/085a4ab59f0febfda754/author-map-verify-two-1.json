@@ -1,0 +1,179 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "085a4ab59f0febfda754",
+  "attempt": "author-map-verify-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b6ad6f9e4c3bf6bcd7517234",
+        "3dd8981b7cf70f3489f0cb9a",
+        "69c0652ae2e85de91e1e5de4"
+      ],
+      "reason": "Verified N: these rows belong to the ancestor TECHNIQUE.md, which declares the required archive destination and describes inherited delivery. DP-01 explicitly distinguishes that ancestor constraint from a leaf Destination. The leaf and explicit inheritance/call relationships carry its comparison; the ancestor itself is not another leaf destination. Assigned rows: corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/TECHNIQUE.md#@element.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b7876638c82ca7835e6ecd54",
+        "8b527c51fa312ce306f5d8f4",
+        "cf440ff1717daba3ba33af52",
+        "af24593c352cedfdf9a972fa",
+        "263ad09bd2d440e2a894ee63",
+        "65dd3d64e8c54c7713685121",
+        "665c1a7ad6f6a7650e3f374a",
+        "9fff88eaae065adb66759e66",
+        "a93639cc3c5c1ad866587c2e",
+        "bf312e511dcc8f4eda77a41a",
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "reason": "Verified N: these native declaration/section/item rows contain no leaf Destination clause and are not explicit execution or inheritance relationship rows. DP-01 limits independent destination checks to the leaf declaration and requires context to travel through the explicit relationships. Their argument keys, output names, emission prose, identifiers or graph containers do not independently declare a leaf destination. Assigned rows: corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/workflow.yaml#@element, corpus/qualification/routines/deliver.yaml#@element, corpus/qualification/workflow.yaml#/initialActivity, corpus/qualification/workflow.yaml#/id, corpus/qualification/activities/run.yaml#/id, corpus/qualification/routines/deliver.yaml#/id, corpus/qualification/activities/run.yaml#@element.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "Verified A: the listed explicit call/inheritance relationships connect qualification run.delivery to deliver.emit/produce and its qualification TECHNIQUE.md ancestor. DP-01 expressly requires those relationships to carry the inherited requirement to the executing leaf. All five concrete context sources were read, so this is an instance-context judgment rather than an independent check of a file without a leaf declaration. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8, corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "Verified A: produce line 12 is a leaf Destination declaration, exposed by its clause, containing Rules section or whole leaf. DP-01 requires comparison with the executing qualification ancestor requirement at TECHNIQUE.md line 5. The explicit run/delivery/deliver/emit chain identifies that ancestor; matching values would still require evaluation. Assigned rows: corpus/qualification/techniques/produce.md#@element.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

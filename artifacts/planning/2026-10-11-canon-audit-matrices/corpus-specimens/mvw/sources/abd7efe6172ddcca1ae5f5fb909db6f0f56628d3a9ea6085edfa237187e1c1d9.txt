@@ -1,0 +1,27 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the scope discipline check over the index, where nothing is staged.
+variables:
+  reads:
+    - negative_diff_scope
+    - negative_requirements_scope
+  writes:
+    - name: negative_scope_findings
+      type: array
+      description: Affected flows falling outside the intended scope, each with the changed symbol that reaches it — empty by construction, since an empty change set reaches no flow.
+required: true
+steps:
+  - kind: routine
+    id: check-empty-index
+    routine: gitnexus::scope-discipline-check
+    with:
+      diff_scope: "{negative_diff_scope}"
+      requirements_scope: "{negative_requirements_scope}"
+    outputs:
+      scope_findings: negative_scope_findings
+exits:
+  - id: checked
+    isDefault: true
+outcome:
+  - The same run under an index holding nothing landed an empty change set, reached no flow and landed empty findings, the fallback the run promises rather than a failure

@@ -1,0 +1,43 @@
+id: consolidate-report
+version: 2.4.0
+name: Consolidate Evaluation Report
+description: Consolidate the per-dimension DEFINITIVE-FINDINGS.md into a unified EVALUATION-REPORT.md.
+variables:
+  reads:
+    - all_analysis_artifact_paths
+    - completed_analyses
+    - dimension_plan
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_plan_path
+    - evaluation_target_type
+    - target_path
+  writes:
+    - name: evaluation_report_path
+      type: string
+      description: Path to the `EVALUATION-REPORT.md` artifact
+steps:
+  - kind: technique
+    id: extract-findings
+    technique: compose-evaluation-report::extract-findings
+  - kind: technique
+    id: identify-patterns
+    technique: compose-evaluation-report::identify-patterns
+  - kind: technique
+    id: compose-report
+    technique: compose-evaluation-report::compose-report
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        artifact_dir: evaluation_output_path
+        guide_map: prism-evaluate/README#planning-artifact-to-guide-map
+  - kind: technique
+    id: verify-report
+    technique: compose-evaluation-report::verify-report
+outcome:
+  - The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from
+exits:
+  - id: done
+    isDefault: true

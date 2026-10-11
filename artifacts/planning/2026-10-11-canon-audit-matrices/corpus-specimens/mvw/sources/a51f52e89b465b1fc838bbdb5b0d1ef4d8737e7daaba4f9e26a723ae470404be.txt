@@ -1,0 +1,21 @@
+id: dispatch
+version: 1.0.0
+name: Dispatch
+description: Dispatch once.
+required: true
+variables:
+  writes:
+    - name: dispatch_recorded
+      type: boolean
+      description: True once the dispatch has executed.
+steps:
+  - kind: routine
+    id: recording
+    routine: record-dispatch
+    outputs:
+      dispatch_recorded: dispatch_recorded
+exits:
+  - id: dispatched
+    isDefault: true
+outcome:
+  - The dispatch has executed ({dispatch_recorded})

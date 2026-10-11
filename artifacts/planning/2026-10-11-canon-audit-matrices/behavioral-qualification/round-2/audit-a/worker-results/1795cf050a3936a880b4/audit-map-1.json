@@ -1,0 +1,293 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "1795cf050a3936a880b4",
+  "attempt": "audit-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "ec7e3577667dbf0846b7b09f"
+      ],
+      "reason": "run.yaml#/steps: The activity steps contain delivery, which invokes deliver with the envelope argument. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "eaf04cb03551645c38d72842"
+      ],
+      "reason": "run.yaml#/steps/id=delivery: The delivery step invokes deliver and supplies the envelope argument. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "51923b360aa3ef1a7585fbf4"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/id: This scalar names the activity step delivery; it does not declare an argument key or exported output. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "7fa24663abc3348858407cd5"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine: The routine object names deliver and supplies the envelope argument. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8f04699d8cada26b1b7ebcc5"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments: The invocation arguments have the single key envelope; sealed is its opaque value. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "f7c71bd7cd44e3d3cfd50614"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/arguments/envelope: The invocation argument key is envelope and its opaque value is sealed. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "501147c7c9cf63d456cc367b"
+      ],
+      "reason": "run.yaml#/steps/id=delivery/routine/name: The routine name deliver selects the declaration whose Inputs list is envelope. DP-02 is a whole-workflow graph invariant and expressly states that activity and routine steps do not add graph exits. This activity/routine row or execution relationship supplies no graph transition.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "21b5df21a5c696fcaa898fbf"
+      ],
+      "reason": "produce.md#/rules: The leaf Rules retain the report ID, validate the report before each emission, and declare Destination archive. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "d4d45cf60920c4360e003cf1"
+      ],
+      "reason": "produce.md#/rules/line-11: The compound rule retains the report ID in its first clause and says to validate the report before each emission in its second. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "b1c897ef75ecfb0802a40206"
+      ],
+      "reason": "produce.md#/rules/line-11/clause-1: Only the first semicolon-separated clause is this row: Retain the report ID. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "b192bf0ffab5454aaf50901a"
+      ],
+      "reason": "produce.md#/rules/line-11/clause-2: Only the second semicolon-separated clause is this row: validate the report before each emission. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "3e979fb0c7e3eb5836c3cb1a"
+      ],
+      "reason": "produce.md#/rules/line-12: The leaf declaration says Destination is archive. DP-02 is restricted to the workflow initialActivity and graph. This technique contract or instruction defines no workflow node or exit.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "workflow.yaml#/graph: The graph contains run with the done exit directed to null. DP-02 applies to the workflow root/graph construct represented here. The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "workflow.yaml#/graph/run: The run graph entry has one done exit directed to null. DP-02 applies to the workflow root/graph construct represented here. The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "workflow.yaml#/graph/run/done: The done exit value is null in the run graph node. DP-02 applies to the workflow root/graph construct represented here. The complete initialActivity and graph must be assessed together for a finite path; resolving the activity name alone does not settle that invariant.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9"
+}

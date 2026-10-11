@@ -1,0 +1,29 @@
+$schema: ../../../schemas/workflow.schema.json
+id: namespace-conformance
+version: 1.0.0
+title: Namespace Conformance Workflow
+description: >-
+  Bind one operation of a library that declares no workflow of its own, under both spellings that
+  reach it — the library's directory name, and the path from the corpus root. The operation is a
+  directory count, the cheapest read the graph offers, so what the run evidences is which folder
+  answered each reference rather than anything about the measuring.
+author: m2ux
+tags:
+  - namespace
+  - conformance
+  - reference
+  - library
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: component_path
+    type: string
+    description: Path of the component being probed, relative to the host repository — '.' for a regular repository.
+    defaultValue: "."
+initialActivity: reach-by-name
+graph:
+  reach-by-name:
+    reached: reach-by-path
+  reach-by-path:
+    reached: __terminal__

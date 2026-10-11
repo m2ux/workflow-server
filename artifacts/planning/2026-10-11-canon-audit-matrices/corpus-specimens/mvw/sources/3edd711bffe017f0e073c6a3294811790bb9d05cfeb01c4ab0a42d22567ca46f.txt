@@ -1,0 +1,88 @@
+id: plan-and-execute
+version: 1.0.0
+name: Plan and Execute
+description: Plan once, gate optionally, execute steps in order, and replan while surprise remains — borrowable mid-phase plan-and-execute pattern.
+variables:
+  reads:
+    - planning_context
+    - planning_folder_path
+    - work_goal
+  writes:
+    - name: execution_plan
+      type: object
+      description: The ordered plan { steps[{ id, instruction, depends_on? }], notes? } the goal decomposed into.
+    - name: plan_needs_replan
+      type: boolean
+      description: Whether the plan needs revising before its steps run.
+      defaultValue: false
+    - name: prior_step_results
+      type: array
+      description: Accumulated per-step outcomes in execution order, each { id, outcome, evidence? }.
+    - name: step_result
+      type: object
+      description: The outcome of the step just executed, { id, outcome, evidence? }.
+    - name: replan_reason
+      type: string
+      description: Why the plan no longer holds, where execution found it wrong, blocked or short a dependency.
+required: false
+steps:
+  - kind: technique
+    id: plan
+    technique: orchestration-patterns::plan-steps
+  - kind: checkpoint
+    id: plan-confirmed
+    message: "Execution plan for the goal is ready ([planning folder]({planning_folder_path}))."
+    options:
+      - id: confirmed
+        label: Proceed with plan
+        description: The plan covers the goal, and its steps are the work to run.
+        effect:
+          setVariable:
+            plan_needs_replan: false
+      - id: revise
+        label: Revise plan
+        description: The plan misses something the work needs.
+        effect:
+          setVariable:
+            plan_needs_replan: true
+  - kind: loop
+    id: execute-steps
+    name: Execute Plan Steps
+    loopType: forEach
+    variable: current_step
+    over: execution_plan.steps
+    maxIterations: 50
+    when: plan_needs_replan != true
+    steps:
+      - kind: technique
+        id: execute-step
+        technique: orchestration-patterns::execute-plan-step
+  - kind: loop
+    id: replan-until-stable
+    name: Replan Until Stable
+    loopType: while
+    maxIterations: 5
+    continueWhile:
+      type: simple
+      variable: plan_needs_replan
+      operator: "=="
+      value: true
+    steps:
+      - kind: technique
+        id: replan
+        technique: orchestration-patterns::replan
+      - kind: loop
+        id: execute-after-replan
+        name: Execute After Replan
+        loopType: forEach
+        variable: current_step
+        over: execution_plan.steps
+        maxIterations: 50
+        steps:
+          - kind: technique
+            id: execute-step-after-replan
+            technique: orchestration-patterns::execute-plan-step
+outcome:
+  - Inspectable execution plan produced before tool-heavy work
+  - Steps executed in plan order
+  - Replan path available when execution surfaces surprise

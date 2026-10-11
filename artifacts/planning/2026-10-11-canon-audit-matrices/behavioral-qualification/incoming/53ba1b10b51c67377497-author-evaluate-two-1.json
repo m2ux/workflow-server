@@ -1,0 +1,141 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "53ba1b10b51c67377497",
+  "attempt": "author-evaluate-two-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Bind outputs.report to emit.summary, the output declared by produce.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "items": [
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "fef2366b0f34a7eda42dc08d",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "reason": "The routine report export binds emit.report, but resolving emit to produce reaches a complete Outputs declaration containing only summary. The consumed name report is absent, so this binding is structurally broken (Live/Critical). This closure consumer break depends on the declared changed producer output contract in scope.paths, giving diff origin. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary, corpus/qualification/techniques/produce.md#@element.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Supply envelope as the delivery invocation's argument key.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery supplies argument key packet, but deliver requires envelope."
+        },
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Bind outputs.report to emit.summary, the output declared by produce.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158",
+        "fa301823ccd44ed9374ce575"
+      ],
+      "reason": "Both independent AP-02 contracts fail in this captured invocation. Delivery passes {packet} while deliver Inputs requires [envelope]. Separately, outputs.report binds emit.report although emit calls produce with only summary declared. These are distinct structurally broken live bindings and both are reported. The invocation is in scope.paths; the export break depends on the declared changed producer contract, so both have diff origin without a Git-base claim. Assigned rows: corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96, corpus/qualification/routines/deliver.yaml#@element.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Supply envelope as the delivery invocation's argument key.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery supplies argument key packet, but deliver requires envelope."
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "reason": "The concrete run delivery invocation names deliver but passes exactly {packet}; deliver requires [envelope] and the dialect supplies no aliases or optional inputs. The required input remains unbound (Live/Critical). The activity is a declared changed definition in scope.paths, so attribution is diff. Assigned rows: corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd"
+}

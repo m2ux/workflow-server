@@ -1,0 +1,119 @@
+5:## Report Context
+9:### Bands
+19:### Severity
+32:### Finding Rows
+48:### Coverage Ledger
+60:### File Coverage
+73:### Coverage Header
+77:## Which Report
+81:## Standalone
+98:## Change Surface
+106:## Findings
+111:## Coverage
+113:## File Coverage
+121:## Known
+126:## Workflow Reports
+5:## Prerequisites
+9:## Canon Question
+13:## Procedure
+35:## Attribution
+45:## Rules
+# Reporting
+
+Severity, row shapes, and which report the run owes.
+
+## Report Context
+
+Read this section before selecting a report layout.
+
+### Bands
+
+| Band | Holds | Target |
+|---|---|---|
+| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |
+| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |
+| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |
+
+State each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.
+
+### Severity
+
+Severity ranks urgency inside a band. The band says whether the finding gates.
+
+| Severity | Fires when |
+|----------|-----------|
+| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |
+| `High` | An entry fires on a construct the change ships, and the defect propagates |
+| `Medium` | An entry fires and the defect stays in that construct |
+| `Low` | Hygiene with no consumer consequence |
+
+The [dispatch phases](audit-dispatch.md#phases) own finding confirmation. An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.
+
+### Finding Rows
+
+| Column | Carries |
+|--------|---------|
+| ID | Stable within the report |
+| Band | `Live`, `Contract`, or `Hygiene` |
+| Severity | The scale above |
+| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |
+| Location | File and field, at the depth the evidence sits |
+| Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |
+| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |
+| Known | Set when a prior pass accepted this key |
+| Fix | The action the entry prescribes, in one line |
+
+A row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.
+
+## Attribution
+
+- **`diff`**
+  A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.
+- **`pre-existing`**
+  The same construct and evidence at the base ref, independent of an I/O contract change on this surface.
+- **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.
+- **`fix`**
+  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
+
+
+2026-10-11T11:43:59.966557+00:00 Exact evaluation bindings f8acd6564321a39f0f04
+{"23d52f087c143d67f67da445": {"cell": "c2bd5063016f19c15dfe27fe7175fa1cb4c224fa41d122bdb6caf2c7328999d0", "mapping": "6946262eb1123c777c03d6eb8defa237a9beb15bda63917f253e7d63d6d0a1ee"}, "366a1ced08e276234b09d365": {"cell": "c99085a80ef3eabed34239996feb9eb53bef80ae6e5b4f8674c2ba727472d1d5", "mapping": "24d3b94d82f8b5167d9aca6bc73dc33630029427dccd9f79ccc912cd235efc92"}, "387b3abcf94e6a19aabbf992": {"cell": "b607c2db7c80e8b755f8f33598fcf4d7104f44b2a323db55662430c734226e67", "mapping": "3e79fbfcf2ab629e07c27ad53396f52c0b6a6b8fd8ed33b31cf9f37a96785865"}, "790b168511688f3580f49f17": {"cell": "d4591ca2df8d8772127b1eea47524971f592b4142c5cdb22a5565253b6219a8b", "mapping": "30667f651906d49284483f2f14d46832fcedd03a6018a498e0931192cc5d6cd2"}, "82c8e910cc4b4df96a89e369": {"cell": "268fd5ab79f83f21de524cb23e9493630d77801eaf0d4394b4f147f66d0f6a63", "mapping": "6b55def44c381a717a36cfc09a34aa77afe367d856c398176dd8124a9f836bbf"}, "e4e1d36386ad37dc4007d953": {"cell": "0ed8dd74c35164d1c6d8901159a2b8e26b703b5e87545a3a6d0c561ba7b7dcf5", "mapping": "dfaabb966229ec492d023b0fcd04b61e0ff856f430b9d8a364eb1d0852a5795c"}, "e6707d2a492bbb28eafc3a21": {"cell": "7e5508306820b898a7acc99593ee7d2d6745ca8ffe52edc464b11133e14864a8", "mapping": "e683bf3084caf84de014258984097770074ff704e6a9a2e379093fb71c7b95ad"}, "ece85719689c1a3411d52a12": {"cell": "6b45c4456eb13d6079cf33b95fd95b8d9c600bb0cac0ad41c25562e6353fd6e0", "mapping": "7005dc83fd348930a817dedb4e39c94ef47e819ae9b90a357b0e7cc1e452ba58"}, "f45b86c19f25461cbe667622": {"cell": "ae41933ecf769e76df606a5a4a4c29247bbe63202056c705b924957937818f90", "mapping": "608efaa95c2cdbd90765ac003d8fbbacc4d31903441ba15adc7014a37ed74502"}, "fc60645fdab03b4f360b972e": {"cell": "3ef6662927a918345757fd196f03dd748dbe31342ff8328a6320e24e2b8b0b96", "mapping": "6b3ecbdc3580269cce1ebbdf897e106a53ac8dfb49bac4a96bbf780c11ba20f8"}}
+
+2026-10-11T11:43:59.967215+00:00 Exact evaluation bindings 953d0bd948811d0bb5b9
+{"094759e3ffb8236db086b566": {"cell": "d79d5143821192a2c3b7835b58ae2135aaac63f356708803221ecfc68d996098", "mapping": "0001cac0e90e56948e9d5ce90da07bc52d025351fe9d129100b5fddc91c1e08f"}, "48da822c85267d96ea48c4c2": {"cell": "baddf90f1dfeadf0c244332d65b1035c892871b8a82179e45331e4c66609e0a4", "mapping": "866cac56a3e9dcc6769906c97b084f948a3ff0d6f53007d595446ad3bf4cc0ca"}, "5453a725eb6086baaa72c972": {"cell": "af1f5d832de33a00f00fdf6a40062f4e4809d23ac268a8e2ff6aa83abf840c84", "mapping": "e99b9d0d8160630777d644e8dcd6ed696d6cde8dd40224fe906e36edce64643f"}, "8862878198e6198ef77c1f28": {"cell": "333af111b3d3a874a9f4c4262e30394e0cf1ba7b2036deddb44cee56b0279d16", "mapping": "9822e0ab0bd8770a7fd063942de363e0df0c1159750f9bf9ac02636a53182ded"}, "9a13e148e0a434d148bef242": {"cell": "2478115a27cd0d1679e2cdc6ee63bdc5adb6baf17932cda0dacb1725f9b24c4e", "mapping": "84604a772ce713d3d439f1437889a65ffd6cc1c7bc1444740748b33be3992ea8"}, "c7fdcca69a6f6d3b3cfa7009": {"cell": "d0d683a5f303ae748e1ab8e9dc18dde59f4c9874d49808de7153aac046756c8a", "mapping": "d9026686e32efe11bb0779dd9f6f1120587b285423f7275ab19542ae6c19bedb"}, "e0fcd50974c10678a3e2fb44": {"cell": "2a2a2b9927e065f3c28730736968d2816c8fd45a2fdd259437f8c2368a6d3e15", "mapping": "60005226993ede4c0b13e55810afcb2d76c5bb58afd25b40d8f5d07900fc3c04"}, "e5c1842a573eccbf8d7d7e60": {"cell": "5025cb76842e449a2a6d5b053aeecf45706b132f13a2c06e8dfc609eb2e96609", "mapping": "6a9918cf0873e7c0bfab5b14bf2c02d3931d75b55b54034d1f1e7775a2848f87"}}
+
+2026-10-11T11:43:59.968025+00:00 Exact evaluation bindings b6da8bd377463e317cb2
+{"15ee43746437cfdf860b1519": {"cell": "361dd565a6dad1e8914d19b63aa27ee55f26f93a2ceba449c2ea8746a1e28297", "mapping": "f2dd43c086233e76e0dad9a34cf4e1b85d7dc50ad83fd45fa2004615fe8085c8"}, "21f9cfbf2718ad51d2976c98": {"cell": "9dcba66edd2391eb0b8a926a9db9c89bf7adaf3ba4e7092ff3694b1d90cbe22e", "mapping": "60cb354ed0b13babb10489e6b7ae26f9763ec3c73a3728cc8d1aaa10df46bb71"}, "32efcf3836cf4d26fc113577": {"cell": "4954f076c5e722b424f96a8621a302354f5c427b912443e3d730448eeed777c2", "mapping": "02c37fa80aa08c461cd88f0e4036ad610a2cb3809bcb53d36d8433dee77a1451"}, "355ce3ec841005b898e3d8d3": {"cell": "d1d9736fe12bd83b3d760dbd46e6657cb14cba95184ddc00fdc1ea073f854572", "mapping": "0982db0b32214919165ff7f106a8253f28aa6d3addbf429a1cde016864039a5d"}, "381dd396d48f156e5b5332ba": {"cell": "f4878980644dcb0c6e903940843c12d66ab0b7c6f161a6909fbd8c76477f809c", "mapping": "de9a4e965ddae76e35100111e168f3f0e14d6df6eb71c53ffc2ed88c1974f7e0"}, "8bfa310664405693e5cee00b": {"cell": "9b243eb2a8b166967b0b79fcfd48cc527d65633718f9d442b058f148602b16e3", "mapping": "b3e47d9a3cbc551a8817a288baac23bb0d1de0a3617337215576f9fd561e00b3"}, "91a7785154a1a018658ccae8": {"cell": "31b5ae74901a04517bbbc39c116910dd048041e51dbf281a19c2b2838be1b3ab", "mapping": "19f483f671295fda67e75e9f363e7b86bed8930b0c11643d80e3f1212a23ca60"}, "a406c04573c91f8ad82577e3": {"cell": "964da1351350d6c96635c8a8bed29fd8b6ee1395d833de7ab17ecfcec08a236b", "mapping": "4a26efdfbe84c80d949618e1c492b9c8b557854811148a0bbd8a13e4691ed2a1"}, "dafc343685f5a84041beee97": {"cell": "8bcd27f3750d2064ed008a024a5ec9eba20549b05ce1e69c4d5213e676a1586f", "mapping": "1f354ad463849149f4168c662ff56e21a849f95a2e5832a6d957a5213404e3ed"}, "eb3d9f625d45294630564c36": {"cell": "e91137d32b267271134edb9ee8edb67e9a350207175535405f8a67fe17b5d9c1", "mapping": "85af856fcbcf9e5ef19cac365337739f012a03ee4deeca93d5478f59bb5fb7e5"}}
+
+2026-10-11T11:43:59.968523+00:00 Exact evaluation bindings 9c2b15ac1f3f72fa9979
+{"1fff788717e68470ea335f4a": {"cell": "796c7c84023bdee4ed0fa526611946f9e09315858bc75c6122c9b182dbfe21d8", "mapping": "f57dcdfbac3195b5e966a1492f6771a4fbbc03240138b35620295f6f804fd8d3"}, "668f2c03b5c1dfffd6143cc5": {"cell": "d1568b9fef81447528008b098e7e71c98fd716d97ac656f55908565fe13aaad4", "mapping": "8ad38599d08ea35adb854392b7fde99473e159123b31c8af3208677a26cf64ef"}, "7f339716e8d7474fb2512654": {"cell": "2bda29b04ab8dd9ea2596cada66efc5c41b05970019dc289280883d6da977dd4", "mapping": "484bdfe2c6cb8da78d98c4ac051c8bd3388c02a024bf9ff1e7252d34736f80a0"}, "a3b7b46de80a7e60f06f33aa": {"cell": "0b24004dd6da711017948a10d889cb78c435ceaa9d9ed85103625e41b54ff5a8", "mapping": "e016da81e50bcdaecebb37c594fe78600e61cd049e6c0da4b2f6455b3d5305d8"}, "d074a916d8f80c61b3aa18a0": {"cell": "4d33ded2a0a824b0b82e76549e8d9bff6fda7f95cec754de84553803a44ebae5", "mapping": "9a4efcff7b007269449344f3d4900d0e43924dad477886910496ff0a4d87df29"}, "d10a33e1908da3335366adaa": {"cell": "3b8bd7f14ec537d79f7112e9b44d53ea4ea94b4b14d61aba621f1e981edd7096", "mapping": "699f4c8ebd2af01b8a7d6fc99b386118351bafd34671f8aa2b5cc022797b5480"}}
+
+2026-10-11T11:43:59.969263+00:00 Exact evaluation bindings dc7410dce6b21d98d91b
+{"1682a187cf7dd36419e2a143": {"cell": "91ca4a91335a68d2083f66b5a367950ba794115609f691f32d89e941f94ae374", "mapping": "ea37535e97e96c007fcf0ea9abeb98cd1c00f4910174543cdee76d1d6bfee864"}, "620325a4c3f62c9867a7df90": {"cell": "99a8b57a77306c0d9914bb25f0e1e61031822ebfa8e3f8603b7061a23a201691", "mapping": "91126080fbd15e85f666b74eaf98798f38ee4052c305374f694f785da3724a4b"}, "7f71a92e9f425b2094dec98d": {"cell": "5c07f5cc3dc625d2b1598051a7f371d5b1015b7d560a414a9bddce4d0c3f0682", "mapping": "8b9abf54946a0ecbb2cbce419eecc63d7f9ef95e3c14c93aa338eb7605e7ae60"}, "85e68983cef9c8b0f9a7bf33": {"cell": "b9a74e62e89b8e19626dba3e33d43d709779cf127d8831c27f4826ce3859e1ac", "mapping": "8aab3a28b84d18451037a42c830987a4d8863c5363845e9c454ec08a3ca3b6c8"}, "8669d4026237cb94e83e2158": {"cell": "5b0272f33e8b78ef908a7d58f1b1301c9742d97ec491069d999d2d8644bee9b9", "mapping": "a2fe29d6b800cbca7547e34c0806a9cd23a6b6ed272c0c3ab004b865b4ae78fd"}, "8835c0ddec51d397d30590e7": {"cell": "7152285a172fb4f1ef4ee7b30ce38632c1078194eb6196e5cc1a27cb3138f9aa", "mapping": "da13efd8a664a112c8f1d6def11b829a6d0299fefa5a4ab9e9db00d180716ff0"}, "b331b3631bac4371bfebf008": {"cell": "1ee1bddefedc4d80df75afc2f880d1173b4766eef4a066ae98d3107af4a6f104", "mapping": "ba10b10093b749797cd5dc99cee789779e5fe138c29c47100ae53cfbca56c9ee"}, "b34f6249f0f9b31107491750": {"cell": "8824608e065fe91fc05d96eb2022cc4fbf897e60bbf74f874bbbdbd3aca9bdc5", "mapping": "bf73077e022ba341d413931c893641efebf2146bafa6a0d2165035faeb43c7c8"}, "c986d23bf9fe92ac15ab723d": {"cell": "e31a2421d1f71d6a66c9d968248d24060a187701441dfe4c453fd9782d36ee80", "mapping": "beb9c3aea9d8346b22f751a22afd264f0ef7913d6948679862c4d7d9e942852a"}, "ca1e1515076ec0147e7b8338": {"cell": "6be249b01605c3f7accf5c2fb3b655c3646f498c02de911e20d81cba8a098aff", "mapping": "a316235d3de7a2de85e174a51f8ebd933f9982d9ee9423e704ef72ccff1d5cd3"}}
+
+2026-10-11T11:43:59.969667+00:00 Exact evaluation bindings 6cc1e7b74007975e7fa8
+{"eeab805ea4653756496776b5": {"cell": "300c51ff92cfe0c3b32bc66f0c64cf53def77277aa31d4590a0d492c451ccce1", "mapping": "4b54bfd902a12f0bfbcbaf3f5f4614863ef64cca9ec870e9b379ae4a4e908077"}, "fa301823ccd44ed9374ce575": {"cell": "e281fc5845a5a0087f26ac7f9cc7c60474abb4faa84cdb8eb653f8aed0922b98", "mapping": "078b08ed34249e141f59415b9466fbe68b9c1c823ce2d6b6845d0bb4e5ff6fd6"}}
+
+2026-10-11T11:43:59.970383+00:00 Exact evaluation bindings fefdbb450388446c39d3
+{"23d52f087c143d67f67da445": {"cell": "4e92d34626d12a9b40bd4bd15cdd7af3b8dda0f86c24b1e436b810b87cff67f4", "mapping": "6ffc68c2d7f147c059d92bb29982954a4e0376e37032174c60f5d71659ed490e"}, "366a1ced08e276234b09d365": {"cell": "dbe58dbee1ec17b4f123b7b4e5b785ec709b2506dd0570e88b1ac8e412fd1f5b", "mapping": "d49722b9a37d80b927824e68b58b2e0aa1f75a98a1dc13ce2b6d9f96d2d9872e"}, "387b3abcf94e6a19aabbf992": {"cell": "b607c2db7c80e8b755f8f33598fcf4d7104f44b2a323db55662430c734226e67", "mapping": "9200fb48b66907c2447e0e69a2f64569ec37b9491dae2b7910f818730df23540"}, "790b168511688f3580f49f17": {"cell": "d4591ca2df8d8772127b1eea47524971f592b4142c5cdb22a5565253b6219a8b", "mapping": "65510f10e9faa4bdf711f29a0063b6614d0e1fa66b5c870395e353d0f1e71317"}, "82c8e910cc4b4df96a89e369": {"cell": "268fd5ab79f83f21de524cb23e9493630d77801eaf0d4394b4f147f66d0f6a63", "mapping": "859d425c9fcff398d6a0089738cd2afd51534ac1fed88a97ba85d16609fbba46"}, "e4e1d36386ad37dc4007d953": {"cell": "be209a02e30e9d2661a3b7ef702e09f073bcd694f465441f8873adda3c89c695", "mapping": "2bd8464ef4cd4ec1ba936c99c0e3c2d9be24f6d8374f3ce35cd593ebc6c2cc61"}, "e6707d2a492bbb28eafc3a21": {"cell": "7e5508306820b898a7acc99593ee7d2d6745ca8ffe52edc464b11133e14864a8", "mapping": "d05a6ded834eb85cde3dfc81960c78dd545e3ac5bc8f0ea9eaba84db4d033409"}, "ece85719689c1a3411d52a12": {"cell": "6107fcccb3c847771b73df9b534003cd7f99ae59280e789581b6ec1ce52aa68a", "mapping": "7a6afb1e9aab711276f8291a429810570d2503acaed7190afbd0e868077e1498"}, "f1186a7f61ea9f6493402006": {"cell": "5f78f6046390174380903e3d5b3235f988688e96af66a89a9ca036018f32872c", "mapping": "476f3169202279517fb2070089add47ba166eaa90aef17defbefedb6ea4281e1"}, "fc60645fdab03b4f360b972e": {"cell": "e1d1204a3d4b2287096502b1c5d2eb3ab33cca24945a0ce102ff7f28be8c8078", "mapping": "47aa9202b7dba6d9b290e2e4f27d79e159e365afc37baed984cc49d4a98bc39f"}}
+
+2026-10-11T11:43:59.971117+00:00 Exact evaluation bindings 842f40ca4072be8cd8be
+{"094759e3ffb8236db086b566": {"cell": "381b13db0c353a4c3d713c78c7332e6efec4d0baa677636af5c24bc0e56e0ec0", "mapping": "750e521c463a2fceddf99b64604d9566f17963312ba971cf0512de3aab894250"}, "3f2fc1d2f91b27a5d46f0504": {"cell": "752ce385075136fc321b757567ca7caefb94aecf05e8ab2818dab24b0d82178d", "mapping": "e1895ddab129b10474d096850977d3f722cb5baa48916d0c23a9bb7fc8d27132"}, "48da822c85267d96ea48c4c2": {"cell": "e7228c0974197e76f78bd6b4d9feac515875399e5f71801a976dda310f669f6c", "mapping": "7adb2893ce3f20d0428dc74ac01a75d101fb6a7c7610b5b0ecda28d04da2d6fe"}, "5453a725eb6086baaa72c972": {"cell": "b62c3ef0b490b58bf37e3f6ee29c3aca0d3e9ed6a2c8cf8348d693657913e00d", "mapping": "329699ea0ee58a5b6b831b837f1862cf1d260e26dfd321d781034b335977210a"}, "8862878198e6198ef77c1f28": {"cell": "4a39e345b599ae53124d39de33d5563d6c31f10c85a6bb3f88ed65670a7032dc", "mapping": "704caad3e4d8f4e4ed4ed925a759c2dc056127156dd23a9097f432e8935ee763"}, "9a13e148e0a434d148bef242": {"cell": "619872ece2bee472edcb14e99b2604ef7fda6ac2e2f591ab3946ae31092da206", "mapping": "b63b329bbe259beb313d5913554ee9507d56a4314ce60dbd14ad446ce9fe4988"}, "c7fdcca69a6f6d3b3cfa7009": {"cell": "2cbe52724f99a7b2999cf056bb5f423e2e2c35adca7ab5f719fdefa42bd89627", "mapping": "3a6eb7e01702041c224d9cf1cc6306c2b7d1506157110bdfb05be0cc071d7c0a"}, "e0fcd50974c10678a3e2fb44": {"cell": "6a67dac6b7cb89cd0831fe36ae4dee35307de79f1ad653d92f7fbd30b56d3037", "mapping": "e0358caf024ebe3a8662a8082a91e9f808a8ad15d09a64d56173104a80a5cccb"}, "e5c1842a573eccbf8d7d7e60": {"cell": "8d6dd7d5fd3d68022634b6acbeaf2efb77510bb93b53e96053ddc20bc0181ab5", "mapping": "6e996e1996ef5751824ab442b99d90282f62e30b59c1576d82a369daf1b1c146"}}
+
+2026-10-11T11:43:59.971940+00:00 Exact evaluation bindings 2c313637b2ecd82cc31c
+{"15ee43746437cfdf860b1519": {"cell": "ac6b0c84ca9a8f73c49c0d93282eccbd95b09b600e610c8c973cb64da7152916", "mapping": "57b5a7361c2ed14a8733be303734b0ea4a8cb95abb4adf2684b99ca80b929537"}, "21f9cfbf2718ad51d2976c98": {"cell": "7251efbcb67650f449fe3170a5355049a79b42d59215b0d26cef3169c794f5d8", "mapping": "2e4383e5836b4d03aaa35bcf7cd5d93a15f0b86717ec2bb741476e11d5d17720"}, "32efcf3836cf4d26fc113577": {"cell": "98777bb676c78014fded3e9e770f3399bdecef66fb61209c9b6ac6753c0ff555", "mapping": "ca0fd863a775e97529761a037f27f94fe01d278f91494c27dd254be236e2006e"}, "355ce3ec841005b898e3d8d3": {"cell": "2dc964934d1d09c7a0b85fdca5b00b4c919eb9f42e69269a5dd91fc39c95b7e2", "mapping": "28ebba71e6e492553f46aeb24dd7eb73c0ffec399bf923658a4e6b5d42671803"}, "381dd396d48f156e5b5332ba": {"cell": "f5fcb9eb64085b27b0eb6bdd51ac9e5d22b3728e5fae35a1104cb6cdfd7e4598", "mapping": "8a113502eb91e8c076d4f0893b5e34fdbfc1bf3ef5010999c351f7853d58b69a"}, "8bfa310664405693e5cee00b": {"cell": "b9642bf3885d04455e6903a6cdd985a25d22704174ddd09d8e95c2b61c8667de", "mapping": "4736db67cfc665af4c1bf0f00c3dfa72440a2edd50c3c196f7ddd03264ac3cd8"}, "91a7785154a1a018658ccae8": {"cell": "25852266203754a1dff02569ed934731f4f65639afceacba3319e321ab15ef29", "mapping": "31671a62d84ac77e46e2943ba2faede4af8dd17f950891430f654ab1fad68903"}, "dafc343685f5a84041beee97": {"cell": "1d25093541cbab219e99f20cd1415ddd2c908b58edaae68ac251f0b6976a45fb", "mapping": "022e59f5660ffa84948c637c9011e1538b442d1b15a636ca31d75ef2c62157b6"}, "eb3d9f625d45294630564c36": {"cell": "f28a4f8cf39979fe8494dc5b8e1a408386022d0513ade78e20040d47893335cf", "mapping": "560413d9d9b5bc07ebdd7a8b6b8a79671634e9e51bbc8e76a81bf8e146ead6ff"}, "f442830158e33a5d097e4514": {"cell": "47b35aa599eac8abfb13cc4e744e89c0e02b3765ddf34f03542d8124fefe6fd9", "mapping": "6af086358e491ef1898d3d98a100836561d98fa5e16c70f13d035bbc4a2792b5"}}
+
+2026-10-11T11:43:59.972456+00:00 Exact evaluation bindings be1b897b6e16d9f84712
+{"1fff788717e68470ea335f4a": {"cell": "525eb3d6df57c4ab77afc9b79bdb841155451d29688177973a745c438fd1c881", "mapping": "79a537c7ff5eb7c56e559cc2212ca8d027a66344e04162d6a8d80f9f8e43a55b"}, "668f2c03b5c1dfffd6143cc5": {"cell": "03371b9c4bc2aa267c5ad6c6fc443fa0606b48ab589c76827a7a8d7c035ae0b2", "mapping": "921b6eb4b8766be958289d4abf8a5edbe55ab739375bc7a4785c4c1b9f1fb9d3"}, "7f339716e8d7474fb2512654": {"cell": "fa905f1fbb2fa9cf53cd47ea3626fd0bdc92ce646c7794d02c5f9d148ab395da", "mapping": "aa543455b50328a07124c9ce8653ba7bcc0efc3b13fb71a27d0a93ed51f38a1f"}, "a3b7b46de80a7e60f06f33aa": {"cell": "351d407bc09b6e14053ccc69aecd21ccab218c91955ecc307126d7745bbbb4ad", "mapping": "9fb70159ac7b1eb05bbe44220987dfeba3a1bca1f52392e7415c524af713ddf9"}, "d074a916d8f80c61b3aa18a0": {"cell": "58af5318ecb48e5f853294fd844171372b3eb3ca4123abd7d89b3cc3a98291ad", "mapping": "6224021dbde11340d6afcc7e8a1202e182cb5d089b7f86f12b6469e6a29aac20"}, "d10a33e1908da3335366adaa": {"cell": "64c45037e05f81ec328222d628ae3e5a607986a24ea1bf37fece15190badc537", "mapping": "adb105b5fb975160f31b6042104b7ade34ee60c545a8615fb875286614a67092"}}
+
+2026-10-11T11:43:59.973228+00:00 Exact evaluation bindings 200f4c0286d2129e4b2b
+{"1682a187cf7dd36419e2a143": {"cell": "91ca4a91335a68d2083f66b5a367950ba794115609f691f32d89e941f94ae374", "mapping": "b232e05a2228f74e6fd8a08b30e981d266773e29a875ac0234364ebcecb493ef"}, "620325a4c3f62c9867a7df90": {"cell": "99a8b57a77306c0d9914bb25f0e1e61031822ebfa8e3f8603b7061a23a201691", "mapping": "1f19db92da82314811f877bc18b46a82b9de37d5cf825e57b3e660f86b07a105"}, "7f71a92e9f425b2094dec98d": {"cell": "5c07f5cc3dc625d2b1598051a7f371d5b1015b7d560a414a9bddce4d0c3f0682", "mapping": "4c6a585558687a7f65733e1580095c8f1b8ca580c47ade2c7c42fae48a6b3cb9"}, "85e68983cef9c8b0f9a7bf33": {"cell": "b9a74e62e89b8e19626dba3e33d43d709779cf127d8831c27f4826ce3859e1ac", "mapping": "57b8c76f8ccd8398b0d80c3272306d462e68a97bbcb54e7a8f3553ee470cb142"}, "8669d4026237cb94e83e2158": {"cell": "2205b2b418414a3f750b06d325ecfaeff1dcdfc7878659a63ee165245966e58b", "mapping": "b277f8bd2ea7dde11c6b31e5b7bf3a88995ac976c6eef92c6c54651def613101"}, "b331b3631bac4371bfebf008": {"cell": "6118e051b0386c1887f12a208a8a4739a93d3843d642cf7e6e68e1c45449042f", "mapping": "3b843ed4e727598dd2ee49e477063d413b83ef383257af23b14bbb968fee89fd"}, "b34f6249f0f9b31107491750": {"cell": "e051b6cf72e32d54bd59debf46af5eb0bd6f648f0814b456a2cab24c10ef37cb", "mapping": "d5e8e9ffadbf795312be63dfd4ac54588c882adf90d4631f21adb25d37fbb3d9"}, "c986d23bf9fe92ac15ab723d": {"cell": "defb424bfd5e6f1b2441451e78abe868eb8a25cff81cf1ba9d956f6c2b8c4849", "mapping": "171e047468a9db0103c481170d25ed61588e3c0ff67287ffbbe337fe5d792640"}, "ca1e1515076ec0147e7b8338": {"cell": "8233184791a4d3db177bffa570ace33fb6ceed582117a2a14d53778c74d897ab", "mapping": "39c55fe7e3ed623d05c6ce1d739cb22eacf0794c94a9644b202952345a984af8"}, "fef2366b0f34a7eda42dc08d": {"cell": "dbe080910c7b83d9af7cfb1907b5777dddae80efe53375907520079bf5a80c68", "mapping": "09c450b1a172451a1fe83638b0b2d97fb6add96ea1bfa76638c2699df83e522c"}}
+
+2026-10-11T11:43:59.973620+00:00 Exact evaluation bindings 97905333cd1d9d41c380
+{"a406c04573c91f8ad82577e3": {"cell": "7679359ba8f95c294eedd4306faffdafa391240fe9942caadc75b88bbfc0d1f1", "mapping": "4c766babc89059879dc016dc579184a57df1ccb7fc7ed8c97638e51815d87a55"}}
+
+2026-10-11T11:43:59.974007+00:00 Exact evaluation bindings f38661e21597dea2b54c
+{"eeab805ea4653756496776b5": {"cell": "d531df18c333b686aa1adcb32bd78ff470fc5012641d3375142dc31923e93cae", "mapping": "2309b21916df7eb9ea0e49f2b7764bf06c58ed4d88f8a7ac89eb00c6215357b7"}, "fa301823ccd44ed9374ce575": {"cell": "e281fc5845a5a0087f26ac7f9cc7c60474abb4faa84cdb8eb653f8aed0922b98", "mapping": "d732405697fd8139e5732a25a80bff39202e550be9f9b704642a8dd105215322"}}
+
+2026-10-11T11:43:59.975178+00:00
+{"round":1,"assignments":13,"cells":94,"packet_bytes":304461,"chunks":7,"initial_capture_reads_start":"2026-10-11T11:43:59.965766+00:00","originals_reused_only_after_actual_hash_and_span_match":true}

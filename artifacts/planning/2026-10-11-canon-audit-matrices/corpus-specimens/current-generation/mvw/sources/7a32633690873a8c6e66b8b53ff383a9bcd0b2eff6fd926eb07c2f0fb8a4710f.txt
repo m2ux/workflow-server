@@ -1,0 +1,101 @@
+id: intake-and-profile
+version: 1.2.0
+name: Intake and Profile
+description: "Classify the request as author, rewrite or audit, settle the reader profile and content selection, and persist the document profile the rest of the run is built on."
+variables:
+  reads:
+    - user_request
+  writes:
+    - name: controlled_language
+      type: boolean
+      description: When true, layer the ASD-STE100 writing rules and approved-word discipline over the ISO 24495-1 base for technical documentation.
+      defaultValue: false
+    - name: document_profile
+      type: object
+      description: The settled reader, purpose, context, and content selection for the document (ISO 24495-1 5.1).
+    - name: document_title
+      type: string
+      description: Short title of the document this run authors, rewrites, or audits.
+      defaultValue: ""
+    - name: intent_needs_confirmation
+      type: boolean
+      description: Composite gap flag for the intake gate — true when the operation type is ambiguous or the reader profile cannot be settled from the request.
+      defaultValue: false
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — author, rewrite, or audit.
+    - name: planning_folder_path
+      type: string
+      description: Absolute path to this run's planning folder — the write location for every working artifact.
+required: true
+steps:
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Absolute planning folder this session writes its working artifacts into, as reported in the server session summary.
+  - kind: technique
+    id: intake-and-profile
+    technique: intake-and-profile
+  - kind: checkpoint
+    id: intent-and-profile-batch
+    condition:
+      type: simple
+      variable: intent_needs_confirmation
+      operator: ==
+      value: true
+    message: "Plain-language intent needs confirmation — classified `{operation_type}` for `{document_title}` (controlled language: {controlled_language})."
+    options:
+      - id: confirm
+        label: Confirm intent and profile
+        description: Accept the classified operation and the settled reader profile as stated.
+        effect:
+          setVariable:
+            intent_needs_confirmation: false
+      - id: confirm-author
+        label: Author a new document
+        description: Correct the classification to author mode.
+        effect:
+          setVariable:
+            operation_type: author
+            intent_needs_confirmation: false
+      - id: confirm-rewrite
+        label: Rewrite an existing document
+        description: Correct the classification to rewrite mode.
+        effect:
+          setVariable:
+            operation_type: rewrite
+            intent_needs_confirmation: false
+      - id: confirm-audit
+        label: Audit an existing document
+        description: Correct the classification to audit mode.
+        effect:
+          setVariable:
+            operation_type: audit
+            intent_needs_confirmation: false
+  - kind: technique
+    id: persist-document-profile
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: document-profile.md
+        artifact_content: document_profile
+        target_dir: planning_folder_path
+  - kind: technique
+    id: seed-planning-readme
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        entity_context: "entity_title={document_title}; entity_type={operation_type}; status=Profiling"
+        seed_profile: plain-language/readme-seed
+        operation_type: operation_type
+exits:
+  - id: has-source
+    when: operation_type == "rewrite" || operation_type == "audit"
+  - id: no-source
+    isDefault: true
+outcome:
+  - The run carries a classified operation type and a confirmed reader profile, so every later drafting and evaluation decision branches on settled state rather than re-reading the request
+  - The document profile is persisted, giving the drafting and evaluation passes a single canonical record of who the document is for and what it must carry
+  - A controlled-language overlay is declared up front, so technical documentation is held to ASD-STE100 from the first draft rather than retrofitted

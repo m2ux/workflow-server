@@ -1,0 +1,123 @@
+id: execute-analysis
+version: 3.0.0
+name: Execute Prism Analyses
+description: Trigger the prism workflow for each execution group.
+variables:
+  reads:
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - execution_groups
+    - target_path
+  writes:
+    - name: all_analysis_artifact_paths
+      type: array
+      description: Paths to every analysis artifact the runs produced
+    - name: completed_analyses
+      type: array
+      description: Completed analysis runs, each { report_path, definitive_findings_path, status }
+    - name: current_activity
+      type: string
+      description: The prism activity the walk holds, and null once the prism graph routes to none
+    - name: from_activity
+      type: string
+      description: The prism activity an advance retires
+    - name: current_group
+      type: object
+      description: The execution group under analysis
+    - name: output_path
+      type: string
+      description: The output location of the execution group under analysis
+    - name: pipeline_mode
+      type: string
+      description: The prism pipeline mode an execution group runs under.
+      values:
+        - full-prism
+        - portfolio
+        - single
+      defaultValue: full-prism
+    - name: target
+      type: string
+      description: The evaluation target an analysis run analyses
+    - name: target_description
+      type: string
+      description: Short description of what an execution group evaluates
+    - name: target_type
+      type: string
+      description: The target's kind, in the analysis run's own vocabulary.
+      values:
+        - general
+        - code
+techniques:
+  - scatter-gather
+triggers:
+  - workflow: prism
+    description: Execute prism analytical pipeline for each execution group. Each trigger passes the target, target type, output path, pipeline mode, selected lenses, and the dimension-specific analysis focus.
+    passContext:
+      - target
+      - target_type
+      - target_description
+      - output_path
+      - pipeline_mode
+      - selected_lenses
+      - analysis_focus
+steps:
+  - kind: action
+    id: verify-preconditions
+    actions:
+      - action: validate
+        message: No execution groups are set. Re-run dimension planning to produce them.
+        condition:
+          type: simple
+          variable: execution_groups
+          operator: exists
+  - kind: action
+    id: prepare-triggers
+    actions:
+      - action: log
+        message: Triggering one prism run per execution group in {execution_groups}.
+      - action: set
+        target: completed_analyses
+        value: "[]"
+      - action: set
+        target: all_analysis_artifact_paths
+        value: "[]"
+  - kind: loop
+    id: group-iteration
+    name: Execution Group Iteration
+    loopType: forEach
+    variable: current_group
+    over: execution_groups
+    maxIterations: 10
+    steps:
+      - kind: technique
+        id: set-trigger-context
+        technique: compose-trigger-context
+      - kind: technique
+        id: trigger-prism
+        technique:
+          name: workflow-engine::handle-sub-workflow
+          inputs:
+            workflow_id: prism
+      - kind: routine
+        id: walk-prism-child
+        routine: activity-loop
+        with:
+          session_index: child_session_index
+          initial_activity: child_initial_activity
+          enter_activity: workflow-engine::take-activity
+          planning_folder_path: child_planning_folder_path
+        outputs:
+          current_activity: current_activity
+          from_activity: from_activity
+      - kind: technique
+        id: read-run-manifest
+        technique: prism/read-run-manifest
+      - kind: technique
+        id: accumulate-analysis-run
+        technique: prism/accumulate-analysis-run
+outcome:
+  - Every planned dimension has been analysed through the prism pipeline; any run that failed is flagged so coverage gaps are visible rather than silent
+exits:
+  - id: done
+    isDefault: true

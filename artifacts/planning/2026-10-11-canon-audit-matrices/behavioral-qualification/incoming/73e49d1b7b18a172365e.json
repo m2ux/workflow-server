@@ -1,0 +1,428 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "73e49d1b7b18a172365e",
+  "attempt": "current-map-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 3,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "5fb3f06992383a0be7318734"
+      ],
+      "reason": "The ancestor Capability describes constraining inherited delivery. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "reason": "This ancestor Capability sentence says Constrain inherited delivery. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "620325a4c3f62c9867a7df90"
+      ],
+      "reason": "The routine Inputs list declares the sole name envelope. AP-02 makes the routine Inputs list the declaration endpoint for each concrete invocation argument-key set. The run/delivery invocation supplies the corresponding call site, so this declaration must be compared in that relationship context.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "reason": "The routine input declaration is envelope. AP-02 makes the routine Inputs list the declaration endpoint for each concrete invocation argument-key set. The run/delivery invocation supplies the corresponding call site, so this declaration must be compared in that relationship context.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 4
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "ac42c54bb5e18cc6005d1df7"
+      ],
+      "reason": "The ancestor Rules declare Destination must be archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "bfde9ab405ad9faa2bc4b5ac"
+      ],
+      "reason": "This ancestor rule declares the inherited required destination archive. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b34f6249f0f9b31107491750"
+      ],
+      "reason": "The routine-to-produce relationship resolves the emit step and its output declaration. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "The explicit qualification/run/delivery/deliver/emit relationship carries the concrete invocation, report export, and inherited destination. AP-02 requires both the concrete invocation argument comparison and resolution of the routine output through emit to produce. This explicit execution relationship supplies both binding contracts and their endpoints.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 4
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "c986d23bf9fe92ac15ab723d"
+      ],
+      "reason": "The leaf Outputs section declares the output name summary. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 5
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "fef2366b0f34a7eda42dc08d"
+      ],
+      "reason": "The leaf output heading declares summary. AP-02 requires resolving the routine output emit.report through step emit to produce and comparing the declared technique output names. This reference, step, output declaration, or relationship is part of that binding contract; agreement is evaluated later.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "4d029f4ed7a941dc5b13bafa"
+      ],
+      "reason": "The complete TECHNIQUE.md ancestor declares its capability and Destination must be archive constraint. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a1bbb96005ca910edd02b943"
+      ],
+      "reason": "The workflow id is qualification. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "The complete activity declares one deliver invocation with argument key packet. AP-02 requires comparing the concrete activity routine argument-key set with deliver Inputs [envelope]. This invocation or binding endpoint participates in that comparison; matching keys would still be an applicable evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 2,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 2
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b93fc9705f0d802bdff5440b"
+      ],
+      "reason": "The workflow initialActivity is run. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 1,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "bfa09024c94a6bc76d51c631"
+      ],
+      "reason": "The routine id is deliver. AP-02 checks concrete activity routine argument-key sets and routine Outputs references resolved to technique output declarations. This row has neither contract endpoint nor a binding relationship; an identifier, graph label, ancestor constraint, or Markdown artifact mention is not such a binding.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb"
+}

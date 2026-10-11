@@ -1,0 +1,26 @@
+id: seed-links
+version: 1.0.0
+name: Seed Links
+description: Deliver the planning-README operation under both link switches.
+required: true
+steps:
+  - kind: technique
+    id: omit-links
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        seed_profile: remediate-vuln/readme-seed
+        include_links: false
+  - kind: technique
+    id: fill-links
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        seed_profile: work-package/readme-seed
+        include_links: true
+exits:
+  - id: seeded
+    isDefault: true
+outcome:
+  - The omitted binding leaves the links section out of the written README
+  - The filled binding writes the links table from the seed

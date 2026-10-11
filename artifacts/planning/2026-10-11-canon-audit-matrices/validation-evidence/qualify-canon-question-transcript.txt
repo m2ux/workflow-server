@@ -1,0 +1,266 @@
+Read 1
+Source: /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md
+Command: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md
+Returned result:
+{
+  "chunk_id": "bc8fcd",
+  "wall_time_seconds": 0.000003611,
+  "exit_code": 0,
+  "original_token_count": 1151,
+  "output": "---\nname: workflow-canon\ndescription: >-\n  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions (\"write a new activity\", \"apply this finding\"), audit them against the design canon (\"audit workflow X\", \"why is this an anti-pattern?\"), review integrations (\"check these branches together\", \"assess integration readiness\"), or revise this skill (\"update the workflow-canon skill\").\nhooks:\n  PostToolUse:\n    - matcher: \"Edit|Write|MultiEdit\"\n      hooks:\n        - type: command\n          command: \"python3 \\\"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\\\"\"\n---\n\n# Workflow Canon\n\nWorkflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.\n\n- **Work**  Intended outcomes, requirements and constraints.\n- **Design**  Architecture, responsibilities, definitions and contracts.\n- **Canon**  The project's authoritative design criteria and conventions.\n- **Evidence**  Observations supporting design decisions, with their limits stated.\n\n## Modes\n\nRead the selected mode's file in full, then follow its links as each step needs them:\n\n- **[Author](references/author-mode.md)**\n  - Authoring definitions and specified changes\n  - Closing confirmed findings with their prescribed fixes\n  - Mapped draft walks and verification of written changes\n- **[Audit](references/audit-mode.md)**\n  - Canon questions and conformance of existing definitions\n  - Attribution and verification of findings\n  - Applicability matrices with independent verification\n  - Complete coverage reports\n- **[Review](references/review-mode.md)**\n  - Scope and revision pairings for integrations\n  - Tracing design and architecture through declarations and consumers\n  - Coverage matched to affected branches and languages\n  - Evidence for findings and readiness\n- **[Revise](references/revise-mode.md)**\n  - Changes to this skill's own files\n  - Conformance with shared and local skill guidelines\n\n## Rules\n\n- **Measured claims.**\n  Counts, revision identities and check outcomes come from command output or preserved run evidence.\n- **One home.**\n  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.\n- **Linked sections.**\n  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.\n- **Planning.**\n  When creating or using artifacts, all modes follow [Planning](references/planning.md).\n- **Commands.**\n  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.\n\n## Dependencies\n\n- **Git and repository search**\n  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.\n- **GitHub CLI**\n  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.\n- **Project instructions, documentation and runtimes**\n  Branch ownership, canon homes, schemas and validation tools for the affected product.\n- **Node and npm**\n  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.\n- **Docker and Compose**\n  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.\n- **Python 3.10+**\n  The definition edit hook, audit inventory/state/dispatch scripts and their tests.\n- **Paired YAML parser**\n  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.\n- **Agent host and sandbox**\n  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.\n- **Claude Code hooks**\n  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.\n- **Workflow resource access**\n  A running workflow's resource tool can supply canon sections and report guides when available.\n"
+}
+
+Read 2
+Source: /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md
+Command: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "693c83",
+    "wall_time_seconds": 0.000003907,
+    "exit_code": 0,
+    "original_token_count": 893,
+    "output": "# Audit Mode\n\nReviews existing definitions through independently verified change-surface matrices, evidence-backed evaluation, finding confirmation and a complete coverage gate. A single canon question uses the bounded procedure below.\n\n## Prerequisites\n\nRead the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).\n\n## Canon Question\n\nFor a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.\n\n## Procedure\n\n1. **Scope the surface.**\n   - Read the [criteria context](canon-context.md#criteria).\n   - Resolve [scope](canon-context.md#scope), then follow the shared [change-surface lifecycle](change-surface.md).\n2. **Run the checks first.**\n   - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.\n   - Capture structural check outcomes now for inventory review; submit their typed observations during the obligations phase after the map is verified. AP/DP evaluation waits for that gate.\n3. **Map and verify.**\n   - Capture the full inventory and four section matrices, decide applicability and independently verify every decision through the shared lifecycle. Resolve all discrepancies before evaluation.\n4. **Evaluate.**\n   - Use [bounded assignments](audit-dispatch.md#phases) for the verified applicable cells and supporting obligations. The coordinator reconciles typed returns and preserves pending work.\n5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).\n6. **Verify findings.**\n   - Dispatch independent confirmation through the [obligations phase](audit-dispatch.md#phases). Only confirmed findings drive fixes.\n7. **Report.**\n   - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.\n   - Report in the layout [Which Report](reporting.md#which-report) names.\n8. **File a mechanised Detect.**\n   - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.\n   - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.\n\n## Attribution\n\n- **`diff`**\n  A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.\n- **`pre-existing`**\n  The same construct and evidence at the base ref, independent of an I/O contract change on this surface.\n- **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.\n- **`fix`**\n  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.\n\n## Rules\n\n- **Remediation.**\n  Confirmed findings go to [Author](author-mode.md) when fixing them is within the user's request. A review-only request reports the finding and any criterion correction without editing definitions, canon entries or exemption surfaces.\n- **Continue.**\n  Reconcile each return and continue the required residual through [dispatch](audit-dispatch.md#phases). An empty findings list is not coverage evidence.\n- **Stop.**\n  Use the shared [completion predicate](change-surface.md#completion). A user stop preserves an incomplete, resumable run.\n"
+  }
+}
+
+Read 3
+Source: /home/mike1/.codex/memories/MEMORY.md
+Command: rg -n 'single-rule-authority|canon question|canon.*audit|audit.*canon' /home/mike1/.codex/memories/MEMORY.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "bc010f",
+    "wall_time_seconds": 0.000002691,
+    "exit_code": 1,
+    "original_token_count": 0,
+    "output": ""
+  }
+}
+
+Observation: transcript persistence attempt failed.
+Returned output:
+Script error:
+apply_patch verification failed: invalid patch: multiple operations target /tmp/qualify-canon-question-transcript.txt
+
+Read 4
+Source: canon-context.md heading locations
+Command: rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "42a062",
+    "wall_time_seconds": 0.000002783,
+    "exit_code": 0,
+    "original_token_count": 29,
+    "output": "1:# Canon Context\n5:## Prerequisites\n9:## Terms\n17:## Criteria\n23:## Scope\n29:## Homes\n43:## Checks\n47:## Edit Hook\n"
+  }
+}
+
+Read 5
+Source: references/planning.md
+Command: cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "7623ad",
+    "wall_time_seconds": 0.000003662,
+    "exit_code": 0,
+    "original_token_count": 322,
+    "output": "# Planning\n\nA planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.\n\n## Location\n\n- **Instructions.**\n  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.\n- **Resolution.**\n  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.\n\n## Records\n\n- **Naming.**\n  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.\n- **Continuity.**\n  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.\n- **Authority.**\n  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.\n"
+  }
+}
+
+Read 6
+Source: canon-context.md#prerequisites and #terms
+Command: sed -n '5,16p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "793f71",
+    "wall_time_seconds": 0.000004352,
+    "exit_code": 0,
+    "original_token_count": 144,
+    "output": "## Prerequisites\n\nRead the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.\n\n## Terms\n\n- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.\n- **Entry**\n  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.\n- **Walk**  Applying each unit to every file on the surface and recording its status.\n- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).\n\n"
+  }
+}
+
+Read 7
+Source: commands.md heading locations
+Command: rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "b8f5cb",
+    "wall_time_seconds": 0.000003654,
+    "exit_code": 0,
+    "original_token_count": 449,
+    "output": "1:# Commands\n3:## Conventions\n20:## Audit Command Conventions\n31:## Audit Surface\n33:### Initialize Audit Surface\n43:### Check Audit Status\n54:### Render Audit Surface\n64:### Plan Audit Assignments\n74:### Bind Audit Agent\n84:### Write Audit Packet\n94:### Submit Audit Results\n104:### Reset Audit Cells\n114:### Refresh Audit Surface\n124:### Retry Audit Assignment\n134:### Run Audit Script Tests\n144:## Revisions\n146:### Resolve Ref\n154:## Review Inputs\n156:### Fetch Pull Request\n166:### Fetch Requirements\n174:### Fetch Branches\n183:### Compare Revisions\n197:### Create Review Worktree\n205:### Prepare Integration Result\n218:### Abort Review Merge\n226:### Read Captured File\n234:### Read Captured Section\n245:### Fetch Check Evidence\n259:### Refresh Revisions\n268:## Project Checks\n270:### Run Project Check\n282:## Skill Revision\n284:### Create Skill Worktree\n293:### Run Skill Checks\n305:### Commit Skill Changes\n317:### Push Skill Branch\n330:### Open Skill Pull Request\n338:## Install Engine Dependencies\n348:## Run Engine Checks\n360:## Run Delivery Gate\n368:## Check Engine Documentation\n381:## Run Corpus Checks\n393:## Run Option Coverage\n405:## Count Running Sessions\n415:## Check Shell Syntax\n423:## Validate Compose\n433:## Build Review Image\n446:## Exercise Review Container\n461:## Restart Review Container\n469:## Stop Review Container\n477:## Check Skill Summaries\n487:## Canon Check Conventions\n498:### Guard Obligations\n515:## Checkouts\n517:### Find the Server Checkout\n527:### Check the Corpus Tree\n538:### Provision the Corpus\n546:## Corpus\n548:### List Units\n560:### List Units for a Construct\n572:### Fetch Unit\n580:### Find Consumers\n591:## Checks\n593:### Run Guard Suite\n604:### Run Guards on the Delta\n614:## Edit Guard\n616:### Run the Edit Guard\n639:### Run the Edit Guard Tests\n"
+  }
+}
+
+Read 8
+Source: commands.md#conventions
+Command: sed -n '3,19p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "542404",
+    "wall_time_seconds": 0.000004652,
+    "exit_code": 0,
+    "original_token_count": 373,
+    "output": "## Conventions\n\nEach operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.\n\n- **Locations.**\n  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.\n- **Execution.**\n  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.\n- **Remote access.**\n  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.\n- **Evidence.**\n  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.\n- **Substitution.**\n  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.\n- **Authored text.**\n  Commit messages and PR bodies go through files.\n\n"
+  }
+}
+
+Read 9
+Source: canon-context.md#homes
+Command: sed -n '29,42p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "77ec42",
+    "wall_time_seconds": 0.000002455,
+    "exit_code": 0,
+    "original_token_count": 314,
+    "output": "## Homes\n\nRead homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.\n\n| Home | Authority |\n| --- | --- |\n| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |\n| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |\n| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |\n| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |\n| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |\n\nLocate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.\n\n"
+  }
+}
+
+Read 10
+Source: commands.md#fetch-unit
+Command: sed -n '572,579p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+Working directory: /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "e04ddf",
+    "wall_time_seconds": 0.000004407,
+    "exit_code": 0,
+    "original_token_count": 105,
+    "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n### Fetch Unit\n\nReads one section or entry of a home.\n\n- **On disk.**\n  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.\n- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.\n\n"
+  }
+}
+
+Read 11
+Source: skill checkout revision
+Command: git rev-parse HEAD
+Working directory: /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "b4540a",
+    "wall_time_seconds": 0.000002813,
+    "exit_code": 0,
+    "original_token_count": 50,
+    "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n2e70d2e705892b2e6705cc3728d797226fa3f2b7\n"
+  }
+}
+
+Read 12
+Source: corpus checkout revision
+Command: git rev-parse HEAD
+Working directory: /home/mike1/projects/dev/workflow-server/.project/workflows
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "691cb4",
+    "wall_time_seconds": 0.000005602,
+    "exit_code": 0,
+    "original_token_count": 50,
+    "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ne70b44778f71d9d699f746f78a16b892531c82d3\n"
+  }
+}
+
+Read 13
+Source: paired engine checkout revision
+Command: git rev-parse HEAD
+Working directory: /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin
+Returned result:
+{
+  "status": "fulfilled",
+  "value": {
+    "chunk_id": "b87b68",
+    "wall_time_seconds": 0.000002603,
+    "exit_code": 0,
+    "original_token_count": 50,
+    "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ne889276ae7c49a6b5cd37b4928d5f983e76c9770\n"
+  }
+}
+
+Read 14
+Source: commands.md#list-units
+Command: sed -n '548,559p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md
+Working directory: /home/mike1/projects/dev/workflow-server
+Returned result:
+{
+  "chunk_id": "38b906",
+  "wall_time_seconds": 0.000007225,
+  "exit_code": 0,
+  "original_token_count": 84,
+  "output": "### List Units\n\nLists a home's `##` units, then its `###` entries, with their line numbers.\n\n- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.\n- Run from the corpus root.\n\n```bash\nrg -n \"^## \" corpus/canon/resources/anti-patterns.md\nrg -n \"^### \" corpus/canon/resources/anti-patterns.md\n```\n\n"
+}
+
+Read 15
+Source: anti-patterns.md heading locations
+Command: rg -n '^#{1,3} ' corpus/canon/resources/anti-patterns.md
+Working directory: /home/mike1/projects/dev/workflow-server/.project/workflows
+Returned result:
+{
+  "chunk_id": "58d56d",
+  "wall_time_seconds": 0.000004048,
+  "exit_code": 0,
+  "original_token_count": 1837,
+  "output": "9:# Overview\n15:## Creation Rules\n19:### Smell not stance\n23:### Entry identity\n27:### Audit technique boundary\n31:### Entry intro\n35:### Detect triad\n39:### Keep audit signals\n43:### Resist over-fit\n51:### Succinctness\n56:# Catalog\n58:## Structural\n62:### AP-01. no-inline-content\n74:### AP-02. schema-is-constraint\n86:### AP-03. no-partial-implementation\n98:### AP-04. no-invented-naming\n110:## Interaction\n114:### AP-05. atomic-checkpoints\n126:### AP-06. no-assumption-execution\n138:### AP-07. scope-reverify-completion\n150:### AP-08. one-question-per-message\n162:## Schema Expressiveness\n166:### AP-09. checkpoint-not-prose\n178:### AP-10. loop-not-prose\n190:### AP-11. decision-not-prose\n202:### AP-12. artifact-not-buried\n214:### AP-13. variable-for-approval\n226:### AP-14. mode-as-state\n238:### AP-15. procedure-in-protocol\n250:### AP-16. technique-inputs-declared\n262:### AP-17. bound-step-no-description\n274:### AP-18. no-monolith-masking-steps\n286:## Rule Hygiene\n290:### AP-19. no-rule-protocol-restatement\n302:### AP-20. rule-group-disambiguation\n314:### AP-21. grouped-rule-keys\n326:### AP-22. single-rule-authority\n338:### AP-23. worker-rule-reach\n350:### AP-24. no-contradictory-rules\n362:### AP-25. no-one-step-rules\n374:## Description Hygiene\n378:### AP-26. no-rationale-in-description\n390:### AP-27. validate-message-economy\n402:### AP-28. no-sequence-in-description\n414:### AP-29. no-user-env-mutation\n426:### AP-30. role-rules-not-description\n438:### AP-31. no-hand-authored-artifacts\n450:### AP-32. outcome-names-value\n462:### AP-33. no-set-of-technique-output\n474:### AP-34. no-valueless-control-set\n486:### AP-35. no-intra-step-input-set\n498:### AP-36. techniques-list-disjoint\n510:### AP-37. rule-audience-bucket\n522:### AP-38. no-duplicate-technique-steps\n534:### AP-39. hoist-universal-techniques\n546:### AP-40. readme-orients-not-transcribes\n558:### AP-41. avoidance-voice-in-definitions\n570:## Coupling\n574:### AP-42. io-agnostic-contract\n586:### AP-43. canonical-artifact-ids\n598:### AP-44. artifact-name-in-io\n610:### AP-45. no-opaque-artifact-path-array\n622:### AP-46. no-resource-caller-backlink\n634:### AP-47. no-redundant-link-label\n646:### AP-48. brace-output-references\n658:### AP-49. no-delivery-mechanism-narration\n670:### AP-50. no-tool-usage-prescription\n682:### AP-51. canonical-technique-reference\n694:### AP-52. brace-declared-ids\n706:### AP-53. dotted-rule-address\n718:### AP-54. anchored-protocol-references\n730:### AP-55. hoist-shared-inputs\n742:### AP-56. paren-invocation-args\n754:### AP-57. escape-literal-dollar\n766:### AP-58. snake-case-symbols\n778:### AP-59. constraint-as-blockquote\n790:### AP-60. local-rule-as-note\n802:### AP-61. factor-repeated-paths\n814:### AP-62. bind-protocol-locals\n826:### AP-63. backtick-code-tokens\n838:### AP-64. boolean-id-shape\n850:### AP-65. collection-id-shape\n862:### AP-66. io-id-shape\n874:### AP-67. rule-slug-shape\n886:### AP-68. technique-stage-agnostic\n898:### AP-69. no-activity-prose-rules\n910:### AP-70. capability-group-placement\n922:## Tool-Technique-Doc Consistency\n926:### AP-71. no-false-resource-delivery\n938:### AP-72. complete-bootstrap-path\n950:### AP-73. consistent-tool-names\n962:### AP-74. no-duplicated-guidance\n974:### AP-75. describe-tool-value\n986:### AP-76. no-redundant-tools\n998:## Execution\n1002:### AP-77. impl-before-confirmed-approach\n1014:### AP-78. follow-through-on-recommend\n1026:### AP-79. structure-backed-constraints\n1038:### AP-80. preserve-readme-content\n1050:### AP-81. verify-format-literacy\n1062:### AP-82. work-through-activities\n1074:### AP-83. accept-correction\n1086:## Output Economy\n1090:### AP-84. single-closeout-artifact\n1102:### AP-85. link-dont-copy-sections\n1114:### AP-86. exception-only-verdict-tables\n1126:### AP-87. omit-null-sections\n1138:### AP-88. one-decision-one-checkpoint\n1150:### AP-89. checkpoint-requires-decision\n1162:### AP-90. no-guide-wrapper-ceremony\n1174:### AP-91. lifecycle-row-update\n1186:### AP-92. resource-fills-not-does\n1198:### AP-93. canonical-fact-home\n1210:### AP-94. link-only-input-slots\n1222:### AP-95. enforce-output-discipline\n1234:### AP-96. artifact-audience-declared\n1246:### AP-97. link-named-artifacts\n1258:### AP-98. no-next-step-narration\n1270:### AP-99. statement-not-question\n1282:### AP-100. runtime-rules-only\n1294:### AP-101. no-caption-only-message\n1306:### AP-102. no-technique-resource-dual-home\n1318:## Canon Hygiene\n1322:### AP-103. cited-home-owns-claim\n1334:### AP-104. operative-criteria-need-a-home\n1346:### AP-105. no-shadow-audit-pass\n1358:### AP-106. canon-layer-cites-not-restates\n1370:### AP-107. bind-site-is-orchestration-truth\n1382:## Technique Protocol\n1386:### AP-108. numbered-protocol-phases\n1398:### AP-109. technique-outputs-declared\n1410:### AP-110. duplicate-shared-capability\n1422:### AP-111. contract-not-procedure\n1434:### AP-112. no-derived-state-shadow\n1446:### AP-113. session-interaction-in-technique\n1458:### AP-114. pass-orchestration-in-technique\n1470:### AP-115. platform-semantics-in-capability\n1482:### AP-116. no-template-creation-guide\n1494:### AP-117. no-engine-mechanics-as-rules\n1506:### AP-118. no-bind-mechanics-as-prose\n1518:### AP-119. procedure-in-io-contract\n1530:### AP-120. procedure-in-capability\n1542:### AP-121. rule-as-protocol-step\n1554:### AP-122. prompt-restates-owned-mechanics\n1566:### AP-123. capability-as-op-inventory\n1578:### AP-124. alternate-ops-as-protocol-sequence\n1590:### AP-125. technique-ref-in-io-contract\n1602:## Draft Hygiene\n1606:### MR-1. cut-comment-jsdoc-verbosity\n1618:### MR-2. no-dense-prose-after-config-examples\n1630:### MR-3. worktree-root-placeholders\n1642:### MR-4. no-parallel-runbook-when-setup-covers-it\n1654:### AP-126. variable-description-one-line\n1666:### AP-127. bag-value-as-literal\n1678:### AP-128. unproduced-value-read\n1690:### AP-129. stale-restatement-after-change\n1702:### AP-130. artifact-name-is-filename\n1714:### AP-131. resource-id-names-its-content\n1726:### AP-132. deployment-path-in-capability\n1738:### AP-133. overlapping-rule-scopes\n1750:### AP-134. whole-resource-for-one-section\n1762:### AP-135. tool-contract-restated-in-protocol\n1774:### AP-136. phase-cited-by-ordinal\n1786:### AP-137. unowned-harness-capability\n1798:### AP-138. output-without-destination\n1810:### AP-139. framing-outside-any-section\n1822:### AP-140. declared-input-never-read\n1834:### AP-141. apply-omits-declared-input\n1846:### AP-142. branch-on-undeclared-threshold\n1858:### AP-143. inherited-rules-re-enumerated\n1870:### AP-144. reference-without-provenance\n1882:### AP-145. pre-session-prose-defers-to-the-framework\n1894:### AP-146. instruction-narrates-an-actor\n1906:### AP-147. rule-binds-beyond-its-operation\n1918:### AP-148. inherited-input-re-declared\n1930:### AP-149. schema-semantics-restated\n1942:### AP-150. engine-internals-narrated\n1954:### AP-151. value-set-in-prose\n1966:### AP-152. one-invariant-per-rule\n1978:### AP-153. call-omits-conditionally-required-argument\n1990:### AP-154. call-omits-required-argument\n2002:### AP-155. call-names-an-undeclared-argument\n2014:### AP-156. protocol-phase-as-list-item\n2026:### AP-157. unreachable-operation-reference\n2038:### AP-158. produce-path-without-a-reading\n2050:### AP-159. construct-folder-without-a-readme\n2062:### AP-160. relocation-without-a-preserved-outcome\n2074:### AP-161. unproducible-declared-value\n"
+}
+
+Read 16
+Source: anti-patterns.md overview, Rule Hygiene context and AP-22 entry
+Command: sed -n '1,14p;286,289p;326,337p' corpus/canon/resources/anti-patterns.md
+Working directory: /home/mike1/projects/dev/workflow-server/.project/workflows
+Returned result:
+{
+  "chunk_id": "e1356b",
+  "wall_time_seconds": 0.000003904,
+  "exit_code": 0,
+  "original_token_count": 480,
+  "output": "---\nname: anti-patterns\ndescription: Specific smell instances in authored workflow content — Detect / Do not flag / Fix. Covering stance lives in design-principles.\nmetadata:\n  order: 2\n  legacy_id: 2\n---\n\n# Overview\n\nThis catalogue lists **smells**: specific instances of bad patterns already present in authored workflow content. Each titled entry is one invariant, stated as a Detect / Do not flag / Fix test an auditor applies after the fact.\n\n[Design principles](./design-principles.md) hold the broader *prefer / before* stance that avoids these smells and related failures. One principle may cover many entries. This file does not host positive authoring primers.\n\n## Rule Hygiene\n\nRule smells.\n\n### AP-22. single-rule-authority\n\n\"This rule appears in the technique AND the activity AND the workflow\" / \"two entries in one `## Rules` block, bridged by `(same stance as …)`\"\n\nThe same rule has more than one home — across levels, or twice within one rules block.\n\n**Detect:** One invariant, two homes. Across levels: the same orchestrator-only rule (variable management, routing, commit policy, mode handling), or a rule that does not need worker reach, appears at workflow, activity, and technique. Within one rules block: two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The tell is a bridge — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that reconciles two homes.\n\n**Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.\n\n**Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates. Within a block, keep the statement with the wider consumer set, fold in any rationale or extra tier the other carried, drop the bridge, and repoint every citation of the deleted entry.\n\n"
+}
+
+Read 17
+Source: anti-patterns.md AP-23 worker-rule-reach (AP-22 exclusion)
+Command: sed -n '338,349p' corpus/canon/resources/anti-patterns.md
+Working directory: /home/mike1/projects/dev/workflow-server/.project/workflows
+Returned result:
+{
+  "chunk_id": "e1ccbf",
+  "wall_time_seconds": 0.000002974,
+  "exit_code": 0,
+  "original_token_count": 191,
+  "output": "### AP-23. worker-rule-reach\n\n\"prefer gitnexus over grep\" lifted to `workflow.yaml` / duplicated across techniques for worker visibility\n\nA worker-directed rule is mis-placed where workers never receive it.\n\n**Detect:** A behavioural rule workers must read is present only under `rules.workflow` (workers never receive `workflow.yaml`), or an audit flags per-technique copies of a worker-directed rule as hygiene violations.\n\n**Do not flag:** An orchestrator-only rule (`single-rule-authority`). Placement by audience is `rule-audience-bucket`.\n\n**Fix:** Keep a worker-directed rule on the activity or the technique. A copy on each technique that must reach the worker is that reach. Consolidate only into a shared technique that every affected activity loads.\n\n"
+}
+
+Observation: transcript structure verification.
+Command: rg -n '^Read |^Observation:|^TRANSCRIPT-END' /tmp/qualify-canon-question-transcript.txt
+Working directory: /home/mike1/projects/dev/workflow-server
+Returned result:
+{
+  "chunk_id": "fb6fe9",
+  "wall_time_seconds": 0.000003983,
+  "exit_code": 0,
+  "original_token_count": 66,
+  "output": "1:Read 1\n13:Read 2\n28:Read 3\n43:Observation: transcript persistence attempt failed.\n48:Read 4\n63:Read 5\n78:Read 6\n93:Read 7\n108:Read 8\n123:Read 9\n138:Read 10\n154:Read 11\n170:Read 12\n186:Read 13\n202:Read 14\n215:Read 15\n228:Read 16\n241:Read 17\n254:TRANSCRIPT-END\n"
+}
+
+TRANSCRIPT-END

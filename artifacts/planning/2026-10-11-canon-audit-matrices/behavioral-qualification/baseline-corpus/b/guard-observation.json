@@ -1,0 +1,13 @@
+{
+  "command": [
+    "/usr/bin/python3",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b",
+    "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+  ],
+  "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+  "exit_code": 0,
+  "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/baseline-corpus/b/guard-output.txt",
+  "output_bytes": 269,
+  "elapsed_seconds": 0.11567819901392795
+}

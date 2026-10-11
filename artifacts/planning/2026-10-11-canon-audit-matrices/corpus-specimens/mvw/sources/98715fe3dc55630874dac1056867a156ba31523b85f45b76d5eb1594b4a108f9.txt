@@ -1,0 +1,23 @@
+id: report-cases
+version: 1.1.0
+name: Report Cases
+description: State what the run landed under each binding.
+variables:
+  reads:
+    - multi_verb_api_change_approved
+    - multi_verb_api_impact_report
+    - negative_api_change_approved
+    - negative_api_impact_report
+    - positive_api_change_approved
+    - positive_api_impact_report
+    - repo_name
+required: true
+steps:
+  - kind: technique
+    id: report
+    technique: report-cases
+exits:
+  - id: reported
+    isDefault: true
+outcome:
+  - All three bindings of the run are named with what each landed, so a reader can tell one report over a held route with no consumer from a seed kept over an absent route and from one kept over a set of routes found consistent

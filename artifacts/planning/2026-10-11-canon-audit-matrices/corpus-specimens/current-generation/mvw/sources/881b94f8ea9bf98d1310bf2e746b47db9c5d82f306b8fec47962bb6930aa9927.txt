@@ -1,0 +1,41 @@
+---
+metadata:
+  version: 1.1.0
+---
+
+## Capability
+
+Tracker-ticket quality across problem, goal, scope, acceptance criteria, and user stories — gaps and optional refactor.
+
+## Inputs
+
+### issue_record
+
+Summary, description, and context of the tracker ticket being assessed (the linked issue's fields).
+
+### assumptions_log
+
+*(optional)* The existing assumptions [log](../resources/assumptions-review.md#assumptions-log-template), where documented gaps are recorded.
+
+## Outputs
+
+### assumptions_log
+
+The assumptions log with each weak or missing ticket dimension recorded as a tracked finding.
+
+### ticket_gaps_documented
+
+True once any identified gaps have been recorded (in the assumptions log) so they persist as tracked findings; false when every dimension is present and sufficient.
+
+## Protocol
+
+### 1. Assess the Dimensions
+
+- Evaluate the `{issue_record}` across five issue-quality dimensions: problem statement, goal, scope, acceptance criteria, and user stories.
+- Judge each dimension as present and sufficient, present but weak, or missing.
+
+### 2. Document Gaps
+
+- For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{assumptions_log}`.
+- Set `{ticket_gaps_documented}` true once gaps are recorded, false when every dimension is present and sufficient.
+- Every gap lands in `{assumptions_log}` as a tracked finding, whether or not the ticket is later refactored.

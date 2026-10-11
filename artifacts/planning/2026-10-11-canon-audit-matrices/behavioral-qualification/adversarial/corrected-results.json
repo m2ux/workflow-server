@@ -1,0 +1,173 @@
+[
+  {
+    "assignment": "e8980cbbcafa22ed8061",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory",
+    "statuses": [
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified"
+    ]
+  },
+  {
+    "assignment": "f8fd2824841d023a9332",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory",
+    "statuses": [
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified",
+      "verified"
+    ]
+  },
+  {
+    "assignment": "fdaa4e7d8a2f8ec26e0c",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion",
+    "statuses": [
+      "verified"
+    ]
+  },
+  {
+    "run": "candidate-inventory",
+    "require_complete_exit": 2,
+    "output": {
+      "mapping_ready": false,
+      "complete": false,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 200,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "unmeasured",
+      "snapshot": "ef29a3e65c47ae330493a92d5618f13b36393586d6321ab8962a3a0a46c5167e",
+      "inventory_missing": 0,
+      "obligations_missing": 8,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-inventory/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 0,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    }
+  },
+  {
+    "run": "candidate-exclusion",
+    "require_complete_exit": 2,
+    "output": {
+      "mapping_ready": true,
+      "complete": false,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 1,
+      "bands": {
+        "Live": 6,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "unmeasured",
+      "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/adversarial/candidate-exclusion/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 2
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 3,
+          "invalidated": 3
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 3,
+          "invalidated": 2
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 3,
+          "invalidated": 0
+        }
+      }
+    }
+  }
+]

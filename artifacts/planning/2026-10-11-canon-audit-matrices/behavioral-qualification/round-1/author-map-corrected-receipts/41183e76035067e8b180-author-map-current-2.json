@@ -1,0 +1,429 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a",
+  "assignment": "41183e76035067e8b180",
+  "snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6",
+  "actor": "/root/qualify_author_one",
+  "attempt": "author-map-current-2",
+  "records": [
+    {
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps/id=delivery.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /steps/id=delivery/id.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 3,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps/id=delivery/routine.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps/id=delivery/routine/arguments.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "f45b86c19f25461cbe667622"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps/id=delivery/routine/arguments/envelope.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 6,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "status": "A",
+      "reason": "AP-02 checks each concrete routine invocation. This row contains or selects delivery calling deliver, including the argument-key side of the contract with deliver Inputs [envelope]. Row: /steps/id=delivery/routine/name.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 5,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "a30b577290e3406e29334f7b"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /rules.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 10,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "6dff2018269cdd7f6ce3a242"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /rules/line-11.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11,
+          "end": 11
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "923c5917ea2c9d4abe29e519"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /rules/line-11/clause-1.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11,
+          "end": 11
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "a03eed5b1543ec6c3d53b66c"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /rules/line-11/clause-2.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 11,
+          "end": 11
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "185e903ef3c4ae26da231a32"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: /rules/line-12.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 12,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        }
+      ]
+    },
+    {
+      "items": [
+        "94b820a882f196103f835741"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: @relationship/3b27fd01db44f877.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "8020bba4283a65b31df0f113"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: @relationship/475a98faaf5b9a55.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    },
+    {
+      "items": [
+        "f0755acc68e9a62e580665a3"
+      ],
+      "status": "N",
+      "reason": "AP-02 Detect is limited to activity routine-argument contracts and routine step.output bindings. This row is an unrelated identifier, prose constraint, graph or ancestor relationship, with neither specified binding nor its compared declaration. Row: @relationship/aa4b84de66a9776b.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        },
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        }
+      ]
+    }
+  ]
+}

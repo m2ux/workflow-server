@@ -1,0 +1,73 @@
+id: guarded-rename
+version: 1.0.0
+name: Guarded Rename
+description: >-
+  Show the edits a rename would make, take a decision on them, apply them where the decision says
+  so, and read the result back off the diff.
+
+inputs:
+  - id: symbol_name
+    description: Current symbol name.
+  - id: new_name
+    description: Target symbol name.
+  - id: file_path
+    description: The file holding the symbol, which separates one of that name from the others.
+
+outputs:
+  - id: changes
+    type: array
+    description: The per-file edit list, each edit carrying the confidence its provenance earns.
+  - id: rename_approved
+    type: boolean
+    description: Whether the previewed edit list was accepted at the gate.
+  - id: change_report
+    type: object
+    description: The symbols and execution flows the applied rename actually moved, read back off the diff.
+
+steps:
+  - kind: technique
+    id: preview
+    technique:
+      name: gitnexus::rename
+      inputs:
+        symbol_name: symbol_name
+        new_name: new_name
+        file_path: file_path
+        dry_run: true
+      outputs:
+        changes: changes
+  - kind: checkpoint
+    id: accept-edit-list
+    message: "Renaming {symbol_name} to {new_name} edits the files {changes} names. An edit marked text_search follows a name match, which reaches a string literal and a comment as readily as a reference."
+    options:
+      - id: apply
+        label: Apply the edit list
+        description: The previewed edits are correct and the rename writes them.
+        effect:
+          setVariable:
+            rename_approved: true
+      - id: abandon
+        label: Leave the symbol as it is
+        description: The edit list reaches something it should not, and nothing is written.
+        effect:
+          setVariable:
+            rename_approved: false
+  - kind: technique
+    id: apply-edits
+    when: rename_approved
+    technique:
+      name: gitnexus::rename
+      inputs:
+        symbol_name: symbol_name
+        new_name: new_name
+        file_path: file_path
+        dry_run: false
+      outputs:
+        changes: changes
+  - kind: technique
+    id: verify
+    when: rename_approved
+    technique:
+      name: gitnexus::detect-changes
+      outputs:
+        change_report: change_report

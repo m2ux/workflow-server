@@ -1,0 +1,35 @@
+id: gap-analysis
+version: 2.6.0
+name: Gap Analysis
+description: Compare the AI audit report against a professional reference.
+variables:
+  reads:
+    - gitnexus_available
+    - planning_folder_path
+    - reference_report
+required: false
+steps:
+  - kind: action
+    id: announce-start
+    actions:
+      - action: log
+        message: Starting gap analysis — reference report will be loaded NOW (not before)
+  - kind: technique
+    id: produce-gap-analysis
+    technique: write-gap-analysis
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: substrate-node-security-audit/README#planning-artifact-to-guide-map
+  - kind: action
+    id: announce-completion
+    actions:
+      - action: log
+        message: Gap analysis complete — audit workflow finished
+outcome:
+  - The AI audit's coverage is measurable against a professional benchmark, finding by finding
+  - Structural blind spots are named with the root cause that let each one slip through
+  - Where the AI over- or under-rates risk relative to the benchmark is known, so its calibration can be trusted or corrected
+  - The template can be improved with concrete countermeasures targeted at the gap clusters this comparison exposed

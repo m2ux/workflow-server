@@ -1,0 +1,30 @@
+id: negative-case
+version: 1.0.0
+name: Negative Case
+description: Refer to the impact gate over a symbol the graph does not resolve.
+variables:
+  reads:
+    - negative_target
+  writes:
+    - name: negative_impact_report
+      type: object
+      description: What depends on the symbol, at depth 1/2/3, with the execution flows reached and a risk level — withheld for a name the graph does not resolve.
+    - name: negative_edit_approved
+      type: boolean
+      description: Whether the measured blast radius was accepted at the gate. True where the rating was low enough that no gate was presented.
+      defaultValue: true
+required: true
+steps:
+  - kind: routine
+    id: gate-unresolved-symbol
+    routine: gitnexus::pre-edit-impact-gate
+    with:
+      target: "{negative_target}"
+    outputs:
+      impact_report: negative_impact_report
+      edit_approved: negative_edit_approved
+exits:
+  - id: gated
+    isDefault: true
+outcome:
+  - The same run under a name the graph does not resolve withheld its rating, presented the gate, and landed the edit refused from a hold — the fallback it promises rather than a pass

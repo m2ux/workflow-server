@@ -1,0 +1,21 @@
+{
+  "incorrect_exclusion": "7f339716e8d7474fb2512654",
+  "omitted_criterion": "dp:2",
+  "removed_clause": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+  "removed_consumer_rows": [
+    "corpus/qualification/routines/deliver.yaml#@element",
+    "corpus/qualification/routines/deliver.yaml#/id",
+    "corpus/qualification/routines/deliver.yaml#/inputs",
+    "corpus/qualification/routines/deliver.yaml#/inputs/0",
+    "corpus/qualification/routines/deliver.yaml#/outputs",
+    "corpus/qualification/routines/deliver.yaml#/outputs/report",
+    "corpus/qualification/routines/deliver.yaml#/steps",
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96"
+  ],
+  "scope": "Deliberately inaccurate candidates; no production judgment is synthesized."
+}

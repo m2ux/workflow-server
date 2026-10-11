@@ -1,0 +1,71 @@
+...................................
+----------------------------------------------------------------------
+Ran 35 tests in 8.991s
+
+OK
+{
+  "mapping_ready": false,
+  "complete": false,
+  "rows": 49,
+  "criteria": 3,
+  "cells": 147,
+  "unknown": 147,
+  "unverified": 0,
+  "unevaluated": 0,
+  "bands": {
+    "Live": 0,
+    "Contract": 0,
+    "Hygiene": 0
+  },
+  "conformance": "unmeasured",
+  "snapshot": "5a667b6f7c332c365c1f1bf6dd93193b85be27e944c352fa7d6e73f493f00cc7",
+  "inventory_missing": 16,
+  "obligations_missing": 8,
+  "findings": 0,
+  "stale_count": 1,
+  "stale": [
+    "Rendered artifact changed: change-surface-technique.md"
+  ],
+  "artifacts": {
+    "audit-report.md": "/tmp/tmpv4sr0zrz/run/audit-report.md",
+    "audit-coverage.md": "/tmp/tmpv4sr0zrz/run/audit-coverage.md",
+    "audit-state.json": "/tmp/tmpv4sr0zrz/run/audit-state.json"
+  },
+  "assignments": {
+    "map": {
+      "pending": 0,
+      "partial": 0,
+      "returned": 0,
+      "failed": 0,
+      "invalidated": 0
+    },
+    "inventory": {
+      "pending": 0,
+      "partial": 0,
+      "returned": 0,
+      "failed": 0,
+      "invalidated": 0
+    },
+    "verify": {
+      "pending": 0,
+      "partial": 0,
+      "returned": 0,
+      "failed": 0,
+      "invalidated": 0
+    },
+    "evaluate": {
+      "pending": 0,
+      "partial": 0,
+      "returned": 0,
+      "failed": 0,
+      "invalidated": 0
+    },
+    "obligations": {
+      "pending": 0,
+      "partial": 0,
+      "returned": 0,
+      "failed": 0,
+      "invalidated": 0
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "assignment": "fdaa4e7d8a2f8ec26e0c",
+  "snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "independent-corrected-1",
+  "records": [
+    {
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "verified",
+      "reason": "The proposed A disposition and reason agree with the original criterion and source. AP-01 Detect expressly covers each Protocol instruction directing artifact emission. Produce Protocol line 8 says Emit the report without validation, an imperative instruction rather than a heading, declaration or Capability description. The mapping cites the complete leaf and the criterion section, overlapping the assigned line and full AP-01 entry. Applicability is established; evaluation is still a separate obligation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

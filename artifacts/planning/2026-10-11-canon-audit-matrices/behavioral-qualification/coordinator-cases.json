@@ -1,0 +1,58 @@
+[
+  {
+    "cells": 196,
+    "fixture": "clean",
+    "mode": "author",
+    "round": 1,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-a"
+  },
+  {
+    "cells": 200,
+    "fixture": "seeded",
+    "mode": "author",
+    "round": 1,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/author-b"
+  },
+  {
+    "cells": 196,
+    "fixture": "clean",
+    "mode": "audit",
+    "round": 1,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-a"
+  },
+  {
+    "cells": 200,
+    "fixture": "seeded",
+    "mode": "audit",
+    "round": 1,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-b"
+  },
+  {
+    "cells": 196,
+    "fixture": "clean",
+    "mode": "author",
+    "round": 2,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-a"
+  },
+  {
+    "cells": 200,
+    "fixture": "seeded",
+    "mode": "author",
+    "round": 2,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/author-b"
+  },
+  {
+    "cells": 196,
+    "fixture": "clean",
+    "mode": "audit",
+    "round": 2,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-a"
+  },
+  {
+    "cells": 200,
+    "fixture": "seeded",
+    "mode": "audit",
+    "round": 2,
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-2/audit-b"
+  }
+]

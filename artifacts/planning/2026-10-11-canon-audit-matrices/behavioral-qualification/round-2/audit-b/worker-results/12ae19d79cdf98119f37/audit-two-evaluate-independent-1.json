@@ -1,0 +1,298 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "12ae19d79cdf98119f37",
+  "attempt": "audit-two-evaluate-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "3f2fc1d2f91b27a5d46f0504"
+      ],
+      "reason": "workflow.yaml#@relationship/27bf829b0e84c593: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "8862878198e6198ef77c1f28"
+      ],
+      "reason": "workflow.yaml#@relationship/3b27fd01db44f877: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "48da822c85267d96ea48c4c2"
+      ],
+      "reason": "workflow.yaml#@relationship/475a98faaf5b9a55: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "workflow.yaml#@relationship/aa4b84de66a9776b: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "workflow.yaml#/graph: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "workflow.yaml#/graph/run: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "workflow.yaml#/graph/run/done: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "workflow.yaml#/initialActivity: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "fix": "Provide a reachable graph exit to null from initialActivity.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The sole reachable graph exit loops from run back to run, leaving no terminating path."
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "workflow.yaml#@element: The complete workflow starts at run and has only run.done -> run. Every reachable transition stays at run; no path reaches null. Activity/routine steps provide no additional graph exits.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90"
+}

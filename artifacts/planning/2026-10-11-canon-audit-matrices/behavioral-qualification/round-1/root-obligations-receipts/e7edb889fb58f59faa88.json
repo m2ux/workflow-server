@@ -1,0 +1,37 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/round-1/audit-b",
+  "assignment": "e7edb889fb58f59faa88",
+  "snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb",
+  "actor": "/root",
+  "attempt": "root-supporting-1",
+  "records": [
+    {
+      "items": [
+        "unit:ap:controlled-qualification"
+      ],
+      "status": "walked",
+      "reason": "Read the complete AP family: its two Detect, Do not flag and Fix contracts are AP-01 and AP-02 already in the matrix. No extra family-level constraint exists. Instruction clauses, exact input names and routine output resolution remain covered by their mapped evaluations.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 5,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "unit:cc:evidence-scope"
+      ],
+      "status": "walked",
+      "reason": "The controlled conventions require full captured definitions, all four criteria, source lines and YAML binding addresses, and the explicit execution/inheritance relationship. Those sources and addresses are present; applicability is independently settled for every cell. Reports identify this as toy-dialect qualification and make no engine/full-canon conformance claim.",
+      "evidence": [
+        {
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 3,
+          "end": 5
+        }
+      ]
+    }
+  ]
+}

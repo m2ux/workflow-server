@@ -1,0 +1,51 @@
+id: validate-specification
+version: 1.8.0
+name: Validate Specification
+description: Validate the working specification and categorize each finding as critical or correctable.
+variables:
+  reads:
+    - correction_iteration
+    - source_paths
+    - target_doc_path
+  writes:
+    - name: has_correctable_issues
+      type: boolean
+      description: True when validation found issues that can be addressed by another correction pass
+      defaultValue: false
+    - name: has_critical_issues
+      type: boolean
+      description: True when validation found critical or irreconcilable issues that require manual intervention
+      defaultValue: false
+    - name: validation_passed
+      type: boolean
+      description: True when the updated specification passed validation with no critical or correctable issues
+      defaultValue: false
+    - name: validation_report_path
+      type: string
+      description: Absolute path to the validation report written for the current pass
+      defaultValue: ""
+    - name: update_pass_kind
+      type: string
+      description: Which apply this pass performs
+      values:
+        - initial
+        - correction
+        - revision
+      defaultValue: initial
+required: true
+steps:
+  - kind: technique
+    id: validate-specification
+    technique: validate-specification
+    actions:
+      - action: message
+        message: "Validation of pass {correction_iteration} categorizes each finding as critical or correctable and records the source-coverage result ([validation report]({validation_report_path}))."
+exits:
+  - id: validation-passed
+    when: validation_passed == true
+  - id: correctable
+    when: has_correctable_issues == true && has_critical_issues == false && correction_iteration < 3
+  - id: uncorrectable
+    isDefault: true
+outcome:
+  - Whether the specification is sound is recorded, and every remaining defect is labeled fatal or fixable

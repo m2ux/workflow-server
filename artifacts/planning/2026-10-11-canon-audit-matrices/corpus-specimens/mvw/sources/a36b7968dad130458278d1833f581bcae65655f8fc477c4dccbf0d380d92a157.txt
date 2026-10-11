@@ -1,0 +1,26 @@
+id: discover-changes
+version: 1.3.0
+name: Discover Changes
+description: Diff upstream prisms against current workflow resources.
+variables:
+  reads:
+    - change_set
+    - next_index
+    - upstream_path
+  writes:
+    - name: change_set
+      type: object
+      description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
+    - name: next_index
+      type: number
+      description: Next available resource index, derived from highest existing index + 1
+required: true
+steps:
+  - kind: technique
+    id: diff-upstream
+    technique: diff-upstream
+exits:
+  - id: done
+    isDefault: true
+outcome:
+  - The workflow knows exactly what changed upstream and how each new prism classifies by family — the import can proceed against an approved, well-understood scope
