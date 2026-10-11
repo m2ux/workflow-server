@@ -1,0 +1,154 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-01",
+      "kind": "unstated_precedence",
+      "priority": "Medium",
+      "entries": [
+        "AP-69",
+        "AP-23",
+        "AP-37"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-69",
+          "start": 904,
+          "end": 906,
+          "quote": "**Detect:** Any activity-level `rules:` entry.\n\n**Do not flag:** None. Behavioural guidance belongs on the bound technique."
+        },
+        {
+          "entry": "AP-23",
+          "start": 348,
+          "end": 348,
+          "quote": "Keep a worker-directed rule on the activity or the technique."
+        }
+      ],
+      "problem": "The activity placement AP-23 prescribes as valid is always rejected by AP-69. This is an inconsistent permitted shape, not an unsatisfiable rule set: technique placement can satisfy both.",
+      "witness": "A worker-wide evidence constraint is placed on an activity binding several techniques. AP-23's Fix accepts that placement; AP-69 flags it even when it reaches the correct actor.",
+      "proposed_fix": "Keep AP-69's structural-only activity policy. Replace AP-23's first Fix sentence with: 'Keep a worker-directed rule on the owning technique or on a container contract delivered to every affected technique.' Clarify in AP-37 that workflow rules.activity is an audience bucket, distinct from rules authored on an activity file.",
+      "observing_check": {
+        "positive": "An activity-file behavioural rule moves to a delivered technique contract.",
+        "negative": "A worker rule in workflow rules.activity is judged by its delivery bucket, without treating that field as activity-file prose."
+      }
+    },
+    {
+      "id": "AE-02",
+      "kind": "ambiguous_classification",
+      "priority": "Medium",
+      "entries": [
+        "AP-70"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-70",
+          "start": 916,
+          "end": 916,
+          "quote": "Discriminator is shape-origin, not consumer count."
+        },
+        {
+          "entry": "AP-70",
+          "start": 920,
+          "end": 920,
+          "quote": "a set one workflow's activities share → that workflow's root, capability-named; a set many workflows share → a namespace of its own, capability-named."
+        }
+      ],
+      "problem": "Shape-origin is undefined, while Fix classifies placement by consumer count. Reviewers can relocate the same intrinsic primitive merely because a second caller appears.",
+      "witness": "A reusable git primitive has one workflow consumer. Detect calls its client-workflow location wrong; the one-workflow branch of Fix directs it to that workflow's root.",
+      "proposed_fix": "Replace the classification with: 'Classify by what determines the contract: external tool or harness semantics belong to that capability's namespace; workflow-domain vocabulary shared across its activities belongs at the workflow root; a contract defined by one activity's input/output seam belongs to an activity-named group. Record the contract dependency establishing the class. Consumer count alone does not change it.' Retain the proper-subset test for group folders.",
+      "observing_check": {
+        "positive": "A client-local primitive determined wholly by a shared tool contract moves to that capability's namespace.",
+        "negative": "Two callers of an activity-specific domain contract do not automatically turn it into an external library."
+      }
+    },
+    {
+      "id": "AE-03",
+      "kind": "same_scope_contradiction",
+      "priority": "High",
+      "entries": [
+        "AP-74",
+        "AP-23",
+        "DP-06"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-74",
+          "start": 968,
+          "end": 968,
+          "quote": "Identical or near-identical behavioural instructions appear in more than one technique or tool description."
+        },
+        {
+          "entry": "AP-23",
+          "start": 344,
+          "end": 344,
+          "quote": "or an audit flags per-technique copies of a worker-directed rule as hygiene violations."
+        },
+        {
+          "entry": "AP-23",
+          "start": 348,
+          "end": 348,
+          "quote": "A copy on each technique that must reach the worker is that reach."
+        },
+        {
+          "entry": "DP-06",
+          "start": 41,
+          "end": 41,
+          "quote": "A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit."
+        }
+      ],
+      "problem": "For necessary worker-visible copies, AP-74 requires the audit finding AP-23 explicitly treats as an audit defect. A reference-only fix can remove the only delivered instruction.",
+      "witness": "Two isolated workers each receive one non-meta leaf technique. Both must receive the same behavioural constraint; neither receives a common owning text. Repeated wording meets AP-74 Detect, while flagging these required copies meets AP-23 Detect. The meta exception does not apply.",
+      "proposed_fix": "Add AP-74 Do not flag: 'Copies required for isolated readers to receive a rule, provided they are delivered from one authoritative statement rather than independently maintained.' Replace Fix with: 'Hoist or deliver the authoritative statement to every affected reader, then remove independently maintained duplicates. A pointer replaces text only after its reader can resolve it before acting.' Align AP-23 with the same one-edit-home condition.",
+      "observing_check": {
+        "positive": "Two independently maintained copies received by the same worker consolidate into their delivered owner.",
+        "negative": "One canonical rule injected into two isolated worker contexts is accepted despite repeated delivered wording."
+      }
+    },
+    {
+      "id": "AE-04",
+      "kind": "underdefined_endpoint",
+      "priority": "Low",
+      "entries": [
+        "AP-72"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-72",
+          "start": 944,
+          "end": 944,
+          "quote": "omits a tool or step required to reach the first meaningful action"
+        }
+      ],
+      "problem": "The hop test is useful, but 'first meaningful action' leaves the bootstrap endpoint to the reviewer.",
+      "witness": "One reviewer stops at a session id; another requires the initial activity and its first-step prerequisites. The same path can receive opposite completeness verdicts.",
+      "proposed_fix": "Replace 'reach the first meaningful action' with 'resolve and load the declared initial activity with the identifiers, authorization and inputs its first step requires'. Add: 'Record the selected start state and the returned field supplying each subsequent call argument.'",
+      "observing_check": {
+        "positive": "A session id with no discoverable initial activity id exposes a missing hop.",
+        "negative": "A path loading the declared initial activity and resolving first-step prerequisites passes without executing domain work."
+      }
+    },
+    {
+      "id": "AE-05",
+      "kind": "underdefined_value_test",
+      "priority": "Medium",
+      "entries": [
+        "AP-75"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-75",
+          "start": 980,
+          "end": 980,
+          "quote": "a description states mechanics or a partial return and omits the value the agent actually receives"
+        }
+      ],
+      "problem": "Every concise description is partial. 'Undersells' and 'value' do not distinguish incidental metadata from a capability the reader needs; Fix repeats the goal.",
+      "witness": "A description identifies the returned activity and usable cursor but omits elapsed milliseconds. Nothing in the test shows why that missing field should or should not count.",
+      "proposed_fix": "Replace Detect with: 'A legitimate tool description omits a returned capability or field needed to choose the call, bind its result, or perform the next declared action. Name the omitted value and the decision or binding it enables.' Add Do not flag: 'Incidental response metadata with no role in that usage contract.'",
+      "observing_check": {
+        "positive": "A next-activity description hides the returned next definition and causes a prescribed redundant fetch; flag that omission.",
+        "negative": "Telemetry unused by the caller's declared work may be omitted."
+      }
+    }
+  ]
+}

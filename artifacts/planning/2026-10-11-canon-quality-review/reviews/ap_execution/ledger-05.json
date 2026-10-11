@@ -1,0 +1,166 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-101–AP-108",
+  "entries": [
+    {
+      "id": "AP-101",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Checkpoint captions following a presentation are the bounded shape.",
+        "observable": "Delete-caption test distinguishes no subject from meaningful decision facts.",
+        "consistency": "Consistent with artifact links and real decision requirements.",
+        "exceptions": "Durable links, useful facts and otherwise missing discriminators are exempt.",
+        "fix": "Persist-and-link or name the subject supplies useful decision context.",
+        "expression": "The example makes the empty caption failure recognizable."
+      },
+      "rationale": "The rule preserves useful context while removing a duplicate presentation label.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-97",
+        "AP-89"
+      ]
+    },
+    {
+      "id": "AP-102",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Operative criteria copied between a technique and linked resource are targeted.",
+        "observable": "Compare the actual criteria and ownership across the two homes.",
+        "consistency": "The general rule subsumes AP-105's linked-audit instance.",
+        "exceptions": "Pointers, scan scope and technique-owned procedure are sensibly excluded.",
+        "fix": "Unique criteria migrate before the duplicate is removed.",
+        "expression": "The ownership test is clear; catalog consolidation can reduce duplicate findings."
+      },
+      "rationale": "Retain this sound general rule and fold in AP-105's narrower audit example.",
+      "finding_ids": [
+        "AE-22"
+      ],
+      "related_ids": [
+        "AP-105",
+        "AP-104",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-103",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Explicit attribution of an operative fact to a cited home is targeted.",
+        "observable": "Read the cited home and verify the attributed fact is supplied.",
+        "consistency": "Consistent with single ownership and actual reference reach.",
+        "exceptions": "See-also pointers without ownership claims are explicitly excluded.",
+        "fix": "Move the fact to its attributed home or correct the attribution.",
+        "expression": "Cannot apply the attributed claim from the home is a usable test."
+      },
+      "rationale": "The source-claim comparison is concrete and does not need a quantitative threshold.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-102",
+        "AP-104",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-104",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Reusable decision criteria embedded only in Protocol are well identified.",
+        "observable": "Lists, vocabularies and repeated criteria supply observable evidence.",
+        "consistency": "The thin-walker presentation remedy conflicts with AP-113.",
+        "exceptions": "Pure procedure and already-homed criteria are usefully separated.",
+        "fix": "Emit findings from the technique; let the activity present them.",
+        "expression": "Load, apply, present incorrectly places the last duty on the walker."
+      },
+      "rationale": "Keep the criteria-home requirement and correct the final delivery instruction.",
+      "finding_ids": [
+        "AE-16"
+      ],
+      "related_ids": [
+        "AP-102",
+        "AP-113",
+        "DP-24"
+      ]
+    },
+    {
+      "id": "AP-105",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "An audit technique copying another walker's criteria is targeted.",
+        "observable": "The copied paragraph also satisfies AP-102 in the linked-home case.",
+        "consistency": "Duplicate criteria are the same defect regardless of a second walker.",
+        "exceptions": "Thin scoped walkers are rightly allowed; independence also matters.",
+        "fix": "Consolidate the criterion-copy rule without banning independent verification.",
+        "expression": "One walker per home is broader than the duplicate-prose trigger."
+      },
+      "rationale": "Fold the narrow instance into AP-102 and retain distinct coverage or independent passes.",
+      "finding_ids": [
+        "AE-22"
+      ],
+      "related_ids": [
+        "AP-102",
+        "AP-104"
+      ]
+    },
+    {
+      "id": "AP-106",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Upper canon surfaces copying lower operational tests are explicitly named.",
+        "observable": "Named-citation substitution tests whether enforceable content is duplicated.",
+        "consistency": "A broader principle remains compatible with the specific lower test.",
+        "exceptions": "Short stance, unique homes and nonduplicating clarification are excluded.",
+        "fix": "Move unique criteria before replacing the copy with its citation.",
+        "expression": "The multi-sentence-copy distinction avoids banning all conceptual overlap."
+      },
+      "rationale": "No numeric length threshold is needed; preserved enforceable content is the qualitative test.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-06",
+        "AP-102",
+        "AP-103"
+      ]
+    },
+    {
+      "id": "AP-107",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Independent ordered or complete pass inventories are targeted.",
+        "observable": "Changes at binds can reveal separately maintained inventories.",
+        "consistency": "The sibling-Apply exception conflicts with AP-114's composition boundary.",
+        "exceptions": "Role orientation is rightly allowed; Apply exception needs removal or scope.",
+        "fix": "Pointer or generated summary closes duplicated inventories.",
+        "expression": "Intro says disagreement while Detect also catches accurate independent copies."
+      },
+      "rationale": "Align the composition exception; describe inventory independence as the actual defect.",
+      "finding_ids": [
+        "AE-26"
+      ],
+      "related_ids": [
+        "AP-114",
+        "AP-40",
+        "DP-25"
+      ]
+    },
+    {
+      "id": "AP-108",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Multiple sequential outcomes under one Protocol heading are targeted.",
+        "observable": "Order dependence alone cannot distinguish phases from sub-actions.",
+        "consistency": "DP-15's single-outcome boundary is stronger than the disjunctive test.",
+        "exceptions": "One-write elaboration is exempt but overlaps the reorder trigger.",
+        "fix": "Split by distinct outcomes, preserving joint sub-actions.",
+        "expression": "Replace the sufficient reorder test with supporting evidence."
+      },
+      "rationale": "Clarify granularity using outcome boundaries and a close counterexample.",
+      "finding_ids": [
+        "AE-23"
+      ],
+      "related_ids": [
+        "DP-15",
+        "AP-124",
+        "AP-156"
+      ]
+    }
+  ]
+}

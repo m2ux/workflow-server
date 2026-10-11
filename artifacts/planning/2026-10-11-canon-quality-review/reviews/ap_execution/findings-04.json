@@ -1,0 +1,154 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-16",
+      "kind": "incompatible_remedy",
+      "priority": "Medium",
+      "entries": [
+        "AP-92",
+        "AP-104",
+        "AP-68",
+        "AP-113"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-92",
+          "start": 1192,
+          "end": 1192,
+          "quote": "Behavioural cadence and gate routing that a technique applies move to the technique."
+        },
+        {
+          "entry": "AP-92",
+          "start": 1196,
+          "end": 1196,
+          "quote": "Move does-sections to the owning technique as protocol phases or named rules"
+        },
+        {
+          "entry": "AP-104",
+          "start": 1344,
+          "end": 1344,
+          "quote": "Leave the technique as a walker: load the home, apply it, present."
+        },
+        {
+          "entry": "AP-68",
+          "start": 896,
+          "end": 896,
+          "quote": "Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs"
+        },
+        {
+          "entry": "AP-113",
+          "start": 1456,
+          "end": 1456,
+          "quote": "Delete present, surface, and show-to-user phases."
+        }
+      ],
+      "problem": "Remedies conflate domain procedure, graph control and human delivery. Moving gate routing or presentation into a technique recreates defects assigned to activities elsewhere.",
+      "witness": "A resource says 'after review, confirm at the checkpoint, then proceed to validation'. AP-92 moves it to Protocol, where AP-68 flags it. AP-104's 'present' instruction similarly creates the presentation phase AP-113 removes.",
+      "proposed_fix": "Replace AP-92 Fix with: 'Move domain work to technique Protocol. Move checkpoints, session cadence and routing to activity structure. Keep fill criteria and vocabularies in resources; reconnect moved values and anchors.' Replace AP-104's walker sentence with: 'The technique loads criteria, applies them and emits declared findings; the activity owns their presentation.'",
+      "observing_check": {
+        "positive": "Resource-owned gate routing becomes activity checkpoints and exits, with findings bound as inputs.",
+        "negative": "Portable risk vocabulary stays in a resource; a technique derives classification without prescribing user interaction."
+      }
+    },
+    {
+      "id": "AE-17",
+      "kind": "invalid_verification_proxy",
+      "priority": "Medium",
+      "entries": [
+        "AP-95",
+        "AP-79"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-95",
+          "start": 1232,
+          "end": 1232,
+          "quote": "mechanical checks for structural rules, declared line budgets otherwise; gate verifies and fixes in place with no checkpoint, loop, or routing variable."
+        }
+      ],
+      "problem": "Line budgets cannot verify semantic ownership, faithful links or absence of copied facts. The claimed gate also lacks a stated failure outcome when repair cannot complete.",
+      "witness": "A two-line summary duplicates another artifact's authoritative verdict but meets its line budget. A longer necessary evidence ledger exceeds it. The proxy accepts the defect and rejects valid content.",
+      "proposed_fix": "Replace Fix with: 'Bind a verifier that checks each invariant against named evidence. Use mechanical checks for structural properties and explicit qualitative predicates for semantic ones. Repair within authorized scope, recheck, and make unresolved violations block completion. Use line budgets only when length itself is the invariant.' Keep user checkpoints limited to actual decisions.",
+      "observing_check": {
+        "positive": "A copied verdict below the line budget still fails an ownership check and blocks completion until resolved.",
+        "negative": "A necessary evidence ledger passes semantic ownership and coverage checks unless a separate size contract applies."
+      }
+    },
+    {
+      "id": "AE-18",
+      "kind": "audience_format_conflation",
+      "priority": "Medium",
+      "entries": [
+        "AP-96"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-96",
+          "start": 1244,
+          "end": 1244,
+          "quote": "`human` is prose. `agent` is structured one-entry-per-item data, serialized as JSON"
+        },
+        {
+          "entry": "AP-96",
+          "start": 1244,
+          "end": 1244,
+          "quote": "Where a person is pointed at the artifact — a progress-inventory row, a gate message linking it — that reader is the one the format serves."
+        }
+      ],
+      "problem": "Audience is conflated with serialization, and a human review link overrides the consuming format contract. The broad scope includes configuration, code and other artifacts whose format cannot be chosen by audience alone.",
+      "witness": "A workflow emits OpenAPI YAML and links it for review. Human classification requires prose; agent classification mandates JSON. Either rule can destroy the required YAML consumer contract.",
+      "proposed_fix": "Replace the format part of Fix with: 'Declare the primary audience and honor the artifact's required consumer format. Agent lifecycle state defaults to structured JSON when no stronger format contract applies. Human review links do not change serialization. A human report may present prose and tables over retained machine evidence.'",
+      "observing_check": {
+        "positive": "An unconstrained agent lifecycle ledger uses structured JSON and declares its audience.",
+        "negative": "A human-reviewed YAML or CSV artifact retains its required consumer format."
+      }
+    },
+    {
+      "id": "AE-19",
+      "kind": "naming_policy_leak",
+      "priority": "Low",
+      "entries": [
+        "AP-97"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-97",
+          "start": 1256,
+          "end": 1256,
+          "quote": "The write technique assigns a numeric prefix."
+        }
+      ],
+      "problem": "The link rule introduces a universal numeric-prefix policy unrelated to the defect. Its scope includes stable filenames consumers require verbatim.",
+      "witness": "A checkpoint links a generated package.json or schema file. The path should be produced and linked, but a numeric prefix can make the file unusable.",
+      "proposed_fix": "Replace the prefix sentence with: 'The producing technique resolves the path under the artifact's naming contract.' Keep variable-based links; use numeric prefixes only where that contract requires them.",
+      "observing_check": {
+        "positive": "A numbered planning report is linked through its produced path rather than a hard-coded prefix.",
+        "negative": "A stable consumer filename stays stable and remains linked through its produced path."
+      }
+    },
+    {
+      "id": "AE-20",
+      "kind": "delivery_precondition_improvement",
+      "priority": "Medium",
+      "entries": [
+        "AP-98"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-98",
+          "start": 1268,
+          "end": 1268,
+          "quote": "Delete the narration; keep timing in `autoAdvanceMs` and `defaultOption`, routing in `exits` and the workflow `graph`, and the rest in option labels only."
+        }
+      ],
+      "problem": "Removing schema copies is useful, but the entry does not establish that the user-facing channel displays timing and defaults. Structural presence alone does not establish delivered notice.",
+      "witness": "Constructed case: a text-only checkpoint renders message and option labels but not autoAdvanceMs. Removing its sole timing notice hides the pending default action. This is a missing delivery premise, not a claim about the current client.",
+      "proposed_fix": "Qualify Fix: 'Keep one structural source for timing, defaults and routing. Remove manually maintained narration when the delivered checkpoint already renders decision-relevant timing and consequences; otherwise render the notice from the same fields.' Check the actual checkpoint delivery channel.",
+      "observing_check": {
+        "positive": "A client already renders its countdown and default; duplicate prose is removed.",
+        "negative": "A channel lacking those displays receives notice derived from the same structural fields."
+      }
+    }
+  ]
+}

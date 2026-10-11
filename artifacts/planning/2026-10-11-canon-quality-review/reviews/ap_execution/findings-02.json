@@ -1,0 +1,147 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-06",
+      "kind": "incomplete_redundancy_test",
+      "priority": "Medium",
+      "entries": [
+        "AP-76"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-76",
+          "start": 992,
+          "end": 992,
+          "quote": "a tool whose output is a strict subset of another tool already required"
+        },
+        {
+          "entry": "AP-76",
+          "start": 994,
+          "end": 994,
+          "quote": "**Do not flag:** Tools that return non-subset value; distinct audiences/permissions."
+        }
+      ],
+      "problem": "Return-set inclusion does not establish substitutability. Timing, side effects, freshness, preconditions and failures can make the smaller call necessary despite identical permissions.",
+      "witness": "A read-current-activity call returns a definition; a required later advance call returns that definition plus a cursor and changes the pointer. The read-only pre-advance observation cannot be replaced by advancing early, but the strict-subset test flags it.",
+      "proposed_fix": "Replace Detect with: 'At the point of the extra call, another required call has already supplied the needed values for the same subject and state, with sufficient freshness; the extra call contributes no required effect, failure check or permitted observation.' Exempt distinct transitions, preconditions, freshness and failure semantics. Retire a tool only after checking its whole supported contract and consumers.",
+      "observing_check": {
+        "positive": "A routing fetch repeats fields just returned for the same activity with no new observation or effect; remove it.",
+        "negative": "A read-only preview remains valid when a later mutating call returns a superset."
+      }
+    },
+    {
+      "id": "AE-07",
+      "kind": "authorization_boundary_improvement",
+      "priority": "Medium",
+      "entries": [
+        "AP-77",
+        "DP-08"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-77",
+          "start": 1008,
+          "end": 1008,
+          "quote": "File/workflow modifications begin before the user has confirmed the proposed approach for the change."
+        },
+        {
+          "entry": "DP-08",
+          "start": 49,
+          "end": 49,
+          "quote": "A semi-reversible or irreversible change waits for explicit confirmation that includes the impact."
+        }
+      ],
+      "problem": "AP-77 imposes approval on all nontrivial edits, wider than its cited irreversible-change principle. This is a stronger policy, not a logical contradiction; it should deliberately recognize prior concrete authorization.",
+      "witness": "A user gives exact instructions for a reversible field edit. It is neither a typo nor continuation of a separately presented plan, so the stated exceptions still demand another approach-confirmation exchange.",
+      "proposed_fix": "Recommended replacement: 'A modification begins without authorization covering its scope and material approach choices. A request specifying the concrete change supplies that authorization; a material ambiguity or unapproved impact requires confirmation before dependent work.' Retain DP-08's explicit-impact requirement for semi-reversible and irreversible actions.",
+      "observing_check": {
+        "positive": "An unapproved gate removal introduces a material impact; dependent edits await the decision.",
+        "negative": "An exact, already authorized reversible edit proceeds without repeating the decision."
+      }
+    },
+    {
+      "id": "AE-08",
+      "kind": "unowned_criticality",
+      "priority": "Medium",
+      "entries": [
+        "AP-79",
+        "DP-09"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-79",
+          "start": 1036,
+          "end": 1036,
+          "quote": "or reclassify as non-critical guidance if structural backing is inappropriate."
+        },
+        {
+          "entry": "DP-09",
+          "start": 53,
+          "end": 53,
+          "quote": "A critical constraint is a checkpoint, a condition, or a validate action. Rule text does not enforce it."
+        }
+      ],
+      "problem": "No owner or consequence establishes criticality, and the fallback permits closing an enforcement defect by relabelling the guarantee as guidance.",
+      "witness": "A requirement makes publication depend on approval. Unable to express its predicate, the author reclassifies it as guidance. The written Fix is followed while the required guarantee disappears.",
+      "proposed_fix": "Add: 'A constraint is critical when a named requirement or accepted risk decision makes its breach invalidate the result or permission to proceed. Record that owner and the bypass its enforcement prevents.' Replace reclassification with: 'If the guarantee cannot be enforced, report the blocking gap. Downgrade only when the requirement owner explicitly changes the guarantee.'",
+      "observing_check": {
+        "positive": "Publication remains reachable without a required approval; flag missing enforcement.",
+        "negative": "A declared style preference without an acceptance or authorization guarantee may remain guidance."
+      }
+    },
+    {
+      "id": "AE-09",
+      "kind": "split_independent_obligations",
+      "priority": "Low",
+      "entries": [
+        "AP-81"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-81",
+          "start": 1056,
+          "end": 1056,
+          "quote": "New workflow/technique/resource files are drafted without checking the relevant format/schema conventions, or commits proceed without validating the touched files."
+        }
+      ],
+      "problem": "Pre-draft literacy and pre-commit validation are independently satisfiable obligations with different evidence and remedies. A single identity can hide an unresolved half.",
+      "witness": "One author reads the schema but commits without checks; another validates a draft produced without first reading the convention. These defects occur at different boundaries.",
+      "proposed_fix": "Split into two entries. Keep verify-format-literacy for 'Drafting begins before the author reads the applicable construct format and conventions'. Add a validation entry for 'A commit includes authored constructs without the required checks recorded for those bytes'. Give each the corresponding exception and Fix.",
+      "observing_check": {
+        "positive": "Missing pre-commit validation remains open after format literacy is established.",
+        "negative": "A documented pre-draft read and required checks on the committed content close the independent obligations."
+      }
+    },
+    {
+      "id": "AE-10",
+      "kind": "fact_identity_scope",
+      "priority": "Medium",
+      "entries": [
+        "AP-84",
+        "AP-93"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-84",
+          "start": 1096,
+          "end": 1096,
+          "quote": "More than one terminal artifact (or README footer) re-states delivered items, decisions, validation, follow-ups, or lessons."
+        },
+        {
+          "entry": "AP-93",
+          "start": 1204,
+          "end": 1204,
+          "quote": "Several templates in one workflow each mandate a full section for the same fact category (problem statement, success criteria, assumptions, decisions, risks)."
+        }
+      ],
+      "problem": "Terminal-document count and broad fact category are not semantic identity. Different subjects' risks or distinct audiences' products need not duplicate facts.",
+      "witness": "A project plan owns project-wide risks and a component plan owns that component's risks. Both have Risks sections, so AP-93 flags them despite no repeated fact. A machine attestation and a human lessons report likewise need not duplicate one another.",
+      "proposed_fix": "For AP-93 use: 'Several templates require independently maintained statements of the same operative fact about the same subject and revision.' Key the home map by that scoped fact. For AP-84 flag repeated close-out facts for the same audience and purpose; preserve distinct mandated products and link common facts to their owner.",
+      "observing_check": {
+        "positive": "Two close-out reports independently maintain the same release verdict for the same audience; consolidate that fact.",
+        "negative": "Project and component registers containing different scoped risks remain separate homes."
+      }
+    }
+  ]
+}

@@ -1,0 +1,380 @@
+{
+  "result": "PASS",
+  "scope": "record integrity, exact source evidence and primary coverage; not automated semantic judgment",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "sources_match_current_corpus": true,
+  "entries": 212,
+  "candidates": 95,
+  "slices": [
+    {
+      "slice": "ap_structures",
+      "entries": 68,
+      "candidates": 24,
+      "dispositions": {
+        "finding": 20,
+        "improvement": 11,
+        "clear": 37
+      },
+      "exact_quotes": 71,
+      "files": [
+        {
+          "path": "reviews/ap_structures/findings-01.json",
+          "bytes": 14622,
+          "sha256": "96baee380985efece41b096872ccd740bbf34b7c936310c3ce3f2d4ae02a2909",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_structures/findings-02.json",
+          "bytes": 13289,
+          "sha256": "06cadd53c1bd43d4b154cfc1d233da71846190524d14bbeb6bd52ea1996941af",
+          "count": 3
+        },
+        {
+          "path": "reviews/ap_structures/findings-03.json",
+          "bytes": 12590,
+          "sha256": "047fb269ff7c3791ad6b9de6f0e3d62541b7ad4f29740e5651060a30abf31c28",
+          "count": 3
+        },
+        {
+          "path": "reviews/ap_structures/findings-04.json",
+          "bytes": 14077,
+          "sha256": "a7db4ccf0131d425c5fa2c5bff97e94538bb0fe6d86057adf928ee12d8b4d94b",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_structures/findings-05.json",
+          "bytes": 13569,
+          "sha256": "90915acdc79ba4f61a9753fe597e4634cbf1fcfc8c2957286173e5c9f5e0fc19",
+          "count": 3
+        },
+        {
+          "path": "reviews/ap_structures/findings-06.json",
+          "bytes": 13998,
+          "sha256": "52c0dce0a70360ad8b6196a50ad95f5bd7d2deb611389d4e12b1335e9c8fa9c2",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_structures/findings-07.json",
+          "bytes": 3063,
+          "sha256": "73a7891944f00186278ae17468883ed5236ad3d053cc77a31cb0f4aad8813878",
+          "count": 1
+        },
+        {
+          "path": "reviews/ap_structures/ledger-01.json",
+          "bytes": 7050,
+          "sha256": "5b730b407b77c84195e35f9d6ecd6fb84794de065fabee402d2050422b0e0479",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-02.json",
+          "bytes": 6928,
+          "sha256": "cbab660801d5c39e1744aefa2ba2e91b038e6f35b111597e688163578ca4482b",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-03.json",
+          "bytes": 7393,
+          "sha256": "b6f222c3e30605815490d26aa688fcb343913ed97a3c241927e83bf5db5ebb8b",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-04.json",
+          "bytes": 7512,
+          "sha256": "8218a2f92431f15aad03b86008d9fc82ca6e58bc9f34336e2f565390b12c47c9",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-05.json",
+          "bytes": 7392,
+          "sha256": "3edab87f41f27a6427d7eb5e63d723d68f2a280515bf317f4fb9abbb6f0c50b8",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-06.json",
+          "bytes": 7441,
+          "sha256": "9f22a9621df23517a4817f1cc7a1e03a3df35deef573f19996c7f8153b28fdb9",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-07.json",
+          "bytes": 7729,
+          "sha256": "1ef3e56fc941457203ebab066fe3354b0bbfced179bb91c5cae6c465b5810d85",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-08.json",
+          "bytes": 7452,
+          "sha256": "7b06e5d569fa9a0e639286e9f1d17632273ac59a3cc4318848201086dda4281d",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_structures/ledger-09.json",
+          "bytes": 3895,
+          "sha256": "d521a560305e8f739bce964537e8cb21612bfe284eaa63c2776f0dff668403b6",
+          "count": 4
+        }
+      ]
+    },
+    {
+      "slice": "ap_execution",
+      "entries": 55,
+      "candidates": 28,
+      "dispositions": {
+        "finding": 23,
+        "clear": 22,
+        "improvement": 10
+      },
+      "exact_quotes": 59,
+      "files": [
+        {
+          "path": "reviews/ap_execution/findings-01.json",
+          "bytes": 8457,
+          "sha256": "a2ff797eb2d4e78a55e6b076f76955f7a99bca51627620d2dcb54a9b3f6566dd",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_execution/findings-02.json",
+          "bytes": 8505,
+          "sha256": "36d7bfb7bf92a8236e491c97534ae7eadb75da915f2a3adc676bb03644e06b7a",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_execution/findings-03.json",
+          "bytes": 7513,
+          "sha256": "20b42dc8825b896371e0f375db51086ec0932c8118d3bb9f0a69f7ceb626917a",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_execution/findings-04.json",
+          "bytes": 8353,
+          "sha256": "7f537bbffef13ce7e423b66c80de503f05bba35b0c76f6d271225e244bd263fb",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_execution/findings-05.json",
+          "bytes": 8949,
+          "sha256": "85204f3e2ebc492ca7bc65ce7476755f7ddfdfa995d66eefeba36e5514e7161a",
+          "count": 5
+        },
+        {
+          "path": "reviews/ap_execution/findings-06.json",
+          "bytes": 6524,
+          "sha256": "c525a9babe98e98443c0f05c2ee4258e23a117619735d5b3673621ce1f9f832a",
+          "count": 3
+        },
+        {
+          "path": "reviews/ap_execution/ledger-01.json",
+          "bytes": 6687,
+          "sha256": "e4629d0e2a19883312b4651c6b7624334587a9224fb3692485f672e829c692c6",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-02.json",
+          "bytes": 6667,
+          "sha256": "003b44e1b86b5128f1b86d047b77b91a229d56c92157512eaa82fc540da73ad9",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-03.json",
+          "bytes": 6758,
+          "sha256": "8360f795d9162d59f9fb2d4e570776ba545683ccee326b5a3dfbc767e3dd1b9f",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-04.json",
+          "bytes": 6922,
+          "sha256": "6e6001ba31c190b0b030e68d997e7fc135c97b43237b8ab65628b0776add5565",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-05.json",
+          "bytes": 7049,
+          "sha256": "45e2a823aaa3b990faa4a106b01cefdeab5006d74b27f337f186e888e26ac299",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-06.json",
+          "bytes": 7102,
+          "sha256": "99a209e3a4be89fe8d65c606cefefbe89c9bfebe585f596006f170c85a306478",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_execution/ledger-07.json",
+          "bytes": 6194,
+          "sha256": "7159b10e89966cdc12eb0fe6db61b862a3e76179530fcbab1ca2827890410503",
+          "count": 7
+        }
+      ]
+    },
+    {
+      "slice": "ap_contracts",
+      "entries": 42,
+      "candidates": 23,
+      "dispositions": {
+        "finding": 17,
+        "improvement": 9,
+        "clear": 16
+      },
+      "exact_quotes": 49,
+      "files": [
+        {
+          "path": "reviews/ap_contracts/findings-01.json",
+          "bytes": 11656,
+          "sha256": "79f21320d79ae30430036fdcb37faaf20f6b7d5e44fa2cb4b892d234cb20ffe2",
+          "count": 2
+        },
+        {
+          "path": "reviews/ap_contracts/findings-02.json",
+          "bytes": 15679,
+          "sha256": "fe0e7bf42099b9ec1e52a4797f7ed4380687ea8ac83469c42fb8d04a1e18cf90",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-03.json",
+          "bytes": 14755,
+          "sha256": "3e44ea16b13f3db90c2f86f216fedcb2942f28c1eb3a5557020503e318caafe8",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-04.json",
+          "bytes": 15477,
+          "sha256": "faf25337780c98af06f27313912329605a4a4fd6a5fb51c832c36725f9902d4b",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-05.json",
+          "bytes": 13435,
+          "sha256": "8bfe040ba33067235b684713c97fe6e80fdeaba843bb838913c2e1b8a03d90f8",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-06.json",
+          "bytes": 12494,
+          "sha256": "fd5607fff0b219d0a2f3a89ddbd7f523f9b5409f8b7ea92fef44bff9c99a3c6d",
+          "count": 4
+        },
+        {
+          "path": "reviews/ap_contracts/findings-07.json",
+          "bytes": 4038,
+          "sha256": "2861396790ed692553c90ef5019e77a4ed680cd77269203703aecea72c58f63e",
+          "count": 1
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-01.json",
+          "bytes": 6793,
+          "sha256": "4afa96ee45ca755e87272b2e107ab5c78f05f6af8d62bf4b1d8afc2f99bd2511",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-02.json",
+          "bytes": 6859,
+          "sha256": "6a7c1e978cdf03c97292bd0dbfa9363d6fab6a0e4ab19a9eac34b0b957a4f773",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-03.json",
+          "bytes": 7027,
+          "sha256": "67b67d683dbc935f93099d0f9079539177f6734b39b29a6a61d054cdcee51549",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-04.json",
+          "bytes": 7165,
+          "sha256": "4091a509a03da6a7d4206e483846aeed32e783ce9b49a347b6b966ba50fed7fa",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-05.json",
+          "bytes": 7130,
+          "sha256": "38355e7062b5cba4bed25602460c21988f6f1880017830a03ce4ae1c35d6a6ad",
+          "count": 8
+        },
+        {
+          "path": "reviews/ap_contracts/ledger-06.json",
+          "bytes": 1978,
+          "sha256": "1a186e90f4057ce4bfbd5738fc8d7eaaac2a4ef495b984282e0b495efd5d6764",
+          "count": 2
+        }
+      ]
+    },
+    {
+      "slice": "principles",
+      "entries": 47,
+      "candidates": 20,
+      "dispositions": {
+        "clear": 21,
+        "finding": 11,
+        "improvement": 15
+      },
+      "exact_quotes": 39,
+      "files": [
+        {
+          "path": "reviews/principles/entries-01.json",
+          "bytes": 6993,
+          "sha256": "a4ee831a843ac81c06d2ff527af1ec389ac629c9526e6f5cfa2144e148cf3141",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-02.json",
+          "bytes": 7135,
+          "sha256": "858404413697498d3cb205617e259525c8301ad00d15fe1a7aaa6868cb2dec87",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-03.json",
+          "bytes": 6841,
+          "sha256": "57a67f4e4499aa0540318d8402206ad47ba77ac3c64b4bd6c676d84b32d8b581",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-04.json",
+          "bytes": 7274,
+          "sha256": "6f65d6cf7e6a03b71f010689c192cd9dcaa736587933a5599e518594bf6ee9b9",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-05.json",
+          "bytes": 6986,
+          "sha256": "d7b4eacd474f4ced6ff483397c207b1b7c4dd42fee79c7ccf16c376661b8910e",
+          "count": 8
+        },
+        {
+          "path": "reviews/principles/entries-06.json",
+          "bytes": 6322,
+          "sha256": "37480ff4c982d5d9ddff33cde0b33469fafe7074e8f53f9fc27e97e263ad581f",
+          "count": 7
+        },
+        {
+          "path": "reviews/principles/findings-01.json",
+          "bytes": 7060,
+          "sha256": "91b7386b9d292ae98e8210654e24fe35bbb7d53fb4b1631e0cf21147c7ce5e74",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-02.json",
+          "bytes": 12051,
+          "sha256": "b033738cfd9a599b0795495603bc6bd34f362f23d61c7dd4f329f6b655bb910f",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-03.json",
+          "bytes": 9705,
+          "sha256": "8a241720c27cd8d9be37f6860371a097410f553b7105b9d48fc7157cc57a810b",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-04.json",
+          "bytes": 9194,
+          "sha256": "e445208527d0ef3b7b8147858edc2e2371f40ecb53f1aa4082b7e8c85acc3089",
+          "count": 4
+        },
+        {
+          "path": "reviews/principles/findings-05.json",
+          "bytes": 7858,
+          "sha256": "e5c33ab22697230692115046b419594bae195238b4be7c784cc514eff0860b80",
+          "count": 4
+        }
+      ]
+    }
+  ]
+}

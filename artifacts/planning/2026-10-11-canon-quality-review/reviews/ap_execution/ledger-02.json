@@ -1,0 +1,160 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-77–AP-84",
+  "entries": [
+    {
+      "id": "AP-77",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Implementation authorization is broader than irreversible actions.",
+        "observable": "The transcript can establish prior approval and its coverage.",
+        "consistency": "Stronger than cited DP-08; this is not a contradiction.",
+        "exceptions": "Approved plans and typos are covered, concrete new requests less clearly.",
+        "fix": "Mandatory reproposal can repeat an already answered decision.",
+        "expression": "Confirm the proposed approach should recognize applicable existing authorization."
+      },
+      "rationale": "Make the approval boundary deliberate and avoid redundant confirmation for precise authorized changes.",
+      "finding_ids": [
+        "AE-07"
+      ],
+      "related_ids": [
+        "DP-04",
+        "DP-08",
+        "AP-78"
+      ]
+    },
+    {
+      "id": "AP-78",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Implementation must be in scope and the next action approved.",
+        "observable": "A stopped transcript can show missing follow-through.",
+        "consistency": "Matches DP-23's action-or-explicit-stop stance.",
+        "exceptions": "Advisory-only work is explicitly excluded.",
+        "fix": "Implementing or resolving implement-versus-stop closes the gap.",
+        "expression": "Approved next action prevents an inference of unlimited scope."
+      },
+      "rationale": "The obligation is conditional on authorization and does not turn advice requests into implementation.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-23",
+        "AP-77"
+      ]
+    },
+    {
+      "id": "AP-79",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Critical constraints are targeted without an owner defining critical.",
+        "observable": "Structural backing is inspectable once the guarantee is identified.",
+        "consistency": "Reclassification can evade DP-09's required enforcement.",
+        "exceptions": "Guidance and already enforced rules are reasonable exclusions.",
+        "fix": "The downgrade branch lacks requirement-owner authority.",
+        "expression": "Critical should refer to a named acceptance or permission guarantee."
+      },
+      "rationale": "Tie criticality and downgrade authority to the requirement the rule protects.",
+      "finding_ids": [
+        "AE-08",
+        "AE-17"
+      ],
+      "related_ids": [
+        "DP-09",
+        "AP-95"
+      ]
+    },
+    {
+      "id": "AP-80",
+      "disposition": "clear",
+      "checks": {
+        "scope": "README removals and substantive reductions are the subject.",
+        "observable": "Compare the diff with preserved meanings and authorization.",
+        "consistency": "Consistent with DP-10; shape cleanup still respects permission.",
+        "exceptions": "User-requested deletions and additive clarifications are exempt.",
+        "fix": "Inventory and applicable confirmation close an unapproved removal.",
+        "expression": "Substantive concerns lost content, not a numeric word threshold."
+      },
+      "rationale": "A meaningful before/after comparison can establish the loss without a word-count rule.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-10",
+        "AP-40",
+        "AP-160"
+      ]
+    },
+    {
+      "id": "AP-81",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Pre-draft preparation and pre-commit validation share one entry.",
+        "observable": "Each stage has distinct observable evidence.",
+        "consistency": "Both duties support format correctness but are independent.",
+        "exceptions": "Identical validated shapes provide a bounded risk exception.",
+        "fix": "One successful remedy does not settle the other obligation.",
+        "expression": "The disjunction hides two separately reportable defects."
+      },
+      "rationale": "Split the lifecycle obligations so partial closure is visible.",
+      "finding_ids": [
+        "AE-09"
+      ],
+      "related_ids": [
+        "DP-02",
+        "AP-03",
+        "AP-07"
+      ]
+    },
+    {
+      "id": "AP-82",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Work in a defined active workflow is the relevant surface.",
+        "observable": "Trace combination and advancement against declared activities and graph.",
+        "consistency": "Matches activity-owned progress in DP-20.",
+        "exceptions": "In-activity orchestration through declared structure is exempt.",
+        "fix": "Route the active work through its existing activities.",
+        "expression": "The informal-merge example distinguishes bypass from ordinary synthesis."
+      },
+      "rationale": "The graph supplies a concrete qualitative reference for judging execution bypass.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-20",
+        "AP-68"
+      ]
+    },
+    {
+      "id": "AP-83",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Responses to actual user corrections are in scope.",
+        "observable": "Transcript evidence shows re-examination and grounds for disagreement.",
+        "consistency": "Allows evidence-backed disagreement rather than automatic acceptance.",
+        "exceptions": "Evidence-backed clarification is explicitly permitted.",
+        "fix": "Re-examine, then accept or supply evidence.",
+        "expression": "The subject is unsupported dismissal, not disagreement itself."
+      },
+      "rationale": "The rule has an observable conversational trigger and preserves substantive judgment.",
+      "finding_ids": [],
+      "related_ids": []
+    },
+    {
+      "id": "AP-84",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Terminal artifacts are targeted without audience or fact scope.",
+        "observable": "Duplicate wording is visible; multiple artifact count is insufficient.",
+        "consistency": "DP-12 distinguishes audiences while this entry collapses products.",
+        "exceptions": "Retrospective sections are allowed; distinct mandated products are absent.",
+        "fix": "One-document collapse can combine different required evidence products.",
+        "expression": "Re-states should identify the same fact, subject and revision."
+      },
+      "rationale": "Judge duplicate close-out facts rather than treating every terminal document as a second home.",
+      "finding_ids": [
+        "AE-10"
+      ],
+      "related_ids": [
+        "AP-93",
+        "AP-96",
+        "DP-12"
+      ]
+    }
+  ]
+}

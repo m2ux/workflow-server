@@ -1,0 +1,166 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-21",
+      "kind": "authoring_runtime_scope",
+      "priority": "Medium",
+      "entries": [
+        "AP-100"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-100",
+          "start": 1288,
+          "end": 1288,
+          "quote": "governs how to *write* workflows (content shape of YAML/technique/resource files, authoring standards) rather than current-session runtime conduct."
+        },
+        {
+          "entry": "AP-100",
+          "start": 1288,
+          "end": 1288,
+          "quote": "would apply in an unrelated authoring session."
+        }
+      ],
+      "problem": "In an authoring workflow, applying the authoring contract is current runtime work. Cross-session reuse does not distinguish general criteria from legitimate reusable runtime constraints.",
+      "witness": "An authoring technique requires every emitted definition to conform to a cited schema. This constrains its current output, but the write-workflows signal classifies it as misplaced design-time policy.",
+      "proposed_fix": "Replace Detect with: 'A runtime rule independently restates general authoring criteria already owned by the canon, rather than imposing a current-work obligation by reference.' Add Do not flag: 'An authoring or audit run's obligation to apply the cited canon to its inputs or outputs, with the criteria remaining at their home.'",
+      "observing_check": {
+        "positive": "A Rules block recopies the general checkpoint-writing checklist; remove the duplicated criteria.",
+        "negative": "A technique requires its emitted definitions to satisfy the referenced schema without restating it."
+      }
+    },
+    {
+      "id": "AE-22",
+      "kind": "duplicate_catalog_obligation",
+      "priority": "Low",
+      "entries": [
+        "AP-105",
+        "AP-102"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-105",
+          "start": 1352,
+          "end": 1352,
+          "quote": "An audit technique embeds a compressed copy of a catalog/resource's Detect criteria while another technique already walks that same home"
+        },
+        {
+          "entry": "AP-102",
+          "start": 1312,
+          "end": 1312,
+          "quote": "A technique that loads or links a resource also embeds operative criteria that must be applied from that resource"
+        }
+      ],
+      "problem": "For a linked audit home, AP-105 is a narrower AP-102 case with the same ownership remedy. Its 'one walker per home' wording can also accidentally reject independent or scoped verification.",
+      "witness": "A technique copies criteria from its linked catalog and another pass walks that catalog. Both entries report the same copied paragraph and prescribe deletion.",
+      "proposed_fix": "Fold AP-105's unique audit example into AP-102 and retire the redundant entry, repointing citations. Keep: 'Several passes may apply one authoritative home for distinct scopes or independent verification; each reads the criteria instead of maintaining a copy.' Shared criteria alone do not prove redundant work.",
+      "observing_check": {
+        "positive": "A copied audit checklist produces one ownership finding with one canonical remedy.",
+        "negative": "Independent reviewers applying the same catalog without copied Detect prose remain legitimate."
+      }
+    },
+    {
+      "id": "AE-23",
+      "kind": "phase_granularity_improvement",
+      "priority": "Medium",
+      "entries": [
+        "AP-108",
+        "DP-15"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-108",
+          "start": 1392,
+          "end": 1392,
+          "quote": "Each produces a different outcome, or must complete before the next. Test: reordering or dropping a bullet changes the phase sequence."
+        },
+        {
+          "entry": "AP-108",
+          "start": 1394,
+          "end": 1394,
+          "quote": "Bullets that elaborate one phase — how-to for one write, constraints on one apply, a loop body over one entry, mode branches of one action."
+        }
+      ],
+      "problem": "Prerequisite order alone is too broad: sub-actions of one write are also order-sensitive. The exception offers the right boundary but the 'or' test reintroduces micro-phases.",
+      "witness": "Creating a directory before writing its report must occur in order, yet both elaborate Persist Report. The reorder test flags them while the one-write exception excuses them.",
+      "proposed_fix": "Replace the test with: 'Name the distinct outcome established at each proposed boundary and consumed by later work. Split when the next phase begins a different outcome; ordered sub-actions jointly producing one outcome remain bullets. Reordering sensitivity is supporting evidence, not sufficient by itself.' Add the directory/write example.",
+      "observing_check": {
+        "positive": "Editing definitions, establishing validation results and recording accepted changes have distinct outcomes and phases.",
+        "negative": "Ensuring a directory and writing the report remain subordinate actions of one persistence phase."
+      }
+    },
+    {
+      "id": "AE-24",
+      "kind": "incompatible_output_tests",
+      "priority": "Medium",
+      "entries": [
+        "AP-109",
+        "AP-138"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-109",
+          "start": 1404,
+          "end": 1404,
+          "quote": "Test: a later step, checkpoint, or consumer could bind or cite the value."
+        },
+        {
+          "entry": "AP-138",
+          "start": 1804,
+          "end": 1804,
+          "quote": "Flag an entry with none, including one mentioned only as \"return `{id}`\", and one whose `variables[]` slot nothing reads."
+        },
+        {
+          "entry": "AP-138",
+          "start": 1808,
+          "end": 1808,
+          "quote": "Otherwise delete the declaration and the variable that shadowed it."
+        }
+      ],
+      "problem": "Potential bindability and an actual destination are different tests. AP-109 can require public declarations for intermediate values AP-138 then removes.",
+      "witness": "A local technique derives candidate_names solely to compute its declared selected_name. A later consumer could bind the candidates, so AP-109 requests an Output. No actual reader exists, so AP-138 deletes it. The external-library exception does not apply.",
+      "proposed_fix": "Replace AP-109's test with: 'The technique promises the value to a caller, persists it as an artifact, or has a named external consumer that needs to bind it.' Add Do not flag: 'Intermediate values consumed entirely within one application; use protocol locals when needed.' Preserve AP-138's external-caller exception for public library contracts.",
+      "observing_check": {
+        "positive": "A later checkpoint needs an undeclared verdict; declare it and name the consumer.",
+        "negative": "A candidate collection consumed only inside its producing technique stays local."
+      }
+    },
+    {
+      "id": "AE-25",
+      "kind": "incomplete_migration_fix",
+      "priority": "Medium",
+      "entries": [
+        "AP-110",
+        "DP-18"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-110",
+          "start": 1416,
+          "end": 1416,
+          "quote": "A shared op that almost fits, missing an input, optional flag, or output, still owns the capability."
+        },
+        {
+          "entry": "AP-110",
+          "start": 1420,
+          "end": 1420,
+          "quote": "Delete the local harness recipe. Bind the shared op from the activity"
+        },
+        {
+          "entry": "DP-18",
+          "start": 89,
+          "end": 89,
+          "quote": "A local recipe exists when the shared surface cannot absorb the caller's diversity."
+        }
+      ],
+      "problem": "Detect acknowledges a shared-contract gap but Fix jumps directly to deletion and rebinding. It does not close the gap or state the principle's incompatible-diversity boundary.",
+      "witness": "A shared lookup lacks a required include-archived input or evidence output. Rebinding without extending its contract loses the required scope or downstream evidence.",
+      "proposed_fix": "Prepend to Fix: 'Compare the caller's required inputs, outputs and guarantees with the shared contract. Close supported gaps at the shared owner and verify existing callers before rebinding and deleting the local recipe. When that surface cannot absorb the semantics, record the concrete incompatibility and keep a distinct capability with a truthful boundary.' Preserve the outcome under DP-38.",
+      "observing_check": {
+        "positive": "A reusable missing output is added and consumers verified before local deletion.",
+        "negative": "Incompatible domain guarantees are not forced through an almost-fitting operation solely because its verb matches."
+      }
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+{
+  "command": "python3 .engineering/artifacts/planning/2026-10-11-canon-quality-review/reviews/ap_execution/validate_review.py",
+  "cwd": "/home/mike1/projects/dev/workflow-server",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "completed_at": "2026-10-11T12:41:41.058918+00:00",
+  "outcome": "passed",
+  "primary_entries": 55,
+  "dispositions": {
+    "finding": 23,
+    "clear": 22,
+    "improvement": 10
+  },
+  "finding_records": 28,
+  "priorities": {
+    "Medium": 20,
+    "High": 2,
+    "Low": 6
+  },
+  "evidence_quotes_verified": 59,
+  "sources": [
+    {
+      "source": "sources/anti-patterns.md",
+      "bytes": 161582,
+      "sha256": "dbdf297b3d7ddb5517993b694705e0baa292374a82373aaee19c36fb8994e681"
+    },
+    {
+      "source": "sources/design-principles.md",
+      "bytes": 14476,
+      "sha256": "dc51605fb74d9a4a3f6bdefb93b984bfa2a6b909bfbd00f164f2d277566d8e7b"
+    }
+  ],
+  "file_bounds": [
+    {
+      "file": "ledger-01.json",
+      "bytes": 6687,
+      "records": 8
+    },
+    {
+      "file": "ledger-02.json",
+      "bytes": 6667,
+      "records": 8
+    },
+    {
+      "file": "ledger-03.json",
+      "bytes": 6758,
+      "records": 8
+    },
+    {
+      "file": "ledger-04.json",
+      "bytes": 6922,
+      "records": 8
+    },
+    {
+      "file": "ledger-05.json",
+      "bytes": 7049,
+      "records": 8
+    },
+    {
+      "file": "ledger-06.json",
+      "bytes": 7102,
+      "records": 8
+    },
+    {
+      "file": "ledger-07.json",
+      "bytes": 6194,
+      "records": 7
+    },
+    {
+      "file": "findings-01.json",
+      "bytes": 8457,
+      "records": 5
+    },
+    {
+      "file": "findings-02.json",
+      "bytes": 8505,
+      "records": 5
+    },
+    {
+      "file": "findings-03.json",
+      "bytes": 7513,
+      "records": 5
+    },
+    {
+      "file": "findings-04.json",
+      "bytes": 8353,
+      "records": 5
+    },
+    {
+      "file": "findings-05.json",
+      "bytes": 8949,
+      "records": 5
+    },
+    {
+      "file": "findings-06.json",
+      "bytes": 6524,
+      "records": 3
+    }
+  ],
+  "source_coverage": {
+    "sources/anti-patterns.md": {
+      "lines": 2084,
+      "unique_lines_read": 2084
+    },
+    "sources/design-principles.md": {
+      "lines": 205,
+      "unique_lines_read": 205
+    }
+  },
+  "unique_source_bytes": 176058,
+  "logged_source_read_bytes": 213555,
+  "source_read_execution_seconds": 0.00973447598516941,
+  "first_logged_read": "2026-10-11T12:18:28.237922+00:00",
+  "last_logged_read": "2026-10-11T12:19:38.508305+00:00",
+  "logged_read_window_seconds": 70.270383,
+  "elapsed_from_first_logged_read_seconds": 1392.820996,
+  "validation_seconds": 0.002740741998422891
+}

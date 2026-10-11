@@ -24,7 +24,8 @@ if args.kind == 'source':
 elif args.kind == 'findings':
     records = []
     for path in sorted((root / 'reviews' / args.selector).glob('findings-*.json')):
-        records.extend(json.loads(path.read_text())['findings'])
+        data = json.loads(path.read_text())
+        records.extend(data if isinstance(data, list) else data['findings'])
     for finding in records[args.start - 1:args.end]:
         print(json.dumps({key: value for key, value in finding.items() if key != 'evidence'}, indent=2))
         print('EVIDENCE', json.dumps([{key: value for key, value in evidence.items() if key != 'quote'}
@@ -34,9 +35,11 @@ else:
     entries, findings = [], []
     for path in sorted(folder.glob('*.json')):
         if path.name.startswith(('ledger-', 'entries-')):
-            entries.extend(json.loads(path.read_text())['entries'])
+            data = json.loads(path.read_text())
+            entries.extend(data if isinstance(data, list) else data['entries'])
         if path.name.startswith('findings-'):
-            findings.extend(json.loads(path.read_text())['findings'])
+            data = json.loads(path.read_text())
+            findings.extend(data if isinstance(data, list) else data['findings'])
     print(json.dumps({'slice': args.selector, 'entries': len(entries), 'findings': len(findings),
         'dispositions': {value: sum(entry['disposition'] == value for entry in entries)
                          for value in ('clear', 'finding', 'improvement')},

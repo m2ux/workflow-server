@@ -1,0 +1,129 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-26",
+      "kind": "incompatible_composition_remedies",
+      "priority": "High",
+      "entries": [
+        "AP-114",
+        "AP-107",
+        "AP-51",
+        "AP-141",
+        "DP-25"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-114",
+          "start": 1464,
+          "end": 1464,
+          "quote": "Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many."
+        },
+        {
+          "entry": "AP-51",
+          "start": 692,
+          "end": 692,
+          "quote": "Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments."
+        },
+        {
+          "entry": "AP-141",
+          "start": 1844,
+          "end": 1844,
+          "quote": "Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it."
+        },
+        {
+          "entry": "AP-107",
+          "start": 1378,
+          "end": 1378,
+          "quote": "a technique that only applies a sibling without listing a parallel set."
+        },
+        {
+          "entry": "DP-25",
+          "start": 117,
+          "end": 117,
+          "quote": "Each sibling or shared technique is its own step. A technique Protocol applies tools and resources."
+        }
+      ],
+      "problem": "AP-114 and DP-25 place composition on the run, while AP-51/AP-141 repair ordinary Protocol into valid-looking technique invocations. AP-107 explicitly exempts a sibling Apply. These are incompatible remedies and an unstated exception boundary, not proof that no conforming workflow exists.",
+      "witness": "A local Protocol calls a raw tool with an existing shared wrapper. AP-51 prescribes replacement by a hyperlinked wrapping op with arguments; AP-114 immediately flags that work invocation. Repairing its omitted inputs under AP-141 leaves the AP-114 defect.",
+      "proposed_fix": "Adopt DP-25 for ordinary techniques: AP-51 binds the wrapper as an activity/routine step; AP-141 checks required inputs at those binding sites; AP-107 removes its sibling-Apply exception. Retire dependent Protocol-invocation guidance unless a specifically named engine-entry case cannot be represented at a run binding site; any such exception must match across affected entries.",
+      "observing_check": {
+        "positive": "A local wrapper call moves to a run step with complete bindings and no residual Protocol Apply.",
+        "negative": "A primitive-owning technique invokes its raw tool and performs the reading without invoking another technique."
+      }
+    },
+    {
+      "id": "AE-27",
+      "kind": "incomplete_creation_guide_scope",
+      "priority": "Medium",
+      "entries": [
+        "AP-116",
+        "DP-28",
+        "AP-130"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-116",
+          "start": 1488,
+          "end": 1488,
+          "quote": "A technique persists a session planning artifact by bare filename"
+        },
+        {
+          "entry": "DP-28",
+          "start": 129,
+          "end": 129,
+          "quote": "Every planning artifact a workflow persists has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it."
+        },
+        {
+          "entry": "AP-130",
+          "start": 1710,
+          "end": 1710,
+          "quote": "A `{placeholder}` template (`{package_name}-plan.md`)."
+        }
+      ],
+      "problem": "The broad guide requirement is narrowed by a literal bare-filename trigger. Token-named or resolved planning artifacts can miss Detect despite needing a guide under DP-28.",
+      "witness": "A producer declares artifact {component_name}-review.md and cites its canonical output id in Protocol, without a guide. The principle requires one; the entry's bare-filename predicate does not clearly reach it.",
+      "proposed_fix": "Replace the opening Detect with: 'For each persisted planning artifact, whether its filename is literal, token-templated or resolved from a declared value, resolve the guide its producer cites. Flag a missing Template or operative fill Rules, or a competing Protocol layout.' Map artifact kinds or filename patterns to guides where one shape serves several names.",
+      "observing_check": {
+        "positive": "A token-named planning artifact without a guide receives a shape guide.",
+        "negative": "Several resolved filenames sharing one documented shape do not need separate guides per concrete name."
+      }
+    },
+    {
+      "id": "AE-28",
+      "kind": "incompatible_rule_relocation",
+      "priority": "Medium",
+      "entries": [
+        "AP-121",
+        "AP-143"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-121",
+          "start": 1552,
+          "end": 1552,
+          "quote": "Move the invariant into `## Rules` — the technique, the prompt resource, or the container `TECHNIQUE.md`."
+        },
+        {
+          "entry": "AP-143",
+          "start": 1864,
+          "end": 1864,
+          "quote": "A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules"
+        },
+        {
+          "entry": "AP-143",
+          "start": 1868,
+          "end": 1868,
+          "quote": "Delete the enumeration and rely on the entry that already commands the inherited or bundled set."
+        }
+      ],
+      "problem": "Moving a redundant follow-delivered-rules phase to Rules creates the inherited-rule restatement AP-143 removes. AP-121 needs a delete branch before relocation.",
+      "witness": "A Protocol phase says to follow already delivered conduct rules throughout, with no work outcome. Moving it verbatim to Rules follows AP-121 but fails AP-143 because it adds no invariant.",
+      "proposed_fix": "Replace Fix with: 'Delete a standing duty already supplied by inherited or delivered rules. Move a unique cross-cutting invariant to its owning Rules surface, preserving every affected reader's reach. Keep work phases in Protocol.' Cite AP-143 for the redundant-citation branch.",
+      "observing_check": {
+        "positive": "A redundant follow-the-bundle phase is deleted without creating a Rules copy.",
+        "negative": "A unique domain invariant written as a phase moves to the proper Rules entry and remains delivered."
+      }
+    }
+  ]
+}

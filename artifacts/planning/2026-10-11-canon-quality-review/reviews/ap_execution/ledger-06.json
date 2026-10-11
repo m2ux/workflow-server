@@ -1,0 +1,167 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-109–AP-116",
+  "entries": [
+    {
+      "id": "AP-109",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Durable or gateable values are targeted, but potential consumers broaden scope.",
+        "observable": "Could bind or cite admits almost any intermediate derived value.",
+        "consistency": "AP-138 requires actual destinations and deletes unused declarations.",
+        "exceptions": "Pure side effects are exempt; application-local values need explicit exclusion.",
+        "fix": "Declare promised external products and keep internal intermediates local.",
+        "expression": "Could is materially weaker than required, promised or actually consumed."
+      },
+      "rationale": "Align output declaration with its intended external contract and liveness.",
+      "finding_ids": [
+        "AE-24"
+      ],
+      "related_ids": [
+        "AP-138",
+        "AP-62",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-110",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Local implementations of shared capabilities include almost-fitting operations.",
+        "observable": "Compare verb ownership plus required input/output guarantees.",
+        "consistency": "DP-18 explicitly allows diversity the shared surface cannot absorb.",
+        "exceptions": "Shared extensions are mentioned but unsupported semantics need a boundary.",
+        "fix": "The missing-contract branch must precede deletion and rebinding.",
+        "expression": "Almost fits needs an explicit contract-gap decision."
+      },
+      "rationale": "Preserve the required result while consolidating genuinely shared capabilities.",
+      "finding_ids": [
+        "AE-25"
+      ],
+      "related_ids": [
+        "DP-18",
+        "DP-38",
+        "AP-114"
+      ]
+    },
+    {
+      "id": "AP-111",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Output recognition copies and projection-only phases are targeted.",
+        "observable": "Deleting the duplicate while retaining a complete Output tests the defect.",
+        "consistency": "DP-13 and AP-119 separate recognition from production procedure.",
+        "exceptions": "Emitting by reference and same-phase count/path results are excluded.",
+        "fix": "Keep identity criteria on Outputs and meaningful work in Protocol.",
+        "expression": "Recognition predicates are distinct from ordered tool-work recipes."
+      },
+      "rationale": "The cross-entry boundary remains coherent when the complete-contract deletion test is applied.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-119",
+        "AP-112",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-112",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Mutable workflow projections of an authoritative value are targeted.",
+        "observable": "A legal write leaving disagreement is a concrete witness.",
+        "consistency": "Fits DP-14 without prohibiting distinct correlated facts.",
+        "exceptions": "Contract prose projections do not create a second mutable state slot.",
+        "fix": "Read the source directly and remove all shadow writes.",
+        "expression": "The divergence test distinguishes redundancy from a useful snapshot fact."
+      },
+      "rationale": "The rule has an executable state-consistency witness and a complete consumer rewrite.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-14",
+        "AP-111",
+        "AP-14"
+      ]
+    },
+    {
+      "id": "AP-113",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Technique-owned delivery into the human session is explicitly targeted.",
+        "observable": "An imperative requiring the human channel is a practical predicate.",
+        "consistency": "Consistent with DP-24; it exposes faulty remedies in AP-92/AP-104.",
+        "exceptions": "Declared output assembly and external delivery capabilities are excluded.",
+        "fix": "Activity messages or checkpoints own presentation of produced values.",
+        "expression": "The distinction between assembling and presenting is plain."
+      },
+      "rationale": "The entry is coherent; the repair belongs in the entries that incorrectly prescribe presentation.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-92",
+        "AP-104",
+        "DP-24"
+      ]
+    },
+    {
+      "id": "AP-114",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Ordinary techniques invoking other techniques for work are targeted.",
+        "observable": "Apply or work-invoking references are inspectable with preservation of behaviour.",
+        "consistency": "AP-51/AP-141 remedies and AP-107's exception preserve forbidden composition.",
+        "exceptions": "Tools, resources, run bindings and non-invoking references are separated.",
+        "fix": "Run-level rebinding is coherent but dependent entries must converge on it.",
+        "expression": "One or many makes the general ban explicit; any engine exception must be named."
+      },
+      "rationale": "Choose one composition policy and align every remedy and exception with it.",
+      "finding_ids": [
+        "AE-26"
+      ],
+      "related_ids": [
+        "AP-51",
+        "AP-107",
+        "AP-141",
+        "DP-25"
+      ]
+    },
+    {
+      "id": "AP-115",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Container Capability and its orientation prose are the bounded subject.",
+        "observable": "Composition explanation can be distinguished from shared contract contribution.",
+        "consistency": "Matches DP-27's container responsibility.",
+        "exceptions": "Platform homes and the explicit README strategy note are excluded.",
+        "fix": "Keep the contribution and remove loader-mechanism narration.",
+        "expression": "What versus how-composed is supported by concrete examples."
+      },
+      "rationale": "The ownership boundary is specific and the exceptions retain the legitimate platform explanation.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-27",
+        "AP-117",
+        "AP-123"
+      ]
+    },
+    {
+      "id": "AP-116",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Planning artifacts are intended, but bare filenames narrow the trigger.",
+        "observable": "Resolve every persisted artifact's guide regardless of name representation.",
+        "consistency": "DP-28 covers all planning artifacts and AP-130 allows token names.",
+        "exceptions": "Shared guides are useful; dynamic names should not escape the check.",
+        "fix": "Guide creation is sound once all artifact naming forms are reached.",
+        "expression": "Bare filename should describe a mapping case, not delimit scope."
+      },
+      "rationale": "Close the token-named artifact gap while keeping one guide per shared shape.",
+      "finding_ids": [
+        "AE-27"
+      ],
+      "related_ids": [
+        "DP-28",
+        "AP-130",
+        "AP-96"
+      ]
+    }
+  ]
+}

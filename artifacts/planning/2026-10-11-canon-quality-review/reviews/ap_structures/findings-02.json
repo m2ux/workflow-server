@@ -1,0 +1,127 @@
+[
+  {
+    "id": "AS-06",
+    "kind": "repair-conflict",
+    "priority": "medium",
+    "entries": [
+      "AP-15",
+      "AP-10",
+      "AP-104"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-15",
+        "start": 244,
+        "end": 248,
+        "quote": "**Detect:** A step `description` holds the procedure — numbered audit criteria, a sequenced procedure, or per-item iteration logic (`numbered-protocol-phases`).\n\n**Do not flag:** Once a step BINDS a technique, absence of description is correct — `bound-step-no-description` requires removing `description` entirely (not merely de-proceduralizing) and homing content in the bound op.\n\n**Fix:** Move imperative bullets into the technique protocol; leave a one-line WHAT in unbound `description`, or delete `description` entirely when the step is bound (`bound-step-no-description`)."
+      },
+      {
+        "entry": "AP-10",
+        "start": 184,
+        "end": 188,
+        "quote": "**Detect:** Description or protocol says to repeat work with no `kind: loop` at that `steps[]` position. Two shapes: walking a collection the session carries between steps, whose declared form is `loopType: forEach` with `over` and `variable`; and repeating until a stated condition clears, whose declared form is `loopType: while` or `doWhile` with `continueWhile`. In both the repeated work is the loop's nested `steps[]`.\n\n**Do not flag:** A one-shot step. A loop already declared in `steps[]`. Per-item work inside a technique `## Protocol`, where the technique is applied once and the phase states what one application does to each entry of its declared input. A protocol phase that refines its own output until it settles.\n\n**Fix:** Replace the prose with a `kind: loop` step and move repeated work into the loop body."
+      },
+      {
+        "entry": "AP-104",
+        "start": 1340,
+        "end": 1344,
+        "quote": "**Detect:** Reusable Detect, Do not flag, and Fix criteria — or an equivalent checklist an agent reapplies across sessions — exist only inside a technique protocol, with no resource or catalogue home. Signals: a long criterion list, a classification vocabulary, a \"scan for these markers\" table.\n\n**Do not flag:** One-off orchestration (step order, which files to open, how to present findings). A thin walker that names a home and applies it (`no-technique-resource-dual-home`). Criteria already homed in a resource or the catalogue while the technique is still fat.\n\n**Fix:** Migrate the criteria into a resource or this catalogue. Leave the technique as a walker: load the home, apply it, present. A prohibited pattern belongs in the catalogue. A positive checklist belongs in a resource. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+      }
+    ],
+    "problem": "AP-15 groups numbered audit criteria, procedural phases, and per-item iteration under one relocation to Protocol. The catalog assigns reusable criteria to resources and session iteration to loop structure. Applying the generic Fix can create a second canon defect.",
+    "witness": "A step description contains a reusable numbered list of audit criteria. AP-15 says to move the imperative bullets into Protocol; AP-104 then flags those reusable criteria for living only in Protocol. A description repeating several bound steps for each session item similarly needs AP-10's loop, not a prose loop in the technique.",
+    "proposed_fix": "Replace Detect with: 'A step description carries work instructions or reusable criteria whose owning construct is elsewhere.' Replace Fix with: 'Classify the content first: encode session sequencing, iteration, and gates in steps; place one technique's procedure in its Protocol; place reusable criteria in their resource and cite it from Protocol. Leave only an unbound step's one-line purpose, or remove description from a bound step.' Keep ownership references rather than repeating their detailed tests.",
+    "observing_check": {
+      "positive": "A reusable criterion list in a step description moves to a criteria resource, with the technique applying its section.",
+      "negative": "A one-application procedure moves to Protocol; an activity loop remains a loop and is not converted to local prose."
+    }
+  },
+  {
+    "id": "AS-07",
+    "kind": "contract-representation-ambiguity",
+    "priority": "medium",
+    "entries": [
+      "AP-16",
+      "AP-62",
+      "AP-148",
+      "DP-13"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-16",
+        "start": 254,
+        "end": 260,
+        "quote": "Required inputs are named in description instead of `inputs[]`.\n\n**Detect:** Technique prose names a needed value (path, id, artifact) that is not declared in `inputs[]` with `id`/`description`.\n\n**Do not flag:** Inputs already declared; pure outputs or locals. Produced values missing from Outputs are `technique-outputs-declared`.\n\n**Fix:** Declare the input on `inputs[]` and reference `{id}` in Protocol."
+      },
+      {
+        "entry": "AP-62",
+        "start": 820,
+        "end": 824,
+        "quote": "**Detect:** (a) An unbound local: a bare `{name}` that is not a declared I/O or an ambient activity input (`{target_path}`, `{branch_name}`) and has no `{$name}` bind in the protocol. (b) A dead binding: `{$name}` is never read as `{name}`. `{$name}` appears only at the producing step; reads are bare `{name}`, and the bind is textually before every read (`backtick-code-tokens`).\n\n**Do not flag:** `{$name}` in each mutually exclusive producing branch. A `{name}` that is a declared I/O or an ambient activity input. If that one wore `$`, strip `$`.\n\n**Fix:** (a) Name the value at the producer as `` `{$name}` ``. (b) Make the consumer read `{name}`, or drop a vestigial bind."
+      },
+      {
+        "entry": "AP-148",
+        "start": 1924,
+        "end": 1928,
+        "quote": "**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.\n\n**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).\n\n**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+      },
+      {
+        "entry": "DP-13",
+        "start": 69,
+        "end": 69,
+        "quote": "On a technique, Inputs and Outputs state what the bound value is: meaning, shape, and allowed values. An Output may state how the value is recognised. Protocol states when and how, and refers to `{id}`. How attached to a value — a constraint, an order, a fallback, a side duty — is a Protocol step, or a Rule when it cuts across steps. A phase whose only work is projecting another output is not a phase."
+      }
+    ],
+    "problem": "AP-16 prescribes an inputs[] declaration with id/description, while the later canon describes authored technique inputs as headings under ## Inputs and includes merged contracts. AP-62 separately accepts ambient activity inputs. The reader is left to infer both the representation and whether an ambient value counts as declared.",
+    "witness": "A Markdown technique has a correct ### target_path under ## Inputs, or receives that slot from its container. AP-16's literal Fix points the author at inputs[] rather than that representation. A leaf using ambient target_path without any local or merged entry is excused by AP-62 but appears missing under AP-16.",
+    "proposed_fix": "AP-16 Detect: 'Technique prose consumes an externally supplied value absent from its effective input contract: its own ## Inputs, merged container Inputs, and explicitly documented ambient inputs.' Fix: 'Declare ### <id> under the owning ## Inputs section, or use the established ambient contract, then reference {id} in Protocol.' AP-62 should identify the authoritative ambient-input contract rather than imply an open-ended exception from two example names. Verify the exact supported ambient contract before adopting this wording.",
+    "observing_check": {
+      "positive": "An undeclared repository value with no merged or documented ambient supplier is flagged.",
+      "negative": "A correctly declared or inherited input is accepted; a documented ambient input is accepted consistently by both rules."
+    }
+  },
+  {
+    "id": "AS-08",
+    "kind": "effective-scope-gap",
+    "priority": "medium",
+    "entries": [
+      "AP-20",
+      "AP-24",
+      "AP-133",
+      "DP-27"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-20",
+        "start": 308,
+        "end": 312,
+        "quote": "**Detect:** Two rules read as conflicting when co-listed, and they are not separated by grouped rule keys that supply context.\n\n**Do not flag:** Rules that are truly contradictory (`no-contradictory-rules`); already-grouped arrays with clear keys.\n\n**Fix:** Place each rule under a descriptive group key that supplies the missing context (e.g. `code-commentary` vs `attribution-prohibition`)."
+      },
+      {
+        "entry": "AP-24",
+        "start": 356,
+        "end": 360,
+        "quote": "**Detect:** Two rules in the same technique (or same rules bucket) prescribe mutually exclusive behaviours.\n\n**Do not flag:** Rules disambiguated by group keys for different contexts (`rule-group-disambiguation`).\n\n**Fix:** Identify the stale rule and remove or rewrite it so the set is logically consistent."
+      },
+      {
+        "entry": "AP-133",
+        "start": 1744,
+        "end": 1748,
+        "quote": "**Detect:** In one bucket (`## Rules`, a `rules.*` array, or fill rules), an input satisfies both triggers, the handling differs, and neither entry orders them: a broad rule beside a narrower one that does not name itself the exception, two thresholds on one measure, or two criteria on one field. Test: one input in the intersection, read alone, does not determine the behaviour.\n\n**Do not flag:** Triggers that cannot both hold. A pair already ordered, by a precedence clause or a group key (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`). Mutually exclusive prescriptions (`no-contradictory-rules`). A carve-out that names the entry it excepts.\n\n**Fix:** One entry, the narrower case as a condition inside it. Where both remain, the narrower names what it overrides (`dotted-rule-address`). Splitting the triggers is valid where the split is a real distinction."
+      },
+      {
+        "entry": "DP-27",
+        "start": 125,
+        "end": 125,
+        "quote": "Capability on a container `TECHNIQUE.md` names the shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Its Protocol, where it has one, is its own and reaches no descendant. Loader composition lives in [Base-contract inheritance](/meta/resources/workflow-canonical.md#base-contract-inheritance)."
+      }
+    ],
+    "problem": "The conflict tests are bounded to one technique/bucket and allow group keys to disambiguate by themselves. The catalog also merges container rules. Conflicting obligations can therefore reach one reader from different files or buckets, and a descriptive group label does not establish disjoint applicability.",
+    "witness": "A container requires publication of raw records for every report; a leaf forbids publication of those same records for every report. Each local file/bucket is internally consistent, but the leaf's effective contract cannot satisfy both. Renaming the groups 'reporting' and 'privacy' leaves the same input subject to both rules.",
+    "proposed_fix": "AP-24 Detect: 'Two rules in the effective delivered rule set apply to the same subject and state and require mutually exclusive behavior. Name that subject/state and both consequences.' Exception: 'Explicitly disjoint trigger conditions, or a named precedence/exception that makes the required behavior unique.' AP-20 Detect: 'Rules target different contexts but the text omits the distinction needed to decide applicability.' Fix: 'State the distinct subject or trigger in the rule or group key; verify the case cannot require both incompatible actions.' Extend AP-133's comparison to the same effective set.",
+    "observing_check": {
+      "positive": "The inherited publication requirement and local publication prohibition are flagged with a shared report as the witness.",
+      "negative": "A public-data rule and a private-data rule with explicit disjoint predicates are not flagged; labels alone do not count as those predicates."
+    }
+  }
+]

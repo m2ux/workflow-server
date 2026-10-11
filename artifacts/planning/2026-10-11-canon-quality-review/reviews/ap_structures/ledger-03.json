@@ -1,0 +1,164 @@
+[
+  {
+    "id": "AP-17",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Technique-bound action/technique steps are the subject.",
+      "observable": "Presence of description or name on the bound step is directly inspectable.",
+      "consistency": "Complements AP-15's unbound procedure and AP-18's repeated bindings.",
+      "exceptions": "Checkpoint and loop inline fields are explicitly distinguished.",
+      "fix": "Home the operative content in the technique, then remove bound-step prose.",
+      "expression": "The allowed structural fields and distinct inline forms make the boundary usable."
+    },
+    "rationale": "The field-purity test is deterministic. Its inline checkpoint/loop exception is evidence for tightening AP-01, not a defect in AP-17.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-01",
+      "AP-15",
+      "AP-18"
+    ]
+  },
+  {
+    "id": "AP-18",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Several bindings of one technique differing only in prose are targeted.",
+      "observable": "Compare bindings, gates, actions, and input/output deviations.",
+      "consistency": "AP-38 handles other duplicate-binding shapes; AP-17 handles prose on each step.",
+      "exceptions": "Structural attach points and distinct pipeline uses are explicitly allowed.",
+      "fix": "Reuse, collapse, or split according to whether one or several work products exist.",
+      "expression": "The branch list is concise enough to distinguish redundant execution from distinct phases."
+    },
+    "rationale": "Two adjacent identical bindings with only different captions are detectable; distinct structural purposes are not collapsed indiscriminately.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-17",
+      "AP-38"
+    ]
+  },
+  {
+    "id": "AP-19",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Rules that carry work rather than constraints are distinguished from invariants.",
+      "observable": "Compare the rule with Protocol and show whether it adds a residual constraint.",
+      "consistency": "Inverse placement is addressed by AP-121; local constraints by AP-25.",
+      "exceptions": "Positive outcome invariants and owner-citing prohibitions are explicitly retained.",
+      "fix": "Delete duplicated work or move genuinely unstated work into its procedure.",
+      "expression": "The distinction is semantic but the entry supplies positive and negative forms."
+    },
+    "rationale": "'Write the report' is work; 'Every finding carries evidence' is an outcome constraint. No numeric threshold is needed to apply that distinction.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-25",
+      "AP-121",
+      "DP-13"
+    ]
+  },
+  {
+    "id": "AP-20",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Apparently conflicting co-listed rules lack a precise applicability test.",
+      "observable": "Name the different subjects or trigger conditions to demonstrate mere ambiguity.",
+      "consistency": "Group labels alone cannot exempt a true same-state contradiction under AP-24.",
+      "exceptions": "The true-conflict exception is sensible but requires an effective-set comparison.",
+      "fix": "Grouping repairs missing context only when the group actually states that context.",
+      "expression": "Replace 'read as conflicting' with a subject/trigger distinction the reader can test."
+    },
+    "rationale": "Grouping is presentation; explicit scope is what makes the obligations compatible.",
+    "finding_ids": [
+      "AS-08"
+    ],
+    "related_ids": [
+      "AP-24",
+      "AP-133",
+      "DP-27"
+    ]
+  },
+  {
+    "id": "AP-21",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Flat related rule families are the stated packaging subject.",
+      "observable": "Identify the shared semantic prefix/family and the enclosing rule representation.",
+      "consistency": "Grouping need not merge independent constraints into one invariant.",
+      "exceptions": "Unrelated rules and a lone rule are explicitly outside scope.",
+      "fix": "The schema's string-or-array form preserves the separate rule texts in a group.",
+      "expression": "Read shared prefix with the unrelated-rule exception; a stylistic prefix alone is insufficient."
+    },
+    "rationale": "A repeated domain family can be grouped without conflating its distinct constraints; unrelated no-* names do not form a semantic family solely by prefix.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-20",
+      "DP-45"
+    ]
+  },
+  {
+    "id": "AP-22",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Duplicate invariant ownership is tested within and across levels.",
+      "observable": "Compare trigger/consequence and verify whether separate edits could change behavior.",
+      "consistency": "The worker-reach exception is contradicted by AP-74's unconditional duplicate repair.",
+      "exceptions": "Necessary worker copies are explicit here and need the same treatment in sibling checks.",
+      "fix": "One authoring home is sound only if the reader's replacement delivery is preserved.",
+      "expression": "Distinguish independently editable duplicates from generated delivery copies."
+    },
+    "rationale": "The ownership rule is coherent locally; the catalog needs one shared delivery exception across duplicate-guidance checks.",
+    "finding_ids": [
+      "AS-09"
+    ],
+    "related_ids": [
+      "AP-23",
+      "AP-74",
+      "DP-06"
+    ]
+  },
+  {
+    "id": "AP-23",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Worker-directed behavioral rules are scoped by what their readers receive.",
+      "observable": "Inspect the effective worker delivery rather than assuming workflow.yaml arrives.",
+      "consistency": "AP-74 removes the copies this rule preserves; AP-69 forbids literal activity rules.",
+      "exceptions": "Orchestrator-only guidance is correctly excluded.",
+      "fix": "A shared delivered contract is a valid consolidation; an unreachable pointer is not.",
+      "expression": "'On the activity' must distinguish an activity definition from a workflow audience bucket."
+    },
+    "rationale": "Preserve reach while choosing one authoring home and an exact permitted placement.",
+    "finding_ids": [
+      "AS-09",
+      "AS-10"
+    ],
+    "related_ids": [
+      "AP-22",
+      "AP-30",
+      "AP-37",
+      "AP-69",
+      "AP-74",
+      "DP-06"
+    ]
+  },
+  {
+    "id": "AP-24",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Same technique or bucket is narrower than the effective rule set delivered to one reader.",
+      "observable": "A witness needs one subject/state and two mutually exclusive requirements.",
+      "consistency": "Inherited and universal/local rules can conflict across the stated source boundary.",
+      "exceptions": "Group keys excuse only genuinely disjoint conditions, not conflicting obligations with labels.",
+      "fix": "Resolve the ownership or precedence before removing a rule; staleness is not always established.",
+      "expression": "Name the effective set and common applicability rather than relying on sibling placement."
+    },
+    "rationale": "Extend the check across merged contracts and require an explicit same-state witness.",
+    "finding_ids": [
+      "AS-08"
+    ],
+    "related_ids": [
+      "AP-20",
+      "AP-133",
+      "DP-27"
+    ]
+  }
+]

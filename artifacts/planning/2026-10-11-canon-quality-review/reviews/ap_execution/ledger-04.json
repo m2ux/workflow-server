@@ -1,0 +1,168 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-93–AP-100",
+  "entries": [
+    {
+      "id": "AP-93",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Several template sections for a fact category are targeted.",
+        "observable": "Category equality is not equality of scoped operative facts.",
+        "consistency": "Distinct subjects need not share a home for their different risks.",
+        "exceptions": "Only distinct categories are exempt, missing distinct facts within one.",
+        "fix": "A global category map can collapse unrelated scoped registers.",
+        "expression": "Define same fact by subject, meaning and revision."
+      },
+      "rationale": "Use semantic identity before requiring one canonical home.",
+      "finding_ids": [
+        "AE-10"
+      ],
+      "related_ids": [
+        "AP-84",
+        "AP-85",
+        "AP-94",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-94",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Consuming-document input slots that restate another document are targeted.",
+        "observable": "The requested slot shape can contradict adjacent link-only prose.",
+        "consistency": "Consistent with AP-85's ownership rule; this is a narrower signal.",
+        "exceptions": "The consuming document's own decisions and outcomes are exempt.",
+        "fix": "Section links preserve traceability without a duplicate input summary.",
+        "expression": "The example explains why shape matters beyond a prose instruction."
+      },
+      "rationale": "The entry gives a concrete template failure; ownership must be established at the source.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-85",
+        "AP-93",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-95",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Workflow-boundary output-discipline verification is the intended subject.",
+        "observable": "Line budgets cannot decide semantic fact ownership or fidelity.",
+        "consistency": "Critical guarantees also need AP-79's failure-blocking behaviour.",
+        "exceptions": "A bound verifier is exempt but its effective check is unspecified.",
+        "fix": "Declare invariant-specific checks and an unresolved-failure outcome.",
+        "expression": "Gate is underspecified beside a blanket ban on control constructs."
+      },
+      "rationale": "Verify the property itself and make failure affect completion.",
+      "finding_ids": [
+        "AE-17"
+      ],
+      "related_ids": [
+        "AP-79",
+        "DP-09",
+        "AP-10"
+      ]
+    },
+    {
+      "id": "AP-96",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Every artifact declaration is covered, beyond lifecycle state.",
+        "observable": "Audience-field presence is observable; format suitability needs a contract.",
+        "consistency": "A review link cannot supersede a machine consumer's format.",
+        "exceptions": "Non-artifacts are exempt; code and constrained data artifacts are not.",
+        "fix": "Human/prose and agent/JSON can prescribe incompatible serialization.",
+        "expression": "Separate who reads a file from the format its consumer requires."
+      },
+      "rationale": "Retain audience declaration while honoring the artifact's explicit format contract.",
+      "finding_ids": [
+        "AE-18"
+      ],
+      "related_ids": [
+        "DP-12",
+        "AP-116"
+      ]
+    },
+    {
+      "id": "AP-97",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "User-presented durable artifact references are well specified.",
+        "observable": "An interpolated produced path is directly inspectable.",
+        "consistency": "Numeric-prefix assignment is unrelated to link correctness.",
+        "exceptions": "Chat-only subjects and internal diagnostics are appropriately excluded.",
+        "fix": "Link and persist correctly; leave naming to the producing contract.",
+        "expression": "The numeric-prefix sentence adds an unrelated naming policy."
+      },
+      "rationale": "The link rule is clear after removing the universal prefix assumption.",
+      "finding_ids": [
+        "AE-19"
+      ],
+      "related_ids": [
+        "AP-130",
+        "AP-96"
+      ]
+    },
+    {
+      "id": "AP-98",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Checkpoint messages and option descriptions duplicating structure are targeted.",
+        "observable": "Duplicated timing is observable; actual notice delivery is not checked.",
+        "consistency": "Single authority must still deliver decision-relevant information.",
+        "exceptions": "Pure status is exempt, but channels lacking timing displays are absent.",
+        "fix": "Derive notice from structure where the UI does not render it.",
+        "expression": "Schema owns the fact does not imply the user received it."
+      },
+      "rationale": "Make removal conditional on faithful user-facing rendering; no current-client defect is claimed.",
+      "finding_ids": [
+        "AE-20"
+      ],
+      "related_ids": [
+        "DP-06",
+        "DP-08"
+      ]
+    },
+    {
+      "id": "AP-99",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Checkpoint message grammar is explicitly the subject.",
+        "observable": "Trailing questions and listed interrogative forms are inspectable.",
+        "consistency": "A statement plus decision options can implement DP-04 clarification.",
+        "exceptions": "Interpolated question marks not addressed to the user are exempt.",
+        "fix": "Rewrite the subject as a statement and keep choice in options.",
+        "expression": "This is a precise local style convention, not a general ban on questions."
+      },
+      "rationale": "The grammatical rule is narrow and observable; it need not be broadened into a semantic conflict.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-05",
+        "AP-89",
+        "DP-04"
+      ]
+    },
+    {
+      "id": "AP-100",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Design standards in runtime rules are targeted without authoring-run scope.",
+        "observable": "Writing workflows and cross-session reuse are insufficient discriminators.",
+        "consistency": "Authoring is itself runtime work for an authoring technique.",
+        "exceptions": "Current-output conformance obligations need a named exception.",
+        "fix": "Delete copied criteria, not the duty to apply their canonical home.",
+        "expression": "Differentiate criterion ownership from applying a criterion now."
+      },
+      "rationale": "Clarify the boundary so legitimate authoring output invariants survive.",
+      "finding_ids": [
+        "AE-21"
+      ],
+      "related_ids": [
+        "AP-19",
+        "AP-102",
+        "AP-117"
+      ]
+    }
+  ]
+}

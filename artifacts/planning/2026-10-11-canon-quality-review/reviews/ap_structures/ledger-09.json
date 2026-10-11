@@ -1,0 +1,79 @@
+[
+  {
+    "id": "AP-65",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Iterated collections and key-addressed maps have distinct named shapes.",
+      "observable": "Observe the value's iteration or key-lookup use, then compare the id's noun shape.",
+      "consistency": "Fits DP-19's value naming and AP-66's avoidance of representation suffixes.",
+      "exceptions": "Plural collection nouns and discriminator heads are explicitly retained.",
+      "fix": "Use plural item names for collections and a meaningful mapping name for keyed maps.",
+      "expression": "The collection-versus-map distinction makes the convention more precise than a blanket plural rule."
+    },
+    "rationale": "tasks describes a collection; domain_to_range describes a keyed map. An array implementation alone need not appear in the identifier.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-19",
+      "AP-66"
+    ]
+  },
+  {
+    "id": "AP-66",
+    "disposition": "clear",
+    "checks": {
+      "scope": "I/O identifiers encode semantic values rather than direction or representation.",
+      "observable": "Check declared ids, true input/output pass-through, and the enumerated generic-name cases.",
+      "consistency": "AP-43's path-id subcase overlaps here, but the rule's own naming checks remain coherent.",
+      "exceptions": "External spellings, plural collections, and qualified head-noun phrases are expressly retained.",
+      "fix": "Rename and unify a shared concept at its owning contract rather than copy caller-specific names.",
+      "expression": "The explicit examples make this a house naming convention, not a claim that every one-word noun is inherently ambiguous."
+    },
+    "rationale": "The criterion is decidable as a stated convention; consolidation with AP-43 is reported under the duplicate owner rather than recasting the convention as a logical error.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-43",
+      "AP-55",
+      "AP-65",
+      "DP-19"
+    ]
+  },
+  {
+    "id": "AP-67",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Rule slugs are evaluated for an available equally clear affirmative invariant.",
+      "observable": "Compare candidate names against the rule's actual trigger and obligation.",
+      "consistency": "DP-19 explicitly makes positive rule names a clarity preference, not an absolute prohibition.",
+      "exceptions": "Intentional clear negations are retained rather than mechanically renamed.",
+      "fix": "Rename only when the affirmative form preserves or improves clarity.",
+      "expression": "A qualitative comparison is appropriate here; a numeric name-length threshold would not settle it."
+    },
+    "rationale": "This is a preference with an explicit clarity exception. never-resume may be clearer than an invented positive euphemism and need not be changed.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-19",
+      "AP-58"
+    ]
+  },
+  {
+    "id": "AP-68",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Technique claims about activity flow and human gates are the intended boundary.",
+      "observable": "Ask whether truth depends on the surrounding graph or on one local application.",
+      "consistency": "The 'no separate commit step follows' safe example asserts exactly the surrounding sequence being prohibited.",
+      "exceptions": "Local input iteration should also be explicit so AP-10's valid case survives.",
+      "fix": "Move actual routing/approval to activity structure and keep emitted evidence local.",
+      "expression": "Remove the graph-position example and qualify loop/iteration as activity-level."
+    },
+    "rationale": "Purpose words can be stage-neutral; a claim about which step follows the technique cannot be.",
+    "finding_ids": [
+      "AS-22"
+    ],
+    "related_ids": [
+      "AP-10",
+      "AP-113",
+      "DP-20"
+    ]
+  }
+]

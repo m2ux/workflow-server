@@ -1,0 +1,162 @@
+[
+  {
+    "id": "AP-49",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Protocol narration of server delivery mechanics is the named surface.",
+      "observable": "Identify whether the clause tells the reader an action or merely describes packaging.",
+      "consistency": "AP-50 owns invocation recipes and AP-150 owns irrelevant engine internals.",
+      "exceptions": "An engine technique whose domain is delivery behavior is explicitly allowed.",
+      "fix": "Delete packaging narration while retaining the imperative and applicable resource reference.",
+      "expression": "The delivery examples and domain exception make the scope concrete."
+    },
+    "rationale": "An ordinary analysis technique need not teach where its resources appear in a tool response; an engine delivery technique may need that operational fact.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-50",
+      "AP-150"
+    ]
+  },
+  {
+    "id": "AP-50",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Harness/MCP call recipes outside the owning tool-use surface are the target.",
+      "observable": "Locate the call name, arguments, or sequence and classify the technique's domain.",
+      "consistency": "Tool wrappers and engine/conduct entry surfaces are explicitly distinguished from ordinary resource consultation.",
+      "exceptions": "The primitive wrapper may name its own tool; plain applicable references carry no recipe.",
+      "fix": "Remove a foreign tool recipe while preserving the reader's obligation or owned call.",
+      "expression": "The domain-based exception is substantive, not just a file-name whitelist."
+    },
+    "rationale": "The entry supplies a workable ownership boundary; AP-51's replacement instruction needs separate reconciliation with the no-invocation rule.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-49",
+      "AP-51",
+      "AP-114",
+      "AP-150"
+    ]
+  },
+  {
+    "id": "AP-51",
+    "disposition": "finding",
+    "checks": {
+      "scope": "A raw tool call with an existing shared owner is clearly identified.",
+      "observable": "Resolve the wrapping capability and inspect the local Protocol call.",
+      "consistency": "Its proposed in-Protocol wrapper invocation triggers AP-114; a consult-only technique link can trigger AP-157.",
+      "exceptions": "The wrapper's own raw call and unaided sibling recovery have express exceptions.",
+      "fix": "Move shared execution to an activity/routine bind and pass the product to local work.",
+      "expression": "Canonical spelling must be separated from permission to invoke another technique here."
+    },
+    "rationale": "The shared-capability goal is valid, but its current repair creates a forbidden Protocol-to-Protocol call.",
+    "finding_ids": [
+      "AS-18"
+    ],
+    "related_ids": [
+      "AP-114",
+      "AP-157",
+      "DP-25"
+    ]
+  },
+  {
+    "id": "AP-52",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Uses of formal declared values, not coincidental English or declaration headings, are targeted.",
+      "observable": "Resolve the token to its declaration and compare exact spelling and designator form.",
+      "consistency": "AP-62 distinguishes local bind sites from reads; AP-63 owns code-span formatting.",
+      "exceptions": "Ordinary language and unrelated literal parameters are expressly excluded.",
+      "fix": "Use the declared designator and tie orphan enum/index values to their controlling input.",
+      "expression": "The token-kind distinctions are concrete despite the variety of examples."
+    },
+    "rationale": "An actual target_path reference requires its designator; a prose word merely coinciding with a symbol does not.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-62",
+      "AP-63",
+      "DP-16"
+    ]
+  },
+  {
+    "id": "AP-53",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Rule-address spelling and delivered rule visibility are combined in one scope.",
+      "observable": "A static tree can prove declarations but may not prove a dynamic role bundle.",
+      "consistency": "Bare-name ancestry wording and bundled-contract reach need one resolution model.",
+      "exceptions": "Resource/README links and the pre-session override are recognized but unknown bundle evidence is not.",
+      "fix": "Correct the address and establish delivery independently; one does not prove the other.",
+      "expression": "Separate grammar, lookup context, and audit evidence instead of 'shorter than the rules'."
+    },
+    "rationale": "The difficult case is unavailable delivery evidence, not lack of a numerical metric; record that limit explicitly.",
+    "finding_ids": [
+      "AS-19"
+    ],
+    "related_ids": [
+      "DP-36",
+      "AP-145",
+      "AP-143"
+    ]
+  },
+  {
+    "id": "AP-54",
+    "disposition": "clear",
+    "checks": {
+      "scope": "References to formal I/O, rule, technique, or resource targets are explicitly classified.",
+      "observable": "Resolve the target kind and check its specified reference form.",
+      "consistency": "It explicitly defers forbidden technique invocation/reference cases to AP-114/AP-157.",
+      "exceptions": "Domain prose and already-anchored same-step anaphora are clearly allowed.",
+      "fix": "Anchor a valid target or remove a genuinely dangling reference.",
+      "expression": "The precedence sentences prevent a link-only repair from laundering a forbidden technique reference."
+    },
+    "rationale": "This entry has a useful distinction between malformed references and references that should not exist on the surface at all.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-48",
+      "AP-51",
+      "AP-114",
+      "AP-157"
+    ]
+  },
+  {
+    "id": "AP-55",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Repeated input contracts and synonym drift are identifiable; workflow-wide context is a special scope.",
+      "observable": "Resolve the common ancestor and semantic identity, not just repeated spelling.",
+      "consistency": "The two/three-leaf exception overlaps the unconditional workflow-wide hoist instruction.",
+      "exceptions": "The leaf-count carve-out correctly does not excuse inherited redeclarations under AP-148.",
+      "fix": "Hoist to the contract owner and remove duplicates, retaining producer outputs where required.",
+      "expression": "Replace 'many' with a stated ownership test or an explicitly limited count policy."
+    },
+    "rationale": "The central reuse rule works; make the workflow-wide case's precedence over the small-leaf carve-out explicit.",
+    "finding_ids": [
+      "AS-20"
+    ],
+    "related_ids": [
+      "AP-148",
+      "AP-58",
+      "DP-27"
+    ]
+  },
+  {
+    "id": "AP-56",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Argument slot names and argument lists are distinguished from values and literals.",
+      "observable": "Check whether a token names the invoked operation's parameter or a declared bound value.",
+      "consistency": "Matches DP-16; the rule formats an otherwise permitted invocation rather than authorizing one.",
+      "exceptions": "JSON/query payloads, ordinary emphasis, and correctly marked values are expressly exempt.",
+      "fix": "The cited principle provides the exact parentheses-and-italic form.",
+      "expression": "The repeated 'technique/technique' phrase is a minor copy-edit, with no substantive ambiguity in the parameter test."
+    },
+    "rationale": "A parameter slot and its value occupy different typographic forms; apply the no-invocation checks before this formatting check.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-16",
+      "AP-114",
+      "AP-52",
+      "AP-63"
+    ]
+  }
+]

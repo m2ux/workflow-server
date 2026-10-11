@@ -1,0 +1,169 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-69–AP-76",
+  "entries": [
+    {
+      "id": "AP-69",
+      "disposition": "finding",
+      "checks": {
+        "scope": "All activity-file rules are explicitly in scope.",
+        "observable": "Presence of rules is a reproducible structural predicate.",
+        "consistency": "AP-23 permits a placement this entry always rejects.",
+        "exceptions": "None is explicit but conflicts with the worker-reach route.",
+        "fix": "Technique/container migration can satisfy both after policy alignment.",
+        "expression": "The colon in the intro is awkward; ownership matters more."
+      },
+      "rationale": "Preserve one clear placement policy and distinguish activity files from workflow audience buckets.",
+      "finding_ids": [
+        "AE-01"
+      ],
+      "related_ids": [
+        "AP-23",
+        "AP-37",
+        "DP-20"
+      ]
+    },
+    {
+      "id": "AP-70",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Folder and name placement is the intended subject.",
+        "observable": "Shape-origin lacks an operational dependency test.",
+        "consistency": "Detect rejects consumer count; Fix relies on it.",
+        "exceptions": "Existing groups and hypothetical reuse are usefully distinguished.",
+        "fix": "Classification can send an intrinsic primitive back to a flagged home.",
+        "expression": "Replace shape-origin shorthand with contract-determining dependencies."
+      },
+      "rationale": "The intrinsic-versus-seam boundary is useful but needs a reproducible classifier.",
+      "finding_ids": [
+        "AE-02"
+      ],
+      "related_ids": [
+        "DP-18",
+        "AP-110"
+      ]
+    },
+    {
+      "id": "AP-71",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Tool-describing techniques, bootstrap resources and docs are named.",
+        "observable": "Compare the claim with the actual returned payload.",
+        "consistency": "Consistent with DP-21's harness-contract requirement.",
+        "exceptions": "Accurate descriptions and recipe-free non-engine surfaces are excluded.",
+        "fix": "Correction or removal closes the inaccurate claim.",
+        "expression": "The return-shape example makes the mismatch concrete."
+      },
+      "rationale": "The entry supplies a direct qualitative comparison without needing a numeric threshold.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-21",
+        "AP-73",
+        "AP-75"
+      ]
+    },
+    {
+      "id": "AP-72",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Authoritative bootstrap sequences are the bounded subject.",
+        "observable": "Each hop is testable; the terminal action is underspecified.",
+        "consistency": "Compatible with standalone bootstrap and actual-return principles.",
+        "exceptions": "Non-engine surfaces correctly avoid bootstrap recipes.",
+        "fix": "Completing missing hops works once the endpoint is fixed.",
+        "expression": "First meaningful action should name a declared execution boundary."
+      },
+      "rationale": "Keep the hop test and identify exactly when bootstrap is complete.",
+      "finding_ids": [
+        "AE-04"
+      ],
+      "related_ids": [
+        "DP-21",
+        "DP-33",
+        "AP-145"
+      ]
+    },
+    {
+      "id": "AP-73",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Authored harness names across techniques and docs are in scope.",
+        "observable": "Existence and consistent action naming are directly comparable.",
+        "consistency": "The harness owns the canonical name under DP-21.",
+        "exceptions": "Primitive ownership differs from stale-name validity.",
+        "fix": "Replace absent or inconsistent names and recheck the surface.",
+        "expression": "Concrete stale-name exemplars convey the defect."
+      },
+      "rationale": "The name comparison is observable; no live harness correctness claim is made by this quality review.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-21",
+        "AP-51",
+        "AP-71"
+      ]
+    },
+    {
+      "id": "AP-74",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Behavioural guidance across techniques and tool descriptions is broad.",
+        "observable": "Duplicate statements are observable, but delivery reach matters.",
+        "consistency": "AP-23 forbids flagging the required worker copies this Detect flags.",
+        "exceptions": "The meta-only carve-out misses isolated worker delivery.",
+        "fix": "Reference-only deletion can remove the only delivered instruction.",
+        "expression": "Near-identical needs semantic identity, not merely similar wording."
+      },
+      "rationale": "Deduplication must establish a reachable owner before copies disappear.",
+      "finding_ids": [
+        "AE-03"
+      ],
+      "related_ids": [
+        "AP-23",
+        "DP-06",
+        "DP-36",
+        "AP-157"
+      ]
+    },
+    {
+      "id": "AP-75",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Legitimate engine/bootstrap/tool descriptions are named.",
+        "observable": "Value and partial-return signals lack a relevance predicate.",
+        "consistency": "Distinct from AP-71's false claims, but boundary needs stating.",
+        "exceptions": "Omitting tools entirely is covered; incidental metadata is not.",
+        "fix": "Describe the value repeats the goal without a decision test.",
+        "expression": "Undersells is evaluative; name the omitted usable capability."
+      },
+      "rationale": "Test omission against the reader's decisions and bindings, not exhaustive return-field coverage.",
+      "finding_ids": [
+        "AE-05"
+      ],
+      "related_ids": [
+        "AP-71",
+        "AP-76",
+        "DP-21"
+      ]
+    },
+    {
+      "id": "AP-76",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Guidance and the harness surface are both reached.",
+        "observable": "Return inclusion is observable but insufficient for redundancy.",
+        "consistency": "No temporal or effect equivalence is required.",
+        "exceptions": "Permissions and audiences are covered; freshness and mutation are not.",
+        "fix": "Deletion can eliminate a distinct necessary observation or effect.",
+        "expression": "Strict subset is precise about shape, not substitutability."
+      },
+      "rationale": "Extend the comparison to state, timing, effects and supported consumers.",
+      "finding_ids": [
+        "AE-06"
+      ],
+      "related_ids": [
+        "AP-75",
+        "DP-21"
+      ]
+    }
+  ]
+}

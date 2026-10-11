@@ -1,0 +1,167 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-85–AP-92",
+  "entries": [
+    {
+      "id": "AP-85",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Template slots requiring another artifact's owned content are targeted.",
+        "observable": "Trace each required copied fact to its canonical home.",
+        "consistency": "Matches DP-06 and the slot-shape specialization AP-94.",
+        "exceptions": "Newly produced content with this template as owner is exempt.",
+        "fix": "A link instruction removes the copied authoritative statement.",
+        "expression": "Canonical home is the meaningful predicate, not section title alone."
+      },
+      "rationale": "The entry remains useful if ownership is established before treating the section as a copy.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-93",
+        "AP-94",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-86",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Verdict tables with an expected all-pass state are broadly targeted.",
+        "observable": "Expected steady state does not prove redundant evidence.",
+        "consistency": "Output economy must preserve proof of coverage.",
+        "exceptions": "Machine parsing is exempt but human-verifiable evidence is not.",
+        "fix": "One-line replacement can erase criterion-level observations.",
+        "expression": "All-green status is an unsuitable proxy for ceremony."
+      },
+      "rationale": "Preserve distinct observations and traceability even when every result passes.",
+      "finding_ids": [
+        "AE-11"
+      ],
+      "related_ids": [
+        "DP-12",
+        "AP-95"
+      ]
+    },
+    {
+      "id": "AP-87",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "All headed nulls and null-confirmation checkpoints are included.",
+        "observable": "Empty shape is inspectable; absence and unexamined scope can differ.",
+        "consistency": "Omission needs the artifact's consumer-contract boundary.",
+        "exceptions": "Required null representation and zero-result evidence need exceptions.",
+        "fix": "Omit decorative emptiness while preserving required null values.",
+        "expression": "None is not automatically absence of useful evidence."
+      },
+      "rationale": "Keep the anti-ceremony goal and state the required-schema exception.",
+      "finding_ids": [
+        "AE-12"
+      ],
+      "related_ids": [
+        "AP-86",
+        "AP-96"
+      ]
+    },
+    {
+      "id": "AP-88",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Repeated checkpoint decisions are the intended subject.",
+        "observable": "Answer-space overlap needs semantic decision and evidence identity.",
+        "consistency": "Distinct binary decisions must still satisfy AP-05.",
+        "exceptions": "Non-overlapping answer spaces is too narrow an exception.",
+        "fix": "Merging by option labels alone can combine independent approvals.",
+        "expression": "Subsumed should mean determined decision and effects, not shared labels."
+      },
+      "rationale": "Prove that the first decision determines the second before merging gates.",
+      "finding_ids": [
+        "AE-13"
+      ],
+      "related_ids": [
+        "AP-05",
+        "AP-89"
+      ]
+    },
+    {
+      "id": "AP-89",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Acknowledgement-only gates are well bounded by the main Detect.",
+        "observable": "Effects and attestation records make the core test observable.",
+        "consistency": "The default-frequency tail does not establish AP-88 redundancy.",
+        "exceptions": "Identity-and-timestamp attestations are a useful explicit exception.",
+        "fix": "Message conversion fits acknowledgements; the default tail overreaches.",
+        "expression": "Always default describes history rather than decision independence."
+      },
+      "rationale": "Keep the main acknowledgement test and remove the unsupported default-frequency inference.",
+      "finding_ids": [
+        "AE-13"
+      ],
+      "related_ids": [
+        "AP-88",
+        "AP-05"
+      ]
+    },
+    {
+      "id": "AP-90",
+      "disposition": "improvement",
+      "checks": {
+        "scope": "Agent-facing template guides are the bounded subject.",
+        "observable": "Redundant wrappers are testable by information loss on deletion.",
+        "consistency": "Worked examples can contribute the missing distinction.",
+        "exceptions": "Operative references are exempt; instructive contrast pairs should be too.",
+        "fix": "Fold lessons only when the rule preserves the demonstrated boundary.",
+        "expression": "Ceremony should mean no operative contribution, not an example format."
+      },
+      "rationale": "Qualify the Good/Bad prohibition with the same redundancy test used for nearby shapes.",
+      "finding_ids": [
+        "AE-14"
+      ],
+      "related_ids": [
+        "DP-12",
+        "AP-116"
+      ]
+    },
+    {
+      "id": "AP-91",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Tracked lifecycle records are targeted without current-versus-history scope.",
+        "observable": "Repeated current claims can be distinguished from unique events.",
+        "consistency": "Historical facts do not violate one authoritative current-state home.",
+        "exceptions": "No exception covers required chronology or durable aggregate evidence.",
+        "fix": "Overwrite and delete remedies can destroy the evidence chain.",
+        "expression": "Append-only is a data model, not itself a smell."
+      },
+      "rationale": "Constrain duplicated current state while preserving required event history.",
+      "finding_ids": [
+        "AE-15"
+      ],
+      "related_ids": [
+        "DP-06",
+        "AP-96"
+      ]
+    },
+    {
+      "id": "AP-92",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Resource procedure and graph routing share one Detect.",
+        "observable": "Operational verbs and routing references are observable.",
+        "consistency": "Gate-routing migration to techniques conflicts with AP-68.",
+        "exceptions": "Fill vocabularies and shape rules are sensibly retained.",
+        "fix": "Remediation must distinguish activity control from technique work.",
+        "expression": "Does versus fills hides two separate destinations for moved content."
+      },
+      "rationale": "Move each instruction to the layer that can own it, preserving bindings and anchors.",
+      "finding_ids": [
+        "AE-16"
+      ],
+      "related_ids": [
+        "AP-68",
+        "AP-104",
+        "AP-113",
+        "DP-20"
+      ]
+    }
+  ]
+}

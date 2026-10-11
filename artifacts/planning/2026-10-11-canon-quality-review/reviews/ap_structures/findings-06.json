@@ -1,0 +1,143 @@
+[
+  {
+    "id": "AS-20",
+    "kind": "optional-quantifier-clarification",
+    "priority": "low",
+    "entries": [
+      "AP-55",
+      "AP-148"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-55",
+        "start": 736,
+        "end": 740,
+        "quote": "**Detect:** The same input is re-declared on many techniques instead of once on the smallest common container (group or workflow-root `TECHNIQUE.md`). A path-flavored id (`planning-folder-path`) is the related shape; the canonical id is the noun the value is (`canonical-artifact-ids`). Also flag synonym drift for one concept across leaves.\n\n**Do not flag:** An input shared by only two or three techniques whose common ancestor declares none of them. That carve-out counts leaves, so it never covers a leaf declaration beside an ancestor's (`inherited-input-re-declared`).\n\n**Fix:** Hoist the shared input to the container under one canonical id, delete the per-technique declarations, and reference `{id}`. Hoist a genuinely workflow-wide contextual input (artifact location, target path) even when some leaves never reference it. A producer/consumer value still hoists: the shared input on the ancestor, and the producing technique also declares it as an output (`snake-case-symbols`). A hoist that leaves the leaf declarations in place is `inherited-input-re-declared`."
+      },
+      {
+        "entry": "AP-148",
+        "start": 1924,
+        "end": 1928,
+        "quote": "**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.\n\n**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).\n\n**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+      }
+    ],
+    "problem": "'Many techniques' is not a named population, while the exception counts two or three leaves and the Fix separately requires hoisting genuinely workflow-wide context. Readers can infer a four-leaf threshold, but cannot tell whether that is the intended cost policy or a shorthand for contract ownership.",
+    "witness": "Three leaves share a workflow-wide location input and no ancestor declares it. The leaf-count exception excuses them, while the Fix explicitly says workflow-wide contextual inputs hoist even when some leaves do not reference them. The exception and the workflow-wide case need an explicit order.",
+    "proposed_fix": "Prefer a scope test: 'Hoist an input when a common container owns that shared semantic contract; leaf-specific inputs stay at their leaves. Workflow-wide context belongs to the root contract regardless of use count.' If the two/three-leaf exception is intentional, state its limit and its precedence explicitly: 'For non-workflow-wide inputs, a duplicate declaration on at most three leaves may remain when their common ancestor has no other shared inputs.' Keep AP-148 as the separate inherited-duplicate check.",
+    "observing_check": {
+      "positive": "A workflow-wide planning location has one root declaration even when only three leaves consume it.",
+      "negative": "Three unrelated leaf-specific values sharing a spelling are not merged merely to meet a count rule."
+    }
+  },
+  {
+    "id": "AS-21",
+    "kind": "conditional-note-scope-ambiguity",
+    "priority": "medium",
+    "entries": [
+      "AP-59",
+      "DP-31",
+      "AP-108"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-59",
+        "start": 784,
+        "end": 788,
+        "quote": "**Detect:** A caveat on one instruction — a condition, a fallback, an error path, or a prohibition — is an indented sub-bullet (`  - …`) or a *when* / *if* / *otherwise* clause inside the step sentence. The step regex strips indent, so the sub-bullet becomes a peer step. Two clauses of one predicate (`when {passed} is false` beside `if the run emitted warnings`) read as two branches.\n\n**Do not flag:** An ordered sub-action or a precedence ladder. An If / Else if / Otherwise ladder over one choice, at any indent. A constraint that spans steps (`structure-backed-constraints`, `no-rule-protocol-restatement`). A one-step rule filed as global (`local-rule-as-note`, `no-one-step-rules`).\n\n**Fix:** Put the caveat in a `>` note under the instruction. One caveat is the note's prose (`  > If the PR has not merged, wait`); two or more are bullets (`  > - When …`). Two clauses of one predicate become one note. A line opening with `>` folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes)."
+      },
+      {
+        "entry": "DP-31",
+        "start": 141,
+        "end": 141,
+        "quote": "Inside a Protocol step, the unconditional instruction is the bullet, and each *when* / *if* / *otherwise* branch is a `>` note under it. A note with two or more items gives each a bullet, written `  > - When …`. A lone caveat is the note's prose. A line opening with `>` is not a step. A condition that selects a step, an activity, or a path is [Encode Constraints as Structure](#9-encode-constraints-as-structure)."
+      },
+      {
+        "entry": "AP-108",
+        "start": 1394,
+        "end": 1394,
+        "quote": "**Do not flag:** Bullets that elaborate one phase — how-to for one write, constraints on one apply, a loop body over one entry, mode branches of one action. A `>` caveat under a primary instruction. A single-bullet step."
+      }
+    ],
+    "problem": "AP-59 explains that indentation is stripped and a conditional sub-bullet becomes a peer step, but exempts an If/Else-if/Otherwise ladder 'at any indent'. DP-31 requires conditional branches inside a Protocol step to be notes. The exception does not distinguish a primary choice instruction from a caveat qualifying another instruction.",
+    "witness": "Under 'Resolve the endpoint', an indented If/Else-if/Otherwise ladder describes fallback cases of that instruction. It is a conditional caveat inside one step under DP-31, yet AP-59's 'at any indent' exemption appears to allow the sub-bullets whose flattening the Detect warns about. This is an exception boundary conflict, not a claim that every ordered ladder is prohibited.",
+    "proposed_fix": "Replace the ladder exception with: 'An ordered sub-action or precedence ladder that is itself the work instruction, rather than a conditional caveat on another instruction.' Add: 'Fallback branches qualifying one instruction use the same note form even when written as If/Else-if/Otherwise.' Keep the condition-to-structure distinction for branches that select whole steps or activities.",
+    "observing_check": {
+      "positive": "An indented fallback ladder qualifying one lookup is flagged until represented as a note under that lookup.",
+      "negative": "A primary ordered work sequence remains ordered work; a proper conditional note and an activity-level structural branch both pass."
+    }
+  },
+  {
+    "id": "AS-22",
+    "kind": "internal-exception-mismatch",
+    "priority": "medium",
+    "entries": [
+      "AP-68",
+      "AP-10",
+      "DP-20"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-68",
+        "start": 892,
+        "end": 896,
+        "quote": "**Detect:** Technique Capability, Protocol, or Rules (a) mention a stage or activity (named, or \"calling/consuming/producing activity\"), a checkpoint, a loop or iteration, a transition or decision route, or a position in the activity flow (\"after each task\", \"before user confirmation\", \"before the next step\"), or (b) prescribe user confirmation, approval, or choice as if the technique owns that gate. Test: the sentence answers where or when in the workflow, which checkpoint surrounds the work, or how the user decides.\n\n**Do not flag:** Purpose-phrased work with no orchestration locus (\"final validation\", \"no separate commit step follows\"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on; bare present/surface-to-user with no stage or gate named (`session-interaction-in-technique`).\n\n**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity exits, `when` gates and loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`."
+      },
+      {
+        "entry": "AP-10",
+        "start": 186,
+        "end": 186,
+        "quote": "**Do not flag:** A one-shot step. A loop already declared in `steps[]`. Per-item work inside a technique `## Protocol`, where the technique is applied once and the phase states what one application does to each entry of its declared input. A protocol phase that refines its own output until it settles."
+      },
+      {
+        "entry": "DP-20",
+        "start": 97,
+        "end": 97,
+        "quote": "An activity owns stage, checkpoints, transitions, and graph progress. A technique produces values and durable evidence, and does not name the activity flow or the gates that consume its outputs."
+      }
+    ],
+    "problem": "The explicit safe example 'no separate commit step follows' states the technique's position in the surrounding run, exactly what AP-68's Detect and test prohibit. The opening list also says 'a loop or iteration' without qualifying activity-level scope, although AP-10 permits local per-item work.",
+    "witness": "A technique says 'No separate commit step follows.' Its truth depends on what the binding run does after this technique, so it answers where/when in workflow flow; the same string is expressly placed under Do not flag. By contrast, 'final validation' can name a product without making a graph claim.",
+    "proposed_fix": "Remove 'no separate commit step follows' from Do not flag. Retain purpose examples such as 'final validation' only when they do not assert surrounding graph structure. Qualify Detect's loop language as 'an activity-level loop or iteration position'; explicitly retain a technique's internal iteration over its own input/output under AP-10's boundary.",
+    "observing_check": {
+      "positive": "'No separate commit step follows' is flagged and the owning activity carries the sequencing fact.",
+      "negative": "'Validate each finding in the declared input and emit the assessment' remains local technique work, and 'final validation' alone is not flagged."
+    }
+  },
+  {
+    "id": "AS-23",
+    "kind": "evidence-surface-addition",
+    "priority": "low",
+    "entries": [
+      "AP-04",
+      "AP-06",
+      "AP-07"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-04",
+        "start": 104,
+        "end": 104,
+        "quote": "**Detect:** A new id, filename pattern, rule slug, or vocabulary term is introduced without checking existing conventions and without user approval."
+      },
+      {
+        "entry": "AP-06",
+        "start": 132,
+        "end": 134,
+        "quote": "**Detect:** The agent chooses among materially different interpretations of user intent without asking, then executes.\n\n**Do not flag:** Unambiguous instructions; routine defaults the user already established in-session."
+      },
+      {
+        "entry": "AP-07",
+        "start": 144,
+        "end": 146,
+        "quote": "**Detect:** A done/complete claim, commit, or close-out proceeds without verifying each scope-manifest item is addressed.\n\n**Do not flag:** An interim status update that does not claim completion."
+      }
+    ],
+    "problem": "Several early entries test historical conduct: whether search, clarification, approval, or scope verification happened. A definition snapshot alone cannot decide those facts. The catalog does not identify the required observation or the result when that observation is absent.",
+    "witness": "A well-formed name in a captured file provides no evidence that the author skipped convention search, just as a done statement alone does not show whether verification occurred. Treating absent history as a violation would be unsupported; treating the snapshot as a pass would also be unsupported.",
+    "proposed_fix": "Add a short evidence convention to the catalog: 'A conduct test names its required record: request/approval, scope manifest, session trace, or recorded check. A source snapshot proves only source properties. When the required conduct record is unavailable, report the criterion as unevidenced and state what record would settle it.' Attach that evidence requirement to AP-04, AP-06, AP-07, and the other conduct entries during a coordinated update.",
+    "observing_check": {
+      "positive": "A trace explicitly records choosing among two material intents and executing without a question: AP-06 can be decided and flagged.",
+      "negative": "A source-only snapshot with no conversation trace is marked unevidenced for clarification conduct; an observed user-established default is accepted."
+    }
+  }
+]

@@ -1,0 +1,39 @@
+[
+  {
+    "id": "AS-24",
+    "kind": "optional-reference-economy",
+    "priority": "low",
+    "entries": [
+      "AP-48",
+      "AP-54",
+      "AP-144"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-48",
+        "start": 652,
+        "end": 656,
+        "quote": "**Detect:** Protocol uses vague nouns (\"the output\", \"the result\", \"the artifact\", \"the analysis\") instead of `{output_id}` or `{output_id}.field`.\n\n**Do not flag:** References that already cite canonical output ids; non-output prose.\n\n**Fix:** Substitute the declared output id (and sub-field when needed) for every vague reference."
+      },
+      {
+        "entry": "AP-54",
+        "start": 726,
+        "end": 726,
+        "quote": "**Do not flag:** Domain prose that names no formal artifact. Anaphora for a noun already linked once in the same step. A reference to another technique, whose disposal is removal: `pass-orchestration-in-technique` where it invokes work, `unreachable-operation-reference` where it does not. Those two take precedence."
+      },
+      {
+        "entry": "AP-144",
+        "start": 1878,
+        "end": 1878,
+        "quote": "**Do not flag:** A reference whose target is declared but wears the wrong form (`anchored-protocol-references`). A needed value absent from `inputs[]` (`technique-inputs-declared`). A vague noun for a declared output (`brace-output-references`). Magnitudes (`branch-on-undeclared-threshold`). Anaphora for a noun already anchored once in the same step. A precondition another technique guarantees, where the step names that technique."
+      }
+    ],
+    "problem": "AP-48 treats generic output nouns as vague by form, whereas AP-54 and AP-144 allow same-step anaphora after an anchored noun. These entries can coexist as stricter output-specific style, but that policy is not stated; a unique, immediately anchored output may not be semantically vague at all.",
+    "witness": "'Assemble {audit_report}. Persist the report.' has one output referent in the instruction. AP-48 prescribes repeating the designator; the general reference entries accept the anaphora. This is optional consistency and expression work, not a demonstrated logical contradiction between an entry and an exception on a different entry.",
+    "proposed_fix": "Choose and state one policy. Recommended Detect: 'An output reference cannot be resolved to exactly one declared output or field from the current instruction and its already anchored noun.' Do not flag: 'Same-instruction anaphora with a unique anchored output.' If every output mention must instead be a designator for machine processing, retain the stricter test and state that concrete requirement rather than calling every noun vague.",
+    "observing_check": {
+      "positive": "With two candidate outputs, 'persist the result' is flagged until the intended output is named.",
+      "negative": "With one immediately anchored output, unambiguous anaphora passes under the recommended policy; the alternative machine-processing policy explicitly requires repetition."
+    }
+  }
+]

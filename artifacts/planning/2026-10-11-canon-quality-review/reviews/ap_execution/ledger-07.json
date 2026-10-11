@@ -1,0 +1,141 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "primary_range": "AP-117–AP-123",
+  "entries": [
+    {
+      "id": "AP-117",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Leaf rules and phases duplicating engine-owned mechanics are targeted.",
+        "observable": "Compare the repeated contract with its named authoritative home.",
+        "consistency": "Consistent with DP-06 and the more specific entry-prompt rule.",
+        "exceptions": "Unique domain constraints and authoritative engine surfaces are excluded.",
+        "fix": "Fix the owner once and delete non-contributing restatements.",
+        "expression": "The no-domain-invariant test prevents removing substantive local guarantees."
+      },
+      "rationale": "The rule supplies ownership and contribution tests; delivery must be established before applying deletion.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-122",
+        "AP-115",
+        "DP-06"
+      ]
+    },
+    {
+      "id": "AP-118",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Prose that substitutes for declared binding resolution is the subject.",
+        "observable": "Remove the sentence and identify the unresolved binding or repeated mechanics.",
+        "consistency": "Input meaning remains separate from call-site remapping.",
+        "exceptions": "Binding owners, defaults and already-bound consumption are excluded.",
+        "fix": "Close the actual binding gap before deleting prose.",
+        "expression": "Obtain is qualified by bind resolution, not every act of deriving an output."
+      },
+      "rationale": "The test distinguishes binding mechanics from domain production and names concrete structural remedies.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-119",
+        "AP-42",
+        "AP-35"
+      ]
+    },
+    {
+      "id": "AP-119",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Input and Output descriptions carrying procedure are explicitly named.",
+        "observable": "Imperatives, sequencing and recovery duties expose misplaced work.",
+        "consistency": "Recognition criteria stay in Outputs under DP-13/AP-111.",
+        "exceptions": "Defaults, value shape and recognition predicates are appropriately excluded.",
+        "fix": "Move work into Protocol or cross-cutting Rules while retaining the contract.",
+        "expression": "What the value is versus how to produce it is a workable qualitative test."
+      },
+      "rationale": "The boundaries and exceptions resolve the principal contract-versus-procedure ambiguity.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-111",
+        "AP-118",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-120",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Capability procedure, foreign links and designators are precisely enumerated.",
+        "observable": "Both semantic procedure and mechanical text forms are inspectable.",
+        "consistency": "A stricter field-purity convention can coexist with DP-13.",
+        "exceptions": "Plain products and container contributions are allowed.",
+        "fix": "Move operational detail to Protocol, Rules or I/O.",
+        "expression": "The title is narrower than the body, but the intended prohibited forms are explicit."
+      },
+      "rationale": "This is an explicit local expression convention; disagreeing with its strictness alone is not a canon defect.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-115",
+        "AP-123",
+        "DP-13"
+      ]
+    },
+    {
+      "id": "AP-121",
+      "disposition": "finding",
+      "checks": {
+        "scope": "Standing constraints encoded as sequenced phases are targeted.",
+        "observable": "Removing the step without changing the sequence is a concrete test.",
+        "consistency": "Moving inherited duties to Rules creates AP-143's defect.",
+        "exceptions": "Work phases and local caveats are usefully excluded.",
+        "fix": "Add deletion for already-delivered duties before relocating unique invariants.",
+        "expression": "Follow rules throughout is not always a new invariant needing another home."
+      },
+      "rationale": "Distinguish unique misplaced constraints from redundant reminders.",
+      "finding_ids": [
+        "AE-28"
+      ],
+      "related_ids": [
+        "AP-143",
+        "AP-19",
+        "AP-25"
+      ]
+    },
+    {
+      "id": "AP-122",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Entry stubs restating owned delivery/binding mechanics are targeted.",
+        "observable": "Deletion plus a citation must preserve fidelity, including reach.",
+        "consistency": "That explicit test can coexist with DP-33's standalone bootstrap.",
+        "exceptions": "Minimal stubs, new duties and role boundaries are differentiated.",
+        "fix": "Remove only a redundant statement after its owner remains available.",
+        "expression": "Preserves fidelity is qualitative but directly testable with the delivered text."
+      },
+      "rationale": "A pre-session instruction whose removal breaks execution fails the Detect test and must remain available.",
+      "finding_ids": [],
+      "related_ids": [
+        "AP-145",
+        "DP-33",
+        "AP-117"
+      ]
+    },
+    {
+      "id": "AP-123",
+      "disposition": "clear",
+      "checks": {
+        "scope": "Capability inventories of child operations or folders are targeted.",
+        "observable": "A child rename/addition requiring a prose update exposes roster coupling.",
+        "consistency": "Matches DP-27's contribution statement and DP-34's edit-owner stance.",
+        "exceptions": "Stable purpose clauses, leaf products and README indexes are exempt.",
+        "fix": "State the domain and link discovery through the actual index.",
+        "expression": "The folder-equivalence test makes the contribution-versus-roster distinction concrete."
+      },
+      "rationale": "The entry is specific enough to apply without arbitrary length limits.",
+      "finding_ids": [],
+      "related_ids": [
+        "DP-27",
+        "DP-34",
+        "AP-115"
+      ]
+    }
+  ]
+}

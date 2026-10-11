@@ -1,0 +1,120 @@
+[
+  {
+    "id": "AS-17",
+    "kind": "consolidation-opportunity",
+    "priority": "low",
+    "entries": [
+      "AP-43",
+      "AP-44",
+      "AP-66"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-43",
+        "start": 592,
+        "end": 596,
+        "quote": "**Detect:** Protocol references data via literal artifact filename/path, or I/O ids are path-flavored proxies (`assumptions-log-path` vs `assumptions-log`).\n\n**Do not flag:** Filename literals correctly placed on `#### artifact` declarations (`artifact-name-in-io`); hyperlinked template nouns to resource sections.\n\n**Fix:** Rename to canonical ids; cite `{id}` in Protocol; hyperlink artifact nouns to template sections without tool recipes (`no-tool-usage-prescription`)."
+      },
+      {
+        "entry": "AP-44",
+        "start": 604,
+        "end": 608,
+        "quote": "**Detect:** Protocol prose names a concrete artifact filename, a literal or an ad-hoc path, instead of a canonical Input or Output id. A name selected by a mode is one literal per technique (`artifact-name-is-filename`).\n\n**Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.\n\n**Fix:** Move the filename (literal or token-template) into the I/O declaration; reference identifiers only in Protocol."
+      },
+      {
+        "entry": "AP-66",
+        "start": 868,
+        "end": 872,
+        "quote": "**Detect:** I/O ids that are direction-encoded; representation proxies (`-path`/`-list`, see `canonical-artifact-ids` / `hoist-shared-inputs`); synonym drift for one concept; bare single-word generics (`summary`, `artifact`, `coverage`, `state`, `result`, `prompt`); Inputs/Output heading name collisions within one technique (except true input∩output pass-through).\n\n**Do not flag:** External tool/schema field spellings; bare plural collection item-nouns (`collection-id-shape`); head-noun-last qualified phrases (`reconciled_assumptions`, `completion_summary`).\n\n**Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`). See [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively)."
+      }
+    ],
+    "problem": "AP-43 and AP-44 both detect a literal artifact filename/path in Protocol and repair it by declaring an I/O id and using its designator. AP-43's additional path-flavored-id case also appears in AP-66. The divisions are not disjoint and create duplicate findings for one construct.",
+    "witness": "'Read assumptions-log.md' in Protocol triggers both AP-43 and AP-44 and has one repair. An assumptions_log_path id can also trigger AP-43 and AP-66. The overlap is observable; it is not contradictory.",
+    "proposed_fix": "Let one entry own artifact references in Protocol: 'A Protocol artifact reference uses a concrete filename/path rather than the declared I/O designator.' Let AP-66 own identifier shape. Retire or narrow the duplicate entry and update all citations, preserving the filename declaration exception and the opaque-collection distinction.",
+    "observing_check": {
+      "positive": "One literal report filename in Protocol produces one finding with a declared-id repair.",
+      "negative": "The same filename under #### artifact is accepted; an independent identifier-shape defect can be reported separately."
+    }
+  },
+  {
+    "id": "AS-18",
+    "kind": "same-scope-repair-conflict",
+    "priority": "high",
+    "entries": [
+      "AP-51",
+      "AP-114",
+      "AP-157",
+      "DP-25"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-51",
+        "start": 688,
+        "end": 692,
+        "quote": "**Detect:** Protocol names a raw harness or MCP tool for a capability that another technique wraps. The canonical form is `[op](path)` or `[group](path)::[op](path)`, which the server resolves to `::`. A stale or inconsistent name is `consistent-tool-names`.\n\n**Do not flag:** The technique that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).\n\n**Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments."
+      },
+      {
+        "entry": "AP-114",
+        "start": 1464,
+        "end": 1468,
+        "quote": "**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each \"Apply […]\"; Capability that names a multi-pass pipeline or a façade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.\n\n**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).\n\n**Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`."
+      },
+      {
+        "entry": "AP-157",
+        "start": 2032,
+        "end": 2036,
+        "quote": "**Detect:** A technique file names another technique or technique — in Capability, Protocol, or `## Rules` — by a markdown link to a technique file or by a `::` address, and no work is invoked: a rule naming the instrument for a question or forbidding one, a Protocol aside citing where a fact lives, a documentation or canonical-form reference. Test: what the reader does with the name needs a file the delivery did not carry.\n\n**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol. Resource citations, which travel with the technique citing them. A bare technique id where the slot's value is a technique id, with no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`).\n\n**Fix:** State the fact the reference stood for, without naming the technique. Where it carried a standing choice of instrument, move it to the container technique that holds both techniques, phrased so it needs no reference. Where it carried sequencing, the run binding both techniques owns it. See [A Technique Names Only What Its Reader Holds](./design-principles.md#36-a-technique-names-only-what-its-reader-holds); also `pass-orchestration-in-technique`, `anchored-protocol-references`."
+      },
+      {
+        "entry": "DP-25",
+        "start": 117,
+        "end": 117,
+        "quote": "Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared technique is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs."
+      }
+    ],
+    "problem": "AP-51 replaces a raw tool call in a technique Protocol with a wrapping-technique invocation and preserves the arguments. AP-114 explicitly forbids invoking even one other technique from that Protocol and moves the work to the activity/routine. A non-invoking replacement link also risks AP-157's unreachable reference.",
+    "witness": "A local analysis technique says 'Use gitnexus_context on the symbol', and a shared context technique owns that capability. AP-51's Fix becomes 'Apply [context](...) (name: {symbol})' in the same Protocol. That exact call is an Apply of another technique for work and satisfies AP-114's Detect. Removing Apply but leaving a consult link invokes AP-157's separate availability check.",
+    "proposed_fix": "Replace AP-51 Fix with: 'Bind the owning shared technique at the activity or routine and pass its product to the local technique. Remove the local raw-call recipe. Where the local step is an explicitly permitted unaided recovery path, retain its raw tool call under the existing exception.' Clarify that canonical link syntax applies only on surfaces allowed to reference that technique; it does not authorize a Protocol-to-Protocol invocation. Reconcile invocation-format and missing-argument entries against this same allowed-surface boundary.",
+    "observing_check": {
+      "positive": "A local reimplementation of a shared call is replaced by a shared activity/routine bind and a declared input for the local consumer.",
+      "negative": "The wrapper's own primitive call and an explicitly allowed unaided remedy remain valid; no Apply of a sibling is introduced into an ordinary technique Protocol."
+    }
+  },
+  {
+    "id": "AS-19",
+    "kind": "address-versus-delivery-ambiguity",
+    "priority": "medium",
+    "entries": [
+      "AP-53",
+      "DP-36",
+      "AP-145"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-53",
+        "start": 712,
+        "end": 716,
+        "quote": "**Detect:** A Protocol step cites a rule as prose (\"per the X rule\"), with `::`, or as a hyperlink to the rule's heading. Also flag a citation of a rule declared nowhere. Also flag an address shorter than the rules that arrive with the citer: its own, every container it sits beneath, and the contracts of the scopes its role's bundle names. A bare slug declared only outside that set names nothing delivered. Roles are not readable from the tree, so a static walk proves the library: inside one library a rule may arrive by a route the walk cannot see, and from another library it never does. Checking link spelling alone settles neither length.\n\n**Do not flag:** A dotted address at the length the citer already holds. Inherited from self, group, or namespace root: the bare name. Outside that ancestry: `<owner>.<rule-name>`, the container named by its folder (`gitnexus.index-freshness-first` for a namespace root). Carry the namespace only where two namespaces hold the same technique id. A hyperlink from a resource or a README. Test: a technique cites in dotted form.\n\n**Fix:** Replace the prose, `::`, or heading link with the dotted address at that length. A dangling citation points at the inline content. `::` invokes; `.` names."
+      },
+      {
+        "entry": "DP-36",
+        "start": 161,
+        "end": 161,
+        "quote": "A technique arrives as its own text and its inherited rules. A name in that text — a technique, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference."
+      },
+      {
+        "entry": "AP-145",
+        "start": 1892,
+        "end": 1892,
+        "quote": "**Fix:** Inline the instruction's substance and keep the name only as a forward label. On this surface that overrides `dotted-rule-address`. See [Pre-Session Prose Stands Alone](./design-principles.md#33-pre-session-prose-stands-alone)."
+      }
+    ],
+    "problem": "AP-53 combines address spelling, inherited/bundled visibility, and limits of a static audit in one paragraph. Its exception describes bare names by ancestry while Detect also includes role-bundled contracts. It gives no explicit outcome when the tree cannot establish the bundle, and a full dotted address alone does not prove delivery.",
+    "witness": "A rule is on a same-library sibling contract that a role may or may not bundle with the citing leaf. The static files establish neither actual delivery nor a unique bare address. One reviewer may accept a bare slug because a route may exist; another may require owner.slug because it is outside ancestry. Neither has observed the effective bundle.",
+    "proposed_fix": "Split the entry's checks in prose: 'Spelling: use a bare slug for a uniquely resolved rule in the reader's delivered local/inherited contract; otherwise use the owning contract's dotted address, qualified by namespace where required. Reach: name the delivery or inheritance path that makes the rule available. If a static walk cannot establish the role bundle, record reach as unverified, not compliant or defective from possibility alone.' Preserve the explicit pre-session override in AP-145. Confirm the exact resolver's supported addressing before changing accepted syntax.",
+    "observing_check": {
+      "positive": "A bare rule slug declared only in another library, with no delivered contract, is flagged with its missing owner and delivery path.",
+      "negative": "A uniquely resolved inherited rule is accepted; unknown role-bundle delivery remains an explicit evidence gap rather than a guessed verdict."
+    }
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "AP-25",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Single-Protocol-step constraints are the relevant local scope.",
+      "observable": "Trace the rule's predicate and consequences to the phases it actually constrains.",
+      "consistency": "Its trigger and repair duplicate AP-60 without a stable division.",
+      "exceptions": "Cross-cutting invariants and existing local notes are adequately excluded.",
+      "fix": "Move local caveats to their instruction, preserving the constraint.",
+      "expression": "One local-scope entry can own this rule and cite AP-59 for formatting."
+    },
+    "rationale": "The criterion is useful and observable; consolidation would remove duplicate judgments and maintenance.",
+    "finding_ids": [
+      "AS-11"
+    ],
+    "related_ids": [
+      "AP-60",
+      "AP-59",
+      "AP-121"
+    ]
+  },
+  {
+    "id": "AP-26",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "The listed prose surfaces are explicit and include procedure/rule text.",
+      "observable": "Deletion is observable, but keeping the invariant alone does not prove that a failure explanation is dispensable.",
+      "consistency": "AP-135 keeps reasons and AP-152 permits a live failure mode, requiring a shared boundary.",
+      "exceptions": "Actor boundaries and owner citations are covered; operative explanations need equivalent treatment.",
+      "fix": "The Fix's keep-a-fact instruction can preserve useful clauses but is broader than Detect's deletion test.",
+      "expression": "Distinguish historical/redundant rationale from explanation that changes present interpretation."
+    },
+    "rationale": "Treat the suggested change as an operational clarity improvement, not a ban on concise explanatory facts.",
+    "finding_ids": [
+      "AS-12"
+    ],
+    "related_ids": [
+      "AP-135",
+      "AP-152",
+      "DP-17"
+    ]
+  },
+  {
+    "id": "AP-27",
+    "disposition": "clear",
+    "checks": {
+      "scope": "The subject is a validate-action failure message after cause and remedy are already stated.",
+      "observable": "Remove the trailing explanation and check whether the failure and required action stay complete.",
+      "consistency": "Fits output economy and AP-26's removal of dispensable rationale.",
+      "exceptions": "Equivalent minimal cause-plus-fix wording is allowed, not only one exact sentence template.",
+      "fix": "Deleting trailing consequence paragraphs directly removes the targeted excess.",
+      "expression": "'Essays' is informal, but cause-and-action completeness supplies a usable qualitative test."
+    },
+    "rationale": "A blocked user can identify what failed and what action resolves it without a second explanation of already-known consequences.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-26",
+      "DP-12"
+    ]
+  },
+  {
+    "id": "AP-28",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Definition descriptions that duplicate a canonical sequence are identified.",
+      "observable": "Compare the prose sequence with the actual graph/steps or explicitly represented layout.",
+      "consistency": "README orientation is deliberately handled separately by AP-40.",
+      "exceptions": "Purpose and value without a reproduced sequence remain allowed.",
+      "fix": "Remove the duplicate sequence while preserving the purpose statement.",
+      "expression": "The authoritative structural sequence is the essential precondition, not merely several nouns in prose."
+    },
+    "rationale": "A description reciting A then B then C when those steps are declared is distinct from a statement of the workflow's purpose.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-40",
+      "AP-107",
+      "DP-05"
+    ]
+  },
+  {
+    "id": "AP-29",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "User-owned environment state outside the tree is an explicit boundary.",
+      "observable": "A directed command and its mutation target establish applicability.",
+      "consistency": "No contradiction with confirmation is proved; confirmation does not itself authorize a prohibited task.",
+      "exceptions": "Diagnostics and in-repository edits are clear; authorized environment maintenance is not addressed.",
+      "fix": "Diagnostic-only remediation preserves the stated strict product boundary.",
+      "expression": "State whether that boundary is absolute product scope or unauthorized-scope protection."
+    },
+    "rationale": "An explicit policy choice would prevent readers from guessing whether the rule applies to a directly requested environment-repair workflow.",
+    "finding_ids": [
+      "AS-13"
+    ],
+    "related_ids": [
+      "DP-08"
+    ]
+  },
+  {
+    "id": "AP-30",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Role prescriptions in descriptive fields are clearly distinguished from purpose.",
+      "observable": "Identify the commanded actor and the behavior the description requires.",
+      "consistency": "Moving to rules on an owning activity conflicts with AP-69's no-exception ban.",
+      "exceptions": "Existing constraints and non-prescriptive summaries are appropriately excluded.",
+      "fix": "Name an allowed technique/shared or workflow audience home, not any owning construct's rules field.",
+      "expression": "The destination phrase needs precise construct and audience names."
+    },
+    "rationale": "The placement smell is valid, but the current generic relocation can create forbidden activity prose rules.",
+    "finding_ids": [
+      "AS-10"
+    ],
+    "related_ids": [
+      "AP-23",
+      "AP-37",
+      "AP-69"
+    ]
+  },
+  {
+    "id": "AP-31",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Hand-authored activity artifacts arrays are unambiguously targeted.",
+      "observable": "Inspect the activity field and each producing technique's declared file outputs.",
+      "consistency": "The discriminator-keyed note repair disagrees with AP-130's one-filename body.",
+      "exceptions": "Non-file side effects are distinguished from the synthesized file contract.",
+      "fix": "Delete activity artifacts and declare valid file output bodies at their producers.",
+      "expression": "Remove the unsupported conditional-note branch and cite the entry that owns filename grammar."
+    },
+    "rationale": "Synthesis has a clear source of truth; its repair instruction must use the same artifact grammar as the rest of the canon.",
+    "finding_ids": [
+      "AS-14"
+    ],
+    "related_ids": [
+      "AP-12",
+      "AP-44",
+      "AP-130"
+    ]
+  },
+  {
+    "id": "AP-32",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Outcomes that assert only file/variable production are the intended bad class.",
+      "observable": "Rename invariance alone does not distinguish delivered value from generic storage acts.",
+      "consistency": "The stated Test reads like a desired property, with no explicit failure polarity.",
+      "exceptions": "A mechanical name supporting a real value statement is properly retained.",
+      "fix": "Rewrite around what a consumer can know or do, not just a produced container.",
+      "expression": "State the positive failure predicate and qualify the rename thought experiment."
+    },
+    "rationale": "A clear value-versus-vessel distinction remains, but the current test can reverse or fail to decide it.",
+    "finding_ids": [
+      "AS-15"
+    ],
+    "related_ids": [
+      "DP-12",
+      "AP-109"
+    ]
+  }
+]

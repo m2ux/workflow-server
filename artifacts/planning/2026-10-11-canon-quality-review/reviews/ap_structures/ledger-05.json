@@ -1,0 +1,149 @@
+[
+  {
+    "id": "AP-33",
+    "disposition": "clear",
+    "checks": {
+      "scope": "A bound step's set duplicating its technique's own computed output is the target.",
+      "observable": "Compare the set target, producer Protocol, Outputs, and binding.",
+      "consistency": "AP-34 distinguishes control derivations and AP-35 input timing.",
+      "exceptions": "Accumulators, caller-specific derivation, and value-bearing control state have explicit exceptions.",
+      "fix": "Declare the product at the technique and remove its duplicate activity assignment.",
+      "expression": "The exceptions prevent a generic ban on all activity sets."
+    },
+    "rationale": "A second assignment of the technique's assessment is redundant; orchestration accumulation or a later derived state has a different role.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-34",
+      "AP-35",
+      "AP-42"
+    ]
+  },
+  {
+    "id": "AP-34",
+    "disposition": "clear",
+    "checks": {
+      "scope": "A control step with no bound technique and a value-less domain derivation is explicit.",
+      "observable": "Inspect value presence and whether description is the only derivation procedure.",
+      "consistency": "Complements AP-33 and keeps domain production in techniques.",
+      "exceptions": "Value-bearing orchestration state and the separate bound-output defect are distinguished.",
+      "fix": "Bind the producer and declare its output rather than leave a prose assignment.",
+      "expression": "Although capitalization is emphatic, the control/value/domain predicates are concrete."
+    },
+    "rationale": "A target-only set that explains how to build a domain assessment has no value contract; a literal control-state assignment does.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-33",
+      "DP-05"
+    ]
+  },
+  {
+    "id": "AP-35",
+    "disposition": "clear",
+    "checks": {
+      "scope": "A same-step set feeding its own technique input is the precise timing hazard.",
+      "observable": "Match the interpolation to a target written by the same step.",
+      "consistency": "The stated invocation-before-side-effect boundary explains the defect without conflicting with output binding.",
+      "exceptions": "Sets for later consumers and independent accumulator/control state are excluded.",
+      "fix": "Produce the value earlier at its source, then keep the consuming binding pure.",
+      "expression": "The producer/consumer ordering is explicit enough to reproduce the failure."
+    },
+    "rationale": "An input that depends on an assignment with no before-input contract is invalid regardless of the assignment's intended prose order.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-33",
+      "AP-128"
+    ]
+  },
+  {
+    "id": "AP-36",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Overlap between activity strategy listings and actual step bindings is targeted.",
+      "observable": "Resolve technique identities in top-level and nested loop binds and compare the sets.",
+      "consistency": "Distinct strategy delivery and per-step execution fit AP-39's inheritance rule.",
+      "exceptions": "A strategy with no step bind is explicitly retained.",
+      "fix": "Delete overlapping listings without deleting the actual step bind.",
+      "expression": "The locations and matching key are concrete."
+    },
+    "rationale": "The same op in both places is detectable; a cross-cutting strategy appearing only in the strategy list remains valid.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-39"
+    ]
+  },
+  {
+    "id": "AP-37",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Workflow rule audience buckets are classified by the actor commanded.",
+      "observable": "Compare delivery through get_workflow/get_activity with who can perform the duty.",
+      "consistency": "The explicit rules.workflow versus rules.activity distinction helps resolve AP-23's ambiguous placement.",
+      "exceptions": "Same duty for both actors belongs in universal; actor narration is handled separately.",
+      "fix": "Move to the right bucket and split instructions that command actors differently.",
+      "expression": "Specific actor and delivery names make the classification observable."
+    },
+    "rationale": "An orchestrator dispatch duty and a worker persistence duty have different recipients; moving a bucket does not itself repair actor narration.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-23",
+      "AP-69",
+      "AP-146"
+    ]
+  },
+  {
+    "id": "AP-38",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Repeated same-technique bindings within an activity are classified by their structural purpose.",
+      "observable": "Inspect outputs, collection inputs, sub-mode distinctions, gates, and pipeline positions.",
+      "consistency": "AP-18 covers description-only monolith masking; this entry adds redundant execution and unrolled collections.",
+      "exceptions": "Static targets, exclusive branches, and distinct pipeline uses prevent blanket deduplication.",
+      "fix": "Collapse, loop, or split only after matching one of the listed shapes.",
+      "expression": "The classifications supply concrete evidence rather than judging repetitions by count alone."
+    },
+    "rationale": "The same op can legitimately occur twice; only the stated redundant, iterative, or masking shapes trigger repair.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-18",
+      "AP-10"
+    ]
+  },
+  {
+    "id": "AP-39",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Universality is the intended scope; near-universality is a different property.",
+      "observable": "Applicability to each activity is observable; the fraction of declarations does not establish it.",
+      "consistency": "Detect and Do not flag both apply to a strategy used by nine of ten activities.",
+      "exceptions": "Subset-only strategies are properly retained locally but collide with 'nearly every'.",
+      "fix": "Hoist only after establishing every activity's duty, not merely widespread use.",
+      "expression": "Replace the vague quantifier with semantic applicability, not a percentage."
+    },
+    "rationale": "A precise contract boundary resolves this without inventing a numerical threshold.",
+    "finding_ids": [
+      "AS-16"
+    ],
+    "related_ids": [
+      "AP-36"
+    ]
+  },
+  {
+    "id": "AP-40",
+    "disposition": "clear",
+    "checks": {
+      "scope": "README transcriptions of authoritative details are distinguished from orientation.",
+      "observable": "Match each duplicated field/list to YAML or folder inventory and apply the explicit exceptions.",
+      "consistency": "DP-11 and AP-159 still require useful orientation; AP-107 owns duplicate pass inventories.",
+      "exceptions": "Diagrams, concise roles, file indexes, and purpose are deliberately allowed despite change coupling.",
+      "fix": "Delete detailed duplication while retaining navigational and purpose information.",
+      "expression": "The broad edit-coupling test is correctly limited by named orientation exceptions."
+    },
+    "rationale": "The rule does not demand that READMEs be independent of every structural change; it draws an explicit detail-versus-orientation boundary.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-11",
+      "AP-107",
+      "AP-159"
+    ]
+  }
+]

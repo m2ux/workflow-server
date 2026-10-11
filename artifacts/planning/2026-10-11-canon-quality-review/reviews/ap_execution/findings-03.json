@@ -1,0 +1,133 @@
+{
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "findings": [
+    {
+      "id": "AE-11",
+      "kind": "evidence_loss",
+      "priority": "Medium",
+      "entries": [
+        "AP-86"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-86",
+          "start": 1120,
+          "end": 1120,
+          "quote": "A template requires a verdict or status table whose expected steady state is all-pass"
+        },
+        {
+          "entry": "AP-86",
+          "start": 1124,
+          "end": 1124,
+          "quote": "Replace with a one-line all-pass form plus a divergences-only table."
+        }
+      ],
+      "problem": "Expected all-pass status does not make rows ceremony. The exception recognizes machine-parsed data but omits human-verifiable coverage and per-criterion evidence.",
+      "witness": "An acceptance matrix contains a passing observation and evidence link per requirement, without a downstream parser. Replacing it with one line removes which requirements were exercised and how each was proved.",
+      "proposed_fix": "Replace Detect with: 'A verdict table repeats a common status without recording distinct scope, observation, evidence or required traceability.' Add Do not flag: 'Per-item evidence or coverage needed to establish the verdict, even when all results pass.' A one-line verdict may link a complete retained evidence ledger.",
+      "observing_check": {
+        "positive": "A prefilled all-green table adds no observation beyond a supported aggregate verdict; condense it.",
+        "negative": "An all-pass matrix with distinct evidence per requirement stays intact or linked as its canonical ledger."
+      }
+    },
+    {
+      "id": "AE-12",
+      "kind": "required_null_shape_exception",
+      "priority": "Low",
+      "entries": [
+        "AP-87"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-87",
+          "start": 1136,
+          "end": 1136,
+          "quote": "Omit empty sections (mark templates `[Omit if none]`); log nulls in one line and proceed — no null-confirmation checkpoint."
+        }
+      ],
+      "problem": "Unconditional omission omits required artifact shapes and evidence that a category was checked and found empty.",
+      "witness": "An externally consumed report requires a Findings section with an explicit empty result. Omitting it violates the consumer contract or becomes indistinguishable from a skipped review.",
+      "proposed_fix": "Add Do not flag: 'An explicit empty value or heading required by the artifact's consumer contract, or a zero-result observation with its scope and evidence.' Qualify Fix: 'Omit optional decorative sections; preserve required null representations and necessary evidence in their canonical home.'",
+      "observing_check": {
+        "positive": "An optional empty frustrations table without contractual or evidential purpose is omitted.",
+        "negative": "A required findings field records zero findings and inspection scope without asking the user to confirm absence."
+      }
+    },
+    {
+      "id": "AE-13",
+      "kind": "decision_identity",
+      "priority": "Medium",
+      "entries": [
+        "AP-88",
+        "AP-89"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-88",
+          "start": 1144,
+          "end": 1144,
+          "quote": "Two declared checkpoints share one decision: the second's answer space is subsumed by the first's options."
+        },
+        {
+          "entry": "AP-89",
+          "start": 1160,
+          "end": 1160,
+          "quote": "A checkpoint always answered with its default is `one-decision-one-checkpoint`."
+        }
+      ],
+      "problem": "Answer-space overlap and default-selection frequency do not establish identical decisions. Different subjects can share Yes/No options, and genuine authorization can usually choose a default.",
+      "witness": "Target-set approval and spending-limit approval each have Yes/No options; neither answer determines the other. A second approval after changed evidence likewise need not be redundant.",
+      "proposed_fix": "Replace AP-88's test with: 'For every reachable path, the first checkpoint's recorded decision and unchanged evidence determine the second's answer and effects; the second adds no distinct subject, authority, timing or information.' Delete AP-89's default-frequency sentence; refer to AP-88 only when semantic redundancy is proved.",
+      "observing_check": {
+        "positive": "A second confirmation repeats approval on unchanged evidence with identical effects; merge it.",
+        "negative": "Two Yes/No decisions about distinct subjects remain separate even when both usually select Yes."
+      }
+    },
+    {
+      "id": "AE-14",
+      "kind": "worked_example_exception",
+      "priority": "Low",
+      "entries": [
+        "AP-90"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-90",
+          "start": 1168,
+          "end": 1168,
+          "quote": "a Purpose or Overview that restates the title, a Good/Bad pair, a Quality Checklist that restates the body, or a relationship table."
+        }
+      ],
+      "problem": "The Good/Bad branch lacks the restatement qualifier applied to its neighbours. A contrast can supply a necessary observable boundary.",
+      "witness": "Two compact JSON examples distinguish an absent field from explicit null. They add a contract distinction, but the unqualified Good/Bad branch treats any pair as padding.",
+      "proposed_fix": "Change the branch to 'a Good/Bad pair that adds no operative distinction beyond the stated rule'. Add: 'Keep a minimal worked contrast that demonstrates a necessary boundary; give the rule one authoritative statement and avoid duplicate explanation.'",
+      "observing_check": {
+        "positive": "A contrast repeats an unambiguous preference and adds no diagnostic case; remove it.",
+        "negative": "An absent-versus-null example disambiguating a consumer contract stays."
+      }
+    },
+    {
+      "id": "AE-15",
+      "kind": "lifecycle_history_scope",
+      "priority": "Medium",
+      "entries": [
+        "AP-91"
+      ],
+      "evidence": [
+        {
+          "entry": "AP-91",
+          "start": 1184,
+          "end": 1184,
+          "quote": "One row per item, updated in place across stages; present aggregate scorecards in-session, not persisted. Rewrite stage techniques as row updates, not appends."
+        }
+      ],
+      "problem": "Current-state duplication and historical evidence are different data. Blanket in-place updates can erase prior decisions, identity, timing and evidence; durable aggregate results are also rejected without testing their purpose.",
+      "witness": "An append-only log records a proposal, approval and later revocation. These are distinct historical facts. Keeping only the final row loses the earlier authority and rationale.",
+      "proposed_fix": "Scope Detect to 'independently maintained copies of the same current item state'. Add Do not flag: 'An append-only event history whose consumer requires sequence, actor or prior evidence; derived snapshots with explicit provenance.' Update the current view in place while retaining required events and durable aggregate evidence at their declared home.",
+      "observing_check": {
+        "positive": "Three sections each claim the current status and can disagree; retain one current row.",
+        "negative": "An immutable history of distinct decisions remains alongside its derived current-state view."
+      }
+    }
+  ]
+}

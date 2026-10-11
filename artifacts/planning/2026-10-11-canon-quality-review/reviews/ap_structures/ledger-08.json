@@ -1,0 +1,156 @@
+[
+  {
+    "id": "AP-57",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Literal dollar characters in rendered prose are the intended subject.",
+      "observable": "Classify prose versus code and distinguish a literal character from intended math markup.",
+      "consistency": "AP-63 places protocol variable syntax in code spans, avoiding accidental escaping.",
+      "exceptions": "Code spans and fences are explicitly protected from escaping that corrupts code.",
+      "fix": "Escape a literal prose dollar while retaining code bytes.",
+      "expression": "Read the literal qualifier across the entry; no new verdict about the current renderer was inferred."
+    },
+    "rationale": "The literal-versus-code rule is inspectable. This review does not independently validate the source's renderer-specific GFM claim.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-63"
+    ]
+  },
+  {
+    "id": "AP-58",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Evaluated symbol ids are separated from technique/resource/rule names.",
+      "observable": "Inspect the declared symbol class and its spelling.",
+      "consistency": "DP-19 supplies the same naming stance; input/output identity is permitted for a real shared value.",
+      "exceptions": "External tool parameter spellings and kebab-case name identities are explicitly retained.",
+      "fix": "Rename symbol ids while preserving exact external parameter mirrors.",
+      "expression": "The two identifier classes and their exceptions make the rule deterministic."
+    },
+    "rationale": "snake_case for values and kebab-case for named definitions are distinct conventions; an external cloudId parameter mirror is not an invented local symbol spelling.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-19",
+      "AP-55",
+      "AP-66"
+    ]
+  },
+  {
+    "id": "AP-59",
+    "disposition": "finding",
+    "checks": {
+      "scope": "A caveat on one instruction is distinguished from the instruction itself.",
+      "observable": "The parser's treatment of indentation provides a concrete consequence to verify.",
+      "consistency": "The any-indent conditional-ladder exception is broader than DP-31's note requirement.",
+      "exceptions": "Primary ordered work should be exempt; fallback ladders qualifying one instruction need a narrower exception.",
+      "fix": "Move local branches into notes; keep whole-step/activity selection in structure.",
+      "expression": "Replace 'at any indent' with a semantic distinction between work and qualifying caveat."
+    },
+    "rationale": "The note rule has a clear purpose, but its ladder exception can admit the very flattened branches it detects.",
+    "finding_ids": [
+      "AS-21"
+    ],
+    "related_ids": [
+      "DP-31",
+      "AP-108",
+      "AP-25",
+      "AP-60"
+    ]
+  },
+  {
+    "id": "AP-60",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "A local rule applying to only one Protocol block is well scoped.",
+      "observable": "Trace the predicate to the single instruction/block it qualifies.",
+      "consistency": "The same trigger and note/prose repair are already in AP-25.",
+      "exceptions": "Cross-cutting rules and existing local notes are appropriately excluded.",
+      "fix": "Demotion to the qualifying instruction retains the actual constraint.",
+      "expression": "The cross-reference to AP-25 does not establish a disjoint boundary."
+    },
+    "rationale": "Consolidate this duplicate local-scope criterion while leaving AP-59 to own note syntax.",
+    "finding_ids": [
+      "AS-11"
+    ],
+    "related_ids": [
+      "AP-25",
+      "AP-59"
+    ]
+  },
+  {
+    "id": "AP-61",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Repeated literals and hard-coded uses of an already declared path are the subjects.",
+      "observable": "Match semantic path identity and inspect existing input/default/local definitions.",
+      "consistency": "Fits AP-127's declared-value use and AP-55's shared contract placement.",
+      "exceptions": "Single-use values, the canonical definition, and similar-looking distinct paths are expressly excluded.",
+      "fix": "Factor one semantic location and correct wrong-location uses without inventing a shadow variable.",
+      "expression": "The semantic-identity exception prevents mechanical string deduplication of unrelated paths."
+    },
+    "rationale": "Repeated references to the same artifact root can share a designator; two coincidentally similar paths with different roles need not.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-55",
+      "AP-127"
+    ]
+  },
+  {
+    "id": "AP-62",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Local binding sites, local reads, and declared/ambient inputs are distinguished.",
+      "observable": "The bind/read spellings and textual producer position can be inspected; path reachability is a separate check.",
+      "consistency": "Its ambient-input exemption needs the same effective-contract model as AP-16.",
+      "exceptions": "Mutually exclusive producers and declared inputs are expressly permitted.",
+      "fix": "Bind a real local once at its producer, read its name, or remove a dead binding.",
+      "expression": "Name the source of ambient inputs rather than implying an open set from examples."
+    },
+    "rationale": "The local-use criterion is clear; align the ambient exception with declared-input quality checks. Textual order alone is not a claim of path-total production.",
+    "finding_ids": [
+      "AS-07"
+    ],
+    "related_ids": [
+      "AP-16",
+      "AP-128",
+      "AP-52"
+    ]
+  },
+  {
+    "id": "AP-63",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Code tokens are separated from descriptive prose and navigable link targets.",
+      "observable": "Inspect Markdown spans/fences and the declared token class.",
+      "consistency": "Braces remain required by AP-52; invocation argument names use AP-56's different form.",
+      "exceptions": "Already protected code, ordinary nouns, links, and parameter labels are explicit exceptions.",
+      "fix": "Wrap the full token/command in one span and preserve its actual code content.",
+      "expression": "Fragmented spans and escaped local markers receive specific unambiguous repairs."
+    },
+    "rationale": "Formatting a whole command as one code span preserves both readability and its embedded designators.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-52",
+      "AP-56",
+      "AP-57"
+    ]
+  },
+  {
+    "id": "AP-64",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Boolean value identifiers are the subject, not arbitrary state or enum names.",
+      "observable": "Compare the identifier with the proposition for which the Boolean is true.",
+      "consistency": "Implements DP-19's affirmative predicate stance without forcing one prefix.",
+      "exceptions": "Clear unprefixed predicates and meaningful is/has/can/should forms are retained.",
+      "fix": "Rename to a predicate that preserves the actual truth condition.",
+      "expression": "The true-value meaning, not a token-count rule, determines whether the stem is affirmative."
+    },
+    "rationale": "A generic status_flag conceals the true condition; ready or has_findings identifies it. Any rename must preserve that condition across consumers.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-19",
+      "AP-58"
+    ]
+  }
+]

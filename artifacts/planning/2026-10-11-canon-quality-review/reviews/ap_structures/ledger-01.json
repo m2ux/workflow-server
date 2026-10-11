@@ -1,0 +1,161 @@
+[
+  {
+    "id": "AP-01",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Named file bodies are clear; 'new construct' extends past that boundary.",
+      "observable": "Inlining is observable, but classification of schema-owned inline forms is unresolved.",
+      "consistency": "AP-17 requires inline checkpoints/loops while the broad parenthesis can catch them.",
+      "exceptions": "Short literals do not explicitly cover composite checkpoint/loop forms.",
+      "fix": "Extraction is sound only for a construct whose schema supports external reference.",
+      "expression": "Restrict 'construct' to the intended file-bearing definitions."
+    },
+    "rationale": "The file-separation goal is useful; the parenthetical and carve-out need the same scope.",
+    "finding_ids": [
+      "AS-01"
+    ],
+    "related_ids": [
+      "AP-17",
+      "DP-22"
+    ]
+  },
+  {
+    "id": "AP-02",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "The boundary protects content authoring from unauthorized schema changes.",
+      "observable": "Compare proposed schema changes with approved scope and validation purpose.",
+      "consistency": "AP-118 can prescribe an extension, so integrated authorization needs treatment.",
+      "exceptions": "'Separate task' excludes a deliberately approved combined schema/consumer change.",
+      "fix": "Conforming content is the default repair; a genuine capability gap needs a scoped decision.",
+      "expression": "Use authorized change scope rather than task packaging as the qualifier."
+    },
+    "rationale": "No contradiction is proved; clarify whether a combined approved task can legitimately evolve the schema.",
+    "finding_ids": [
+      "AS-02"
+    ],
+    "related_ids": [
+      "AP-118",
+      "DP-47"
+    ]
+  },
+  {
+    "id": "AP-03",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Detect includes every commit although the failure is incomplete delivery.",
+      "observable": "Scope manifest and declared completion/commit status distinguish the events.",
+      "consistency": "The broad commit trigger exceeds DP-03's check before claiming work done.",
+      "exceptions": "Approved partial delivery is covered; ordinary interim commits are not.",
+      "fix": "Completing every scope item before any commit blocks incremental recording.",
+      "expression": "Name completion claims and final handoff rather than a bare commit."
+    },
+    "rationale": "The completion invariant should remain strict while validated in-progress commits retain open scope.",
+    "finding_ids": [
+      "AS-03"
+    ],
+    "related_ids": [
+      "AP-07",
+      "AP-81",
+      "DP-03"
+    ]
+  },
+  {
+    "id": "AP-04",
+    "disposition": "finding",
+    "checks": {
+      "scope": "A new identifier and a new convention need separate classification.",
+      "observable": "Search and approval require historical records, not only the authored name.",
+      "consistency": "Detect's conjunction accepts a search-only adoption that Fix disallows.",
+      "exceptions": "Reuse should explicitly include a fresh id following an existing convention.",
+      "fix": "Search then approve genuine invention is coherent once Detect matches it.",
+      "expression": "Use separate missing-search and missing-new-convention-approval predicates."
+    },
+    "rationale": "Repair the Boolean condition and the identifier/convention distinction; record missing conduct evidence explicitly.",
+    "finding_ids": [
+      "AS-04",
+      "AS-23"
+    ],
+    "related_ids": [
+      "DP-07"
+    ]
+  },
+  {
+    "id": "AP-05",
+    "disposition": "clear",
+    "checks": {
+      "scope": "The subject is independent user decisions combined in one checkpoint.",
+      "observable": "Name each decision and show its independently selectable answer.",
+      "consistency": "AP-88 addresses the converse: splitting one decision across gates.",
+      "exceptions": "One atomic choice with several options is explicitly exempt.",
+      "fix": "Separate gates preserve independent choices and their effects.",
+      "expression": "The independence predicate is qualitative but can be demonstrated with answer combinations."
+    },
+    "rationale": "A checkpoint selecting both a deployment target and an unrelated license choice can be distinguished from one checkpoint selecting a target.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-88",
+      "AP-08"
+    ]
+  },
+  {
+    "id": "AP-06",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Materially different interpretations of the actual request bound the rule.",
+      "observable": "A request and execution trace can show the two interpretations and omitted question.",
+      "consistency": "Matches DP-04 and does not require clarification of unambiguous routine detail.",
+      "exceptions": "Existing in-session defaults are expressly allowed.",
+      "fix": "Ask before the ambiguous action while independent work can remain separate.",
+      "expression": "State the evidence source so absent conversation history is not a guessed verdict."
+    },
+    "rationale": "The substantive rule is coherent and observable; add an unevidenced outcome for a source-only audit.",
+    "finding_ids": [
+      "AS-23"
+    ],
+    "related_ids": [
+      "DP-04",
+      "AP-08"
+    ]
+  },
+  {
+    "id": "AP-07",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Completion claims are clear, but the additional bare commit trigger broadens scope.",
+      "observable": "Manifest verification needs check records and the claimed deliverable boundary.",
+      "consistency": "Fix discusses claiming done while Detect includes interim commits.",
+      "exceptions": "Interim status is exempt; equivalent interim commits need the same distinction.",
+      "fix": "Rechecking the current scope before completion directly closes the defect.",
+      "expression": "Separate the observation of completion from the mechanics of committing."
+    },
+    "rationale": "Use the completion boundary and identify the evidence needed to establish verification.",
+    "finding_ids": [
+      "AS-03",
+      "AS-23"
+    ],
+    "related_ids": [
+      "AP-03",
+      "AP-81",
+      "DP-03"
+    ]
+  },
+  {
+    "id": "AP-08",
+    "disposition": "clear",
+    "checks": {
+      "scope": "User-facing messages and independent answer demands are explicitly named.",
+      "observable": "Count distinct requested answers, not question marks or option labels.",
+      "consistency": "Consistent with AP-05's one atomic decision and DP-04's clarification stance.",
+      "exceptions": "Clarifying context and options of one question are expressly excluded.",
+      "fix": "Serial questions with an answer between them remove stacked demands.",
+      "expression": "The semantic unit 'requires an answer' makes the wording actionable."
+    },
+    "rationale": "A target question plus a deadline question is two demands; one target question with three choices remains one.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-05",
+      "DP-04"
+    ]
+  }
+]

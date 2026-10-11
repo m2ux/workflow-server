@@ -1,0 +1,127 @@
+[
+  {
+    "id": "AS-09",
+    "kind": "same-scope-repair-conflict",
+    "priority": "high",
+    "entries": [
+      "AP-22",
+      "AP-23",
+      "AP-74",
+      "DP-06"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-22",
+        "start": 332,
+        "end": 336,
+        "quote": "**Detect:** One invariant, two homes. Across levels: the same orchestrator-only rule (variable management, routing, commit policy, mode handling), or a rule that does not need worker reach, appears at workflow, activity, and technique. Within one rules block: two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The tell is a bridge — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that reconciles two homes.\n\n**Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.\n\n**Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates. Within a block, keep the statement with the wider consumer set, fold in any rationale or extra tier the other carried, drop the bridge, and repoint every citation of the deleted entry."
+      },
+      {
+        "entry": "AP-23",
+        "start": 344,
+        "end": 348,
+        "quote": "**Detect:** A behavioural rule workers must read is present only under `rules.workflow` (workers never receive `workflow.yaml`), or an audit flags per-technique copies of a worker-directed rule as hygiene violations.\n\n**Do not flag:** An orchestrator-only rule (`single-rule-authority`). Placement by audience is `rule-audience-bucket`.\n\n**Fix:** Keep a worker-directed rule on the activity or the technique. A copy on each technique that must reach the worker is that reach. Consolidate only into a shared technique that every affected activity loads."
+      },
+      {
+        "entry": "AP-74",
+        "start": 968,
+        "end": 972,
+        "quote": "**Detect:** Identical or near-identical behavioural instructions appear in more than one technique or tool description. Harness mechanics restated outside the engine, conduct, or bootstrap surface are `no-tool-usage-prescription`.\n\n**Do not flag:** One home with pointers elsewhere. A meta surface whose domain is tool usage.\n\n**Fix:** Keep one location and replace each duplicate with a reference to it. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+      },
+      {
+        "entry": "DP-06",
+        "start": 41,
+        "end": 41,
+        "quote": "Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit."
+      }
+    ],
+    "problem": "Necessary worker-facing rule copies are explicitly exempted by AP-22 and prescribed as reach by AP-23. AP-74 detects the same copies in two ordinary technique bodies and orders their removal in favor of references, with no delivery exception. The fixed delivery context therefore receives opposing remediation.",
+    "witness": "Two separately delivered leaf techniques carry the same worker safety invariant because neither receives the other's text or a shared rule home. AP-23 treats each copy as required reach and says an audit must not flag it as hygiene. AP-74 flags the identical behavioral instructions and says to keep one location plus pointers. A pointer alone does not give the second worker the bytes it needs. The contradiction is in what the two rules prescribe for this exact delivery state.",
+    "proposed_fix": "Make delivery and authorship separate checks. AP-23 Fix: 'Put the invariant in a shared contract delivered to every affected worker. If delivery requires a materialized copy, derive it from that home; record its source so it is not independently edited. Preserve the currently delivered obligation until the replacement delivery is verified.' AP-74 Do not flag: 'A mechanically derived copy needed for a reader that cannot receive the authoritative home; a plain reference alone does not establish reach.' AP-22 should point to this delivery exception. Verify each worker's effective text after consolidation.",
+    "observing_check": {
+      "positive": "Two independently editable copies that both workers can replace with the same delivered shared contract are flagged and consolidated.",
+      "negative": "A generated copy required for an isolated worker is not deleted merely because its bytes also exist at the owner; the observer confirms that worker still receives the invariant."
+    }
+  },
+  {
+    "id": "AS-10",
+    "kind": "rule-placement-repair-conflict",
+    "priority": "medium",
+    "entries": [
+      "AP-23",
+      "AP-30",
+      "AP-69",
+      "AP-37"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-23",
+        "start": 348,
+        "end": 348,
+        "quote": "**Fix:** Keep a worker-directed rule on the activity or the technique. A copy on each technique that must reach the worker is that reach. Consolidate only into a shared technique that every affected activity loads."
+      },
+      {
+        "entry": "AP-30",
+        "start": 432,
+        "end": 436,
+        "quote": "**Detect:** Description (including variable descriptions) prescribes orchestrator/worker/sub-agent behaviour (\"MUST\", \"coordinates only\", \"do not call\") rather than saying what the construct is.\n\n**Do not flag:** WHAT summaries with no role prescription; equivalent constraints already in `rules:` (drop the description duplicate).\n\n**Fix:** Move the role constraint into `rules:` on the owning construct, or drop it when that rule is already there."
+      },
+      {
+        "entry": "AP-69",
+        "start": 904,
+        "end": 908,
+        "quote": "**Detect:** Any activity-level `rules:` entry.\n\n**Do not flag:** None. Behavioural guidance belongs on the bound technique.\n\n**Fix:** Delete an entry that restates structure the activity already enforces. Migrate a technique constraint to the owning technique (`single-rule-authority`). Encode an unenforced constraint as `when` or `condition`, a transition, a decision, a checkpoint, or `required: false`. A hard gate is `when` or `condition`. Step `required` is a worker hint. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure)."
+      },
+      {
+        "entry": "AP-37",
+        "start": 516,
+        "end": 520,
+        "quote": "**Detect:** Classify each rule by who must act: orchestrator (`get_workflow` only), worker (`get_activity` inject), or both identically. Flag worker directives (write-immediately, no-permission-questions, blocker-surfacing, artifact-verification, lens-loading-by-worker) under `rules.workflow`. Flag orchestration directives (dispatch isolation, output forwarding, checkpoint cadence, orchestrator handoff) under `rules.activity`.\n\n**Do not flag:** Orchestrator directives in `rules.workflow`, worker directives in `rules.activity`, and the same directive for both in `rules.universal`. A rule that describes the other actor's mechanics (`instruction-narrates-an-actor`). Moving a mis-filed rule does not strike a narrating clause.\n\n**Fix:** Move to the bucket for the actor commanded. If one prose rule commands the two actors differently, split into two rules (orchestrator handoff vs worker load)."
+      }
+    ],
+    "problem": "'Keep ... on the activity' in AP-23 and 'rules: on the owning construct' in AP-30 can direct a reader to author activity-level rules. AP-69 forbids every such entry. The canon also has a distinct workflow rules.activity audience bucket, so 'activity' is not precise enough to locate the home.",
+    "witness": "An activity description says workers must persist evidence immediately. Following AP-30 literally moves that constraint into rules: on the owning activity, and AP-23's Fix appears to endorse the placement. AP-69 then flags the entire activity-level rules entry with no exception. If AP-23 intended workflow rules.activity delivery, it does not say that.",
+    "proposed_fix": "AP-23 Fix: 'Place worker guidance in the owning technique or shared technique contract that its delivery includes; where a workflow audience bucket is intended, name workflow.rules.activity explicitly. Activity definition files carry structural constraints, not rules entries.' AP-30 Fix: 'Move runtime role constraints to the owning technique/shared contract or the appropriate workflow rules audience bucket. Encode activity-local sequencing and gates structurally. Remove duplicate description prose.'",
+    "observing_check": {
+      "positive": "A role prescription in an activity description is detected; its repair lands in a worker-delivered technique contract or declared workflow audience bucket.",
+      "negative": "The repair does not create activity.yaml rules:, and a purpose-only description stays in place."
+    }
+  },
+  {
+    "id": "AS-11",
+    "kind": "consolidation-opportunity",
+    "priority": "low",
+    "entries": [
+      "AP-25",
+      "AP-60",
+      "AP-59"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-25",
+        "start": 368,
+        "end": 372,
+        "quote": "**Detect:** A `## Rules` entry constrains a single protocol step/phase rather than a cross-cutting invariant.\n\n**Do not flag:** Cross-cutting rules that span multiple phases; step-local caveats already filed as `>` notes (`constraint-as-blockquote`).\n\n**Fix:** Move the guidance into that step's protocol prose (or a `>` caveat) and delete the rule."
+      },
+      {
+        "entry": "AP-60",
+        "start": 796,
+        "end": 800,
+        "quote": "**Detect:** A `## Rules` entry applies to only one protocol block/step rather than spanning the technique.\n\n**Do not flag:** A cross-cutting technique rule. A step-scoped caveat already under the instruction as `>` (`constraint-as-blockquote`). Guidance that belongs in protocol prose is `no-one-step-rules`.\n\n**Fix:** Demote the entry to a `>` note under the block it qualifies; leave workflow-wide constraints in Rules."
+      },
+      {
+        "entry": "AP-59",
+        "start": 784,
+        "end": 788,
+        "quote": "**Detect:** A caveat on one instruction — a condition, a fallback, an error path, or a prohibition — is an indented sub-bullet (`  - …`) or a *when* / *if* / *otherwise* clause inside the step sentence. The step regex strips indent, so the sub-bullet becomes a peer step. Two clauses of one predicate (`when {passed} is false` beside `if the run emitted warnings`) read as two branches.\n\n**Do not flag:** An ordered sub-action or a precedence ladder. An If / Else if / Otherwise ladder over one choice, at any indent. A constraint that spans steps (`structure-backed-constraints`, `no-rule-protocol-restatement`). A one-step rule filed as global (`local-rule-as-note`, `no-one-step-rules`).\n\n**Fix:** Put the caveat in a `>` note under the instruction. One caveat is the note's prose (`  > If the PR has not merged, wait`); two or more are bullets (`  > - When …`). Two clauses of one predicate become one note. A line opening with `>` folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes)."
+      }
+    ],
+    "problem": "AP-25 and AP-60 both detect a Rules entry that constrains only one Protocol step and move it to that step, usually as a note. Their cross-references do not define disjoint triggers. Keeping both creates duplicate judgments and two places to maintain the same boundary.",
+    "witness": "A rule 'When this lookup times out, emit unresolved' applies only to the lookup phase. Both Detects match; both fixes demote it to the same local note. This is redundant coverage, not a logical contradiction.",
+    "proposed_fix": "Keep one step-local-rule entry with Detect: 'A Rules entry constrains only one Protocol instruction or phase.' Fix: 'Move a conditional caveat to a note under that instruction; move work into Protocol; retain genuinely cross-cutting invariants in Rules.' Retire the other entry and repoint its citations. Let AP-59 own the note's formatting, without restating that format in both entries.",
+    "observing_check": {
+      "positive": "One local timeout caveat produces one finding and moves to its instruction.",
+      "negative": "An invariant applied across lookup, interpretation, and persistence stays under Rules."
+    }
+  }
+]

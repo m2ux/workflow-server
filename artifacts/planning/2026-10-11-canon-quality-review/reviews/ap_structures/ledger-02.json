@@ -1,0 +1,158 @@
+[
+  {
+    "id": "AP-09",
+    "disposition": "finding",
+    "checks": {
+      "scope": "The intro names user decisions; Detect's verbs also catch local technical choices.",
+      "observable": "Observe whether a person must answer before work progresses.",
+      "consistency": "DP-26 allows technique judgment that needs no human checkpoint.",
+      "exceptions": "Messages and existing checkpoints are covered; local output selection needs explicit exclusion.",
+      "fix": "Checkpoint structure closes a human decision gap only.",
+      "expression": "Keep the word 'person' or 'user' in the operational predicate."
+    },
+    "rationale": "Require a checkpoint for human decision dependence, not any imperative containing choose or confirm.",
+    "finding_ids": [
+      "AS-05"
+    ],
+    "related_ids": [
+      "AP-11",
+      "AP-89",
+      "DP-26"
+    ]
+  },
+  {
+    "id": "AP-10",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Session-level collection/condition repetition is distinguished from one application.",
+      "observable": "Trace repeated steps, carried state, and the declared loop body.",
+      "consistency": "The local iteration exception fits DP-26 and structural fan-out in DP-40.",
+      "exceptions": "Per-input-item work and refinement of the technique's own output are explicit.",
+      "fix": "Move session repetition to nested loop steps while preserving local work.",
+      "expression": "The two declared loop families and their field names make the test concrete."
+    },
+    "rationale": "The entry already supplies a useful scope boundary; a full activity pass repeated until approval differs from refining one output within a technique.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-40",
+      "AP-38",
+      "AP-68"
+    ]
+  },
+  {
+    "id": "AP-11",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Cross-activity routing is the intended scope; unspecified paths broaden it.",
+      "observable": "A graph destination can be named and compared with declared routing.",
+      "consistency": "Local conditional interpretation allowed by DP-31 must stay outside this test.",
+      "exceptions": "Step conditions and checkpoint-fed exits are expressly exempt.",
+      "fix": "Activity decisions repair cross-activity movement, not every local branch.",
+      "expression": "Replace activities/paths with next activities or graph destinations."
+    },
+    "rationale": "The branch target must determine whether structure is missing.",
+    "finding_ids": [
+      "AS-05"
+    ],
+    "related_ids": [
+      "AP-09",
+      "DP-31"
+    ]
+  },
+  {
+    "id": "AP-12",
+    "disposition": "clear",
+    "checks": {
+      "scope": "A claimed file/report product is the subject; ordinary data outputs are separate.",
+      "observable": "Compare the claimed durable file with the producer's Outputs artifact declaration.",
+      "consistency": "Complements AP-109's missing-value declaration and AP-31's synthesis rule.",
+      "exceptions": "Non-artifact data correctly declared as data is excluded.",
+      "fix": "Adding the file declaration to the producing output exposes the contract.",
+      "expression": "The named heading and producer location make this actionable."
+    },
+    "rationale": "A report promised only in a description is distinguishable from a declared file output and from a structured in-memory result.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-31",
+      "AP-109"
+    ]
+  },
+  {
+    "id": "AP-13",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Approval state that gates later work is the relevant state lifetime.",
+      "observable": "Trace checkpoint effects to the typed variable and downstream predicates.",
+      "consistency": "Fits DP-14's single state home and AP-14's mode representation.",
+      "exceptions": "A transient acknowledgment with no later gate is explicitly exempt.",
+      "fix": "Declare and set the variable, then read it from the gate.",
+      "expression": "The control-flow use, rather than the mere word approval, determines applicability."
+    },
+    "rationale": "Remember approval in prose is a gap when a later step needs it; a one-message acknowledgment is not that gap.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-14",
+      "DP-14"
+    ]
+  },
+  {
+    "id": "AP-14",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Named modes that change skip or branch behavior are identified.",
+      "observable": "Compare the mode variable and the actual step/exit predicates.",
+      "consistency": "AP-112 owns redundant Boolean projections, keeping one authoritative mode.",
+      "exceptions": "Unrelated one-off conditions are outside the mode test.",
+      "fix": "Set one mode early and express every mode-controlled branch structurally.",
+      "expression": "The state-plus-condition requirement is concrete without prescribing all mode names."
+    },
+    "rationale": "A prose fast-mode skip is a detectable gap; direct predicates on one declared mode satisfy the invariant.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-112",
+      "DP-14"
+    ]
+  },
+  {
+    "id": "AP-15",
+    "disposition": "finding",
+    "checks": {
+      "scope": "The step-description scope combines reusable criteria, procedure, and iteration.",
+      "observable": "Classify the misplaced content by the decision or work it owns.",
+      "consistency": "The generic move-to-Protocol repair conflicts with AP-104 and can bypass AP-10.",
+      "exceptions": "Bound steps must lose description, but that does not select the destination of every clause.",
+      "fix": "Choose resource, structural step, or Protocol before deleting source prose.",
+      "expression": "Numbered criteria are not inherently procedural steps."
+    },
+    "rationale": "The location smell is valid; its repair needs the correct destination for each content class.",
+    "finding_ids": [
+      "AS-06"
+    ],
+    "related_ids": [
+      "AP-10",
+      "AP-17",
+      "AP-104"
+    ]
+  },
+  {
+    "id": "AP-16",
+    "disposition": "finding",
+    "checks": {
+      "scope": "Externally supplied values must be distinguished from locals and outputs.",
+      "observable": "Resolve own, inherited, and documented ambient inputs before declaring a gap.",
+      "consistency": "inputs[] spelling differs from later Markdown input contracts and AP-62's ambient exception.",
+      "exceptions": "Already-declared inputs need an explicit effective-contract interpretation.",
+      "fix": "The missing input should be declared at the owning Markdown contract.",
+      "expression": "Use the same authored representation as AP-148 rather than unexplained array syntax."
+    },
+    "rationale": "The requirement is sound, but field spelling and ambient/inherited scope need a single model.",
+    "finding_ids": [
+      "AS-07"
+    ],
+    "related_ids": [
+      "AP-62",
+      "AP-148",
+      "DP-13"
+    ]
+  }
+]

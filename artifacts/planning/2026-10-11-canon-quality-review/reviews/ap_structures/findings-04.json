@@ -1,0 +1,152 @@
+[
+  {
+    "id": "AS-12",
+    "kind": "operative-explanation-boundary",
+    "priority": "low",
+    "entries": [
+      "AP-26",
+      "AP-135",
+      "AP-152"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-26",
+        "start": 384,
+        "end": 388,
+        "quote": "**Detect:** A `description`, `message`, option or action description, procedure bullet, technique `## Rules` entry, or `rules.*` string explains why a construct exists, what consumes it, or whose remit it falls under, compares it to a prior implementation, or restates a fact adjacent structure already encodes (`steps[]` order, `when`, effects, exits, the workflow graph, a default). Test: delete the clause; if the prohibition or invariant still says what is constrained, the clause was rationale.\n\n**Do not flag:** A one-line summary of what the construct does. A structural field itself. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). A rule whose subject is the boundary between actors.\n\n**Fix:** Delete the rationale, narration, or restatement. Keep a clause whose deletion would lose a fact. Where a reader needs another actor's contract, link that contract's home. Put rationale in a commit, an ADR, or a planning doc."
+      },
+      {
+        "entry": "AP-135",
+        "start": 1772,
+        "end": 1772,
+        "quote": "**Fix:** Keep the obligation and the reason. Drop the shape. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface)."
+      },
+      {
+        "entry": "AP-152",
+        "start": 1974,
+        "end": 1974,
+        "quote": "**Do not flag:** A single constraint stated with the failure mode that makes it matter. Paragraphs or bullets elaborating one constraint across the cases it covers, each case subordinate to the named invariant. Length alone settles nothing. A rule scoped to one protocol step (`no-one-step-rules`). One invariant with two homes (`single-rule-authority`). Two entries whose triggers intersect (`overlapping-rule-scopes`)."
+      }
+    ],
+    "problem": "AP-26's deletion test equates a surviving prohibition with dispensable rationale, while its Fix keeps any clause whose deletion loses a fact. AP-135 says to keep an obligation's reason; AP-152 exempts a constraint's failure mode. Those clauses need a shared operational boundary rather than a blanket 'why' test.",
+    "witness": "'Only use marker bytes this context received; an unreadable marker cannot authenticate the action.' The imperative survives deletion of the second clause, but the clause supplies the failure condition the reader must recognize. The current tests can classify it either as removable rationale or as a retained operative fact. This is exception ambiguity, not a proved conflict about every explanatory clause.",
+    "proposed_fix": "AP-26 Detect: 'A clause repeats structure or supplies historical/design rationale without changing the reader's applicability decision, required action, interpretation, or failure recognition.' Do not flag: 'A current constraint, failure mode, or non-local dependency the reader needs to apply the instruction correctly.' Fix: 'Remove only clauses that fail that operational test; place historical rationale in the appropriate design record.' Align the short exceptions in AP-135 and AP-152 by reference.",
+    "observing_check": {
+      "positive": "'This phase replaced the older manual approach' is removed when it changes no present decision or obligation.",
+      "negative": "A failure condition needed to distinguish safe retry from duplicate creation remains with the instruction that uses it."
+    }
+  },
+  {
+    "id": "AS-13",
+    "kind": "optional-authorization-boundary",
+    "priority": "low",
+    "entries": [
+      "AP-29",
+      "DP-08"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-29",
+        "start": 420,
+        "end": 424,
+        "quote": "**Detect:** Descriptions, validate messages, procedure bullets, or options direct the user or agent to mutate user-owned environment state outside the working tree (e.g. global git/gh/gpg config, package installs).\n\n**Do not flag:** Diagnostics that report misconfiguration without directing the mutating fix; in-repo file edits.\n\n**Fix:** Surface the diagnostic only; leave the fix scope to the user. Declare the boundary in workflow rules if needed."
+      },
+      {
+        "entry": "DP-08",
+        "start": 49,
+        "end": 49,
+        "quote": "A semi-reversible or irreversible change waits for explicit confirmation that includes the impact."
+      }
+    ],
+    "problem": "The environment-mutation rule is an absolute boundary, including explicitly requested environment maintenance. That can be intentional, but the catalog does not name that product restriction; readers may infer that approval permits a scoped setup change from the confirmation principle. The suggested change is a policy decision, not an automatic relaxation.",
+    "witness": "A user explicitly requests repair of their global Git identity. A workflow executing that request remains prohibited by AP-29, even after the requested impact confirmation. This is not a logical contradiction: confirmation is a prerequisite, not permission. It exposes a boundary the canon should either affirm or scope.",
+    "proposed_fix": "Recommended if environment-maintenance workflows are supported: Detect 'Workflow prose directs mutation of user-owned environment state outside the declared and authorized work scope.' Exception 'Explicitly scoped environment maintenance with the target and impact confirmed.' Otherwise keep the absolute prohibition and state 'These workflows diagnose user-owned environment state; environment maintenance is outside their supported task scope.'",
+    "observing_check": {
+      "positive": "An authoring workflow unexpectedly orders a global Git configuration change: flag it.",
+      "negative": "A diagnostic-only instruction passes. If the scoped-maintenance exception is adopted, a separately authorized environment repair also passes; otherwise the workflow declares that task unsupported."
+    }
+  },
+  {
+    "id": "AS-14",
+    "kind": "same-scope-repair-conflict",
+    "priority": "high",
+    "entries": [
+      "AP-31",
+      "AP-44",
+      "AP-130"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-31",
+        "start": 448,
+        "end": 448,
+        "quote": "**Fix:** Delete the activity `artifacts[]` block. If a produced file is missing from the synthesized contract, add `#### artifact` (bare filename, `{token}` template, or discriminator-keyed note per `artifact-name-in-io`) on the producing technique's `## Outputs` — never back onto the activity."
+      },
+      {
+        "entry": "AP-44",
+        "start": 604,
+        "end": 608,
+        "quote": "**Detect:** Protocol prose names a concrete artifact filename, a literal or an ad-hoc path, instead of a canonical Input or Output id. A name selected by a mode is one literal per technique (`artifact-name-is-filename`).\n\n**Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.\n\n**Fix:** Move the filename (literal or token-template) into the I/O declaration; reference identifiers only in Protocol."
+      },
+      {
+        "entry": "AP-130",
+        "start": 1708,
+        "end": 1712,
+        "quote": "**Detect:** Read the body as the filename created under the artifact prefix. Flag more than one path segment: names joined by `/`, `and`, or `or`; a parenthesised mode or condition; a declaration key written as text (`name: <file>`); a sentence naming a section of another technique's document; a path separator.\n\n**Do not flag:** One literal (`01-audit-report.md`). A `{placeholder}` template (`{package_name}-plan.md`).\n\n**Fix:** Several files: one `###` output each, with its own `#### artifact`. A mode-selected name: one op per mode, gated at the bind (`no-monolith-masking-steps`). A section of another technique's file: no artifact here. A sibling's files: declare them on the sibling (`canonical-fact-home`)."
+      }
+    ],
+    "problem": "AP-31 explicitly permits adding a discriminator-keyed note in an artifact declaration. Its cited AP-44 does not define that form, and AP-130 flags condition/mode text in the same declaration and requires one filename. The prescribed artifact repair can immediately violate the filename contract.",
+    "witness": "To replace an activity artifacts block, an author follows AP-31 and declares the filename as 'full-report.md (full mode) or brief-report.md (brief mode)'. AP-31's discriminator-keyed-note branch offers this conditional declaration, while AP-130 rejects a mode/condition and multiple names in the artifact body.",
+    "proposed_fix": "Replace AP-31 Fix with: 'Delete activity artifacts[]. Declare each produced file on its producing technique's output using one literal filename or token-template under #### artifact. Where a mode selects distinct file contracts, use the mode-specific producing operations described by artifact-name-is-filename.' Remove 'discriminator-keyed note' and cite AP-130 for filename grammar rather than attributing that grammar to AP-44.",
+    "observing_check": {
+      "positive": "A conditional multi-name artifact body is flagged once and split into valid declared file contracts.",
+      "negative": "A single report.md or {package_name}-report.md declaration passes, and deleting activity artifacts[] does not introduce a conditional note."
+    }
+  },
+  {
+    "id": "AS-15",
+    "kind": "ambiguous-test-polarity",
+    "priority": "medium",
+    "entries": [
+      "AP-32"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-32",
+        "start": 454,
+        "end": 460,
+        "quote": "An outcome names the vessel (file/variable) instead of delivered value.\n\n**Detect:** An outcome names the act of writing a file, re-lists that file's contents, or says a variable was populated or set. Test: the outcome still reads true if the file or variable is renamed.\n\n**Do not flag:** A mechanical name used only in service of the value it carries.\n\n**Fix:** Rewrite the outcome as the value delivered. Delete or fold an outcome whose only content is that a directory was created or a variable was populated."
+      }
+    ],
+    "problem": "The entry detects vessel-focused outcomes but its Test says the outcome 'still reads true if the file or variable is renamed'. That is normally the desired property of a value-focused outcome. The polarity is unstated, and a generic 'directory created' also survives renaming despite being expressly unwanted.",
+    "witness": "'Evidence establishes the proposed merge is safe' survives a report filename change, as does 'Output directory created'. The former describes delivered value and the latter is an explicit bad class. Therefore rename invariance alone cannot separate the classes; treating the stated test as a positive Detect signal also reverses its intended polarity.",
+    "proposed_fix": "Replace Detect with: 'An outcome asserts only that storage or a variable exists, was written, or was populated, without naming what the user or next consumer can now know or do. A filename or id substitution alone must not change the claimed delivered value.' Retain the allowance for a mechanical name that supports a value statement. Make the positive failure predicate explicit rather than labeling the desired property as an unqualified Test.",
+    "observing_check": {
+      "positive": "'Output directory created' and 'assessment variable populated' are flagged when they assert no further delivered result.",
+      "negative": "'Conflicting obligations identified with the evidence needed to choose a repair' is accepted whether its report filename changes or stays the same."
+    }
+  },
+  {
+    "id": "AS-16",
+    "kind": "detect-exception-collision",
+    "priority": "medium",
+    "entries": [
+      "AP-39"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-39",
+        "start": 540,
+        "end": 544,
+        "quote": "**Detect:** A strategy technique appears on nearly every activity's `techniques[]`. `techniques.workflow` reaches the orchestrator (`get_workflow`). `techniques.activity` is inherited by every activity (`get_activity`). There is no `universal` bucket for techniques. A technique only some activities use stays on those activities. A step-binding duplicate is `techniques-list-disjoint`.\n\n**Do not flag:** Activity-specific strategy techniques used by only some activities.\n\n**Fix:** Declare once under `workflow.techniques.activity`; delete from every activity `techniques[]`; drop emptied activity blocks."
+      }
+    ],
+    "problem": "Detect says 'nearly every activity', but the same paragraph and the Do-not-flag block say a strategy used by only some activities stays local. A strategy on nine of ten activities satisfies both descriptions. Hoisting it changes the tenth activity's delivered guidance without first establishing that the strategy belongs there.",
+    "witness": "Nine processing activities use a strategy; the tenth performs a terminal acknowledgment and does not use it. This is both 'nearly every' and 'only some'. Detect recommends hoisting while the exception recommends retaining local placement. No percentage threshold would establish applicability to the tenth activity.",
+    "proposed_fix": "Replace Detect with: 'A strategy's contract applies to every activity, but its declaration is repeated on individual activities rather than workflow.techniques.activity.' Do not flag: 'A strategy whose behavior applies to a proper subset, regardless of how large the subset is.' Fix: 'Verify applicability to every activity, then hoist and remove local copies; otherwise keep it on the activities that use it.'",
+    "observing_check": {
+      "positive": "Every activity requires the same strategy and duplicates its declaration: hoist it.",
+      "negative": "A strategy applying to nine of ten activities stays local when the tenth has no such duty."
+    }
+  }
+]

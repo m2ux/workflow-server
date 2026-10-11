@@ -1,0 +1,374 @@
+{
+  "assignment": "ap_structures",
+  "primary_ids": [
+    "AP-01",
+    "AP-02",
+    "AP-03",
+    "AP-04",
+    "AP-05",
+    "AP-06",
+    "AP-07",
+    "AP-08",
+    "AP-09",
+    "AP-10",
+    "AP-11",
+    "AP-12",
+    "AP-13",
+    "AP-14",
+    "AP-15",
+    "AP-16",
+    "AP-17",
+    "AP-18",
+    "AP-19",
+    "AP-20",
+    "AP-21",
+    "AP-22",
+    "AP-23",
+    "AP-24",
+    "AP-25",
+    "AP-26",
+    "AP-27",
+    "AP-28",
+    "AP-29",
+    "AP-30",
+    "AP-31",
+    "AP-32",
+    "AP-33",
+    "AP-34",
+    "AP-35",
+    "AP-36",
+    "AP-37",
+    "AP-38",
+    "AP-39",
+    "AP-40",
+    "AP-41",
+    "AP-42",
+    "AP-43",
+    "AP-44",
+    "AP-45",
+    "AP-46",
+    "AP-47",
+    "AP-48",
+    "AP-49",
+    "AP-50",
+    "AP-51",
+    "AP-52",
+    "AP-53",
+    "AP-54",
+    "AP-55",
+    "AP-56",
+    "AP-57",
+    "AP-58",
+    "AP-59",
+    "AP-60",
+    "AP-61",
+    "AP-62",
+    "AP-63",
+    "AP-64",
+    "AP-65",
+    "AP-66",
+    "AP-67",
+    "AP-68"
+  ],
+  "scope": "Canon criterion quality only; suggestions; no definition-conformance verdict and no corpus edits.",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "revision_provenance": "Coordinator supplied revision; captured source SHA-256 identities independently checked against inventory. No Git or network access used.",
+  "primary_source_bytes": 53488,
+  "source_reads": [
+    {
+      "source": "sources/anti-patterns.md",
+      "sha256": "dbdf297b3d7ddb5517993b694705e0baa292374a82373aaee19c36fb8994e681",
+      "bytes": 161582,
+      "lines": 2084,
+      "ranges": [
+        [
+          1,
+          273
+        ],
+        [
+          274,
+          545
+        ],
+        [
+          546,
+          813
+        ],
+        [
+          814,
+          1085
+        ],
+        [
+          1086,
+          1357
+        ],
+        [
+          1358,
+          1617
+        ],
+        [
+          1618,
+          1857
+        ],
+        [
+          1858,
+          2084
+        ]
+      ],
+      "outcome": "Complete; all instrumented ranges returned without tool truncation."
+    },
+    {
+      "source": "sources/design-principles.md",
+      "sha256": "dc51605fb74d9a4a3f6bdefb93b984bfa2a6b909bfbd00f164f2d277566d8e7b",
+      "bytes": 14476,
+      "lines": 205,
+      "ranges": [
+        [
+          1,
+          205
+        ]
+      ],
+      "outcome": "Complete; all instrumented ranges returned without tool truncation."
+    }
+  ],
+  "unique_source_bytes": 176058,
+  "instrumented_emitted_source_bytes": 176058,
+  "instrumented_read_count": 9,
+  "instrumented_read_io_seconds": 0.0037268780288286507,
+  "measured_interval_start_utc": "2026-10-11T12:18:06.460743+00:00",
+  "measured_interval_end_utc": "2026-10-11T12:40:05.375770+00:00",
+  "measured_interval_elapsed_seconds": 1318.915027,
+  "timing_scope": "Wall time from first instrumented full-source read through artifact validation, including reasoning and writing; excludes preliminary instruction discovery and the first truncated combined read.",
+  "ledger_dispositions": {
+    "clear": 37,
+    "finding": 20,
+    "improvement": 11
+  },
+  "finding_record_priorities": {
+    "high": 3,
+    "medium": 13,
+    "low": 8
+  },
+  "ledger_files": [
+    {
+      "path": "ledger-01.json",
+      "entries": [
+        "AP-01",
+        "AP-02",
+        "AP-03",
+        "AP-04",
+        "AP-05",
+        "AP-06",
+        "AP-07",
+        "AP-08"
+      ],
+      "bytes": 7050,
+      "sha256": "5b730b407b77c84195e35f9d6ecd6fb84794de065fabee402d2050422b0e0479"
+    },
+    {
+      "path": "ledger-02.json",
+      "entries": [
+        "AP-09",
+        "AP-10",
+        "AP-11",
+        "AP-12",
+        "AP-13",
+        "AP-14",
+        "AP-15",
+        "AP-16"
+      ],
+      "bytes": 6928,
+      "sha256": "cbab660801d5c39e1744aefa2ba2e91b038e6f35b111597e688163578ca4482b"
+    },
+    {
+      "path": "ledger-03.json",
+      "entries": [
+        "AP-17",
+        "AP-18",
+        "AP-19",
+        "AP-20",
+        "AP-21",
+        "AP-22",
+        "AP-23",
+        "AP-24"
+      ],
+      "bytes": 7393,
+      "sha256": "b6f222c3e30605815490d26aa688fcb343913ed97a3c241927e83bf5db5ebb8b"
+    },
+    {
+      "path": "ledger-04.json",
+      "entries": [
+        "AP-25",
+        "AP-26",
+        "AP-27",
+        "AP-28",
+        "AP-29",
+        "AP-30",
+        "AP-31",
+        "AP-32"
+      ],
+      "bytes": 7512,
+      "sha256": "8218a2f92431f15aad03b86008d9fc82ca6e58bc9f34336e2f565390b12c47c9"
+    },
+    {
+      "path": "ledger-05.json",
+      "entries": [
+        "AP-33",
+        "AP-34",
+        "AP-35",
+        "AP-36",
+        "AP-37",
+        "AP-38",
+        "AP-39",
+        "AP-40"
+      ],
+      "bytes": 7392,
+      "sha256": "3edab87f41f27a6427d7eb5e63d723d68f2a280515bf317f4fb9abbb6f0c50b8"
+    },
+    {
+      "path": "ledger-06.json",
+      "entries": [
+        "AP-41",
+        "AP-42",
+        "AP-43",
+        "AP-44",
+        "AP-45",
+        "AP-46",
+        "AP-47",
+        "AP-48"
+      ],
+      "bytes": 7441,
+      "sha256": "9f22a9621df23517a4817f1cc7a1e03a3df35deef573f19996c7f8153b28fdb9"
+    },
+    {
+      "path": "ledger-07.json",
+      "entries": [
+        "AP-49",
+        "AP-50",
+        "AP-51",
+        "AP-52",
+        "AP-53",
+        "AP-54",
+        "AP-55",
+        "AP-56"
+      ],
+      "bytes": 7729,
+      "sha256": "1ef3e56fc941457203ebab066fe3354b0bbfced179bb91c5cae6c465b5810d85"
+    },
+    {
+      "path": "ledger-08.json",
+      "entries": [
+        "AP-57",
+        "AP-58",
+        "AP-59",
+        "AP-60",
+        "AP-61",
+        "AP-62",
+        "AP-63",
+        "AP-64"
+      ],
+      "bytes": 7452,
+      "sha256": "7b06e5d569fa9a0e639286e9f1d17632273ac59a3cc4318848201086dda4281d"
+    },
+    {
+      "path": "ledger-09.json",
+      "entries": [
+        "AP-65",
+        "AP-66",
+        "AP-67",
+        "AP-68"
+      ],
+      "bytes": 3895,
+      "sha256": "d521a560305e8f739bce964537e8cb21612bfe284eaa63c2776f0dff668403b6"
+    }
+  ],
+  "finding_files": [
+    {
+      "path": "findings-01.json",
+      "entries": [
+        "AS-01",
+        "AS-02",
+        "AS-03",
+        "AS-04",
+        "AS-05"
+      ],
+      "bytes": 14622,
+      "sha256": "96baee380985efece41b096872ccd740bbf34b7c936310c3ce3f2d4ae02a2909"
+    },
+    {
+      "path": "findings-02.json",
+      "entries": [
+        "AS-06",
+        "AS-07",
+        "AS-08"
+      ],
+      "bytes": 13289,
+      "sha256": "06cadd53c1bd43d4b154cfc1d233da71846190524d14bbeb6bd52ea1996941af"
+    },
+    {
+      "path": "findings-03.json",
+      "entries": [
+        "AS-09",
+        "AS-10",
+        "AS-11"
+      ],
+      "bytes": 12590,
+      "sha256": "047fb269ff7c3791ad6b9de6f0e3d62541b7ad4f29740e5651060a30abf31c28"
+    },
+    {
+      "path": "findings-04.json",
+      "entries": [
+        "AS-12",
+        "AS-13",
+        "AS-14",
+        "AS-15",
+        "AS-16"
+      ],
+      "bytes": 14077,
+      "sha256": "a7db4ccf0131d425c5fa2c5bff97e94538bb0fe6d86057adf928ee12d8b4d94b"
+    },
+    {
+      "path": "findings-05.json",
+      "entries": [
+        "AS-17",
+        "AS-18",
+        "AS-19"
+      ],
+      "bytes": 13569,
+      "sha256": "90915acdc79ba4f61a9753fe597e4634cbf1fcfc8c2957286173e5c9f5e0fc19"
+    },
+    {
+      "path": "findings-06.json",
+      "entries": [
+        "AS-20",
+        "AS-21",
+        "AS-22",
+        "AS-23"
+      ],
+      "bytes": 13998,
+      "sha256": "52c0dce0a70360ad8b6196a50ad95f5bd7d2deb611389d4e12b1335e9c8fa9c2"
+    },
+    {
+      "path": "findings-07.json",
+      "entries": [
+        "AS-24"
+      ],
+      "bytes": 3063,
+      "sha256": "73a7891944f00186278ae17468883ed5236ad3d053cc77a31cb0f4aad8813878"
+    }
+  ],
+  "validation": {
+    "primary_ids_exactly_once": true,
+    "six_reasoned_checks_per_primary": true,
+    "all_evidence_ranges_within_entry": true,
+    "quotes_match_captured_sources": true,
+    "whole_sources_read_without_final_gaps": true,
+    "max_entries_per_json_batch": 8,
+    "max_utf8_bytes_per_json_batch": 16000
+  },
+  "limits": [
+    "No application schema or loader execution was independently inspected; proposed syntax involving ambient inputs and dotted address resolution needs implementation confirmation before adoption.",
+    "AP-57's renderer-specific factual claim was not independently verified; the disposition covers the wording's literal-versus-code boundary.",
+    "Cross-entry review is a source-grounded qualitative check, not a formal proof of natural-language consistency.",
+    "Initial combined inventory/skill and principles outputs were truncated; every captured-source byte was subsequently reread in the complete instrumented ranges listed here."
+  ]
+}

@@ -1,0 +1,187 @@
+[
+  {
+    "id": "AS-01",
+    "kind": "scope-ambiguity",
+    "priority": "medium",
+    "entries": [
+      "AP-01",
+      "AP-17",
+      "DP-22"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-01",
+        "start": 68,
+        "end": 72,
+        "quote": "**Detect:** An activity, technique, or resource body is inlined into a parent YAML/markdown file (or a new construct is authored inline rather than as a sibling file).\n\n**Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.\n\n**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline)."
+      },
+      {
+        "entry": "AP-17",
+        "start": 270,
+        "end": 270,
+        "quote": "**Do not flag:** `kind: loop` may have `name`, loop fields, and nested `steps[]`. `kind: checkpoint` uses inline `message` and `options` and a stable `id`. A checkpoint or a loop is inline in `steps[]`, never `step.checkpoint` or a separate `checkpoints[]` or `loops[]` array."
+      },
+      {
+        "entry": "DP-22",
+        "start": 105,
+        "end": 105,
+        "quote": "A construct lives in its own file. A parent references that file."
+      }
+    ],
+    "problem": "The parenthetical 'a new construct' extends a file-separation rule beyond the three named file bodies. Its exception covers short literals, although checkpoints and loops are required inline constructs. A literal reading produces a false positive on the schema's intended packaging.",
+    "witness": "A newly authored inline checkpoint with message, options, and effects is a 'new construct ... authored inline' under AP-01, while AP-17 expressly says a checkpoint is inline in steps[]. The narrow reading limited to activity/technique/resource bodies avoids the conflict, so this is a scope ambiguity, not a proved contradiction under every reading.",
+    "proposed_fix": "Replace Detect with: 'An activity, technique, or resource definition is embedded as a body in a parent where the schema represents that definition by a file reference.' Replace Do not flag with: 'Schema-owned inline forms, including checkpoint and loop steps, conditions, effects, and literal fields; references to separate definitions.' Remove the open-ended 'new construct' parenthesis. Align the scope of DP-22 with the same file-bearing construct boundary.",
+    "observing_check": {
+      "positive": "An activity body pasted into a workflow field that expects an activity reference is flagged and extracted.",
+      "negative": "A checkpoint with inline message/options and a loop with nested steps remain inline and are not flagged."
+    }
+  },
+  {
+    "id": "AS-02",
+    "kind": "optional-scope-improvement",
+    "priority": "low",
+    "entries": [
+      "AP-02",
+      "AP-118"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-02",
+        "start": 80,
+        "end": 84,
+        "quote": "**Detect:** A change proposes altering workflow/activity/technique schema (or inventing fields) so existing content validates.\n\n**Do not flag:** Legitimate schema evolution requested explicitly by the user as a separate task.\n\n**Fix:** Rewrite the content to conform to the current schema."
+      },
+      {
+        "entry": "AP-118",
+        "start": 1516,
+        "end": 1516,
+        "quote": "**Fix:** Delete the bind prose. Close the gap with a same-name bag binding, a declared `default`, or a call-site input or output deviation. Delete unused I/O. Where structure cannot express the resolution, extend variable-binding or the schema once. See also `io-agnostic-contract`."
+      }
+    ],
+    "problem": "Requiring schema evolution to be a 'separate task' makes task packaging stand in for authorization. AP-118 can prescribe a schema extension as part of closing a binding gap. The catalog does not say whether a single explicitly authorized engine-and-definition change is legitimate.",
+    "witness": "A user explicitly requests one change that adds a supported binding construct and its first workflow consumer. The schema change is authorized, but AP-02's literal separate-task exception does not cover it. This is a suggested policy clarification, not evidence that schema changes should be automatic.",
+    "proposed_fix": "Replace Do not flag with: 'Schema evolution explicitly included in the approved change scope, with the schema contract and its affected consumers reviewed together.' Add to Fix: 'When current structure cannot express the authorized requirement, identify the missing capability and resolve its scope before changing the schema.' Keep the prohibition on inventing fields merely to silence validation.",
+    "observing_check": {
+      "positive": "An author invents an undeclared field to make an unapproved content shape validate: flag it.",
+      "negative": "An approved schema-and-consumer change is not flagged solely because the work is tracked in one task."
+    }
+  },
+  {
+    "id": "AS-03",
+    "kind": "overbroad-completion-scope",
+    "priority": "medium",
+    "entries": [
+      "AP-03",
+      "AP-07",
+      "AP-81",
+      "DP-03"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-03",
+        "start": 90,
+        "end": 96,
+        "quote": "Scope is left partially implemented before commit or close-out.\n\n**Detect:** A commit, handoff, or \"done\" claim leaves items in the scope manifest unaddressed or explicitly deferred without user approval.\n\n**Do not flag:** An explicitly scoped partial deliverable the user approved (remaining items stay open in the manifest).\n\n**Fix:** Complete every scope-manifest item, or get approval to shrink scope and update the manifest before committing."
+      },
+      {
+        "entry": "AP-07",
+        "start": 142,
+        "end": 148,
+        "quote": "Completion is claimed without re-checking every item in the scope manifest.\n\n**Detect:** A done/complete claim, commit, or close-out proceeds without verifying each scope-manifest item is addressed.\n\n**Do not flag:** An interim status update that does not claim completion.\n\n**Fix:** Walk the scope manifest item-by-item and resolve gaps before claiming done."
+      },
+      {
+        "entry": "AP-81",
+        "start": 1056,
+        "end": 1060,
+        "quote": "**Detect:** New workflow/technique/resource files are drafted without checking the relevant format/schema conventions, or commits proceed without validating the touched files.\n\n**Do not flag:** Edits that only touch already-validated identical shapes with no format risk.\n\n**Fix:** Verify format literacy before drafting; validate all touched files before commit."
+      },
+      {
+        "entry": "DP-03",
+        "start": 29,
+        "end": 29,
+        "quote": "List every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done."
+      }
+    ],
+    "problem": "Both completion checks include every commit. AP-03 consequently demands that the whole scope be complete before an incremental commit; AP-07's Fix speaks only about claiming done. Commit-time validation and completion-time scope closure are different observable events.",
+    "witness": "An approved two-part change records a validated first part in an interim commit and keeps the second part openly in progress. No handoff or done claim occurs. AP-03 flags unfinished scope and requires completion before committing; AP-07 flags the commit despite its completion-focused title and Fix.",
+    "proposed_fix": "AP-03 Detect: 'A deliverable is handed off or represented as complete while approved scope items remain unaddressed or are deferred without approval.' Do not flag: 'An explicitly partial deliverable, or an interim commit that keeps remaining scope open and makes no completion claim.' Fix: 'Complete the agreed deliverable or obtain and record a scope change before its completion claim.' AP-07 Detect: 'A completion claim or final handoff lacks item-by-item verification against the current scope manifest.' Keep AP-81 as the commit-validation check.",
+    "observing_check": {
+      "positive": "A final 'done' report omits an agreed resource edit with no scope approval: both unfinished-work and missing-verification evidence can be recorded distinctly.",
+      "negative": "A validated interim commit with the unfinished item still in progress is not treated as a completed deliverable."
+    }
+  },
+  {
+    "id": "AS-04",
+    "kind": "detect-fix-mismatch",
+    "priority": "medium",
+    "entries": [
+      "AP-04",
+      "DP-07"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-04",
+        "start": 102,
+        "end": 108,
+        "quote": "A new naming convention is invented without search and user approval.\n\n**Detect:** A new id, filename pattern, rule slug, or vocabulary term is introduced without checking existing conventions and without user approval.\n\n**Do not flag:** Reuse of an already-established convention found in-repo or in this catalogue.\n\n**Fix:** Search for an existing name/pattern; if none fits, propose the new convention and get approval before adopting it."
+      },
+      {
+        "entry": "DP-07",
+        "start": 45,
+        "end": 45,
+        "quote": "Search existing naming, field order, and structure before introducing a pattern."
+      }
+    ],
+    "problem": "Detect uses 'without checking ... and without user approval', so either search or approval alone makes the conjunction false. Fix requires search and, when no convention fits, approval. It also switches between a new identifier and a new convention, which are not the same event.",
+    "witness": "An author searches, finds no suitable convention, and adopts a new naming scheme without approval. Detect is false because search occurred, although Fix says the new convention needs approval. Conversely, a fresh id following established snake_case is not a new naming convention.",
+    "proposed_fix": "Replace Detect with: 'A naming convention is adopted without checking whether an existing convention fits; or, after no existing convention fits, a new convention is adopted without the required approval.' Do not flag: 'New identifiers that follow an established convention; a genuinely new convention with its search and approval recorded.' Retain the existing Fix sequence.",
+    "observing_check": {
+      "positive": "A search with no fit followed by an unapproved new filename scheme is flagged.",
+      "negative": "A new task_results id using the established identifier convention is not flagged merely because the id is new."
+    }
+  },
+  {
+    "id": "AS-05",
+    "kind": "decision-scope-ambiguity",
+    "priority": "medium",
+    "entries": [
+      "AP-09",
+      "AP-11",
+      "DP-26",
+      "DP-31"
+    ],
+    "evidence": [
+      {
+        "entry": "AP-09",
+        "start": 170,
+        "end": 176,
+        "quote": "A user decision is written as prose instead of a `kind: checkpoint` step.\n\n**Detect:** Step/activity description (or protocol prose) tells the agent to ask/confirm/choose without a `kind: checkpoint` at that `steps[]` position.\n\n**Do not flag:** Non-blocking informational messages (`action: message`) with no decision; decisions already modeled as checkpoints.\n\n**Fix:** Add a `kind: checkpoint` with `message`, `options`, and `effects` at the decision point in `steps[]`."
+      },
+      {
+        "entry": "AP-11",
+        "start": 194,
+        "end": 200,
+        "quote": "Cross-activity routing is written as prose instead of an activity-level `decision`.\n\n**Detect:** Prose describes branching to different activities/paths without an activity-level `decision` with `branches`/`conditions`.\n\n**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates.\n\n**Fix:** Declare an activity-level `decision` with branches/conditions; remove the prose branch recipe."
+      },
+      {
+        "entry": "DP-26",
+        "start": 121,
+        "end": 121,
+        "quote": "A technique is the judgement a loop, branch, or gate cannot hold: how to orient a tool for this anatomy, how to read what came back, and how to recover when that is not what was expected. The tool schema owns the remaining parameters. The inputs name the situation the path applies to. A path that only calls the tool is the tool's own leaflet. A judgement that already has an endpoint or a step kind lives in that construct."
+      },
+      {
+        "entry": "DP-31",
+        "start": 141,
+        "end": 141,
+        "quote": "Inside a Protocol step, the unconditional instruction is the bullet, and each *when* / *if* / *otherwise* branch is a `>` note under it. A note with two or more items gives each a bullet, written `  > - When …`. A lone caveat is the note's prose. A line opening with `>` is not a step. A condition that selects a step, an activity, or a path is [Encode Constraints as Structure](#9-encode-constraints-as-structure)."
+      }
+    ],
+    "problem": "AP-09's Detect broadens 'user decision' to the verbs ask/confirm/choose; AP-11 broadens cross-activity routing to unspecified 'paths'. Those words also describe legitimate local judgment within one technique. The subject headings supply intent but the operational tests do not preserve the boundary.",
+    "witness": "A technique says 'Choose the candidate whose returned evidence satisfies the criteria; if none does, return unresolved.' It makes a local output judgment, not a human decision or activity transition. Verb-based AP-09 and the unqualified 'paths' in AP-11 can nevertheless route it into checkpoints or graph branches.",
+    "proposed_fix": "AP-09 Detect: 'Definition prose requires a person to decide, authorize, or confirm progress, but the activity has no checkpoint at that decision point.' AP-11 Detect: 'Prose selects the next activity or graph destination, but no declared activity decision or exit predicate represents that routing.' Add to both exceptions: 'A technique's local evidence interpretation or output selection that neither asks a person nor selects an activity/step.'",
+    "observing_check": {
+      "positive": "'Ask the user to approve publication before the publishing activity' without a checkpoint is flagged; prose selecting a next activity without declared routing is flagged.",
+      "negative": "A local evidence branch producing one declared classification remains in the technique; an existing step condition remains structural."
+    }
+  }
+]

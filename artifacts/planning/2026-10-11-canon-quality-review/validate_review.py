@@ -34,14 +34,15 @@ for name in slices:
         if key is None:
             continue
         data = json.loads(path.read_text())
+        values = data if isinstance(data, list) else data[key]
         assert path.stat().st_size <= 16000, path
         if key == 'entries':
-            assert len(data[key]) <= 8, path
-            entries.extend(data[key])
+            assert len(values) <= 8, path
+            entries.extend(values)
         else:
-            findings.extend(data[key])
+            findings.extend(values)
         files.append({'path': str(path.relative_to(root)), 'bytes': path.stat().st_size,
-                      'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'count': len(data[key])})
+                      'sha256': hashlib.sha256(path.read_bytes()).hexdigest(), 'count': len(values)})
     ids = [entry['id'] for entry in entries]
     assert len(ids) == len(set(ids)), name
     assert set(ids) == set(inventory['assignments'][name]['entries']), name

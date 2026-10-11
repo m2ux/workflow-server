@@ -1,0 +1,152 @@
+[
+  {
+    "id": "AP-41",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Definition prose is separated from planning history and runtime constraints.",
+      "observable": "Ask whether the clause describes current behavior or requires remembering an alternative design.",
+      "consistency": "Matches DP-17 without banning every English negation.",
+      "exceptions": "Runtime prohibitions, schema operators, catalog examples, and validation errors are explicitly retained.",
+      "fix": "Rewrite around the current behavior while preserving live constraints.",
+      "expression": "The edit-when-old-way-is-forgotten signal makes the stylistic goal operational."
+    },
+    "rationale": "'The workflow now avoids the old manual path' differs from a current invariant such as 'Secrets stay out of artifacts'.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-17",
+      "AP-26"
+    ]
+  },
+  {
+    "id": "AP-42",
+    "disposition": "clear",
+    "checks": {
+      "scope": "I/O descriptions naming workflow-internal producers or consumers are the subject.",
+      "observable": "Inspect the named/link target and whether it identifies a particular workflow position.",
+      "consistency": "Consistent with DP-37; AP-125 adds the broader technique-link form.",
+      "exceptions": "Intrinsic/external origins and resource links describing shape remain useful contract facts.",
+      "fix": "State meaning, shape, and allowed values without the caller's topology.",
+      "expression": "The boundary between a value's nature and one caller's source is well illustrated."
+    },
+    "rationale": "'Findings from the assessment activity' couples a contract; 'Findings with severity and source evidence' defines the value.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-37",
+      "AP-125",
+      "AP-119"
+    ]
+  },
+  {
+    "id": "AP-43",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Literal artifact references and path-flavored ids are both named.",
+      "observable": "Compare the Protocol reference with declared I/O and artifact metadata.",
+      "consistency": "The literal-file case duplicates AP-44; identifier shape is also owned by AP-66.",
+      "exceptions": "Artifact declaration literals and resource-template nouns are expressly allowed.",
+      "fix": "Use the declared designator and preserve filename metadata at its declaration.",
+      "expression": "Separating reference syntax from id shape would give each invariant one home."
+    },
+    "rationale": "The checks are observable; consolidate duplicated ownership rather than label the overlap a contradiction.",
+    "finding_ids": [
+      "AS-17"
+    ],
+    "related_ids": [
+      "AP-44",
+      "AP-66"
+    ]
+  },
+  {
+    "id": "AP-44",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "Concrete artifact filenames inside Protocol are a precise target.",
+      "observable": "A literal filename can be compared directly with its declared artifact/input id.",
+      "consistency": "The same case and remedy appear in AP-43; AP-130 owns the declaration grammar.",
+      "exceptions": "Canonical designators are excluded and opaque arrays have their own check.",
+      "fix": "Move the filename to the declaration and use the identifier in work instructions.",
+      "expression": "Keep one Protocol-filename entry and point to the filename grammar owner."
+    },
+    "rationale": "The individual rule is usable, but one construct need not yield both AP-43 and AP-44 findings.",
+    "finding_ids": [
+      "AS-17"
+    ],
+    "related_ids": [
+      "AP-43",
+      "AP-45",
+      "AP-130"
+    ]
+  },
+  {
+    "id": "AP-45",
+    "disposition": "clear",
+    "checks": {
+      "scope": "An opaque array replacing distinct semantic artifact inputs is the target.",
+      "observable": "Show that Protocol must recover file identities the input contract does not name.",
+      "consistency": "Fits AP-43/AP-44's declaration ownership without banning every collection.",
+      "exceptions": "A single named artifact is explicit; a meaningful structured collection does not satisfy the opaque/forced-filename Detect.",
+      "fix": "Give fixed semantic artifact roles their own declared inputs.",
+      "expression": "The forced-Protocol-filenames condition keeps the rule narrower than a ban on path arrays by name alone."
+    },
+    "rationale": "An unordered list of specification/review paths that the procedure must identify by filename differs from a declared collection whose entries already carry semantic roles.",
+    "finding_ids": [],
+    "related_ids": [
+      "AP-43",
+      "AP-44"
+    ]
+  },
+  {
+    "id": "AP-46",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Ordinary resources naming host callers, destinations, or binding topology are explicit.",
+      "observable": "Delete the host narrative and verify that template/vocabulary/guide use remains complete.",
+      "consistency": "The prompt-domain exception accommodates resources whose subject is running the engine.",
+      "exceptions": "Creation-guide artifact names, template filenames, shape headings, and appropriate resource references are retained.",
+      "fix": "Move actual orchestration into its owning activity or technique and preserve usable fill material.",
+      "expression": "Examples are numerous but the host-coupling predicate and exceptions provide a coherent decision."
+    },
+    "rationale": "'Used by activity X at gate Y' is incidental to a general template; a creation guide's subject filename is not that incidental backlink.",
+    "finding_ids": [],
+    "related_ids": [
+      "DP-30",
+      "AP-92",
+      "AP-116"
+    ]
+  },
+  {
+    "id": "AP-47",
+    "disposition": "clear",
+    "checks": {
+      "scope": "Immediate textual repetition before a same-name hyperlink is precisely scoped.",
+      "observable": "Normalize case, hyphen, and underscore and compare the two labels.",
+      "consistency": "No broader reference or contract rule requires the redundant wrapper.",
+      "exceptions": "A distinct preceding role label is explicitly preserved.",
+      "fix": "A single hyperlink preserves both the name and navigation.",
+      "expression": "The concrete text pattern and normalization rule are sufficient."
+    },
+    "rationale": "deep_scan followed by a same-name parenthetical link is redundant; a role word followed by a different resource id is informative.",
+    "finding_ids": [],
+    "related_ids": []
+  },
+  {
+    "id": "AP-48",
+    "disposition": "improvement",
+    "checks": {
+      "scope": "References to declared outputs are the scope, not all descriptive nouns.",
+      "observable": "Named output slots make ambiguity testable, but the current noun list treats unique anaphora as vague.",
+      "consistency": "General reference entries allow same-step anaphora; output-specific strictness could be intentional.",
+      "exceptions": "Existing designators and non-output prose are excluded; unique anchored anaphora is unstated.",
+      "fix": "Substitute the id when needed to identify the output; decide whether machine processing needs every repetition.",
+      "expression": "Distinguish ambiguity from a stricter formatting requirement."
+    },
+    "rationale": "State a consistent reference policy; no contradiction is claimed solely from a narrower style rule.",
+    "finding_ids": [
+      "AS-24"
+    ],
+    "related_ids": [
+      "AP-54",
+      "AP-144"
+    ]
+  }
+]
