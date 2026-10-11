@@ -1880,9 +1880,9 @@ A comment narrates what the next line already says.
 
 **Detect:** Comments or JSDoc whose removal leaves the code equally clear; multi-line blocks that paraphrase identifiers; "what" narration without a non-obvious "why".
 
-**Do not flag:** One-line rationale for a surprising constraint, safety invariant, or non-local coupling; license headers; public API contracts that the language cannot express.
+**Do not flag:** The shortest clear statement of a non-obvious invariant, rationale, coupling, or public contract the code and types do not express; license headers.
 
-**Fix:** Delete or collapse to a single why-line. Prefer renaming and structure over commentary.
+**Fix:** Delete the redundant narration, preserving every operative fact. Prefer naming and structure where they communicate the same information more clearly.
 
 ### AP-127. no-dense-prose-after-config-examples
 
@@ -2102,7 +2102,7 @@ A declared output has no reader.
 
 **Fires on:** `technique.outputs`, `activity.steps`
 
-**Detect:** For each `### <id>` under `## Outputs`, name where it lands: an `#### artifact` on the entry; a binding, remap, gate, `validate` target, or same-named input in a workflow that can bind the op; or `{id}` in the binding activity's message or checkpoint. Flag an entry with none, including one mentioned only as "return `{id}`", and one whose `variables[]` slot nothing reads. Test: the only reader is the worker's own report.
+**Detect:** For each `### <id>` under `## Outputs`, trace it through the actual reachable binds, remaps, artifact construction, gates, `validate` targets and messages to a consumer inside the declared review boundary. Flag an entry that reaches none, including one mentioned only as "return `{id}`", and one whose `variables[]` slot nothing reads. A same-name declaration with no such route is not a reader. Record unknown external consumption separately from a proved unused local output.
 
 **Do not flag:** A library op, or one bound cross-workflow, whose external callers sit outside the tree. An output consumed by a sibling `#### artifact` template on the same technique. A terminal product the binding activity actually surfaces.
 
@@ -2172,9 +2172,9 @@ A rules entry cites rules another file owns and the reader already receives, so 
 
 **Fires on:** `technique.rules`, `workflow.rules`, `activity.rules`
 
-**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules — by container merge, by the techniques bundle, or by a sibling entry that commands following that set. Compare the list with the cited home's roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not; when the entry is a subset of an obligation a sibling already states; or when the entry reuses the cited rule's name or a near-variant, so the shortened dotted address is ambiguous. Test: adding a rule to the cited home leaves this entry incomplete, or removing the entry changes no behaviour.
+**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or a list of citations, to rules declared elsewhere, and the reader already receives those rules by a named delivery route — a container merge, the techniques bundle, or a sibling entry commanding that set. Name that route; an uncertain bundle does not prove the rule already arrives. Compare the list with the cited home's roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not; when the entry is a subset of an obligation a sibling already states; or when the entry reuses the cited rule's name or a near-variant, so the shortened dotted address is ambiguous. Test: adding a rule to the cited home leaves this entry incomplete, or removing the entry changes no behaviour.
 
-**Do not flag:** A pointer that narrows or qualifies the cited rule — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`). Capability op inventories (`capability-as-op-inventory`).
+**Do not flag:** A pointer that narrows or qualifies the cited rule — a scope restriction, a threshold, an exception the cited rule does not state. A container entry that owns an invariant the loader delivers to descendants; being a container does not excuse a redundant enumeration of rules the reader already receives. A prohibition citing the home that owns the behaviour it forbids (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`). Capability op inventories (`capability-as-op-inventory`).
 
 **Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it. Carry over any clause the deleted entry held that no other surface states. The Inputs-side fault is `inherited-input-re-declared`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
@@ -2214,9 +2214,9 @@ A rule, Protocol step, or I/O description describes an actor instead of instruct
 
 **Fires on:** `technique.rules`, `technique.protocol`, `technique.inputs`, `technique.outputs`, `technique.capability`, `readme`, `activity.steps[].options[].description`, `activity.steps[].actions[].description`, `workflow.rules.universal`
 
-**Detect:** For each rule, Protocol step, I/O description, Capability sentence, README orientation line, and option or action text, name the actor the surface is delivered to. Where a surface reaches more than one — a container `TECHNIQUE.md` merged into its descendants, or `rules.universal` — flag a clause only some of those actors can act on. Flag a clause that narrates a second actor's behaviour, state, techniques, or limitations, which the reader can neither observe nor act on, and a clause that states the reader's own duty in the third person. Test: strike the clause. Where it named a second actor, flag it if the instruction is still complete. Where it named the reader in the third person, flag it if what remains no longer tells the reader to do the thing. A clause already addressed to the reader that repeats an imperative is not this fault.
+**Detect:** On an instruction surface — a rule, a Protocol step, an option or action text — name the actor the surface is delivered to. Where a surface reaches more than one — a container `TECHNIQUE.md` merged into its descendants, or `rules.universal` — flag a clause only some of those actors can act on. Flag a required duty attributed to the reader only through third-person narration, and an account of another actor that supplies neither an actionable obligation nor checkable evidence. Test: strike the clause. Where it named a second actor, flag it if the instruction is still complete. Where it named the reader in the third person, flag it if what remains no longer tells the reader to do the thing.
 
-**Do not flag:** A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere (`prompt-restates-owned-mechanics`). A rule whose only defect is its bucket (`rule-audience-bucket`). One that is mis-filed and narrating is both.
+**Do not flag:** Declarative purpose and behaviour orientation on `description`, Capability, I/O and README surfaces, where it prescribes no extra duty. A clause already addressed to the reader that repeats an imperative. A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere (`prompt-restates-owned-mechanics`). A rule whose only defect is its bucket (`rule-audience-bucket`). One that is mis-filed and narrating is both.
 
 **Fix:** Address the reader. Where the clause carried a duty of the reader's, restate it as an imperative. Where it described another actor, restate the reason from the reader's own position or delete it. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
@@ -2244,9 +2244,9 @@ A leaf redeclares an input a container contract merges into it, so one bind slot
 
 **Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.
 
-**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).
+**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs — where the leaf advertises no shared contract, or where its effective input preconditions and output guarantees still preserve the one it advertises. An explicitly distinct, stricter leaf contract. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).
 
-**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Delete the redundant leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Evaluate a supported override against the effective contract and its callers before keeping it. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-153. schema-semantics-restated
 
@@ -2260,7 +2260,7 @@ Definition prose restates what a schema field means, so the schema and the prose
 
 **Do not flag:** A definition that uses a field and names it in passing ("gated on `is_review_mode`"). Prose whose subject is the schema — the schema resource, the construct inventory, an authoring guide teaching the constructs. An engine technique that states a contract the schema does not carry, such as which agent may resolve a gate. A rule that constrains an authoring choice among valid shapes (`overlapping-rule-scopes`).
 
-**Fix:** Delete the restatement and let the field carry it; where prose needs the fact, cite the schema resource once. Where the schema cannot express the fact, declare it in the schema first, then delete the prose (`value-set-in-prose`). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Delete the restatement and let the field carry it; where prose needs the fact, cite the schema resource once. A fact the schema does not express is not a restatement under this entry: keep it at its operative contract home, and scope any schema capability change as separate schema work (`value-set-in-prose`). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-154. engine-internals-narrated
 
@@ -2326,9 +2326,9 @@ A Protocol writes a whole call signature without an argument the tool's schema d
 
 **Fires on:** `technique.protocol`, `technique.rules`
 
-**Detect:** For each tool call a Protocol phase or Rule writes as a whole signature, compare the arguments it names against the parameters that tool declares required. Flag every required parameter the signature does not name. A signature is whole unless its own text marks it partial. Test: the call the signature stands for is one the tool refuses before its handler runs.
+**Detect:** For each tool call a Protocol phase or Rule writes as a whole signature, compare the arguments it names against the parameters that tool's authoritative schema declares required, an external harness contract included. Flag every required parameter the signature does not name. A signature is whole unless its own text marks it partial. Test: the call the signature stands for is one the tool refuses before its handler runs.
 
-**Do not flag:** A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. A call to a tool the corpus does not register. An argument required only in a state the schema cannot express (`call-omits-conditionally-required-argument`).
+**Do not flag:** A signature the text marks as partial — an ellipsis, a spread, or one argument named because it is the argument under discussion. A call whose authoritative schema is unavailable at the reviewed revision, recorded unevaluated with the missing source rather than judged against an invented contract. An argument required only in a state the schema cannot express (`call-omits-conditionally-required-argument`).
 
 **Fix:** Name the argument in the signature, and declare the value as an input where the technique takes it from its caller. Where the omission traces to a parameter the tool gained after the technique was written, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
 
@@ -2340,9 +2340,9 @@ A Protocol writes a call signature naming an argument the tool does not declare,
 
 **Fires on:** `technique.protocol`, `technique.rules`
 
-**Detect:** Compare every argument a described signature names against the parameters the tool declares, whole signature or partial alike. Flag each name the tool does not carry. Where the argument sits on a nested object the tool declares, read the name at that level. A renamed or withdrawn parameter and a name that was never one fail the same way.
+**Detect:** Compare every argument a described signature names against the tool's effective schema, whole signature or partial alike, resolving object maps, admitted additional keys, key patterns and applicable alternatives before comparing explicit property names. Flag a supplied argument or nested key only where that schema excludes it at that position. A renamed or withdrawn parameter of a closed object and a name that was never one fail the same way.
 
-**Do not flag:** A call to a tool the corpus does not register. A response field the prose names alongside the call.
+**Do not flag:** A call whose authoritative schema is unavailable at the reviewed revision, recorded unevaluated with the missing source. A key an open map or pattern contract admits, where its value conforms. A response field the prose names alongside the call.
 
 **Fix:** Delete the argument, or correct it to the name the tool declares. Where it names a parameter the tool once carried, sweep every call the corpus describes to that tool (`stale-restatement-after-change`).
 
@@ -2410,11 +2410,11 @@ A duty moves to another home and neither home names the outcome the move had to 
 
 **Fires on:** `activity.steps`, `activity.exits`, `technique`, `workflow.rules`, `activity.rules`, `technique.rules`
 
-**Detect:** On a change surface, a gate, an exit, a bound technique, or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere. Flag where neither site states the outcome, option, input, or audience the move preserves, nor the check that confirms it. Test: what the move had to keep, and where that is recorded, exists only in the reviewer's head. A relocation reads clean file by file, so a per-file walk never reaches it.
+**Detect:** On a change surface, a gate, an exit, a bound technique, or a rule that the base ref carried at a site is absent there, and an equivalent construct appears elsewhere. Identify the preserved observable outcome and compare its producer, paths, consumers, options and audience before and after. Flag a missing preservation claim, or a missing check supporting it. A relocation reads clean file by file, so a per-file walk never reaches it.
 
-**Do not flag:** A removal the change states as a removal. A receiving site that declares the same output, gate, or artifact the losing site did. Surviving prose still asserting the old behaviour (`stale-restatement-after-change`).
+**Do not flag:** An intentional removal recorded in the change scope. Preservation supported by a path or contract comparison, or by a test; a matching declaration at the new site is not by itself that support. Surviving prose still asserting the old behaviour (`stale-restatement-after-change`).
 
-**Fix:** At the receiving site, state the outcome that still has to hold and the check confirming it — a declared output the consumers read, a gate on the same variable, an artifact at the same path. Where the move retires the behaviour, say so where the behaviour was. See [A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps).
+**Fix:** Record the claim and its evidence in the change review or planning record, and express the surviving runtime contract at its owner — a declared output the consumers read, a gate on the same variable, an artifact at the same path. Where the move retires the behaviour, record that retirement in the change record. See [A Relocation Records the Outcome It Keeps](./design-principles.md#38-a-relocation-records-the-outcome-it-keeps).
 
 ### AP-165. unproducible-declared-value
 
@@ -2424,11 +2424,11 @@ An output's contract admits a value no Protocol path leaves standing, so the voc
 
 **Fires on:** `technique.outputs`, `technique.protocol`
 
-**Detect:** For each value a technique's `## Outputs` enumerates — on an entry, a component, or a nested field — name the phase that leaves it standing when the run ends. Flag a value whose assigning phase is followed by a phase that reassigns the same field over a population that includes those subjects, and a value no phase assigns. Test: as the last phase completes, a later phase's own criteria settle that subject's field. Each phase can be correct alone; only their order is wrong.
+**Detect:** For each value a technique's `## Outputs` enumerates — on an entry, a component, or a nested field — trace, for each feasible input class, the assignments to the terminal state. Flag a promised value that no feasible path leaves as the final value: one whose assigning phase is followed by a phase reassigning the same field over a population that includes those subjects, and one no phase assigns. Each phase can be correct alone; only their order is wrong.
 
 **Do not flag:** A value a later phase's criteria exclude, by a condition naming the subjects the earlier phase settled. A value the tool supplies in its own response. A value the contract admits and no available fixture exercises — record it unevidenced and leave the declaration. A value set whose only home is prose (`value-set-in-prose`).
 
-**Fix:** Scope the settling phase to the subjects it judges, so a value an earlier phase recorded survives. Where no path can produce the value, delete it and fold what it distinguished into a value that has a path. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); a whole output with no home is `output-without-destination`.
+**Fix:** Where the intended contract requires the value, add or repair a reachable producer and preserve it through later assignments — scoping the settling phase to the subjects it judges, so a value an earlier phase recorded survives. Where the value is unintended, remove it only with its consumer and semantic changes accounted for, folding what it distinguished into a value that has a path. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); a whole output with no home is `output-without-destination`.
 
 ### AP-166. inherited-input-never-spent
 
@@ -2443,4 +2443,3 @@ A container contract delivers a required input to a descendant that never reads 
 **Do not flag:** A container input no descendant references (`declared-input-never-read`). A leaf redeclaring the input with the optionality it needs.
 
 **Fix:** Give the input a `#### default` the spending descendants accept, or mark it optional where they handle its absence. A value a container rule composes is that default. Where no default fits, move the declaration to the smallest container the spending descendants share; where that container is the root, mark the input optional there (`hoist-shared-inputs`). See [State Contract Contribution](./design-principles.md#27-state-contract-contribution).
-
