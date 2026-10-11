@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -12,20 +12,6 @@ Score CI/CD pipeline vulnerabilities using a two-dimensional rubric — Impact (
 ### merged_findings
 
 Unified [finding set](../../resources/intermediate-artifact-schemas.md#merged-findings), each finding carrying pattern ID, source, sink, and evidence.
-
-## Outputs
-
-### scored_findings
-
-Findings with severity levels and scoring rationale
-
-#### severity_distribution
-
-Count by severity level
-
-#### scoring_rationale
-
-Per-finding Impact and Exploitability assessment
 
 ## Rules
 

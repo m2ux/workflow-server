@@ -5,11 +5,8 @@ description: Impact assessment of proposed changes against an existing workflow'
 variables:
   reads:
     - accumulated_design
-    - component_git_dir
     - operation_type
     - planning_folder_path
-    - pr_number
-    - target_path
   writes:
     - name: impact_analysis_path
       type: string

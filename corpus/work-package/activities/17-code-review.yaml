@@ -4,14 +4,8 @@ name: Code Review
 description: Review the change's code for architecture, error handling, safety and project-specific patterns.
 variables:
   reads:
-    - branch_name
     - changed_files
-    - component_git_dir
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: code_review_report

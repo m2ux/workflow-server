@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Decompose source code into subsystems, assign different prisms per region via ca
 
 ### code_subsystem
 
-One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Shared across the decompose, calibrate, and execute techniques.
+*(optional)* One decomposed structural subsystem of the source, carrying its identity, line range, source file, and the names of its peer subsystems. Absent where the step does not read a decomposed subsystem.
 
 #### subsystem_name
 

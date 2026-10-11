@@ -4,15 +4,9 @@ name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 variables:
   reads:
-    - branch_name
-    - component_git_dir
     - is_review_mode
     - issue_record
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: assumptions_log

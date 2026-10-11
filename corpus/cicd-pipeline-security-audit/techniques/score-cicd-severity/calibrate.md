@@ -1,11 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
 Cross-check severity assignments against the campaign calibration anchors, adjust any finding that diverges by two or more levels, and emit the calibrated findings.
+
+## Outputs
+
+### scored_findings
+
+Findings with severity levels and scoring rationale.
+
+#### severity_distribution
+
+Count by severity level.
+
+#### scoring_rationale
+
+Per-finding Impact and Exploitability assessment.
 
 ## Protocol
 

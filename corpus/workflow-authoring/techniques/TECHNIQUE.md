@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -9,7 +9,7 @@ Shared inputs and authoring invariants for the techniques that classify, author 
 
 ## Inputs
 
-### user_description
+### user_request
 
 Free-form statement of the workflow the user wants created, changed or audited.
 

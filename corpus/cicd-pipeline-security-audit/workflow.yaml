@@ -12,6 +12,9 @@ tags:
   - automated
   - multi-phase
 variables:
+  - name: user_request
+    type: string
+    description: The session request that opened this audit.
   - name: target_submodules
     type: string
     description: Comma-separated list of submodule paths to audit, or 'all' to scan every submodule with .github/workflows/

@@ -4,7 +4,6 @@ name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 variables:
   reads:
-    - branch_name
     - component_git_dir
     - gitnexus_indexed
     - host_repo_path
@@ -12,11 +11,7 @@ variables:
     - needs_elicitation
     - needs_research
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
     - optional_activities_declined
-    - target_path
     - target_repo
   writes:
     - name: gitnexus_indexed

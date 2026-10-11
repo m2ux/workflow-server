@@ -4,20 +4,14 @@ name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 variables:
   reads:
-    - branch_name
     - changed_files
-    - component_git_dir
     - component_path
     - failures
     - host_repo_path
     - is_review_mode
     - planning_folder_path
-    - pr_number
-    - problem_statement
     - project_type
-    - requirements
     - run_local_validation
-    - target_path
     - target_repo
     - test_status
   writes:

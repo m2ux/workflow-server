@@ -1,10 +1,11 @@
 id: report-generation
-version: 1.6.0
+version: 1.7.0
 name: Report Generation
 description: Produce the final CI/CD security audit report.
 variables:
   reads:
     - planning_folder_path
+    - scanner_outputs
 techniques:
   - execute-cicd-audit
 required: true

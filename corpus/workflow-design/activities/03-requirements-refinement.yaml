@@ -6,11 +6,8 @@ variables:
   reads:
     - assumption_outcome
     - change_category
-    - component_git_dir
     - operation_type
     - planning_folder_path
-    - pr_number
-    - target_path
   writes:
     - name: accumulated_design
       type: string

@@ -5,15 +5,9 @@ description: Analyze the current implementation to understand effectiveness, est
 variables:
   reads:
     - base_branch
-    - branch_name
-    - component_git_dir
     - component_name
     - is_review_mode
     - planning_folder_path
-    - pr_number
-    - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: analysis_assumptions
