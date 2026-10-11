@@ -1,0 +1,101 @@
+{
+  "reviews": [
+    {
+      "id": "AC-01",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Executable alternate slices sent to Rules violate the work/constraint boundary. Separating standing policy from executable alternatives makes the repair coherent."
+    },
+    {
+      "id": "AC-02",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The catalog both preserves and repairs Protocol Apply sites that pass-orchestration-in-technique removes. The supported bind site is the coherent common remedy."
+    },
+    {
+      "id": "AC-03",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "A source name or heading is not delivered evidence. The witness is restricted to operative references whose required text or value is unavailable; orientation and locally delivered references remain valid."
+    },
+    {
+      "id": "AC-04",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The phrase where the placeholder belongs can already exclude a comparison constant. Make that boundary explicit; this is a false-positive prevention improvement, not proof that all literal predicates violate the rule."
+    },
+    {
+      "id": "AC-05",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The same expression evaluated before and after a write can have different truth values. The exemption is insufficient to prove a producer dominates a read. A definedness repair must retain the domain predicate."
+    },
+    {
+      "id": "AC-06",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "A sibling suffix alone does not establish the applicable naming family, and the broad content-name exemption overlaps the detector."
+    },
+    {
+      "id": "AC-07",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The existing final Detect test already requires undetermined behavior, so compatible cumulative rules do not reproduce a defect when the full test is applied. The useful change clarifies that grouping alone does not provide precedence.",
+      "proposed_fix_override": "Retain the current undetermined-behavior test. Add to Do not flag: Compatible cumulative constraints. Replace the group-key exemption with grouping that makes scopes disjoint or explicitly establishes precedence; a label alone is insufficient."
+    },
+    {
+      "id": "AC-08",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The bare-introduction exception and the whole-plus-section detector admit opposing dispositions for one delivered citation pair."
+    },
+    {
+      "id": "AC-09",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Keeping every reason is broader than retaining an operative constraint or fact. The fix should preserve necessary meaning and remove explanation that adds no obligation; this is a repair wording conflict, not a ban on useful context."
+    },
+    {
+      "id": "AC-10",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Repeated use of the same capability alone does not prove a useful shared technique contribution. The conflict occurs when extraction yields only a raw-return alias; different capabilities and a fixed-question wrapper are already exceptions. Do not claim every extraction cycles."
+    },
+    {
+      "id": "AC-11",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The entry already exempts external library callers and asks for a reader. Strengthen its name-search procedure to prove an actual route; do not treat a lack of visible external callers as unused."
+    },
+    {
+      "id": "AC-12",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The explicit Protocol-and-Rules lexical search misses input consumption in permitted Output recognition and artifact filename templates. Adding a bare mention is not a semantic repair."
+    }
+  ]
+}

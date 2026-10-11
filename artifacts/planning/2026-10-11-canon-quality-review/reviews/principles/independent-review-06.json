@@ -1,0 +1,45 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-20",
+      "disposition": "rejected",
+      "recommended_priority": null,
+      "entries": [
+        "DP-47",
+        "DP-34"
+      ],
+      "reason": "The proposed witness changes a defective shared requirement, whereas DP-47 scopes itself to gaining a consumer need through a wrapper. It does not prohibit repairing the owner or intentionally changing the shared contract. DP-34 concerns synchronization caused by restated facts, not an assertion that every owner defect must be solved by wrapping. No same-scope conflict or missing boundary is demonstrated.",
+      "retained_claim": "No correction required by this candidate.",
+      "replacement_adjustment": "Retain DP-47. If a separate change-validation principle is desired, propose it explicitly as an addition about invalidating dependent calibration after owner changes, rather than as a repair required by this witness.",
+      "evidence": [
+        {
+          "entry": "DP-47",
+          "source": "sources/design-principles.md",
+          "start": 203,
+          "end": 205,
+          "quote": "## 47. A Calibrated Surface Extends by Wrapping\n\nA surface other work is calibrated or validated against — a schema, a measured prompt — gains a consumer's need through the construct that wraps it."
+        },
+        {
+          "entry": "DP-34",
+          "source": "sources/design-principles.md",
+          "start": 151,
+          "end": 153,
+          "quote": "## 34. Edit the Owner\n\nName every file a later extension of a contract would force an edit to. A file that must change only to keep agreeing — a restated count, a duplicated field list, a copied criteria set — is coupled to content it does not own. The citation is what remains when the copy is removed."
+        },
+        {
+          "entry": "AP-02",
+          "source": "sources/anti-patterns.md",
+          "start": 80,
+          "end": 84,
+          "quote": "**Detect:** A change proposes altering workflow/activity/technique schema (or inventing fields) so existing content validates.\n\n**Do not flag:** Legitimate schema evolution requested explicitly by the user as a separate task.\n\n**Fix:** Rewrite the content to conform to the current schema."
+        }
+      ],
+      "observing_check": {
+        "positive": "A consumer-only adaptation changes a calibrated shared surface despite an adequate wrapper: this is the actual wrapping-preference case.",
+        "negative": "An authorized correction to a defective shared contract is outside the consumer-only extension case. It still needs its own scoped validation, but DP-47 does not forbid the correction."
+      }
+    }
+  ]
+}

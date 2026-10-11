@@ -5,9 +5,15 @@ This review covers every design principle and anti-pattern at the captured corpu
 ## Progress
 
 - [x] Capture and verify the full inventory and distribute bounded review work.
-- [ ] In progress: review every entry and cross-entry tensions, preserving per-entry dispositions.
-- [ ] Independently confirm findings and reconcile proposed fixes.
-- [ ] Publish the report, complete coverage ledger and prioritized improvements.
+- [x] Review every entry and cross-entry tensions, preserving per-entry dispositions.
+- [x] Independently confirm findings and reconcile proposed fixes.
+- [x] Publish the report, complete coverage ledger and prioritized improvements.
+
+## Result
+
+The [review report](review-report.md) consolidates the proposed repairs and additions. All 212 entries have primary dispositions; all 95 candidates have independent dispositions (58 confirmed, 35 narrowed, two rejected). The [coverage ledger](coverage-ledger.md) distinguishes corrections, optional improvements, clear entries and the one renderer-specific evidence limit. No corpus changes are part of this review.
+
+The [candidate index](candidate-index.md) links exact wording and observing checks. [Primary validation](validation-primary.json) checks inventory and quoted evidence; [final validation](validation-final.json) checks independent evidence, source pins, complete rendered coverage and report links. Counts describe review coverage, not a formal proof that the natural-language canon has no possible contradiction.
 
 ## Method
 
@@ -26,4 +32,9 @@ The two shared source files total 176,058 UTF-8 bytes. The established conservat
 - [Captured inventory](inventory.md)
 - [Captured anti-pattern catalog](sources/anti-patterns.md)
 - [Captured design principles](sources/design-principles.md)
+- [Reconciled structural recommendations](recommendations-structures.md)
+- [Reconciled execution recommendations](recommendations-execution.md)
+- [Reconciled contract recommendations](recommendations-contracts.md)
+- [Reconciled principle recommendations](recommendations-principles.md)
+- [Pinned input and Markdown-delivery checks](reviews/ap_structures/implementation-check.md)
 - [Implementation and validation preceding this review](../2026-10-11-canon-audit-matrices/implementation.md)

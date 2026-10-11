@@ -1,0 +1,101 @@
+{
+  "reviews": [
+    {
+      "id": "AS-14",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The artifact repair expressly permits a discriminator-keyed note while the filename contract rejects mode/condition text. Use the filename grammar consistently."
+    },
+    {
+      "id": "AS-15",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Rename invariance holds for both the desired value claim and the prohibited directory-created claim, so the stated Test cannot distinguish them."
+    },
+    {
+      "id": "AS-16",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Nine of ten activities is both nearly every and only some. Applicability to the tenth, not a percentage, determines whether hoisting is sound."
+    },
+    {
+      "id": "AS-17",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "Literal artifact-reference defects and identifier-shape defects have overlapping homes. Consolidate ownership without merging separate semantic defects."
+    },
+    {
+      "id": "AS-18",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Replacing the raw tool with a wrapping-technique call in the same Protocol introduces the work invocation that pass-orchestration-in-technique removes."
+    },
+    {
+      "id": "AS-19",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The current text already warns that static spelling cannot establish reach. Make unknown delivery explicit and preserve current accepted address syntax until its resolver contract is verified; this review does not propose a new addressing grammar.",
+      "proposed_fix_override": "Keep the existing address grammar. State separately that a qualified address identifies an owner but does not prove the reader receives its rule. Record the known inheritance or bundle route; when a static review cannot determine that route, leave delivery unverified and name the missing evidence."
+    },
+    {
+      "id": "AS-20",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The leaf-count exception and workflow-wide contextual-input remedy need explicit precedence. Scope ownership is more informative than how many sites share a spelling."
+    },
+    {
+      "id": "AS-21",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The exception must distinguish primary choice work from a conditional caveat on another instruction. Do not ban ordered work ladders or infer a renderer defect without implementation evidence."
+    },
+    {
+      "id": "AS-22",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "No separate commit step follows asserts surrounding run position, exactly the subject the entry rejects. Local iteration should remain scoped by the local-versus-session distinction."
+    },
+    {
+      "id": "AS-23",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "Source snapshots do not establish historical approval, questioning or search. Explicit evidence classes and an unevidenced disposition prevent both invented failures and unsupported passes."
+    },
+    {
+      "id": "AS-24",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The stricter output-reference style can coexist with general anaphora exceptions. Choose a semantic uniqueness or machine-format rationale explicitly; this is not a contradiction."
+    },
+    {
+      "id": "AE-01",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Activity-file guidance is a permitted repair in one entry and always a violation in another. The technique/shared-delivery solution satisfies both objectives."
+    }
+  ]
+}

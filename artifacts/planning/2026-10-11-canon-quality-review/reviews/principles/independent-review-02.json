@@ -1,0 +1,146 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-05",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-09"
+      ],
+      "reason": "The principle is not unobservable: it names concrete structural mechanisms and a clear enforcement goal. The counterexample usefully distinguishes a field being present from a path actually being prevented. Do not define every critical constraint solely by start/commit/complete labels or mandate duplicate prose for a predicate already fully expressed by structure.",
+      "retained_claim": "Make enforcement evidence a reachable-path property.",
+      "replacement_adjustment": "Use: \"A constraint designated as a required execution or acceptance boundary is enforced by a checkpoint, condition, or validation result so that rejection or missing required evidence cannot reach the prohibited operation or accepted completion. Identify the predicate and failure route in their owning structure.\" Retain semantic guidance only where structure does not already state it.",
+      "evidence": [
+        {
+          "entry": "DP-09",
+          "source": "sources/design-principles.md",
+          "start": 51,
+          "end": 53,
+          "quote": "## 9. Encode Constraints as Structure\n\nA critical constraint is a checkpoint, a condition, or a validate action. Rule text does not enforce it."
+        },
+        {
+          "entry": "AP-79",
+          "source": "sources/anti-patterns.md",
+          "start": 1032,
+          "end": 1036,
+          "quote": "**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or decision).\n\n**Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.\n\n**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure)."
+        },
+        {
+          "entry": "AP-19",
+          "source": "sources/anti-patterns.md",
+          "start": 296,
+          "end": 300,
+          "quote": "**Detect:** A technique, activity, or workflow rule restates a protocol bullet or phase without an invariant the steps do not already convey, or instructs work rather than constraining it. Test: the sentence could stand as a numbered Protocol phase unaltered. A prohibition is a constraint, and so is an invariant on a result. An imperative that names a step's work is not, including when no phase states that work yet.\n\n**Do not flag:** A cross-cutting constraint the protocol does not encode, including a positively framed invariant on an outcome (`every finding carries evidence`). A prohibition citing the home that owns the behaviour it forbids.\n\n**Fix:** Delete the rule where a phase already carries the work. Where the work is genuinely unstated, move it into `## Protocol` as a phase rather than leaving it in Rules — protocol is the procedural source either way. Keep any residual invariant the phases cannot express."
+        }
+      ],
+      "observing_check": {
+        "positive": "A validation result is false or a required decision is absent, yet a feasible path reaches the gated effect: the claimed enforcement fails.",
+        "negative": "The same failures route away from the effect, with a permitted pass route. A guidance-only rule does not need invented blocking machinery."
+      }
+    },
+    {
+      "id": "PD-06",
+      "disposition": "confirmed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-12",
+        "AP-84"
+      ],
+      "reason": "One fact lacks a stable useful unit when applied to an artifact containing multiple newly produced findings or decisions. AP-84 is supporting evidence of intended document grain, not global authorization overriding DP-12. This is an ambiguity in the principle own unit of ownership, not a formal contradiction between an AP exclusion and a principle.",
+      "retained_claim": "Separate coherent artifact ownership from one checkpoint decision.",
+      "replacement_adjustment": "The proposed replacement is sound. Prefer: \"Each artifact has one declared audience and one coherent purpose; it owns the facts produced for that purpose and links facts owned elsewhere. A checkpoint presents one decision subject with the context needed to decide it.\" This avoids suggesting that its message must literally be an interrogative, which AP-99 separately addresses.",
+      "evidence": [
+        {
+          "entry": "DP-12",
+          "source": "sources/design-principles.md",
+          "start": 63,
+          "end": 65,
+          "quote": "## 12. Output Economy\n\nAn artifact or a checkpoint states one fact for one declared audience, and links the home of every other fact."
+        },
+        {
+          "entry": "AP-84",
+          "source": "sources/anti-patterns.md",
+          "start": 1096,
+          "end": 1100,
+          "quote": "**Detect:** More than one terminal artifact (or README footer) re-states delivered items, decisions, validation, follow-ups, or lessons.\n\n**Do not flag:** A single close-out artifact with retrospective as a section; engine session summary presented but not persisted as a second artifact.\n\n**Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only."
+        },
+        {
+          "entry": "AP-05",
+          "source": "sources/anti-patterns.md",
+          "start": 120,
+          "end": 124,
+          "quote": "**Detect:** Two or more distinct user decisions are packed into a single checkpoint (or one checkpoint is skipped by bundling its decision into another).\n\n**Do not flag:** A single decision whose options naturally cover one atomic choice (`one-decision-one-checkpoint`).\n\n**Fix:** Restore one checkpoint per atomic decision; split combined options into separate gates."
+        },
+        {
+          "entry": "AP-99",
+          "source": "sources/anti-patterns.md",
+          "start": 1276,
+          "end": 1280,
+          "quote": "**Detect:** Checkpoint `message` has a trailing `?`, or confirm/interrogative openers (\"confirm…\", \"is this…\", \"does this…\", \"would you like…\", \"which … should\").\n\n**Do not flag:** `?` inside interpolated content that is not asking the user.\n\n**Fix:** Rewrite `message` as a statement of the subject (optionally with a `link-named-artifacts` path link); put the decision in `options[]` labels."
+        }
+      ],
+      "observing_check": {
+        "positive": "A close-out report repeats a complete validation section owned elsewhere, or a checkpoint combines two independent choices: flag the relevant ownership/decision problem.",
+        "negative": "One report owns several distinct newly produced findings for its declared purpose; it does not need one file per scalar assertion."
+      }
+    },
+    {
+      "id": "PD-07",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-16",
+        "DP-25",
+        "DP-42",
+        "AP-51",
+        "AP-114"
+      ],
+      "reason": "The AP-51-to-AP-114 repair conflict is reproducible. DP-16 typography, however, does not by itself authorize a prohibited invocation, and DP-42 explicitly splices routines into activities, so DP-25 activity wording is compatible with expanded execution. Retain the stale-surface and authoring-ownership clarification without claiming these sentences form a formal contradiction.",
+      "retained_claim": "Unify supported work binding and remove repair advice that creates a prohibited Protocol call.",
+      "replacement_adjustment": "DP-25: \"Sibling and shared techniques are bound as steps in the activity or routine that owns their sequence.\" DP-16: retain braced value references and remove the Protocol technique-invocation argument rule if no supported Protocol invocation remains. Do not transplant italic/parenthesized Markdown argument syntax into YAML; use the actual binding schema. AP-51/56 and Apply repairs should route work to supported binds.",
+      "evidence": [
+        {
+          "entry": "DP-16",
+          "source": "sources/design-principles.md",
+          "start": 81,
+          "end": 81,
+          "quote": "In Protocol, a declared value is `{id}`, a technique argument name is italic, and the argument list sits in parentheses on the technique reference. Argument names stay out of braces and backticks."
+        },
+        {
+          "entry": "DP-25",
+          "source": "sources/design-principles.md",
+          "start": 117,
+          "end": 117,
+          "quote": "Multi-technique work lives in activity `steps[]`, checkpoints, and loops. Each sibling or shared technique is its own step. A technique Protocol applies tools and resources. Container I/O and rule merge is composition the loader performs."
+        },
+        {
+          "entry": "DP-42",
+          "source": "sources/design-principles.md",
+          "start": 185,
+          "end": 185,
+          "quote": "Where an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading))."
+        },
+        {
+          "entry": "AP-51",
+          "source": "sources/anti-patterns.md",
+          "start": 688,
+          "end": 692,
+          "quote": "**Detect:** Protocol names a raw harness or MCP tool for a capability that another technique wraps. The canonical form is `[op](path)` or `[group](path)::[op](path)`, which the server resolves to `::`. A stale or inconsistent name is `consistent-tool-names`.\n\n**Do not flag:** The technique that wraps the primitive — naming the raw tool IS that technique's purpose. A remedy step whose wrapping op is a sibling of the technique holding it, which the step must perform unaided (`unreachable-operation-reference`).\n\n**Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments."
+        },
+        {
+          "entry": "AP-114",
+          "source": "sources/anti-patterns.md",
+          "start": 1464,
+          "end": 1468,
+          "quote": "**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique for work, by `Apply [technique]` or a `::` invocation, one or many. Signals: numbered phases that are each \"Apply […]\"; Capability that names a multi-pass pipeline or a façade over shared ops; Outputs that only re-export children. Test: moving each invoked op to its own `steps[]` entry at the binding site, with any local value-assembly technique kept separate, preserves behaviour.\n\n**Do not flag:** A reference that invokes nothing (`unreachable-operation-reference`). Citing resources, including creation-guide Templates. Container I/O and rule merge. Activity `steps[]` and routine technique binds. Activity borrow, bind, or include of a reusable orchestration pattern. Tools. One produce path over tools and resources (load, derive, persist one product) with no Apply or `::` work invoke. Stage or gate locus without an op inventory (`technique-stage-agnostic`).\n\n**Fix:** Delete the façade, or strip Apply and `::` work invokes from the Protocol. Bind each sibling or shared technique as its own step of the run that needs both, in the order required. Keep distinct local value assembly as a separate technique. See [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps) and [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`."
+        }
+      ],
+      "observing_check": {
+        "positive": "Replacing a raw tool call in a leaf Protocol with Apply another-technique still fails AP-114 and is not a complete repair.",
+        "negative": "A reusable routine with sibling technique binds is valid composition, as is its expansion into the binding activity."
+      }
+    }
+  ]
+}

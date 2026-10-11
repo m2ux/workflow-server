@@ -6,7 +6,7 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parent
 parser = argparse.ArgumentParser()
-parser.add_argument('kind', choices=['findings', 'source', 'summary'])
+parser.add_argument('kind', choices=['findings', 'independent', 'source', 'summary'])
 parser.add_argument('selector')
 parser.add_argument('--start', type=int, default=1)
 parser.add_argument('--end', type=int)
@@ -21,11 +21,13 @@ if args.kind == 'source':
         print(ident, entry['title'], entry['source'])
         for number in range(entry['start'], entry['end'] + 1):
             print(str(number) + ': ' + lines[number - 1])
-elif args.kind == 'findings':
+elif args.kind in ('findings', 'independent'):
     records = []
-    for path in sorted((root / 'reviews' / args.selector).glob('findings-*.json')):
+    pattern = 'findings-*.json' if args.kind == 'findings' else 'independent-review-*.json'
+    key = 'findings' if args.kind == 'findings' else 'reviews'
+    for path in sorted((root / 'reviews' / args.selector).glob(pattern)):
         data = json.loads(path.read_text())
-        records.extend(data if isinstance(data, list) else data['findings'])
+        records.extend(data if isinstance(data, list) else data[key])
     for finding in records[args.start - 1:args.end]:
         print(json.dumps({key: value for key, value in finding.items() if key != 'evidence'}, indent=2))
         print('EVIDENCE', json.dumps([{key: value for key, value in evidence.items() if key != 'quote'}

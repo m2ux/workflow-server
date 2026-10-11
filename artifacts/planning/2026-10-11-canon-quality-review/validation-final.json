@@ -1,0 +1,22 @@
+{
+  "result": "PASS",
+  "current_corpus_and_engine_pins_verified": true,
+  "current_canon_sources_clean": true,
+  "primary_rows": 212,
+  "independent_principle_dispositions": 20,
+  "independent_exact_quotes": 66,
+  "resolved_report_links": 923,
+  "report_sha256": {
+    "README.md": "e1a3d1c88f2d5ddd170c8b7d7802290eec55c9834c19c655778047aca623fa8a",
+    "review-report.md": "25867d45b1ed8d4b60e02fdcb5f52057e50872e302aad41d77897c08b24e01aa",
+    "coverage-ledger.md": "a8ca41b319bc3db0cd0a7aa0a3620931d4b796d8a427d5b6994c0585644d9f0d",
+    "candidate-index.md": "58936cf4d8a2e53b5c1469c1e63f5fb496b3e51de06ca0c05f941118b277feb2",
+    "recommendations-structures.md": "6ba275079b0d704fb6a62278a7dd8d6969187a65e29b6763e27225a9617e030a",
+    "recommendations-execution.md": "32d24b18298b769ebd72e86e984eb6dc94fd814634e85f69ce25a9a9286c103d",
+    "recommendations-contracts.md": "f9a7f750b3587c572965bc984b833ead3e4862d0d0925a02d96f197caec41876",
+    "recommendations-principles.md": "cc4b3c260215f88c1756031ebd3cc9ae6776f3b69db7893c86d55c11d772f9dd",
+    "reviews/ap_structures/implementation-check.md": "dde8a5b94a20e1bdc9746ef4227d359a04e58a441a811067923db35b11ac688d",
+    "reviews/principles/independent-summary.md": "477ffc292e49f27cd9e73ebb9aefdab97ad5d185db40c10dee67840aef150916"
+  },
+  "limits": "Structural artifact validation only. Semantic judgments are attributed to their independent reviewers."
+}

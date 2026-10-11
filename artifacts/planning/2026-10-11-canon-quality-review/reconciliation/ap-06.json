@@ -1,0 +1,100 @@
+{
+  "reviews": [
+    {
+      "id": "AE-14",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "Ceremony is the stated subject, so a useful contrast is not automatically a contradiction. Qualify the Good/Bad branch to retain examples that convey a necessary distinction."
+    },
+    {
+      "id": "AE-15",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The universal in-place update rule omits immutable event evidence. Separate one authoritative current-state view from distinct historical observations and approvals."
+    },
+    {
+      "id": "AE-16",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Session gates and routing moved into technique Protocol violate the owning activity boundary. Presentation should be performed by the activity; the technique emits its declared evidence."
+    },
+    {
+      "id": "AE-17",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "A line budget cannot establish fact ownership or semantic validity. Apply evidence-specific checks, and make an unresolved required invariant block completion."
+    },
+    {
+      "id": "AE-18",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Audience alone does not determine a required serialization. This suggested policy repair also needs coordinated updates to check-audience and any corresponding schema/consumer tests; changing prose alone would be insufficient."
+    },
+    {
+      "id": "AE-19",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The artifact-link requirement does not justify changing every consumer-required filename to a numeric-prefix form."
+    },
+    {
+      "id": "AE-20",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The witness is conditional on the actual presentation channel. Verify rendered notice before removing prose; no missing notice in the current client is asserted by this static review."
+    },
+    {
+      "id": "AE-21",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The current-session distinction can already cover an authoring run. Explicitly allow applying a cited authoring contract while continuing to forbid copied global criteria; do not classify all authoring obligations as misplaced."
+    },
+    {
+      "id": "AE-22",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The copied-criteria cases overlap. Thin scoped walkers are already explicitly exempted, so independent review is not inherently prohibited; clarify that exception and consolidate the duplicate criterion."
+    },
+    {
+      "id": "AE-23",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The one-write exception already excludes the directory/write witness. Clarify its precedence over order-sensitivity; do not claim the full rule necessarily demands micro-phases."
+    },
+    {
+      "id": "AE-24",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Potential future consumption is too broad to distinguish a local intermediate from a public output. Name the actual promised product or consumer before requiring a declaration."
+    },
+    {
+      "id": "AE-25",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "An almost-fitting shared contract must satisfy the missing guarantee before the local implementation is deleted. The existing exception permits such owner changes but the prescribed repair omits that step."
+    }
+  ]
+}

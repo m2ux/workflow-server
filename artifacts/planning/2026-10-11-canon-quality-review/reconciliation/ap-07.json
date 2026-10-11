@@ -1,0 +1,28 @@
+{
+  "reviews": [
+    {
+      "id": "AE-26",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The Protocol-invocation repair conflict is confirmed. The exception in bind-site-is-orchestration-truth only excludes that entry and is not global permission to invoke; removing or cross-referencing it is a consistency cleanup, not another contradiction."
+    },
+    {
+      "id": "AE-27",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The bare-filename trigger can miss token-templated authored planning documents. Bound the expansion to authored/fillable documents; raw captures and machine-format artifacts use their actual producer/format contract."
+    },
+    {
+      "id": "AE-28",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The example explicitly follows rules already delivered. Moving that roster to Rules preserves a redundant obligation; delete that case before relocating unique invariants."
+    }
+  ]
+}

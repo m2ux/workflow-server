@@ -1,0 +1,139 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-12",
+      "disposition": "rejected",
+      "recommended_priority": null,
+      "entries": [
+        "DP-26",
+        "DP-42",
+        "AP-158"
+      ],
+      "reason": "The broad metaphor complaint does not reproduce a criterion defect. DP-26 immediately explains reading as tool orientation for a situation, response interpretation, and recovery; these are concrete qualitative contributions. A wrapper fixing arguments for a named question performs the stated orientation, so the witness does not establish a conflict. DP-42 names routine sequence/iteration/branch/gate ownership and explicitly retains residual technique reading. AP-158 local exceptions are not global permission, but its fixed-question example also fits DP-26 itself.",
+      "retained_claim": "No required correction established by this candidate.",
+      "replacement_adjustment": "Retain DP-26 and DP-42. An optional example may illustrate fixed-question argument selection versus a raw alias, but do not replace the criterion or classify a deterministic reading as a routine merely because its own Protocol is stable.",
+      "evidence": [
+        {
+          "entry": "DP-26",
+          "source": "sources/design-principles.md",
+          "start": 119,
+          "end": 121,
+          "quote": "## 26. A Technique Is a Reading\n\nA technique is the judgement a loop, branch, or gate cannot hold: how to orient a tool for this anatomy, how to read what came back, and how to recover when that is not what was expected. The tool schema owns the remaining parameters. The inputs name the situation the path applies to. A path that only calls the tool is the tool's own leaflet. A judgement that already has an endpoint or a step kind lives in that construct."
+        },
+        {
+          "entry": "DP-42",
+          "source": "sources/design-principles.md",
+          "start": 183,
+          "end": 185,
+          "quote": "## 42. A Routine Holds the Codified Path\n\nWhere an application is still free-form, it is a technique. Where the path is accepted and consistent, it is a routine: a named run of those produce paths, spliced into the activity that binds it, and the home for a sequence, an iteration, a branch, or a gate that several sites share. Its sources are the two in [Workflows Ossify Patterns](#1-workflows-ossify-patterns). The Protocol that remains is the reading that routine cannot hold ([A Technique Is a Reading](#26-a-technique-is-a-reading))."
+        },
+        {
+          "entry": "DP-01",
+          "source": "sources/design-principles.md",
+          "start": 19,
+          "end": 21,
+          "quote": "## 1. Workflows Ossify Patterns\n\nA repeated procedure is a durable graph of activities. A circumstance has its own graph and rules; techniques and routines stay portable across graphs. The graph comes from repeated success in this practice, or from an external procedure already held as such. Novelty is a design update, or work outside the graph. Which construct holds one application is [A Routine Holds the Codified Path](#42-a-routine-holds-the-codified-path)."
+        },
+        {
+          "entry": "AP-158",
+          "source": "sources/anti-patterns.md",
+          "start": 2044,
+          "end": 2048,
+          "quote": "**Detect:** A technique `## Protocol` whose phases reduce to invoking one tool, or reading one resource, and recording the response under a declared id, with no phase that interprets, bounds, or qualifies the answer: no statement of what the response omits or caps, no derivation, no verdict, no recovery for an unexpected answer. Test: what a reader gains beyond the tool's own schema is only a variable name.\n\n**Do not flag:** A reading that lives in a declared Output description or a `## Rules` entry. A wrapper whose contribution is the argument shape it fixes for one named question. A compose step that assembles a value another step consumes. A Protocol that carries the tool's argument structure (`tool-contract-restated-in-protocol`).\n\n**Fix:** Add the phase that reads the answer — what it caps, what it omits, what an empty result means, what the recovery is. Where no such reading exists, retire the technique and bind the tool at the run that needed it. See [A Technique Is a Reading](./design-principles.md#26-a-technique-is-a-reading)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A technique merely forwards arbitrary arguments and renames the raw response; no domain question, interpretation, qualification, derivation, or recovery is contributed.",
+        "negative": "A technique fixes a meaningful domain question or interprets a response and remains a technique even when that judgment is consistent and repeatable. A reusable structural run has a routine owner."
+      }
+    },
+    {
+      "id": "PD-13",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-28",
+        "AP-116"
+      ],
+      "reason": "A raw evidence capture is a useful omitted category, but machine-generated or schema-validated alone is not a sound exemption: an agent-authored planning ledger can be JSON and still need filling criteria. A creation guide can also instruct byte preservation, so the current rule does not inherently require altering a capture.",
+      "retained_claim": "Distinguish an authored planning artifact from a preserved external/tool-produced evidence format.",
+      "replacement_adjustment": "Use: \"Planning documents whose content a technique authors or fills have a creation guide. A byte-exact capture or producer-defined evidence format cites its producer/format contract and preserves its bytes; it needs no competing layout template. Structured authored planning data still has operative filling criteria, even when a schema validates its shape.\"",
+      "evidence": [
+        {
+          "entry": "DP-28",
+          "source": "sources/design-principles.md",
+          "start": 127,
+          "end": 129,
+          "quote": "## 28. Creation Guide for Generated Documents\n\nEvery planning artifact a workflow persists has a creation-guide resource with a `## Template` section and operative `## Rules` for filling it. The persisting technique cites that template. A shared shape may share one guide. Every bare filename still maps to a guide."
+        },
+        {
+          "entry": "AP-116",
+          "source": "sources/anti-patterns.md",
+          "start": 1488,
+          "end": 1492,
+          "quote": "**Detect:** A technique persists a session planning artifact by bare filename and either no workflow resource owns that filename with a `## Template` (or named template anchor), or Protocol embeds a competing section or table recipe rather than citing the guide. Shared satellites may share one guide.\n\n**Do not flag:** A non-planning output (a variable, a PR, a commit). A cite of an existing Template with short when/which bullets. Wrapper ceremony around a template (`no-guide-wrapper-ceremony`). Fill content that lives in the resource Template while Protocol only orders persist.\n\n**Fix:** Author or extend a creation-guide resource with `## Template` and `## Rules`. Map the bare filename in the resources index. Replace the Protocol layout with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`."
+        },
+        {
+          "entry": "AP-96",
+          "source": "sources/anti-patterns.md",
+          "start": 1240,
+          "end": 1244,
+          "quote": "**Detect:** An output declaring `#### artifact` carries no `#### audience`. Absence reads as `human`, so an agent-state artifact — a lifecycle log, index, or ledger only later steps re-read — keeps the prose shape a human document has.\n\n**Do not flag:** An output with no `#### artifact`. Audience is a property of a file on disk.\n\n**Fix:** Declare the audience. `human` is prose. `agent` is structured one-entry-per-item data, serialized as JSON (`check-audience` enforces the format; `audience-declared` enforces the presence). Where a person is pointed at the artifact — a progress-inventory row, a gate message linking it — that reader is the one the format serves."
+        }
+      ],
+      "observing_check": {
+        "positive": "An authored decision report or JSON findings ledger lacks the criteria needed to fill its substantive fields: retain the creation-guide requirement.",
+        "negative": "A byte-exact tool transcript with source identity and hash preserves its authoritative format without a second prose template."
+      }
+    },
+    {
+      "id": "PD-14",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-32",
+        "DP-44",
+        "AP-134"
+      ],
+      "reason": "The missing shared-context delivery witness is sound: addressability does not prove receipt. The most-of-body phrase is a broad delivery-economy heuristic, however, and does not need a numeric threshold to be meaningful. The required rule is complete operative context, not a new size-ratio policy or a universal requirement that whole-body loads consume every byte.",
+      "retained_claim": "Ensure that every section consumer receives its required framing and shared constraints.",
+      "replacement_adjustment": "Amend DP-44: \"Before applying a section, the consumer receives that section and every shared definition, rule, or template fragment it requires; the required sections are named at the consumption site or as fetched prerequisites.\" Keep DP-32 minimal-sufficient citation guidance. State that loading a broader body is an optimization choice that may not omit required context; byte measurement is useful evidence when making a cost claim, not a prerequisite for the principle.",
+      "evidence": [
+        {
+          "entry": "DP-32",
+          "source": "sources/design-principles.md",
+          "start": 143,
+          "end": 145,
+          "quote": "## 32. Cite Resources at Section Grain\n\nA citation names the narrowest section that carries what the prose needs. The path after `resources/`, with `.md` stripped and any `#anchor` kept, is the unit loaded. The bare resource is the citation when the consumer reads the whole body. Every distinct citation is delivered, so a bare citation beside anchored ones sends the file and the sections. Where several sections are needed, cite each anchor. Where the set is most of the body, cite the resource once."
+        },
+        {
+          "entry": "DP-44",
+          "source": "sources/design-principles.md",
+          "start": 191,
+          "end": 193,
+          "quote": "## 44. A Resource Splits for Section Delivery\n\nA multi-part resource splits into per-category sections, each holding the fragment for one category, with the whole-document skeleton in its own section. Shared fragments — scales, mappings, reference tables — sit in one shared section. Operative framing, shared keys, and obligations a section reader needs live under a `##` heading an anchor can deliver. The consumer fetches the section it renders."
+        },
+        {
+          "entry": "AP-139",
+          "source": "sources/anti-patterns.md",
+          "start": 1816,
+          "end": 1820,
+          "quote": "**Detect:** After stripping frontmatter and ignoring fenced blocks, the resource has at least one anchored citer, and either (a) the leading H1 carries substantial framing (roughly 100+ characters of body before the first `##`) whose only reachable anchor spans the whole file, or (b) prose sits before any heading. Mechanical: measure prose before the first `##` against the span of the leading H1 and against every `##` span. A section-scoped `get_resource` returns only the matched heading's span, so that framing is silently absent for every section consumer.\n\n**Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request. Whole-resource citations where the consumer loads the full file (`whole-resource-for-one-section` Do-not-flag carve-outs).\n\n**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`."
+        },
+        {
+          "entry": "AP-134",
+          "source": "sources/anti-patterns.md",
+          "start": 1756,
+          "end": 1760,
+          "quote": "**Detect:** A technique cites a multi-section resource with no `#anchor` while the link text, or the phrase beside it, matches one heading. Also flag a bare citation beside an anchored citation of the same resource: both are delivered.\n\n**Do not flag:** A consumer that reads the body: a filler using `## Template` with its `## Rules`, an audit of every entry, or a technique whose sections are most of the file. A single-section resource. A bare citation that introduces the resource.\n\n**Fix:** Cite `../resources/example.md#section-title`, link text the section title, one citation per section. A bare citation beside anchored ones is anchored or dropped. A large resource no section covers is a split under [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A fresh reader receives Template without its required shared Rules, even though Rules has a valid heading: the delivery dependency is incomplete.",
+        "negative": "The required shared section is actually delivered or fetched before application. A whole-resource read for most needed content is not defective solely because a small unrelated section also arrives."
+      }
+    }
+  ]
+}

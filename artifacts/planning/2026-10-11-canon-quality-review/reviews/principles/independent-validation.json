@@ -1,0 +1,125 @@
+{
+  "result": "PASS",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviewed_candidates": 20,
+  "first_pass_ledger_entries_read": 47,
+  "first_pass_files_read": 11,
+  "first_pass_quotes_verified": 39,
+  "dispositions": {
+    "confirmed": 5,
+    "narrowed": 13,
+    "rejected": 2
+  },
+  "evidence_quotes": 66,
+  "sources": [
+    {
+      "path": "sources/anti-patterns.md",
+      "bytes": 161582,
+      "sha256": "dbdf297b3d7ddb5517993b694705e0baa292374a82373aaee19c36fb8994e681"
+    },
+    {
+      "path": "sources/design-principles.md",
+      "bytes": 14476,
+      "sha256": "dc51605fb74d9a4a3f6bdefb93b984bfa2a6b909bfbd00f164f2d277566d8e7b"
+    }
+  ],
+  "first_pass_inputs": [
+    {
+      "path": "findings-01.json",
+      "bytes": 7060,
+      "sha256": "91b7386b9d292ae98e8210654e24fe35bbb7d53fb4b1631e0cf21147c7ce5e74"
+    },
+    {
+      "path": "findings-02.json",
+      "bytes": 12051,
+      "sha256": "b033738cfd9a599b0795495603bc6bd34f362f23d61c7dd4f329f6b655bb910f"
+    },
+    {
+      "path": "findings-03.json",
+      "bytes": 9705,
+      "sha256": "8a241720c27cd8d9be37f6860371a097410f553b7105b9d48fc7157cc57a810b"
+    },
+    {
+      "path": "findings-04.json",
+      "bytes": 9194,
+      "sha256": "e445208527d0ef3b7b8147858edc2e2371f40ecb53f1aa4082b7e8c85acc3089"
+    },
+    {
+      "path": "findings-05.json",
+      "bytes": 7858,
+      "sha256": "e5c33ab22697230692115046b419594bae195238b4be7c784cc514eff0860b80"
+    },
+    {
+      "path": "entries-01.json",
+      "bytes": 6993,
+      "sha256": "a4ee831a843ac81c06d2ff527af1ec389ac629c9526e6f5cfa2144e148cf3141"
+    },
+    {
+      "path": "entries-02.json",
+      "bytes": 7135,
+      "sha256": "858404413697498d3cb205617e259525c8301ad00d15fe1a7aaa6868cb2dec87"
+    },
+    {
+      "path": "entries-03.json",
+      "bytes": 6841,
+      "sha256": "57a67f4e4499aa0540318d8402206ad47ba77ac3c64b4bd6c676d84b32d8b581"
+    },
+    {
+      "path": "entries-04.json",
+      "bytes": 7274,
+      "sha256": "6f65d6cf7e6a03b71f010689c192cd9dcaa736587933a5599e518594bf6ee9b9"
+    },
+    {
+      "path": "entries-05.json",
+      "bytes": 6986,
+      "sha256": "d7b4eacd474f4ced6ff483397c207b1b7c4dd42fee79c7ccf16c376661b8910e"
+    },
+    {
+      "path": "entries-06.json",
+      "bytes": 6322,
+      "sha256": "37480ff4c982d5d9ddff33cde0b33469fafe7074e8f53f9fc27e97e263ad581f"
+    }
+  ],
+  "first_pass_files_unchanged": true,
+  "files": [
+    {
+      "path": "independent-review-01.json",
+      "bytes": 13341,
+      "records": 4,
+      "sha256": "b5f295c6ec6ebdbfcfde988d252f818531eb1956df179e6188a3939d0b011708"
+    },
+    {
+      "path": "independent-review-02.json",
+      "bytes": 12640,
+      "records": 3,
+      "sha256": "dd73f3330a8dcca0eed37f677d01f897247b865c20b9cb6adaee35a5128933a2"
+    },
+    {
+      "path": "independent-review-03.json",
+      "bytes": 14709,
+      "records": 4,
+      "sha256": "ed9b9fe6e32c059251c1151bb920851af4b9213a1ef1d9bec1e8eaaa9fbd667d"
+    },
+    {
+      "path": "independent-review-04.json",
+      "bytes": 14407,
+      "records": 3,
+      "sha256": "9596ff44fbe19b34f8f0c60eb668db7f0c342fdbd0a1f1e1a2909d27f1d112db"
+    },
+    {
+      "path": "independent-review-05.json",
+      "bytes": 14356,
+      "records": 5,
+      "sha256": "1ce4b08eec1988145251d01cbc42ca771802b8a9fc4ddfd47f8f0966c0d882bb"
+    },
+    {
+      "path": "independent-review-06.json",
+      "bytes": 2768,
+      "records": 1,
+      "sha256": "fb4420d202cfe5b69603369bbbd041604e209a8319788a7c3fe4d6805083ae3d"
+    }
+  ],
+  "validation_and_write_seconds": 0.014945466013159603,
+  "timestamp_utc": "2026-10-11T12:44:16.411080+00:00",
+  "reading_note": "All five findings batches and all six entries batches were read fully without truncation. The complete 205-line captured principles source was re-read; captured catalog context reuses the complete read documented in reviews/ap_contracts/read-log.jsonl, with targeted re-reads at AP-06/07/08, AP-51/52/53 and AP-157/158. This timing measures artifact construction/validation only, not the entire independent analysis."
+}

@@ -1,0 +1,175 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-08",
+      "disposition": "confirmed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-18",
+        "AP-110"
+      ],
+      "reason": "This is a useful optional operationalization of cannot absorb diversity. The principle already has a qualitative contract-fit boundary; the improvement names the evidence for the local-recipe exception and agrees with AP-110 near-fit case.",
+      "retained_claim": "Record the actual unsatisfied semantic requirement before duplicating shared work.",
+      "replacement_adjustment": "Retain the proposed text, reading \"record\" as identifying the requirement in the existing design evidence, not requiring a new artifact for every choice. The comparison should distinguish a missing configurable value from a genuinely incompatible capability or contract.",
+      "evidence": [
+        {
+          "entry": "DP-18",
+          "source": "sources/design-principles.md",
+          "start": 87,
+          "end": 89,
+          "quote": "## 18. Prefer Shared Capability\n\nWhen a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work)."
+        },
+        {
+          "entry": "AP-110",
+          "source": "sources/anti-patterns.md",
+          "start": 1416,
+          "end": 1420,
+          "quote": "**Detect:** A workflow-local technique embeds a harness recipe in its Protocol for a capability a shared namespace already holds a technique for. Also flag a local re-teaching of a concurrent fan-out — `Task`, spawn-concurrent, or dispatch-then-merge — when [`orchestration-patterns`](/meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](/meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition; the verb is already owned elsewhere. A shared op that almost fits, missing an input, optional flag, or output, still owns the capability.\n\n**Do not flag:** A change to the shared op itself that keeps existing callers working — a new optional input, default, output, or small protocol branch. A new shared op when no shared capability exists yet. A local technique that only assembles caller-specific values while the activity binds the shared op. Session-level `dispatch-activity`.\n\n**Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A local recipe repeats a shared operation solely to change a parameter the shared owner can support: no demonstrated exception exists.",
+        "negative": "A documented semantic requirement cannot be supplied by the supported contract, composition, or justified shared extension; the local scope is reviewable."
+      }
+    },
+    {
+      "id": "PD-09",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-19"
+      ],
+      "reason": "The individual naming clauses are all observable. Boolean and collection clauses can be read as type-specific cases of meaningful naming, so multiple clauses alone do not prove a defective principle. Case and typography are separable convention details, making single ownership a worthwhile optional cleanup. DP-45 directly governs Rules entries, not every multi-clause principle.",
+      "retained_claim": "Keep the semantic stance concise and locate exact naming conventions once.",
+      "replacement_adjustment": "Use a principle such as: \"Symbol names identify their values affirmatively; type-specific forms make that meaning explicit.\" Cite the existing convention/AP homes for exact case, plurality, and spelling. Avoid introducing a second parallel list of stable sub-identifiers unless independent citation is actually needed.",
+      "evidence": [
+        {
+          "entry": "DP-19",
+          "source": "sources/design-principles.md",
+          "start": 91,
+          "end": 93,
+          "quote": "## 19. Name Symbols Affirmatively\n\nA symbol id states what the value is: affirmative, head noun last, `snake_case`. A boolean is a predicate, a collection is a plural, and an I/O id carries neither direction nor representation. A rule slug states a positive invariant when that is clearer than a negation."
+        },
+        {
+          "entry": "DP-45",
+          "source": "sources/design-principles.md",
+          "start": 195,
+          "end": 197,
+          "quote": "## 45. A Rule States One Invariant\n\nA `## Rules` entry states one constraint. A part that can be cited and edited on its own is its own entry."
+        },
+        {
+          "entry": "AP-58",
+          "source": "sources/anti-patterns.md",
+          "start": 772,
+          "end": 776,
+          "quote": "**Detect:** Symbol ids (inputs, outputs, sub-fields, `{$locals}`) in kebab/camel — they must be `snake_case` to bind to activity/condition/session state. Case used to encode input vs output direction. Rule/technique/resource/file/`::` targets wrongly snaked.\n\n**Do not flag:** Tool/MCP/CLI param mirrors keeping the tool's exact spelling (`session_index`, `cloudId`). NAME class stays `kebab-case`: technique/technique/resource identities, hyperlink/`::` targets, and rule names (cited by dotted address, never evaluated). One snake symbol declared in both Inputs and Outputs when the value is input∩output (hoistable per `hoist-shared-inputs`).\n\n**Fix:** Snake every symbol id. Keep a tool-parameter mirror. Keep kebab for a name or a rule."
+        },
+        {
+          "entry": "AP-64",
+          "source": "sources/anti-patterns.md",
+          "start": 844,
+          "end": 848,
+          "quote": "**Detect:** Boolean symbol ids use a non-affirmative stem (`not_ready`, `no_merge`), a generic-noun burial (`…_flag`, `…_status`, `…_check`), or an ambiguous noun. Inverted meaning still fails when the id is prefixed.\n\n**Do not flag:** Conformant unprefixed affirmatives; `is_`/`has_`/`can_`/`should_` only when the prefix sharpens an already-affirmative stem.\n\n**Fix:** Rename to an affirmative predicate shape. See also [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively)."
+        },
+        {
+          "entry": "AP-65",
+          "source": "sources/anti-patterns.md",
+          "start": 856,
+          "end": 860,
+          "quote": "**Detect:** Collection/map ids use `*_list`/`*_array`/`*_collection`/`*_set` suffixes, or a singular id holding an iterated collection. Collections: plural item noun (`tasks`, `failures`). Key-addressed maps: singular mapping name (`domain_to_range`).\n\n**Do not flag:** Bare plural collection item-nouns (correct); `_mode`/`_type`/`kind` discriminators (suffix is the head).\n\n**Fix:** Rename to plural item noun (collection) or singular mapping name (map)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A change to the spelling convention forces the same normative text to be edited in multiple homes: reduce that duplication.",
+        "negative": "Several type-specific examples under one semantic naming principle are not unmeasurable merely because their predicates differ."
+      }
+    },
+    {
+      "id": "PD-10",
+      "disposition": "confirmed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-22",
+        "AP-01"
+      ],
+      "reason": "Construct is unqualified in DP-22 while the catalog and schema-first principle distinguish separately authored definitions from inline schema structures. The proposal improves scope; it should not be described as an AP exemption granting universal permission.",
+      "retained_claim": "Restrict own-file guidance to constructs the schema supports as separately referenced definitions.",
+      "replacement_adjustment": "Use: \"A separately referenceable definition lives in its own file and its parent references it. Fields and steps that the schema owns inline remain on that parent.\" This avoids implying that any future or unsupported construct gains a file-reference form by analogy.",
+      "evidence": [
+        {
+          "entry": "DP-22",
+          "source": "sources/design-principles.md",
+          "start": 103,
+          "end": 105,
+          "quote": "## 22. Modular Over Inline\n\nA construct lives in its own file. A parent references that file."
+        },
+        {
+          "entry": "DP-05",
+          "source": "sources/design-principles.md",
+          "start": 35,
+          "end": 37,
+          "quote": "## 5. Maximize Schema Expressiveness\n\nUse the most specific construct the schema provides. A prose field (`description`, `outcome`, and their equivalents) states what the construct is, and does not restate structure the schema already holds."
+        },
+        {
+          "entry": "AP-01",
+          "source": "sources/anti-patterns.md",
+          "start": 68,
+          "end": 72,
+          "quote": "**Detect:** An activity, technique, or resource body is inlined into a parent YAML/markdown file (or a new construct is authored inline rather than as a sibling file).\n\n**Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.\n\n**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline)."
+        },
+        {
+          "entry": "AP-17",
+          "source": "sources/anti-patterns.md",
+          "start": 268,
+          "end": 270,
+          "quote": "**Detect:** A `kind: technique` or `kind: action` step that binds a technique still carries `description` or `name`. A bound step allows `kind`, `id`, `technique` (a string or `{ name, inputs, outputs }`), and structural `actions`, `when`, `condition`, or `required: false`. Unbound procedure in a description is `procedure-in-protocol`.\n\n**Do not flag:** `kind: loop` may have `name`, loop fields, and nested `steps[]`. `kind: checkpoint` uses inline `message` and `options` and a stable `id`. A checkpoint or a loop is inline in `steps[]`, never `step.checkpoint` or a separate `checkpoints[]` or `loops[]` array."
+        }
+      ],
+      "observing_check": {
+        "positive": "Embedding a separately referenceable activity body inside a parent is the modularity defect.",
+        "negative": "An inline checkpoint or action required by the schema stays inline; extracting it to an unsupported referenced file is not a valid repair."
+      }
+    },
+    {
+      "id": "PD-11",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-24",
+        "AP-113"
+      ],
+      "reason": "The title already bounds DP-24 to session interaction, and activity ownership of when/how can include binding a domain delivery operation. AP-113 clarifies that boundary rather than contradicting the principle. The body word person is broader than necessary, so a concise wording improvement remains useful.",
+      "retained_claim": "Use operator/session presentation language and distinguish domain effects.",
+      "replacement_adjustment": "Use: \"Activities own in-session presentation and operator decisions. A bound technique may perform a domain delivery operation through its owning tool; the activity owns when that operation runs.\" Retain any declared delivery evidence without requiring every pure side effect to acquire a new Output.",
+      "evidence": [
+        {
+          "entry": "DP-24",
+          "source": "sources/design-principles.md",
+          "start": 111,
+          "end": 113,
+          "quote": "## 24. Keep Session Interaction in Activities\n\nA technique takes inputs, works over tools and resources, and emits outputs. An activity owns when and how those products reach a person: `action: message`, checkpoint `message` and `options`, and artifact links."
+        },
+        {
+          "entry": "AP-113",
+          "source": "sources/anti-patterns.md",
+          "start": 1452,
+          "end": 1456,
+          "quote": "**Detect:** Technique Capability, Protocol, or Rules instructs presenting, surfacing, showing, narrating, or otherwise delivering content to a user, session, or chat. Test: the imperative needs a human audience or session channel to succeed, and no tool or technique owns that channel.\n\n**Do not flag:** Assembling or persisting a declared output the activity will surface. An activity binding a tool or technique whose domain is external delivery (push, open a PR, send). Naming \"the user's request\" as an input origin (`io-agnostic-contract`). A stage or gate locus (`technique-stage-agnostic`).\n\n**Fix:** Delete present, surface, and show-to-user phases. Keep assemble, derive, and persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message`, or a checkpoint message linking `{id}` or a path). See [Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities)."
+        },
+        {
+          "entry": "AP-109",
+          "source": "sources/anti-patterns.md",
+          "start": 1406,
+          "end": 1406,
+          "quote": "**Do not flag:** A pure side-effect with no bindable product (push, open a PR, mark ready) when no path or number is captured. A value already declared on Outputs. An input-only gap (`technique-inputs-declared`). Protocol that only presents a value to a user (`session-interaction-in-technique`); still declare the output when it is gateable."
+        }
+      ],
+      "observing_check": {
+        "positive": "A domain-analysis technique directly narrates its findings into operator chat: move that presentation to the activity.",
+        "negative": "A bound notification or publication operation performs its domain effect. Its existence does not violate the session-presentation boundary or automatically authorize sending anything."
+      }
+    }
+  ]
+}

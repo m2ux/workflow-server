@@ -1,0 +1,101 @@
+{
+  "reviews": [
+    {
+      "id": "AC-13",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The exemption should cover a container-owned invariant, not every container entry including redundant rosters. Confirm actual inherited delivery before removing a roster."
+    },
+    {
+      "id": "AC-14",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The existing duty and deletion tests limit the detector, but its inclusion of README orientation invites an overly literal imperative rewrite. Clarify the instruction-versus-description boundary; ordinary present-tense orientation is not inherently a violation."
+    },
+    {
+      "id": "AC-15",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The incompatible case requires the leaf to advertise or be substitutable for the same shared contract. Mere inheritance does not by itself prove that promise. Under that promise an optional-to-required override rejects valid callers.",
+      "proposed_fix_override": "Qualify the optionality exemption: When the leaf advertises a shared contract, its effective input preconditions and output guarantees preserve that contract. A leaf-specific stricter contract is explicitly distinct. Delete only redundant declarations; evaluate supported overrides against the effective contract and its callers."
+    },
+    {
+      "id": "AC-16",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The schema-extension branch lies outside this detector and contradicts its exception for schema-inexpressible engine facts. Separately scope schema evolution."
+    },
+    {
+      "id": "AC-17",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "This is a proposed scope improvement, not an internal contradiction. External tools can be explicitly excluded; a correctness claim must then disclose that boundary rather than treating an exclusion as a pass."
+    },
+    {
+      "id": "AC-18",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "A declared open map can admit keys without listing each property. Compare against effective schema admissibility before deleting a dynamic key."
+    },
+    {
+      "id": "AC-19",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "An identical gate or output at a new site does not prove preserved paths or audience. The exemption needs the outcome comparison and confirming check required by the principle."
+    },
+    {
+      "id": "AC-20",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Removing a promised value can mask an incomplete producer. Preserve required semantic distinctions by repairing the producing path, or explicitly scope a contract change."
+    },
+    {
+      "id": "AC-21",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The Detect test already targets information redundancy. Remove pressure from the one-line remedy and exception; the constructed necessary multi-line invariant is not inherently redundant."
+    },
+    {
+      "id": "AC-22",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "Exact phrase searches are discovery aids. Semantic paraphrases and operative Protocol/Rules statements need coverage in a change-surface review."
+    },
+    {
+      "id": "AC-23",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Short operative framing can be missed by the length heuristic, and a new heading alone does not supply existing consumers. The remedy must update and verify prerequisite delivery."
+    },
+    {
+      "id": "AS-01",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The open-ended construct clause and short-literal exception do not accurately bound schema-owned inline checkpoints and loops. This is a scope ambiguity, not a globally unsatisfiable file rule."
+    }
+  ]
+}

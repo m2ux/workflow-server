@@ -1,0 +1,177 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-15",
+      "disposition": "confirmed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-35"
+      ],
+      "reason": "The opening inference is overbroad: a warning can distinguish intentional capabilities or authorities rather than identify duplicate implementations. The final both-paths clause reduces the risk but does not repair the word means. The proposal supplies a useful semantic-equivalence check without numeric machinery.",
+      "retained_claim": "Treat a warning as a prompt to compare paths, not proof that one path is redundant.",
+      "replacement_adjustment": "Use: \"When a prohibition distinguishes paths that serve the same required capability under the same preconditions, authority, and lifecycle, choose one owner and retire the duplicate. Preserve intentional differences and cite the owner of each behavior.\" Preserve the existing preference rather than turning it into an absolute ban on alternatives.",
+      "evidence": [
+        {
+          "entry": "DP-35",
+          "source": "sources/design-principles.md",
+          "start": 155,
+          "end": 157,
+          "quote": "## 35. Prefer Removing the Thing That Needs a Prohibition\n\nA warning against a second path means two constructs do one job. Retire one, and the warning, the validation, and the carve-outs that policed the overlap go with it. Where both paths remain, the prohibition names the home that owns the surviving behaviour."
+        },
+        {
+          "entry": "DP-34",
+          "source": "sources/design-principles.md",
+          "start": 151,
+          "end": 153,
+          "quote": "## 34. Edit the Owner\n\nName every file a later extension of a contract would force an edit to. A file that must change only to keep agreeing — a restated count, a duplicated field list, a copied criteria set — is coupled to content it does not own. The citation is what remains when the copy is removed."
+        }
+      ],
+      "observing_check": {
+        "positive": "Two implementations have the same required behavior and differ only in which one an instruction forbids: one authoritative implementation is preferable.",
+        "negative": "Preview and effectful execution have distinct authority and side effects; a warning distinguishing them does not by itself justify deleting either capability."
+      }
+    },
+    {
+      "id": "PD-16",
+      "disposition": "confirmed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-39"
+      ],
+      "reason": "The two-or-three requirement and past-four heuristic provide inconsistent audit cues at four words. They are not formally contradictory: the second sentence does not positively permit four words, and the first already excludes them. Treat this as a low-priority expression/boundary correction, not a logical impossibility.",
+      "retained_claim": "Use one word-count boundary if this exact count remains an intended convention.",
+      "replacement_adjustment": "The smallest repair preserving the stated policy is \"More than three words carries detail that belongs in the bullet\" in place of \"Past four words\". Do not silently invent a four-word allowance or proper-name exception; add an exception only if the convention owner intends it. Outcome clarity remains the design purpose.",
+      "evidence": [
+        {
+          "entry": "DP-39",
+          "source": "sources/design-principles.md",
+          "start": 171,
+          "end": 173,
+          "quote": "## 39. A Phase Heading Names the Outcome\n\nA phase heading is two or three words in Title Case, with the articles dropped. It names the outcome. Past four words it carries the bullet's detail. A heading that only repeats its bullet is a phase with no outcome of its own."
+        },
+        {
+          "entry": "DP-15",
+          "source": "sources/design-principles.md",
+          "start": 75,
+          "end": 77,
+          "quote": "## 15. Phase by Sequenced Outcome\n\nA Protocol phase is one outcome that finishes before the next begins, written as a `### N. Title` section with the work in bullets under it. Facets of that same outcome stay bullets. A partition that can be reordered or dropped without changing the sequence is not its own phase. What the heading is made of is [A Phase Heading Names the Outcome](#39-a-phase-heading-names-the-outcome)."
+        }
+      ],
+      "observing_check": {
+        "positive": "Under the existing strict count policy, four- and five-word headings both require revision; the prose should communicate that same boundary.",
+        "negative": "A two- or three-word heading that clearly names the outcome satisfies the count convention, though duplicating its bullet may still fail the independent outcome test."
+      }
+    },
+    {
+      "id": "PD-17",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-41",
+        "AP-161"
+      ],
+      "reason": "An explicit evidence policy for rare or unsafe-to-trigger responses is a useful addition. AP-161 concerns output-value reachability, not every tool response interpretation, so its exception cannot override DP-41 or prove a contradiction. A contract-backed fixture demonstrates the intended branch handling but does not establish live harness behavior.",
+      "retained_claim": "Separate observed behavior from contract-backed but live-unobserved recovery logic.",
+      "replacement_adjustment": "Use: \"Response interpretations identify their evidence: a captured live response, or an authoritative response contract with a representative fixture. Claims that the tool has returned a response require observation; contract-backed but unobserved recovery remains labeled as such.\" Preserve deployment verification limits and avoid implying that absence of a sample proves impossibility.",
+      "evidence": [
+        {
+          "entry": "DP-41",
+          "source": "sources/design-principles.md",
+          "start": 179,
+          "end": 181,
+          "quote": "## 41. A Phase States Answers the Tool Has Returned\n\nA schema settles the call. What a Protocol does with a response — the branch it takes, the emptiness it reads as absence, the name it expects to resolve — states answers the tool has returned on a real subject."
+        },
+        {
+          "entry": "DP-21",
+          "source": "sources/design-principles.md",
+          "start": 99,
+          "end": 101,
+          "quote": "## 21. Match the Harness Surface\n\nTool names, return shapes, and bootstrap paths in techniques and docs match the harness. Guidance about a tool's behaviour has one home. What a phase may claim about a response is [A Phase States Answers the Tool Has Returned](#41-a-phase-states-answers-the-tool-has-returned)."
+        },
+        {
+          "entry": "AP-161",
+          "source": "sources/anti-patterns.md",
+          "start": 2080,
+          "end": 2082,
+          "quote": "**Detect:** For each value a technique's `## Outputs` enumerates — on an entry, a component, or a nested field — name the phase that leaves it standing when the run ends. Flag a value whose assigning phase is followed by a phase that reassigns the same field over a population that includes those subjects, and a value no phase assigns. Test: as the last phase completes, a later phase's own criteria settle that subject's field. Each phase can be correct alone; only their order is wrong.\n\n**Do not flag:** A value a later phase's criteria exclude, by a condition naming the subjects the earlier phase settled. A value the tool supplies in its own response. A value the contract admits and no available fixture exercises — record it unevidenced and leave the declaration. A value set whose only home is prose (`value-set-in-prose`)."
+        }
+      ],
+      "observing_check": {
+        "positive": "The Protocol invents an empty-result meaning with neither actual observations nor an authoritative semantic contract: the interpretation is unsupported.",
+        "negative": "A documented rare error has a tested recovery fixture and is explicitly marked live-unobserved; fixture success is not reported as an observed real-subject return."
+      }
+    },
+    {
+      "id": "PD-18",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-43",
+        "DP-18"
+      ],
+      "reason": "May borrow/bind/include is a clear capability statement, not vague or impossible to apply. It lacks a prefer/before stance of the kind the principles overview promises, which supports a catalog-placement improvement rather than a missing enforcement rule. Adding another reuse obligation would duplicate DP-18.",
+      "retained_claim": "Place composition capability descriptions at the construct home and retain one reuse preference.",
+      "replacement_adjustment": "Prefer the first proposed branch: move the supported borrow/bind/include forms and library examples to the construct reference, and let DP-18 own the reuse preference. If a principle entry remains, make it a concise citation to that existing preference rather than a new independently maintained local-activity exception rule.",
+      "evidence": [
+        {
+          "entry": "DP-43",
+          "source": "sources/design-principles.md",
+          "start": 187,
+          "end": 189,
+          "quote": "## 43. An Activity Reuses Activities\n\nAn activity may borrow, bind, or include another activity, including the meta pattern library under [`meta/activities/patterns/`](/meta/activities/patterns/README.md) (supervisor, plan-and-execute, lead-researcher)."
+        },
+        {
+          "entry": "DP-18",
+          "source": "sources/design-principles.md",
+          "start": 87,
+          "end": 89,
+          "quote": "## 18. Prefer Shared Capability\n\nWhen a shared technique already owns a capability, the activity binds that technique, or borrows an activity that already binds it. A local recipe exists when the shared surface cannot absorb the caller's diversity. Where the work runs is [Fan-Out Lives at the Layer That Runs the Work](#40-fan-out-lives-at-the-layer-that-runs-the-work)."
+        },
+        {
+          "entry": "DP-05",
+          "source": "sources/design-principles.md",
+          "start": 35,
+          "end": 37,
+          "quote": "## 5. Maximize Schema Expressiveness\n\nUse the most specific construct the schema provides. A prose field (`description`, `outcome`, and their equivalents) states what the construct is, and does not restate structure the schema already holds."
+        }
+      ],
+      "observing_check": {
+        "positive": "A catalog claiming one prefer/before invariant per heading contains only a permitted-feature inventory at this heading: reorganize the material for that declared purpose.",
+        "negative": "The same feature statement is useful and clear in a construct reference. Failure to borrow is not itself a violation of the permissive sentence."
+      }
+    },
+    {
+      "id": "PD-19",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-46"
+      ],
+      "reason": "DP-46 is already a normative substitutability requirement: a definition advertising the contract must be usable in its place. It does not state that a declaration empirically proves compliance. Making preconditions and guarantees explicit is useful teaching/check guidance, but the allegation of nominal identity being sufficient is not supported. Invalid-input behavior is only a guarantee where the shared contract specifies it.",
+      "retained_claim": "Optional explanation of how to assess the existing substitutability obligation.",
+      "replacement_adjustment": "Use: \"A definition advertising a shared contract accepts every input admitted by that contract without stronger preconditions and preserves its promised outputs, failure behavior, and relevant effects. Consumers bind against those promises.\" Keep the observing check scoped to defined contract behavior; do not demand arbitrary invalid-input semantics or imply finite tests prove every possible substitution.",
+      "evidence": [
+        {
+          "entry": "DP-46",
+          "source": "sources/design-principles.md",
+          "start": 199,
+          "end": 201,
+          "quote": "## 46. A Consumer Binds the Contract\n\nA definition that declares a shared contract is usable wherever that contract is expected. The consumer binds the contract."
+        },
+        {
+          "entry": "AP-148",
+          "source": "sources/anti-patterns.md",
+          "start": 1924,
+          "end": 1928,
+          "quote": "**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf is read. Where the leaf's wording narrows the value to that one technique, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.\n\n**Do not flag:** A leaf entry that changes the bind contract — a differing `#### default`, or an optionality the technique needs. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares (`hoist-shared-inputs`).\n\n**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}`. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home)."
+        }
+      ],
+      "observing_check": {
+        "positive": "An implementation makes an inherited optional input required or omits a promised failure result: it violates the existing substitution obligation.",
+        "negative": "Two implementations accept the same admitted inputs and meet the promised behavior. Unspecified behavior outside the contract preconditions is not an invented conformance obligation."
+      }
+    }
+  ]
+}

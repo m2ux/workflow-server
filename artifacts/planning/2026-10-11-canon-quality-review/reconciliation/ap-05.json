@@ -1,0 +1,100 @@
+{
+  "reviews": [
+    {
+      "id": "AE-02",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Detect explicitly rejects consumer count as the classifier, but the remedy uses the number of consuming workflows. Locate ownership by the source of the contract."
+    },
+    {
+      "id": "AE-03",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Confirmed on the isolated-worker witness: flagging necessary copies is itself flagged by worker-rule-reach. Resolve the local audit prescription by proving delivery from one editable owner."
+    },
+    {
+      "id": "AE-04",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "A declared initial activity and its first-step prerequisites provide a reproducible bootstrap endpoint without executing domain work."
+    },
+    {
+      "id": "AE-05",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The existing value requirement need not imply exhaustive field documentation. Name the omitted capability and the caller decision it enables; unused telemetry is not a counterexample requiring documentation."
+    },
+    {
+      "id": "AE-06",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Return-set inclusion does not account for state transition, ordering, freshness or effects. A preview cannot be replaced by a later mutating superset call."
+    },
+    {
+      "id": "AE-07",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The approval policy is stronger than the cited irreversible-change principle, which is allowed. Recognizing prior concrete authorization is a proposed policy refinement, not a contradiction."
+    },
+    {
+      "id": "AE-08",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The repair must not turn an accepted guarantee into guidance merely because enforcement is difficult. Name the requirement owner and require a deliberate scope/guarantee change."
+    },
+    {
+      "id": "AE-09",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "Pre-draft literacy and validation of committed bytes have independent evidence and failure cases. Separate identities make partial closure visible."
+    },
+    {
+      "id": "AE-10",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The fact-category detector can collapse different scoped facts. The closeout entry already targets restatement; refining its audience/purpose boundary is optional rather than proof all distinct terminal artifacts are banned."
+    },
+    {
+      "id": "AE-11",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "An all-pass per-item evidence ledger can establish coverage even without a parser. Its necessary observations must survive presentation compression."
+    },
+    {
+      "id": "AE-12",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "Required empty representations and an evidenced zero result differ from decorative empty headings. Preserve actual consumer contracts."
+    },
+    {
+      "id": "AE-13",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Shared option labels alone do not show shared decision meaning. The entry title already supplies one-decision intent, but its answer-space test and default-frequency claim need semantic scope, authority, timing and effects."
+    }
+  ]
+}

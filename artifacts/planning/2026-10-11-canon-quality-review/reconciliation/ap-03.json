@@ -1,0 +1,101 @@
+{
+  "reviews": [
+    {
+      "id": "AS-02",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "Explicitly approved schema-and-consumer work can be one task. Clarify authorization rather than infer that schema expansion is allowed whenever convenient."
+    },
+    {
+      "id": "AS-03",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The detector explicitly treats every commit as whole-scope completion. Separate a validated interim checkpoint from delivery acceptance; the user has independently authorized incremental commits in this task."
+    },
+    {
+      "id": "AS-04",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The conjunction accepts search without the approval demanded by Fix when no convention fits. New identifiers following a convention are not new conventions."
+    },
+    {
+      "id": "AS-05",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The introductory subjects already say user decision and cross-activity routing. Preserve them explicitly in Detect to prevent verb-only matching; local technique judgment is not intrinsically prohibited."
+    },
+    {
+      "id": "AS-06",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "The detector includes numbered criteria and iteration but the remedy always chooses Protocol. Reusable criteria and structural session loops need their existing owners."
+    },
+    {
+      "id": "AS-07",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "correction",
+      "priority": "P2",
+      "reason": "Pinned implementation confirms that authored Markdown headings become parsed inputs[] and ancestor inputs compose into the effective signature. Familiar names are not proof of universal runtime supply. Static provenance acceptance and actual value availability remain distinct.",
+      "proposed_fix_override": "AP-16: An externally supplied value belongs to the effective input signature or an explicitly documented delivery contract applicable to that technique. Author declarations as ### <id> under the owning ## Inputs; inputs[] is the parsed representation. Reuse inherited declarations. AP-62: distinguish effective I/O and evidenced runtime context before checking local producer/read order. Mark only an actual local producer with the local-binding sigil; an absent external supplier needs a declared contract, not a fictional local. Qualify target_path and branch_name by their actual supplying contract. See the pinned implementation check for precise replacement blocks and supported limits."
+    },
+    {
+      "id": "AS-08",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Same-file or same-bucket tests miss incompatible inherited obligations that reach one reader. Group names settle the conflict only when they actually define disjoint applicability or precedence."
+    },
+    {
+      "id": "AS-09",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "Necessary isolated-reader copies are explicitly protected from hygiene findings by worker-rule-reach and flagged by no-duplicated-guidance. This is a bounded opposing audit prescription, not proof the entire corpus is unsatisfiable."
+    },
+    {
+      "id": "AS-10",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "correction",
+      "priority": "P1",
+      "reason": "The activity-file Rules repair is categorically prohibited by no-activity-prose-rules. Distinguish a workflow audience bucket from an activity definition."
+    },
+    {
+      "id": "AS-11",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "The local-rule detectors and remedies overlap. Consolidation can remove duplicate findings while retaining note formatting at its separate owner."
+    },
+    {
+      "id": "AS-12",
+      "reviewer": "/root",
+      "disposition": "narrowed",
+      "category": "improvement",
+      "priority": "P2",
+      "reason": "The existing Fix already protects facts lost on deletion. Clarify the applicability/interpretation/failure-recognition test so rationale cleanup preserves those facts; avoid treating every explanatory clause as necessary."
+    },
+    {
+      "id": "AS-13",
+      "reviewer": "/root",
+      "disposition": "confirmed",
+      "category": "improvement",
+      "priority": "P3",
+      "reason": "This is an optional product-scope choice, not a contradiction and not authorization to mutate a user environment. No maintenance exception is adopted in this review."
+    }
+  ]
+}

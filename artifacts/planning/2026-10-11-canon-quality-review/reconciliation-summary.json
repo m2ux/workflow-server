@@ -1,0 +1,22 @@
+{
+  "primary_entries": 212,
+  "candidates": 95,
+  "candidate_dispositions": {
+    "confirmed": 58,
+    "narrowed": 35,
+    "rejected": 2
+  },
+  "candidate_categories": {
+    "correction": 50,
+    "improvement": 43,
+    "no_change": 2
+  },
+  "final_primary_dispositions": {
+    "correction": 63,
+    "improvement": 50,
+    "clear": 98,
+    "evidence limit": 1
+  },
+  "source_revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "scope": "criterion quality and cross-entry repair review; no corpus edits and no formal global consistency proof"
+}

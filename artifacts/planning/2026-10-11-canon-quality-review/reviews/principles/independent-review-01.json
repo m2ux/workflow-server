@@ -1,0 +1,175 @@
+{
+  "reviewer": "/root/canon_contracts",
+  "revision": "e70b44778f71d9d699f746f78a16b892531c82d3",
+  "reviews": [
+    {
+      "id": "PD-01",
+      "disposition": "narrowed",
+      "recommended_priority": "P3",
+      "entries": [
+        "DP-03"
+      ],
+      "reason": "DP-03 already gives an observable manifest-before-work and reconciliation duty. A newly discovered dependency does not prove that this broad principle is inconsistent or unmeasurable; it identifies a useful missing update instruction. The proposal must not turn discovery into authority to expand the task.",
+      "retained_claim": "Optional clarification of when a changed worklist becomes authoritative.",
+      "replacement_adjustment": "Use: \"List the intended files and edit root before their dependent edits. Add discovered dependencies to that list before changing them, within the approved scope. Resolve material scope or authority changes before dependent work, and reconcile the list before completion.\" Do not describe the initial manifest requirement itself as defective.",
+      "evidence": [
+        {
+          "entry": "DP-03",
+          "source": "sources/design-principles.md",
+          "start": 27,
+          "end": 29,
+          "quote": "## 3. Define Complete Scope Before Execution\n\nList every file to create, modify, or remove, including the session edit root at `{target_path}`, before starting, and check that list again before claiming the work done."
+        },
+        {
+          "entry": "AP-03",
+          "source": "sources/anti-patterns.md",
+          "start": 92,
+          "end": 96,
+          "quote": "**Detect:** A commit, handoff, or \"done\" claim leaves items in the scope manifest unaddressed or explicitly deferred without user approval.\n\n**Do not flag:** An explicitly scoped partial deliverable the user approved (remaining items stay open in the manifest).\n\n**Fix:** Complete every scope-manifest item, or get approval to shrink scope and update the manifest before committing."
+        },
+        {
+          "entry": "AP-07",
+          "source": "sources/anti-patterns.md",
+          "start": 144,
+          "end": 148,
+          "quote": "**Detect:** A done/complete claim, commit, or close-out proceeds without verifying each scope-manifest item is addressed.\n\n**Do not flag:** An interim status update that does not claim completion.\n\n**Fix:** Walk the scope manifest item-by-item and resolve gaps before claiming done."
+        }
+      ],
+      "observing_check": {
+        "positive": "A newly identified consumer is listed and its existing scope authority checked before editing; completion reconciles the actual affected files.",
+        "negative": "Silently editing an unlisted consumer fails. Merely discovering an additional file does not fail the principle or authorize changing it."
+      }
+    },
+    {
+      "id": "PD-02",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-04"
+      ],
+      "reason": "The ask-then-assume wording is a real clarification opportunity, but the title and ordinary meaning of clarification already oppose acting on an unresolved choice. AP-08 explicitly waits for an answer before the next question, though it does not itself settle dependent work. Treat this as closing an operational omission, not a reproduced P1 runtime enforcement failure.",
+      "retained_claim": "Say that the answer, not the act of asking, resolves the dependent choice.",
+      "replacement_adjustment": "Use: \"When unresolved interpretations materially change the outcome, scope, authority, or acceptance test, ask one question and wait for its answer before dependent action. Existing explicit instructions resolve covered choices; independent investigation may continue.\" Classify as clarification of the decision boundary, with no claim that every uncertainty requires a new interview.",
+      "evidence": [
+        {
+          "entry": "DP-04",
+          "source": "sources/design-principles.md",
+          "start": 31,
+          "end": 33,
+          "quote": "## 4. Clarify Before Assuming\n\nWhen the request admits materially different interpretations, ask one question before acting."
+        },
+        {
+          "entry": "AP-06",
+          "source": "sources/anti-patterns.md",
+          "start": 132,
+          "end": 136,
+          "quote": "**Detect:** The agent chooses among materially different interpretations of user intent without asking, then executes.\n\n**Do not flag:** Unambiguous instructions; routine defaults the user already established in-session.\n\n**Fix:** Ask a single clarifying question (`one-question-per-message`) before acting on the ambiguous point."
+        },
+        {
+          "entry": "AP-08",
+          "source": "sources/anti-patterns.md",
+          "start": 160,
+          "end": 160,
+          "quote": "**Fix:** Ask one question per message; wait for the answer before the next."
+        }
+      ],
+      "observing_check": {
+        "positive": "An unanswered choice between destructive and non-destructive behavior prevents the dependent edit.",
+        "negative": "Read-only investigation independent of that choice, or action covered by an earlier explicit answer, does not require another decision."
+      }
+    },
+    {
+      "id": "PD-03",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-06",
+        "DP-29",
+        "DP-36"
+      ],
+      "reason": "DP-29 expressly makes resource policy citation valid, and AP-157 explains that resource citations travel with the technique. Therefore the cited resource witness does not prove a same-scope contradiction or a need to inline that policy. The useful issue is DP-36 ambiguous description of available context, plus the difference between a qualified address and received instruction bytes. AP-53 spelling exclusions are not global permission to depend on undelivered text.",
+      "retained_claim": "Clarify delivery reach and single-edit ownership without duplicating resource policy or mandating a new projection framework.",
+      "replacement_adjustment": "Amend DP-36: \"A required fact is in the technique, its delivered contracts, or a resource section delivered or fetched before use. A qualified rule address identifies its owner; the reader must also receive the operative fact.\" DP-06 may add: \"A necessary delivery copy has an identifiable canonical source and is updated from that source.\" Keep DP-29 unchanged. Do not require every temporary copy to introduce a regeneration system.",
+      "evidence": [
+        {
+          "entry": "DP-06",
+          "source": "sources/design-principles.md",
+          "start": 41,
+          "end": 41,
+          "quote": "Each operative fact has one statement. Resources hold fill and consult: templates, vocabularies, criteria, policy. Protocol holds cadence and how. Other layers cite that statement. A repeated copy exists only where delivery would not carry the statement, and that copy is not a second text to edit."
+        },
+        {
+          "entry": "DP-29",
+          "source": "sources/design-principles.md",
+          "start": 133,
+          "end": 133,
+          "quote": "A resource owns vocabulary, criteria, and how fields are represented or matched. Protocol operates on the semantic fields and cites the section: link text is the section title, and the URL includes the `#` anchor. Representation of a consult surface can change without a Protocol change when the fields are unchanged."
+        },
+        {
+          "entry": "DP-36",
+          "source": "sources/design-principles.md",
+          "start": 161,
+          "end": 161,
+          "quote": "A technique arrives as its own text and its inherited rules. A name in that text — a technique, or a rule slug — is a name the delivery carries: the technique's own rules, every container it sits beneath, and the contracts of the scopes a role's bundle names. A rule from another library is named at its full dotted address. A fact the technique needs is in its own text, or stated plainly. A choice between two techniques belongs to the container that holds both, phrased so it needs no reference."
+        },
+        {
+          "entry": "AP-53",
+          "source": "sources/anti-patterns.md",
+          "start": 712,
+          "end": 716,
+          "quote": "**Detect:** A Protocol step cites a rule as prose (\"per the X rule\"), with `::`, or as a hyperlink to the rule's heading. Also flag a citation of a rule declared nowhere. Also flag an address shorter than the rules that arrive with the citer: its own, every container it sits beneath, and the contracts of the scopes its role's bundle names. A bare slug declared only outside that set names nothing delivered. Roles are not readable from the tree, so a static walk proves the library: inside one library a rule may arrive by a route the walk cannot see, and from another library it never does. Checking link spelling alone settles neither length.\n\n**Do not flag:** A dotted address at the length the citer already holds. Inherited from self, group, or namespace root: the bare name. Outside that ancestry: `<owner>.<rule-name>`, the container named by its folder (`gitnexus.index-freshness-first` for a namespace root). Carry the namespace only where two namespaces hold the same technique id. A hyperlink from a resource or a README. Test: a technique cites in dotted form.\n\n**Fix:** Replace the prose, `::`, or heading link with the dotted address at that length. A dangling citation points at the inline content. `::` invokes; `.` names."
+        },
+        {
+          "entry": "AP-157",
+          "source": "sources/anti-patterns.md",
+          "start": 2034,
+          "end": 2034,
+          "quote": "**Do not flag:** A reference that invokes work (`pass-orchestration-in-technique`). A technique reference in an I/O contract (`technique-ref-in-io-contract`). READMEs and other orientation surfaces that run no protocol. Resource citations, which travel with the technique citing them. A bare technique id where the slot's value is a technique id, with no navigable link. A raw tool name a remedy step must run unaided (`canonical-technique-reference`)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A required policy is absent from every received section and the only supplied text is an external rule address: the dependency is unresolved.",
+        "negative": "An anchored resource section actually delivered with the technique supplies the policy without an inline duplicate."
+      }
+    },
+    {
+      "id": "PD-04",
+      "disposition": "narrowed",
+      "recommended_priority": "P2",
+      "entries": [
+        "DP-08",
+        "DP-10"
+      ],
+      "reason": "Neither DP-08 nor DP-10 requires a fresh duplicate confirmation after an existing informed approval; that claimed failure is an interpretation risk, not a literal requirement. Semi-reversible is the stronger target for clarification. Keep the separate removal rule intact rather than silently exempting reversible material deletion.",
+      "retained_claim": "Explain incomplete reversal and acknowledge authority that already covers the effect.",
+      "replacement_adjustment": "DP-08: \"A change whose reversal cannot restore the prior state, requires another party, or incurs material loss has explicit approval covering its target and impact before execution.\" DP-10: \"Identify removed material and verify that explicit approval covers that removal.\" Add to the shared confirmation convention: \"Approval remains effective for the same target and impact; a material change requires a new decision.\"",
+      "evidence": [
+        {
+          "entry": "DP-08",
+          "source": "sources/design-principles.md",
+          "start": 47,
+          "end": 49,
+          "quote": "## 8. Confirm Before Irreversible Changes\n\nA semi-reversible or irreversible change waits for explicit confirmation that includes the impact."
+        },
+        {
+          "entry": "DP-10",
+          "source": "sources/design-principles.md",
+          "start": 55,
+          "end": 57,
+          "quote": "## 10. Non-Destructive Updates\n\nCompare new content with what is there. A change that removes material names the removal and waits for explicit approval. A move that must keep an outcome is [A Relocation Records the Outcome It Keeps](#38-a-relocation-records-the-outcome-it-keeps)."
+        },
+        {
+          "entry": "AP-80",
+          "source": "sources/anti-patterns.md",
+          "start": 1044,
+          "end": 1048,
+          "quote": "**Detect:** A README edit removes or shrinks substantive content without listing what was preserved/removed and getting user confirmation.\n\n**Do not flag:** Additive clarifications; deletions the user explicitly requested.\n\n**Fix:** Audit preservations/removals, confirm with the user, then apply (`readme-orients-not-transcribes` still applies to shape)."
+        }
+      ],
+      "observing_check": {
+        "positive": "A new removal or residual external effect falls outside the recorded approval and requires a decision.",
+        "negative": "An explicit instruction to remove the named obsolete file already supplies approval for that exact removal; no identical second approval is required."
+      }
+    }
+  ]
+}
