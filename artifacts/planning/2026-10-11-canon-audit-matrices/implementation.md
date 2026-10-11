@@ -59,6 +59,19 @@ Corpus revision: `e70b44778f71d9d699f746f78a16b892531c82d3`. Paired engine: `e88
 
 These tests qualify capture, rendering, sizing and ownership against existing corpus bytes. The assignment counts use an illustrative structural profile of 80 output units and two seconds per cell with three slots, not measured full-canon semantic costs. They do not claim completed semantic audits: their cells remain unresolved and their completion gates remain closed. [Measured results](corpus-specimens/current-generation/results.json) retain identities, estimates and elapsed time for the corrected tool generation.
 
+### Renumbered Catalog
+
+A later corpus revision retires three entries, adds one and renumbers the catalog from AP-61 onward. Capture absorbs it without a skill change, because criterion identity is the canonical named entry and the AP number is a display alias.
+
+Corpus revision: `4d333ca073440a6399f3ee896c665a31253d2a7a`. Paired engine unchanged. 159 APs and 47 DPs are included.
+
+| Specimen | Rows | Criteria | Cells | Elapsed | Structural Result |
+| --- | ---: | ---: | ---: | ---: | --- |
+| MVW coverage | 211 | 206 | 43,466 | 8.079s | Every assertion holds; four types and relationship context retained |
+| Routine conformance coverage | 743 | 206 | 153,058 | 42.409s | Distinct routine instantiations and unchanged callers retained |
+
+Both cell counts are the exact row × criterion product at 206 criteria, and the rows are unchanged because the specimens' own sources did not move. [Measured results](corpus-specimens/renumbered-catalog/results.json) retain the identities and estimates. This measures structural capture against the changed catalog; it resolves no semantic cell and opens no completion gate.
+
 The first global packing experiment was interrupted after excessive repeated cost calculations. Criterion/kind seams and cached source/canon spans bound that search. Interrupted exits 143 and 130 remain failed observations, not passing specimen tests. The final experiments take about 8 and 40 seconds; exact current measurements are in the results artifact.
 
 ## Live Agent Validation
