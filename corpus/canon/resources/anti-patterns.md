@@ -1488,9 +1488,9 @@ A design-time authoring standard is filed as a runtime rule.
 
 **Fires on:** `workflow.rules`, `activity.rules`, `technique.rules`
 
-**Detect:** A rule in `rules.*` or technique `## Rules` governs how to *write* workflows (content shape of YAML/technique/resource files, authoring standards) rather than current-session runtime conduct. Signals: restates a design principle or anti-pattern; would apply in an unrelated authoring session.
+**Detect:** A rule in `rules.*` or technique `## Rules` independently restates general authoring criteria the canon already owns, rather than imposing a current-work obligation by reference. Signals: restates a design principle or anti-pattern; would apply in an unrelated authoring session.
 
-**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions. An authoring technique's rules for the definitions it drafts.
+**Do not flag:** Runtime keepers — progress-tracker updates, corrections-must-persist, isolation/orchestration models, write-immediately, domain safety floors, worker permissions. An authoring or audit run's rules for the definitions it drafts, and its obligation to apply the cited canon to its own inputs or outputs, the criteria remaining at their home.
 
 **Fix:** Remove it from `rules.*` or technique `## Rules`. Migrate it into the design-time canon — a principle, this catalogue, the construct inventory, or an existing covering entry. Enforce it in the authoring audit.
 
