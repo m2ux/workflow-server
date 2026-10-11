@@ -1842,15 +1842,15 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 "### 1. Spawn … ### 2. Resume … ### 3. Concurrent" (or unnumbered `### spawn` / `### resume` / `### concurrent` under `## Protocol`)
 
-Mutually exclusive technique variants — or standing host-invoke policy — are encoded as Protocol phases as if they were a sequenced procedure.
+Mutually exclusive technique variants are encoded as Protocol phases as if they were a sequenced procedure.
 
 **Fires on:** `technique.protocol`
 
-**Detect:** A technique `## Protocol` lists alternate modes of the same technique that a caller selects exactly one of (spawn versus resume versus concurrent; create versus update) and never walks in order. Also flag a Protocol bullet whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer or omit flags) with no produce, transform, or persist outcome for that step. Test: renumbering the phases would not change runtime behaviour, because only one phase applies per call.
+**Detect:** A technique `## Protocol` lists alternate modes of the same technique that a caller selects exactly one of (spawn versus resume versus concurrent; create versus update) and never walks in order. Test: renumbering the phases would not change runtime behaviour, because only one phase applies per call. A Protocol bullet carrying only a standing duty is `rule-as-protocol-step`.
 
 **Do not flag:** Sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome), `numbered-protocol-phases`). One Protocol phase whose bullets are mode branches of one invoke. A Rules catalogue for a host or compat file. A generic technique whose Protocol is resolve, then dispatch, then await ([spawn-agent](/meta/techniques/harness-compat/spawn-agent.md)).
 
-**Fix:** Move alternate slices and standing host policy into `## Rules`, naming slices by `operation_kind` when a resolver selects them. Keep `## Protocol` for ordered outcomes. A caller Applies the selected rule section. See also `rule-as-protocol-step`, `no-one-step-rules`.
+**Fix:** Keep standing host policy in `## Rules`. Express alternate work inside one outcome phase as conditional notes where it is one operation; give distinct operations separate techniques, selected at the binding site. Keep `## Protocol` for ordered outcomes. See also `rule-as-protocol-step`, `no-one-step-rules`.
 
 ### AP-125. technique-ref-in-io-contract
 
@@ -1862,9 +1862,9 @@ An Input or Output description hyperlinks or otherwise associates the bind slot 
 
 **Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file (`**/techniques/**/*.md`, group `TECHNIQUE.md`, or equivalent `::` technique citation), or prose that names another technique as the producer/consumer/executor of the value ("from [challenge]", "via [commit-paths]", "ready for [dispatch-workers]", "folded by [run-suite]"). Inputs/Outputs are bind contracts — what the value *is* — not an invitation to execute another op. Test: if following the link would take the agent into another technique's Protocol/Rules to interpret the slot, flag it.
 
-**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. "one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; Protocol/Rules that correctly Apply or cite techniques; I/O HOW without a technique association (`procedure-in-io-contract`).
+**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. "one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; I/O HOW without a technique association (`procedure-in-io-contract`).
 
-**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
+**Fix:** Keep I/O descriptions about meaning and shape. Put producer/consumer sequencing at the activity or routine bind; put any technique-owned value assembly in its own Protocol. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
 
 ## Draft Hygiene
 
@@ -1948,11 +1948,11 @@ A concrete value is written out where a declared variable or technique input alr
 
 **Fires on:** `workflow`, `activity`, `technique`, `resource`
 
-**Detect:** Cross-reference literals in workflow, activity, technique, and resource content against the workflow's `variables[]` and the enclosing technique's `## Inputs` and `## Outputs`. Flag a verbatim value — path root, branch or remote name, identifier, count, enum member, host — where a declared slot carries that meaning and `{name}` belongs. Both must hold: the slot's `description` names what the literal denotes, and the literal is the operative value rather than a shape illustration.
+**Detect:** Cross-reference literals in workflow, activity, technique, and resource content against the workflow's `variables[]` and the enclosing technique's `## Inputs` and `## Outputs`. Flag a verbatim value — path root, branch or remote name, identifier, count, enum member, host — where a declared slot carries that meaning and `{name}` belongs. All must hold: the slot's `description` names what the literal denotes, the literal is the operative value rather than a shape illustration, and the literal substitutes for the current value of that slot rather than standing as an independently meaningful comparison operand or pattern.
 
-**Do not flag:** The declaration itself (`defaultValue`, or an enum or shape hint inside the slot's own `description`). A Template or example fence that shows a resolved shape. A planning-folder artifact recording one session's resolved values. An exemplar line in a catalogue entry. A literal with no declared slot: a path repeated across sites (`factor-repeated-paths`), a host absolute path or checkout root (`worktree-root-placeholders`), state tracked in prose with no variable (`variable-for-approval`), a literal of state a declared variable already derives (`no-derived-state-shadow`).
+**Do not flag:** The declaration itself (`defaultValue`, or an enum or shape hint inside the slot's own `description`). An enum member or fixed constant used to test, classify, or select the declared value, as in when `{operation_type}` is review. A Template or example fence that shows a resolved shape. A planning-folder artifact recording one session's resolved values. An exemplar line in a catalogue entry. A literal with no declared slot: a path repeated across sites (`factor-repeated-paths`), a host absolute path or checkout root (`worktree-root-placeholders`), state tracked in prose with no variable (`variable-for-approval`), a literal of state a declared variable already derives (`no-derived-state-shadow`).
 
-**Fix:** Replace the literal with `{name}` for the declared slot. Leave exactly one home for the value — the declaration.
+**Fix:** Replace a copied bound value with `{name}` for the declared slot, leaving exactly one home for it — the declaration. Where the consumer is a resource, keep the resource parameter abstract and put the caller-specific binding on the technique or activity.
 
 ### AP-132. unproduced-value-read
 
@@ -1962,11 +1962,11 @@ A reader can reach a variable on a path that skips its only producer.
 
 **Fires on:** `activity.steps`
 
-**Detect:** The sole producer (step output, remap, or `set`) is gated by `when` or `condition`, or sits in a `while` body whose `continueWhile` decides the first pass. A later reader — an input, a `when`, `condition`, `continueWhile`, `breakCondition`, or `{token}` — is reachable where that producer is skipped, and the variable has no `defaultValue`. Two shapes: a reader gated by equality or a relational operator, and an ungated reader with no producer arm for the gate's negation.
+**Detect:** The sole producer (step output, remap, or `set`) is gated by `when` or `condition`, or sits in a `while` body whose `continueWhile` decides the first pass. A later reader — an input, a `when`, `condition`, `continueWhile`, `breakCondition`, or `{token}`, including a condition evaluated before the producer — is reachable where that producer is skipped, and the variable has no `defaultValue`. Two shapes: a reader gated by equality or a relational operator, and an ungated reader with no producer arm for the gate's negation.
 
-**Do not flag:** A `defaultValue` seeded at session creation. A reader gated by the same expression as its producer. A checkpoint `setVariable` that applies on every option. A projection of state another variable already carries (`no-derived-state-shadow`).
+**Do not flag:** A `defaultValue` seeded at session creation. A reader whose every reaching path includes a producer or a valid seed, which equivalent gates establish only where the values they test cannot change between evaluations. A checkpoint `setVariable` that applies on every option. A projection of state another variable already carries (`no-derived-state-shadow`).
 
-**Fix:** Ask definedness with `operator: exists` or `notExists`. Where the excluded path needs the value, add the producer arm so the gates are exhaustive. A `defaultValue` a reader cannot tell from a produced value is not that arm.
+**Fix:** Add a definedness precondition with `operator: exists` or `notExists`, retaining any required domain predicate. Where the excluded path needs the value, add the producer arm so the gates are exhaustive. A `defaultValue` a reader cannot tell from a produced value is not that arm.
 
 ### AP-133. stale-restatement-after-change
 
@@ -1976,11 +1976,11 @@ A change leaves a restatement asserting the behaviour it altered.
 
 **Fires on:** `readme`, `activity.description`, `technique.capability`, `activity.outcome`, `resource`
 
-**Detect:** A change alters a gate, precondition, default, or ordering. Search the pre-change phrasing across every README tier, activity `description`, `## Capability`, `outcome[]`, and resource body. Flag each hit that still asserts the old behaviour. Count occurrences in the tree: a manifest naming one file for a claim that appears in three is the same defect.
+**Detect:** A change alters a gate, precondition, default, or ordering. Enumerate the surfaces that state or consume the changed contract — every README tier, activity `description`, `## Capability`, `outcome[]`, Protocol, Rules, and resource body — searching the old terms and related symbols to locate candidates, then compare each surviving claim with the current behaviour. A phrase search alone does not prove completeness. Count occurrences in the tree: a manifest naming one file for a claim that appears in three is the same defect.
 
 **Do not flag:** A restatement the change did not affect. A planning artifact that records the before state. A claim held once. A restated Detect body (`canon-layer-cites-not-restates`). A stale clause about another actor (`instruction-narrates-an-actor`).
 
-**Fix:** Update every occurrence in one edit and record the count in the file manifest. Where the claim has one home, delete the restatements. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Update or remove each semantically stale claim in one edit, recording the reviewed surface and the count in the file manifest. Where the claim has one home, delete the restatements, retaining permitted orientation that does not duplicate operative ownership. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-134. artifact-name-is-filename
 
@@ -2004,9 +2004,9 @@ A consult resource's id is a verb phrase.
 
 **Fires on:** `resource`
 
-**Detect:** Read each id under `**/resources/**` with the body closed. For a template, guide, vocabulary, criteria, or policy, flag a verb head or an imperative. Also flag a noun that omits the kind word its siblings carry (`-guide`, `-template`, `-forms`, `-seed`) while the file holds a `## Template`.
+**Detect:** Read each id under `**/resources/**` with the body closed. For a template, guide, vocabulary, criteria, or policy, flag a verb head or an imperative. Within a documented family of one resource kind, also flag an id that omits the kind suffix that family establishes (`-guide`, `-template`, `-forms`, `-seed`) and is ambiguous without opening the body.
 
-**Do not flag:** A prompt the agent executes (a lens, bootstrap, or agent-conduct prompt). An id that already names its content. A bare noun where no sibling carries a kind word. A noun-modifier that only looks verbal (`review-format`, `update-mode-guide`). A technique or activity id.
+**Do not flag:** A prompt the agent executes (a lens, bootstrap, or agent-conduct prompt). An unambiguous content noun, or a resource of another kind; a sibling suffix alone does not establish a convention. A noun-modifier that only looks verbal (`review-format`, `update-mode-guide`). A technique or activity id.
 
 **Fix:** Rename to the content plus its kind, and update `name:`, the resources index, and every relative and `::` reference in one edit. Where the verb names a technique, move the content into a technique. See [Convention Over Invention](./design-principles.md#7-convention-over-invention).
 
@@ -2034,7 +2034,7 @@ Two rules' triggers intersect and their handling differs, with no order between 
 
 **Detect:** In the effective delivered rule set — a `## Rules` block, a `rules.*` array, fill rules, and the obligations inherited with them — an input satisfies both triggers, the handling differs, and neither entry orders them: a broad rule beside a narrower one that does not name itself the exception, two thresholds on one measure, or two criteria on one field. Test: one input in the intersection, read alone, does not determine the behaviour.
 
-**Do not flag:** Triggers that cannot both hold. A pair already ordered, by a precedence clause or a group key (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`). Mutually exclusive prescriptions (`no-contradictory-rules`). A carve-out that names the entry it excepts.
+**Do not flag:** Triggers that cannot both hold. Compatible cumulative constraints, which narrow one behaviour rather than compete for it. A pair already ordered by a precedence clause, or grouped so the scopes are disjoint — a label alone does not establish either (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`). Mutually exclusive prescriptions (`no-contradictory-rules`). A carve-out that names the entry it excepts.
 
 **Fix:** One entry, the narrower case as a condition inside it. Where both remain, the narrower names what it overrides (`dotted-rule-address`). Splitting the triggers is valid where the split is a real distinction.
 
@@ -2048,7 +2048,7 @@ A citation delivers a whole resource where the prose reads one section.
 
 **Detect:** A technique cites a multi-section resource with no `#anchor` while the link text, or the phrase beside it, matches one heading. Also flag a bare citation beside an anchored citation of the same resource: both are delivered.
 
-**Do not flag:** A consumer that reads the body: a filler using `## Template` with its `## Rules`, an audit of every entry, or a technique whose sections are most of the file. A single-section resource. A bare citation that introduces the resource.
+**Do not flag:** A consumer that reads the body: a filler using `## Template` with its `## Rules`, an audit of every entry, or a technique whose sections are most of the file. A single-section resource. Orientation outside a delivered technique, which may introduce a resource with a bare link. Where this application consumes the whole body, that one bare citation stands and no delivered section citation joins it.
 
 **Fix:** Cite `../resources/example.md#section-title`, link text the section title, one citation per section. A bare citation beside anchored ones is anchored or dropped. A large resource no section covers is a split under [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
 
@@ -2064,7 +2064,7 @@ Protocol restates a tool argument's shape.
 
 **Do not flag:** A call signature naming which arguments a step passes. What the caller does with the response. A constraint on a value, such as relaying a map verbatim. An obligation the schema cannot express, such as which dispatches must pass the argument.
 
-**Fix:** Keep the obligation and the reason. Drop the shape. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
+**Fix:** Keep the caller obligation and every fact needed to apply it. Drop the argument shape the tool schema already declares. Put explanatory rationale in its design record, and cite the canonical contract where the caller needs it. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
 
 ### AP-140. phase-cited-by-ordinal
 
@@ -2078,7 +2078,7 @@ A reference names a Protocol phase by its ordinal.
 
 **Do not flag:** An ordinal inside the `## Protocol` that owns the numbering. A link to the phase heading. A dotted rule address (`dotted-rule-address`). An ordinal that is a declared id, heading text, or quoted output.
 
-**Fix:** Name the technique or op that holds the phase. Anchor the heading where that one phase is required. Where the pointer only explains the cited work, delete it. See also `anchored-protocol-references`.
+**Fix:** Within the delivered Protocol, identify the outcome by its heading. Put cross-technique sequencing at the bind site. A consumer of an earlier result declares that value or a checkable precondition rather than linking to an undelivered phase. Where the pointer only explains the cited work, delete it. See also `anchored-protocol-references`.
 
 ### AP-141. unowned-harness-capability
 
@@ -2088,11 +2088,11 @@ No technique owns a harness capability that several techniques call.
 
 **Fires on:** `technique`
 
-**Detect:** One tool is named for the same capability in two or more technique bodies, and no technique declares that product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which technique a caller would bind.
+**Detect:** Two or more techniques duplicate the same tool-facing interpretation, recovery policy, or argument selection for one named question, and no technique owns that shared product on `## Outputs`. Signals: permitted argument values listed at more than one site; a citation of another consumer (`single-rule-authority`). Test: no file answers which technique a caller would bind.
 
-**Do not flag:** One call site (`duplicate-shared-capability`). A site that already binds a wrapping op, and the wrapper (`canonical-technique-reference`). An engine, conduct, bootstrap, or agent-entry surface. Distinct capabilities of one tool.
+**Do not flag:** One call site (`duplicate-shared-capability`). Independent use of a raw primitive exactly as its tool contract defines, with distinct caller-owned interpretation. A site that already binds a wrapping op, and the wrapper (`canonical-technique-reference`). An engine, conduct, bootstrap, or agent-entry surface. Distinct capabilities of one tool.
 
-**Fix:** Author the technique, declare the product, bind it as an activity step, and let consumers declare that product as an input. Repoint sideways citations at the owner. See also `pass-orchestration-in-technique`.
+**Fix:** Extract the proven shared contribution: author the technique, declare the product, bind it as an activity step, and let consumers declare that product as an input, repointing sideways citations at the owner. Preserve direct primitive use where there is no such contribution, since an extraction that adds none is `produce-path-without-a-reading`. See also `pass-orchestration-in-technique`.
 
 ### AP-142. output-without-destination
 
@@ -2116,11 +2116,11 @@ A resource carries operative prose in a span no `##` anchor reaches, while techn
 
 **Fires on:** `resource`
 
-**Detect:** After stripping frontmatter and ignoring fenced blocks, the resource has at least one anchored citer, and either (a) the leading H1 carries substantial framing (roughly 100+ characters of body before the first `##`) whose only reachable anchor spans the whole file, or (b) prose sits before any heading. Mechanical: measure prose before the first `##` against the span of the leading H1 and against every `##` span. A section-scoped `get_resource` returns only the matched heading's span, so that framing is silently absent for every section consumer.
+**Detect:** After stripping frontmatter and ignoring fenced blocks, the resource has at least one anchored citer, and operative facts the consumer needs sit outside the delivered sections — before any heading, or under a leading H1 whose only reachable anchor spans the whole file. A section-scoped `get_resource` returns only the matched heading's span, so that framing is silently absent for every section consumer. Flag a missing fact whatever its length; measuring the prose before the first `##` prioritises inspection without deciding applicability.
 
 **Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request. Whole-resource citations where the consumer loads the full file (`whole-resource-for-one-section` Do-not-flag carve-outs).
 
-**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
+**Fix:** Move unique operative framing to an addressable `##` section and update every dependent consumer to receive it, or place the fact inside the consumed section; verify the delivered section then carries the obligation. Delete framing that duplicates the citing technique, and leave orientation-only prose. Cross-section deixis becomes an anchored link. See [A Resource Splits for Section Delivery](./design-principles.md#44-a-resource-splits-for-section-delivery) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
 
 ### AP-144. declared-input-never-read
 
@@ -2130,11 +2130,11 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 **Fires on:** `technique.inputs`, `technique.protocol`, `technique.rules`
 
-**Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes. Flag an entry with no occurrence. Test: the only phase that spends the value is the declaration itself.
+**Detect:** Resolve the technique's effective contract and identify the semantic reads of each `### <id>` under `## Inputs` — in `## Protocol`, `## Rules`, Output recognition or construction, artifact templates, and supported binding or default expressions. Flag an input with no such use. A bare mention that consumes nothing is not evidence of use.
 
-**Do not flag:** An input on a container `TECHNIQUE.md` that a descendant references after the merge. An input handed whole to an applied op as a substitution map or pass-through, where a phase references the map. An agent-entry technique's identity bindings — ids a spawn or continuation stub emits and the entry tools consume. An output no consumer reads (`output-without-destination`).
+**Do not flag:** An input on a container `TECHNIQUE.md` that a descendant references after the merge. An input handed whole to a bound op as a substitution map or pass-through, where a phase references the map. An agent-entry technique's identity bindings — ids a spawn or continuation stub emits and the entry tools consume. An output no consumer reads (`output-without-destination`).
 
-**Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site (`apply-omits-declared-input`).
+**Fix:** Delete a proved unused input, or wire it to its actual consumer; do not add prose solely to satisfy a text search. Where the value belongs to an op this technique binds, pass it at that binding site (`apply-omits-declared-input`).
 
 ### AP-145. apply-omits-declared-input
 
