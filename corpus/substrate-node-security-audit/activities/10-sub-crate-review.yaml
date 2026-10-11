@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 2.0.0
+version: 2.1.0
 name: "Sub-Agent: Crate Deep Review"
 description: Structured crate review for Group A sub-agents.
 variables:
@@ -15,8 +15,8 @@ variables:
       type: object
       description: Complete verdict matrix and coverage attestation.
     - name: verification_report
-      type: string
-      description: Scan completeness verification with gaps and re-scan recommendations
+      type: object
+      description: "Scan completeness verification, carrying the tables the verifier publishes: { dispatch_manifest, coverage_table, missing_tables, redispatch_recommendations }."
 
 steps:
   - kind: technique
