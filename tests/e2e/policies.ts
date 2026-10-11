@@ -37,8 +37,7 @@ export const baseSimulation: Record<string, Record<string, unknown>> = {
     implement_settle_assumptions_has_open_assumptions: true,
   },
   // strategic-findings-analysis emits review_passed on the finding-free / minor
-  // path (work-package #192): with no findings the review-findings checkpoint
-  // auto-dismisses (condition_not_met) and this signal drives the transition to
+  // path (work-package #192). The signal drives the transition to
   // submit-for-review. Without it the walk loops strategic-review → plan-prepare.
   'strategic-review': { review_passed: true },
   // Contract-first join: the walker does not run suites, so the join's fail-on-base and pass

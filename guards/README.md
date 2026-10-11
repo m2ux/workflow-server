@@ -12,6 +12,8 @@ A check program reads a tree and reports whether a stated invariant holds. Those
 
 Repo-scoped programs — site links, SVG layout, source encoding, the lockfile denylist — live here too. They read this tree rather than a corpus.
 
+A verdict about one named corpus lives here rather than under `ledgers/` when it is a record the engine work consumes: [`condition-survey.ts`](condition-survey.ts) is the disposition of every structured-condition site on the corpus branch this engine branch pairs with, and [`condition-sites.ts`](condition-sites.ts) is the enumeration and the measurements it is graded against.
+
 ## One sweep, one registry
 
 ```bash

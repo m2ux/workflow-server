@@ -150,6 +150,12 @@ describe('guard registry', () => {
         + 'technique publishing members — one value described two incompatible ways. They are a '
         + 'corpus fix rather than a question, and enrolling before they land would take a green '
         + 'hard-zero sweep red; enrolling is the last step, in the commit that makes it pass',
+      'guards/check-condition-survey.ts':
+        'grades guards/condition-survey.ts, a record of ONE corpus — the initiative branch this engine '
+        + 'branch pairs with. The sweep is pointed at whatever tree is under review, so enrolling would '
+        + 'grade the record against a corpus it was never taken on. `tests/condition-survey.test.ts` runs '
+        + 'it against the paired corpus instead, which is where the pairing is already decided; it joins '
+        + 'the sweep when the structured condition is gone and the record is empty',
     };
 
     const onDisk = readdirSync(join(REPO, 'guards'))

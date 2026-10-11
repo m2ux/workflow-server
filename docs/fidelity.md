@@ -143,9 +143,8 @@ Others deliver content — `get_workflow`, `get_activity`, `get_technique`, `get
 - An agent cannot forge a response. `option_id` is validated against the checkpoint definition.
 - An agent cannot resolve instantly. Both timers run from the recorded pause, so answering faster than a person could read is refused. This closes the cheapest way to fake a gate: calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything.
 - Real worker execution takes minutes, so the check never fires on a legitimate run.
-- An agent cannot dismiss an unconditional checkpoint. `condition_not_met` is rejected without a `condition` field.
 
-The three resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#resolving-a-pause).
+The two resolution modes and the timers each one waits out are specified in [checkpoints](checkpoint.md#resolving-a-pause).
 
 ## Layer 3: Cross-Activity Validation
 
@@ -427,7 +426,6 @@ Every layer above detects rather than prevents, and the limits are worth stating
 - **Step execution is not provable.** The manifest shows that an agent *reported* each step, not that it did the work, and the output descriptions are the agent's own. The mechanical trace independently confirms which tool calls were made, which corroborates but does not settle it.
 - **Condition truth is not verified.** The server checks that a claimed exit maps to the target activity. Whether the predicate holds in the agent's state is beyond it.
 - **Checkpoint user presence is not provable.** The gate ensures the agent calls `respond_checkpoint` with a valid option. It cannot show a person saw the question. The timers raise the bar by rejecting an instant resolve, but an agent could wait the minimum and submit a fabricated answer. This is inherent wherever the agent controls the channel to the user.
-- **Conditional dismissal relies on honesty.** On `condition_not_met` the server validates that the checkpoint carries a `condition`, not that the condition is false. The dismissal is recorded for later audit.
 - **A repeated call is not distinguished from a fresh one.** A call is checked against the position the server recorded, so it cannot tell that an agent is re-issuing a call it already made. The trace records both, so a repeat is visible afterwards.
 - **Warnings are advisory.** A confused agent may ignore them. They are captured in the trace, so ignored warnings show up in review.
 - **The in-memory trace does not survive a restart.** Tokens issued before it remain valid, since the event data is embedded in them, but a `get_trace` with no tokens returns nothing for prior sessions.

@@ -319,7 +319,7 @@
                   },
                   "when": {
                     "$ref": "#/definitions/whenExpression",
-                    "description": "Entry gate: the step runs only when this expression holds. On a checkpoint step, `condition`, not `when`, makes the checkpoint dismissible."
+                    "description": "Entry gate: the step runs only when this expression holds."
                   },
                   "required": {
                     "type": "boolean",
@@ -328,7 +328,7 @@
                   },
                   "condition": {
                     "$ref": "#/definitions/condition",
-                    "description": "Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, selecting no option and no exit."
+                    "description": "Structured entry condition. Prefer `when` for a step gate."
                   }
                 },
                 "required": [

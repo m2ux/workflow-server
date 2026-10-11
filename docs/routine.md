@@ -202,7 +202,7 @@ An invalid routine file is recorded against that routine alone: a file its schem
 
 ##### The site prefix
 
-The step's id is the prefix every identifier in the materialised body carries. Its gate is `when` alone. A structured condition is rejected: on a checkpoint that field is what makes the gate dismissible, and a site condition pushed into the body would hand every gate in the run a capability its author never declared.
+The step's id is the prefix every identifier in the materialised body carries. Its gate is `when` alone. A structured condition on the reference is rejected: the body's own steps carry their gates.
 
 ## Splice
 

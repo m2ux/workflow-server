@@ -274,15 +274,11 @@ classDiagram
   class AutoAdvance {
     the declared default
   }
-  class ConditionNotMet {
-    the gate does not apply
-  }
   class PauseTimestamp {
     when the pause began
   }
   OptionChosen --> PauseTimestamp : waits briefly
   AutoAdvance --> PauseTimestamp : waits as declared
-  ConditionNotMet --> PauseTimestamp : no wait
 ```
 
 
@@ -296,16 +292,13 @@ classDiagram
 | ------------------- | ---------------------------------------- | --------------------------------------------------- |
 | `option_id`         | The person picked this option            | At least three seconds since the pause was recorded |
 | `auto_advance`      | Take the checkpoint's own default        | The declared wait has passed                        |
-| `condition_not_met` | The prerequisite is false, so dismiss it | None                                                |
 
 
-Exactly one of the three may be supplied. `reply` accompanies `option_id`: it is required where the option declares `recordReply` and refused elsewhere, and a soft gate's default records no reply. Both timers run from the moment the pause was recorded, so an answer that arrives instantly is rejected.
+Exactly one of the two may be supplied. `reply` accompanies `option_id`: it is required where the option declares `recordReply` and refused elsewhere, and a soft gate's default records no reply. Both timers run from the moment the pause was recorded, so an answer that arrives instantly is rejected.
 
-#### Soft Gate and Dismissal
+#### Soft Gate
 
 Auto-advance needs both a default option and a declared wait. That pair is a soft gate. A gate that must wait for a person declares neither, and a checkpoint declaring one without the other, or a default that names none of its options, excludes its activity from the load.
-
-Dismissal is only open to a checkpoint carrying a structured condition. One gated by an inline expression cannot be dismissed this way. The server checks that the condition field is present and cannot check whether it is true, so the evaluation is taken on trust and recorded.
 
 
 
@@ -489,7 +482,7 @@ Five earlier reads are exempt, because each already has an answer or loses nothi
 | Exempt                                   | Why                                                                                                       |
 | ---------------------------------------- | --------------------------------------------------------------------------------------------------------- |
 | The variable declares a default          | Seeding puts it in the bag at session creation, so the earlier gate reads the default rather than nothing |
-| The earlier gate tests presence          | A presence test answers on a missing variable; absence is one of its two answers                          |
+| The earlier gate tests presence          | A presence test answers on a missing variable; absence is one of its two answers, whether the gate writes `exists` or the inline test that holds for every present non-null value |
 | The earlier step only announces          | An announcement that does not fire costs nothing                                                          |
 | The deciding option leaves the activity  | The run meets the earlier step again on its next visit, and that visit reads what the option wrote        |
 | The two gates demand incompatible values | No single run reaches both steps, so the earlier one was never waiting on this decision                   |

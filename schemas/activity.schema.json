@@ -283,7 +283,7 @@
                   },
                   "when": {
                     "$ref": "#/definitions/whenExpression",
-                    "description": "Entry gate: the step runs only when this expression holds. On a checkpoint step, `condition`, not `when`, makes the checkpoint dismissible."
+                    "description": "Entry gate: the step runs only when this expression holds."
                   },
                   "required": {
                     "type": "boolean",
@@ -292,7 +292,7 @@
                   },
                   "condition": {
                     "$ref": "#/definitions/condition",
-                    "description": "Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, selecting no option and no exit."
+                    "description": "Structured entry condition. Prefer `when` for a step gate."
                   }
                 },
                 "required": [
@@ -578,7 +578,7 @@
               "isDefault": {
                 "type": "boolean",
                 "const": true,
-                "description": "Declare `true` for the exit taken when no `when` matches and no checkpoint option selects an exit, including when a checkpoint is dismissed because its condition was not met. Required on exactly one exit of an activity with two or more exits; `false` is rejected."
+                "description": "Declare `true` for the exit taken when no `when` matches and no checkpoint option selects an exit. Required on exactly one exit of an activity with two or more exits; `false` is rejected."
               },
               "immediate": {
                 "type": "boolean",

@@ -1,0 +1,8 @@
+id: answer-fixture
+version: 1.0.0
+title: Answer Fixture
+description: Fixture workflow whose checkpoints are answered by an option or by auto-advance.
+initialActivity: answer-activity
+graph:
+  answer-activity:
+    done: followup-activity

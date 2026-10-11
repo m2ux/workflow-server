@@ -56,12 +56,12 @@ export const TechniqueBindingSchema = z.object({
 export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 
 const stepCommonFields = {
-  when: enforcement(WhenExpressionSchema.optional().describe('Entry gate: the step runs only when this expression holds. On a checkpoint step, `condition`, not `when`, makes the checkpoint dismissible.'), { owner: 'Agent', strictness: 'advisory' }),
+  when: enforcement(WhenExpressionSchema.optional().describe('Entry gate: the step runs only when this expression holds.'), { owner: 'Agent', strictness: 'advisory' }),
   required: enforcement(z.literal(false).optional().describe('Declare `false` for an optional step; omission means the step is required, and `true` is rejected.'), { owner: 'Agent', strictness: 'advisory' }),
 };
 
 const stepEntryCondition = {
-  condition: enforcement(ConditionSchema.optional().describe('Structured entry condition. Prefer `when` for a step gate. On a checkpoint step, `condition` is the only gate that makes the checkpoint dismissible: when it is false, the checkpoint may be dismissed as not met, selecting no option and no exit.'), { owner: 'Agent', strictness: 'advisory' }),
+  condition: enforcement(ConditionSchema.optional().describe('Structured entry condition. Prefer `when` for a step gate.'), { owner: 'Agent', strictness: 'advisory' }),
 };
 
 export const TechniqueStepSchema = z.object({
@@ -111,7 +111,7 @@ export const LoopStepSchema = z.object({
 }).strict().describe('Loop over a collection or until a continuation test fails, entered when its `when` expression holds.');
 export type LoopStep = z.infer<typeof LoopStepSchema>;
 
-// A routine step's gate is `when` alone: a `condition` reaching the body would make every checkpoint in it dismissible.
+// A routine step's gate is `when` alone.
 export const RoutineStepSchema = z.object({
   kind: enforcement(z.literal('routine').describe('Step-kind discriminator.'), { owner: 'Engine', strictness: 'enforced' }),
   id: enforcement(z.string().describe('Step identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. It is also the prefix every identifier in the routine body carries once spliced in.'), { owner: 'Engine', strictness: 'enforced' }),
@@ -279,7 +279,7 @@ export const ExitSchema = z.object({
   id: z.string().describe('Kebab-case outcome name, unique within the activity and distinct from a destination activity identifier.'),
   label: z.string().optional().describe('Human-readable statement of the outcome.'),
   when: WhenExpressionSchema.optional().describe('Expression selecting this exit, in the same dialect as a step `when`. Omitted on the default exit and on an exit only a checkpoint option selects.'),
-  isDefault: z.literal(true).optional().describe('Declare `true` for the exit taken when no `when` matches and no checkpoint option selects an exit, including when a checkpoint is dismissed because its condition was not met. Required on exactly one exit of an activity with two or more exits; `false` is rejected.'),
+  isDefault: z.literal(true).optional().describe('Declare `true` for the exit taken when no `when` matches and no checkpoint option selects an exit. Required on exactly one exit of an activity with two or more exits; `false` is rejected.'),
   immediate: z.literal(true).optional().describe('Declare `true` so that selecting this exit at a checkpoint ends the step sequence there, and the remaining steps do not run. Omission records the exit when chosen and takes it when the steps finish; `false` is rejected.'),
 }).strict().describe('Named activity outcome with optional selection and completion conditions.');
 export type Exit = z.infer<typeof ExitSchema>;
