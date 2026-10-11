@@ -1,0 +1,180 @@
+{
+  "schema": "selector-author-retrieval-trace/v1",
+  "batch": 7,
+  "first_sequence": 36,
+  "last_sequence": 44,
+  "records": [
+    {
+      "sequence": 36,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '5,125p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 7000
+        }
+      },
+      "result": {
+        "chunk_id": "1bd532",
+        "wall_time_seconds": 0.000001422,
+        "exit_code": 0,
+        "original_token_count": 1505,
+        "output": "## Report Context\n\nRead this section before selecting a report layout.\n\n### Bands\n\n| Band | Holds | Target |\n|---|---|---|\n| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |\n| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |\n| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |\n\nState each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.\n\n### Severity\n\nSeverity ranks urgency inside a band. The band says whether the finding gates.\n\n| Severity | Fires when |\n|----------|-----------|\n| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |\n| `High` | An entry fires on a construct the change ships, and the defect propagates |\n| `Medium` | An entry fires and the defect stays in that construct |\n| `Low` | Hygiene with no consumer consequence |\n\nThe [dispatch phases](audit-dispatch.md#phases) own finding confirmation. An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.\n\n### Finding Rows\n\n| Column | Carries |\n|--------|---------|\n| ID | Stable within the report |\n| Band | `Live`, `Contract`, or `Hygiene` |\n| Severity | The scale above |\n| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |\n| Location | File and field, at the depth the evidence sits |\n| Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |\n| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |\n| Known | Set when a prior pass accepted this key |\n| Fix | The action the entry prescribes, in one line |\n\nA row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.\n\n### Coverage Ledger\n\nThe generated [coverage state](change-surface.md#artifacts) accounts for every row–criterion cell, inventory, file read and supplemental obligation. The findings report summarizes divergences and links to that complete ledger.\n\n| Column | Carries |\n|--------|---------|\n| Home | The criteria home |\n| Unit | The section title or anchor, as the home spells it |\n| Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |\n\nDerive unknown, unverified, unevaluated and supplemental residuals from current state. Preserve each residual's identifiers. Display counts summarize those lists.\n\n### File Coverage\n\nIndependent of the unit ledger: every unit can be `walked` while the surface stays unopened.\n\n| Disposition | Means |\n|-------------|-------|\n| `read` | The whole file was inspected |\n| `unread` | Anything else |\n\nA scan hit is `read` only when the file was then inspected whole. A scan is evidence for a finding, not a path disposition. `read` and `unread` sum to the enumeration; where they do not, the report states the list that was walked.\n\nList the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.\n\n### Coverage Header\n\nUse `finished` only when the shared [completion predicate](change-surface.md#completion) holds; otherwise use `in progress`. Include the captured generation, row and AP/DP counts, verified applicability, applicable-cell evaluations, unread sources and unresolved supporting obligations. Every count reconciles to the generated state.\n\n## Which Report\n\nInside workflow-authoring or workflow-design, use [Workflow Reports](#workflow-reports). Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).\n\n## Standalone\n\nIn the chat, or in a file the user named:\n\n~~~markdown\n# Canon Audit — `{target}`\n\n**Status:** in progress | finished · **Base ref:** `{ref}` · **Snapshot:** `{hash}` · **Coverage:** N rows × N AP/DP criteria — N of N mappings independently verified, N of N applicable cells evaluated · **Change surface:** N files (touched: N · context: N · consumers: N) · **Guards:** clean | N findings | N unmeasured\n\n**Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: N unknown mappings · N unverified mappings · N unevaluated applicable cells · N unverified inventory items · N supporting obligations · N unread files. Live and Contract converge to zero over the coverage measured. Hygiene ratchets against the prior pass's N.\n\n| Band | Open | Known | Prior pass |\n|------|-----:|------:|-----------:|\n| Live | N | N | N |\n| Contract | N | N | N |\n| Hygiene | N | N | N |\n\n## Change Surface\n\n| Path | How it joined |\n|------|----------------|\n| `{path}` | touched |\n| `{path}` | closure — references `{contract-path}` |\n| `{path}` | consumer of a change-surface file |\n\n## Findings\n\n| ID | Band | Severity | Entry | Location | Evidence | Origin | Fix |\n|----|------|----------|-------|----------|----------|--------|-----|\n\n## Coverage\n\n## File Coverage\n\nread N · unread N.\n\n| Disposition | Paths |\n|-------------|-------|\n| `unread` | `{path}` |\n\n## Known\n~~~\n\nOmit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. Every header figure reconciles against the generated ledger. Status is the [coverage header](#coverage-header). Live or Contract at zero over partial coverage is a statement about that part. A Live or Contract count that rose says a fix moved a defect.\n\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 37,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '35,44p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 3000
+        }
+      },
+      "result": {
+        "chunk_id": "4f5c82",
+        "wall_time_seconds": 0.000003772,
+        "exit_code": 0,
+        "original_token_count": 140,
+        "output": "## Attribution\n\n- **`diff`**\n  A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.\n- **`pre-existing`**\n  The same construct and evidence at the base ref, independent of an I/O contract change on this surface.\n- **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.\n- **`fix`**\n  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.\n\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 38,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "7b8f1c",
+        "wall_time_seconds": 0.000001527,
+        "exit_code": 0,
+        "original_token_count": 994,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.\n# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n\n## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.\n# Controlled qualification conventions\n\n## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 39,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '33,53p;104,123p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "cd360c",
+        "wall_time_seconds": 0.000004171,
+        "exit_code": 0,
+        "original_token_count": 425,
+        "output": "### Initialize Audit Surface\n\nCapture source bytes and render all four matrices with unresolved cells.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Paths are relative to a root containing `corpus/`. Use the actual inventory author identity and a new run directory.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py init --root <corpus-root> --engine <engine-root> --scope <scope.json> --actor <host-agent-id> --run <run>\n```\n\n### Check Audit Status\n\nReconcile current evidence, rendered views and outstanding obligations.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.\n- Output contains bounded counts, the generation identity and artifact paths. Read the relevant coverage section or assignment packet for individual residuals.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>\n```\n\n### Reset Audit Cells\n\nReopen selected decisions and invalidate dependent evidence and assignments.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Supply a JSON array of cell IDs and the correction reason.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'\n```\n\n### Refresh Audit Surface\n\nCapture current inputs and invalidate a changed generation.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py refresh --run <run>\n```\n\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 40,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "rg -n 'qualification/|produce|deliver|emit.report|TECHNIQUE' corpus -g '*.md' -g '*.yaml'",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "ef8dde",
+        "wall_time_seconds": 0.000003146,
+        "exit_code": 0,
+        "original_token_count": 306,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ncorpus/canon/resources/design-principles.md:7:A leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\ncorpus/qualification/activities/run.yaml:3:  - id: delivery\ncorpus/qualification/activities/run.yaml:5:      name: deliver\ncorpus/qualification/techniques/TECHNIQUE.md:2:Constrain inherited delivery.\ncorpus/qualification/routines/deliver.yaml:1:id: deliver\ncorpus/qualification/routines/deliver.yaml:3:outputs: {report: emit.report}\ncorpus/qualification/routines/deliver.yaml:6:    technique: produce\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 41,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "git rev-parse HEAD",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+          "max_output_tokens": 2000
+        }
+      },
+      "result": {
+        "chunk_id": "c23271",
+        "wall_time_seconds": 0.000001852,
+        "exit_code": 0,
+        "original_token_count": 50,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ne8be42ce97eeb427e337214890da52ce3c1e8906\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 42,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "git rev-parse HEAD",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin",
+          "max_output_tokens": 2000
+        }
+      },
+      "result": {
+        "chunk_id": "c26380",
+        "wall_time_seconds": 0.000003612,
+        "exit_code": 0,
+        "original_token_count": 50,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ne889276ae7c49a6b5cd37b4928d5f983e76c9770\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 43,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "git rev-parse HEAD",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.engineering",
+          "max_output_tokens": 2000
+        }
+      },
+      "result": {
+        "chunk_id": "c6969a",
+        "wall_time_seconds": 0.000003628,
+        "exit_code": 0,
+        "original_token_count": 50,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n17fed6192fa19d4a889be388a545c1ce70e8a75b\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 44,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "git status --short -- skills/workflow-canon",
+          "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+          "max_output_tokens": 4000
+        }
+      },
+      "result": {
+        "chunk_id": "a0b64b",
+        "wall_time_seconds": 0.000002623,
+        "exit_code": 0,
+        "original_token_count": 39,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n"
+      },
+      "status": "fulfilled"
+    }
+  ]
+}
+

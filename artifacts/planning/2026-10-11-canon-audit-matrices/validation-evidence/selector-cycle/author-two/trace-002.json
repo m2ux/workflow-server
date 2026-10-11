@@ -1,0 +1,90 @@
+{
+  "format": "exact-nested-tool-invocations-v1",
+  "sequence_range": [
+    6,
+    10
+  ],
+  "records": [
+    {
+      "sequence": 6,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "cat skills/workflow-canon/references/planning.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 12000
+      },
+      "raw_return": {
+        "chunk_id": "63d3bb",
+        "wall_time_seconds": 0.000004106,
+        "exit_code": 0,
+        "original_token_count": 361,
+        "output": "# Planning\n\nA planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.\n\n## Location\n\n- **Instructions.**\n  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.\n- **Resolution.**\n  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.\n\n## Records\n\n- **Naming.**\n  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.\n- **Continuity.**\n  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.\n- **Authority.**\n  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n"
+      }
+    },
+    {
+      "sequence": 7,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "e353aa",
+        "wall_time_seconds": 0.000003588,
+        "exit_code": 0,
+        "original_token_count": 488,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n1:# Commands\n3:## Conventions\n20:## Audit Command Conventions\n31:## Audit Surface\n33:### Initialize Audit Surface\n43:### Check Audit Status\n54:### Render Audit Surface\n64:### Plan Audit Assignments\n74:### Bind Audit Agent\n84:### Write Audit Packet\n94:### Submit Audit Results\n104:### Reset Audit Cells\n114:### Refresh Audit Surface\n124:### Retry Audit Assignment\n134:### Run Audit Script Tests\n144:## Revisions\n146:### Resolve Ref\n154:## Review Inputs\n156:### Fetch Pull Request\n166:### Fetch Requirements\n174:### Fetch Branches\n183:### Compare Revisions\n197:### Create Review Worktree\n205:### Prepare Integration Result\n218:### Abort Review Merge\n226:### Read Captured File\n234:### Read Captured Section\n245:### Fetch Check Evidence\n259:### Refresh Revisions\n268:## Project Checks\n270:### Run Project Check\n282:## Skill Revision\n284:### Create Skill Worktree\n293:### Run Skill Checks\n305:### Commit Skill Changes\n317:### Push Skill Branch\n330:### Open Skill Pull Request\n338:## Install Engine Dependencies\n348:## Run Engine Checks\n360:## Run Delivery Gate\n368:## Check Engine Documentation\n381:## Run Corpus Checks\n393:## Run Option Coverage\n405:## Count Running Sessions\n415:## Check Shell Syntax\n423:## Validate Compose\n433:## Build Review Image\n446:## Exercise Review Container\n461:## Restart Review Container\n469:## Stop Review Container\n477:## Check Skill Summaries\n487:## Canon Check Conventions\n498:### Guard Obligations\n515:## Checkouts\n517:### Find the Server Checkout\n527:### Check the Corpus Tree\n538:### Provision the Corpus\n546:## Corpus\n548:### List Units\n560:### List Units for a Construct\n572:### Fetch Unit\n580:### Find Consumers\n591:## Checks\n593:### Run Guard Suite\n604:### Run Guards on the Delta\n614:## Edit Guard\n616:### Run the Edit Guard\n639:### Run the Edit Guard Tests\n"
+      }
+    },
+    {
+      "sequence": 8,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "ls -ld .engineering .engineering/artifacts .engineering/artifacts/planning && rg --files -g AGENTS.md -g '!node_modules' .engineering",
+        "workdir": "/home/mike1/projects/dev/workflow-server",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "44f940",
+        "wall_time_seconds": 0.000003064,
+        "exit_code": 0,
+        "original_token_count": 57,
+        "output": "drwxr-xr-x   4 mike mike1  4096 Oct  7 06:57 .engineering\ndrwxr-xr-x   9 mike mike1  4096 Oct  7 06:19 .engineering/artifacts\ndrwxr-xr-x 304 mike mike1 24576 Oct 11 13:15 .engineering/artifacts/planning\n.engineering/AGENTS.md\n"
+      }
+    },
+    {
+      "sequence": 9,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "cat .engineering/AGENTS.md && realpath .engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/selector-cycle/author-two && git -C .engineering rev-parse --show-toplevel",
+        "workdir": "/home/mike1/projects/dev/workflow-server",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "6d05a0",
+        "wall_time_seconds": 0.000002428,
+        "exit_code": 0,
+        "original_token_count": 125,
+        "output": "# Engineering Instructions\n\nScope: `.engineering/` directory (artifacts, planning, history, and scripts).\n\n## Project overview\n\nThis folder contains:\n\n- **Artifacts** — Planning work packages under `artifacts/planning/`\n\nThe main application lives at the repo root. See the root `README.md`.\n\n/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/selector-cycle/author-two\n/home/mike1/projects/dev/workflow-server/.engineering\n"
+      }
+    },
+    {
+      "sequence": 10,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/canon-context.md && sed -n '3,19p' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "21d796",
+        "wall_time_seconds": 0.000003514,
+        "exit_code": 0,
+        "original_token_count": 441,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n1:# Canon Context\n5:## Prerequisites\n9:## Terms\n17:## Criteria\n23:## Scope\n29:## Homes\n43:## Checks\n47:## Edit Hook\n## Conventions\n\nEach operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.\n\n- **Locations.**\n  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.\n- **Execution.**\n  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.\n- **Remote access.**\n  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.\n- **Evidence.**\n  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.\n- **Substitution.**\n  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.\n- **Authored text.**\n  Commit messages and PR bodies go through files.\n\n"
+      }
+    }
+  ]
+}
+

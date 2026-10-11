@@ -1,0 +1,360 @@
+{
+  "schema": "selector-author-retrieval-trace/v1",
+  "agent": "/root/selector_author_one",
+  "artifact_root": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/selector-cycle/author-one",
+  "record_count": 44,
+  "trace_files": [
+    "trace-001.json",
+    "trace-002.json",
+    "trace-003.json",
+    "trace-004.json",
+    "trace-005.json",
+    "trace-006.json",
+    "trace-007.json"
+  ],
+  "scope": "Exact nested tool commands and raw returned objects for source-facing reads, discovery and the expressly requested coordinator progress message. Evidence packaging does not perform source verification.",
+  "parallel_groups": [
+    [
+      1,
+      2,
+      3,
+      4
+    ],
+    [
+      6,
+      7,
+      8,
+      9
+    ],
+    [
+      10,
+      11,
+      12,
+      13
+    ],
+    [
+      14,
+      15,
+      16,
+      17
+    ],
+    [
+      18,
+      19,
+      20,
+      21
+    ],
+    [
+      22,
+      23,
+      24,
+      25
+    ],
+    [
+      26,
+      27,
+      28,
+      29
+    ],
+    [
+      30,
+      31,
+      32,
+      33
+    ],
+    [
+      35,
+      36,
+      37,
+      38
+    ],
+    [
+      39,
+      40,
+      41,
+      42,
+      43,
+      44
+    ]
+  ],
+  "index": [
+    {
+      "sequence": 1,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/AGENTS.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 2,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.project/main/AGENTS.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 3,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 4,
+      "tool": "exec_command",
+      "command": "rg -n -i 'workflow.canon|audit matrices|planning artifacts|author|qualification' /home/mike1/.codex/memories/MEMORY.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 5,
+      "tool": "ALL_TOOLS.filter",
+      "command": {
+        "predicate": "/workflow.*discover$/.test(name) || (/discover/.test(name) && /bootstrap|workflow.server/i.test(description))"
+      },
+      "exit_code": null
+    },
+    {
+      "sequence": 6,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/author-mode.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 7,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 8,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.engineering/AGENTS.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 9,
+      "tool": "exec_command",
+      "command": "sed -n '1,37p' /home/mike1/.codex/memories/MEMORY.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 10,
+      "tool": "mcp__workflow_server__discover",
+      "command": {},
+      "exit_code": null
+    },
+    {
+      "sequence": 11,
+      "tool": "exec_command",
+      "command": "rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 12,
+      "tool": "exec_command",
+      "command": "rg --files --hidden -g AGENTS.md /home/mike1/projects/dev/workflow-server/.engineering/artifacts /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon",
+      "exit_code": 1
+    },
+    {
+      "sequence": 13,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/.codex/memories/rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 14,
+      "tool": "exec_command",
+      "command": "sed -n '5,28p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 15,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/scope.json",
+      "exit_code": 0
+    },
+    {
+      "sequence": 16,
+      "tool": "exec_command",
+      "command": "rg --files --hidden /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean -g '!README*' -g '!expected-outcomes.json'",
+      "exit_code": 0
+    },
+    {
+      "sequence": 17,
+      "tool": "exec_command",
+      "command": "git -C /home/mike1/projects/dev/workflow-server/.engineering rev-parse --show-toplevel",
+      "exit_code": 0
+    },
+    {
+      "sequence": 18,
+      "tool": "exec_command",
+      "command": "sed -n '29,42p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 19,
+      "tool": "exec_command",
+      "command": "rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 20,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-map.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 21,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/walk-rules.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 22,
+      "tool": "exec_command",
+      "command": "sed -n '3,19p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 23,
+      "tool": "exec_command",
+      "command": "sed -n '5,$p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/definition-scope.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 24,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/design-flow.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 25,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/change-surface.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 26,
+      "tool": "exec_command",
+      "command": "sed -n '146,153p;548,559p;572,590p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 27,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/techniques/produce.md /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/techniques/TECHNIQUE.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 28,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/workflow.yaml /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/activities/run.yaml /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/routines/deliver.yaml",
+      "exit_code": 0
+    },
+    {
+      "sequence": 29,
+      "tool": "exec_command",
+      "command": "sed -n '43,80p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 30,
+      "tool": "exec_command",
+      "command": "sed -n '20,30p;270,281p;487,514p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 31,
+      "tool": "exec_command",
+      "command": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/templates/audit-scope.json",
+      "exit_code": 0
+    },
+    {
+      "sequence": 32,
+      "tool": "exec_command",
+      "command": "rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 33,
+      "tool": "exec_command",
+      "command": "rg -n '^## |^### ' corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 34,
+      "tool": "collaboration.send_message",
+      "command": {
+        "target": "/root",
+        "message": "Core Author, scope, design flow, lifecycle, command conventions, checker interface, and the producer/routine/caller sources are read and preserved in memory. The unchanged deliver routine exports emit.report and is explicitly in the supplied relationship closure. I will finish with one bounded set of reads for dispatch/receipt gates, report selection, the controlled canon sections and revision identities, then save result.md and raw trace batches. No definitions, audits, guards, state, or Git writes have run. I will record unverified engine semantics as a remaining prerequisite rather than expand investigation."
+      },
+      "exit_code": null
+    },
+    {
+      "sequence": 35,
+      "tool": "exec_command",
+      "command": "sed -n '5,18p;33,100p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-dispatch.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 36,
+      "tool": "exec_command",
+      "command": "sed -n '5,125p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/reporting.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 37,
+      "tool": "exec_command",
+      "command": "sed -n '35,44p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/audit-mode.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 38,
+      "tool": "exec_command",
+      "command": "cat corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 39,
+      "tool": "exec_command",
+      "command": "sed -n '33,53p;104,123p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/commands.md",
+      "exit_code": 0
+    },
+    {
+      "sequence": 40,
+      "tool": "exec_command",
+      "command": "rg -n 'qualification/|produce|deliver|emit.report|TECHNIQUE' corpus -g '*.md' -g '*.yaml'",
+      "exit_code": 0
+    },
+    {
+      "sequence": 41,
+      "tool": "exec_command",
+      "command": "git rev-parse HEAD",
+      "exit_code": 0
+    },
+    {
+      "sequence": 42,
+      "tool": "exec_command",
+      "command": "git rev-parse HEAD",
+      "exit_code": 0
+    },
+    {
+      "sequence": 43,
+      "tool": "exec_command",
+      "command": "git rev-parse HEAD",
+      "exit_code": 0
+    },
+    {
+      "sequence": 44,
+      "tool": "exec_command",
+      "command": "git status --short -- skills/workflow-canon",
+      "exit_code": 0
+    }
+  ],
+  "limitations": [
+    "No audit, guard, schema-conformance, parser-identity, or generation-agreement outcome was measured.",
+    "No source response was truncated; historical memory text describes prior truncation.",
+    "Sequence 12 has exit 1 and empty output; stream-fd warnings are preserved in later receipts.",
+    "Sequence 23 retains a host-prohibited textual shell pattern; it was not rewritten in the receipt.",
+    "Source read order reflects submission order inside parallel groups.",
+    "Only exact receipt outputs constitute retrieval evidence; HEAD observations are not audit snapshots."
+  ]
+}
+

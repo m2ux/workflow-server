@@ -1,0 +1,123 @@
+{
+  "schema": "selector-author-retrieval-trace/v1",
+  "batch": 3,
+  "first_sequence": 13,
+  "last_sequence": 18,
+  "records": [
+    {
+      "sequence": 13,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/.codex/memories/rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 10000
+        }
+      },
+      "result": {
+        "chunk_id": "547b21",
+        "wall_time_seconds": 0.000002517,
+        "exit_code": 0,
+        "original_token_count": 1748,
+        "output": "thread_id: 01a12457-67a2-7350-9541-c6d156e7c316\nupdated_at: 2026-10-10T18:10:40+00:00\nrollout_path: /home/mike1/.codex/sessions/2026/10/10/rollout-2026-10-10T06-44-30-01a12457-67a2-7350-9541-c6d156e7c316.jsonl\ncwd: /home/mike1/projects/dev/workflow-server\ngit_branch: workspace\n\n# PR documentation and Workflow Canon integration-review work\n\nRollout context: In `/home/mike1/projects/dev/workflow-server`, the user first requested representative bodies for PRs #1225 and #1226, then asked about Development-field links, and finally requested a reusable integration-review prompt tailored to the repository's branches, architecture, schemas, languages, tests and implementation. The work expanded into flattening Workflow Canon's project context and updating PR #1295.\n\n## Task 1: Update PR #1225 and #1226 bodies\n\nOutcome: success\n\nPreference signals:\n\n- The user asked for “representative pr bodies,” and the bodies were rewritten around the actual current diffs rather than merely preserving historical merge narratives -> future PR-body work should describe the delivered behavior and validation accurately, while avoiding unsupported claims.\n- The user later questioned PR hyperlinks in References and whether they could be moved to Development -> preserve task/constituent PR references in the body when GitHub cannot represent PR-to-PR Development links.\n\nKey steps:\n\n- Read the work-planner PR template and repository instructions.\n- Inspected both PR metadata, file lists, patches and commit messages.\n- Replaced the bodies with current-diff summaries, retained constituent PR references, and removed blanket claims that all task test plans passed.\n- Patched both PRs through `gh api`, then fetched them again and verified exact body equality.\n\nReusable knowledge:\n\n- The repository’s PR template requires Overview, Changes, Test Plan and References; review/integration PRs may omit Test Plan when they add no independent check, but these bodies retained a table explaining that constituent PRs supplied validation.\n- GitHub’s Development field supports PR-to-issue/branch relationships, not PR-to-PR relationships; incorporated task PRs therefore remain appropriate in References.\n\nReferences:\n\n- PR #1225: `https://github.com/m2ux/workflow-server/pull/1225`\n- PR #1226: `https://github.com/m2ux/workflow-server/pull/1226`\n- Update command shape: `gh api --method PATCH repos/m2ux/workflow-server/pulls/{number} -F body=@file`\n\n## Task 2: Create and implement a reusable integration-review workflow\n\nOutcome: success\n\nPreference signals:\n\n- The user explicitly selected “Review and report only,” not “Review, fix and revalidate” -> integration review should remain read-only and produce evidence-backed findings, not implement fixes.\n- The user required coverage to account for “project languages, constructs, tests, schema and implementation specifics of each long-lived branch” and asked that docs and architecture inform planning -> future integration reviews should derive coverage from branch ownership, architecture, schemas, implementation, CI and consumers rather than use generic checks.\n\nKey steps:\n\n- Confirmed long-lived branches from `config/branches`: `docker`, `main`, `workflows`, `workspace`.\n- Read architecture, schema, fidelity, dispatch, state, resolution, delivery and development documentation.\n- Used the existing `workflow-canon` skill and repository guidance to add direct project context, branch-specific coverage, engine/corpus pairing, workspace/docker coverage, and bounded reading requirements.\n- Removed the Workflow Canon variant-selector architecture; moved canon-map and definition-scope references into the main reference set, while preserving executable command bodies and hook behavior.\n- Added explicit integration-review requirements for revision capture, affected consumers, branch-specific checks, schemas, generated/served surfaces, CI selection, findings reproduction and evidence gaps.\n- Validated 797 local links across 45 Markdown files, 42 retained command blocks, 36 edit-guard tests and 3 mode-summary tests. Fresh-agent trials showed the intended paths work but live disclosure remains Partial because some agents over-read command ranges or encountered truncation.\n- Committed and pushed skill changes as `d264a101077c7d255a6767e160161c30b4cb44bc` on `skill/work-designer`.\n- Published engineering evidence on `engineering` (`c3386131ca08ac6633e4cac89ea15cbcd26cfcba`) and linked it from PR #1295.\n\nFailures and how to do differently:\n\n- The generic skill validator rejected the existing `hooks` frontmatter key even though repository guidelines and hook tests support it. Treat this as validator incompatibility, not a repository regression, and report it separately.\n- Fresh-agent disclosure was not a clean pass: some command reads included unrelated operations and some outputs were truncated. Preserve this limitation instead of claiming perfect progressive disclosure.\n- The default `scripts/sbx` invocation failed with `bwrap: No permissions to create a new namespace`; approved elevated execution was required for validation.\n\nReusable knowledge:\n\n- Engine checks must pair the engine branch with its corresponding corpus branch; engine tests can pass while corpus-dependent tests silently skip if `.worktrees/workflows` is absent.\n- Main branch owns server code and schemas; workflows owns definitions, techniques and resources; docker owns packaging; workspace owns shared agent skills/configuration.\n- Integration findings should include captured revisions, prerequisites, inputs, working directory, ordered reproduction steps, expected/observed results and execution status. Missing or blocked evidence remains explicit.\n\nReferences:\n\n- PR #1295: `https://github.com/m2ux/workflow-server/pull/1295`\n- Skill commit: `d264a101077c7d255a6767e160161c30b4cb44bc`\n- Evidence commit: `c3386131ca08ac6633e4cac89ea15cbcd26cfcba`\n- Evidence path: `.engineering/artifacts/planning/2026-10-10-1295-work-designer-test-evidence/canon-project-context.md`\n\n## Task 3: Update PR #1295 body\n\nOutcome: success\n\nKey steps:\n\n- Read the current PR, branch head and work-planner PR template.\n- Rewrote the Overview and Changes sections to describe Workflow Canon’s direct workflow-server context, branch-specific integration coverage, progressive disclosure and Work Planner compatibility.\n- Kept the Test Plan table-only, preserving seven rows and verified links to published evidence sections; retained Partial results where validation was incomplete.\n- Verified eight published evidence links resolve to intended headings and confirmed the live PR body exactly matched the prepared body.\n\nReferences:\n\n- Final PR: `https://github.com/m2ux/workflow-server/pull/1295`\n- Final head: `d264a101077c7d255a6767e160161c30b4cb44bc`\n- Verification confirmed PR open, body matched, source worktree clean and upstream matched; GitHub reported no check runs for the head, so local results were not presented as remote CI results.\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 14,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '5,28p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 8000
+        }
+      },
+      "result": {
+        "chunk_id": "4f8a57",
+        "wall_time_seconds": 0.000004913,
+        "exit_code": 0,
+        "original_token_count": 371,
+        "output": "## Prerequisites\n\nRead the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.\n\n## Terms\n\n- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.\n- **Entry**\n  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.\n- **Walk**  Applying each unit to every file on the surface and recording its status.\n- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).\n\n## Criteria\n\nUse the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).\n\nFollow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).\n\n## Scope\n\nResolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.\n\nResolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.\n\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 15,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/scope.json",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 4000
+        }
+      },
+      "result": {
+        "chunk_id": "716d3e",
+        "wall_time_seconds": 0.000002203,
+        "exit_code": 0,
+        "original_token_count": 180,
+        "output": "{\n  \"paths\": [\n    \"corpus/qualification/workflow.yaml\",\n    \"corpus/qualification/activities/run.yaml\",\n    \"corpus/qualification/techniques/produce.md\"\n  ],\n  \"checks\": [\"guards\"],\n  \"relationships\": [\n    {\n      \"source\": \"corpus/qualification/routines/deliver.yaml\",\n      \"target\": \"corpus/qualification/techniques/produce.md\",\n      \"address\": \"execution/qualification/run/delivery/deliver/emit\",\n      \"label\": \"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination\",\n      \"context\": [\n        \"corpus/qualification/workflow.yaml\",\n        \"corpus/qualification/activities/run.yaml\",\n        \"corpus/qualification/techniques/TECHNIQUE.md\"\n      ]\n    }\n  ]\n}\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 16,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "rg --files --hidden /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean -g '!README*' -g '!expected-outcomes.json'",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "2ddba8",
+        "wall_time_seconds": 0.000002772,
+        "exit_code": 0,
+        "original_token_count": 405,
+        "output": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/scope.json\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/canon/resources/anti-patterns.md\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/canon/resources/design-principles.md\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/canon/resources/convention-conformance.md\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/workflow.yaml\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/activities/run.yaml\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/routines/deliver.yaml\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/techniques/TECHNIQUE.md\n/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean/corpus/qualification/techniques/produce.md\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 17,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "git -C /home/mike1/projects/dev/workflow-server/.engineering rev-parse --show-toplevel",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 2000
+        }
+      },
+      "result": {
+        "chunk_id": "87735f",
+        "wall_time_seconds": 0.000003479,
+        "exit_code": 0,
+        "original_token_count": 14,
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 18,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '29,42p' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "e04271",
+        "wall_time_seconds": 0.000004759,
+        "exit_code": 0,
+        "original_token_count": 314,
+        "output": "## Homes\n\nRead homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.\n\n| Home | Authority |\n| --- | --- |\n| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |\n| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |\n| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |\n| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |\n| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |\n\nLocate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.\n\n"
+      },
+      "status": "fulfilled"
+    }
+  ]
+}
+

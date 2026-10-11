@@ -1,0 +1,85 @@
+# Canon Audit instruction walk — qualification
+
+**Instruction walk:** complete. **Audit:** not executed; no conformance verdict or audit-completion claim.
+
+The task authorizes a procedural qualification and evidence capture. It does not authorize audit-state mutations, checks, independent audit assignments, definition edits, workflow-server sessions or Git writes. All commands below describe a future audit unless the trace records them as reads.
+
+- [x] Retrieve the selected skill, applicable workspace instructions and Audit prerequisites.
+- [x] Trace the scoped definitions, unchanged routine, declared relationship and controlled checker.
+- [x] Explain the unresolved concern, partial returns, reporting and completion gate.
+- [x] Preserve the exact read evidence beside this note.
+
+**Resolved locations**
+
+| Role | Location |
+| --- | --- |
+| Workspace and planning owner | `/home/mike1/projects/dev/workflow-server`; its existing `.engineering` checkout |
+| This evidence directory | `/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/selector-cycle/audit-one` |
+| Skill root | `/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon` |
+| Candidate corpus root | `/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded` |
+| Scope | Candidate root's `scope.json` |
+| Paired engine | `/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin` |
+| Selected checker | Skill root's `test/fixtures/audit-qualification/check.py` |
+
+The planning owner was verified with `git -C .engineering rev-parse --show-toplevel`. Read-only revision observations were skill checkout `e8be42ce97eeb427e337214890da52ce3c1e8906` and engine `e889276ae7c49a6b5cd37b4928d5f983e76c9770`. These Git identities do not establish a captured audit generation or replace the exact bytes in the trace. No comparison base was supplied.
+
+The workspace's configured project instructions and engineering instructions were read. The project's discovery requirement caused one workflow-server discovery read; the returned bootstrap applies to starting a workflow. This task explicitly creates no workflow or work package, so no session was started.
+
+**Scope and the prior concern**
+
+- Start with the supplied residual: an unresolved concern about `corpus/qualification/routines/deliver.yaml` passing a value into `produce.md`. Resolve its current path and inspect its complete source, caller and target. Keep the concern visible as pending evidence; an unresolved suspicion is neither a confirmed violation nor `known`, which requires a previously accepted key.
+- The supplied declaration paths are `workflow.yaml`, `activities/run.yaml` and `techniques/produce.md` beneath `corpus/qualification/`. There is no measured Git delta, so these are the declared candidate scope, not a proven set of touched files.
+- Keep `routines/deliver.yaml` in the affected surface as an unchanged consumer. Retain its declaration and the concrete invocation separately. The explicit relationship's identity is `execution/qualification/run/delivery/deliver/emit`: workflow `qualification` → activity `run` → reference step `delivery` → routine `deliver` → step `emit` → `produce.md`.
+- Preserve both endpoints, the binding site, the routine output binding and the executing workflow. Preserve `workflow.yaml`, `run.yaml` and `techniques/TECHNIQUE.md` as relationship context. The inherited destination constraint belongs to the leaf instance through that relationship; the shared contract remains its own source.
+- Source reads observed the invocation argument key `packet`, routine input name `envelope`, output binding `report: emit.report`, and the technique's output heading `summary`. These are retrieval observations, not independently confirmed findings. The prior claim about a value passed into the technique must be restated or resolved from the exact current binding construct; similarity to an input-related concern does not establish identity.
+- Always compute callers and consumers, including unchanged files. Search results identify sites; inspect full files and follow the complete reference chain. If extraction misses a clause, whole-element invariant, call instance or inherited contract, add the source/address/context to the scope and refresh in an authorized audit.
+- Without a comparison base, the audit cannot prove that a candidate finding is `diff` or `pre-existing` under the skill's attribution rules. Preserve that evidence gap rather than inventing a base or using `known` to bypass it. Independent confirmation and an attributable report remain separate requirements.
+
+The full candidate definition sources and the three controlled canon homes were read. The paired engine's routine reference resolution and technique ancestor composition were inspected by bounded source ranges. They show why the declaring/source workflow and the technique's resolved home must be retained. The fixture's explicit relationship and controlled criteria govern this dialect; these reads do not establish production-engine acceptance.
+
+**Check selection**
+
+The task selects `check.py` for controlled structural checking. The skill's Checks section routes that selection to **Run Project Check**. The absence of a base prevents an equivalent delta comparison. A future authorized invocation would run Python with the absolute candidate root and paired engine root as the two positional arguments, from the skill checkout, following the host's sandbox rules.
+
+The checker source imports the inventory/YAML adapter, checks definition IDs, workflow graph and initial activity, ordered steps for other YAML definitions, and the controlled criterion inventory size. It emits JSON and exits according to its error list. It does not establish AP/DP conformance, production schema acceptance, or full-project canon coverage. The scope's required `guards` obligation must retain that limited meaning.
+
+Capture the exact program/arguments, working directory, input identities, exit status and output bytes. Run the selected structural check before inventory review, but submit its typed observation only in the obligations phase after the independently verified map. A measured exit 0 supports a check pass; a measured exit 1 needs structured finding attribution; unavailable/unmeasured execution remains blocked. No checker or guard ran in this walk.
+
+**Inventory and applicability**
+
+1. In a future authorized audit, capture source bytes, scope, engine/parser/tool identities, all controlled AP/DP entries, supporting material and supplemental obligations in a new run under the existing planning record. Initialize the four workflow, technique, routine and activity matrices. Empty types must be explicit.
+2. Independently verify the proposed inventory against captured files and the corpus manifest, including unselected source candidates, complete relationships, full nested ancestry, repeated occurrences, separate semicolon clauses, whole-section and whole-element rows, and missing-structure rows. Script extraction proposes the inventory; it does not certify completeness.
+3. Enumerate every row against every captured criterion. The retrieved controlled homes contain two AP entries and two DP headings. Do not substitute production criteria or treat a fires-on hint, missing lookup command or clean search as permission to omit cells. AP names are stable identities; current numbers are display aliases. Supplemental families, conventions, whole-file reads and the selected structural check remain separately accounted for.
+4. Every cell needs source evidence and `A`, `N` or `U`: applying construct and criterion scope; explicit excluding wording plus source facts; or the missing evidence/decision. A Do not flag exception can justify an applicable pass; it is not automatically an applicability exclusion.
+5. A different agent verifies every settled applicability decision, including every `N`, against the exact reason, disposition, evidence and original criterion. Resolve disputes through coordinator-owned reset or scope refresh and renew verification. AP/DP evaluation waits for successful `status --require map`.
+
+The audit CLI's init, status, render, plan, bind, packet, submit, reset, refresh and retry command specifications were read, but none was invoked.
+
+**Evaluation and partial returns**
+
+- Plan disjoint bounded assignments for inventory, mapping, verification, evaluation and obligations. Bind each to an actual host actor and provide its packet plus the typed receipt contract. The verifier cannot verify its own mapping; the inventory verifier differs from its author; a finding confirmer differs from the finder.
+- Measure actual context/output limits, available slots, prompt/tool reserve, safety reserve and time budget. Calibrate every phase separately with a fitting pilot. Unknown limits, zero free slots or an indivisible oversized item block dispatch. Retrieve missing portions of any truncated packet before judgment. No dispatch budget or free-slot count was measured in this qualification.
+- Evaluate verified applicable cells entry-major over the surface. Inspect each imperative instruction and independently testable clause, then its larger structure. Read full source and relationship context. Record source-backed pass, finding or blockage; whole-file reads, supplemental units, the selected check and confirmation each need their own result.
+- A receipt carries assignment, snapshot, actor, unique attempt, owned item IDs, substantive reasons and exact source spans. Cite all assigned row sources and the criterion source, including for exclusions. A findings array must contain structured band, severity, origin, summary, prescribed fix, entry and location. Group only items sharing the same source facts and reason.
+- The coordinator submits immutable typed returns. Valid partial returns retain accepted items and leave the rest incomplete. An empty findings list does not prove coverage. Invalid submissions must not partly change the canonical state; failed or invalidated assignments cannot return.
+- Retire an interrupted assignment with retry, preserve its accepted results, and plan only the unresolved residual. A new attempt cannot replace accepted items. Reset an accepted mapping only through the explicit correction path; refresh changed source/scope/canon/engine/parser/tool generations. Changed generations invalidate mapping, verification and evaluation evidence and archive the former state; identical generations preserve pending work.
+- Independently confirm findings after evaluation: re-derive Critical and High findings, spot-confirm Mediums, and record the resulting severity/band for downgrades or the non-reproduction reason for withdrawals. Review-only findings go into the report. Definition or criterion corrections require Author authority, which this task does not grant.
+
+**Report and completion**
+
+Use the standalone report layout for an actual audit: generation and base availability, separate declared/touched/context/consumer scope, bands, severity-ordered findings, known accepted keys, current coverage, unread files and every residual identifier. Derive all completion counts from generated state. The present note has no generated state, findings count, guard result, inventory certification or independently verified mapping.
+
+A future audit may say **finished** only after the current inventory is independently verified, all applicability cells are independently verified, every applicable cell has an evidence-backed pass or finding, and whole-file reads, supplemental criteria, selected checks and finding confirmations are settled. Require a successful `status --require complete`; rendering a report or planning assignments cannot establish that gate.
+
+Unknown, disputed, stale, unread, unmeasured, blocked or otherwise unreconciled work keeps the audit **in progress**. A stop or resource limit saves a resumable residual. Complete coverage and conformance are separate: confirmed violations can coexist with complete coverage, while Live/Contract verdicts depend on the findings. A mechanisable Detect reaching the recurrence threshold is a guard candidate recorded in the report; external filing requires separate authority.
+
+**Receipt and execution limits**
+
+`trace-*.json` preserve every instruction/discovery/source-read command and its exact raw nested result, including working directory, token budget, exit status, timing and returned output. `trace-index.json` maps batches to record IDs. Whole-file instruction receipt includes SKILL.md, Audit mode, Planning, Canon Map and Walk Rules. Bounded heading/range reads include canon context, command conventions/specifications, definition scope, dispatch phases/sizing/returns and standalone reporting; the trace records their exact ranges.
+
+Repeated receipt consists of the stored engine-inheritance search replay after a combined tool presentation exceeded its default 10,000-token limit. An overbroad listing of planning artifact names itself exceeded its 5,000-token budget; the raw returned truncation remains saved. Its omitted names were not needed, no prior report body was opened, and no conclusion depends on that list. Several reads emitted three “Failed to create stream fd: Operation not permitted” warnings before returning complete requested content with exit 0. Those bytes were retained. No failed execution was retried.
+
+Unavailable context remains explicit: no supplied base, accepted prior finding key, prior audit generation, measured structural-check result, dispatch calibration or current semantic confirmations. The fixture README and expected-outcomes.json were not opened. The coordinator requested a bounded finish after substantive reads; no further source reads follow it.
+
+A lightweight memory pass supplied only historical reminders to preserve evidence limits and distinguish review from implementation; all current instructions and source observations above were read live.
+

@@ -1,0 +1,139 @@
+{
+  "schema": "selector-author-retrieval-trace/v1",
+  "batch": 2,
+  "first_sequence": 6,
+  "last_sequence": 12,
+  "records": [
+    {
+      "sequence": 6,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/author-mode.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 12000
+        }
+      },
+      "result": {
+        "chunk_id": "89f12d",
+        "wall_time_seconds": 0.000003185,
+        "exit_code": 0,
+        "original_token_count": 894,
+        "output": "# Author Mode\n\nWrites definition content: a new definition, or a specified change to existing ones, such as a work item, a finding, or a defect with a location. A finding is closed with the Fix its entry states.\n\n## Prerequisites\n\nRead the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms) and [criteria](canon-context.md#criteria).\n\n## Procedure\n\n1. **Resolve to files.**\n   - List every file the change adds or edits. A new definition also edits each file that wires it in, such as `workflow.yaml` or the activity that binds it.\n   - Add the I/O-contract closure and consumers per the shared [scope](canon-context.md#scope).\n   - For a specified change, the surface is the specification, not the diff. Confirm it still holds against the tree: the construct is where it says, the count is what it says, the absence is an absence.\n   - What has moved is reported first. Where nothing remains to change, that is the finding.\n2. **Read what binds.**\n   - Read the [design flow](design-flow.md). Structure is synthesised from expected behaviour. Exposed behaviour is derived from that structure and compared with the expected behaviour. A failed comparison reformulates the structure, the expected behaviour, or the function.\n   - Read the shared [change-surface lifecycle](change-surface.md). Intended items can have provisional planning rows; applicability and evaluation bind captured draft bytes.\n   - When the change answers a finding, follow that entry's Fix and Do not flag.\n3. **Open a live sibling.**  Conformance compares against those files.\n4. **Preserve.**  Name what the entries require the change to preserve.\n5. **Walk the draft, then write.**\n   - Each fix is a draft of its own: its replacement text is walked before it is written.\n   - Capture the candidate in an isolated corpus tree, create all four matrices, and follow the shared lifecycle through independent inventory and mapping verification before evaluating the draft. Prioritize the prescribing entry without dropping any AP/DP cell.\n   - Rewrite while an entry still fires.\n   - Before writing definitions, read the [edit hook](canon-context.md#edit-hook). Apply the evaluated bytes through [Author Byte Agreement](change-surface.md#freshness-and-resume), then run the selected [checks](canon-context.md#checks).\n6. **Check what the pass wrote.**\n   - Reconcile actual bytes and affected consumers using [freshness](change-surface.md#freshness-and-resume). Every correction receives its current inventory, mapping verification and evaluation.\n   - A hit is a `fix` finding, per Audit's [Attribution](audit-mode.md#attribution). Close it by step 5 before any report.\n7. **Stop on oscillation.**\n   - Stop when an entry fires on text written to satisfy it, or when a round's `fix` findings do not fall below the round before.\n   - Report the entries in conflict to the user as a canon defect, with the text each one rejected.\n8. **Audit.**\n   - Reconcile the current run through the shared [completion gate](change-surface.md#completion). Read [Report Context](reporting.md#report-context) before [report selection](reporting.md#which-report).\n   - A draft-only request stops with its measured draft coverage and writes no findings register for a commit.\n\n## Rules\n\n- **Commit gate.**  A definition change commits only once the procedure's audit is complete.\n- **Scope.**\n  Changes close the specified requirement or confirmed finding, including its affected consumers. Canon defects that prevent convergence are reported with the conflicting entries.\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 7,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/planning.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 10000
+        }
+      },
+      "result": {
+        "chunk_id": "ff4676",
+        "wall_time_seconds": 0.000002566,
+        "exit_code": 0,
+        "original_token_count": 322,
+        "output": "# Planning\n\nA planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.\n\n## Location\n\n- **Instructions.**\n  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.\n- **Resolution.**\n  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.\n\n## Records\n\n- **Naming.**\n  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.\n- **Continuity.**\n  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.\n- **Authority.**\n  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 8,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.engineering/AGENTS.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 8000
+        }
+      },
+      "result": {
+        "chunk_id": "7b6aae",
+        "wall_time_seconds": 0.000007861,
+        "exit_code": 0,
+        "original_token_count": 74,
+        "output": "# Engineering Instructions\n\nScope: `.engineering/` directory (artifacts, planning, history, and scripts).\n\n## Project overview\n\nThis folder contains:\n\n- **Artifacts** — Planning work packages under `artifacts/planning/`\n\nThe main application lives at the repo root. See the root `README.md`.\n\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 9,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "sed -n '1,37p' /home/mike1/.codex/memories/MEMORY.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "50270f",
+        "wall_time_seconds": 0.000005925,
+        "exit_code": 0,
+        "original_token_count": 886,
+        "output": "# Task Group: workflow-server PR documentation and Workflow Canon integration review\n\nscope: Produce representative PR bodies and repository-specific integration reviews; use for evidence-backed PR updates, long-lived-branch coverage, and read-only review findings.\napplies_to: cwd=/home/mike1/projects/dev/workflow-server; reuse_rule=PR numbers and commits are historical as of 2026-10-10; reuse the procedure after refreshing checkout and remote state.\n\n## Task 1: Rewrite representative PR #1225 and #1226 bodies; success\n\n### rollout_summary_files\n\n- rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md (cwd=/home/mike1/projects/dev/workflow-server, rollout_path=/home/mike1/.codex/sessions/2026/10/10/rollout-2026-10-10T06-44-30-01a12457-67a2-7350-9541-c6d156e7c316.jsonl, updated_at=2026-10-10T18:10:40+00:00, thread_id=01a12457-67a2-7350-9541-c6d156e7c316, success; published bodies compared exactly)\n\n### keywords\n\n- representative pr bodies, PR-1225, PR-1226, gh api PATCH, Development field, Overview, Changes, Test Plan, References\n\n## Task 2: Implement Workflow Canon integration review and update PR #1295 body; success\n\n### rollout_summary_files\n\n- rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md (cwd=/home/mike1/projects/dev/workflow-server, rollout_path=/home/mike1/.codex/sessions/2026/10/10/rollout-2026-10-10T06-44-30-01a12457-67a2-7350-9541-c6d156e7c316.jsonl, updated_at=2026-10-10T18:10:40+00:00, thread_id=01a12457-67a2-7350-9541-c6d156e7c316, success; PR #1295 body and evidence verified)\n\n### keywords\n\n- workflow-canon, integration-review, Review and report only, config/branches, docker, main, workflows, workspace, engine/corpus pairing, hooks frontmatter, progressive disclosure, PR-1295\n\n## User preferences\n\n- For “representative pr bodies,” describe current delivered changes and validation, not historical merge narrative or unsupported blanket test-pass claims. [Task 1]\n- The user selected “Review and report only” -> do not implement fixes during integration review; report evidence-backed findings. [Task 2]\n- Coverage must consider “project languages, constructs, tests, schema and implementation specifics of each long-lived branch”; use docs and architecture to plan branch-aware checks. [Task 2]\n\n## Reusable knowledge\n\n- Use the work-planner PR template. Update with `gh api --method PATCH repos/m2ux/workflow-server/pulls/{number} -F body=@file`, re-fetch, and compare the published body with the prepared file. GitHub Development supports PR-to-issue/branch, not PR-to-PR, so incorporated PR references remain in the body. [Task 1]\n- Keep a PR Test Plan as one table with `[✓](URL#section)` or `[Partial](URL#section)` result links. Verify URLs/anchors before patching, retain Partial where validation is incomplete, then compare the live body exactly. [Task 2]\n- Long-lived branches from `config/branches` are `docker`, `main`, `workflows`, `workspace`: main owns server code/schemas, workflows definitions/techniques/resources, docker packaging, workspace shared agent skills/configuration. Pair engine with its corpus worktree or corpus-dependent tests can silently skip. [Task 2]\n- Integration findings need captured revisions, prerequisites, inputs, working directory, ordered reproduction, expected/observed results, execution status, and explicit evidence gaps. Validation recorded 797 local links, 42 command blocks, 36 edit-guard tests, and 3 mode-summary tests. [Task 2]\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 10,
+      "call": {
+        "tool": "mcp__workflow_server__discover",
+        "args": {}
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "server: workflow-server\nversion: 2.1.0\nrepo_binding: required before a session holds work — pass working_directory as the absolute path of the checkout under work, and the server derives owner/repo from that checkout's origin. repo is optional and must equal the derived origin when present. A call naming no working_directory passes repo: \"owner/repo\", which resolves the root its planning folder sits in. The user or workspace AGENTS.md is a fallback only where derivation yields nothing: a workspace that is not a git repo, or a checkout with no origin remote.\n\n---\nname: bootstrap-protocol\ndescription: The mandatory session-bootstrap sequence executed by every agent at the start of a workflow.\n---\n\n# Bootstrap Protocol\n\nIMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS\n\n1. **Name the session for the work it carries.**\n\n   Compose `planning_slug` from the request, as `YYYY-MM-DD-<ref>-<name>`:\n   > - `YYYY-MM-DD` is today's date.\n   > - `<ref>` is the issue or pull-request number the request names, digits only, taken from a\n   >   bare `#1125`, a `owner/repo#1125`, or the trailing number of an issue or pull-request URL.\n   >   Where the request names none, the segment is absent and the slug is `YYYY-MM-DD-<name>`.\n   >   Where it names several, the one the work is *on* takes the segment.\n   > - `<name>` is what the work is about, in kebab case: lowercase, alphanumerics and single\n   >   hyphens, a handful of words. Name the subject, not the activity performed on it —\n   >   `work-planner-retrospective`, not `start-a-retrospective`.\n   > - The slug is a single path segment. The server resolves which planning root it lands in.\n   > - This slug is the session's name, and the folder keeps it. The initiative name an activity\n   >   settles later names the initiative, not the folder.\n\n2. **Open the session.**\n\n   Call `start_session { workflow_id: \"meta\", agent_id: \"orchestrator\", working_directory, user_request, planning_slug }`.\n   > - `working_directory` is the absolute path of the checkout under work.\n   > - The server derives `owner/repo` from that checkout's origin remote.\n   > - `repo` is optional and must equal the derived origin when present.\n   > - Origin binds even when the checkout folder is named for a branch.\n   > - A `planning_slug` that already holds a session resumes it, and `resumed` comes back true.\n   >   Where the request asked to open new work, put that to the user before going on: continue\n   >   the session that stands there, or retry with a slug that distinguishes this work.\n   > - A call naming no slug opens a folder named for the date and a random token, which carries\n   >   nothing about the work. The folder keeps the name it opens with, so compose one.\n\n3. **Settle any opening decision**, where the response names a `decision` and has no `session_index`.\n\n   Present the `recommendation` and `candidates`, wait for the user, then retry the same call with\n   what they chose.\n   > - `unbound-repo`: pass `repo` as `owner/repo`.\n   > - `binding-mismatch`: pass `repo` matching the checkout, or a different `working_directory`.\n   > - `component-choice`: name a component in the request, or pass that component's `working_directory`.\n   > - `unmapped-root`: pass a `working_directory` under a checkout this server serves.\n   > - `workflow-selection`: pass `target_workflow_id` set to the chosen catalog id, or `user_request`.\n   > - `resume-session`: pass `planning_slug` set to the chosen saved session's slug, in place of the one composed at step 1, or `fresh: true` for a new client.\n\n4. **Keep what the response returns.**\n\n   Hold its `session_index`, a 6-character base32 string; its `workflow.initialActivity`, the\n   activity this session opens on; its `current`, the activity already in flight; and its `status`.\n   > - Every call below takes the `session_index`.\n   > - Every open returns `planning_folder_path`. A fresh open also returns `client`, the client\n   >   session it opened alongside this one; a resume returns no `client`.\n   > - Where two session indices are in hand, the one this call returned is this session's.\n\n5. **Stop**, where `status` came back `completed`.\n\n   Tell the user this session's walk has already ended, and ask whether to open a fresh one.\n   > A finished session leaves `current` empty for the same reason a new one does. Advancing it\n   > restarts a walk that is already done, over client work that is already delivered.\n\n6. **Settle an open checkpoint**, where the response names one.\n\n   Call `present_checkpoint { session_index }` for its question and options, put those to the user,\n   and call `respond_checkpoint { session_index, option_id }` with the option they chose.\n   > - Pass `reply` alongside `option_id` where that option asks for text.\n   > - An open gate refuses every other call, so nothing below runs until it is answered.\n\n7. **Make the opening advance**, where `current` came back empty.\n\n   Call `next_activity { session_index, activity_id }`, naming the `initialActivity` from step 4.\n   > A `current` that already names an activity is a resumed session standing where its last walk\n   > left it. It makes no advance.\n\n8. **Take the activity this session stands on.**\n\n   Call `get_activity { session_index, context_tokens }`.\n   > - `context_tokens` is your own context window in tokens.\n   > - Name no activity: the one in flight is what it serves.\n   > - That activity carries the run that walks the client session, the techniques its steps bind,\n   >   and the contract the orchestrator is held to. From here on it governs and this text stops\n   >   applying.\n"
+          }
+        ]
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 11,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "rg -n '^#{1,6} ' /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/references/canon-context.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "1084f7",
+        "wall_time_seconds": 0.000004748,
+        "exit_code": 0,
+        "original_token_count": 29,
+        "output": "1:# Canon Context\n5:## Prerequisites\n9:## Terms\n17:## Criteria\n23:## Scope\n29:## Homes\n43:## Checks\n47:## Edit Hook\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 12,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "rg --files --hidden -g AGENTS.md /home/mike1/projects/dev/workflow-server/.engineering/artifacts /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 6000
+        }
+      },
+      "result": {
+        "chunk_id": "c0c8ac",
+        "wall_time_seconds": 3.25e-7,
+        "exit_code": 1,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "status": "fulfilled"
+    }
+  ]
+}
+

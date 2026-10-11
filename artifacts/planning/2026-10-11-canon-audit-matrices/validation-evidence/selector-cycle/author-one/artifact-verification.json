@@ -1,0 +1,22 @@
+{
+  "schema": "selector-author-artifact-verification/v1",
+  "receipt": {
+    "call": {
+      "tool": "exec_command",
+      "args": {
+        "cmd": "ls -l /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/selector-cycle/author-one",
+        "workdir": "/home/mike1/projects/dev/workflow-server",
+        "max_output_tokens": 4000
+      }
+    },
+    "result": {
+      "chunk_id": "930b00",
+      "wall_time_seconds": 0.00000329,
+      "exit_code": 0,
+      "original_token_count": 133,
+      "output": "total 172\n-rw-r--r-- 1 mike mike1 15744 Oct 11 16:33 result.md\n-rw-r--r-- 1 mike mike1 19166 Oct 11 16:33 trace-001.json\n-rw-r--r-- 1 mike mike1 18471 Oct 11 16:33 trace-002.json\n-rw-r--r-- 1 mike mike1 16021 Oct 11 16:33 trace-003.json\n-rw-r--r-- 1 mike mike1 22218 Oct 11 16:33 trace-004.json\n-rw-r--r-- 1 mike mike1 20233 Oct 11 16:33 trace-005.json\n-rw-r--r-- 1 mike mike1 18469 Oct 11 16:33 trace-006.json\n-rw-r--r-- 1 mike mike1 19704 Oct 11 16:33 trace-007.json\n-rw-r--r-- 1 mike mike1 13539 Oct 11 16:33 trace-index.json\n"
+    }
+  },
+  "evidence_sealing_boundary": "Source-facing commands and raw receipts are in trace batches; initial artifact-write commands and raw results are in artifact-write-receipt files. The final sealing writes are visible in the tool transcript and are not recursively embedded inside their own receipts."
+}
+

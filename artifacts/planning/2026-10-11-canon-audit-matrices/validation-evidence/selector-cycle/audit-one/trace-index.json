@@ -1,0 +1,134 @@
+{
+  "format": "exact-read-trace-index-v1",
+  "result": "result.md",
+  "record_count": 61,
+  "batches": [
+    {
+      "file": "trace-001.json",
+      "records": [
+        "workspace-instructions",
+        "memory-registry-search",
+        "project-instructions",
+        "canon-skill",
+        "workflow-discovery-tool-lookup",
+        "memory-relevant-context",
+        "engineering-instructions",
+        "audit-mode",
+        "planning-instructions"
+      ],
+      "characters": 29067,
+      "write_result": {}
+    },
+    {
+      "file": "trace-002.json",
+      "records": [
+        "scope",
+        "workflow-discovery",
+        "linked-section-locations",
+        "planning-owner",
+        "planning-instruction-locations",
+        "candidate-file-list",
+        "change-surface-lifecycle"
+      ],
+      "characters": 28545,
+      "write_result": {}
+    },
+    {
+      "file": "trace-003.json",
+      "records": [
+        "canon-prerequisites-and-terms",
+        "shared-command-conventions",
+        "canon-inventory-section-locations",
+        "dispatch-phases",
+        "canon-criteria-scope-homes-checks",
+        "complete-walk-rules",
+        "scope-contract",
+        "dispatch-sizing-and-returns",
+        "selected-read-and-check-command-specs",
+        "canon-check-conventions",
+        "complete-canon-map"
+      ],
+      "characters": 28350,
+      "write_result": {}
+    },
+    {
+      "file": "trace-004.json",
+      "records": [
+        "controlled-check-interface",
+        "definition-scope-section-locations",
+        "candidate-workflow",
+        "unchanged-routine-consumer",
+        "candidate-activity",
+        "canon-list-command-specs",
+        "definition-scope",
+        "candidate-technique",
+        "candidate-shared-technique-context",
+        "candidate-reference-sites",
+        "standalone-report-contract",
+        "candidate-canon-unit-locations",
+        "audit-operation-command-specs",
+        "dispatch-budget-contract",
+        "dispatch-receipt-contract",
+        "candidate-convention-context"
+      ],
+      "characters": 30000,
+      "write_result": {}
+    },
+    {
+      "file": "trace-005.json",
+      "records": [
+        "paired-engine-schema-context-search",
+        "candidate-design-principles",
+        "skill-checkout-revision",
+        "complete-candidate-anti-pattern-catalog",
+        "paired-engine-resolution-source-locations",
+        "paired-engine-revision",
+        "paired-engine-schema-ownership",
+        "paired-engine-routine-resolution-sites"
+      ],
+      "characters": 28512,
+      "write_result": {}
+    },
+    {
+      "file": "trace-006.json",
+      "records": [
+        "paired-engine-inheritance-sites"
+      ],
+      "characters": 9289,
+      "write_result": {}
+    },
+    {
+      "file": "trace-007.json",
+      "records": [
+        "planning-record-artifact-context",
+        "aggregate-presentation-truncation"
+      ],
+      "characters": 21640,
+      "write_result": {}
+    },
+    {
+      "file": "trace-008.json",
+      "records": [
+        "inheritance-sites-receipt-replay",
+        "artifact-listing-truncation-metadata",
+        "paired-engine-technique-context",
+        "paired-engine-routine-context",
+        "paired-engine-technique-reference-context",
+        "coordinator-bounded-finish-status"
+      ],
+      "characters": 28369,
+      "write_result": {}
+    },
+    {
+      "file": "trace-009.json",
+      "records": [
+        "execution-limits-and-receipt-boundary"
+      ],
+      "characters": 2010,
+      "write_result": {}
+    }
+  ],
+  "receipt_order": "Records retain completion/receipt order. Each exec_command record includes its exact input and raw returned result. Aggregate presentation truncation and the stored-output replay have separate records.",
+  "serialization": "Exact apply_patch export inputs and raw results are retained in trace-export-*.json; final serialization receipts remain in the tool transcript."
+}
+

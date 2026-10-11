@@ -1,0 +1,183 @@
+{
+  "format": "exact-read-trace-v1",
+  "batch": 3,
+  "records": [
+    {
+      "id": "canon-prerequisites-and-terms",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '5,16p' skills/workflow-canon/references/canon-context.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "result": {
+        "chunk_id": "a44bc4",
+        "wall_time_seconds": 0.00000362,
+        "exit_code": 0,
+        "original_token_count": 183,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Prerequisites\n\nRead the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.\n\n## Terms\n\n- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.\n- **Entry**\n  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.\n- **Walk**  Applying each unit to every file on the surface and recording its status.\n- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).\n\n"
+      }
+    },
+    {
+      "id": "shared-command-conventions",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '3,30p' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 9000
+      },
+      "result": {
+        "chunk_id": "8e59b4",
+        "wall_time_seconds": 0.000002449,
+        "exit_code": 0,
+        "original_token_count": 681,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Conventions\n\nEach operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.\n\n- **Locations.**\n  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.\n- **Execution.**\n  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.\n- **Remote access.**\n  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.\n- **Evidence.**\n  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.\n- **Substitution.**\n  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.\n- **Authored text.**\n  Commit messages and PR bodies go through files.\n\n## Audit Command Conventions\n\n- **Runtime.**\n  Read [Conventions](#conventions) first. Use Python 3.10+ and Node with the paired engine's installed `yaml` package. Resolve `<skill-root>`, `<corpus-root>`, `<engine-root>` and the shared planning `<run>` directory to absolute paths. Apply the host's sandbox rules.\n- **Ownership.**\n  The coordinator invokes mutations sequentially; workers return files. Preserve failures and output in the planning record.\n- **Inputs.**\n  JSON files follow the [scope](../templates/audit-scope.json), [budget](../templates/audit-budgets.json) and [receipt](../templates/audit-receipt.json) contracts. Fill actual limits and measured calibration. Scope can include `base`, additional `rows` with source/address/section/start/end/context, and `relationships` with source/target/address/label/context.\n- **Exit status.**\n  Exit 0 means the operation succeeded; status with `--require` returns 2 when the requested gate is incomplete; exit 1 means invalid input or unavailable operation. Rendering and planning do not establish audit completion.\n\n"
+      }
+    },
+    {
+      "id": "canon-inventory-section-locations",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/canon-map.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "result": {
+        "chunk_id": "4111dd",
+        "wall_time_seconds": 0.000002464,
+        "exit_code": 0,
+        "original_token_count": 58,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n1:# Canon Map\n5:## Unit Inventory\n19:## Prior Judgments\n31:## File Kinds\n"
+      }
+    },
+    {
+      "id": "dispatch-phases",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '5,18p' skills/workflow-canon/references/audit-dispatch.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 8000
+      },
+      "result": {
+        "chunk_id": "ea8e25",
+        "wall_time_seconds": 0.000005378,
+        "exit_code": 0,
+        "original_token_count": 425,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Phases\n\n| Phase | Required Work | Independent Role |\n| --- | --- | --- |\n| `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |\n| `map` | Every row × AP/DP cell | Mapping author recorded per cell |\n| `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |\n| `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |\n| `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |\n\nInventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.\n\nUse [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, AP/DP and supplemental criteria, required checks, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.\n\n"
+      }
+    },
+    {
+      "id": "canon-criteria-scope-homes-checks",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '17,46p' skills/workflow-canon/references/canon-context.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 8000
+      },
+      "result": {
+        "chunk_id": "c10289",
+        "wall_time_seconds": 0.000001324,
+        "exit_code": 0,
+        "original_token_count": 819,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Criteria\n\nUse the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).\n\nFollow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).\n\n## Scope\n\nResolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.\n\nResolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.\n\n## Homes\n\nRead homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.\n\n| Home | Authority |\n| --- | --- |\n| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |\n| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |\n| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |\n| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |\n| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |\n\nLocate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.\n\n## Checks\n\nSelect checks from the task's declared check contract and the project's requirements before retrieving command specifications. Read [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. When the task supplies a checker for a bounded scope, read its interface and use [Run Project Check](commands.md#run-project-check); report the scope its observations establish. When the project's guard suite is required, use [Run Guards on the Delta](commands.md#run-guards-on-the-delta) with an identified base and candidate under equivalent conditions, or [Run Guard Suite](commands.md#run-guard-suite) for a single candidate or draft. An established step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Established shared-construct changes select broader consumer coverage through [Workflows Coverage](coverage.md#workflows-coverage).\n\n"
+      }
+    },
+    {
+      "id": "complete-walk-rules",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "cat skills/workflow-canon/references/walk-rules.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 14000
+      },
+      "result": {
+        "chunk_id": "4df234",
+        "wall_time_seconds": 0.00000259,
+        "exit_code": 0,
+        "original_token_count": 622,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n# Walk Rules\n\nThese govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.\n\n## Order\n\n- **Entry-major.**\n  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.\n- **Compound headings.**\n  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.\n  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.\n\n## Evidence\n\n- **The construct.**\n  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.\n- **Identifiers.**\n  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.\n- **Search hits.**\n  - A search hit is a site. Read the construct around it, and cite that construct.\n  - An empty search leaves open a construct the pattern did not name.\n- **Probes.**\n  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.\n- **Consumers.**\n  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.\n- **Forms.**\n  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.\n- **Hand-checks.**\n  - An empty hand-check is `blocked` until it has reported a case already in the corpus.\n  - Take a set the entry names from that entry's wording.\n\n## Candidates and Fixes\n\n- **Falling candidates.**\n  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.\n- **Unread paths.**\n  `unread` paths are outside the remediation scope.\n  - An audit walks them under [Rules](audit-mode.md#rules).\n- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.\n- **Ledgers, fixtures and snapshots.**\n  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.\n"
+      }
+    },
+    {
+      "id": "scope-contract",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "cat skills/workflow-canon/templates/audit-scope.json",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 5000
+      },
+      "result": {
+        "chunk_id": "927587",
+        "wall_time_seconds": 0.0000052,
+        "exit_code": 0,
+        "original_token_count": 69,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n{\n  \"paths\": [\"corpus/example/techniques/operation.md\"],\n  \"checks\": [\"guards\"],\n  \"rows\": [],\n  \"relationships\": []\n}\n"
+      }
+    },
+    {
+      "id": "dispatch-sizing-and-returns",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '19,160p' skills/workflow-canon/references/audit-dispatch.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 12000
+      },
+      "result": {
+        "chunk_id": "2fa306",
+        "wall_time_seconds": 0.000001917,
+        "exit_code": 0,
+        "original_token_count": 1417,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Sizing\n\nRecord actual host context/output limits, available child slots, prompt/tool reserve, safety reserve and work limit in the [budget input](../templates/audit-budgets.json). Reserve the coordinator and occupied slots once. The input contains estimates, never a promise of runtime capacity.\n\nCalibrate each phase separately with a bounded pilot from its required work. Record measured packet/output sizes and elapsed time; retain useful pilot results. A pilot's maximum input and output must already fit the declared host limits. Unknown host limits block dispatch. Use the host tokenizer when available; the CLI's explicit bytes-per-token proxy requires a conservative ratio and safety reserve.\n\nFor each slice, the planner counts the serialized packet, including source/canon context, identifiers, mapping reasons and assignment metadata. Verification and evaluation include the exact source spans cited by their mappings, merged with required row and criterion context. It estimates output and elapsed work from the recorded phase calibration. It requires input + output ≤ context − prompt/tool reserve − safety reserve, output ≤ output limit, and work ≤ work limit. Output is counted once in the context equation. Use an effective combined context limit consistent with the host's input/output accounting.\n\nRead packet fields and source excerpts in batches within the host's tool-return limit. Retain all owned identifiers, reasons and relationship context across those batches. Reuse source bytes already read at the same hash; retrieve every missing portion of a truncated return before making a judgment.\n\nBundles group criterion, source and section, with relationship context retained. Oversized bundles split into bounded item groups; a single item that cannot fit blocks dispatch. Largest bundles are packed first within their criterion or obligation kind, preferring shared context. This keeps an entry's walk together and bounds the planner's packing search. Each phase's assignments are disjoint and exactly cover its unassigned residual. The final list determines agent count `N`; free slots `K` determine concurrency `min(K,N)` and a lower bound of `ceil(N/K)` waves. Zero slots blocks dispatch. Lower concurrency changes elapsed time, never coverage.\n\nThe coordinator observes actual work. When a worker exceeds its calibrated cost, retain accepted evidence, retire its unfinished assignment, recalibrate and plan the remaining work. Shared source context may overlap; primary items and file write ownership do not. Inventory closure is partitioned by manifest source so a large surface can fan out without one whole-corpus input packet.\n\n## Returns\n\nReturn a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.\n\n- **Identity.**\n  Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.\n- **Evidence.**\n  Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.\n- **Statuses.**\n  Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.\n- **Findings.**\n  A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. Before returning findings, read [bands](reporting.md#bands), [severity](reporting.md#severity), [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.\n- **Check observations.**\n  A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.\n- **Partial work.**\n  A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.\n"
+      }
+    },
+    {
+      "id": "selected-read-and-check-command-specs",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n -e '146,153p' -e '270,281p' -e '572,590p' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 10000
+      },
+      "result": {
+        "chunk_id": "6fc40b",
+        "wall_time_seconds": 0.000001478,
+        "exit_code": 0,
+        "original_token_count": 308,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n### Resolve Ref\n\nRead the full commit identity for a captured ref.\n\n```bash\ngit rev-parse <ref>\n```\n\n### Run Project Check\n\nRun the check selected by the task or by the reviewed project's manifest, test configuration or CI job.\n\n- Replace the command placeholder with that project's actual invocation, including its runtime, check arguments and explicit dependency paths.\n- Capture the working directory, input revisions, measured cases, skips, exit status and output. Assess the result against the active mode's requirements.\n\n```bash\ncd <tool-checkout>\n<project-check-command>\n```\n\n### Fetch Unit\n\nReads one section or entry of a home.\n\n- **On disk.**\n  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.\n- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.\n\n### Find Consumers\n\nLists the references other workflows hold into the target.\n\n- Run from the corpus root.\n- Resolve each hit's binds and Apply links from there.\n\n```bash\nrg -n \"work-package/\" corpus/ -g \"*.md\" -g \"*.yaml\"\n```\n\n"
+      }
+    },
+    {
+      "id": "canon-check-conventions",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '487,514p' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 9000
+      },
+      "result": {
+        "chunk_id": "aa8825",
+        "wall_time_seconds": 0.000004421,
+        "exit_code": 0,
+        "original_token_count": 483,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Canon Check Conventions\n\n- **Branch point.**\n  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.\n- **Exit status.**\n  Capture the check's own exit status before filtering output; a pipe reports the filter's status.\n- **Guard outcomes.**\n  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.\n- **Option coverage.**\n  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.\n\n### Guard Obligations\n\n- **Binding fidelity.**\n  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.\n  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.\n- **Suppressions.**\n  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.\n  - Count the findings at the site before calling an entry redundant.\n- **New guards.**\n  - Prove a new guard against the corpus at the commit before the fix it was written for.\n  - A carve-out that follows from the entry belongs in the guard's condition.\n  - Take a file's kind from its declaration, and name in the check the kinds it admits.\n- **Definition changes.**\n  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.\n  - The suppression of a binding finding it closed is the entry that goes stale on that commit.\n\n\n"
+      }
+    },
+    {
+      "id": "complete-canon-map",
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "cat skills/workflow-canon/references/canon-map.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 12000
+      },
+      "result": {
+        "chunk_id": "3d9103",
+        "wall_time_seconds": 0.000005331,
+        "exit_code": 0,
+        "original_token_count": 531,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n# Canon Map\n\nHow each home is enumerated, and where a judgement already made is recorded.\n\n## Unit Inventory\n\nRead the enumeration from the home at the commit audited, with [List units](commands.md#list-units).\n\n| Home | Unit |\n|------|------|\n| Anti-Patterns | One `##` family; each `###` entry inside it |\n| Design Principles | One `##` |\n| Convention Conformance | One `##` |\n| Guards | One registry entry in `guards/guards.ts` |\n\n- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.\n- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.\n\n## Prior Judgments\n\nAn entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.\n\n| Authority | Where | Records |\n|-----------|-------|---------|\n| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |\n| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |\n| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |\n\n`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.\n\n## File Kinds\n\nAuthor and Audit establish applicability through the shared [matrix contract](change-surface.md#applicability). The complete [unit inventory](#unit-inventory) supplies the matrix and supplemental obligations. Fires-on metadata, when available, is a prioritization hint.\n"
+      }
+    }
+  ]
+}
+

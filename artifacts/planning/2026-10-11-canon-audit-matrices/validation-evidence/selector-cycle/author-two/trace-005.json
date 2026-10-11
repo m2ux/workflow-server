@@ -1,0 +1,90 @@
+{
+  "format": "exact-nested-tool-invocations-v1",
+  "sequence_range": [
+    21,
+    25
+  ],
+  "records": [
+    {
+      "sequence": 21,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '5,160p' skills/workflow-canon/references/definition-scope.md && sed -n '146,153p' skills/workflow-canon/references/commands.md && sed -n '548,590p' skills/workflow-canon/references/commands.md",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 12000
+      },
+      "raw_return": {
+        "chunk_id": "2df894",
+        "wall_time_seconds": 0.000002917,
+        "exit_code": 0,
+        "original_token_count": 1019,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Scope\n\n- **Base ref.**  The ref the change is measured against.\n- **Surface files.**\n  `workflow.yaml`, `activities/`, `techniques/`, `routines/`, `resources/`, READMEs of the target.\n- **Touched.**\n  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.\n- **I/O contract.**\n  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.\n  - Activity inputs, outputs, and step binds that name those ids.\n  - Routine parameters, outputs, internals, nested reference sites and technique arguments.\n  - Renames, additions, removals, optionality flips, and type or shape changes.\n- **Reference.**\n  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.\n  - Sweep the workflows tree. Resolve each to a file path.\n  - Resolve routine references and their full instantiation chains, graph entries, ancestors and shared resources through [surface identity](change-surface.md#identity).\n- **Closure.**\n  Affected elements and supporting sources reached through callers, consumers, invoked definitions and inherited contracts, including unchanged files across workflow boundaries.\n- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.\n- **Consumers.**\n  - References other workflows hold into the target. Always computed.\n  - A consumer joins the change surface when the file it names is on it.\n  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.\n- **Reference workflows.**  Siblings of similar type, as convention conformance requires.\n- **Prior residual.**\n  - `unread` paths in the latest findings register in the shared [planning record](planning.md).\n  - Reconcile captured identities through [freshness](change-surface.md#freshness-and-resume). A deleted path remains a base-side obligation when the selected comparison includes it.\n  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.\n- **Second entry.**\n  - Where a graph gives one activity two entry points, both are on the surface.\n  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.\n\nHunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.\n### Resolve Ref\n\nRead the full commit identity for a captured ref.\n\n```bash\ngit rev-parse <ref>\n```\n\n### List Units\n\nLists a home's `##` units, then its `###` entries, with their line numbers.\n\n- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.\n- Run from the corpus root.\n\n```bash\nrg -n \"^## \" corpus/canon/resources/anti-patterns.md\nrg -n \"^### \" corpus/canon/resources/anti-patterns.md\n```\n\n### List Units for a Construct\n\nPrints every canon unit that fires on one construct id, with its file and line.\n\n- The id is a construct a draft writes: a bare kind, a field path, `resource`, `readme`, or `*`.\n- A unit is listed when it declares that id, a prefix of it, its bare kind, or `*`.\n- Runs in the server checkout. `--root` names the corpus tree. The listing is printed and not stored.\n\n```bash\nnpx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>\n```\n\n### Fetch Unit\n\nReads one section or entry of a home.\n\n- **On disk.**\n  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.\n- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.\n\n### Find Consumers\n\nLists the references other workflows hold into the target.\n\n- Run from the corpus root.\n- Resolve each hit's binds and Apply links from there.\n\n```bash\nrg -n \"work-package/\" corpus/ -g \"*.md\" -g \"*.yaml\"\n```\n\n"
+      }
+    },
+    {
+      "sequence": 22,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "sed -n '20,30p' skills/workflow-canon/references/commands.md && sed -n '33,53p' skills/workflow-canon/references/commands.md && sed -n '104,123p' skills/workflow-canon/references/commands.md && sed -n '616,638p' skills/workflow-canon/references/commands.md && cat skills/workflow-canon/templates/audit-scope.json",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 15000
+      },
+      "raw_return": {
+        "chunk_id": "adcd79",
+        "wall_time_seconds": 0.000003966,
+        "exit_code": 0,
+        "original_token_count": 1112,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n## Audit Command Conventions\n\n- **Runtime.**\n  Read [Conventions](#conventions) first. Use Python 3.10+ and Node with the paired engine's installed `yaml` package. Resolve `<skill-root>`, `<corpus-root>`, `<engine-root>` and the shared planning `<run>` directory to absolute paths. Apply the host's sandbox rules.\n- **Ownership.**\n  The coordinator invokes mutations sequentially; workers return files. Preserve failures and output in the planning record.\n- **Inputs.**\n  JSON files follow the [scope](../templates/audit-scope.json), [budget](../templates/audit-budgets.json) and [receipt](../templates/audit-receipt.json) contracts. Fill actual limits and measured calibration. Scope can include `base`, additional `rows` with source/address/section/start/end/context, and `relationships` with source/target/address/label/context.\n- **Exit status.**\n  Exit 0 means the operation succeeded; status with `--require` returns 2 when the requested gate is incomplete; exit 1 means invalid input or unavailable operation. Rendering and planning do not establish audit completion.\n\n### Initialize Audit Surface\n\nCapture source bytes and render all four matrices with unresolved cells.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Paths are relative to a root containing `corpus/`. Use the actual inventory author identity and a new run directory.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py init --root <corpus-root> --engine <engine-root> --scope <scope.json> --actor <host-agent-id> --run <run>\n```\n\n### Check Audit Status\n\nReconcile current evidence, rendered views and outstanding obligations.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.\n- Output contains bounded counts, the generation identity and artifact paths. Read the relevant coverage section or assignment packet for individual residuals.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>\n```\n\n### Reset Audit Cells\n\nReopen selected decisions and invalidate dependent evidence and assignments.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Supply a JSON array of cell IDs and the correction reason.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'\n```\n\n### Refresh Audit Surface\n\nCapture current inputs and invalidate a changed generation.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py refresh --run <run>\n```\n\n### Run the Edit Guard\n\nRuns the corpus guards over an edited definition's corpus tree, and reports the failures its branch introduced, as the hook does after each edit.\n\n- Run from the workspace root.\n\n- **Input.**\n  - The hook's JSON on stdin. `tool_input.file_path` names the edited file, and a relative path resolves against `cwd`.\n  - Only a corpus definition file runs a guard: a `workflow.yaml`, a README, or a file under `activities/`, `routines/`, `techniques/` or `resources/`, beneath `corpus/` of a corpus tree.\n- **Measure.**\n  - The guards run in `.project/main`, with `--root` naming the file's corpus tree.\n  - A failing run is compared with a run at the branch point: the nearest merge-base with `origin/workflows` and each `origin/iNN/workflows`.\n  - The branch point's run is cached in `.project/main/.guard-cache`, by branch point and server HEAD. A server checkout with uncommitted changes caches nothing.\n- **Exits.**\n  - 0 when no guard runs, every guard is clean, or every failure is present at the branch point.\n  - 2 with the introduced failures on stderr, or with the reason the run cannot measure.\n- **Flags.**\n  `--server`, `--guards` and `--cache` replace the server checkout, guard runner and cache folder.\n\n```bash\necho '{\"tool_input\": {\"file_path\": \".project/workflows/corpus/work-package/workflow.yaml\"}}' | python3 skills/workflow-canon/scripts/edit_guard.py\n```\n\n{\n  \"paths\": [\"corpus/example/techniques/operation.md\"],\n  \"checks\": [\"guards\"],\n  \"rows\": [],\n  \"relationships\": []\n}\n"
+      }
+    },
+    {
+      "sequence": 23,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "git status --short -- skills/workflow-canon/SKILL.md skills/workflow-canon/references skills/workflow-canon/templates/audit-scope.json skills/workflow-canon/test/fixtures/audit-qualification/clean skills/workflow-canon/test/fixtures/audit-qualification/check.py && git -C /home/mike1/projects/dev/workflow-server/.worktrees/engine-pin status --short",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "86a567",
+        "wall_time_seconds": 0.000002984,
+        "exit_code": 0,
+        "original_token_count": 43,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n D node_modules\n"
+      }
+    },
+    {
+      "sequence": 24,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "rg -n '^#{1,6} ' corpus/canon/resources/anti-patterns.md corpus/canon/resources/design-principles.md corpus/canon/resources/convention-conformance.md && rg -n 'produce|deliver|qualification/|emit.report|archive' corpus -g '*.md' -g '*.yaml' -g '!README*' -g '!expected-outcomes.json'",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "ffbad3",
+        "wall_time_seconds": 0.000003082,
+        "exit_code": 0,
+        "original_token_count": 530,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ncorpus/canon/resources/convention-conformance.md:1:# Controlled qualification conventions\ncorpus/canon/resources/convention-conformance.md:3:## Evidence scope\ncorpus/canon/resources/design-principles.md:1:# Controlled qualification design principles\ncorpus/canon/resources/design-principles.md:5:## 1. Honor the executing workflow's inherited destination\ncorpus/canon/resources/design-principles.md:9:## 2. Provide a terminating workflow path\ncorpus/canon/resources/anti-patterns.md:1:# Controlled qualification anti-patterns\ncorpus/canon/resources/anti-patterns.md:5:## Controlled Qualification\ncorpus/canon/resources/anti-patterns.md:7:### AP-01. emission-without-validation\ncorpus/canon/resources/anti-patterns.md:15:### AP-02. broken-binding\ncorpus/canon/resources/design-principles.md:7:A leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\ncorpus/qualification/activities/run.yaml:3:  - id: delivery\ncorpus/qualification/activities/run.yaml:5:      name: deliver\ncorpus/qualification/techniques/TECHNIQUE.md:2:Constrain inherited delivery.\ncorpus/qualification/techniques/TECHNIQUE.md:5:- Destination must be archive.\ncorpus/qualification/routines/deliver.yaml:1:id: deliver\ncorpus/qualification/routines/deliver.yaml:3:outputs: {report: emit.report}\ncorpus/qualification/routines/deliver.yaml:6:    technique: produce\ncorpus/qualification/techniques/produce.md:12:- Destination is archive.\n"
+      }
+    },
+    {
+      "sequence": 25,
+      "tool": "exec_command",
+      "arguments": {
+        "cmd": "git rev-parse HEAD && git status --short -- skills/workflow-canon/SKILL.md skills/workflow-canon/references skills/workflow-canon/templates/audit-scope.json skills/workflow-canon/test/fixtures/audit-qualification/clean skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+        "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+        "max_output_tokens": 6000
+      },
+      "raw_return": {
+        "chunk_id": "403472",
+        "wall_time_seconds": 0.000002653,
+        "exit_code": 0,
+        "original_token_count": 50,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ne8be42ce97eeb427e337214890da52ce3c1e8906\n"
+      }
+    }
+  ]
+}
+

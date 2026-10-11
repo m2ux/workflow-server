@@ -1,0 +1,105 @@
+{
+  "schema": "selector-author-retrieval-trace/v1",
+  "batch": 1,
+  "first_sequence": 1,
+  "last_sequence": 5,
+  "records": [
+    {
+      "sequence": 1,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/AGENTS.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 8000
+        }
+      },
+      "result": {
+        "chunk_id": "459a1c",
+        "wall_time_seconds": 0.000001204,
+        "exit_code": 0,
+        "original_token_count": 1352,
+        "output": "# Workspace Instructions\n\n- **Here:** how work is conducted, how prose is written, and the local code index.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n\n## Project Instructions\n\n- You must adopt all content from .project/<folder> *when* working on content in that folder:\n  - .project/main/[AGENTS.md](http://AGENTS.md)\n\n- Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.\n- Follow the folder naming pattern at: /.engineering/artifacts/planning/ and use to store *all* planning artifacts\n\n\n\n## Design principles\n\n- No backward compatibility. Remove obsolete paths rather than adding compatibility layers, fallbacks, or migrations.\n- Simplest implementation that fully meets requirements — no speculative abstraction, configuration, or indirection.\n- Grow in layers: smallest version that works end to end, then build on a product that already works.\n- Never trade working for unfinished.\n- Modular components, separated concerns (see SOLID)\n- Prefer established libraries to reimplementing. Check a library's docs and types before assuming it lacks a capability.\n- Exhaust existing dependencies before adding a package.\n- Decide for the long term. No stopgap meant to be replaced later.\n- Obey SOLID principles (Single responsibility, Open–closed, Liskov substitution, Interface segregation, Dependency inversion) when making changes to both source and documentation.\n\n\n\n## Code and Documentation\n\n- Follow existing patterns\n- Clear, professional language\n- No process attribution in comments (“Added by agent”).\n- **Describe the design, not the change to it.** Definitions, code and doc comments, and **commit subjects** state the system as it is, present tense, without naming what they replaced (eg write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`). For an absent value, say what holds when it is missing. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”.\n  - A live hazard survives, stated as an invariant: *a marker is unreadable to a context that never received the bytes* — not *this is why the old rule forbade it*.\n  - Exceptions: issue and PR bodies, and commit bodies. A reviewer needs the before-state; nothing that persists past merge does.\n  - After a behaviour change, grep out surviving descriptions of the old one — doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A stale claim reads as current fact.\n- **Prefer removing the thing that needs a prohibition.** Prose warning \"do not also use X\" usually means two paths now do one job. Retire one and the warning goes, along with the validation that policed the overlap.\n\n\n\n## User Interaction\n\n- Words cost tokens! Be as succinct as possible *without* compromising fidelity.\n- First and foremost your job is to *maximise* fidelity while *minimising* cognitive load\n- Reponses should use plain language and be as succinct as possible\n- Prefer bullet points instead of large blocks of prose when responding to the user\n- For responses that concern system design should split by area of concern in the system eg corpus, guards, tests, source. \n- Each area of conern should be titled and sub-divided into a bulletted list of problem/solution pairs with one plain-language paragraph for each of the problem solution. Jargon should be disambiguated. Use two space seperators between title items.\n- When user input is required to reconcile outstanding issues or design choices, present the user a sequence of questions, one-at-a-time, interview-style. Each question should have multiple choice answers with a recommended option. Each question should be preceded by a plain-language paragraph worded to aid the decision kaing process.\n- Always treat user requests at the start of a new chat as an incomplete specification. Use the interview style to illicit further information fromf the user until you are confident you have sufficient understanding to properly proceed.\n\n\n\n## Commits and pushes\n\n- Commit and push upon completion of any discrete user request to the current branch\n- **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.\n- **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.\n- **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.\n- **A pull request delivering initiative work starts its title with the epic reference:** `[I07:E00] Purpose`.\n\n\n\n## Task management\n\n- Complete **one** task at a time unless the user asks for multiple.\n- For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.\n- Request permission before starting a new task or making changes outside the current request.\n- *ALWAYS* use a local work-tree when working on a branch\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 2,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.project/main/AGENTS.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 10000
+        }
+      },
+      "result": {
+        "chunk_id": "160375",
+        "wall_time_seconds": 0.000002413,
+        "exit_code": 0,
+        "original_token_count": 1186,
+        "output": "# Project Instructions\n\nProject instructions for this repository.\n\n- **Here:** rules that change what an agent does on an ordinary turn. A how-to for one kind of task lives in the doc that task already has.\n- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n- When building, testing, or changing a checkout, follow [development.md](docs/development.md).\n\n## Worktrees\n\n- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.\n- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.\n- Provision, rename, and a corpus-only sweep: [guards/README.md](guards/README.md#running-guards-in-a-worktree).\n\n\n\n## Dependencies\n\n- **Never delete the lockfile or run** `npm update`**.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.\n- Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).\n\n\n\n## Boundaries\n\n- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.\n- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).\n\n\n\n## Issues and PRs\n\n- **Shape:** See the reference example: [#394](https://github.com/m2ux/workflow-server/issues/394)\n- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.\n- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations (\"references\", not \"refs\"), no anti-pattern numbers, no code tokens unless the token is the subject.\n- **No file:line citations in the body.** Evidence reads as prose.\n- **Spell out jargon.** \"Phase 0/1/2\" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.\n- **One paragraph per stage, and no section that restates another.** Where a \"what was verified\" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.\n- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.\n- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.\n- **A pull request lands on** `main` **or on** `workflows`**.** Code and definitions sit on separate long-lived branches, so the base is a choice. One aimed anywhere else is a stack: it merges, reads as delivered, and reaches neither branch until its base lands. Check the base before merging, and re-target a stacked request the moment its base merges.\n- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.\n\n\n\n## Testing\n\nCommands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).\n\n- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.\n\n\n\n## Where to look\n\n[docs/README.md](docs/README.md) is the index. Open the page for the task. \n\nA **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.\n\nEngineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md)."
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 3,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "cat /home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/SKILL.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 16000
+        }
+      },
+      "result": {
+        "chunk_id": "ad6929",
+        "wall_time_seconds": 0.000002055,
+        "exit_code": 0,
+        "original_token_count": 1151,
+        "output": "---\nname: workflow-canon\ndescription: >-\n  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions (\"write a new activity\", \"apply this finding\"), audit them against the design canon (\"audit workflow X\", \"why is this an anti-pattern?\"), review integrations (\"check these branches together\", \"assess integration readiness\"), or revise this skill (\"update the workflow-canon skill\").\nhooks:\n  PostToolUse:\n    - matcher: \"Edit|Write|MultiEdit\"\n      hooks:\n        - type: command\n          command: \"python3 \\\"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\\\"\"\n---\n\n# Workflow Canon\n\nWorkflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.\n\n- **Work**  Intended outcomes, requirements and constraints.\n- **Design**  Architecture, responsibilities, definitions and contracts.\n- **Canon**  The project's authoritative design criteria and conventions.\n- **Evidence**  Observations supporting design decisions, with their limits stated.\n\n## Modes\n\nRead the selected mode's file in full, then follow its links as each step needs them:\n\n- **[Author](references/author-mode.md)**\n  - Authoring definitions and specified changes\n  - Closing confirmed findings with their prescribed fixes\n  - Mapped draft walks and verification of written changes\n- **[Audit](references/audit-mode.md)**\n  - Canon questions and conformance of existing definitions\n  - Attribution and verification of findings\n  - Applicability matrices with independent verification\n  - Complete coverage reports\n- **[Review](references/review-mode.md)**\n  - Scope and revision pairings for integrations\n  - Tracing design and architecture through declarations and consumers\n  - Coverage matched to affected branches and languages\n  - Evidence for findings and readiness\n- **[Revise](references/revise-mode.md)**\n  - Changes to this skill's own files\n  - Conformance with shared and local skill guidelines\n\n## Rules\n\n- **Measured claims.**\n  Counts, revision identities and check outcomes come from command output or preserved run evidence.\n- **One home.**\n  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.\n- **Linked sections.**\n  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.\n- **Planning.**\n  When creating or using artifacts, all modes follow [Planning](references/planning.md).\n- **Commands.**\n  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.\n\n## Dependencies\n\n- **Git and repository search**\n  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.\n- **GitHub CLI**\n  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.\n- **Project instructions, documentation and runtimes**\n  Branch ownership, canon homes, schemas and validation tools for the affected product.\n- **Node and npm**\n  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.\n- **Docker and Compose**\n  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.\n- **Python 3.10+**\n  The definition edit hook, audit inventory/state/dispatch scripts and their tests.\n- **Paired YAML parser**\n  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.\n- **Agent host and sandbox**\n  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.\n- **Claude Code hooks**\n  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.\n- **Workflow resource access**\n  A running workflow's resource tool can supply canon sections and report guides when available.\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 4,
+      "call": {
+        "tool": "exec_command",
+        "args": {
+          "cmd": "rg -n -i 'workflow.canon|audit matrices|planning artifacts|author|qualification' /home/mike1/.codex/memories/MEMORY.md",
+          "workdir": "/home/mike1/projects/dev/workflow-server",
+          "max_output_tokens": 8000
+        }
+      },
+      "result": {
+        "chunk_id": "88c6e1",
+        "wall_time_seconds": 0.000003912,
+        "exit_code": 0,
+        "original_token_count": 161,
+        "output": "1:# Task Group: workflow-server PR documentation and Workflow Canon integration review\n16:## Task 2: Implement Workflow Canon integration review and update PR #1295 body; success\n24:- workflow-canon, integration-review, Review and report only, config/branches, docker, main, workflows, workspace, engine/corpus pairing, hooks frontmatter, progressive disclosure, PR-1295\n71:- `config/branches` is authoritative; missing/empty configuration is unevaluable. PR #1294 merged into `workspace` at `bf5f48cf83427f6c1949236e1836cc8d422862af`; validation recorded 292 tests, 616 local links/anchors, skill validation, and `git diff --check`. [Task 1]\n"
+      },
+      "status": "fulfilled"
+    },
+    {
+      "sequence": 5,
+      "call": {
+        "tool": "ALL_TOOLS.filter",
+        "args": {
+          "predicate": "/workflow.*discover$/.test(name) || (/discover/.test(name) && /bootstrap|workflow.server/i.test(description))"
+        }
+      },
+      "status": "fulfilled",
+      "result": [
+        {
+          "name": "mcp__workflow_server__discover",
+          "description": "Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required. Pass working_directory on start_session so the server derives the bound repository.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__workflow_server__discover(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```"
+        },
+        {
+          "name": "mcp__workflow_server_exp__discover",
+          "description": "Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required. Pass working_directory on start_session so the server derives the bound repository.\n\nexec tool declaration:\n```ts\ndeclare const tools: { mcp__workflow_server_exp__discover(args: { [key: string]: unknown; }): Promise<CallToolResult>; };\n```"
+        }
+      ]
+    }
+  ]
+}
+
