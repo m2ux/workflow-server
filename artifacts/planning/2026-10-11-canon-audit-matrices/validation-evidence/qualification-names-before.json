@@ -1,0 +1,106 @@
+[
+  {
+    "round": 1,
+    "matches": {
+      "Q01": [
+        "070cd4ca1a0d1330bb5b"
+      ],
+      "Q02": [
+        "452b21c3c82a86416607"
+      ],
+      "Q03": [],
+      "Q04": [
+        "5962f0bd3a0b9cc13585"
+      ],
+      "Q05": [
+        "a4bf0744e8470747d764"
+      ],
+      "Q06": []
+    },
+    "negative_controls": [
+      {
+        "entry": "1",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "2",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "Unrelated principle",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "1",
+        "criterion": "dp:1",
+        "rejected": true
+      },
+      {
+        "entry": "2",
+        "criterion": "dp:1",
+        "rejected": true
+      },
+      {
+        "entry": "Unrelated principle",
+        "criterion": "dp:1",
+        "rejected": true
+      }
+    ],
+    "pass": false
+  },
+  {
+    "round": 2,
+    "matches": {
+      "Q01": [
+        "070cd4ca1a0d1330bb5b"
+      ],
+      "Q02": [
+        "452b21c3c82a86416607"
+      ],
+      "Q03": [],
+      "Q04": [
+        "5962f0bd3a0b9cc13585"
+      ],
+      "Q05": [
+        "a4bf0744e8470747d764"
+      ],
+      "Q06": []
+    },
+    "negative_controls": [
+      {
+        "entry": "1",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "2",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "Unrelated principle",
+        "criterion": "dp:2",
+        "rejected": true
+      },
+      {
+        "entry": "1",
+        "criterion": "dp:1",
+        "rejected": true
+      },
+      {
+        "entry": "2",
+        "criterion": "dp:1",
+        "rejected": true
+      },
+      {
+        "entry": "Unrelated principle",
+        "criterion": "dp:1",
+        "rejected": true
+      }
+    ],
+    "pass": false
+  }
+]

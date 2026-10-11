@@ -1,0 +1,13 @@
+{
+  "purpose": "Confirm the three newly written evidence artifacts exist and contain bytes",
+  "command": "wc -c /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/result.md /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/trace.json /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/trace.md",
+  "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+  "result": {
+    "chunk_id": "7adbdc",
+    "wall_time_seconds": 0.000003251,
+    "exit_code": 0,
+    "original_token_count": 125,
+    "output": " 10238 /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/result.md\n 95664 /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/trace.json\n 90442 /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-author-repeat/trace.md\n196344 total\n"
+  }
+}
+

@@ -16,6 +16,8 @@ The second Author evaluator classified the inherited destination conflict as Con
 
 Reference scoring resolves either the exact captured AP named identity or its full current heading containing that name and ordinal. A numeric alias alone is insufficient. The first strict-string scoring attempt rejected four real findings whose entries included their current AP prefixes; exact captured-heading resolution corrected that scorer issue. The independently fixed criterion/location manifest and one-to-one finding requirements remain the same.
 
+The current Audit returns also use exact DP names without the captured numeric heading prefix. The scorer's two-round before/after probe records that mismatch, then accepts the exact heading or its exact unnumbered name. Negative controls reject bare ordinals and unrelated names. This is a qualification-harness correction; core audit tooling and all captured source/criterion bytes retain their identities.
+
 For the corrected dispatcher generation, the coordinator re-read the complete clean and seeded definitions, four controlled criteria, convention and structural guard source. The renewed captures contain identical semantic inputs but distinct tool-bound snapshots. Current helper observations check original source hashes before recording supporting reads or independent finding derivations. No earlier accepted receipt satisfies a current obligation.
 
 ## Calibration and Recovery

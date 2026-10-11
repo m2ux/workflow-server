@@ -1,0 +1,1811 @@
+{
+  "purpose": "Independent instruction retrieval rehearsal for a retrospective Audit, with no audit execution or conformance judgment.",
+  "output_directory": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/fresh-audit-repeat",
+  "command_count": 71,
+  "ordering": "Commands are numbered in submission order; independent reads within a batch ran concurrently.",
+  "content_fidelity": "Each result is the actual exec_command return, including the complete output field, exit status and tool metadata. stderr and stdout are preserved together as returned by the tool.",
+  "observations": {
+    "truncation": "No tool-reported truncation occurred.",
+    "failed_reads": [
+      5,
+      7,
+      8
+    ],
+    "shell_noise": [
+      4,
+      5
+    ],
+    "forbidden_artifacts_opened": [],
+    "audit_commands_executed": [],
+    "guard_commands_executed": [],
+    "git_writes": [],
+    "external_communication": [],
+    "command_composition_deviations": [
+      {
+        "reads": [
+          39,
+          42
+        ],
+        "description": "These two sed commands used a dollar-prefixed p in the single-quoted end-of-file address. The host accepted them, but that raw spelling conflicts with the workspace's textual shell-composition rule. The actual commands and outputs are retained."
+      }
+    ]
+  },
+  "records": [
+    {
+      "sequence": 1,
+      "label": "memory registry quick pass",
+      "cmd": "rg -n 'workflow-canon|audit.*matrix|audit-qualification' /home/mike1/.codex/memories/MEMORY.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "81e2ee",
+        "wall_time_seconds": 0.000003746,
+        "exit_code": 0,
+        "original_token_count": 48,
+        "output": "24:- workflow-canon, integration-review, Review and report only, config/branches, docker, main, workflows, workspace, engine/corpus pairing, hooks frontmatter, progressive disclosure, PR-1295\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": true,
+        "read_only": true,
+        "batch": 1,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 48,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 2,
+      "label": "workspace instructions",
+      "cmd": "cat AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "f4a2f5",
+        "wall_time_seconds": 0.00000148,
+        "exit_code": 0,
+        "original_token_count": 1352,
+        "output": "# Workspace Instructions\n\n- **Here:** how work is conducted, how prose is written, and the local code index.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n\n## Project Instructions\n\n- You must adopt all content from .project/<folder> *when* working on content in that folder:\n  - .project/main/[AGENTS.md](http://AGENTS.md)\n\n- Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.\n- Follow the folder naming pattern at: /.engineering/artifacts/planning/ and use to store *all* planning artifacts\n\n\n\n## Design principles\n\n- No backward compatibility. Remove obsolete paths rather than adding compatibility layers, fallbacks, or migrations.\n- Simplest implementation that fully meets requirements — no speculative abstraction, configuration, or indirection.\n- Grow in layers: smallest version that works end to end, then build on a product that already works.\n- Never trade working for unfinished.\n- Modular components, separated concerns (see SOLID)\n- Prefer established libraries to reimplementing. Check a library's docs and types before assuming it lacks a capability.\n- Exhaust existing dependencies before adding a package.\n- Decide for the long term. No stopgap meant to be replaced later.\n- Obey SOLID principles (Single responsibility, Open–closed, Liskov substitution, Interface segregation, Dependency inversion) when making changes to both source and documentation.\n\n\n\n## Code and Documentation\n\n- Follow existing patterns\n- Clear, professional language\n- No process attribution in comments (“Added by agent”).\n- **Describe the design, not the change to it.** Definitions, code and doc comments, and **commit subjects** state the system as it is, present tense, without naming what they replaced (eg write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`). For an absent value, say what holds when it is missing. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”.\n  - A live hazard survives, stated as an invariant: *a marker is unreadable to a context that never received the bytes* — not *this is why the old rule forbade it*.\n  - Exceptions: issue and PR bodies, and commit bodies. A reviewer needs the before-state; nothing that persists past merge does.\n  - After a behaviour change, grep out surviving descriptions of the old one — doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A stale claim reads as current fact.\n- **Prefer removing the thing that needs a prohibition.** Prose warning \"do not also use X\" usually means two paths now do one job. Retire one and the warning goes, along with the validation that policed the overlap.\n\n\n\n## User Interaction\n\n- Words cost tokens! Be as succinct as possible *without* compromising fidelity.\n- First and foremost your job is to *maximise* fidelity while *minimising* cognitive load\n- Reponses should use plain language and be as succinct as possible\n- Prefer bullet points instead of large blocks of prose when responding to the user\n- For responses that concern system design should split by area of concern in the system eg corpus, guards, tests, source. \n- Each area of conern should be titled and sub-divided into a bulletted list of problem/solution pairs with one plain-language paragraph for each of the problem solution. Jargon should be disambiguated. Use two space seperators between title items.\n- When user input is required to reconcile outstanding issues or design choices, present the user a sequence of questions, one-at-a-time, interview-style. Each question should have multiple choice answers with a recommended option. Each question should be preceded by a plain-language paragraph worded to aid the decision kaing process.\n- Always treat user requests at the start of a new chat as an incomplete specification. Use the interview style to illicit further information fromf the user until you are confident you have sufficient understanding to properly proceed.\n\n\n\n## Commits and pushes\n\n- Commit and push upon completion of any discrete user request to the current branch\n- **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.\n- **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.\n- **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.\n- **A pull request delivering initiative work starts its title with the epic reference:** `[I07:E00] Purpose`.\n\n\n\n## Task management\n\n- Complete **one** task at a time unless the user asks for multiple.\n- For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.\n- Request permission before starting a new task or making changes outside the current request.\n- *ALWAYS* use a local work-tree when working on a branch\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": true,
+        "read_only": true,
+        "batch": 1,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 1352,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 3,
+      "label": "workspace main project instructions",
+      "cmd": "cat .project/main/AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "402bcc",
+        "wall_time_seconds": 0.000002045,
+        "exit_code": 0,
+        "original_token_count": 1186,
+        "output": "# Project Instructions\n\nProject instructions for this repository.\n\n- **Here:** rules that change what an agent does on an ordinary turn. A how-to for one kind of task lives in the doc that task already has.\n- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n- When building, testing, or changing a checkout, follow [development.md](docs/development.md).\n\n## Worktrees\n\n- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.\n- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.\n- Provision, rename, and a corpus-only sweep: [guards/README.md](guards/README.md#running-guards-in-a-worktree).\n\n\n\n## Dependencies\n\n- **Never delete the lockfile or run** `npm update`**.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.\n- Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).\n\n\n\n## Boundaries\n\n- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.\n- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).\n\n\n\n## Issues and PRs\n\n- **Shape:** See the reference example: [#394](https://github.com/m2ux/workflow-server/issues/394)\n- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.\n- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations (\"references\", not \"refs\"), no anti-pattern numbers, no code tokens unless the token is the subject.\n- **No file:line citations in the body.** Evidence reads as prose.\n- **Spell out jargon.** \"Phase 0/1/2\" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.\n- **One paragraph per stage, and no section that restates another.** Where a \"what was verified\" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.\n- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.\n- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.\n- **A pull request lands on** `main` **or on** `workflows`**.** Code and definitions sit on separate long-lived branches, so the base is a choice. One aimed anywhere else is a stack: it merges, reads as delivered, and reaches neither branch until its base lands. Check the base before merging, and re-target a stacked request the moment its base merges.\n- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.\n\n\n\n## Testing\n\nCommands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).\n\n- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.\n\n\n\n## Where to look\n\n[docs/README.md](docs/README.md) is the index. Open the page for the task. \n\nA **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.\n\nEngineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md)."
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": true,
+        "read_only": true,
+        "batch": 1,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 1186,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 4,
+      "label": "worktree instructions",
+      "cmd": "cat AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "81fdba",
+        "wall_time_seconds": 0.000002849,
+        "exit_code": 0,
+        "original_token_count": 1391,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\n# Workspace Instructions\n\n- **Here:** how work is conducted, how prose is written, and the local code index.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n\n## Project Instructions\n\n- You must adopt all content from .project/<folder> *when* working on content in that folder:\n  - .project/main/[AGENTS.md](http://AGENTS.md)\n\n- Any instructions found in those files that *conflict* with those prescribed here *override* these instructions for *that* component.\n- Follow the folder naming pattern at: /.engineering/artifacts/planning/ and use to store *all* planning artifacts\n\n\n\n## Design principles\n\n- No backward compatibility. Remove obsolete paths rather than adding compatibility layers, fallbacks, or migrations.\n- Simplest implementation that fully meets requirements — no speculative abstraction, configuration, or indirection.\n- Grow in layers: smallest version that works end to end, then build on a product that already works.\n- Never trade working for unfinished.\n- Modular components, separated concerns (see SOLID)\n- Prefer established libraries to reimplementing. Check a library's docs and types before assuming it lacks a capability.\n- Exhaust existing dependencies before adding a package.\n- Decide for the long term. No stopgap meant to be replaced later.\n- Obey SOLID principles (Single responsibility, Open–closed, Liskov substitution, Interface segregation, Dependency inversion) when making changes to both source and documentation.\n\n\n\n## Code and Documentation\n\n- Follow existing patterns\n- Clear, professional language\n- No process attribution in comments (“Added by agent”).\n- **Describe the design, not the change to it.** Definitions, code and doc comments, and **commit subjects** state the system as it is, present tense, without naming what they replaced (eg write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`). For an absent value, say what holds when it is missing. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”.\n  - A live hazard survives, stated as an invariant: *a marker is unreadable to a context that never received the bytes* — not *this is why the old rule forbade it*.\n  - Exceptions: issue and PR bodies, and commit bodies. A reviewer needs the before-state; nothing that persists past merge does.\n  - After a behaviour change, grep out surviving descriptions of the old one — doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A stale claim reads as current fact.\n- **Prefer removing the thing that needs a prohibition.** Prose warning \"do not also use X\" usually means two paths now do one job. Retire one and the warning goes, along with the validation that policed the overlap.\n\n\n\n## User Interaction\n\n- Words cost tokens! Be as succinct as possible *without* compromising fidelity.\n- First and foremost your job is to *maximise* fidelity while *minimising* cognitive load\n- Reponses should use plain language and be as succinct as possible\n- Prefer bullet points instead of large blocks of prose when responding to the user\n- For responses that concern system design should split by area of concern in the system eg corpus, guards, tests, source. \n- Each area of conern should be titled and sub-divided into a bulletted list of problem/solution pairs with one plain-language paragraph for each of the problem solution. Jargon should be disambiguated. Use two space seperators between title items.\n- When user input is required to reconcile outstanding issues or design choices, present the user a sequence of questions, one-at-a-time, interview-style. Each question should have multiple choice answers with a recommended option. Each question should be preceded by a plain-language paragraph worded to aid the decision kaing process.\n- Always treat user requests at the start of a new chat as an incomplete specification. Use the interview style to illicit further information fromf the user until you are confident you have sufficient understanding to properly proceed.\n\n\n\n## Commits and pushes\n\n- Commit and push upon completion of any discrete user request to the current branch\n- **A fix belongs in the pull request whose code it fixes.** A defect found while reviewing a branch is corrected on that branch, not carried onto a later one in a stack. Amend, rebase or force-push as needed to put it there — a branch with no other contributors is yours to rewrite.\n- **Commit incrementally while building.** Distinct work lands as its own commit, so the branch records how it was built. That is about not collapsing unrelated changes into one commit; it is never a reason to leave a fix in the wrong place.\n- **Push with plain** `git push`**.** When a push will not fast-forward on a branch someone else may hold, stop and ask rather than rewriting.\n- **A pull request delivering initiative work starts its title with the epic reference:** `[I07:E00] Purpose`.\n\n\n\n## Task management\n\n- Complete **one** task at a time unless the user asks for multiple.\n- For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.\n- Request permission before starting a new task or making changes outside the current request.\n- *ALWAYS* use a local work-tree when working on a branch\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": true,
+        "read_only": true,
+        "batch": 1,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 1391,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 5,
+      "label": "worktree project instruction location",
+      "cmd": "ls -ld .project .project/main .project/main/AGENTS.md skills skills/workflow-canon skills/workflow-canon/SKILL.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "5b780c",
+        "wall_time_seconds": 0,
+        "exit_code": 2,
+        "original_token_count": 133,
+        "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nls: cannot access '.project': No such file or directory\nls: cannot access '.project/main': No such file or directory\nls: cannot access '.project/main/AGENTS.md': No such file or directory\ndrwxr-xr-x 6 mike mike1 4096 Oct 11 06:28 skills\ndrwxr-xr-x 6 mike mike1 4096 Oct 11 06:28 skills/workflow-canon\n-rw-r--r-- 1 mike mike1 4602 Oct 11 07:05 skills/workflow-canon/SKILL.md\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": true,
+        "read_only": true,
+        "batch": 1,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 133,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 6,
+      "label": "memory match context",
+      "cmd": "sed -n '1,39p' /home/mike1/.codex/memories/MEMORY.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "7c639d",
+        "wall_time_seconds": 0.000006938,
+        "exit_code": 0,
+        "original_token_count": 896,
+        "output": "# Task Group: workflow-server PR documentation and Workflow Canon integration review\n\nscope: Produce representative PR bodies and repository-specific integration reviews; use for evidence-backed PR updates, long-lived-branch coverage, and read-only review findings.\napplies_to: cwd=/home/mike1/projects/dev/workflow-server; reuse_rule=PR numbers and commits are historical as of 2026-10-10; reuse the procedure after refreshing checkout and remote state.\n\n## Task 1: Rewrite representative PR #1225 and #1226 bodies; success\n\n### rollout_summary_files\n\n- rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md (cwd=/home/mike1/projects/dev/workflow-server, rollout_path=/home/mike1/.codex/sessions/2026/10/10/rollout-2026-10-10T06-44-30-01a12457-67a2-7350-9541-c6d156e7c316.jsonl, updated_at=2026-10-10T18:10:40+00:00, thread_id=01a12457-67a2-7350-9541-c6d156e7c316, success; published bodies compared exactly)\n\n### keywords\n\n- representative pr bodies, PR-1225, PR-1226, gh api PATCH, Development field, Overview, Changes, Test Plan, References\n\n## Task 2: Implement Workflow Canon integration review and update PR #1295 body; success\n\n### rollout_summary_files\n\n- rollout_summaries/2026-10-10T05-44-30-FK2a-workflow_server_pr_bodies_and_integration_review_skill.md (cwd=/home/mike1/projects/dev/workflow-server, rollout_path=/home/mike1/.codex/sessions/2026/10/10/rollout-2026-10-10T06-44-30-01a12457-67a2-7350-9541-c6d156e7c316.jsonl, updated_at=2026-10-10T18:10:40+00:00, thread_id=01a12457-67a2-7350-9541-c6d156e7c316, success; PR #1295 body and evidence verified)\n\n### keywords\n\n- workflow-canon, integration-review, Review and report only, config/branches, docker, main, workflows, workspace, engine/corpus pairing, hooks frontmatter, progressive disclosure, PR-1295\n\n## User preferences\n\n- For “representative pr bodies,” describe current delivered changes and validation, not historical merge narrative or unsupported blanket test-pass claims. [Task 1]\n- The user selected “Review and report only” -> do not implement fixes during integration review; report evidence-backed findings. [Task 2]\n- Coverage must consider “project languages, constructs, tests, schema and implementation specifics of each long-lived branch”; use docs and architecture to plan branch-aware checks. [Task 2]\n\n## Reusable knowledge\n\n- Use the work-planner PR template. Update with `gh api --method PATCH repos/m2ux/workflow-server/pulls/{number} -F body=@file`, re-fetch, and compare the published body with the prepared file. GitHub Development supports PR-to-issue/branch, not PR-to-PR, so incorporated PR references remain in the body. [Task 1]\n- Keep a PR Test Plan as one table with `[✓](URL#section)` or `[Partial](URL#section)` result links. Verify URLs/anchors before patching, retain Partial where validation is incomplete, then compare the live body exactly. [Task 2]\n- Long-lived branches from `config/branches` are `docker`, `main`, `workflows`, `workspace`: main owns server code/schemas, workflows definitions/techniques/resources, docker packaging, workspace shared agent skills/configuration. Pair engine with its corpus worktree or corpus-dependent tests can silently skip. [Task 2]\n- Integration findings need captured revisions, prerequisites, inputs, working directory, ordered reproduction, expected/observed results, execution status, and explicit evidence gaps. Validation recorded 797 local links, 42 command blocks, 36 edit-guard tests, and 3 mode-summary tests. [Task 2]\n\n## Failures and how to do differently\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 2,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 896,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 7,
+      "label": "nested instruction files",
+      "cmd": "rg --files --hidden -g AGENTS.md -g '!node_modules/**' -g '!.git/**' skills",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "edbe8f",
+        "wall_time_seconds": 0.000002358,
+        "exit_code": 1,
+        "original_token_count": 0,
+        "output": ""
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 2,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 0,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 8,
+      "label": "planning ancestor instruction files",
+      "cmd": "ls -l .engineering/AGENTS.md .engineering/artifacts/AGENTS.md .engineering/artifacts/planning/AGENTS.md .engineering/artifacts/planning/2026-10-11-canon-audit-matrices/AGENTS.md .engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "e0c8e9",
+        "wall_time_seconds": 0.000002566,
+        "exit_code": 2,
+        "original_token_count": 124,
+        "output": "ls: cannot access '.engineering/artifacts/AGENTS.md': No such file or directory\nls: cannot access '.engineering/artifacts/planning/AGENTS.md': No such file or directory\nls: cannot access '.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/AGENTS.md': No such file or directory\nls: cannot access '.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/validation-evidence/AGENTS.md': No such file or directory\n-rw-r--r-- 1 mike mike1 295 Sep 26 18:52 .engineering/AGENTS.md\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 2,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 124,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 9,
+      "label": "Workflow Canon skill entrypoint",
+      "cmd": "cat skills/workflow-canon/SKILL.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "ab3f73",
+        "wall_time_seconds": 0.000003478,
+        "exit_code": 0,
+        "original_token_count": 1151,
+        "output": "---\nname: workflow-canon\ndescription: >-\n  A work-design assistant for workflow-server goals, requirements, architecture, contracts and design decisions. Use to author workflow definitions (\"write a new activity\", \"apply this finding\"), audit them against the design canon (\"audit workflow X\", \"why is this an anti-pattern?\"), review integrations (\"check these branches together\", \"assess integration readiness\"), or revise this skill (\"update the workflow-canon skill\").\nhooks:\n  PostToolUse:\n    - matcher: \"Edit|Write|MultiEdit\"\n      hooks:\n        - type: command\n          command: \"python3 \\\"${CLAUDE_PROJECT_DIR}/.claude/skills/workflow-canon/scripts/edit_guard.py\\\"\"\n---\n\n# Workflow Canon\n\nWorkflow Canon is a work-design assistant for shaping workflow-server work around its goals, requirements, architecture and constraints.\n\n- **Work**  Intended outcomes, requirements and constraints.\n- **Design**  Architecture, responsibilities, definitions and contracts.\n- **Canon**  The project's authoritative design criteria and conventions.\n- **Evidence**  Observations supporting design decisions, with their limits stated.\n\n## Modes\n\nRead the selected mode's file in full, then follow its links as each step needs them:\n\n- **[Author](references/author-mode.md)**\n  - Authoring definitions and specified changes\n  - Closing confirmed findings with their prescribed fixes\n  - Mapped draft walks and verification of written changes\n- **[Audit](references/audit-mode.md)**\n  - Canon questions and conformance of existing definitions\n  - Attribution and verification of findings\n  - Applicability matrices with independent verification\n  - Complete coverage reports\n- **[Review](references/review-mode.md)**\n  - Scope and revision pairings for integrations\n  - Tracing design and architecture through declarations and consumers\n  - Coverage matched to affected branches and languages\n  - Evidence for findings and readiness\n- **[Revise](references/revise-mode.md)**\n  - Changes to this skill's own files\n  - Conformance with shared and local skill guidelines\n\n## Rules\n\n- **Measured claims.**\n  Counts, revision identities and check outcomes come from command output or preserved run evidence.\n- **One home.**\n  Project documents own their design criteria. Fetch the authoritative section and apply it as written, including its exclusions; notes taken from it do not replace it.\n- **Linked sections.**\n  Retrieve a heading-linked section and its subsections only, stopping before the next heading of equal or higher level. Use targeted search and range reads; follow required prerequisites and expand only to resolve missing context. Explicit whole-document reading requirements still apply.\n- **Planning.**\n  When creating or using artifacts, all modes follow [Planning](references/planning.md).\n- **Commands.**\n  Before the first command spec, read the [shared command conventions](references/commands.md#conventions) and any additional conventions linked by its caller. Reuse complete prerequisites already read at the same revision; retrieve each operation's spec at its point of use.\n\n## Dependencies\n\n- **Git and repository search**\n  Revision capture, comparisons, isolated worktrees and locating criteria and consumers.\n- **GitHub CLI**\n  PR metadata, requirements, check evidence and authorized publication through REST on GitHub.\n- **Project instructions, documentation and runtimes**\n  Branch ownership, canon homes, schemas and validation tools for the affected product.\n- **Node and npm**\n  Engine and corpus checks use the paired engine's runtime, lockfile and installed tools, including TypeScript and `tsx`.\n- **Docker and Compose**\n  Packaging checks build and exercise disposable images and containers when deployment behavior is affected.\n- **Python 3.10+**\n  The definition edit hook, audit inventory/state/dispatch scripts and their tests.\n- **Paired YAML parser**\n  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.\n- **Agent host and sandbox**\n  Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.\n- **Claude Code hooks**\n  Registers the definition edit hook for the session; its script resolves beneath the workspace root named by `CLAUDE_PROJECT_DIR`. Hosts without skill-hook support run the applicable explicit checks.\n- **Workflow resource access**\n  A running workflow's resource tool can supply canon sections and report guides when available.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 2,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 1151,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 10,
+      "label": "engineering artifact instructions",
+      "cmd": "cat .engineering/AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server",
+      "result": {
+        "chunk_id": "09056d",
+        "wall_time_seconds": 0.000001961,
+        "exit_code": 0,
+        "original_token_count": 74,
+        "output": "# Engineering Instructions\n\nScope: `.engineering/` directory (artifacts, planning, history, and scripts).\n\n## Project overview\n\nThis folder contains:\n\n- **Artifacts** — Planning work packages under `artifacts/planning/`\n\nThe main application lives at the repo root. See the root `README.md`.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 3,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 74,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 11,
+      "label": "Audit mode full instructions",
+      "cmd": "cat skills/workflow-canon/references/audit-mode.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "c3cca5",
+        "wall_time_seconds": 0.00000438,
+        "exit_code": 0,
+        "original_token_count": 893,
+        "output": "# Audit Mode\n\nReviews existing definitions through independently verified change-surface matrices, evidence-backed evaluation, finding confirmation and a complete coverage gate. A single canon question uses the bounded procedure below.\n\n## Prerequisites\n\nRead the [canon prerequisites](canon-context.md#prerequisites), then its [terms](canon-context.md#terms).\n\n## Canon Question\n\nFor a single question about an entry, locate its [canon home](canon-context.md#homes), [fetch the entry](commands.md#fetch-unit) with its required context, answer and stop. The full audit procedure applies when the request calls for a conformance judgment over definitions.\n\n## Procedure\n\n1. **Scope the surface.**\n   - Read the [criteria context](canon-context.md#criteria).\n   - Resolve [scope](canon-context.md#scope), then follow the shared [change-surface lifecycle](change-surface.md).\n2. **Run the checks first.**\n   - Select the project's [checks](canon-context.md#checks), preferring a delta run when it can compare the base and candidate under equivalent conditions.\n   - Capture structural check outcomes now for inventory review; submit their typed observations during the obligations phase after the map is verified. AP/DP evaluation waits for that gate.\n3. **Map and verify.**\n   - Capture the full inventory and four section matrices, decide applicability and independently verify every decision through the shared lifecycle. Resolve all discrepancies before evaluation.\n4. **Evaluate.**\n   - Use [bounded assignments](audit-dispatch.md#phases) for the verified applicable cells and supporting obligations. The coordinator reconciles typed returns and preserves pending work.\n5. **Attribute.**  Give each finding its origin per [Attribution](#attribution).\n6. **Verify findings.**\n   - Dispatch independent confirmation through the [obligations phase](audit-dispatch.md#phases). Only confirmed findings drive fixes.\n7. **Report.**\n   - Read [Report Context](reporting.md#report-context) for bands, severity, row fields and coverage.\n   - Report in the layout [Which Report](reporting.md#which-report) names.\n8. **File a mechanised Detect.**\n   - A Detect applied by pattern is a guard candidate. Name what it keys on and record it against the registry in the report; external filing follows existing user authority.\n   - The threshold is the second occurrence: twice in one walk, or once in each of two consecutive walks. A `fix` finding counts.\n\n## Attribution\n\n- **`diff`**\n  A touched file, or a break that exists because an I/O contract on the change surface changed, including a stale bind or Apply in an untouched referencer or consumer.\n- **`pre-existing`**\n  The same construct and evidence at the base ref, independent of an I/O contract change on this surface.\n- **`known`**  A prior pass accepted this key. Keep the row. Leave it out of the decision surface.\n- **`fix`**\n  Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.\n\n## Rules\n\n- **Remediation.**\n  Confirmed findings go to [Author](author-mode.md) when fixing them is within the user's request. A review-only request reports the finding and any criterion correction without editing definitions, canon entries or exemption surfaces.\n- **Continue.**\n  Reconcile each return and continue the required residual through [dispatch](audit-dispatch.md#phases). An empty findings list is not coverage evidence.\n- **Stop.**\n  Use the shared [completion predicate](change-surface.md#completion). A user stop preserves an incomplete, resumable run.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 3,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 893,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 12,
+      "label": "Planning full instructions",
+      "cmd": "cat skills/workflow-canon/references/planning.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "f86cf7",
+        "wall_time_seconds": 8.44e-7,
+        "exit_code": 0,
+        "original_token_count": 322,
+        "output": "# Planning\n\nA planning record holds the artifacts for one piece of work: requirements, design decisions, analysis, evidence and reports. Modes share its location; the active mode determines which artifacts the work needs.\n\n## Location\n\n- **Instructions.**\n  Use the location specified by the user and applicable project instructions. The project default is `.engineering/artifacts/planning/` beneath the workspace checkout that owns the engineering history.\n- **Resolution.**\n  Resolve the workspace checkout and planning root before writing artifacts, including when working in a linked worktree. Record the resolved location.\n\n## Records\n\n- **Naming.**\n  Use `YYYY-MM-DD-<ref>-<slug>/`, omitting the reference when none exists, unless applicable instructions specify another convention. Derive the reference and descriptive slug from the work; the mode does not impose a folder suffix.\n- **Continuity.**\n  Reuse the record already established for the same work. Its artifacts from different modes remain together, with evidence and revision identities beside the conclusions they support.\n- **Authority.**\n  Writing, committing and publishing artifacts follow the active mode's authority and the user's instructions. A configured planning location does not grant publication authority.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 3,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 322,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 13,
+      "label": "supplied Audit scope",
+      "cmd": "cat skills/workflow-canon/test/fixtures/audit-qualification/seeded/scope.json",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "ddbfce",
+        "wall_time_seconds": 0.00000454,
+        "exit_code": 0,
+        "original_token_count": 180,
+        "output": "{\n  \"paths\": [\n    \"corpus/qualification/workflow.yaml\",\n    \"corpus/qualification/activities/run.yaml\",\n    \"corpus/qualification/techniques/produce.md\"\n  ],\n  \"checks\": [\"guards\"],\n  \"relationships\": [\n    {\n      \"source\": \"corpus/qualification/routines/deliver.yaml\",\n      \"target\": \"corpus/qualification/techniques/produce.md\",\n      \"address\": \"execution/qualification/run/delivery/deliver/emit\",\n      \"label\": \"qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination\",\n      \"context\": [\n        \"corpus/qualification/workflow.yaml\",\n        \"corpus/qualification/activities/run.yaml\",\n        \"corpus/qualification/techniques/TECHNIQUE.md\"\n      ]\n    }\n  ]\n}\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 3,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 180,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 14,
+      "label": "canon context section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "32cedc",
+        "wall_time_seconds": 0.000003512,
+        "exit_code": 0,
+        "original_token_count": 29,
+        "output": "1:# Canon Context\n5:## Prerequisites\n9:## Terms\n17:## Criteria\n23:## Scope\n29:## Homes\n43:## Checks\n47:## Edit Hook\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 29,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 15,
+      "label": "shared command section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "77f54b",
+        "wall_time_seconds": 0.0000018,
+        "exit_code": 0,
+        "original_token_count": 449,
+        "output": "1:# Commands\n3:## Conventions\n20:## Audit Command Conventions\n31:## Audit Surface\n33:### Initialize Audit Surface\n43:### Check Audit Status\n54:### Render Audit Surface\n64:### Plan Audit Assignments\n74:### Bind Audit Agent\n84:### Write Audit Packet\n94:### Submit Audit Results\n104:### Reset Audit Cells\n114:### Refresh Audit Surface\n124:### Retry Audit Assignment\n134:### Run Audit Script Tests\n144:## Revisions\n146:### Resolve Ref\n154:## Review Inputs\n156:### Fetch Pull Request\n166:### Fetch Requirements\n174:### Fetch Branches\n183:### Compare Revisions\n197:### Create Review Worktree\n205:### Prepare Integration Result\n218:### Abort Review Merge\n226:### Read Captured File\n234:### Read Captured Section\n245:### Fetch Check Evidence\n259:### Refresh Revisions\n268:## Project Checks\n270:### Run Project Check\n282:## Skill Revision\n284:### Create Skill Worktree\n293:### Run Skill Checks\n305:### Commit Skill Changes\n317:### Push Skill Branch\n330:### Open Skill Pull Request\n338:## Install Engine Dependencies\n348:## Run Engine Checks\n360:## Run Delivery Gate\n368:## Check Engine Documentation\n381:## Run Corpus Checks\n393:## Run Option Coverage\n405:## Count Running Sessions\n415:## Check Shell Syntax\n423:## Validate Compose\n433:## Build Review Image\n446:## Exercise Review Container\n461:## Restart Review Container\n469:## Stop Review Container\n477:## Check Skill Summaries\n487:## Canon Check Conventions\n498:### Guard Obligations\n515:## Checkouts\n517:### Find the Server Checkout\n527:### Check the Corpus Tree\n538:### Provision the Corpus\n546:## Corpus\n548:### List Units\n560:### List Units for a Construct\n572:### Fetch Unit\n580:### Find Consumers\n591:## Checks\n593:### Run Guard Suite\n604:### Run Guards on the Delta\n614:## Edit Guard\n616:### Run the Edit Guard\n639:### Run the Edit Guard Tests\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 449,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 16,
+      "label": "change surface full lifecycle",
+      "cmd": "cat skills/workflow-canon/references/change-surface.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "d65ee0",
+        "wall_time_seconds": 0.000001445,
+        "exit_code": 0,
+        "original_token_count": 2368,
+        "output": "# Change Surface\n\nAuthor and Audit use the same captured inventory, applicability matrices and evidence gates. Scripts establish structural coverage; independent agents establish semantic accuracy.\n\n## Capture\n\n1. **Locate the record.**\n   Resolve the shared [planning record](planning.md), corpus root and paired engine. Each run has its own directory beneath that record. Read the [audit command conventions](commands.md#audit-command-conventions) before the first audit command.\n2. **Declare the scope.**\n   Fill the [scope input](../templates/audit-scope.json) with paths relative to the corpus root, the exact base commit when comparing changes, and checks selected through [canon context](canon-context.md#checks). Include supporting resources, READMEs, routines, unchanged consumers and relationship context. The guard obligation is required. Candidate draft bytes must exist in an isolated corpus tree before capture.\n3. **Capture the bytes.**\n   [Initialize the surface](commands.md#initialize-audit-surface). It captures source bytes, revisions, parser/tool identities, deleted base files, all AP/DP entries and supplemental canon units. Four Markdown documents contain workflow, technique, routine and activity tables separated by source and section; empty types explicitly say so. The coordinator owns the state and generated views.\n4. **Check the proposed inventory.**\n   Read [Identity](#identity), then assign [independent inventory verification](audit-dispatch.md#phases). Verifiers derive expected items and relationships from captured sources and the corpus manifest. They compare the proposed rows, complete AP/DP inventory, diagnostics and unselected files against those expectations. Automated extraction is a candidate inventory, including unresolved reference candidates; it does not establish completeness.\n\n## Identity\n\n- **Items.**\n  Rows use the source path and native section, rule, input, output or step identifier. Nested steps retain their full ancestry and duplicate occurrences. Positional prose, paragraphs and candidate clauses use revision-bound source addresses. Independently testable constraints sharing one line need separate clause rows; verifiers add any missed boundary through the scope input's `rows` list. Whole-section, whole-element, missing-structure and relationship rows retain checks that span items.\n- **Relationships.**\n  Each call records its source, target, binding site, executing workflow and complete routine reference chain. Instantiations are separate from routine declarations. Check the paired engine's resolution and inheritance semantics; record ancestor sources and both endpoints explicitly. Add relationships and required context through the scope input when extraction cannot resolve them. An unresolved target can be a measured defect, but uncertainty about its actual target or context leaves inventory verification disputed.\n- **Supporting material.**\n  Resource and README rows belong to Workflow / Supporting Material under their actual namespace and source path. A namespace without a workflow definition remains a namespace. Shared content has one content row; referencing elements have relationship rows.\n- **Criteria.**\n  AP identity uses the canonical named entry; its current AP number is a display alias. DP aliases retain their numbered source headings and titles. Every row accounts for every captured AP and DP. Fires-on hints can order work; absent metadata or a missing lookup command cannot remove cells. The [canon inventory](canon-map.md#unit-inventory) also supplies family, creation-rule, convention and guard obligations.\n\n## Applicability\n\nUse [mapping assignments](audit-dispatch.md#phases) to decide every cell in the full row × AP/DP product. Each cell links to source evidence and exactly one disposition:\n\n| Status | Evidence |\n| --- | --- |\n| `A` | The criterion's scope and the construct that makes it apply |\n| `N` | The criterion's excluding wording and source facts satisfying it |\n| `U` | The evidence or decision still missing |\n\nShared reasons name the exact assigned row set and hold for every member. A clean result or a Do not flag exception is an evaluation under an applicable criterion; it does not by itself establish inapplicability. Blank cells are unresolved. Table pagination preserves every logical pair exactly once.\n\nAfter all decisions are `A` or `N`, independent verifiers check every cell, including every exclusion, against the original criterion and source. They cannot verify cells they mapped. The receipt binds the exact mapping reason, disposition and evidence. Disputes return to the coordinator for correction through [reset](commands.md#reset-audit-cells) or [refresh](commands.md#refresh-audit-surface), then fresh verification. Open the evaluation gate only when [status requires the map](commands.md#check-audit-status) successfully.\n\n## Evaluation\n\nAssign the verified applicable cells through [dispatch](audit-dispatch.md#phases). Workers follow the complete [walk rules](walk-rules.md), read the full source and required relationship context, and return evidence for each pass, finding or blockage. Reconcile returns through the typed [receipt](audit-dispatch.md#returns). Whole-file reads, supplemental units, selected project checks and independent finding confirmation are separate obligations. A command result carries its command, working directory, exit status and captured output; an unmeasured check stays blocked.\n\nThe calling mode owns remediation authority. Corrections to definitions return through Author's draft procedure. Review-only audits report findings. Workers have read authority; authorized edits are serialized by the coordinator or assigned disjoint file ownership before execution.\n\n## Completion\n\nThe audit is complete only when the current inventory is independently verified, every AP/DP cell has independently verified applicability, every applicable cell has an evidence-backed pass or finding, and every whole-file read, supplemental unit, required check and finding confirmation is settled. Unknown, disputed, stale, unread, unmeasured or blocked work keeps it incomplete. Every required item has one reconciled primary result; retries cannot overwrite accepted items. Use [status requiring completion](commands.md#check-audit-status) for the final claim.\n\nCoverage completion and conformance are separate. Confirmed violations can have complete coverage; [reporting](reporting.md#report-context) determines their bands and verdict. A user stop or resource limit leaves a saved incomplete run with its residual, never a finished audit.\n\n## Freshness and Resume\n\n- **Inspect the run.**\n  Start with [status](commands.md#check-audit-status), which returns bounded counts, generation identity and artifact paths. Locate residuals through the coverage document's headings and assignment identifiers; issue the relevant [packet](commands.md#write-audit-packet) for source, mapping and ownership detail. The script-owned JSON ledger stores the complete dataset and is accessed through these projections.\n- **Source generations.**\n  Any corpus membership/byte change, scope correction, canon change, parser/engine change or audit-tool change blocks use of the captured generation. [Refresh](commands.md#refresh-audit-surface) captures the current generation and invalidates all its mapping, verification and evaluation evidence because cross-element dependency reach can exceed local source rows. An identical generation preserves its pending work. Archived state and immutable returns retain prior evidence.\n- **Mapping corrections.**\n  [Reset](commands.md#reset-audit-cells) invalidates a selected mapping and its verification/evaluation, including intersecting assignments. A reason or evidence edit changes the mapping fingerprint. Renewed evaluation waits for the entire current map to be verified.\n- **Interrupted workers.**\n  Accepted partial work remains recorded. [Retry](commands.md#retry-audit-assignment) retires an assignment and [planning](commands.md#plan-audit-assignments) assigns its unresolved residual. A fresh agent can continue after the coordinator checks captured identities and current status.\n- **Author byte agreement.**\n  Before applying a verified draft, compare its captured source hashes with the bytes to write. After writing, capture the actual working tree and run its selected checks. Reuse evidence only for an identical generation; changed roots, contracts or candidate bytes require their current verification. A draft-only request makes no commit-completion claim.\n\n## Artifacts\n\n| Artifact | Role |\n| --- | --- |\n| `audit-state.json` | Coordinator-owned inventory, evidence, assignments and history |\n| `change-surface-{workflow,technique,routine,activity}.md` | Section matrices, including explicit empty types |\n| `audit-evidence.md` | Cell reasons, independent receipts and evidence links |\n| `audit-coverage.md` | Inventory, criterion aliases, assignments and residuals |\n| `sources/` | Captured source and check-output bytes |\n| `worker-results/` | Immutable typed returns by assignment and attempt |\n| `generations/` | Prior state when the captured generation changes |\n| `audit-report.md` | Generated standalone findings and completion status |\n\nFor a workflow-owned report, follow [Workflow Reports](reporting.md#workflow-reports) and transfer the generated counts, residuals and links into that guide's layout. The generated coverage remains authoritative.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 2368,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 17,
+      "label": "dispatch section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/audit-dispatch.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "dde108",
+        "wall_time_seconds": 0.000001437,
+        "exit_code": 0,
+        "original_token_count": 15,
+        "output": "1:# Audit Dispatch\n5:## Phases\n19:## Sizing\n33:## Returns\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 15,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 18,
+      "label": "reporting section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/reporting.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "dacb23",
+        "wall_time_seconds": 0.000001433,
+        "exit_code": 0,
+        "original_token_count": 82,
+        "output": "1:# Reporting\n5:## Report Context\n9:### Bands\n19:### Severity\n32:### Finding Rows\n48:### Coverage Ledger\n60:### File Coverage\n73:### Coverage Header\n77:## Which Report\n81:## Standalone\n86:# Canon Audit — `{target}`\n98:## Change Surface\n106:## Findings\n111:## Coverage\n113:## File Coverage\n121:## Known\n126:## Workflow Reports\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 82,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 19,
+      "label": "supplied controlled dialect file names",
+      "cmd": "rg --files skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "01a451",
+        "wall_time_seconds": 0.00000338,
+        "exit_code": 0,
+        "original_token_count": 230,
+        "output": "skills/workflow-canon/test/fixtures/audit-qualification/seeded/scope.json\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/canon/resources/anti-patterns.md\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/canon/resources/design-principles.md\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/canon/resources/convention-conformance.md\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/qualification/workflow.yaml\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/qualification/activities/run.yaml\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/qualification/routines/deliver.yaml\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/qualification/techniques/TECHNIQUE.md\nskills/workflow-canon/test/fixtures/audit-qualification/seeded/corpus/qualification/techniques/produce.md\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 4,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 230,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 20,
+      "label": "canon prerequisites",
+      "cmd": "sed -n '5,8p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "c506e0",
+        "wall_time_seconds": 0.000004029,
+        "exit_code": 0,
+        "original_token_count": 39,
+        "output": "## Prerequisites\n\nRead the [command conventions](commands.md#conventions) before the first command spec. Read the sections below as the task needs them.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 39,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 21,
+      "label": "canon terms",
+      "cmd": "sed -n '9,16p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "abc702",
+        "wall_time_seconds": 0.000002176,
+        "exit_code": 0,
+        "original_token_count": 106,
+        "output": "## Terms\n\n- **Unit**  One criterion at the level the [canon inventory](canon-map.md#unit-inventory) specifies.\n- **Entry**\n  An anti-pattern unit: its Detect finds the defect, its Do not flag excuses a look-alike, and its Fix closes it.\n- **Walk**  Applying each unit to every file on the surface and recording its status.\n- **Change surface**  Touched files and their contract closure, resolved through [Scope](#scope).\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 106,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 22,
+      "label": "canon criteria",
+      "cmd": "sed -n '17,22p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "30b1de",
+        "wall_time_seconds": 0.000001345,
+        "exit_code": 0,
+        "original_token_count": 108,
+        "output": "## Criteria\n\nUse the [canon homes](#homes) at the captured revisions. Read the complete [canon map](canon-map.md) before the first unit for its enumeration and prior-judgment guidance. Fetch each required unit through [Fetch Unit](commands.md#fetch-unit).\n\nFollow covering entries where their Detect reaches, and the owning principle for spellings beyond that Detect. Every walk follows the complete [walk rules](walk-rules.md).\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 108,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 23,
+      "label": "canon scope",
+      "cmd": "sed -n '23,28p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "45101b",
+        "wall_time_seconds": 0.000001994,
+        "exit_code": 0,
+        "original_token_count": 119,
+        "output": "## Scope\n\nResolve the requested definitions to files, touched paths, changed I/O contracts, their reference closure, consumers and relevant siblings using [Definition Scope](definition-scope.md#scope). Record the base and full revision identities through [Resolve Ref](commands.md#resolve-ref). A new definition includes the files that bind it into the project.\n\nResolve any prior residual from the shared [planning record](planning.md) by current path before continuing it.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 119,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 24,
+      "label": "canon check selection",
+      "cmd": "sed -n '43,46p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "0c21db",
+        "wall_time_seconds": 0.000002029,
+        "exit_code": 0,
+        "original_token_count": 135,
+        "output": "## Checks\n\nRead [Canon Check Conventions](commands.md#canon-check-conventions) before a selected canon check. A full audit prefers [Run Guards on the Delta](commands.md#run-guards-on-the-delta); draft and post-write checks use [Run Guard Suite](commands.md#run-guard-suite). A step-list, exit, gate or graph change also requires [Run Option Coverage](commands.md#run-option-coverage), baselined before editing. Select broader consumer coverage from [Workflows Coverage](coverage.md#workflows-coverage) when shared constructs are affected.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 135,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 25,
+      "label": "shared command conventions",
+      "cmd": "sed -n '3,19p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "aa2805",
+        "wall_time_seconds": 8.03e-7,
+        "exit_code": 0,
+        "original_token_count": 373,
+        "output": "## Conventions\n\nEach operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.\n\n- **Locations.**\n  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.\n- **Execution.**\n  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.\n- **Remote access.**\n  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.\n- **Evidence.**\n  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.\n- **Substitution.**\n  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.\n- **Authored text.**\n  Commit messages and PR bodies go through files.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 373,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 26,
+      "label": "audit command conventions",
+      "cmd": "sed -n '20,30p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "598642",
+        "wall_time_seconds": 0.000001709,
+        "exit_code": 0,
+        "original_token_count": 269,
+        "output": "## Audit Command Conventions\n\n- **Runtime.**\n  Read [Conventions](#conventions) first. Use Python 3.10+ and Node with the paired engine's installed `yaml` package. Resolve `<skill-root>`, `<corpus-root>`, `<engine-root>` and the shared planning `<run>` directory to absolute paths. Apply the host's sandbox rules.\n- **Ownership.**\n  The coordinator invokes mutations sequentially; workers return files. Preserve failures and output in the planning record.\n- **Inputs.**\n  JSON files follow the [scope](../templates/audit-scope.json), [budget](../templates/audit-budgets.json) and [receipt](../templates/audit-receipt.json) contracts. Fill actual limits and measured calibration. Scope can include `base`, additional `rows` with source/address/section/start/end/context, and `relationships` with source/target/address/label/context.\n- **Exit status.**\n  Exit 0 means the operation succeeded; status with `--require` returns 2 when the requested gate is incomplete; exit 1 means invalid input or unavailable operation. Rendering and planning do not establish audit completion.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 269,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 27,
+      "label": "Audit phases",
+      "cmd": "sed -n '5,18p' skills/workflow-canon/references/audit-dispatch.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "1c4ee7",
+        "wall_time_seconds": 0.000003787,
+        "exit_code": 0,
+        "original_token_count": 386,
+        "output": "## Phases\n\n| Phase | Required Work | Independent Role |\n| --- | --- | --- |\n| `inventory` | Source enumeration, closure, every proposed row and complete canon inventory | Agent other than the inventory author |\n| `map` | Every row × AP/DP cell | Mapping author recorded per cell |\n| `verify` | Every settled mapping, including `N` | Agent other than that cell's mapper |\n| `evaluate` | Every independently verified `A` cell | Audit worker with full source and relationship context |\n| `obligations` | Whole-file reads, supplemental units, selected checks and finding confirmation | Finding confirmer differs from its author |\n\nInventory and mapping can proceed together. Verification requires all mapping decisions settled. Evaluation and audit obligations require the complete independently verified map. Plan finding confirmations after findings return. Critical and High findings are re-derived, Mediums spot-confirmed; downgrades state the resulting severity and band.\n\nUse [Plan Audit Assignments](commands.md#plan-audit-assignments), [Bind Audit Agent](commands.md#bind-audit-agent), then [Write Audit Packet](commands.md#write-audit-packet). Bind the actual host agent identity, give it the packet and [return contract](#returns), and dispatch through the host. Scripts do not create agents or turn simulated judgments into semantic validation. Inventory packets carry proposed rows, AP/DP and supplemental criteria, required checks, diagnostics and corpus manifest slices; captured bytes for unselected sources remain inspectable.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 386,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 28,
+      "label": "report context",
+      "cmd": "sed -n '5,76p' skills/workflow-canon/references/reporting.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "2b7eb0",
+        "wall_time_seconds": 7.77e-7,
+        "exit_code": 0,
+        "original_token_count": 989,
+        "output": "## Report Context\n\nRead this section before selecting a report layout.\n\n### Bands\n\n| Band | Holds | Target |\n|---|---|---|\n| **Live** | The definition misbehaves as it stands — a value read before its producer runs, a bind of the wrong value, a gate option that reaches no path | Zero, every pass |\n| **Contract** | The defect propagates while the run still works — a second home for an owned fact, a constraint with no structural backing, a citation whose home lacks the claim | Zero, every pass |\n| **Hygiene** | Contained to the prose it sits in | A falling ratchet against the prior pass |\n\nState each band's count. The verdict is Live and Contract. Text a fix writes is checked within its pass, so a pass reports no finding its own fixes made.\n\n### Severity\n\nSeverity ranks urgency inside a band. The band says whether the finding gates.\n\n| Severity | Fires when |\n|----------|-----------|\n| `Critical` | Schema-invalid or structurally broken. Must not be committed. Every guard failure is Critical. |\n| `High` | An entry fires on a construct the change ships, and the defect propagates |\n| `Medium` | An entry fires and the defect stays in that construct |\n| `Low` | Hygiene with no consumer consequence |\n\nThe [dispatch phases](audit-dispatch.md#phases) own finding confirmation. An unmeasured guard records `blocked` coverage; the [canon check conventions](commands.md#canon-check-conventions) define its exit statuses.\n\n### Finding Rows\n\n| Column | Carries |\n|--------|---------|\n| ID | Stable within the report |\n| Band | `Live`, `Contract`, or `Hygiene` |\n| Severity | The scale above |\n| Entry | As the catalog's entry-identity rule states. A principle by the title its file uses: an anchor that embeds the section ordinal breaks when a principle is inserted ahead of it |\n| Location | File and field, at the depth the evidence sits |\n| Evidence | The construct Detect keys on, quoted or named. A closure-only file says which contract it references |\n| Origin | `diff` or `pre-existing`, per [Attribution](audit-mode.md#attribution) |\n| Known | Set when a prior pass accepted this key |\n| Fix | The action the entry prescribes, in one line |\n\nA row whose Evidence cannot name a construct is not a finding. Evidence and Location cite any construct in a change-surface file.\n\n### Coverage Ledger\n\nThe generated [coverage state](change-surface.md#artifacts) accounts for every row–criterion cell, inventory, file read and supplemental obligation. The findings report summarizes divergences and links to that complete ledger.\n\n| Column | Carries |\n|--------|---------|\n| Home | The criteria home |\n| Unit | The section title or anchor, as the home spells it |\n| Status | `not-applicable` with the unit's own reason, or `blocked` with what prevented the walk |\n\nDerive unknown, unverified, unevaluated and supplemental residuals from current state. Preserve each residual's identifiers. Display counts summarize those lists.\n\n### File Coverage\n\nIndependent of the unit ledger: every unit can be `walked` while the surface stays unopened.\n\n| Disposition | Means |\n|-------------|-------|\n| `read` | The whole file was inspected |\n| `unread` | Anything else |\n\nA scan hit is `read` only when the file was then inspected whole. A scan is evidence for a finding, not a path disposition. `read` and `unread` sum to the enumeration; where they do not, the report states the list that was walked.\n\nList the `unread` paths. While any remain, the header's status is the [coverage header](#coverage-header). An existence claim over a list that still has `unread` paths says so on the finding.\n\n### Coverage Header\n\nUse `finished` only when the shared [completion predicate](change-surface.md#completion) holds; otherwise use `in progress`. Include the captured generation, row and AP/DP counts, verified applicability, applicable-cell evaluations, unread sources and unresolved supporting obligations. Every count reconciles to the generated state.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 989,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 29,
+      "label": "report route",
+      "cmd": "sed -n '77,80p' skills/workflow-canon/references/reporting.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "9bcf52",
+        "wall_time_seconds": 0.000001872,
+        "exit_code": 0,
+        "original_token_count": 57,
+        "output": "## Which Report\n\nInside workflow-authoring or workflow-design, use [Workflow Reports](#workflow-reports). Otherwise use the [Standalone](#standalone) layout. Stored artifacts follow the shared [planning guide](planning.md).\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 5,
+        "max_output_tokens": 20000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 57,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 30,
+      "label": "complete canon map",
+      "cmd": "cat skills/workflow-canon/references/canon-map.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "460762",
+        "wall_time_seconds": 0.000004776,
+        "exit_code": 0,
+        "original_token_count": 492,
+        "output": "# Canon Map\n\nHow each home is enumerated, and where a judgement already made is recorded.\n\n## Unit Inventory\n\nRead the enumeration from the home at the commit audited, with [List units](commands.md#list-units).\n\n| Home | Unit |\n|------|------|\n| Anti-Patterns | One `##` family; each `###` entry inside it |\n| Design Principles | One `##` |\n| Convention Conformance | One `##` |\n| Guards | One registry entry in `guards/guards.ts` |\n\n- Read the catalog through its last family. Appended entries share that family, so its title is not the end of the list.\n- The catalog's first family binds when the change edits a canon home: `anti-patterns.md`, `design-principles.md`, or `convention-conformance.md`. Otherwise it is `not-applicable`, with that reason.\n\n## Prior Judgments\n\nAn entry can fire against an instance a surface has already judged. Read that surface before hand-walking an entry whose registry line claims the check.\n\n| Authority | Where | Records |\n|-----------|-------|---------|\n| A guard's exemption surface | In the guard or a module it shares — `EXEMPT_DATA_IDS` in `src/schema/identifiers.ts`; the kind and pipeline sets in `guards/check-prism-lens-reachability.ts` | Instances the check excuses, each with a reason |\n| Triage ledgers | `ledgers/binding-fidelity-triage.json` and `ledgers/section-framing-triage.json` on the corpus tree | A verdict and a rationale per finding. Binding-fidelity stamps the corpus commit |\n| Reasoned exemption lists | `walks/option-coverage.json` on the corpus tree | Options a walk need not reach, under the reason that covers them |\n\n`EXEMPT_DATA_IDS` is compiled into the Zod variable schema and the published JSON schemas.\n\n## File Kinds\n\nAuthor and Audit establish applicability through the shared [matrix contract](change-surface.md#applicability). The complete [unit inventory](#unit-inventory) supplies the matrix and supplemental obligations. Fires-on metadata, when available, is a prioritization hint.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 492,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 31,
+      "label": "complete walk rules",
+      "cmd": "cat skills/workflow-canon/references/walk-rules.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "41f8c4",
+        "wall_time_seconds": 0.000006388,
+        "exit_code": 0,
+        "original_token_count": 583,
+        "output": "# Walk Rules\n\nThese govern every walk of the canon's units, in each mode. The criterion applied on a hit is the entry's.\n\n## Order\n\n- **Entry-major.**\n  One unit across the surface, paths recorded, then the next. A file-major walk drops later instances of an entry that already fired.\n- **Compound headings.**\n  - On a `## Rules` or I/O heading, apply each binding entry to each constraint on its own, before testing the heading whole.\n  - The entry's Do not flag covers that constraint. A sound first sentence leaves the sibling clause still to test.\n\n## Evidence\n\n- **The construct.**\n  A finding quotes or names the construct the entry's Detect keys on. Where that construct is the harness tool surface or a bootstrap resource, read that surface.\n- **Identifiers.**\n  Take an identifier at full length from its authority: [Resolve Ref](commands.md#resolve-ref), the registry, the resolved path. The calling mode supplies command prerequisites through its canon context.\n- **Search hits.**\n  - A search hit is a site. Read the construct around it, and cite that construct.\n  - An empty search leaves open a construct the pattern did not name.\n- **Probes.**\n  Read a probe's field, label, id, and anchor back from the schema, the registry, or the catalog before reading the result.\n- **Consumers.**\n  A claim about what consumes a construct is settled at that consumer: the guard, the loader, or the call sites.\n- **Forms.**\n  Where an entry keys on a form, sweep the reference workflows before recording. Convention conformance decides a form the siblings carry.\n- **Hand-checks.**\n  - An empty hand-check is `blocked` until it has reported a case already in the corpus.\n  - Take a set the entry names from that entry's wording.\n\n## Candidates and Fixes\n\n- **Falling candidates.**\n  A candidate that falls identifies a correction to the entry's Do not flag or the guard's exemption surface. Apply that correction within authorized remediation; a review-only audit records it for Author.\n- **Unread paths.**\n  `unread` paths are outside the remediation scope.\n  - An audit walks them under [Rules](audit-mode.md#rules).\n- **Consumers of a Fix.**  Follow the entry's Fix through to the consumer it names.\n- **Ledgers, fixtures and snapshots.**\n  Edit the lines a ledger, fixture, or snapshot needs. The diff's size is the check.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 583,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 32,
+      "label": "canon homes",
+      "cmd": "sed -n '29,42p' skills/workflow-canon/references/canon-context.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "2cf270",
+        "wall_time_seconds": 0.000002303,
+        "exit_code": 0,
+        "original_token_count": 314,
+        "output": "## Homes\n\nRead homes on disk at the captured revisions. The links identify paths from the corpus or engine root; they do not substitute the latest web copy for the reviewed tree.\n\n| Home | Authority |\n| --- | --- |\n| Design principles | [Design principles](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/design-principles.md) |\n| Anti-patterns | [Anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) |\n| Convention conformance | [Convention conformance](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/convention-conformance.md) |\n| Guards | [Guard registry](https://github.com/m2ux/workflow-server/blob/main/guards/guards.ts) |\n| Schema fields | [Schemas](https://github.com/m2ux/workflow-server/blob/main/docs/schemas.md) |\n\nLocate unresolved roots through [Find the Server Checkout](commands.md#find-the-server-checkout) and [Check the Corpus Tree](commands.md#check-the-corpus-tree). The engine's instructions own paired checks, worktree selection and binding-fidelity triage. Node, npm and installed engine dependencies supply the guards; a live workflow session may supply individual sections through its resource tool.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 314,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 33,
+      "label": "definition scope section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/definition-scope.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "c079e8",
+        "wall_time_seconds": 0.000001288,
+        "exit_code": 0,
+        "original_token_count": 8,
+        "output": "1:# Definition Scope\n5:## Scope\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 8,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 34,
+      "label": "canon check conventions and guard obligations",
+      "cmd": "sed -n '487,514p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "fbd887",
+        "wall_time_seconds": 0.000002285,
+        "exit_code": 0,
+        "original_token_count": 444,
+        "output": "## Canon Check Conventions\n\n- **Branch point.**\n  Hold the baseline checkout and paired engine revision fixed for each comparison. Refresh the selected integration refs before deriving the baseline.\n- **Exit status.**\n  Capture the check's own exit status before filtering output; a pipe reports the filter's status.\n- **Guard outcomes.**\n  Capture measured findings separately from an unmeasured result, which exits 2. A schema-reading failure may reflect an engine/corpus pairing mismatch; establish the pairing before attributing a definition defect.\n- **Option coverage.**\n  The full CI test suite skips the coverage walk. Inspect the recorded exceptions against the reason for each unreachable option.\n\n### Guard Obligations\n\n- **Binding fidelity.**\n  - It exits `OK` while carrying triaged debt, stamped with the corpus commit.\n  - On drift, a clean result means the verdicts are old: record `blocked`, and re-affirm entries whose cited file changed since the stamp.\n- **Suppressions.**\n  - A suppression matches a normalised key. Its reason and its line sit outside the comparison, and the key drops the line number, so one line can earn two entries.\n  - Count the findings at the site before calling an entry redundant.\n- **New guards.**\n  - Prove a new guard against the corpus at the commit before the fix it was written for.\n  - A carve-out that follows from the entry belongs in the guard's condition.\n  - Take a file's kind from its declaration, and name in the check the kinds it admits.\n- **Definition changes.**\n  - A definition change owes the code branch its pointer, walk baseline, stamp, and every triage entry it settled, in the order `AGENTS.md` states.\n  - The suppression of a binding finding it closed is the entry that goes stale on that commit.\n\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 444,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 35,
+      "label": "resume status command specification",
+      "cmd": "sed -n '43,53p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "78427c",
+        "wall_time_seconds": 0.000001652,
+        "exit_code": 0,
+        "original_token_count": 135,
+        "output": "### Check Audit Status\n\nReconcile current evidence, rendered views and outstanding obligations.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Require `map` before evaluation and `complete` before claiming completion; omit `--require` for status only.\n- Output contains bounded counts, the generation identity and artifact paths. Read the relevant coverage section or assignment packet for individual residuals.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py status --run <run> --require <map-or-complete>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 135,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 36,
+      "label": "resume packet command specification",
+      "cmd": "sed -n '84,93p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "bd49a0",
+        "wall_time_seconds": 0.00000358,
+        "exit_code": 0,
+        "original_token_count": 96,
+        "output": "### Write Audit Packet\n\nWrite captured context and ownership for one agent.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Give the packet and [return contract](audit-dispatch.md#returns) to the bound host agent. Serialized size must fit the plan.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py packet --run <run> --assignment <id> --out <packet.json>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 96,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 37,
+      "label": "standalone report layout",
+      "cmd": "sed -n '81,125p' skills/workflow-canon/references/reporting.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "9f99a1",
+        "wall_time_seconds": 0.000002542,
+        "exit_code": 0,
+        "original_token_count": 460,
+        "output": "## Standalone\n\nIn the chat, or in a file the user named:\n\n~~~markdown\n# Canon Audit — `{target}`\n\n**Status:** in progress | finished · **Base ref:** `{ref}` · **Snapshot:** `{hash}` · **Coverage:** N rows × N AP/DP criteria — N of N mappings independently verified, N of N applicable cells evaluated · **Change surface:** N files (touched: N · context: N · consumers: N) · **Guards:** clean | N findings | N unmeasured\n\n**Verdict:** Live N · Contract N · Hygiene N, at that coverage. Residual: N unknown mappings · N unverified mappings · N unevaluated applicable cells · N unverified inventory items · N supporting obligations · N unread files. Live and Contract converge to zero over the coverage measured. Hygiene ratchets against the prior pass's N.\n\n| Band | Open | Known | Prior pass |\n|------|-----:|------:|-----------:|\n| Live | N | N | N |\n| Contract | N | N | N |\n| Hygiene | N | N | N |\n\n## Change Surface\n\n| Path | How it joined |\n|------|----------------|\n| `{path}` | touched |\n| `{path}` | closure — references `{contract-path}` |\n| `{path}` | consumer of a change-surface file |\n\n## Findings\n\n| ID | Band | Severity | Entry | Location | Evidence | Origin | Fix |\n|----|------|----------|-------|----------|----------|--------|-----|\n\n## Coverage\n\n## File Coverage\n\nread N · unread N.\n\n| Disposition | Paths |\n|-------------|-------|\n| `unread` | `{path}` |\n\n## Known\n~~~\n\nOmit an empty section. Order findings Critical → High → Medium → Low. Link the entry; the report holds no criteria prose. Say which Highs were withdrawn or downgraded. Every header figure reconciles against the generated ledger. Status is the [coverage header](#coverage-header). Live or Contract at zero over partial coverage is a statement about that part. A Live or Contract count that rose says a fix moved a defect.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 460,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 38,
+      "label": "selected structural check implementation",
+      "cmd": "cat skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "e5c02c",
+        "wall_time_seconds": 0.000003659,
+        "exit_code": 0,
+        "original_token_count": 331,
+        "output": "\"\"\"Structural guard for the explicitly controlled qualification dialect.\"\"\"\n\nimport json\nimport sys\nfrom pathlib import Path\n\nsys.path.insert(0, str(Path(__file__).resolve().parents[3] / 'scripts'))\nfrom audit_inventory import corpus_files, yaml_sources, canon_inventory\n\nroot, engine = map(Path, sys.argv[1:3])\nsources = corpus_files(root)\nparsed = yaml_sources(sources, engine)\nerrors = [error for item in parsed.values() for error in item['errors']]\nfor key, item in parsed.items():\n    value = item['value']\n    if not isinstance(value, dict) or not isinstance(value.get('id'), str):\n        errors.append(key + ': a definition needs its string id')\n    elif key.endswith('workflow.yaml'):\n        if not isinstance(value.get('graph'), dict) or not value.get('initialActivity'):\n            errors.append(key + ': graph and initial activity required')\n    elif not isinstance(value.get('steps'), list):\n        errors.append(key + ': ordered steps required')\ncriteria, _ = canon_inventory(sources)\nif len(criteria) != 4:\n    errors.append('The qualification dialect requires its four criteria')\nprint(json.dumps({'check': 'controlled qualification structural guard', 'root': str(root),\n                  'sources': len(sources), 'criteria': len(criteria), 'errors': errors}, indent=2))\nraise SystemExit(bool(errors))\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 6,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 331,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 39,
+      "label": "definition scope",
+      "cmd": "sed -n '5,$p' skills/workflow-canon/references/definition-scope.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "0f9a2b",
+        "wall_time_seconds": 0.000006187,
+        "exit_code": 0,
+        "original_token_count": 628,
+        "output": "## Scope\n\n- **Base ref.**  The ref the change is measured against.\n- **Surface files.**\n  `workflow.yaml`, `activities/`, `techniques/`, `routines/`, `resources/`, READMEs of the target.\n- **Touched.**\n  Definition paths whose bytes differ from the base ref, each the whole file. Hunks discover membership.\n- **I/O contract.**\n  - Technique `## Inputs` / `## Outputs`, including nested component and artifact declarations.\n  - Activity inputs, outputs, and step binds that name those ids.\n  - Routine parameters, outputs, internals, nested reference sites and technique arguments.\n  - Renames, additions, removals, optionality flips, and type or shape changes.\n- **Reference.**\n  - `techniques[]`, step `technique` / `technique.name`, Protocol `Apply` / `::` / a markdown link to an op, or a resource or README cite that resolves to the op file.\n  - Sweep the workflows tree. Resolve each to a file path.\n  - Resolve routine references and their full instantiation chains, graph entries, ancestors and shared resources through [surface identity](change-surface.md#identity).\n- **Closure.**\n  Affected elements and supporting sources reached through callers, consumers, invoked definitions and inherited contracts, including unchanged files across workflow boundaries.\n- **Change surface.**  Touched ∪ closure. The header reports the two subsets separately.\n- **Consumers.**\n  - References other workflows hold into the target. Always computed.\n  - A consumer joins the change surface when the file it names is on it.\n  - Start from [Find consumers](commands.md#find-consumers), then resolve binds and Apply links.\n- **Reference workflows.**  Siblings of similar type, as convention conformance requires.\n- **Prior residual.**\n  - `unread` paths in the latest findings register in the shared [planning record](planning.md).\n  - Reconcile captured identities through [freshness](change-surface.md#freshness-and-resume). A deleted path remains a base-side obligation when the selected comparison includes it.\n  - Reading starts at the residual. The walk follows [audit rules](audit-mode.md#rules). Paths a stop leaves unread are the next residual.\n- **Second entry.**\n  - Where a graph gives one activity two entry points, both are on the surface.\n  - Read each outcome against the state that entry arrives in. Take entries from every graph that includes the activity.\n\nHunk lines are not the surface. A unit read from a hunk is not `walked`. A referencer stays on the surface when its bind site was not edited.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 628,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 40,
+      "label": "scope contract",
+      "cmd": "cat skills/workflow-canon/templates/audit-scope.json",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "7c7a3e",
+        "wall_time_seconds": 0.000002472,
+        "exit_code": 0,
+        "original_token_count": 30,
+        "output": "{\n  \"paths\": [\"corpus/example/techniques/operation.md\"],\n  \"checks\": [\"guards\"],\n  \"rows\": [],\n  \"relationships\": []\n}\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 30,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 41,
+      "label": "dispatch sizing",
+      "cmd": "sed -n '19,32p' skills/workflow-canon/references/audit-dispatch.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "2075bf",
+        "wall_time_seconds": 0.000002653,
+        "exit_code": 0,
+        "original_token_count": 669,
+        "output": "## Sizing\n\nRecord actual host context/output limits, available child slots, prompt/tool reserve, safety reserve and work limit in the [budget input](../templates/audit-budgets.json). Reserve the coordinator and occupied slots once. The input contains estimates, never a promise of runtime capacity.\n\nCalibrate each phase separately with a bounded pilot from its required work. Record measured packet/output sizes and elapsed time; retain useful pilot results. A pilot's maximum input and output must already fit the declared host limits. Unknown host limits block dispatch. Use the host tokenizer when available; the CLI's explicit bytes-per-token proxy requires a conservative ratio and safety reserve.\n\nFor each slice, the planner counts the serialized packet, including source/canon context, identifiers, mapping reasons and assignment metadata. Verification and evaluation include the exact source spans cited by their mappings, merged with required row and criterion context. It estimates output and elapsed work from the recorded phase calibration. It requires input + output ≤ context − prompt/tool reserve − safety reserve, output ≤ output limit, and work ≤ work limit. Output is counted once in the context equation. Use an effective combined context limit consistent with the host's input/output accounting.\n\nRead packet fields and source excerpts in batches within the host's tool-return limit. Retain all owned identifiers, reasons and relationship context across those batches. Reuse source bytes already read at the same hash; retrieve every missing portion of a truncated return before making a judgment.\n\nBundles group criterion, source and section, with relationship context retained. Oversized bundles split into bounded item groups; a single item that cannot fit blocks dispatch. Largest bundles are packed first within their criterion or obligation kind, preferring shared context. This keeps an entry's walk together and bounds the planner's packing search. Each phase's assignments are disjoint and exactly cover its unassigned residual. The final list determines agent count `N`; free slots `K` determine concurrency `min(K,N)` and a lower bound of `ceil(N/K)` waves. Zero slots blocks dispatch. Lower concurrency changes elapsed time, never coverage.\n\nThe coordinator observes actual work. When a worker exceeds its calibrated cost, retain accepted evidence, retire its unfinished assignment, recalibrate and plan the remaining work. Shared source context may overlap; primary items and file write ownership do not. Inventory closure is partitioned by manifest source so a large surface can fan out without one whole-corpus input packet.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 669,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 42,
+      "label": "dispatch typed return contract",
+      "cmd": "sed -n '33,$p' skills/workflow-canon/references/audit-dispatch.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "ea9664",
+        "wall_time_seconds": 0.000001108,
+        "exit_code": 0,
+        "original_token_count": 709,
+        "output": "## Returns\n\nReturn a JSON file following the [receipt example](../templates/audit-receipt.json). The coordinator [submits it](commands.md#submit-audit-results); workers do not edit the canonical ledger.\n\n- **Identity.**\n  Copy the assignment ID, captured snapshot and host-bound actor. Give each attempt a unique safe name. Return only owned item IDs, once each. Group IDs only when the same source facts and reason hold for every member.\n- **Evidence.**\n  Each record has a status, substantive reason and source spans `{source,start,end}`. Mapping, verification and evaluation cite every source in each assigned `row.sources` plus `criterion.source`, including exclusions. Evidence must overlap the named row and criterion. Absence claims and whole-file reads account for the complete relevant source. Inventory discrepancies name missing rows, clauses, references or criteria; the coordinator corrects scope and refreshes.\n- **Statuses.**\n  Mapping uses `A`, `N`, `U`; verification uses `verified`, `disputed`; evaluation uses `pass`, `finding`, `blocked`. Reads use `read` or `blocked`. Supplemental units use `walked`, `not-applicable`, `finding`, `blocked`. Selected checks use `pass`, `finding`, `blocked`. Finding confirmation uses `confirmed`, `downgraded`, `withdrawn`, `blocked`.\n- **Findings.**\n  A `finding` record carries a nonempty `findings` array; each member has `band`, `severity`, `origin`, `summary`, `fix`, `entry` and `location`. Before returning findings, read [bands](reporting.md#bands), [severity](reporting.md#severity), [finding rows](reporting.md#finding-rows) and [attribution](audit-mode.md#attribution). A cell can expose several violations. Evidence spans sit on the record. Keep entry, location and construct summary consistent across cells detecting the same violation, so the report deduplicates it. Duplicate reports retain their classification; conflicting band, severity or origin requires independent reconciliation. A downgrade also supplies `severity` and `band` on the confirmation record; withdrawal states what did not reproduce.\n- **Check observations.**\n  A measured check includes `check: {command: [program, arguments], cwd, exit_code, output}` where `output` names the captured output file. `pass` requires exit 0; a measured finding requires exit 1 and structured attribution. Exit 2 or unavailable execution remains blocked. The coordinator captures the output bytes alongside source evidence.\n- **Partial work.**\n  A valid partial return keeps accepted items and leaves the residual incomplete. Failed or invalidated assignments cannot return; a new attempt cannot replace a previously returned item. Correction of an accepted decision uses [reset](commands.md#reset-audit-cells). [Retry](commands.md#retry-audit-assignment) releases residual ownership for a new bounded assignment.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 709,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 43,
+      "label": "disputed mapping reset command specification",
+      "cmd": "sed -n '104,113p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "84886c",
+        "wall_time_seconds": 0.000003786,
+        "exit_code": 0,
+        "original_token_count": 86,
+        "output": "### Reset Audit Cells\n\nReopen selected decisions and invalidate dependent evidence and assignments.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Supply a JSON array of cell IDs and the correction reason.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py reset --run <run> --items <items.json> --reason '<reason>'\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 86,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 44,
+      "label": "stale generation refresh command specification",
+      "cmd": "sed -n '114,123p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "60596d",
+        "wall_time_seconds": 0.000003264,
+        "exit_code": 0,
+        "original_token_count": 92,
+        "output": "### Refresh Audit Surface\n\nCapture current inputs and invalidate a changed generation.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Add `--scope <scope.json>` for inventory corrections. Identical generations retain evidence; changed generations archive prior state.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py refresh --run <run>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 92,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 45,
+      "label": "interrupted assignment retry specification",
+      "cmd": "sed -n '124,133p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "c66194",
+        "wall_time_seconds": 0.000001897,
+        "exit_code": 0,
+        "original_token_count": 96,
+        "output": "### Retry Audit Assignment\n\nRetire interrupted ownership so its unresolved work can be planned again.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Accepted items remain settled. Record why the worker stopped and recalibrate excessive estimates.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 96,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 46,
+      "label": "unit enumeration command specification",
+      "cmd": "sed -n '548,559p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "2f25a6",
+        "wall_time_seconds": 7.31e-7,
+        "exit_code": 0,
+        "original_token_count": 84,
+        "output": "### List Units\n\nLists a home's `##` units, then its `###` entries, with their line numbers.\n\n- The [unit inventory](canon-map.md#unit-inventory) names the level each home's unit sits at.\n- Run from the corpus root.\n\n```bash\nrg -n \"^## \" corpus/canon/resources/anti-patterns.md\nrg -n \"^### \" corpus/canon/resources/anti-patterns.md\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 84,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 47,
+      "label": "unit fetch command specification",
+      "cmd": "sed -n '572,579p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "6968c3",
+        "wall_time_seconds": 0.00000253,
+        "exit_code": 0,
+        "original_token_count": 66,
+        "output": "### Fetch Unit\n\nReads one section or entry of a home.\n\n- **On disk.**\n  [List units](#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.\n- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 66,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 48,
+      "label": "engine instruction file",
+      "cmd": "cat AGENTS.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin",
+      "result": {
+        "chunk_id": "439a72",
+        "wall_time_seconds": 0.000003701,
+        "exit_code": 0,
+        "original_token_count": 1141,
+        "output": "# Project Instructions\n\nProject instructions for this repository.\n\n- **Here:** rules that change what an agent does on an ordinary turn. A how-to for one kind of task lives in the doc that task already has.\n- A rule that names a path on this machine, or a tool not in `package.json`, belongs here rather than the repo.\n- **Edits to *this* file shall be succinct.** State the rule, not the reasoning behind it. Keep an example only where it makes the rule followable.\n- When building, testing, or changing a checkout, follow [development.md](docs/development.md).\n\n## Worktrees\n\n- **Work a branch in its own worktree.** `.worktrees/workflows` stays on `workflows`; a feature branch lives at `.worktrees/<branch>`. Switching the shared dest moves the corpus under whatever is reading it — a guard sweep, a coverage walk, another agent — and the result reads as a defect in the change.\n- **Name a worktree for its branch in full**, slashes as nested directories: `.worktrees/workflow/353-context-scoped-delivery`. `git worktree list` then reads as a branch index, and a path in a command or a stack trace says which branch it belongs to without anyone inspecting its `HEAD`.\n- Provision, rename, and a corpus-only sweep: [guards/README.md](guards/README.md#running-guards-in-a-worktree).\n\n\n\n## Dependencies\n\n- **Never delete the lockfile or run** `npm update`**.** An install-time payload runs before any of this repo's code, so the lockfile is the last point a build can refuse.\n- Adding a dependency, exact versions, and the known-bad denylist: [development.md](docs/development.md#dependencies).\n\n\n\n## Boundaries\n\n- Do **not** modify server source (`src/`, `schemas/`) or workflow YAML unless the user explicitly asks.\n- Call `discover` first and follow what it returns. A fresh `start_session` passes `working_directory` as the checkout under work. The rest of the sequence is [setup](docs/setup.md).\n\n\n\n## Issues and PRs\n\n- **Shape:** See the reference example: [#394](https://github.com/m2ux/workflow-server/issues/394)\n- **Explain the situation before naming it.** Ordinary sentences first, then the concept's name. Never open with a term of art the reader hasn't been handed.\n- **Title:** `Name: plain description`**.** No conventional-commit prefixes, no abbreviations (\"references\", not \"refs\"), no anti-pattern numbers, no code tokens unless the token is the subject.\n- **No file:line citations in the body.** Evidence reads as prose.\n- **Spell out jargon.** \"Phase 0/1/2\" becomes named stages; shorthand like fold-by-reference gets a sentence or a definition on first use. Reference an anti-pattern by name with its meaning stated, so the reference corroborates rather than being required reading.\n- **One paragraph per stage, and no section that restates another.** Where a \"what was verified\" section states what was proved, an acceptance-criteria list repeats it. Cut the prose around the counts, never the counts.\n- **These bodies narrate against what preceded them.** They are the one sanctioned home for before/after; everything persisting past merge stays in positive present tense.\n- Prefer replacement over accretion. When updating PR bodies. Don't narrate history. Don't add changes as comments. Replace the body with the version correct today.\n- **Code lives on** `main`**, definitions on** `workflows`**.** They are separate long-lived branches, so a change to code and a change to definitions never share a branch.\n- **A branch is absorbed when its content is on the target, not its commits.** The same change arriving by another route leaves the branch reading as unmerged. `git diff <target> <branch> -- <paths>` settles it; a commit count does not.\n\n\n\n## Testing\n\nCommands, what CI runs, and how a walk is re-baselined: [development](docs/development.md). Delivery cost: [benchmark](benchmark/README.md#appendix).\n\n- **Definition changes land on** `workflows`, with the walk baselines and triage entries that describe them, in the same commit. A closed binding finding moves with the change that settled it: delete it and it is untriaged, keep it and it matches nothing.\n\n\n\n## Where to look\n\n[docs/README.md](docs/README.md) is the index. Open the page for the task. \n\nA **workflow** is the guide an operator follows. An **activity** is one phase of it. A **technique** is one capability a step names. A **routine** is steps written once and spliced in. A **resource** is material a technique cites and does not contain.\n\nEngineering work starts at [its AGENTS.md](https://github.com/m2ux/workflow-server/blob/engineering/AGENTS.md)."
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 7,
+        "max_output_tokens": 22000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 1141,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 49,
+      "label": "controlled anti-pattern enumeration",
+      "cmd": "rg -n '^#{2,3} ' corpus/canon/resources/anti-patterns.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "c45cdd",
+        "wall_time_seconds": 0.00000316,
+        "exit_code": 0,
+        "original_token_count": 25,
+        "output": "5:## Controlled Qualification\n7:### AP-01. emission-without-validation\n15:### AP-02. broken-binding\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 25,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 50,
+      "label": "controlled principle enumeration",
+      "cmd": "rg -n '^## ' corpus/canon/resources/design-principles.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "9294c3",
+        "wall_time_seconds": 0.000001993,
+        "exit_code": 0,
+        "original_token_count": 27,
+        "output": "5:## 1. Honor the executing workflow's inherited destination\n9:## 2. Provide a terminating workflow path\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 27,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 51,
+      "label": "controlled convention enumeration",
+      "cmd": "rg -n '^## ' corpus/canon/resources/convention-conformance.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "0f4d87",
+        "wall_time_seconds": 0.000003771,
+        "exit_code": 0,
+        "original_token_count": 5,
+        "output": "3:## Evidence scope\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 5,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 52,
+      "label": "source whole-file reading for supplied scope context",
+      "cmd": "cat corpus/qualification/workflow.yaml corpus/qualification/activities/run.yaml corpus/qualification/routines/deliver.yaml corpus/qualification/techniques/TECHNIQUE.md corpus/qualification/techniques/produce.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "8d6a3b",
+        "wall_time_seconds": 0.000002737,
+        "exit_code": 0,
+        "original_token_count": 140,
+        "output": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run\nid: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}\nid: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce\n## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive.\n## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 140,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 53,
+      "label": "dispatch budget contract",
+      "cmd": "cat skills/workflow-canon/templates/audit-budgets.json",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "a05adb",
+        "wall_time_seconds": 0.000015836,
+        "exit_code": 0,
+        "original_token_count": 71,
+        "output": "{\n  \"context_tokens\": null,\n  \"reserve_tokens\": null,\n  \"safety_tokens\": null,\n  \"output_tokens\": null,\n  \"work_seconds\": null,\n  \"slots\": null,\n  \"bytes_per_token\": null,\n  \"calibration\": {\n    \"map\": {\"output_tokens_per_item\": null, \"seconds_per_item\": null, \"evidence\": \"\"}\n  }\n}\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 71,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 54,
+      "label": "receipt example contract",
+      "cmd": "cat skills/workflow-canon/templates/audit-receipt.json",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "6ddc32",
+        "wall_time_seconds": 0.000001212,
+        "exit_code": 0,
+        "original_token_count": 99,
+        "output": "{\n  \"assignment\": \"copy-from-packet\",\n  \"snapshot\": \"copy-from-packet\",\n  \"actor\": \"host-bound-agent-id\",\n  \"attempt\": \"attempt-1\",\n  \"records\": [\n    {\n      \"items\": [\"copy-owned-item-id\"],\n      \"status\": \"U\",\n      \"reason\": \"Identify the missing evidence; supply a source-derived judgment when settled.\",\n      \"evidence\": [{\"source\": \"copy-source-key\", \"start\": 1, \"end\": 1}]\n    }\n  ]\n}\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 99,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 55,
+      "label": "find consumers command specification",
+      "cmd": "sed -n '580,590p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "746a49",
+        "wall_time_seconds": 0.000001146,
+        "exit_code": 0,
+        "original_token_count": 58,
+        "output": "### Find Consumers\n\nLists the references other workflows hold into the target.\n\n- Run from the corpus root.\n- Resolve each hit's binds and Apply links from there.\n\n```bash\nrg -n \"work-package/\" corpus/ -g \"*.md\" -g \"*.yaml\"\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 58,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 56,
+      "label": "resolve revision command specification",
+      "cmd": "sed -n '146,153p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "9ed923",
+        "wall_time_seconds": 0.000001501,
+        "exit_code": 0,
+        "original_token_count": 26,
+        "output": "### Resolve Ref\n\nRead the full commit identity for a captured ref.\n\n```bash\ngit rev-parse <ref>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 26,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 57,
+      "label": "guard delta command specification",
+      "cmd": "sed -n '604,613p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "43b989",
+        "wall_time_seconds": 5.77e-7,
+        "exit_code": 0,
+        "original_token_count": 73,
+        "output": "### Run Guards on the Delta\n\nRuns the guard suite at the merge-base and on this tree, and attributes each failure by the difference.\n\n- The caller supplies the canon check conventions, including guard obligations.\n\n```bash\nWORKFLOWS_DIR=<corpus> npm run check:delta -- --base <base-ref>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 73,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 58,
+      "label": "generic selected check command specification",
+      "cmd": "sed -n '270,281p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "170329",
+        "wall_time_seconds": 0.000001199,
+        "exit_code": 0,
+        "original_token_count": 118,
+        "output": "### Run Project Check\n\nRun the check selected from the reviewed project's manifest, test configuration or CI job.\n\n- Replace the command placeholder with that project's actual invocation, including its runtime, check arguments and explicit dependency paths.\n- Capture the working directory, input revisions, measured cases, skips, exit status and output. Assess the result against the active mode's requirements.\n\n```bash\ncd <tool-checkout>\n<project-check-command>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 8,
+        "max_output_tokens": 16000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 118,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 59,
+      "label": "controlled anti-pattern home",
+      "cmd": "cat corpus/canon/resources/anti-patterns.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "19d2e0",
+        "wall_time_seconds": 0.000004077,
+        "exit_code": 0,
+        "original_token_count": 514,
+        "output": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n\n### AP-01. emission-without-validation\n\nDetect: A technique's Protocol instruction or Rules clause explicitly directs an artifact's emission without validating that artifact first. Review each instruction and each semicolon-separated clause independently. Validation elsewhere does not excuse an instruction or clause that explicitly permits unvalidated emission.\n\nDo not flag: A directive to validate before emission satisfies this criterion. A heading, output declaration, retention clause, destination declaration, routine call, binding or graph label does not itself direct emission. Capability descriptions describe the service and are not imperative instructions.\n\nFix: Require validation of the same artifact before emission in every emitting instruction and clause.\n\n### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 514,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 60,
+      "label": "controlled principles home",
+      "cmd": "cat corpus/canon/resources/design-principles.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "781177",
+        "wall_time_seconds": 0.000001868,
+        "exit_code": 0,
+        "original_token_count": 338,
+        "output": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n\n## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 338,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 61,
+      "label": "controlled convention unit",
+      "cmd": "sed -n '3,100p' corpus/canon/resources/convention-conformance.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/seeded",
+      "result": {
+        "chunk_id": "5d7693",
+        "wall_time_seconds": 0.000002076,
+        "exit_code": 0,
+        "original_token_count": 93,
+        "output": "## Evidence scope\n\nUse the complete captured definitions and the four controlled criteria. Source lines identify instructions; YAML addresses identify bindings. The explicit execution relationship supplies the call chain and inherited contract. Unknown applicability remains unresolved. These toy definitions do not claim engine schema or full-project-canon conformance.\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 93,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 62,
+      "label": "bounded assignment plan command specification",
+      "cmd": "sed -n '64,73p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "d2489f",
+        "wall_time_seconds": 0.000001781,
+        "exit_code": 0,
+        "original_token_count": 114,
+        "output": "### Plan Audit Assignments\n\nCompute disjoint residual assignments under declared budgets.\n\n- Read [Audit Command Conventions](#audit-command-conventions) and [Sizing](audit-dispatch.md#sizing). Select `inventory`, `map`, `verify`, `evaluate` or `obligations`. Unknown limits, unmet gates or indivisible oversized context refuse dispatch.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py plan --run <run> --phase <phase> --budgets <budgets.json>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 114,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 63,
+      "label": "independent agent binding command specification",
+      "cmd": "sed -n '74,83p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "b1a531",
+        "wall_time_seconds": 0.000002589,
+        "exit_code": 0,
+        "original_token_count": 90,
+        "output": "### Bind Audit Agent\n\nBind an assignment to its actual host agent identity.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Independent roles cannot own their authored work; retired assignments require a new residual plan.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py bind --run <run> --assignment <id> --actor <host-agent-id>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 90,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 64,
+      "label": "typed return submission command specification",
+      "cmd": "sed -n '94,103p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "553948",
+        "wall_time_seconds": 0.000003312,
+        "exit_code": 0,
+        "original_token_count": 89,
+        "output": "### Submit Audit Results\n\nValidate a typed return and preserve its immutable receipt.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Invalid returns cannot partially change state; valid partial results leave the residual incomplete.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py submit --run <run> --receipt <receipt.json>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 89,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 65,
+      "label": "report render command specification",
+      "cmd": "sed -n '54,63p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "6d91d1",
+        "wall_time_seconds": 0.000005529,
+        "exit_code": 0,
+        "original_token_count": 69,
+        "output": "### Render Audit Surface\n\nRegenerate matrices, evidence and reports from canonical state.\n\n- Read [Audit Command Conventions](#audit-command-conventions). Changed source evidence requires refresh.\n\n```bash\npython3 <skill-root>/scripts/audit_surface.py render --run <run>\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 69,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 66,
+      "label": "coverage instruction section locations",
+      "cmd": "rg -n '^#{1,6} ' skills/workflow-canon/references/coverage.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "aaf16b",
+        "wall_time_seconds": 0.000001588,
+        "exit_code": 0,
+        "original_token_count": 79,
+        "output": "1:# Integration Coverage\n5:## Coverage Planning\n7:### Establish the Project Map\n13:### Select Observations\n32:### Determine the Required Set\n45:## Branches and Sources\n58:## Design Reading\n71:## Engine and Corpus Pairing\n80:## Main Coverage\n100:## Workflows Coverage\n115:## Docker Coverage\n128:## Workspace Coverage\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 79,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 67,
+      "label": "paired engine schema context locations",
+      "cmd": "rg -n '^#{1,6} |inherit|routine|Routine' docs/schemas.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin",
+      "result": {
+        "chunk_id": "aba511",
+        "wall_time_seconds": 0.000001738,
+        "exit_code": 0,
+        "original_token_count": 160,
+        "output": "1:# Schema System\n5:The server exposes every one of these schemas except the routine schema as [MCP resources](api.md#mcp-resources).\n7:## Overview\n16:| [routine.schema.json](../schemas/routine.schema.json#L7)           | Defines a routine          |\n22:## Enforcement Model\n24:The server enforces structure at load time plus a runtime core; the executing agents carry out the rest. `get_activity` delivers the activity YAML as authored, with each step's resolved id filled in and each routine reference replaced by the routine's steps, so every authored field reaches the agent. Each field has an owner and a strictness.\n29:## Generation\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 160,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 68,
+      "label": "current skill tree commit identity",
+      "cmd": "git rev-parse HEAD",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "0454ef",
+        "wall_time_seconds": 0.000001162,
+        "exit_code": 0,
+        "original_token_count": 11,
+        "output": "0d5e8ee27f8ae3b00c0add10f6c58d67c24675fa\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 11,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 69,
+      "label": "current paired engine commit identity",
+      "cmd": "git rev-parse HEAD",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin",
+      "result": {
+        "chunk_id": "26dcff",
+        "wall_time_seconds": 0.000001498,
+        "exit_code": 0,
+        "original_token_count": 11,
+        "output": "e889276ae7c49a6b5cd37b4928d5f983e76c9770\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 9,
+        "max_output_tokens": 18000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 11,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 70,
+      "label": "broader workflow consumer coverage instructions",
+      "cmd": "sed -n '100,114p' skills/workflow-canon/references/coverage.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "ff5a22",
+        "wall_time_seconds": 0.000002508,
+        "exit_code": 0,
+        "original_token_count": 454,
+        "output": "## Workflows Coverage\n\nRead [Canon Check Conventions](commands.md#canon-check-conventions), then [Run Guard Suite](commands.md#run-guard-suite) and [Run Corpus Checks](commands.md#run-corpus-checks) from the intended engine checkout for the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.\n\n- **Definition contracts.**\n  Inspect schema agreement; steps, gates, actions, loops, checkpoints, exits and fans; value provenance and absence/null/falsy behavior; routine expansion; technique anatomy and inherited contracts; defaults, executable references and artifact persistence.\n- **Receiving roles.**\n  Trace the actual content and resource sections delivered to each role, including review, interactive and headless paths when affected. Apply Review's [Coverage](review-mode.md#coverage) to separate instruction inspection from execution evidence.\n- **Option coverage.**\n  [Run Option Coverage](commands.md#run-option-coverage) over the full roster for shared engine behavior, meta definitions, common routines/contracts, routing, walker/policy or roster changes. A smaller scope needs evidence that its dependency analysis includes every affected consumer.\n- **Records and exceptions.**\n  Inspect snapshots, roster membership, option-coverage exceptions and triage entries with the definitions they describe. Check stale keys, newly unobserved options, missing consumers and the rationale for each affected exception.\n- **Running sessions.**\n  Assess definition versions and the documented resume/seeding behavior. [Count Running Sessions](commands.md#count-running-sessions) where the relevant state is available; a local census establishes nothing about another deployment.\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 10,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 454,
+        "returned_truncation_marker": false
+      }
+    },
+    {
+      "sequence": 71,
+      "label": "conditional option coverage command specification",
+      "cmd": "sed -n '393,404p' skills/workflow-canon/references/commands.md",
+      "workdir": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+      "result": {
+        "chunk_id": "a90b2d",
+        "wall_time_seconds": 0.000004112,
+        "exit_code": 0,
+        "original_token_count": 125,
+        "output": "## Run Option Coverage\n\nWalk the current corpus roster and compare checkpoint reachability with its exceptions.\n\n- Read the roster first and supply its walked IDs as a literal comma-separated value.\n- An omitted scope walks the full roster. [Workflows Coverage](coverage.md#workflows-coverage) determines when a literal `WF_COVERAGE_SCOPE` narrows the walk.\n\n```bash\njq -r '.walked | join(\",\")' <corpus>/walks/roster.json\nWORKFLOWS_DIR=<corpus> WF_WALKED=<walked-ids> npm run test:coverage-walk\n```\n\n"
+      },
+      "execution": {
+        "tool": "exec_command",
+        "shell": "bash",
+        "login": false,
+        "read_only": true,
+        "batch": 10,
+        "max_output_tokens": 14000
+      },
+      "truncation": {
+        "tool_reported_original_token_count": 125,
+        "returned_truncation_marker": false
+      }
+    }
+  ]
+}
+
