@@ -1,0 +1,11 @@
+[
+  {
+    "actor": "/root",
+    "assignment": "4e9552f8f8a63ebff8fb",
+    "check_observation": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/check-observation.json",
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/packets/obligations/4e9552f8f8a63ebff8fb.json",
+    "phase": "obligations",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b"
+  }
+]

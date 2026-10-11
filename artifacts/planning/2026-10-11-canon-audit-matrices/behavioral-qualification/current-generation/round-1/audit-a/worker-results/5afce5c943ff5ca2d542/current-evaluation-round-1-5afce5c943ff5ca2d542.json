@@ -1,0 +1,61 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "5afce5c943ff5ca2d542",
+  "attempt": "current-evaluation-round-1-5afce5c943ff5ca2d542",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "reason": "/steps/id=delivery/routine/name: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fa301823ccd44ed9374ce575"
+      ],
+      "reason": "@element: Delivery arguments {envelope} match Inputs [envelope]; export emit.report resolves emit to produce Outputs [report]. Both concrete AP2 contracts hold.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8"
+}

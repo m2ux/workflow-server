@@ -1,0 +1,231 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "0d6c0abcdad63a22ec9e",
+  "attempt": "current-source-map-round-2-0d6c0abcdad63a22ec9e",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f64e24f8a4caa9482d28228",
+        "232c484eaf1003ef830d4ffa",
+        "2ec151da2546cd9066780932"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/routines/deliver.yaml#@element. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "afeb129e1e03e4f353693950"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7b47769dd43afb09823a4b14"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee",
+        "720f7eeadf6be862dd39b7ab",
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/TECHNIQUE.md#@element. The ancestor contains only a Capability description and the constraint Destination must be archive. These inherited declarations do not direct artifact emission in a leaf Protocol instruction or Rules clause.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e00abe344b2cf11c702b34f1",
+        "f0f7088daffd00158c0c1032"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/report. The owned Outputs surface declares the name report; an output declaration does not direct emission under AP1.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e192558242a4ed960c5d7a46",
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2. Capability describes the service as Produce a report; AP1 expressly excludes descriptive Capability text from the imperative Protocol/Rules emission check.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "0782b255d289b2d8aaa260a8"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/activities/run.yaml#/id. The activity defines run and invokes routine deliver with argument key envelope. Its identifiers, routine-call fields and call relationship are YAML orchestration/binding surfaces; AP1 expressly excludes routine calls and bindings from emission instructions.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "3641b7b9d54d55df0cc22cb1"
+      ],
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/workflow.yaml#/initialActivity. The workflow defines initialActivity run and graph exit done to null. Its graph/identifier surfaces and workflow-to-activity relationships are not technique emission instructions; AP1 expressly excludes graph labels.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"
+}

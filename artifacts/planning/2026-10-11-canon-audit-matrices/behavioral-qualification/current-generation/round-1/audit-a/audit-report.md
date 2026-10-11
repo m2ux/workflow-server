@@ -1,14 +1,14 @@
 # Canon Audit
 
-Status: in progress
+Status: finished
 
 Base ref: None · Snapshot: f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8
 
-Coverage: 49 rows × 4 AP/DP criteria; 196 of 196 mappings verified; 0 of 46 applicable cells evaluated.
+Coverage: 49 rows × 4 AP/DP criteria; 196 of 196 mappings verified; 46 of 46 applicable cells evaluated.
 
 Guards: pass. Residual: 0 unread files; 0 inventory and 0 other obligations.
 
-Conformance: unmeasured
+Conformance: clean-live-and-contract
 
 | Band | Findings |
 | --- | --- |

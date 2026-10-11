@@ -1,0 +1,92 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "f38661e21597dea2b54c",
+  "attempt": "current-author-evaluate-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "items": [
+        "eeab805ea4653756496776b5"
+      ],
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        },
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "items": [
+        "fa301823ccd44ed9374ce575"
+      ],
+      "reason": "The concrete caller uses packet against Inputs [envelope], and emit.report references report while produce declares only summary. These are two distinct AP2 binding violations.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

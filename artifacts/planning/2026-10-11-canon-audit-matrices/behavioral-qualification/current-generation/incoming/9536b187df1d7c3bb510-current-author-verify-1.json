@@ -1,0 +1,164 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "9536b187df1d7c3bb510",
+  "attempt": "current-author-verify-round-2-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "16ed4220394232ac66e84453",
+        "8d0f33a043c7068e8c998046",
+        "9839de920cafa86c93f9e319",
+        "98b55e096e4899353322814f",
+        "a700a3294be653eb8e533547",
+        "cc4fea783a74407b8fdb654e"
+      ],
+      "reason": "Independently verified N. The leaf and its inheritance relationship own technique declarations and instructions, not initialActivity or graph exit targets. They have no DP2 workflow termination responsibility.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "36c8e451b93d39512aae352f",
+        "7d5cdef67a14fe0a0e70a8ff",
+        "8b3b602b6703003326b8df8d"
+      ],
+      "reason": "Independently verified N. The activity contains a local routine invocation. DP2 explicitly says activity and routine steps add no workflow graph exits; neither this native surface nor its routine-call relationship owns termination.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "4da9396f20f50a18673256c5",
+        "54a73e1bf111128988cf03fe",
+        "d9b55f0b6cbe3ed6ab868ed5"
+      ],
+      "reason": "Independently verified N. The ancestor contains descriptive Capability and an archive Rule. It defines neither initialActivity nor a workflow graph exit and has no DP2 finite-path responsibility.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "7616d539ed6effba75237723",
+        "a0e70a1645458e99657058ca",
+        "a6cc9c95bd8a15eec9337ab9"
+      ],
+      "reason": "Independently verified N. The routine contains Inputs, an export and a technique call. These local steps and execution relationships add no workflow graph exits under DP2, even when workflow context is supplied for other criteria.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "b70cd0fa3dc717cd87f806e4"
+      ],
+      "reason": "Independently verified N. The workflow ID only names qualification. It adds no start selection or graph exit, so the separately inventoried graph/start and whole-workflow rows own DP2.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "Independently verified A. This workflow surface owns the start or graph, or contains the whole workflow. DP2 requires a finite path from run to null using all exit targets; applicability is independent of whether the captured graph terminates.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"
+}

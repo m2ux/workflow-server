@@ -1,0 +1,298 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "a4e1eb1b4efa99bb23ab",
+  "attempt": "current-evaluation-round-2-a4e1eb1b4efa99bb23ab",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "3f2fc1d2f91b27a5d46f0504"
+      ],
+      "reason": "/graph/run/done: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "8862878198e6198ef77c1f28"
+      ],
+      "reason": "/initialActivity: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "48da822c85267d96ea48c4c2"
+      ],
+      "reason": "/graph/run: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "/graph/run/done: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "/graph: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "/graph/run: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "/graph/run/done: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "/initialActivity: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Provide a terminating workflow path",
+          "fix": "Provide a reachable workflow exit whose destination is null.",
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Qualification's sole reachable exit loops from run to run, with no path to null."
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "@element: The complete workflow starts at run; its only edge is done to run, with no null destination or alternative path. This structurally nonterminating graph is Live/Critical.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d"
+}

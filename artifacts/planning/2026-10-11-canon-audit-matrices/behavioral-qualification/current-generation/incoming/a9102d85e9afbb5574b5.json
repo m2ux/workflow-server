@@ -1,0 +1,175 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "a9102d85e9afbb5574b5",
+  "attempt": "current-evaluation-round-1-a9102d85e9afbb5574b5",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566"
+      ],
+      "reason": "/graph: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "9a13e148e0a434d148bef242"
+      ],
+      "reason": "/graph/run: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "reason": "/graph/run/done: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "8862878198e6198ef77c1f28"
+      ],
+      "reason": "/initialActivity: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "48da822c85267d96ea48c4c2"
+      ],
+      "reason": "/graph/run: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "5453a725eb6086baaa72c972"
+      ],
+      "reason": "/graph/run/done: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "c7fdcca69a6f6d3b3cfa7009"
+      ],
+      "reason": "/initialActivity: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "items": [
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "@element: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8"
+}

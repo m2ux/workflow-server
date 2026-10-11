@@ -1,0 +1,209 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "50133d1b69bd6d4d9a06",
+  "attempt": "dp1-reconciliation-source-map-20261011",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "f442830158e33a5d097e4514",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "Owned rows: corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. These explicit workflow-to-run relationships identify the executing activity through initialActivity and graph entries/targets. In this captured workflow, run invokes deliver through delivery, deliver calls produce through emit, and produce declares Destination public. The qualification ancestor Rules requires archive. DP1 explicitly carries the inherited destination rule through call relationships to that leaf instance, so these owned relationships require that comparison.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "Owned rows: corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53. This activity-to-routine relationship invokes deliver from run step delivery. Deliver calls produce at emit; the leaf declares Destination public and the executing qualification ancestor requires archive. DP1 explicitly requires the call relationship to carry that inherited constraint to the leaf, even though the activity itself has no destination declaration.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "Owned rows: corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. These producer/execution relationships resolve deliver step emit to produce in the qualification/run/delivery execution chain. Produce declares Destination public, and qualification/techniques/TECHNIQUE.md declares required archive. DP1 specifically assigns call and inheritance relationships the responsibility to carry this rule to the executing leaf; these rows therefore require the destination comparison.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3",
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "Owned rows: corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/techniques/produce.md#@element. Each owned leaf surface contains the Rules declaration Destination is public at line 12. The captured qualification workflow invokes run, which calls deliver and then produce; its ancestor TECHNIQUE.md requires archive. DP1 directly applies to that leaf destination in its executing inheritance context. This mapping assigns the comparison responsibility without classifying the eventual finding.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "Owned rows: corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8. This explicit relationship links produce to its ancestor TECHNIQUE.md. The leaf declares Destination public, while the ancestor Rules requires archive; the workflow/activity/routine sources establish qualification as the executing context. DP1 requires this inheritance relationship to carry the constraint to the leaf instance, rather than independently treating the ancestor declaration as a leaf destination.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d"
+}

@@ -143,9 +143,26 @@ def main():
         for n, (entry, packet) in enumerate(data, 1):
             values.append({'number': n, 'run': Path(entry['run']).name, 'assignment': packet['assignment']['id'], 'cells': [[item, aliases[packet['cells'][item][0]], packet['cells'][item][1]] for item in packet['assignment']['items']]})
         chunks('Every owned current evaluation cell', values, int(sys.argv[3]))
+    elif mode == 'context-reuse':
+        old_data, old_rows, old_criteria, old_aliases = dictionaries('round-1')
+        data, rows, criteria, aliases = dictionaries(sys.argv[2])
+        def digest(value):
+            return hashlib.sha256(json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+        assert digest(rows) == digest(old_rows)
+        assert digest(criteria) == digest(old_criteria)
+        assert aliases == old_aliases
+        emit('Exact context reuse after byte agreement; current assigned row/criterion objects compared with complete round-1 objects already read, no receipts read', {'round': sys.argv[2], 'rows': len(rows), 'row_metadata_sha256': digest(rows), 'criteria': len(criteria), 'criterion_objects_sha256': digest(criteria), 'row_aliases': aliases, 'reuse': 'Every row/relationship field and complete criterion wording is identical. Full original source bytes are checked separately by the sources mode. Current queue, assignment snapshots and owned cells are read independently.'})
     elif mode == 'write-round':
         decisions = runpy.run_path(str(BASE / 'audit-evaluate-decisions.py'))
         decisions['write_round'](sys.modules[__name__], sys.argv[2])
+    elif mode == 'finish':
+        log = LOG.read_text()
+        sequence = [line for line in log.splitlines() if ' | ' in line and line[4:5] == '-' and line[10:11] == 'T']
+        first_read = min(datetime.datetime.fromisoformat(line.split(' | ')[0]) for line in sequence)
+        data = packets('round-1') + packets('round-2')
+        receipts = [Path(entry['run']).parent / 'audit-evaluate-receipts' / (entry['assignment'] + '.json') for entry, packet in data]
+        assert len(receipts) == 26 and all(path.exists() for path in receipts)
+        emit('FINAL current Audit evaluation handoff', {'assignments': 26, 'cells': 188, 'per_round': {'pass': 46, 'finding_cells': 48, 'blocked': 0, 'finding_occurrences': 51, 'distinct_findings': 6}, 'packet_bytes': sum(Path(entry['packet']).stat().st_size for entry, packet in data), 'receipt_bytes': sum(path.stat().st_size for path in receipts), 'largest_receipt_bytes': max(path.stat().st_size for path in receipts), 'transcript_bytes_before_final_record': LOG.stat().st_size, 'elapsed_seconds_from_first_instrumented_read': round((datetime.datetime.now(datetime.timezone.utc) - first_read).total_seconds(), 3), 'timing_limit': 'Initial header discovery and helper setup preceded the first instrumented semantic read and are excluded from this measured interval.', 'observed_read_sequence': sequence, 'authority': 'Only own typed receipts and permitted helper/transcript artifacts written. No ledger, definition, hidden expected, baseline or other evaluator finding access. Root owns ingestion and independent finding confirmation.'})
     else:
         raise ValueError(mode)
 

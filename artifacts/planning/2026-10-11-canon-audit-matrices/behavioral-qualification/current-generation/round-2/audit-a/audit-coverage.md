@@ -2,7 +2,7 @@
 
 Snapshot: b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf
 
-Status: incomplete
+Status: complete
 
 | Measure | Count |
 | --- | --- |
@@ -11,7 +11,7 @@ Status: incomplete
 | cells | 196 |
 | unknown | 0 |
 | unverified | 0 |
-| unevaluated | 46 |
+| unevaluated | 0 |
 
 ## Criterion Index
 
@@ -71,21 +71,21 @@ Status: incomplete
 | 5512f177a731e37e773b | map | 14 | returned | /root/qualify_audit_two |
 | 64d41db4c8f82a3150f2 | map | 14 | returned | /root/qualify_audit_two |
 | 69db8689a4a39d4fa259 | map | 7 | returned | /root/qualify_audit_two |
-| 70a7573fc05321d08675 | evaluate | 10 | pending | /root/qualify_audit_one |
-| 973657c37f9fcf99f2ab | evaluate | 10 | pending | /root/qualify_audit_one |
+| 70a7573fc05321d08675 | evaluate | 10 | returned | /root/qualify_audit_one |
+| 973657c37f9fcf99f2ab | evaluate | 10 | returned | /root/qualify_audit_one |
 | 9798e3449bcc1b65bf06 | map | 14 | returned | /root/qualify_audit_two |
 | ac3bb1f41aef48e9228f | obligations | 5 | returned | /root |
 | b1a09ad471587099fdc9 | inventory | 10 | returned | /root/qualify_audit_one |
 | bb8ee41b2f67ddfbbf3f | map | 7 | returned | /root/qualify_audit_two |
 | c329dac6dc54b3206956 | map | 14 | returned | /root/qualify_audit_two |
 | c371b05c65ab437c5e23 | verify | 31 | returned | /root/qualify_audit_one |
-| c3cfc701f599ad4855d6 | evaluate | 8 | pending | /root/qualify_audit_one |
+| c3cfc701f599ad4855d6 | evaluate | 8 | returned | /root/qualify_audit_one |
 | c522850b6534f47b5672 | map | 14 | returned | /root/qualify_audit_two |
-| ce49585ecb10f8e90c33 | evaluate | 10 | pending | /root/qualify_audit_one |
+| ce49585ecb10f8e90c33 | evaluate | 10 | returned | /root/qualify_audit_one |
 | cfd32d29145ff820b85c | map | 14 | returned | /root/qualify_audit_two |
 | d26a9d11520faf754063 | verify | 18 | returned | /root/qualify_audit_one |
-| da3557a8b188162aca82 | evaluate | 2 | pending | /root/qualify_audit_one |
-| daf4742764d84d0ff677 | evaluate | 6 | pending | /root/qualify_audit_one |
+| da3557a8b188162aca82 | evaluate | 2 | returned | /root/qualify_audit_one |
+| daf4742764d84d0ff677 | evaluate | 6 | returned | /root/qualify_audit_one |
 | db90f07d9755a4fc892f | map | 14 | returned | /root/qualify_audit_two |
 | e9ac483af2bbdfb77767 | map | 14 | returned | /root/qualify_audit_two |
 | edabfa6c8c2769e0f82a | map | 14 | returned | /root/qualify_audit_two |

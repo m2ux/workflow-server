@@ -1,0 +1,197 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "104a572a4781b76f8b0a",
+  "attempt": "current-evaluation-round-2-104a572a4781b76f8b0a",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before every emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "/rules: The second Rules clause says emit the report without validation. Retaining its ID in clause 1 supplies no validation; this separate directive is Live/High.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before every emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "/rules/line-11: The second Rules clause says emit the report without validation. Retaining its ID in clause 1 supplies no validation; this separate directive is Live/High.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before every emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "/rules/line-11/clause-2: The second Rules clause says emit the report without validation. Retaining its ID in clause 1 supplies no validation; this separate directive is Live/High.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emitting it in this Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Protocol directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "/protocol: Protocol explicitly says Emit the report without validation. This independently permits unvalidated report emission (Live/High), propagating beyond the instruction.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emitting it in this Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Protocol directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "/protocol/line-8: Protocol explicitly says Emit the report without validation. This independently permits unvalidated report emission (Live/High), propagating beyond the instruction.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before emitting it in this Protocol instruction.",
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Protocol directs report emission without prior report validation."
+        },
+        {
+          "band": "Live",
+          "entry": "emission-without-validation",
+          "fix": "Require validation of the report before every emission in the second Rules clause.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without prior report validation."
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "@element: Two separate directives permit unvalidated report emission: Protocol line 8 and Rules line 11 clause 2. AP1 requires both violations independently (Live/High).",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d"
+}

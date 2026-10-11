@@ -1,0 +1,231 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "4af850dc187ad316a51e",
+  "attempt": "current-author-verify-round-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "15ee43746437cfdf860b1519",
+        "91a7785154a1a018658ccae8",
+        "eb3d9f625d45294630564c36"
+      ],
+      "reason": "Independently verified A. This explicit workflow/activity/routine call or execution relationship carries qualification through run and deliver to produce. DP1 requires that chain to carry the ancestor destination constraint to the leaf, even though caller files have no leaf declaration.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "263ad09bd2d440e2a894ee63",
+        "665c1a7ad6f6a7650e3f374a",
+        "9fff88eaae065adb66759e66"
+      ],
+      "reason": "Independently verified N. The complete workflow specifies its ID, initialActivity and graph, without a leaf Destination declaration. DP1 assigns propagation to its explicit call relationships; this native row has no independent leaf comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "3dd8981b7cf70f3489f0cb9a",
+        "69c0652ae2e85de91e1e5de4",
+        "b6ad6f9e4c3bf6bcd7517234"
+      ],
+      "reason": "Independently verified N. The ancestor states the inherited archive requirement. DP1 explicitly distinguishes that declaration from a conflicting leaf destination, so the ancestor is not independently judged as the leaf instance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "65dd3d64e8c54c7713685121",
+        "af24593c352cedfdf9a972fa",
+        "bf312e511dcc8f4eda77a41a",
+        "cf440ff1717daba3ba33af52"
+      ],
+      "reason": "Independently verified N. The complete routine has Inputs, emit.report and a produce call, without a leaf Destination declaration. DP1 applies through the separate call/execution relationships rather than these native routine rows.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8b527c51fa312ce306f5d8f4",
+        "b7876638c82ca7835e6ecd54"
+      ],
+      "reason": "Independently verified N. This leaf row owns Capability, Outputs, Protocol, retention or emission wording without a Destination declaration. DP1 applies to the separate destination-containing rows and inheritance relationships.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "Independently verified A. This leaf-to-ancestor relationship attaches the archive constraint to produce in the declared executing workflow. DP1 expressly includes inheritance relationships in the leaf destination comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "Independently verified A. This leaf surface contains its Destination declaration. The captured qualification/run/delivery/deliver/emit chain binds produce to the ancestor archive constraint, so DP1 requires comparing their declared destinations.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "a93639cc3c5c1ad866587c2e",
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "reason": "Independently verified N. The complete activity has a deliver invocation and no leaf Destination declaration. DP1 excludes independent checks of such files; its separately inventoried call relationship carries the inherited rule.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

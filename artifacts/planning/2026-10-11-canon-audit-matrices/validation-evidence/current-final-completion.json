@@ -1,0 +1,758 @@
+[
+  {
+    "run": "round-1/author-a",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 49,\n  \"criteria\": 4,\n  \"cells\": 196,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 0,\n    \"Contract\": 0,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"clean-live-and-contract\",\n  \"snapshot\": \"57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 0,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 6,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 3,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 49,
+      "criteria": 4,
+      "cells": 196,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "clean-live-and-contract",
+      "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 6,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+    "mappings": {
+      "N": 150,
+      "A": 46
+    },
+    "evaluations": {
+      "pass": 46
+    },
+    "obligations": {
+      "check": 1,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-1/author-b",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 50,\n  \"criteria\": 4,\n  \"cells\": 200,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 5,\n    \"Contract\": 1,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"findings\",\n  \"snapshot\": \"533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 6,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 4,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 5,
+        "Contract": 1,
+        "Hygiene": 0
+      },
+      "conformance": "findings",
+      "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+    "mappings": {
+      "N": 152,
+      "A": 48
+    },
+    "evaluations": {
+      "finding": 48
+    },
+    "obligations": {
+      "check": 1,
+      "finding": 6,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-1/audit-a",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 49,\n  \"criteria\": 4,\n  \"cells\": 196,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 0,\n    \"Contract\": 0,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"clean-live-and-contract\",\n  \"snapshot\": \"f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 0,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 6,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 3,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 49,
+      "criteria": 4,
+      "cells": 196,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "clean-live-and-contract",
+      "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 6,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8",
+    "mappings": {
+      "N": 150,
+      "A": 46
+    },
+    "evaluations": {
+      "pass": 46
+    },
+    "obligations": {
+      "check": 1,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-1/audit-b",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 50,\n  \"criteria\": 4,\n  \"cells\": 200,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 5,\n    \"Contract\": 1,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"findings\",\n  \"snapshot\": \"1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 6,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 13,\n      \"failed\": 0,\n      \"invalidated\": 4\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 2\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 2\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 4,\n      \"failed\": 1,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 5,
+        "Contract": 1,
+        "Hygiene": 0
+      },
+      "conformance": "findings",
+      "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 13,
+          "failed": 0,
+          "invalidated": 4
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 2
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 2
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 1,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7",
+    "mappings": {
+      "N": 152,
+      "A": 48
+    },
+    "evaluations": {
+      "finding": 48
+    },
+    "obligations": {
+      "check": 1,
+      "finding": 6,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-2/author-a",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 49,\n  \"criteria\": 4,\n  \"cells\": 196,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 0,\n    \"Contract\": 0,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"clean-live-and-contract\",\n  \"snapshot\": \"b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 0,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 6,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 3,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 49,
+      "criteria": 4,
+      "cells": 196,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "clean-live-and-contract",
+      "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 6,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+    "mappings": {
+      "N": 150,
+      "A": 46
+    },
+    "evaluations": {
+      "pass": 46
+    },
+    "obligations": {
+      "check": 1,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-2/author-b",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 50,\n  \"criteria\": 4,\n  \"cells\": 200,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 5,\n    \"Contract\": 1,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"findings\",\n  \"snapshot\": \"090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 6,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 4,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 5,
+        "Contract": 1,
+        "Hygiene": 0
+      },
+      "conformance": "findings",
+      "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+    "mappings": {
+      "N": 152,
+      "A": 48
+    },
+    "evaluations": {
+      "finding": 48
+    },
+    "obligations": {
+      "check": 1,
+      "finding": 6,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-2/audit-a",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 49,\n  \"criteria\": 4,\n  \"cells\": 196,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 0,\n    \"Contract\": 0,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"clean-live-and-contract\",\n  \"snapshot\": \"b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 0,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 16,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 8,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 6,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 3,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 49,
+      "criteria": 4,
+      "cells": 196,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 0,
+        "Contract": 0,
+        "Hygiene": 0
+      },
+      "conformance": "clean-live-and-contract",
+      "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 0,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 16,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 8,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 6,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 3,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
+    "mappings": {
+      "N": 150,
+      "A": 46
+    },
+    "evaluations": {
+      "pass": 46
+    },
+    "obligations": {
+      "check": 1,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  },
+  {
+    "run": "round-2/audit-b",
+    "command": [
+      "/usr/bin/python3",
+      "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/scripts/audit_surface.py",
+      "status",
+      "--run",
+      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b",
+      "--require",
+      "complete"
+    ],
+    "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices",
+    "exit_code": 0,
+    "stdout": "{\n  \"mapping_ready\": true,\n  \"complete\": true,\n  \"rows\": 50,\n  \"criteria\": 4,\n  \"cells\": 200,\n  \"unknown\": 0,\n  \"unverified\": 0,\n  \"unevaluated\": 0,\n  \"bands\": {\n    \"Live\": 5,\n    \"Contract\": 1,\n    \"Hygiene\": 0\n  },\n  \"conformance\": \"findings\",\n  \"snapshot\": \"5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d\",\n  \"inventory_missing\": 0,\n  \"obligations_missing\": 0,\n  \"findings\": 6,\n  \"stale_count\": 0,\n  \"stale\": [],\n  \"artifacts\": {\n    \"audit-report.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-report.md\",\n    \"audit-coverage.md\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-coverage.md\",\n    \"audit-state.json\": \"/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-state.json\"\n  },\n  \"assignments\": {\n    \"map\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 13,\n      \"failed\": 0,\n      \"invalidated\": 4\n    },\n    \"inventory\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 2,\n      \"failed\": 0,\n      \"invalidated\": 0\n    },\n    \"verify\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 2\n    },\n    \"evaluate\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 7,\n      \"failed\": 0,\n      \"invalidated\": 2\n    },\n    \"obligations\": {\n      \"pending\": 0,\n      \"partial\": 0,\n      \"returned\": 4,\n      \"failed\": 0,\n      \"invalidated\": 0\n    }\n  }\n}\n",
+    "stderr": "",
+    "status": {
+      "mapping_ready": true,
+      "complete": true,
+      "rows": 50,
+      "criteria": 4,
+      "cells": 200,
+      "unknown": 0,
+      "unverified": 0,
+      "unevaluated": 0,
+      "bands": {
+        "Live": 5,
+        "Contract": 1,
+        "Hygiene": 0
+      },
+      "conformance": "findings",
+      "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d",
+      "inventory_missing": 0,
+      "obligations_missing": 0,
+      "findings": 6,
+      "stale_count": 0,
+      "stale": [],
+      "artifacts": {
+        "audit-report.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-report.md",
+        "audit-coverage.md": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-coverage.md",
+        "audit-state.json": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b/audit-state.json"
+      },
+      "assignments": {
+        "map": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 13,
+          "failed": 0,
+          "invalidated": 4
+        },
+        "inventory": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 2,
+          "failed": 0,
+          "invalidated": 0
+        },
+        "verify": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 2
+        },
+        "evaluate": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 7,
+          "failed": 0,
+          "invalidated": 2
+        },
+        "obligations": {
+          "pending": 0,
+          "partial": 0,
+          "returned": 4,
+          "failed": 0,
+          "invalidated": 0
+        }
+      }
+    },
+    "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d",
+    "mappings": {
+      "N": 152,
+      "A": 48
+    },
+    "evaluations": {
+      "finding": 48
+    },
+    "obligations": {
+      "check": 1,
+      "finding": 6,
+      "inventory": 16,
+      "read": 5,
+      "unit": 2
+    }
+  }
+]

@@ -1,0 +1,78 @@
+{
+  "actor": "/root",
+  "assignment": "ac3bb1f41aef48e9228f",
+  "attempt": "root-current-support",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "Read the entire activity: delivery invokes deliver and supplies its explicit argument map. Argument keys remain a semantic AP-02 obligation, independently evaluated in their mapped cells.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "Read the entire unchanged routine: envelope is the input, report exports emit.report, and emit calls produce. Declaration and concrete invocation contexts remain separately mapped.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "Read the entire inherited contract: its capability and required archive destination. The rule applies through the captured leaf and call-chain context.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "Read all twelve lines: Capability, Outputs, Protocol and both Rules, including the independently testable second semicolon clause. This read disposition does not assert conformance.",
+      "status": "read"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "read:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "Read the entire initialActivity and run graph, including the sole done destination. Its complete graph supplies the DP2 termination evaluation.",
+      "status": "read"
+    }
+  ],
+  "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf"
+}

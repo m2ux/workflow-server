@@ -1,0 +1,677 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "fe7b2aad954bdd18c462",
+  "attempt": "current-independent-round-1-fe7b2aad954bdd18c462",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "A verified for /steps: The delivery invocation supplies key packet to deliver, whose Inputs is [envelope]. AP2 requires checking this concrete key-set contract.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "reason": "A verified for /steps/id=delivery: The delivery invocation supplies key packet to deliver, whose Inputs is [envelope]. AP2 requires checking this concrete key-set contract.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "reason": "N verified for /steps/id=delivery/id: This names run or activity step delivery; neither identifier is a routine argument key or a producer step referenced by a routine export.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "reason": "A verified for /steps/id=delivery/routine: The delivery invocation supplies key packet to deliver, whose Inputs is [envelope]. AP2 requires checking this concrete key-set contract.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "reason": "A verified for /steps/id=delivery/routine/arguments: The delivery invocation supplies key packet to deliver, whose Inputs is [envelope]. AP2 requires checking this concrete key-set contract.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "f1186a7f61ea9f6493402006"
+      ],
+      "reason": "A verified for /steps/id=delivery/routine/arguments/packet: The delivery invocation supplies key packet to deliver, whose Inputs is [envelope]. AP2 requires checking this concrete key-set contract.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "reason": "A verified for /steps/id=delivery/routine/name: The deliver reference resolves the concrete call with key packet to Inputs [envelope]. AP2 requires each invocation to resolve and compare keys.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a30b577290e3406e29334f7b"
+      ],
+      "reason": "N verified for /rules: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "6dff2018269cdd7f6ce3a242"
+      ],
+      "reason": "N verified for /rules/line-11: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "923c5917ea2c9d4abe29e519"
+      ],
+      "reason": "N verified for /rules/line-11/clause-1: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a03eed5b1543ec6c3d53b66c"
+      ],
+      "reason": "N verified for /rules/line-11/clause-2: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "185e903ef3c4ae26da231a32"
+      ],
+      "reason": "N verified for /rules/line-12: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "30d521174c6c7f6c4a8579ad"
+      ],
+      "reason": "N verified for /graph/run/done: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "94b820a882f196103f835741"
+      ],
+      "reason": "N verified for /initialActivity: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "8020bba4283a65b31df0f113"
+      ],
+      "reason": "N verified for /graph/run: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "f0755acc68e9a62e580665a3"
+      ],
+      "reason": "N verified for /graph/run/done: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369"
+      ],
+      "reason": "A verified for /steps: Step emit resolves export emit.report to produce and its output summary. AP2 explicitly requires step/technique resolution before comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "790b168511688f3580f49f17"
+      ],
+      "reason": "A verified for /steps/id=emit: Step emit resolves export emit.report to produce and its output summary. AP2 explicitly requires step/technique resolution before comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "A verified for /steps/id=emit/id: Step emit resolves export emit.report to produce and its output summary. AP2 explicitly requires step/technique resolution before comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "reason": "A verified for /steps/id=emit/technique: Step emit resolves export emit.report to produce and its output summary. AP2 explicitly requires step/technique resolution before comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e3964a7ca7f68e7c40793e11"
+      ],
+      "reason": "N verified for /graph: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "fc47360bf214ca94a9c2f752"
+      ],
+      "reason": "N verified for /graph/run: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e8a18028e34e1ace5d01fcf3"
+      ],
+      "reason": "N verified for /graph/run/done: The workflow selects run and an exit to run; these graph references carry neither routine argument keys nor step.output export names.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143"
+      ],
+      "reason": "A verified for /outputs: The report export is emit.report; emit calls produce, whose declared output is summary. AP2 requires comparing the referenced producer name.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "A verified for /outputs/report: The report export is emit.report; emit calls produce, whose declared output is summary. AP2 requires comparing the referenced producer name.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "4c3a69d6842d941bb1b4ae64"
+      ],
+      "reason": "N verified for /capability: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "883f9febadc76de8d4b64dd6"
+      ],
+      "reason": "N verified for /capability/line-2: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "547682eae905cf61fddd33be"
+      ],
+      "reason": "N verified for /protocol: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "0f13f165ba007a4540cef470"
+      ],
+      "reason": "N verified for /protocol/line-8: This technique prose describes capability, emission, retention or destination. AP2 excludes Markdown artifact mentions; Outputs is separate.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "5fb3f06992383a0be7318734"
+      ],
+      "reason": "N verified for /capability: The ancestor only describes a service and requires destination archive; it has no Inputs, Outputs, invocation arguments or exported output binding.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "reason": "N verified for /capability/line-2: The ancestor only describes a service and requires destination archive; it has no Inputs, Outputs, invocation arguments or exported output binding.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

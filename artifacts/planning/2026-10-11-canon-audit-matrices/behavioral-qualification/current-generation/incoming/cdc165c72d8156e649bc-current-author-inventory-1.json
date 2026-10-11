@@ -1,0 +1,248 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "cdc165c72d8156e649bc",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The complete 21-line canon home has one family, Controlled Qualification, and exactly two named entries: emission-without-validation at lines 7-14 and broken-binding at lines 15-21. Both AP identities, aliases, Detect/Do not flag/Fix text, and the full family supplemental unit are present through the final line; no additional entry or family is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The complete five-line canon home contains one unit, Evidence scope, at lines 3-5. The supplemental cc:evidence-scope reproduces that entire unit. It explicitly limits these definitions to the four controlled criteria and supplies execution context without claiming engine-schema or full-project-canon conformance. Required check:guards is present as an obligation, not a measured result.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:canon:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The complete 11-line canon home contains exactly two numbered principles: inherited Destination at lines 5-8 and a terminating workflow path at lines 9-11. Both numbered DP identities and exact complete criterion texts are present. Their scope includes executing call/inheritance context and whole-workflow graph analysis; neither principle is omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The nine native rows cover id, steps, the full delivery-step ancestry, its id, routine object, routine/name, arguments object and concrete packet key, plus the whole element. The tenth row records delivery calling deliver at the actual name field. All six source lines and both call endpoints are accounted for.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The ten native rows cover id, Inputs container and envelope item, Outputs container and report binding, steps container and emit ancestry, step id, technique selector, and the whole element. Two relationship rows capture emit calling produce and the explicit qualification/run/delivery/deliver/emit instance with workflow, activity and ancestor context. All 12 proposed rows are justified.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The five rows cover Capability heading and its paragraph, Rules heading and the archive constraint, and the whole element. The complete five-line ancestor is contract context for the executing produce leaf. No independent clauses or source sections are omitted.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The 12 native rows cover Capability and paragraph, Outputs and summary heading, Protocol and line-8 instruction, Rules, the line-11 compound instruction, its separate retention and emission/validation clauses, line-12 Destination, and the whole element. The thirteenth row explicitly links produce to its ancestor TECHNIQUE.md. These account for every original heading, instruction and independent semicolon clause.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The six native rows cover id, initialActivity, graph, run, run.done, and the whole element. Initial selection, graph-entry ownership and done-exit ownership are distinct relationship rows. The actual done destination is run. The run destination adds the separate next-activity relationship to run, yielding ten rows and four relationships.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/anti-patterns.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The manifest identifies this complete canon home as unselected and non-seed, with no definition-call references. Its AP entries and family supplemental unit are captured by canon inventory. It is not one of the declared definition paths and adds no missing definition row or closure target.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/convention-conformance.md"
+      ],
+      "reason": "Current-generation round-1/author-b verification: The manifest identifies this complete convention home as unselected and non-seed, with no definition-call references. Evidence scope is preserved as a supplemental unit. It contributes the controlled-dialect boundary and introduces no omitted definition target.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

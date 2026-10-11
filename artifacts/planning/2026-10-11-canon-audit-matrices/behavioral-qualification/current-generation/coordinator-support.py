@@ -15,6 +15,7 @@ parser.add_argument('--round', type=int, default=1)
 parser.add_argument('--mode', choices=('author', 'audit'), default='author')
 parser.add_argument('--kind', choices=('support', 'confirmation'), default='support')
 parser.add_argument('--reuse-source-bytes', action='store_true')
+parser.add_argument('--receipt-folder')
 args = parser.parse_args()
 base = Path(__file__).resolve().parent
 folder = base / ('round-' + str(args.round))
@@ -87,7 +88,8 @@ for job in read_json(folder / (args.mode + '-obligations-queue.json')):
             elif 'workflow.yaml' in location:
                 reason = 'Start from initialActivity run. The complete graph has only run.done returning to run; no reachable transition targets null. DP2 requires a finite terminating path. The whole-graph defect independently reproduces Critical Live.'
             elif '/rules/line-12' in location or ':12 ' in location:
-                reason = 'Follow qualification/run delivery to deliver/emit and produce, retaining the executing ancestor TECHNIQUE.md. The ancestor requires archive while the leaf declares public on line 12. DP1 reproduces an inherited contract conflict with High urgency because it reaches the concrete workflow instance. Contract classification identifies this declaration conflict; the controlled guard supplies no trace proving an actual runtime destination.'
+                assert finding['band'] == 'Contract', 'Current DP1 band needs an independent coordinator judgment before confirmation'
+                reason = 'Follow qualification/run delivery to deliver/emit and produce, retaining the executing ancestor TECHNIQUE.md. The ancestor requires archive while the leaf declares public on line 12. DP1 reproduces an inherited contract conflict with High urgency because it reaches the concrete workflow instance. Contract identifies the propagated contradictory declarations: the fixture supplies no structural destination-binding operation that establishes which declaration wins. This does not assert a successful runtime execution.'
             else:
                 raise AssertionError('Unreviewed finding location: ' + location)
             record = {'items': [key], 'status': 'confirmed', 'reason': reason, 'evidence': evidence}
@@ -104,6 +106,6 @@ for job in read_json(folder / (args.mode + '-obligations-queue.json')):
             check = read_json(job['check_observation'])
             print(json.dumps({'check': check, 'actual_output': Path(check['output']).read_text()}))
     else:
-        destination = folder / (args.mode + '-root-' + args.kind + '-receipts') / (job['assignment'] + '.json')
+        destination = folder / (args.receipt_folder or (args.mode + '-root-' + args.kind + '-receipts')) / (job['assignment'] + '.json')
         write_json(destination, {'run': job['run'], 'assignment': job['assignment'], 'snapshot': state['snapshot'], 'actor': '/root', 'attempt': 'root-current-' + args.kind, 'records': records})
         print(json.dumps({'receipt': str(destination), 'items': len(records)}))

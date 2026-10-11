@@ -1,0 +1,67 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "4bf97cecd8c1423fe9bd",
+  "attempt": "audit-dp1-evaluate-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "items": [
+        "f442830158e33a5d097e4514",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97",
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3",
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "DP1 compares this executing leaf with its ancestor: public contradicts required archive. This is a propagated declaration conflict; effective routing is unspecified.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

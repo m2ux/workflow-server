@@ -1,0 +1,119 @@
+[
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "c85756be2aee5d50adf4",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/c85756be2aee5d50adf4.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "47f4ef2c649d1b1cafca",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/47f4ef2c649d1b1cafca.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "9a8585ae10bdd680320f",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/9a8585ae10bdd680320f.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "df1947a7cb9d5f5fdcb6",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/df1947a7cb9d5f5fdcb6.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "f2285bfd55f4a1769631",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/f2285bfd55f4a1769631.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "8d0483f486cf27fdec91",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/packets/evaluate/8d0483f486cf27fdec91.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "599976394e3ceff3971e",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/599976394e3ceff3971e.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "dba0980a4d3510219dfc",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/dba0980a4d3510219dfc.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "e6a02551969bdf4dfb61",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/e6a02551969bdf4dfb61.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "664beb9113de92370cb8",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/664beb9113de92370cb8.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "0e26e24ef164353a649d",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/0e26e24ef164353a649d.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "3482b0c867b5e8d13fe8",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/3482b0c867b5e8d13fe8.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "46574e4cefae74a26d4d",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/packets/evaluate/46574e4cefae74a26d4d.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b"
+  }
+]

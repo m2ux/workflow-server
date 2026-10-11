@@ -18,6 +18,8 @@ Reference scoring resolves either the exact captured AP named identity or its fu
 
 The current Audit returns also use exact DP names without the captured numeric heading prefix. The scorer's two-round before/after probe records that mismatch, then accepts the exact heading or its exact unnumbered name. Negative controls reject bare ordinals and unrelated names. This is a qualification-harness correction; core audit tooling and all captured source/criterion bytes retain their identities.
 
+Final current Audit confirmation uses independently renewed DP1 evaluations. Their specific reasoning identifies no destination-binding or conflict-precedence semantics in the fixture; the claim is not merely that a runtime trace is absent. The root re-read the complete declaration chain and agrees with High Contract. The two original High Live returns remain in immutable evidence; a rejected same-severity downgrade receipt is not counted. Typed reset, fresh mapping, independent verification, current evaluation and independent confirmation settle the same six defects in each seeded case. All eight actual CLI completion calls return exit 0, and fixed-reference scoring reports eight reconciled complete cases.
+
 For the corrected dispatcher generation, the coordinator re-read the complete clean and seeded definitions, four controlled criteria, convention and structural guard source. The renewed captures contain identical semantic inputs but distinct tool-bound snapshots. Current helper observations check original source hashes before recording supporting reads or independent finding derivations. No earlier accepted receipt satisfies a current obligation.
 
 ## Calibration and Recovery
@@ -37,3 +39,5 @@ A correction-receipt ingestion omitted the engineering worktree from the sandbox
 ## Disclosure Inspection
 
 The coordinator inspected recorded read indexes, actual returned source projections, final dispositions and measurement outputs. One coordinator inspection combined too many transcript lines and truncated the display; a bounded index and tail recovered the required disclosure observations. Worker truncation, irrelevant reads and calibration overruns remain recorded in their transcripts. Source-byte counts are not model-token savings.
+
+The final independent review inspects Audit-final, Author-repeat and Audit-repeat raw traces against the actual source sections and shared disclosure guidelines. All three fail strict disclosure; no missing mandatory skill route is established for their instruction-only requests. The coordinator read that review in full and retains its exact excess-section references, unsupported check selections and provenance gaps. Successful coverage qualification does not erase this separate failed acceptance condition.

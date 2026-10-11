@@ -1,0 +1,508 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "84ea6a8dff9b7db15d94",
+  "attempt": "current-evaluation-round-1-84ea6a8dff9b7db15d94",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "f442830158e33a5d097e4514"
+      ],
+      "reason": "/graph/run/done: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "21f9cfbf2718ad51d2976c98"
+      ],
+      "reason": "/initialActivity: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "32efcf3836cf4d26fc113577"
+      ],
+      "reason": "/graph/run: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "dafc343685f5a84041beee97"
+      ],
+      "reason": "/graph/run/done: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba"
+      ],
+      "reason": "/rules: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "355ce3ec841005b898e3d8d3"
+      ],
+      "reason": "/rules/line-12: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36"
+      ],
+      "reason": "/steps/id=emit/technique: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "execution/qualification/run/delivery/deliver/emit: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "ancestor/corpus/qualification/techniques/TECHNIQUE.md: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to archive to satisfy its executing ancestor constraint.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Produce declares public while its executing workflow's ancestor requires archive."
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "/steps/id=delivery/routine/name: Qualification/run invokes deliver/emit then produce. The executing TECHNIQUE.md requires archive, but the leaf Destination is public. This incorrect destination propagates to delivery (Live/High).",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

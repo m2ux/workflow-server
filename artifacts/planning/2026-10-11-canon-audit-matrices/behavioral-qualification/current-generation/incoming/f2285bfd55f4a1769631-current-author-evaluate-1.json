@@ -1,0 +1,102 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "f2285bfd55f4a1769631",
+  "attempt": "current-author-evaluate-2-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d",
+        "8835c0ddec51d397d30590e7",
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "ca1e1515076ec0147e7b8338"
+      ],
+      "reason": "The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33",
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "Delivery keys {envelope} match Inputs [envelope], and emit.report resolves through emit to produce Outputs [report]. Both AP2 binding contracts hold.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"
+}

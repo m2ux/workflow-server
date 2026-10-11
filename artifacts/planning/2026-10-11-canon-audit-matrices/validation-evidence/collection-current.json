@@ -1,0 +1,158 @@
+[
+  {
+    "file": "author-disclosure-one-transcript.txt",
+    "bytes": 148728
+  },
+  {
+    "file": "author-disclosure-two-transcript.txt",
+    "bytes": 110643
+  },
+  {
+    "file": "author-disclosure-three-transcript.txt",
+    "bytes": 133692
+  },
+  {
+    "file": "audit-disclosure-one-transcript.txt",
+    "bytes": 73709
+  },
+  {
+    "file": "audit-disclosure-two-transcript.txt",
+    "bytes": 90744
+  },
+  {
+    "file": "audit-disclosure-three-transcript.txt",
+    "bytes": 447842
+  },
+  {
+    "file": "canon-audit-unit-final.txt",
+    "bytes": 1517
+  },
+  {
+    "file": "canon-edit-guard-final.txt",
+    "bytes": 135
+  },
+  {
+    "file": "canon-summaries-final.txt",
+    "bytes": 101
+  },
+  {
+    "file": "canon-corpus-final.txt",
+    "bytes": 1322
+  },
+  {
+    "file": "canon-generic-validator.txt",
+    "bytes": 276
+  },
+  {
+    "file": "canon-author-map-submit.txt",
+    "bytes": 917
+  },
+  {
+    "file": "canon-links-final.json",
+    "bytes": 99
+  },
+  {
+    "file": "qualify-current-audit-band-evaluate-transcript.txt",
+    "bytes": 149470
+  },
+  {
+    "file": "qualify-current-audit-band-verify-transcript.txt",
+    "bytes": 196484
+  },
+  {
+    "file": "qualify-audit-band-map-transcript.txt",
+    "bytes": 11716
+  },
+  {
+    "file": "qualify-current-audit-evaluate-transcript.txt",
+    "bytes": 89497
+  },
+  {
+    "file": "qualify-current-author-evaluate-transcript.txt",
+    "bytes": 205181
+  },
+  {
+    "file": "qualify-current-audit-verify-transcript.txt",
+    "bytes": 170509
+  },
+  {
+    "file": "qualify-current-author-verify-transcript.txt",
+    "bytes": 611852
+  },
+  {
+    "file": "qualify-current-audit-transcript.txt",
+    "bytes": 96526
+  },
+  {
+    "file": "qualify-current-map-transcript.txt",
+    "bytes": 141516
+  },
+  {
+    "file": "qualify-current-author-transcript.txt",
+    "bytes": 184166
+  },
+  {
+    "file": "qualify-audit-verify-two-transcript.txt",
+    "bytes": 186171
+  },
+  {
+    "file": "qualify-negative-transcript.txt",
+    "bytes": 24182
+  },
+  {
+    "file": "qualify-verify-two-transcript.txt",
+    "bytes": 888486
+  },
+  {
+    "file": "qualify-audit-two-transcript.txt",
+    "bytes": 110025
+  },
+  {
+    "file": "qualify-author-two-transcript.txt",
+    "bytes": 124310
+  },
+  {
+    "file": "qualify-verify-audit-one-transcript.txt",
+    "bytes": 19726
+  },
+  {
+    "file": "qualify-canon-question-transcript.txt",
+    "bytes": 34108
+  },
+  {
+    "file": "qualify-verify-one-transcript.txt",
+    "bytes": 1328630
+  },
+  {
+    "file": "qualify-author-one-transcript.txt",
+    "bytes": 1297866
+  },
+  {
+    "file": "qualify-audit-one-transcript.txt",
+    "bytes": 285564
+  },
+  {
+    "file": "qualify-current-author-evaluate-round-2-measurements.json",
+    "bytes": 14364
+  },
+  {
+    "file": "qualify-current-author-evaluate-round-1-measurements.json",
+    "bytes": 14364
+  },
+  {
+    "file": "qualify-dispatch-candidate-measurements.json",
+    "bytes": 1947
+  },
+  {
+    "file": "qualify-author-two-measurements.json",
+    "bytes": 11294
+  },
+  {
+    "file": "baseline-audit-transcript.txt",
+    "bytes": 78308
+  },
+  {
+    "file": "baseline-author-transcript.txt",
+    "bytes": 70489
+  }
+]

@@ -1,0 +1,358 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "f7268193f5827075589f",
+  "attempt": "current-evaluation-round-1-f7268193f5827075589f",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "/steps: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "ece85719689c1a3411d52a12"
+      ],
+      "reason": "/steps/id=delivery: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "366a1ced08e276234b09d365"
+      ],
+      "reason": "/steps/id=delivery/routine: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "e4e1d36386ad37dc4007d953"
+      ],
+      "reason": "/steps/id=delivery/routine/arguments: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "f1186a7f61ea9f6493402006"
+      ],
+      "reason": "/steps/id=delivery/routine/arguments/packet: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Pass the argument under the exact declared input key envelope.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery passes packet to deliver, whose only input is envelope."
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "reason": "/steps/id=delivery/routine/name: Delivery supplies {packet}, but deliver requires exactly {envelope}; there are no optional keys or aliases. The invocation is structurally broken (Live/Critical).",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the exported report to emit.summary, the output declared by the called technique.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Deliver exports emit.report, but emit calls produce, which declares only summary."
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369"
+      ],
+      "reason": "/steps: Export emit.report resolves emit to produce, whose only declared output is summary. This unresolved output bind is Live/Critical; diff follows the supplied touched producer contract.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the exported report to emit.summary, the output declared by the called technique.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Deliver exports emit.report, but emit calls produce, which declares only summary."
+        }
+      ],
+      "items": [
+        "790b168511688f3580f49f17"
+      ],
+      "reason": "/steps/id=emit: Export emit.report resolves emit to produce, whose only declared output is summary. This unresolved output bind is Live/Critical; diff follows the supplied touched producer contract.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the exported report to emit.summary, the output declared by the called technique.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Deliver exports emit.report, but emit calls produce, which declares only summary."
+        }
+      ],
+      "items": [
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "/steps/id=emit/id: Export emit.report resolves emit to produce, whose only declared output is summary. This unresolved output bind is Live/Critical; diff follows the supplied touched producer contract.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "broken-binding",
+          "fix": "Bind the exported report to emit.summary, the output declared by the called technique.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Deliver exports emit.report, but emit calls produce, which declares only summary."
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "reason": "/steps/id=emit/technique: Export emit.report resolves emit to produce, whose only declared output is summary. This unresolved output bind is Live/Critical; diff follows the supplied touched producer contract.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

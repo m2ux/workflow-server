@@ -1,0 +1,20 @@
+[
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "4bf97cecd8c1423fe9bd",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/packets/evaluate/4bf97cecd8c1423fe9bd.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "3b42856afe66297c6be6",
+    "check_observation": null,
+    "mode": "audit",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/packets/evaluate/3b42856afe66297c6be6.json",
+    "phase": "evaluate",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b"
+  }
+]

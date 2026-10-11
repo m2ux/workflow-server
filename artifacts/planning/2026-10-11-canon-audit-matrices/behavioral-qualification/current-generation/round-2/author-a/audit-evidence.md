@@ -119,7 +119,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 69bbe5f010e4e9c6cc42b36b
 
@@ -213,7 +219,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 4c9b9e3283acb76acd0c593c
 
@@ -399,7 +411,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 8f71acc678543f1dedd6da64
 
@@ -493,7 +511,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 85d58778322169b7eb358fb2
 
@@ -587,7 +611,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell e7190e6183add8a7b67d408d
 
@@ -681,7 +711,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 7a49531ccbd7063bf5c4dd03
 
@@ -775,7 +811,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 6d000a7587cb7a720d3ce09a
 
@@ -871,7 +913,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell e42353cfc8fe3169b809b996
 
@@ -927,7 +975,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 36c8e451b93d39512aae352f
 
@@ -1077,7 +1134,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 2e52133101ac058519a8aa51
 
@@ -1171,7 +1234,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery supplies exactly {envelope}; deliver requires exactly [envelope]. The input contract matches, and sealed is an opaque allowed value.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 
 ## Cell 8d0a1adc7b4ff87710b48af6
 
@@ -1265,7 +1334,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 8f64e24f8a4caa9482d28228
 
@@ -1359,7 +1434,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 232c484eaf1003ef830d4ffa
 
@@ -1453,7 +1534,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell cbb292d61ff63c7740d065be
 
@@ -1547,7 +1634,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell bbb0ef5214ae8bbcce715c65
 
@@ -1641,7 +1734,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 71fd5507f4b74e2ec91c2b3e
 
@@ -1735,7 +1834,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell f2a200e38a51bc411ee5e057
 
@@ -1833,7 +1938,14 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery keys {envelope} match Inputs [envelope], and emit.report resolves through emit to produce Outputs [report]. Both AP2 binding contracts hold.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 2ec151da2546cd9066780932
 
@@ -1931,7 +2043,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell afeb129e1e03e4f353693950
 
@@ -1990,7 +2108,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell a6cc9c95bd8a15eec9337ab9
 
@@ -2049,7 +2176,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — Delivery keys {envelope} match Inputs [envelope], and emit.report resolves through emit to produce Outputs [report]. Both AP2 binding contracts hold.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 7b47769dd43afb09823a4b14
 
@@ -2111,7 +2247,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 7616d539ed6effba75237723
 
@@ -2811,7 +2956,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell e00abe344b2cf11c702b34f1
 
@@ -2906,7 +3057,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell f0f7088daffd00158c0c1032
 
@@ -3022,7 +3179,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The Protocol orders validation of the report before emitting it, satisfying AP1 at this instruction.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 533e91f3401233d0974551eb
 
@@ -3115,7 +3277,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The Protocol orders validation of the report before emitting it, satisfying AP1 at this instruction.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell fbafce4f79dd46979495549a
 
@@ -3208,7 +3375,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The second Rules clause requires validation before each emission. The separate retention clause adds no unvalidated emission permission.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 381dd396d48f156e5b5332ba
 
@@ -3239,7 +3411,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 21b5df21a5c696fcaa898fbf
 
@@ -3308,7 +3489,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The second Rules clause requires validation before each emission. The separate retention clause adds no unvalidated emission permission.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell 69a9fd68e24025b700e9bbb1
 
@@ -3492,7 +3678,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The second Rules clause requires validation before each emission. The separate retention clause adds no unvalidated emission permission.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell acca57d9a610cd2900940f11
 
@@ -3615,7 +3806,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 3e979fb0c7e3eb5836c3cb1a
 
@@ -3663,7 +3863,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — The report export resolves emit.report through step emit to produce, whose Outputs declares report. The referenced producer output exists.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell d074a916d8f80c61b3aa18a0
 
@@ -3686,7 +3892,12 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
-Evaluation: unresolved.
+Evaluation: pass — Both the Protocol instruction and the second Rules clause require report validation before emission; the retention and destination clauses direct no emission.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/anti-patterns.md](sources/0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025.txt), lines 1–21
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 
 ## Cell a406c04573c91f8ad82577e3
 
@@ -3717,7 +3928,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 8d0f33a043c7068e8c998046
 
@@ -3822,7 +4042,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 98b55e096e4899353322814f
 
@@ -3941,7 +4170,13 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell fc47360bf214ca94a9c2f752
 
@@ -4035,7 +4270,13 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell e8a18028e34e1ace5d01fcf3
 
@@ -4129,7 +4370,13 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell a1bbb96005ca910edd02b943
 
@@ -4313,7 +4560,13 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell ce1c6885d9fe828ffb2d4802
 
@@ -4405,7 +4658,13 @@ Agent: /root/qualify_author_one
 - [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 94b820a882f196103f835741
 
@@ -4486,7 +4745,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 8862878198e6198ef77c1f28
 
@@ -4511,7 +4779,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 8020bba4283a65b31df0f113
 
@@ -4592,7 +4866,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 48da822c85267d96ea48c4c2
 
@@ -4617,7 +4900,13 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell f0755acc68e9a62e580665a3
 
@@ -4698,7 +4987,16 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/routines/deliver.yaml](sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt), lines 1–6
+- [corpus/qualification/techniques/TECHNIQUE.md](sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt), lines 1–5
+- [corpus/qualification/techniques/produce.md](sources/53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77.txt), lines 1–12
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
 ## Cell 5453a725eb6086baaa72c972
 
@@ -4723,4 +5021,10 @@ Agent: /root/qualify_author_one
 - [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
 - [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5
 
-Evaluation: unresolved.
+Evaluation: pass — The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.
+
+Agent: /root/qualify_author_one
+
+- [corpus/canon/resources/design-principles.md](sources/6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121.txt), lines 1–11
+- [corpus/qualification/activities/run.yaml](sources/21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a.txt), lines 1–6
+- [corpus/qualification/workflow.yaml](sources/02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771.txt), lines 1–5

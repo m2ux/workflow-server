@@ -1,0 +1,36 @@
+{
+  "actor": "/root",
+  "assignment": "76e0b5c4ab09490c215e",
+  "attempt": "root-current-support",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "unit:ap:controlled-qualification"
+      ],
+      "reason": "Walked the controlled AP family: it scopes interpretation to explicit instruction and binding constructs and identifies each distinct failing construct once. All AP-01/AP-02 cells retain those complete criteria; overlapping section and element detections reconcile through stable findings.",
+      "status": "walked"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/convention-conformance.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "unit:cc:evidence-scope"
+      ],
+      "reason": "Walked Evidence scope against the captured definitions and all four controlled criteria. Source lines identify the two instruction clauses; YAML addresses and explicit execution relationships retain the binding and inherited call-chain context. Every current applicability decision is independently settled. Findings retain the controlled-dialect boundary and do not assert engine-schema or full-project-canon conformance.",
+      "status": "walked"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

@@ -1758,9 +1758,20 @@
         "eb3d9f625d45294630564c36": "77f354b8b8335aba4210cd7601a3f158761c4468ca641dcd9aaac294340b4261"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "15ee43746437cfdf860b1519",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "355ce3ec841005b898e3d8d3",
+        "381dd396d48f156e5b5332ba",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8",
+        "a406c04573c91f8ad82577e3",
+        "dafc343685f5a84041beee97",
+        "eb3d9f625d45294630564c36"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "973657c37f9fcf99f2ab": {
       "actor": "/root/qualify_audit_one",
@@ -1841,9 +1852,20 @@
         "fc60645fdab03b4f360b972e": "c5926fd4ae924a32a06f0a8076ce48af0454a56b62580b24e37ee7f26e61eac0"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "23d52f087c143d67f67da445",
+        "366a1ced08e276234b09d365",
+        "387b3abcf94e6a19aabbf992",
+        "790b168511688f3580f49f17",
+        "82c8e910cc4b4df96a89e369",
+        "e4e1d36386ad37dc4007d953",
+        "e6707d2a492bbb28eafc3a21",
+        "ece85719689c1a3411d52a12",
+        "f45b86c19f25461cbe667622",
+        "fc60645fdab03b4f360b972e"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "9798e3449bcc1b65bf06": {
       "actor": "/root/qualify_audit_two",
@@ -2514,9 +2536,18 @@
         "e5c1842a573eccbf8d7d7e60": "f35241a870233698438fa33b11bf01b744689fa82362c583a94368177de3568d"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "094759e3ffb8236db086b566",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972",
+        "8862878198e6198ef77c1f28",
+        "9a13e148e0a434d148bef242",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e0fcd50974c10678a3e2fb44",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "c522850b6534f47b5672": {
       "actor": "/root/qualify_audit_two",
@@ -2708,9 +2739,20 @@
         "ca1e1515076ec0147e7b8338": "d8bdbc86e7092b82616702478ac3190c433d793966b8c47b026f7853cb9519ae"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "1682a187cf7dd36419e2a143",
+        "620325a4c3f62c9867a7df90",
+        "7f71a92e9f425b2094dec98d",
+        "85e68983cef9c8b0f9a7bf33",
+        "8669d4026237cb94e83e2158",
+        "8835c0ddec51d397d30590e7",
+        "b331b3631bac4371bfebf008",
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "ca1e1515076ec0147e7b8338"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "cfd32d29145ff820b85c": {
       "actor": "/root/qualify_audit_two",
@@ -3002,9 +3044,12 @@
         "fa301823ccd44ed9374ce575": "63b5e9ed66f2ae74023a6dee1ff11921b162bc20e57deaf80a5c852492feb3c6"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "eeab805ea4653756496776b5",
+        "fa301823ccd44ed9374ce575"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "daf4742764d84d0ff677": {
       "actor": "/root/qualify_audit_one",
@@ -3061,9 +3106,16 @@
         "d10a33e1908da3335366adaa": "2f101867755c6554229cdd749a7fb3d39e588ad3b57fc6d75456ce42dce51185"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "1fff788717e68470ea335f4a",
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654",
+        "a3b7b46de80a7e60f06f33aa",
+        "d074a916d8f80c61b3aa18a0",
+        "d10a33e1908da3335366adaa"
+      ],
       "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
-      "status": "pending"
+      "status": "returned"
     },
     "db90f07d9755a4fc892f": {
       "actor": "/root/qualify_audit_two",
@@ -3598,7 +3650,1273 @@
     }
   },
   "diagnostics": [],
-  "evaluations": {},
+  "evaluations": {
+    "094759e3ffb8236db086b566": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "b2c315df1561acd06d01e8a009eb955e975263b5f288184b6861f3114a954720",
+      "reason": "/graph: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "15ee43746437cfdf860b1519": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "fb27b5f54796d9dff1b29d0aa8e81c3aecf65d21e8bd0bc8bead1c662adb61c3",
+      "reason": "execution/qualification/run/delivery/deliver/emit: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "1682a187cf7dd36419e2a143": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "88e777d28bddf70de7da85659eaa7fcc2a1b695352ed9412e2081e9ca63cd19d",
+      "reason": "/outputs: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "1fff788717e68470ea335f4a": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "3d98f8ed4b94bb4447f640df3b8927f9ad0284bbd3244bc31b7784f1a3a44074",
+      "reason": "/rules/line-11/clause-2: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    "21f9cfbf2718ad51d2976c98": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "c98204e829878d00737a6e8646d2a0d8b9935732e188c2d90ddd810c9beed7ac",
+      "reason": "/initialActivity: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "23d52f087c143d67f67da445": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "3bdeca76a568a2dc8d06b4fe81724f67a7a849799e6e0b8bf76068ed80d4d38a",
+      "reason": "/steps/id=delivery/routine/name: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "32efcf3836cf4d26fc113577": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "6d99e9d9890588bf843c8e3df577876051660526b64543e16519b95525576ab9",
+      "reason": "/graph/run: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "355ce3ec841005b898e3d8d3": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "123dca4f9c3f7e8f80128a1c183e415d742a9929f6869f1379e5dade2eb9af43",
+      "reason": "/rules/line-12: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "366a1ced08e276234b09d365": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "8d13474a62f8b678a25b7430ad1da48158fbc6bfdeda006c50a8a7119b40847d",
+      "reason": "/steps/id=delivery/routine: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "381dd396d48f156e5b5332ba": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "d4e645860f770c674e80e560ae67b0a00eea2a8735b14b0725e8b01fdef2cfe9",
+      "reason": "/rules: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "387b3abcf94e6a19aabbf992": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "14e566c6da7808982c9381ed55013e982959f2de5d17f9bd1a73c5d0f5d49f30",
+      "reason": "/steps/id=emit/technique: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "48da822c85267d96ea48c4c2": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "06b9e21a165d45e25190bdc292061d65d0a2399be3f1bae68eed4961c041b063",
+      "reason": "/graph/run: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "5453a725eb6086baaa72c972": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "238b4747732fa0dd9c0adf6c32a934918f4156244da0826e004d5757c26fdbb9",
+      "reason": "/graph/run/done: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "620325a4c3f62c9867a7df90": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "c121d3d2eb5805cb1467b92c8bfed990263a9043920c8cc59455bf55ffc1f78e",
+      "reason": "/inputs: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "668f2c03b5c1dfffd6143cc5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "926b8bd2cc0ed8006fb11512b615a8075d3703926927ea832e586bc0272b7461",
+      "reason": "/protocol: Protocol requires Validate the report, then emit it: validation precedes emission of the same report, satisfying AP1 for this instruction.",
+      "status": "pass"
+    },
+    "790b168511688f3580f49f17": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "16f9c7cd59ea8e62c4413c3ec666288c183958eda8032eb84585f6cf28787f94",
+      "reason": "/steps/id=emit: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "7f339716e8d7474fb2512654": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "5a522a606fcba53df074c27a46ed31f4166a9fd3695747c82d3fffbf42a22b89",
+      "reason": "/protocol/line-8: Protocol requires Validate the report, then emit it: validation precedes emission of the same report, satisfying AP1 for this instruction.",
+      "status": "pass"
+    },
+    "7f71a92e9f425b2094dec98d": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "ce471e333e3702d5805c691fc97663f436671b0f8898611ba71889dc31395b46",
+      "reason": "/outputs/report: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "82c8e910cc4b4df96a89e369": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "de778f65c293452fd9188a73e5a55027c43882ced1ca12cf563c2bbdc93b7e5c",
+      "reason": "/steps: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "85e68983cef9c8b0f9a7bf33": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "c3fb350f024990235c8568ef62d91ec071ce5c2dd90a3330e808dc0a50be2ee1",
+      "reason": "/inputs/0: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "8669d4026237cb94e83e2158": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "a116cf1ceaf1c8b3b82bec1a99dcde6fc23da455175060a38ffd877b62c4fdc8",
+      "reason": "execution/qualification/run/delivery/deliver/emit: Delivery arguments {envelope} match Inputs [envelope]; export emit.report resolves emit to produce Outputs [report]. Both concrete AP2 contracts hold.",
+      "status": "pass"
+    },
+    "8835c0ddec51d397d30590e7": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "0fdc9f51d00679f643446f84e8ab92e9625be65a93622fdefbf576e9234eac99",
+      "reason": "/outputs/report: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "8862878198e6198ef77c1f28": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "b4547ef8bf2b0d779d212e6a044edee2ca0e9c22e60988e60bc7dd6cf65da0dc",
+      "reason": "/initialActivity: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "8bfa310664405693e5cee00b": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "51f2b252146370d521bd86e2ac1233fa08bb4e35418a1812a45c78e5cc23f71d",
+      "reason": "ancestor/corpus/qualification/techniques/TECHNIQUE.md: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "91a7785154a1a018658ccae8": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "abffbdb4783402d0ff67323a1092cce8cd5f69eef86a1c98257639688003b0cb",
+      "reason": "/steps/id=delivery/routine/name: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "9a13e148e0a434d148bef242": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "085855245b7deadc5a5d06f4ecc1cebfd62553f83c4338e23ee9b3ba8f73bb54",
+      "reason": "/graph/run: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "a3b7b46de80a7e60f06f33aa": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "fe47fb41a89679964afd294e16afdda523c0e3d050997a7bc64e831d469ee888",
+      "reason": "/rules/line-11: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    "a406c04573c91f8ad82577e3": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "e251d8efadbce9665cac1e896eaddb465adde4b624de9bcc2e0439dc13f188a1",
+      "reason": "@element: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "b331b3631bac4371bfebf008": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "37ace419db480c8f9171c90197235b0fcd68b833a8727f7cc4c42388bbb3212b",
+      "reason": "@element: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "b34f6249f0f9b31107491750": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "be5feb4bd2d4bd3d036cfcbdf2e3978d9723fbe305472bb8b4d8a6668f5b276d",
+      "reason": "/steps/id=emit/technique: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "c7fdcca69a6f6d3b3cfa7009": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "ace8f2f00b6469d40f69dbee68c13c58d1b7f4c10594577dee132b8bb17daa14",
+      "reason": "/initialActivity: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "c986d23bf9fe92ac15ab723d": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "bf0ebb6c7aa1629ad127e7ce552c98acbffa8cc553874aa30d6363e58b778389",
+      "reason": "/outputs: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "ca1e1515076ec0147e7b8338": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "d8bdbc86e7092b82616702478ac3190c433d793966b8c47b026f7853cb9519ae",
+      "reason": "@element: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "d074a916d8f80c61b3aa18a0": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "232a8e899f74678de12aaa2ecddb3ec7593321b4d62e1038b9419f5fee41f46d",
+      "reason": "@element: Protocol validates the report before emitting it, and Rules independently requires validation before each emission. Capability, Outputs, retention and destination add no unvalidated directive.",
+      "status": "pass"
+    },
+    "d10a33e1908da3335366adaa": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "mapping": "2f101867755c6554229cdd749a7fb3d39e588ad3b57fc6d75456ce42dce51185",
+      "reason": "/rules: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    "dafc343685f5a84041beee97": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "a522c5a1ada225e3fdc2e45eacb602e9d2313f129b56dd6b45a92f0153b383be",
+      "reason": "/graph/run/done: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "e0fcd50974c10678a3e2fb44": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "7435c6e963aebb6e0dad83b26ad40d9c7be0b930dcda5547941176a996ea2301",
+      "reason": "/graph/run/done: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "e4e1d36386ad37dc4007d953": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "3da67f62ce45f9bacccb7cafd0ec227f5640ad7e4d182084d66411ba70ee40e3",
+      "reason": "/steps/id=delivery/routine/arguments: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "e5c1842a573eccbf8d7d7e60": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9
+        }
+      ],
+      "mapping": "f35241a870233698438fa33b11bf01b744689fa82362c583a94368177de3568d",
+      "reason": "@element: The complete workflow starts at run and its sole done edge reaches null in one transition. That finite path satisfies DP2; activity steps need add no exits.",
+      "status": "pass"
+    },
+    "e6707d2a492bbb28eafc3a21": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "afde67bcf63e8696ea175e6c7c2775ccbfe7edc57798e9929c9c87add377955a",
+      "reason": "/steps/id=emit/id: Export emit.report resolves step emit to produce, whose Outputs declares report. The referenced output exists; export and producer names need not otherwise match.",
+      "status": "pass"
+    },
+    "eb3d9f625d45294630564c36": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "mapping": "77f354b8b8335aba4210cd7601a3f158761c4468ca641dcd9aaac294340b4261",
+      "reason": "/steps/id=emit/technique: Qualification selects run, whose delivery calls deliver; emit calls produce. The executing ancestor requires archive and the leaf declares archive, satisfying this inheritance relationship.",
+      "status": "pass"
+    },
+    "ece85719689c1a3411d52a12": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "b4fca0b2fe59a49aa1a2a6caa4d47c83ef09909b0dad13de6d5fa48933744d04",
+      "reason": "/steps/id=delivery: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "eeab805ea4653756496776b5": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "da3557a8b188162aca82",
+      "attempt": "current-evaluation-round-2-da3557a8b188162aca82",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "2c16b5719c50651ca081fffe1b2043a10a59a45073f91869ae18e8930d667612",
+      "reason": "/steps/id=delivery/routine/name: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "f45b86c19f25461cbe667622": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "7b4abbd6ec9c21b7373ed72e37e831c86c769225904a00d52bfefcb1e97c58fc",
+      "reason": "/steps/id=delivery/routine/arguments/envelope: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    },
+    "fa301823ccd44ed9374ce575": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "da3557a8b188162aca82",
+      "attempt": "current-evaluation-round-2-da3557a8b188162aca82",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "63b5e9ed66f2ae74023a6dee1ff11921b162bc20e57deaf80a5c852492feb3c6",
+      "reason": "@element: Delivery arguments {envelope} match Inputs [envelope]; export emit.report resolves emit to produce Outputs [report]. Both concrete AP2 contracts hold.",
+      "status": "pass"
+    },
+    "fc60645fdab03b4f360b972e": {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "mapping": "c5926fd4ae924a32a06f0a8076ce48af0454a56b62580b24e37ee7f26e61eac0",
+      "reason": "/steps: The concrete delivery argument-key set {envelope} exactly matches deliver Inputs [envelope]; sealed is an opaque value.",
+      "status": "pass"
+    }
+  },
   "format": 1,
   "history": [
     {
@@ -3803,6 +5121,48 @@
       "attempt": "root-current-support",
       "phase": "obligations",
       "receipt": "c59afccbfe751b5cf33cc8def123ba707147e4d4b6dee24927d17a9828a07adc"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "70a7573fc05321d08675",
+      "attempt": "current-evaluation-round-2-70a7573fc05321d08675",
+      "phase": "evaluate",
+      "receipt": "d11cc35108ead95d208057c86ecb57dcc8c621c93f0b36297ccdb0bc24022f86"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "973657c37f9fcf99f2ab",
+      "attempt": "current-evaluation-round-2-973657c37f9fcf99f2ab",
+      "phase": "evaluate",
+      "receipt": "a65bb2cb8b36fee0714db00f97a1b82a50217af0580026a25c2aa05266b6d1c1"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "c3cfc701f599ad4855d6",
+      "attempt": "current-evaluation-round-2-c3cfc701f599ad4855d6",
+      "phase": "evaluate",
+      "receipt": "59858f59a4119ada3a5d70659399b911986300a64411e9ce387ea76cd24a2cb3"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "ce49585ecb10f8e90c33",
+      "attempt": "current-evaluation-round-2-ce49585ecb10f8e90c33",
+      "phase": "evaluate",
+      "receipt": "9073b91a411577cfe0575d443cdf90aa6d400a26c31f39ac6e2b525eef7981da"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "da3557a8b188162aca82",
+      "attempt": "current-evaluation-round-2-da3557a8b188162aca82",
+      "phase": "evaluate",
+      "receipt": "f268441da70252e448326a8907e549cd53939b7c420d475ffc28d14748db34f5"
+    },
+    {
+      "actor": "/root/qualify_audit_one",
+      "assignment": "daf4742764d84d0ff677",
+      "attempt": "current-evaluation-round-2-daf4742764d84d0ff677",
+      "phase": "evaluate",
+      "receipt": "b21973ff84ff7dc0ce4d7498773d30bc5a1aac137ae39c84a6354777bcb808ca"
     }
   ],
   "identity": {
@@ -10135,9 +11495,9 @@
   },
   "rendered": {
     "files": {
-      "audit-coverage.md": "ec99071e7cd07a59fcb3695ecd60316ebe12a952670d47267e57494f3096bcc9",
-      "audit-evidence.md": "715ca1661c0b1879b3a88df700db5f260538243a7009f950ece43f9b08ea93e7",
-      "audit-report.md": "25924662073b961553eb05f1bb0807c8b19e83a349f63afcb9b8511a5891c50e",
+      "audit-coverage.md": "bf5522d6748854a1589802131eb9c6af8f1c3afc7e6464b5b990743fc4da8887",
+      "audit-evidence.md": "8fdf44dc8051fb515f812a40c4de2d97c5867716a7282f082410590114b387ed",
+      "audit-report.md": "bf91cb9969b223ef041c85e52a511cadb3327cbe4624243a2246d2651eb3f81e",
       "change-surface-activity.md": "95d976c3cf9c8cc1422128236a117c9f2af02888cf53d61b80f592b1f734ceaf",
       "change-surface-routine.md": "514225e0a79d1b9759ce136aa855d1ad98d3f82a6ea556f6f0a5b8be9dc8f3ae",
       "change-surface-technique.md": "a24ae91f545bce8fc60cc6e472a249d4e80067b0d4819526c6668e7c5c9c0d7d",
@@ -10152,7 +11512,7 @@
       "sources/dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b.txt": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
       "sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"
     },
-    "state": "c89d724758f49b0a3f3bcc5527a6c2a589c7dc11ec5d9cf22e2121769b5b70fd"
+    "state": "704d69beb71b187b7a3bdb0c68f475374afc641615389e2e8d75b66c4ff0bd65"
   },
   "rows": {
     "corpus/qualification/activities/run.yaml#/id": {

@@ -1,0 +1,86 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "fefdbb450388446c39d3",
+  "attempt": "current-author-evaluate-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "ece85719689c1a3411d52a12",
+        "f1186a7f61ea9f6493402006",
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992",
+        "790b168511688f3580f49f17",
+        "82c8e910cc4b4df96a89e369",
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

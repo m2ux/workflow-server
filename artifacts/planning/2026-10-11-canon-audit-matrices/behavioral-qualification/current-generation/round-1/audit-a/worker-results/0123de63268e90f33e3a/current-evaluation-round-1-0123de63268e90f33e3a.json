@@ -1,0 +1,122 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "0123de63268e90f33e3a",
+  "attempt": "current-evaluation-round-1-0123de63268e90f33e3a",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "/rules: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "/rules/line-11: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "/rules/line-11/clause-2: The second Rules clause requires validating the report before each emission. The first clause only retains its ID; each clause satisfies its own AP1 scope.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "/protocol: Protocol requires Validate the report, then emit it: validation precedes emission of the same report, satisfying AP1 for this instruction.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "/protocol/line-8: Protocol requires Validate the report, then emit it: validation precedes emission of the same report, satisfying AP1 for this instruction.",
+      "status": "pass"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "reason": "@element: Protocol validates the report before emitting it, and Rules independently requires validation before each emission. Capability, Outputs, retention and destination add no unvalidated directive.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8"
+}

@@ -91,9 +91,20 @@
         "fef2366b0f34a7eda42dc08d": "3610dc70ba535a1f8b8428d3f59776d3dacec847c6dc53435f5298cf101f78d9"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "1682a187cf7dd36419e2a143",
+        "620325a4c3f62c9867a7df90",
+        "7f71a92e9f425b2094dec98d",
+        "85e68983cef9c8b0f9a7bf33",
+        "8669d4026237cb94e83e2158",
+        "b331b3631bac4371bfebf008",
+        "b34f6249f0f9b31107491750",
+        "c986d23bf9fe92ac15ab723d",
+        "ca1e1515076ec0147e7b8338",
+        "fef2366b0f34a7eda42dc08d"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "1011580ea5eb684453ca": {
       "actor": "/root/qualify_audit_two",
@@ -672,9 +683,11 @@
         "a406c04573c91f8ad82577e3": "74df8d8ce3cbe497e53c144a745be9c2e5845534e2988409f8ea70112c1421b9"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "a406c04573c91f8ad82577e3"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "42b502b453c4492186cc": {
       "actor": "/root/qualify_audit_two",
@@ -838,9 +851,12 @@
         "fa301823ccd44ed9374ce575": "a98d309de21203ab093b91662430fe9e6e3d8fa4dbf04e0bcc0858f4b951fa57"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "eeab805ea4653756496776b5",
+        "fa301823ccd44ed9374ce575"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "47aaf5196d50372b2fa6": {
       "actor": "/root/qualify_author_one",
@@ -1145,9 +1161,20 @@
         "fc60645fdab03b4f360b972e": "2c984b014239cbdeae9e62a5a13b1d91241137896b8a8f87d0d2cc69fab693d9"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "23d52f087c143d67f67da445",
+        "366a1ced08e276234b09d365",
+        "387b3abcf94e6a19aabbf992",
+        "790b168511688f3580f49f17",
+        "82c8e910cc4b4df96a89e369",
+        "e4e1d36386ad37dc4007d953",
+        "e6707d2a492bbb28eafc3a21",
+        "ece85719689c1a3411d52a12",
+        "f1186a7f61ea9f6493402006",
+        "fc60645fdab03b4f360b972e"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "5a71cbec85331a5925aa": {
       "actor": "/root/qualify_author_one",
@@ -1333,9 +1360,16 @@
         "d10a33e1908da3335366adaa": "143208ef2165363fcd5e6e976b7d81e0d11f173a76e44ea9c3718076ac2e162f"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "1fff788717e68470ea335f4a",
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654",
+        "a3b7b46de80a7e60f06f33aa",
+        "d074a916d8f80c61b3aa18a0",
+        "d10a33e1908da3335366adaa"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "776854c0c3ad0d93f3ba": {
       "actor": "/root/qualify_audit_two",
@@ -2003,6 +2037,95 @@
         "b70cd0fa3dc717cd87f806e4",
         "c7fdcca69a6f6d3b3cfa7009",
         "e5c1842a573eccbf8d7d7e60"
+      ],
+      "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+      "status": "returned"
+    },
+    "a04a7c5f60c43138cafe": {
+      "actor": "/root",
+      "budgets": {
+        "bytes_per_token": 1,
+        "calibration": {
+          "obligations": {
+            "evidence": "Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json",
+            "output_tokens_per_item": 2048,
+            "seconds_per_item": 30
+          }
+        },
+        "context_tokens": 258400,
+        "output_tokens": 16000,
+        "reserve_tokens": 20000,
+        "safety_tokens": 30000,
+        "slots": 1,
+        "work_seconds": 600
+      },
+      "estimate": {
+        "context": {
+          "corpus/canon/resources/anti-patterns.md": [
+            [
+              1,
+              21
+            ]
+          ],
+          "corpus/canon/resources/design-principles.md": [
+            [
+              1,
+              11
+            ]
+          ],
+          "corpus/qualification/activities/run.yaml": [
+            [
+              1,
+              6
+            ]
+          ],
+          "corpus/qualification/routines/deliver.yaml": [
+            [
+              1,
+              6
+            ]
+          ],
+          "corpus/qualification/techniques/TECHNIQUE.md": [
+            [
+              1,
+              5
+            ]
+          ],
+          "corpus/qualification/techniques/produce.md": [
+            [
+              1,
+              12
+            ]
+          ],
+          "corpus/qualification/workflow.yaml": [
+            [
+              1,
+              5
+            ]
+          ]
+        },
+        "input_tokens_estimate": 23023,
+        "output_tokens_estimate": 12288,
+        "work_seconds_estimate": 180
+      },
+      "id": "a04a7c5f60c43138cafe",
+      "items": [
+        "finding:209dc9f4824686ad40cb",
+        "finding:27029a238a739a1402cb",
+        "finding:333b7dd9cc252e3139cb",
+        "finding:43e98a017886135888df",
+        "finding:95a1b58aa5a5507907af",
+        "finding:f6d4d01ecd70b1f006d1"
+      ],
+      "mappings": {},
+      "phase": "obligations",
+      "returned": [
+        "finding:209dc9f4824686ad40cb",
+        "finding:27029a238a739a1402cb",
+        "finding:333b7dd9cc252e3139cb",
+        "finding:43e98a017886135888df",
+        "finding:95a1b58aa5a5507907af",
+        "finding:f6d4d01ecd70b1f006d1"
       ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
       "status": "returned"
@@ -2904,9 +3027,19 @@
         "e5c1842a573eccbf8d7d7e60": "9ca6cc3b664993564e8a5777fb6140896b4e940938b94c62a9787d99669deb6e"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "094759e3ffb8236db086b566",
+        "3f2fc1d2f91b27a5d46f0504",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972",
+        "8862878198e6198ef77c1f28",
+        "9a13e148e0a434d148bef242",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e0fcd50974c10678a3e2fb44",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "dd64ecf4cf960df36ecf": {
       "actor": "/root/qualify_author_one",
@@ -3251,9 +3384,20 @@
         "f442830158e33a5d097e4514": "784a362dc041f3a2737a80210f278cb7d997f9cdde93e9e4b9cdc48275caa875"
       },
       "phase": "evaluate",
-      "returned": [],
+      "returned": [
+        "15ee43746437cfdf860b1519",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "355ce3ec841005b898e3d8d3",
+        "381dd396d48f156e5b5332ba",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8",
+        "dafc343685f5a84041beee97",
+        "eb3d9f625d45294630564c36",
+        "f442830158e33a5d097e4514"
+      ],
       "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
-      "status": "pending"
+      "status": "returned"
     },
     "e7cbf9d0b95d07458af9": {
       "actor": "/root/qualify_audit_two",
@@ -3682,7 +3826,3458 @@
     }
   },
   "diagnostics": [],
-  "evaluations": {},
+  "evaluations": {
+    "094759e3ffb8236db086b566": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "d47ae8c7fa18fa5d578393d79d521ae25f302d143f631e3d215daacd5a27be98",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "15ee43746437cfdf860b1519": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "53c879088b27d54bb9c85280b8736cee3bb3677a5d798e59634b917896c6a65c",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "1682a187cf7dd36419e2a143": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "10bce479745fa3478b9f5c850a78dbd19470ff22f270949a939dadc300dc0581",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "1fff788717e68470ea335f4a": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before emission in this Rules clause.",
+          "id": "209dc9f4824686ad40cb",
+          "items": [
+            "1fff788717e68470ea335f4a",
+            "a3b7b46de80a7e60f06f33aa",
+            "d10a33e1908da3335366adaa"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without validation."
+        }
+      ],
+      "mapping": "3f5aedeeea7e75f12787ad7ea2dd3efa85e14bdf0fa8db8840de733c4f788203",
+      "reason": "Rules line 11 clause 2 explicitly emits without validation. Clause 1 only retains the ID and cannot cure the separate emitting clause.",
+      "status": "finding"
+    },
+    "21f9cfbf2718ad51d2976c98": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "1840fa3abb901aadeb5bffaaa55147774152034a2936f93a607cea106a14ed49",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "23d52f087c143d67f67da445": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "5a3fae7d56ce921461b761f324f73e3f21a6f9c8b66c63b6fb4e0c5006985960",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "32efcf3836cf4d26fc113577": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "a32c6e9d5ed010eed2a91effb2534c50358c4648a18c44517d2d0f7d6593709d",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "355ce3ec841005b898e3d8d3": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "a8d1e3e2104e520a9a5cae8cb6d99911e3c2cb9e8f2323d4419697de718d31c6",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "366a1ced08e276234b09d365": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "579b13c7c90dcf6c65be2d21afe1a53c68bb426df2ad717782374af38a9b06b7",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "381dd396d48f156e5b5332ba": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "afb3727ebe1e733ea82694612fafbdd78a7d202ee542d6fb5846a09438cf2ff4",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "387b3abcf94e6a19aabbf992": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "387b3abcf94e6a19aabbf992",
+            "790b168511688f3580f49f17",
+            "82c8e910cc4b4df96a89e369",
+            "e6707d2a492bbb28eafc3a21"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "f7d16fb921003d8f76f09066f63ae4c7e22c2e8d9ac02c00865f97a5bfd13821",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "3f2fc1d2f91b27a5d46f0504": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "edd71e24a8f6c5720649903bb229f5b6711faca993d27c1a928e8127507458bf",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "48da822c85267d96ea48c4c2": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "882f6244bd95d36635073c7c53361894ca97196cadb17d567dde53b1918db1f5",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "5453a725eb6086baaa72c972": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "15f0a75db04626272195f1f1c2c39d6136996b8fe0f13dd8ad7f8c26c727f0a3",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "620325a4c3f62c9867a7df90": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "620325a4c3f62c9867a7df90",
+            "85e68983cef9c8b0f9a7bf33",
+            "b331b3631bac4371bfebf008"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "28bd235479bc1c2f74441091f3c45b7f5ef55d06fcc5eb673f6a8c4c848bb4c6",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "668f2c03b5c1dfffd6143cc5": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before this Protocol instruction emits it.",
+          "id": "95a1b58aa5a5507907af",
+          "items": [
+            "668f2c03b5c1dfffd6143cc5",
+            "7f339716e8d7474fb2512654"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The Protocol directs report emission without validation."
+        }
+      ],
+      "mapping": "15a49af9cfaaa259834ef3be0dbde22d61b9499b6c6a821c93d9f7d011ee442e",
+      "reason": "Protocol line 8 explicitly emits the report without validation. AP1 rejects this instruction independently of all other clauses.",
+      "status": "finding"
+    },
+    "790b168511688f3580f49f17": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "387b3abcf94e6a19aabbf992",
+            "790b168511688f3580f49f17",
+            "82c8e910cc4b4df96a89e369",
+            "e6707d2a492bbb28eafc3a21"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "9af4b232c2a06ed8baa93f59fcb4c40fb275a32facbd5864e87312378f794c36",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "7f339716e8d7474fb2512654": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before this Protocol instruction emits it.",
+          "id": "95a1b58aa5a5507907af",
+          "items": [
+            "668f2c03b5c1dfffd6143cc5",
+            "7f339716e8d7474fb2512654"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The Protocol directs report emission without validation."
+        }
+      ],
+      "mapping": "927dd62374a2c685e00c7a90d927d759b83b74785ad895325d3c2bed979eee35",
+      "reason": "Protocol line 8 explicitly emits the report without validation. AP1 rejects this instruction independently of all other clauses.",
+      "status": "finding"
+    },
+    "7f71a92e9f425b2094dec98d": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "98f75cda63de668ec6b19f4b836b8a0209e494f15ced8a5f9071174436b9a56c",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "82c8e910cc4b4df96a89e369": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "387b3abcf94e6a19aabbf992",
+            "790b168511688f3580f49f17",
+            "82c8e910cc4b4df96a89e369",
+            "e6707d2a492bbb28eafc3a21"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "ce757ca3466d06d841637ff4970229db77e453fc584aa54a2ad1a4c8d7fcaa4a",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "85e68983cef9c8b0f9a7bf33": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "620325a4c3f62c9867a7df90",
+            "85e68983cef9c8b0f9a7bf33",
+            "b331b3631bac4371bfebf008"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "6478843bd16eee99bc69c6b6d6cfe5d5c1c423b52683f173858afee6f47f9ac0",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "8669d4026237cb94e83e2158": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "8669d4026237cb94e83e2158"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        },
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "8669d4026237cb94e83e2158"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "b70aab8a412c63af87c8934a635f090cdaa98e786df4710bad5bcef37322be31",
+      "reason": "The concrete caller uses packet against Inputs [envelope], and emit.report references report while produce declares only summary. These are two distinct AP2 binding violations.",
+      "status": "finding"
+    },
+    "8862878198e6198ef77c1f28": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "57c16d3123c2d011f3f04ffecce3607695ea96bbf2a5f8792814848837a80398",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "8bfa310664405693e5cee00b": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "8778228966f92a4caecbf435983f5143a9d66ae7c9f60dc32d71d3de15d88881",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "91a7785154a1a018658ccae8": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "c0d7442d75e22765cbf210e6a4563b49b9464d4ac89f66642dfe09617f480b47",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "9a13e148e0a434d148bef242": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "484d72b7e9bb6fe8c8e7d59b40bae2de543f852ba09679b2785bdaed15298dc4",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "a3b7b46de80a7e60f06f33aa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before emission in this Rules clause.",
+          "id": "209dc9f4824686ad40cb",
+          "items": [
+            "1fff788717e68470ea335f4a",
+            "a3b7b46de80a7e60f06f33aa",
+            "d10a33e1908da3335366adaa"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without validation."
+        }
+      ],
+      "mapping": "2294833e6b4f3094ae0cad16145f326b03e49c92947a3b54849f7feb0d55b565",
+      "reason": "Rules line 11 clause 2 explicitly emits without validation. Clause 1 only retains the ID and cannot cure the separate emitting clause.",
+      "status": "finding"
+    },
+    "a406c04573c91f8ad82577e3": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "3482b0c867b5e8d13fe8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "a406c04573c91f8ad82577e3"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "74df8d8ce3cbe497e53c144a745be9c2e5845534e2988409f8ea70112c1421b9",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "b331b3631bac4371bfebf008": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "620325a4c3f62c9867a7df90",
+            "85e68983cef9c8b0f9a7bf33",
+            "b331b3631bac4371bfebf008"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "cf94785c4032b89aaf11d6ad9c21c7b80586a841d05989407959562c73126c9a",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "b34f6249f0f9b31107491750": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "b0cd55c12977eb3112d416b77bb102c5e3eb6405e70481048545c87ae785f23b",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "c7fdcca69a6f6d3b3cfa7009": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "aef1478fa3f69d43c105627dc6f005de545a4016a10057d9b6386e973895a802",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "c986d23bf9fe92ac15ab723d": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "478ac4cc29b68be8e3636d0f2275dd07106fc022dfa715fa4e2d10a3d14be132",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "ca1e1515076ec0147e7b8338": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "ef8ddfc71f124766e5f2a9f7f0a9650df5931e58c34a4978284c8723d4d69a2c",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "d074a916d8f80c61b3aa18a0": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before this Protocol instruction emits it.",
+          "id": "95a1b58aa5a5507907af",
+          "items": [
+            "d074a916d8f80c61b3aa18a0"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The Protocol directs report emission without validation."
+        },
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before emission in this Rules clause.",
+          "id": "209dc9f4824686ad40cb",
+          "items": [
+            "d074a916d8f80c61b3aa18a0"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without validation."
+        }
+      ],
+      "mapping": "21cff94edaf3dee89fa5d82e4a4103c80e28115b5d2a510937d08f7efa9ecc26",
+      "reason": "Protocol line 8 and Rules line 11 clause 2 each independently direct unvalidated report emission. Both distinct instructions violate AP1.",
+      "status": "finding"
+    },
+    "d10a33e1908da3335366adaa": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-01. emission-without-validation",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Require report validation before emission in this Rules clause.",
+          "id": "209dc9f4824686ad40cb",
+          "items": [
+            "1fff788717e68470ea335f4a",
+            "a3b7b46de80a7e60f06f33aa",
+            "d10a33e1908da3335366adaa"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "Rules clause 2 directs report emission without validation."
+        }
+      ],
+      "mapping": "143208ef2165363fcd5e6e976b7d81e0d11f173a76e44ea9c3718076ac2e162f",
+      "reason": "Rules line 11 clause 2 explicitly emits without validation. Clause 1 only retains the ID and cannot cure the separate emitting clause.",
+      "status": "finding"
+    },
+    "dafc343685f5a84041beee97": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "791e5791813fd92fb2e47123a0d990bda8b70acb82f819637758bc7eae864dab",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "e0fcd50974c10678a3e2fb44": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "60e2c6e8f23bb63ad5a9455f0785e114d764cb98120c78c730c6d73518000f80",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "e4e1d36386ad37dc4007d953": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "5a530601b556e2d67be6be7727bd41fc1c4049722b6e1e916fe13d85b92445fe",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "e5c1842a573eccbf8d7d7e60": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "2. Provide a terminating workflow path",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Provide a reachable graph exit whose finite path ends at null.",
+          "id": "27029a238a739a1402cb",
+          "items": [
+            "094759e3ffb8236db086b566",
+            "3f2fc1d2f91b27a5d46f0504",
+            "48da822c85267d96ea48c4c2",
+            "5453a725eb6086baaa72c972",
+            "8862878198e6198ef77c1f28",
+            "9a13e148e0a434d148bef242",
+            "c7fdcca69a6f6d3b3cfa7009",
+            "e0fcd50974c10678a3e2fb44",
+            "e5c1842a573eccbf8d7d7e60"
+          ],
+          "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "The workflow has only run --done--> run and no finite path to null."
+        }
+      ],
+      "mapping": "9ca6cc3b664993564e8a5777fb6140896b4e940938b94c62a9787d99669deb6e",
+      "reason": "Starting at run, the only exit is done to run. The complete graph has no null edge or alternative reachable path; its sole self-loop violates DP2.",
+      "status": "finding"
+    },
+    "e6707d2a492bbb28eafc3a21": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "387b3abcf94e6a19aabbf992",
+            "790b168511688f3580f49f17",
+            "82c8e910cc4b4df96a89e369",
+            "e6707d2a492bbb28eafc3a21"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "877c54211dd7afa809ca927fc50074d0304fc449f117b21343134b426d3abd73",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    },
+    "eb3d9f625d45294630564c36": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "cd4f6dc6c41e8dcef745dbe55d4fb1b6dee85b2d529c998630fa84bd2520b9de",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "ece85719689c1a3411d52a12": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "4e381c75c2419a61e0758d010eadae172d7db6fb42043888b03485a67eddb990",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "eeab805ea4653756496776b5": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "46574e4cefae74a26d4d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "eeab805ea4653756496776b5"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "2c538cf265c5df1de7cdffa618910ebec5871b73bb3c269310cb6ccba9714089",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "f1186a7f61ea9f6493402006": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "a4e429a5ea84e508e9a2621bd940003abb2b54e3287dfe2a8f21b76f159bcdc3",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "f442830158e33a5d097e4514": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "evidence": [
+            {
+              "end": 11,
+              "source": "corpus/canon/resources/design-principles.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/techniques/TECHNIQUE.md",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            },
+            {
+              "end": 5,
+              "source": "corpus/qualification/workflow.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "id": "333b7dd9cc252e3139cb",
+          "items": [
+            "15ee43746437cfdf860b1519",
+            "21f9cfbf2718ad51d2976c98",
+            "32efcf3836cf4d26fc113577",
+            "355ce3ec841005b898e3d8d3",
+            "381dd396d48f156e5b5332ba",
+            "8bfa310664405693e5cee00b",
+            "91a7785154a1a018658ccae8",
+            "dafc343685f5a84041beee97",
+            "eb3d9f625d45294630564c36",
+            "f442830158e33a5d097e4514"
+          ],
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "mapping": "784a362dc041f3a2737a80210f278cb7d997f9cdde93e9e4b9cdc48275caa875",
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    },
+    "fa301823ccd44ed9374ce575": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "46574e4cefae74a26d4d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "fa301823ccd44ed9374ce575"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        },
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "fa301823ccd44ed9374ce575"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "a98d309de21203ab093b91662430fe9e6e3d8fa4dbf04e0bcc0858f4b951fa57",
+      "reason": "The concrete caller uses packet against Inputs [envelope], and emit.report references report while produce declares only summary. These are two distinct AP2 binding violations.",
+      "status": "finding"
+    },
+    "fc60645fdab03b4f360b972e": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/activities/run.yaml",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            }
+          ],
+          "fix": "Pass envelope and match the routine's exact input-key set.",
+          "id": "43e98a017886135888df",
+          "items": [
+            "23d52f087c143d67f67da445",
+            "366a1ced08e276234b09d365",
+            "e4e1d36386ad37dc4007d953",
+            "ece85719689c1a3411d52a12",
+            "f1186a7f61ea9f6493402006",
+            "fc60645fdab03b4f360b972e"
+          ],
+          "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+        }
+      ],
+      "mapping": "2c984b014239cbdeae9e62a5a13b1d91241137896b8a8f87d0d2cc69fab693d9",
+      "reason": "Delivery supplies {packet}; deliver requires exactly [envelope]. There are no optional inputs or aliases, so this concrete invocation breaks AP2.",
+      "status": "finding"
+    },
+    "fef2366b0f34a7eda42dc08d": {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "actor": "/root/qualify_author_one",
+          "band": "Live",
+          "entry": "AP-02. broken-binding",
+          "evidence": [
+            {
+              "end": 21,
+              "source": "corpus/canon/resources/anti-patterns.md",
+              "start": 1
+            },
+            {
+              "end": 6,
+              "source": "corpus/qualification/routines/deliver.yaml",
+              "start": 1
+            },
+            {
+              "end": 12,
+              "source": "corpus/qualification/techniques/produce.md",
+              "start": 1
+            }
+          ],
+          "fix": "Bind report to an output actually declared by produce after resolving emit.",
+          "id": "f6d4d01ecd70b1f006d1",
+          "items": [
+            "1682a187cf7dd36419e2a143",
+            "7f71a92e9f425b2094dec98d",
+            "b34f6249f0f9b31107491750",
+            "c986d23bf9fe92ac15ab723d",
+            "ca1e1515076ec0147e7b8338",
+            "fef2366b0f34a7eda42dc08d"
+          ],
+          "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+          "origin": "diff",
+          "severity": "Critical",
+          "summary": "Routine output report binds emit.report, but produce declares only summary."
+        }
+      ],
+      "mapping": "3610dc70ba535a1f8b8428d3f59776d3dacec847c6dc53435f5298cf101f78d9",
+      "reason": "Deliver exports report from emit.report; emit calls produce, whose only declared output is summary. The referenced report output is absent, violating AP2.",
+      "status": "finding"
+    }
+  },
   "format": 1,
   "history": [
     {
@@ -3887,6 +7482,62 @@
       "attempt": "root-current-support",
       "phase": "obligations",
       "receipt": "c6da0a9d571a7d016fd58a513412ccf7004c833611892f5f97242eda754099fb"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "0e26e24ef164353a649d",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "90b3fc8c10d1c23d9fa00aa142a7cd08259e126790b4ee3658146f33801de726"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "3482b0c867b5e8d13fe8",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "28a47305052df8bc6bfe9c9aa92f016d6f48e30d5ebe89d995024d8732a8b35b"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "46574e4cefae74a26d4d",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "6697ee1ada79b0707773c8704c53789a54cf7dbfbcd94d0b965e894c7b6759bc"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "599976394e3ceff3971e",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "d64c5adc4b5f592b8c0ab3eb0b1428931043f464ea66533130f0c4cd4807ada0"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "664beb9113de92370cb8",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "725cab3a5b8bc407847ebe04f4e18e03c81c696e1b734bb17f8a732c2178d8dd"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "dba0980a4d3510219dfc",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "10b7a01551692253c5c37b1219b697b68e63b7d5a4853e1f5dddeb826e41a1c0"
+    },
+    {
+      "actor": "/root/qualify_author_one",
+      "assignment": "e6a02551969bdf4dfb61",
+      "attempt": "current-author-evaluate-2-1",
+      "phase": "evaluate",
+      "receipt": "174a93b496c9f7ebdd8028ac9ac0ded505e3ddf7ffdb9c8dab076210d837d3bf"
+    },
+    {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "phase": "obligations",
+      "receipt": "776c0b202f92a6080c51e741fc6fce9aed66a25254163353fa98aa08303af573"
     }
   ],
   "identity": {
@@ -9623,6 +13274,185 @@
       "reason": "The recorded controlled guard command completed with exit 0: eight sources parse, the four controlled criteria are present, and required IDs, steps and graph shapes satisfy its assertions. This does not assert engine-schema or semantic conformance.",
       "status": "pass"
     },
+    "finding:209dc9f4824686ad40cb": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "reason": "Independently split Rules line 11 at its semicolon: retaining the ID is the first clause; the second explicitly directs emission without validation. AP-01 applies to each clause, reproducing a separate High Live violation.",
+      "status": "confirmed"
+    },
+    "finding:27029a238a739a1402cb": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "reason": "Start from initialActivity run. The complete graph has only run.done returning to run; no reachable transition targets null. DP2 requires a finite terminating path. The whole-graph defect independently reproduces Critical Live.",
+      "status": "confirmed"
+    },
+    "finding:333b7dd9cc252e3139cb": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "reason": "Follow qualification/run delivery to deliver/emit and produce, retaining the executing ancestor TECHNIQUE.md. The ancestor requires archive while the leaf declares public on line 12. DP1 reproduces an inherited contract conflict with High urgency because it reaches the concrete workflow instance. Contract classification identifies this declaration conflict; the controlled guard supplies no trace proving an actual runtime destination.",
+      "status": "confirmed"
+    },
+    "finding:43e98a017886135888df": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "reason": "Resolve delivery to deliver and compare exact keys: the invocation supplies packet while the routine Inputs list requires envelope. This fixture has no aliases or optional parameters. AP-02(1) reproduces a Critical Live binding defect.",
+      "status": "confirmed"
+    },
+    "finding:95a1b58aa5a5507907af": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "reason": "The original Protocol line 8 explicitly directs report emission without validation. AP-01 requires prior validation for every emitting instruction. This construct independently reproduces High Live, regardless of instructions elsewhere.",
+      "status": "confirmed"
+    },
+    "finding:f6d4d01ecd70b1f006d1": {
+      "actor": "/root",
+      "assignment": "a04a7c5f60c43138cafe",
+      "attempt": "root-current-confirmation",
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "reason": "Resolve the unchanged routine export report to emit.report, emit to produce, and then read the complete leaf Outputs section: only summary is declared. The referenced report output is absent. AP-02(2) reproduces Critical Live at this consumer binding.",
+      "status": "confirmed"
+    },
     "inventory:canon:corpus/canon/resources/anti-patterns.md": {
       "actor": "/root/qualify_author_one",
       "assignment": "ab9559f165c1a6337f24",
@@ -10158,6 +13988,295 @@
         "corpus/qualification/workflow.yaml"
       ]
     },
+    "finding:209dc9f4824686ad40cb": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Live",
+        "entry": "AP-01. emission-without-validation",
+        "evidence": [
+          {
+            "end": 21,
+            "source": "corpus/canon/resources/anti-patterns.md",
+            "start": 1
+          },
+          {
+            "end": 12,
+            "source": "corpus/qualification/techniques/produce.md",
+            "start": 1
+          }
+        ],
+        "fix": "Require report validation before emission in this Rules clause.",
+        "id": "209dc9f4824686ad40cb",
+        "items": [
+          "d074a916d8f80c61b3aa18a0"
+        ],
+        "location": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+        "origin": "diff",
+        "severity": "High",
+        "summary": "Rules clause 2 directs report emission without validation."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/anti-patterns.md",
+        "corpus/qualification/techniques/produce.md"
+      ]
+    },
+    "finding:27029a238a739a1402cb": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Live",
+        "entry": "2. Provide a terminating workflow path",
+        "evidence": [
+          {
+            "end": 11,
+            "source": "corpus/canon/resources/design-principles.md",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/activities/run.yaml",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "source": "corpus/qualification/workflow.yaml",
+            "start": 1
+          }
+        ],
+        "fix": "Provide a reachable graph exit whose finite path ends at null.",
+        "id": "27029a238a739a1402cb",
+        "items": [
+          "094759e3ffb8236db086b566",
+          "3f2fc1d2f91b27a5d46f0504",
+          "48da822c85267d96ea48c4c2",
+          "5453a725eb6086baaa72c972",
+          "8862878198e6198ef77c1f28",
+          "9a13e148e0a434d148bef242",
+          "c7fdcca69a6f6d3b3cfa7009",
+          "e0fcd50974c10678a3e2fb44",
+          "e5c1842a573eccbf8d7d7e60"
+        ],
+        "location": "corpus/qualification/workflow.yaml#/graph/run/done",
+        "origin": "diff",
+        "severity": "Critical",
+        "summary": "The workflow has only run --done--> run and no finite path to null."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/design-principles.md",
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ]
+    },
+    "finding:333b7dd9cc252e3139cb": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Contract",
+        "entry": "1. Honor the executing workflow's inherited destination",
+        "evidence": [
+          {
+            "end": 11,
+            "source": "corpus/canon/resources/design-principles.md",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/activities/run.yaml",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/routines/deliver.yaml",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "source": "corpus/qualification/techniques/TECHNIQUE.md",
+            "start": 1
+          },
+          {
+            "end": 12,
+            "source": "corpus/qualification/techniques/produce.md",
+            "start": 1
+          },
+          {
+            "end": 5,
+            "source": "corpus/qualification/workflow.yaml",
+            "start": 1
+          }
+        ],
+        "fix": "Set the leaf Destination to the inherited archive requirement.",
+        "id": "333b7dd9cc252e3139cb",
+        "items": [
+          "15ee43746437cfdf860b1519",
+          "21f9cfbf2718ad51d2976c98",
+          "32efcf3836cf4d26fc113577",
+          "355ce3ec841005b898e3d8d3",
+          "381dd396d48f156e5b5332ba",
+          "8bfa310664405693e5cee00b",
+          "91a7785154a1a018658ccae8",
+          "dafc343685f5a84041beee97",
+          "eb3d9f625d45294630564c36",
+          "f442830158e33a5d097e4514"
+        ],
+        "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+        "origin": "diff",
+        "severity": "High",
+        "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/design-principles.md",
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ]
+    },
+    "finding:43e98a017886135888df": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Live",
+        "entry": "AP-02. broken-binding",
+        "evidence": [
+          {
+            "end": 21,
+            "source": "corpus/canon/resources/anti-patterns.md",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/activities/run.yaml",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/routines/deliver.yaml",
+            "start": 1
+          }
+        ],
+        "fix": "Pass envelope and match the routine's exact input-key set.",
+        "id": "43e98a017886135888df",
+        "items": [
+          "23d52f087c143d67f67da445",
+          "366a1ced08e276234b09d365",
+          "e4e1d36386ad37dc4007d953",
+          "ece85719689c1a3411d52a12",
+          "f1186a7f61ea9f6493402006",
+          "fc60645fdab03b4f360b972e"
+        ],
+        "location": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet",
+        "origin": "diff",
+        "severity": "Critical",
+        "summary": "Delivery argument keys {packet} do not match deliver Inputs {envelope}."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/anti-patterns.md",
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ]
+    },
+    "finding:95a1b58aa5a5507907af": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Live",
+        "entry": "AP-01. emission-without-validation",
+        "evidence": [
+          {
+            "end": 21,
+            "source": "corpus/canon/resources/anti-patterns.md",
+            "start": 1
+          },
+          {
+            "end": 12,
+            "source": "corpus/qualification/techniques/produce.md",
+            "start": 1
+          }
+        ],
+        "fix": "Require report validation before this Protocol instruction emits it.",
+        "id": "95a1b58aa5a5507907af",
+        "items": [
+          "d074a916d8f80c61b3aa18a0"
+        ],
+        "location": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+        "origin": "diff",
+        "severity": "High",
+        "summary": "The Protocol directs report emission without validation."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/anti-patterns.md",
+        "corpus/qualification/techniques/produce.md"
+      ]
+    },
+    "finding:f6d4d01ecd70b1f006d1": {
+      "actors": [
+        "/root/qualify_author_one"
+      ],
+      "finding": {
+        "actor": "/root/qualify_author_one",
+        "band": "Live",
+        "entry": "AP-02. broken-binding",
+        "evidence": [
+          {
+            "end": 21,
+            "source": "corpus/canon/resources/anti-patterns.md",
+            "start": 1
+          },
+          {
+            "end": 6,
+            "source": "corpus/qualification/routines/deliver.yaml",
+            "start": 1
+          },
+          {
+            "end": 12,
+            "source": "corpus/qualification/techniques/produce.md",
+            "start": 1
+          }
+        ],
+        "fix": "Bind report to an output actually declared by produce after resolving emit.",
+        "id": "f6d4d01ecd70b1f006d1",
+        "items": [
+          "387b3abcf94e6a19aabbf992",
+          "790b168511688f3580f49f17",
+          "82c8e910cc4b4df96a89e369",
+          "e6707d2a492bbb28eafc3a21"
+        ],
+        "location": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+        "origin": "diff",
+        "severity": "Critical",
+        "summary": "Routine output report binds emit.report, but produce declares only summary."
+      },
+      "kind": "finding",
+      "sources": [
+        "corpus/canon/resources/anti-patterns.md",
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ]
+    },
     "inventory:canon:corpus/canon/resources/anti-patterns.md": {
       "kind": "inventory",
       "sources": [
@@ -10329,9 +14448,9 @@
   },
   "rendered": {
     "files": {
-      "audit-coverage.md": "11760ba86027fd703c67d529de851888c3563a4ebfe9251a33462b0c8d8cb34f",
-      "audit-evidence.md": "fe53441819765f8f5f704e19d498a4ec26b67bdb9209bbe3b939d73c89bfc08c",
-      "audit-report.md": "8d8e635d62642171c36302d7490fa522f4406d3b54ee88407c008408ccb1cff0",
+      "audit-coverage.md": "e2f3438b0dcbdad5177bd8415b3eb2bd10d5aab6e581fdfced59d3826ae0191e",
+      "audit-evidence.md": "edb5f85e8c4232cb71dc8865e5d2bab3182e87d9e33054e84d0886f3fec2c266",
+      "audit-report.md": "f92c6866b4fb404c24cfa3c05e83d4a371fa9b59ed5bb27988e872951c049fc0",
       "change-surface-activity.md": "c64a4064609c035a980c29638c2af8d7cd212c87b6c3a0b35ac71f2f6c5575e3",
       "change-surface-routine.md": "448f46227253a6882d468ababf910da4f040943eb334387af3ae551f06864719",
       "change-surface-technique.md": "df69e878979546d5b2cc2d47a88ab54825f899f2166a1d34e7745ad7cfc0e6b9",
@@ -10346,7 +14465,7 @@
       "sources/e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813.txt": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
       "sources/ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1.txt": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1"
     },
-    "state": "c5b9188ec4604c7f0f972314372691664637ee460d31a1735a9e8f55a5a4222a"
+    "state": "81b2b7ded2505a3950eadc6dc2ce5919af22295cf8a7db7c488a0e156414a3e3"
   },
   "rows": {
     "corpus/qualification/activities/run.yaml#/id": {

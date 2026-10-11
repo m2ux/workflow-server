@@ -2,7 +2,7 @@
 
 Snapshot: b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea
 
-Status: incomplete
+Status: complete
 
 | Measure | Count |
 | --- | --- |
@@ -11,7 +11,7 @@ Status: incomplete
 | cells | 196 |
 | unknown | 0 |
 | unverified | 0 |
-| unevaluated | 46 |
+| unevaluated | 0 |
 
 ## Criterion Index
 
@@ -63,7 +63,7 @@ Status: incomplete
 | 1a2f4774199f7b564911 | inventory | 10 | returned | /root/qualify_author_one |
 | 23f1664dd87ddc30dcef | map | 14 | returned | /root/qualify_audit_two |
 | 34a9cb7252a39dc181d0 | verify | 18 | returned | /root/qualify_author_one |
-| 47f4ef2c649d1b1cafca | evaluate | 8 | pending | /root/qualify_author_one |
+| 47f4ef2c649d1b1cafca | evaluate | 8 | returned | /root/qualify_author_one |
 | 51520341a39110598812 | map | 14 | returned | /root/qualify_audit_two |
 | 5670dab3b35f8860eb67 | verify | 31 | returned | /root/qualify_author_one |
 | 5c88f854017bfdccbd5e | inventory | 6 | returned | /root/qualify_author_one |
@@ -72,21 +72,21 @@ Status: incomplete
 | 845c24776d9254758525 | map | 14 | returned | /root/qualify_audit_two |
 | 85af7f9ec370ce84cc8b | obligations | 1 | returned | /root |
 | 88a51fe1e7df864496ae | verify | 31 | returned | /root/qualify_author_one |
-| 8d0483f486cf27fdec91 | evaluate | 2 | pending | /root/qualify_author_one |
+| 8d0483f486cf27fdec91 | evaluate | 2 | returned | /root/qualify_author_one |
 | 9536b187df1d7c3bb510 | verify | 18 | returned | /root/qualify_author_one |
-| 9a8585ae10bdd680320f | evaluate | 10 | pending | /root/qualify_author_one |
+| 9a8585ae10bdd680320f | evaluate | 10 | returned | /root/qualify_author_one |
 | acb1bea88c5051280b2e | map | 14 | returned | /root/qualify_audit_two |
 | b8a36e31fcca597102c4 | map | 7 | returned | /root/qualify_audit_two |
 | ba60bae158b6bb070bd4 | map | 7 | returned | /root/qualify_audit_two |
 | c55ec34b9b7e5f244ba9 | map | 14 | returned | /root/qualify_audit_two |
 | c6a768587abd326733ab | verify | 18 | returned | /root/qualify_author_one |
-| c85756be2aee5d50adf4 | evaluate | 10 | pending | /root/qualify_author_one |
+| c85756be2aee5d50adf4 | evaluate | 10 | returned | /root/qualify_author_one |
 | d33da92c720fac4aec33 | verify | 31 | returned | /root/qualify_author_one |
 | dacce3a9ed9d3548c26f | map | 7 | returned | /root/qualify_audit_two |
 | dda95527fe752d522970 | verify | 18 | returned | /root/qualify_author_one |
-| df1947a7cb9d5f5fdcb6 | evaluate | 6 | pending | /root/qualify_author_one |
+| df1947a7cb9d5f5fdcb6 | evaluate | 6 | returned | /root/qualify_author_one |
 | e4e895117a161e3ea5c4 | map | 14 | returned | /root/qualify_audit_two |
-| f2285bfd55f4a1769631 | evaluate | 10 | pending | /root/qualify_author_one |
+| f2285bfd55f4a1769631 | evaluate | 10 | returned | /root/qualify_author_one |
 | fa8aa7fb7f9073315ed3 | obligations | 5 | returned | /root |
 | fba191c7faea94c4ee2f | map | 7 | returned | /root/qualify_audit_two |
 | fe252e333686aa556e7e | map | 14 | returned | /root/qualify_audit_two |

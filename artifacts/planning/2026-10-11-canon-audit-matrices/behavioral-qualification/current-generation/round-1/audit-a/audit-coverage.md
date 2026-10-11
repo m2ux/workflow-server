@@ -2,7 +2,7 @@
 
 Snapshot: f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8
 
-Status: incomplete
+Status: complete
 
 | Measure | Count |
 | --- | --- |
@@ -11,7 +11,7 @@ Status: incomplete
 | cells | 196 |
 | unknown | 0 |
 | unverified | 0 |
-| unevaluated | 46 |
+| unevaluated | 0 |
 
 ## Criterion Index
 
@@ -56,9 +56,9 @@ Status: incomplete
 | Assignment | Phase | Items | Status | Agent |
 | --- | --- | --- | --- | --- |
 | 00c4059e90f6cf9c1ea2 | verify | 31 | returned | /root/qualify_audit_one |
-| 0123de63268e90f33e3a | evaluate | 6 | pending | /root/qualify_audit_one |
+| 0123de63268e90f33e3a | evaluate | 6 | returned | /root/qualify_audit_one |
 | 06a2d1a7808c6d9dd70c | obligations | 5 | returned | /root |
-| 0718f54eaeea9dc70562 | evaluate | 10 | pending | /root/qualify_audit_one |
+| 0718f54eaeea9dc70562 | evaluate | 10 | returned | /root/qualify_audit_one |
 | 14bd1946e687caf70274 | map | 7 | returned | /root/qualify_audit_two |
 | 17c63341af9d5556c0db | map | 14 | returned | /root/qualify_audit_two |
 | 17e9f553a43514f6d046 | map | 14 | returned | /root/qualify_audit_two |
@@ -67,12 +67,12 @@ Status: incomplete
 | 3961414728cca4bde720 | map | 14 | returned | /root/qualify_audit_two |
 | 3c69efa8713ed357437e | verify | 31 | returned | /root/qualify_audit_one |
 | 47d28cd1e27c887b955e | map | 14 | returned | /root/qualify_audit_two |
-| 5afce5c943ff5ca2d542 | evaluate | 2 | pending | /root/qualify_audit_one |
+| 5afce5c943ff5ca2d542 | evaluate | 2 | returned | /root/qualify_audit_one |
 | 603717b22bf27b693ca4 | map | 14 | returned | /root/qualify_audit_two |
 | 62fd62280290e581ae1d | inventory | 10 | returned | /root/qualify_audit_one |
 | 6844543bde9e11773361 | map | 14 | returned | /root/qualify_audit_two |
 | 6ca2f260a4c594dbab16 | map | 7 | returned | /root/qualify_audit_two |
-| 788d636b20edc1171c9b | evaluate | 10 | pending | /root/qualify_audit_one |
+| 788d636b20edc1171c9b | evaluate | 10 | returned | /root/qualify_audit_one |
 | 81309fb3f582e8931d75 | map | 14 | returned | /root/qualify_audit_two |
 | 813308d5478c2bc75026 | verify | 18 | returned | /root/qualify_audit_one |
 | 85c00542c9960c5fea36 | map | 14 | returned | /root/qualify_audit_two |
@@ -80,14 +80,14 @@ Status: incomplete
 | 97200764e2c7a49ddc50 | verify | 18 | returned | /root/qualify_audit_one |
 | a712ace14c123a4bae41 | verify | 18 | returned | /root/qualify_audit_one |
 | a7e8355166d2017b8f5e | map | 14 | returned | /root/qualify_audit_two |
-| a9102d85e9afbb5574b5 | evaluate | 8 | pending | /root/qualify_audit_one |
+| a9102d85e9afbb5574b5 | evaluate | 8 | returned | /root/qualify_audit_one |
 | b33ecaad013fccaff555 | map | 14 | returned | /root/qualify_audit_two |
 | b4fd84046a20f9228089 | map | 14 | returned | /root/qualify_audit_two |
 | c1d1ff6fa7f12cf1e92d | map | 7 | returned | /root/qualify_audit_two |
 | d67bc41133697f9d8f81 | verify | 31 | returned | /root/qualify_audit_one |
 | e3854b065dee8ae473d2 | verify | 18 | returned | /root/qualify_audit_one |
 | f308e258d1c5e5d65410 | obligations | 2 | returned | /root |
-| f481b5b222013cde901f | evaluate | 10 | pending | /root/qualify_audit_one |
+| f481b5b222013cde901f | evaluate | 10 | returned | /root/qualify_audit_one |
 | f8b4d8600040b16f3de3 | obligations | 1 | returned | /root |
 | fbee3b7c3dca66ce4bd9 | verify | 31 | returned | /root/qualify_audit_one |
 

@@ -1,0 +1,192 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "5c88f854017bfdccbd5e",
+  "attempt": "current-author-inventory-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The manifest identifies this complete principle home as unselected and non-seed, with no definition-call references. Both principles are present in the canon inventory. Their named fixture context is represented by the explicit execution relationship; they introduce no additional uncaptured definition.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The activity is a selected seed from scope.paths. Its sole routine reference resolves delivery to captured deliver, and incoming workflow references resolve the declared run activity. The full manifest accounts for both directions; no additional call target appears in its six source lines.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The routine is selected closure, not a seed: run/delivery calls deliver and deliver consumes the changed produce output contract through emit. Its direct produce reference and explicit execution relationship preserve both endpoints, the output-binding site and all workflow/activity/ancestor context. Its Inputs and export are inventoried; no target is unresolved.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The ancestor is selected context, not a seed. The leaf inheritance relationship and explicit executing qualification context require this TECHNIQUE.md. Its full contents are captured and its Rules have rows; it declares no further call or ancestor target in this controlled scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The technique is a selected seed from scope.paths. Deliver/emit is its captured consumer, and the explicit leaf-to-ancestor relationship retains qualification TECHNIQUE.md. The complete call instance includes workflow and activity context. Every source named by those references is selected and captured.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "Current-generation round-2/author-a verification: The workflow is a selected seed from scope.paths. initialActivity and every graph key/exit resolve to run; the done value is null and does not introduce another target. The manifest includes the activity and the complete downstream invocation/ancestor context. No further workflow destination appears in the full source.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"
+}

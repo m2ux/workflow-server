@@ -1,0 +1,612 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "3c69efa8713ed357437e",
+  "attempt": "current-independent-round-1-3c69efa8713ed357437e",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b"
+      ],
+      "reason": "N verified for /steps: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "4c9b9e3283acb76acd0c593c"
+      ],
+      "reason": "N verified for /steps/id=delivery: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "eb0acb5f69509bc093ccb4c4"
+      ],
+      "reason": "N verified for /steps/id=delivery/id: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f71acc678543f1dedd6da64"
+      ],
+      "reason": "N verified for /steps/id=delivery/routine: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "85d58778322169b7eb358fb2"
+      ],
+      "reason": "N verified for /steps/id=delivery/routine/arguments: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "e7190e6183add8a7b67d408d"
+      ],
+      "reason": "N verified for /steps/id=delivery/routine/arguments/envelope: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "reason": "N verified for /steps/id=delivery/routine/name: Run invokes deliver with envelope; these YAML identifiers/call fields do not issue technique emission instructions. AP1 excludes calls and bindings.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "d10a33e1908da3335366adaa"
+      ],
+      "reason": "A verified for /rules: The second Rules clause directs: validate the report before each emission. AP1 requires examining this emitting clause independently of the retention clause.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "a3b7b46de80a7e60f06f33aa"
+      ],
+      "reason": "A verified for /rules/line-11: The second Rules clause directs: validate the report before each emission. AP1 requires examining this emitting clause independently of the retention clause.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "reason": "N verified for /rules/line-11/clause-1: This first semicolon clause only says Retain the report ID. AP1 excludes retention; the separate emitting clause cannot change this clause scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "1fff788717e68470ea335f4a"
+      ],
+      "reason": "A verified for /rules/line-11/clause-2: The second Rules clause directs: validate the report before each emission. AP1 requires examining this emitting clause independently of the retention clause.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "reason": "N verified for /rules/line-12: Destination is archive declares a destination without directing emission; AP1 explicitly excludes this construct.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cbb292d61ff63c7740d065be"
+      ],
+      "reason": "N verified for /steps: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "bbb0ef5214ae8bbcce715c65"
+      ],
+      "reason": "N verified for /steps/id=emit: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "71fd5507f4b74e2ec91c2b3e"
+      ],
+      "reason": "N verified for /steps/id=emit/id: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f2a200e38a51bc411ee5e057"
+      ],
+      "reason": "N verified for /steps/id=emit/technique: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "343988e91c335d3bdef76586"
+      ],
+      "reason": "N verified for /graph: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "cc39f8b8ebb2b96169d05005"
+      ],
+      "reason": "N verified for /graph/run: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "b1f517596f87f82a15830709"
+      ],
+      "reason": "N verified for /graph/run/done: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "f30ba6f42d4230bf27814f3a"
+      ],
+      "reason": "N verified for /initialActivity: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "ca06cc90126da20e026a0486"
+      ],
+      "reason": "N verified for /graph/run: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "96797ae8488cf51f8878572b"
+      ],
+      "reason": "N verified for /graph/run/done: Qualification starts at run and its done edge targets null. Workflow identifiers/graph references are outside AP1 technique instruction scope.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "2e52133101ac058519a8aa51"
+      ],
+      "reason": "N verified for /inputs: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "reason": "N verified for /inputs/0: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "541cffe238719bcc6a46fe77"
+      ],
+      "reason": "N verified for /rules: The ancestor contains descriptive Capability text and Destination must be archive; neither instructs artifact emission under AP1.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "reason": "N verified for /rules/line-5: The ancestor contains descriptive Capability text and Destination must be archive; neither instructs artifact emission under AP1.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "668f2c03b5c1dfffd6143cc5"
+      ],
+      "reason": "A verified for /protocol: Protocol directs: Validate the report, then emit it. AP1 covers each emitting instruction; requiring validation affects its result, not its applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "7f339716e8d7474fb2512654"
+      ],
+      "reason": "A verified for /protocol/line-8: Protocol directs: Validate the report, then emit it. AP1 covers each emitting instruction; requiring validation affects its result, not its applicability.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "8f64e24f8a4caa9482d28228"
+      ],
+      "reason": "N verified for /outputs: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "232c484eaf1003ef830d4ffa"
+      ],
+      "reason": "N verified for /outputs/report: Deliver declares envelope, binds emit.report and calls produce. AP1 excludes these declarations and calls from Protocol/Rules emission instructions.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 14,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7
+        }
+      ],
+      "items": [
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "reason": "N verified for @element: The ancestor contains descriptive Capability text and Destination must be archive; neither instructs artifact emission under AP1.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8"
+}

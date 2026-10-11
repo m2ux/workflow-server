@@ -1,0 +1,152 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "2cd834d459bb17b21ef4",
+  "attempt": "current-source-map-round-1-2cd834d459bb17b21ef4",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "30d521174c6c7f6c4a8579ad",
+        "94b820a882f196103f835741",
+        "8020bba4283a65b31df0f113",
+        "f0755acc68e9a62e580665a3"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. The workflow owns initialActivity run and graph done to run, with relationships to the run activity. These graph selections do not carry routine argument keys or step-id.output-name exports, which are the two binding forms AP2 checks.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "82c8e910cc4b4df96a89e369",
+        "790b168511688f3580f49f17",
+        "e6707d2a492bbb28eafc3a21",
+        "387b3abcf94e6a19aabbf992"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output summary; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "e3964a7ca7f68e7c40793e11",
+        "fc47360bf214ca94a9c2f752",
+        "e8a18028e34e1ace5d01fcf3"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done. The workflow owns initialActivity run and graph done to run, with relationships to the run activity. These graph selections do not carry routine argument keys or step-id.output-name exports, which are the two binding forms AP2 checks.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report. The routine export report binds emit.report. Step emit calls produce, whose Outputs declares summary; AP2 requires resolving the producer and checking the referenced output name report against that declaration.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "588e9afc6de79e4e15622316"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/id. This owned row is an activity or activity-step identifier. It neither declares an invocation argument key nor resolves an exported routine output; the activity routine-call and argument rows carry the concrete AP2 responsibilities.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

@@ -1,0 +1,246 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "aee2613d3fa2e283868b",
+  "attempt": "current-source-map-round-1-aee2613d3fa2e283868b",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "5fb3f06992383a0be7318734",
+        "c9c06fb4ee9924c6c63c553f",
+        "ac42c54bb5e18cc6005d1df7",
+        "bfde9ab405ad9faa2bc4b5ac",
+        "4d029f4ed7a941dc5b13bafa"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/techniques/TECHNIQUE.md#@element. The ancestor contains Capability and an inherited destination Rule, with no routine Inputs, technique Outputs, activity argument mapping or routine export reference. It supplies no AP2 binding responsibility.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "620325a4c3f62c9867a7df90",
+        "85e68983cef9c8b0f9a7bf33"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0. This routine input surface declares envelope, the required key for the activity delivery invocation whose actual key set is {envelope}. AP2 checks the concrete caller against this Inputs contract.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b34f6249f0f9b31107491750"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output report; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "8669d4026237cb94e83e2158"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. This routine/execution surface connects the delivery argument key envelope to Inputs [envelope] and resolves exported emit.report through emit to produce Outputs [report]. Both concrete binding responsibilities are within AP2; this receipt records applicability only.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "c986d23bf9fe92ac15ab723d",
+        "8835c0ddec51d397d30590e7"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/report. The technique Outputs declaration names report. Deliver binds emit.report and resolves emit to produce, so AP2 requires comparing report with this declared producer output name. Merely naming an artifact in prose would not create this binding responsibility.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "588e9afc6de79e4e15622316"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/id. This owned row is an activity or activity-step identifier. It neither declares an invocation argument key nor resolves an exported routine output; the activity routine-call and argument rows carry the concrete AP2 responsibilities.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "a1bbb96005ca910edd02b943"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/workflow.yaml#/id. The workflow owns initialActivity run and graph done to null, with relationships to the run activity. These graph selections do not carry routine argument keys or step-id.output-name exports, which are the two binding forms AP2 checks.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "items": [
+        "b331b3631bac4371bfebf008"
+      ],
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#@element. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    }
+  ],
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23"
+}
