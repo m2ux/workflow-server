@@ -1,0 +1,34 @@
+[
+  {
+    "slice": "structures",
+    "entries": 68,
+    "recommendations": 30,
+    "packet_bytes": 110401,
+    "context_budget_proxy": 185401,
+    "maximum_additional_source_bytes": 60000
+  },
+  {
+    "slice": "execution",
+    "entries": 55,
+    "recommendations": 40,
+    "packet_bytes": 115679,
+    "context_budget_proxy": 190679,
+    "maximum_additional_source_bytes": 60000
+  },
+  {
+    "slice": "contracts",
+    "entries": 42,
+    "recommendations": 38,
+    "packet_bytes": 120053,
+    "context_budget_proxy": 195053,
+    "maximum_additional_source_bytes": 60000
+  },
+  {
+    "slice": "principles",
+    "entries": 47,
+    "recommendations": 39,
+    "packet_bytes": 83311,
+    "context_budget_proxy": 158311,
+    "maximum_additional_source_bytes": 60000
+  }
+]

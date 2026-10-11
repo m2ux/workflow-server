@@ -1,0 +1,951 @@
+[
+  {
+    "id": "AS-01",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-01",
+      "AP-17",
+      "DP-22"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-01\n\n**Confirmed · correction · P2**\n\nScope: [AP-01 · no-inline-content](sources/anti-patterns.md#ap-01-no-inline-content), [AP-17 · bound-step-no-description](sources/anti-patterns.md#ap-17-bound-step-no-description), [DP-22 · Modular Over Inline](sources/design-principles.md#22-modular-over-inline).\n\n**Assessment.** The open-ended construct clause and short-literal exception do not accurately bound schema-owned inline checkpoints and loops. This is a scope ambiguity, not a globally unsatisfiable file rule.\n\n**Witness.** A newly authored inline checkpoint with message, options, and effects is a 'new construct ... authored inline' under AP-01, while AP-17 expressly says a checkpoint is inline in steps[]. The narrow reading limited to activity/technique/resource bodies avoids the conflict, so this is a scope ambiguity, not a proved contradiction under every reading.\n\n**Suggested wording.** Replace Detect with: 'An activity, technique, or resource definition is embedded as a body in a parent where the schema represents that definition by a file reference.' Replace Do not flag with: 'Schema-owned inline forms, including checkpoint and loop steps, conditions, effects, and literal fields; references to separate definitions.' Remove the open-ended 'new construct' parenthesis. Align the scope of DP-22 with the same file-bearing construct boundary.\n\n**Observing check.** Positive: An activity body pasted into a workflow field that expects an activity reference is flagged and extracted. Negative: A checkpoint with inline message/options and a loop with nested steps remain inline and are not flagged.\n\nEvidence addresses: AP-01 lines 68–72; AP-17 lines 270–270; DP-22 lines 105–105.\n\n[Original candidate](reviews/ap_structures/findings-01.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AS-02",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-02",
+      "AP-118"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-02\n\n**Confirmed · improvement · P3**\n\nScope: [AP-02 · schema-is-constraint](sources/anti-patterns.md#ap-02-schema-is-constraint), [AP-118 · no-bind-mechanics-as-prose](sources/anti-patterns.md#ap-118-no-bind-mechanics-as-prose).\n\n**Assessment.** Explicitly approved schema-and-consumer work can be one task. Clarify authorization rather than infer that schema expansion is allowed whenever convenient.\n\n**Witness.** A user explicitly requests one change that adds a supported binding construct and its first workflow consumer. The schema change is authorized, but AP-02's literal separate-task exception does not cover it. This is a suggested policy clarification, not evidence that schema changes should be automatic.\n\n**Suggested wording.** Replace Do not flag with: 'Schema evolution explicitly included in the approved change scope, with the schema contract and its affected consumers reviewed together.' Add to Fix: 'When current structure cannot express the authorized requirement, identify the missing capability and resolve its scope before changing the schema.' Keep the prohibition on inventing fields merely to silence validation.\n\n**Observing check.** Positive: An author invents an undeclared field to make an unapproved content shape validate: flag it. Negative: An approved schema-and-consumer change is not flagged solely because the work is tracked in one task.\n\nEvidence addresses: AP-02 lines 80–84; AP-118 lines 1516–1516.\n\n[Original candidate](reviews/ap_structures/findings-01.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-03",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-03",
+      "AP-07",
+      "AP-81",
+      "DP-03"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-03\n\n**Confirmed · correction · P1**\n\nScope: [AP-03 · no-partial-implementation](sources/anti-patterns.md#ap-03-no-partial-implementation), [AP-07 · scope-reverify-completion](sources/anti-patterns.md#ap-07-scope-reverify-completion), [AP-81 · verify-format-literacy](sources/anti-patterns.md#ap-81-verify-format-literacy), [DP-03 · Define Complete Scope Before Execution](sources/design-principles.md#3-define-complete-scope-before-execution).\n\n**Assessment.** The detector explicitly treats every commit as whole-scope completion. Separate a validated interim checkpoint from delivery acceptance; the user has independently authorized incremental commits in this task.\n\n**Witness.** An approved two-part change records a validated first part in an interim commit and keeps the second part openly in progress. No handoff or done claim occurs. AP-03 flags unfinished scope and requires completion before committing; AP-07 flags the commit despite its completion-focused title and Fix.\n\n**Suggested wording.** AP-03 Detect: 'A deliverable is handed off or represented as complete while approved scope items remain unaddressed or are deferred without approval.' Do not flag: 'An explicitly partial deliverable, or an interim commit that keeps remaining scope open and makes no completion claim.' Fix: 'Complete the agreed deliverable or obtain and record a scope change before its completion claim.' AP-07 Detect: 'A completion claim or final handoff lacks item-by-item verification against the current scope manifest.' Keep AP-81 as the commit-validation check.\n\n**Observing check.** Positive: A final 'done' report omits an agreed resource edit with no scope approval: both unfinished-work and missing-verification evidence can be recorded distinctly. Negative: A validated interim commit with the unfinished item still in progress is not treated as a completed deliverable.\n\nEvidence addresses: AP-03 lines 90–96; AP-07 lines 142–148; AP-81 lines 1056–1060; DP-03 lines 29–29.\n\n[Original candidate](reviews/ap_structures/findings-01.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-04",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-04",
+      "DP-07"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-04\n\n**Confirmed · correction · P2**\n\nScope: [AP-04 · no-invented-naming](sources/anti-patterns.md#ap-04-no-invented-naming), [DP-07 · Convention Over Invention](sources/design-principles.md#7-convention-over-invention).\n\n**Assessment.** The conjunction accepts search without the approval demanded by Fix when no convention fits. New identifiers following a convention are not new conventions.\n\n**Witness.** An author searches, finds no suitable convention, and adopts a new naming scheme without approval. Detect is false because search occurred, although Fix says the new convention needs approval. Conversely, a fresh id following established snake_case is not a new naming convention.\n\n**Suggested wording.** Replace Detect with: 'A naming convention is adopted without checking whether an existing convention fits; or, after no existing convention fits, a new convention is adopted without the required approval.' Do not flag: 'New identifiers that follow an established convention; a genuinely new convention with its search and approval recorded.' Retain the existing Fix sequence.\n\n**Observing check.** Positive: A search with no fit followed by an unapproved new filename scheme is flagged. Negative: A new task_results id using the established identifier convention is not flagged merely because the id is new.\n\nEvidence addresses: AP-04 lines 102–108; DP-07 lines 45–45.\n\n[Original candidate](reviews/ap_structures/findings-01.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-05",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-09",
+      "AP-11",
+      "DP-26",
+      "DP-31"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-05\n\n**Narrowed · improvement · P2**\n\nScope: [AP-09 · checkpoint-not-prose](sources/anti-patterns.md#ap-09-checkpoint-not-prose), [AP-11 · decision-not-prose](sources/anti-patterns.md#ap-11-decision-not-prose), [DP-26 · A Technique Is a Reading](sources/design-principles.md#26-a-technique-is-a-reading), [DP-31 · Isolate Conditional Branches as Notes](sources/design-principles.md#31-isolate-conditional-branches-as-notes).\n\n**Assessment.** The introductory subjects already say user decision and cross-activity routing. Preserve them explicitly in Detect to prevent verb-only matching; local technique judgment is not intrinsically prohibited.\n\n**Witness.** A technique says 'Choose the candidate whose returned evidence satisfies the criteria; if none does, return unresolved.' It makes a local output judgment, not a human decision or activity transition. Verb-based AP-09 and the unqualified 'paths' in AP-11 can nevertheless route it into checkpoints or graph branches.\n\n**Suggested wording.** AP-09 Detect: 'Definition prose requires a person to decide, authorize, or confirm progress, but the activity has no checkpoint at that decision point.' AP-11 Detect: 'Prose selects the next activity or graph destination, but no declared activity decision or exit predicate represents that routing.' Add to both exceptions: 'A technique's local evidence interpretation or output selection that neither asks a person nor selects an activity/step.'\n\n**Observing check.** Positive: 'Ask the user to approve publication before the publishing activity' without a checkpoint is flagged; prose selecting a next activity without declared routing is flagged. Negative: A local evidence branch producing one declared classification remains in the technique; an existing step condition remains structural.\n\nEvidence addresses: AP-09 lines 170–176; AP-11 lines 194–200; DP-26 lines 121–121; DP-31 lines 141–141.\n\n[Original candidate](reviews/ap_structures/findings-01.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-06",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-10",
+      "AP-104",
+      "AP-15"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-06\n\n**Confirmed · correction · P2**\n\nScope: [AP-15 · procedure-in-protocol](sources/anti-patterns.md#ap-15-procedure-in-protocol), [AP-10 · loop-not-prose](sources/anti-patterns.md#ap-10-loop-not-prose), [AP-104 · operative-criteria-need-a-home](sources/anti-patterns.md#ap-104-operative-criteria-need-a-home).\n\n**Assessment.** The detector includes numbered criteria and iteration but the remedy always chooses Protocol. Reusable criteria and structural session loops need their existing owners.\n\n**Witness.** A step description contains a reusable numbered list of audit criteria. AP-15 says to move the imperative bullets into Protocol; AP-104 then flags those reusable criteria for living only in Protocol. A description repeating several bound steps for each session item similarly needs AP-10's loop, not a prose loop in the technique.\n\n**Suggested wording.** Replace Detect with: 'A step description carries work instructions or reusable criteria whose owning construct is elsewhere.' Replace Fix with: 'Classify the content first: encode session sequencing, iteration, and gates in steps; place one technique's procedure in its Protocol; place reusable criteria in their resource and cite it from Protocol. Leave only an unbound step's one-line purpose, or remove description from a bound step.' Keep ownership references rather than repeating their detailed tests.\n\n**Observing check.** Positive: A reusable criterion list in a step description moves to a criteria resource, with the technique applying its section. Negative: A one-application procedure moves to Protocol; an activity loop remains a loop and is not converted to local prose.\n\nEvidence addresses: AP-15 lines 244–248; AP-10 lines 184–188; AP-104 lines 1340–1344.\n\n[Original candidate](reviews/ap_structures/findings-02.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-07",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-148",
+      "AP-16",
+      "AP-62",
+      "DP-13"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-07\n\n**Narrowed · correction · P2**\n\nScope: [AP-16 · technique-inputs-declared](sources/anti-patterns.md#ap-16-technique-inputs-declared), [AP-62 · bind-protocol-locals](sources/anti-patterns.md#ap-62-bind-protocol-locals), [AP-148 · inherited-input-re-declared](sources/anti-patterns.md#ap-148-inherited-input-re-declared), [DP-13 · Separate Contract from Procedure](sources/design-principles.md#13-separate-contract-from-procedure).\n\n**Assessment.** Pinned implementation confirms that authored Markdown headings become parsed inputs[] and ancestor inputs compose into the effective signature. Familiar names are not proof of universal runtime supply. Static provenance acceptance and actual value availability remain distinct.\n\n**Witness.** A Markdown technique has a correct ### target_path under ## Inputs, or receives that slot from its container. AP-16's literal Fix points the author at inputs[] rather than that representation. A leaf using ambient target_path without any local or merged entry is excused by AP-62 but appears missing under AP-16.\n\n**Suggested wording.** AP-16: An externally supplied value belongs to the effective input signature or an explicitly documented delivery contract applicable to that technique. Author declarations as ### <id> under the owning ## Inputs; inputs[] is the parsed representation. Reuse inherited declarations. AP-62: distinguish effective I/O and evidenced runtime context before checking local producer/read order. Mark only an actual local producer with the local-binding sigil; an absent external supplier needs a declared contract, not a fictional local. Qualify target_path and branch_name by their actual supplying contract. See the pinned implementation check for precise replacement blocks and supported limits.\n\n**Observing check.** Positive: An undeclared repository value with no merged or documented ambient supplier is flagged. Negative: A correctly declared or inherited input is accepted; a documented ambient input is accepted consistently by both rules.\n\nEvidence addresses: AP-16 lines 254–260; AP-62 lines 820–824; AP-148 lines 1924–1928; DP-13 lines 69–69.\n\n[Original candidate](reviews/ap_structures/findings-02.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-08",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-133",
+      "AP-20",
+      "AP-24",
+      "DP-27"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-08\n\n**Confirmed · correction · P1**\n\nScope: [AP-20 · rule-group-disambiguation](sources/anti-patterns.md#ap-20-rule-group-disambiguation), [AP-24 · no-contradictory-rules](sources/anti-patterns.md#ap-24-no-contradictory-rules), [AP-133 · overlapping-rule-scopes](sources/anti-patterns.md#ap-133-overlapping-rule-scopes), [DP-27 · State Contract Contribution](sources/design-principles.md#27-state-contract-contribution).\n\n**Assessment.** Same-file or same-bucket tests miss incompatible inherited obligations that reach one reader. Group names settle the conflict only when they actually define disjoint applicability or precedence.\n\n**Witness.** A container requires publication of raw records for every report; a leaf forbids publication of those same records for every report. Each local file/bucket is internally consistent, but the leaf's effective contract cannot satisfy both. Renaming the groups 'reporting' and 'privacy' leaves the same input subject to both rules.\n\n**Suggested wording.** AP-24 Detect: 'Two rules in the effective delivered rule set apply to the same subject and state and require mutually exclusive behavior. Name that subject/state and both consequences.' Exception: 'Explicitly disjoint trigger conditions, or a named precedence/exception that makes the required behavior unique.' AP-20 Detect: 'Rules target different contexts but the text omits the distinction needed to decide applicability.' Fix: 'State the distinct subject or trigger in the rule or group key; verify the case cannot require both incompatible actions.' Extend AP-133's comparison to the same effective set.\n\n**Observing check.** Positive: The inherited publication requirement and local publication prohibition are flagged with a shared report as the witness. Negative: A public-data rule and a private-data rule with explicit disjoint predicates are not flagged; labels alone do not count as those predicates.\n\nEvidence addresses: AP-20 lines 308–312; AP-24 lines 356–360; AP-133 lines 1744–1748; DP-27 lines 125–125.\n\n[Original candidate](reviews/ap_structures/findings-02.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-09",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-22",
+      "AP-23",
+      "AP-74",
+      "DP-06"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-09\n\n**Confirmed · correction · P1**\n\nScope: [AP-22 · single-rule-authority](sources/anti-patterns.md#ap-22-single-rule-authority), [AP-23 · worker-rule-reach](sources/anti-patterns.md#ap-23-worker-rule-reach), [AP-74 · no-duplicated-guidance](sources/anti-patterns.md#ap-74-no-duplicated-guidance), [DP-06 · One Authoritative Home](sources/design-principles.md#6-one-authoritative-home).\n\n**Assessment.** Necessary isolated-reader copies are explicitly protected from hygiene findings by worker-rule-reach and flagged by no-duplicated-guidance. This is a bounded opposing audit prescription, not proof the entire corpus is unsatisfiable.\n\n**Witness.** Two separately delivered leaf techniques carry the same worker safety invariant because neither receives the other's text or a shared rule home. AP-23 treats each copy as required reach and says an audit must not flag it as hygiene. AP-74 flags the identical behavioral instructions and says to keep one location plus pointers. A pointer alone does not give the second worker the bytes it needs. The contradiction is in what the two rules prescribe for this exact delivery state.\n\n**Suggested wording.** Make delivery and authorship separate checks. AP-23 Fix: 'Put the invariant in a shared contract delivered to every affected worker. If delivery requires a materialized copy, derive it from that home; record its source so it is not independently edited. Preserve the currently delivered obligation until the replacement delivery is verified.' AP-74 Do not flag: 'A mechanically derived copy needed for a reader that cannot receive the authoritative home; a plain reference alone does not establish reach.' AP-22 should point to this delivery exception. Verify each worker's effective text after consolidation.\n\n**Observing check.** Positive: Two independently editable copies that both workers can replace with the same delivered shared contract are flagged and consolidated. Negative: A generated copy required for an isolated worker is not deleted merely because its bytes also exist at the owner; the observer confirms that worker still receives the invariant.\n\nEvidence addresses: AP-22 lines 332–336; AP-23 lines 344–348; AP-74 lines 968–972; DP-06 lines 41–41.\n\n[Original candidate](reviews/ap_structures/findings-03.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-10",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-23",
+      "AP-30",
+      "AP-37",
+      "AP-69"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-10\n\n**Confirmed · correction · P1**\n\nScope: [AP-23 · worker-rule-reach](sources/anti-patterns.md#ap-23-worker-rule-reach), [AP-30 · role-rules-not-description](sources/anti-patterns.md#ap-30-role-rules-not-description), [AP-69 · no-activity-prose-rules](sources/anti-patterns.md#ap-69-no-activity-prose-rules), [AP-37 · rule-audience-bucket](sources/anti-patterns.md#ap-37-rule-audience-bucket).\n\n**Assessment.** The activity-file Rules repair is categorically prohibited by no-activity-prose-rules. Distinguish a workflow audience bucket from an activity definition.\n\n**Witness.** An activity description says workers must persist evidence immediately. Following AP-30 literally moves that constraint into rules: on the owning activity, and AP-23's Fix appears to endorse the placement. AP-69 then flags the entire activity-level rules entry with no exception. If AP-23 intended workflow rules.activity delivery, it does not say that.\n\n**Suggested wording.** AP-23 Fix: 'Place worker guidance in the owning technique or shared technique contract that its delivery includes; where a workflow audience bucket is intended, name workflow.rules.activity explicitly. Activity definition files carry structural constraints, not rules entries.' AP-30 Fix: 'Move runtime role constraints to the owning technique/shared contract or the appropriate workflow rules audience bucket. Encode activity-local sequencing and gates structurally. Remove duplicate description prose.'\n\n**Observing check.** Positive: A role prescription in an activity description is detected; its repair lands in a worker-delivered technique contract or declared workflow audience bucket. Negative: The repair does not create activity.yaml rules:, and a purpose-only description stays in place.\n\nEvidence addresses: AP-23 lines 348–348; AP-30 lines 432–436; AP-69 lines 904–908; AP-37 lines 516–520.\n\n[Original candidate](reviews/ap_structures/findings-03.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-11",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-25",
+      "AP-59",
+      "AP-60"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-11\n\n**Confirmed · improvement · P3**\n\nScope: [AP-25 · no-one-step-rules](sources/anti-patterns.md#ap-25-no-one-step-rules), [AP-60 · local-rule-as-note](sources/anti-patterns.md#ap-60-local-rule-as-note), [AP-59 · constraint-as-blockquote](sources/anti-patterns.md#ap-59-constraint-as-blockquote).\n\n**Assessment.** The local-rule detectors and remedies overlap. Consolidation can remove duplicate findings while retaining note formatting at its separate owner.\n\n**Witness.** A rule 'When this lookup times out, emit unresolved' applies only to the lookup phase. Both Detects match; both fixes demote it to the same local note. This is redundant coverage, not a logical contradiction.\n\n**Suggested wording.** Keep one step-local-rule entry with Detect: 'A Rules entry constrains only one Protocol instruction or phase.' Fix: 'Move a conditional caveat to a note under that instruction; move work into Protocol; retain genuinely cross-cutting invariants in Rules.' Retire the other entry and repoint its citations. Let AP-59 own the note's formatting, without restating that format in both entries.\n\n**Observing check.** Positive: One local timeout caveat produces one finding and moves to its instruction. Negative: An invariant applied across lookup, interpretation, and persistence stays under Rules.\n\nEvidence addresses: AP-25 lines 368–372; AP-60 lines 796–800; AP-59 lines 784–788.\n\n[Original candidate](reviews/ap_structures/findings-03.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-12",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-135",
+      "AP-152",
+      "AP-26"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-12\n\n**Narrowed · improvement · P2**\n\nScope: [AP-26 · no-rationale-in-description](sources/anti-patterns.md#ap-26-no-rationale-in-description), [AP-135 · tool-contract-restated-in-protocol](sources/anti-patterns.md#ap-135-tool-contract-restated-in-protocol), [AP-152 · one-invariant-per-rule](sources/anti-patterns.md#ap-152-one-invariant-per-rule).\n\n**Assessment.** The existing Fix already protects facts lost on deletion. Clarify the applicability/interpretation/failure-recognition test so rationale cleanup preserves those facts; avoid treating every explanatory clause as necessary.\n\n**Witness.** 'Only use marker bytes this context received; an unreadable marker cannot authenticate the action.' The imperative survives deletion of the second clause, but the clause supplies the failure condition the reader must recognize. The current tests can classify it either as removable rationale or as a retained operative fact. This is exception ambiguity, not a proved conflict about every explanatory clause.\n\n**Suggested wording.** AP-26 Detect: 'A clause repeats structure or supplies historical/design rationale without changing the reader's applicability decision, required action, interpretation, or failure recognition.' Do not flag: 'A current constraint, failure mode, or non-local dependency the reader needs to apply the instruction correctly.' Fix: 'Remove only clauses that fail that operational test; place historical rationale in the appropriate design record.' Align the short exceptions in AP-135 and AP-152 by reference.\n\n**Observing check.** Positive: 'This phase replaced the older manual approach' is removed when it changes no present decision or obligation. Negative: A failure condition needed to distinguish safe retry from duplicate creation remains with the instruction that uses it.\n\nEvidence addresses: AP-26 lines 384–388; AP-135 lines 1772–1772; AP-152 lines 1974–1974.\n\n[Original candidate](reviews/ap_structures/findings-04.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-13",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-29",
+      "DP-08"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-13\n\n**Confirmed · improvement · P3**\n\nScope: [AP-29 · no-user-env-mutation](sources/anti-patterns.md#ap-29-no-user-env-mutation), [DP-08 · Confirm Before Irreversible Changes](sources/design-principles.md#8-confirm-before-irreversible-changes).\n\n**Assessment.** This is an optional product-scope choice, not a contradiction and not authorization to mutate a user environment. No maintenance exception is adopted in this review.\n\n**Witness.** A user explicitly requests repair of their global Git identity. A workflow executing that request remains prohibited by AP-29, even after the requested impact confirmation. This is not a logical contradiction: confirmation is a prerequisite, not permission. It exposes a boundary the canon should either affirm or scope.\n\n**Suggested wording.** Recommended if environment-maintenance workflows are supported: Detect 'Workflow prose directs mutation of user-owned environment state outside the declared and authorized work scope.' Exception 'Explicitly scoped environment maintenance with the target and impact confirmed.' Otherwise keep the absolute prohibition and state 'These workflows diagnose user-owned environment state; environment maintenance is outside their supported task scope.'\n\n**Observing check.** Positive: An authoring workflow unexpectedly orders a global Git configuration change: flag it. Negative: A diagnostic-only instruction passes. If the scoped-maintenance exception is adopted, a separately authorized environment repair also passes; otherwise the workflow declares that task unsupported.\n\nEvidence addresses: AP-29 lines 420–424; DP-08 lines 49–49.\n\n[Original candidate](reviews/ap_structures/findings-04.json) · [Independent disposition](reconciliation/ap-03.json)."
+  },
+  {
+    "id": "AS-14",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-130",
+      "AP-31",
+      "AP-44"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-14\n\n**Confirmed · correction · P1**\n\nScope: [AP-31 · no-hand-authored-artifacts](sources/anti-patterns.md#ap-31-no-hand-authored-artifacts), [AP-44 · artifact-name-in-io](sources/anti-patterns.md#ap-44-artifact-name-in-io), [AP-130 · artifact-name-is-filename](sources/anti-patterns.md#ap-130-artifact-name-is-filename).\n\n**Assessment.** The artifact repair expressly permits a discriminator-keyed note while the filename contract rejects mode/condition text. Use the filename grammar consistently.\n\n**Witness.** To replace an activity artifacts block, an author follows AP-31 and declares the filename as 'full-report.md (full mode) or brief-report.md (brief mode)'. AP-31's discriminator-keyed-note branch offers this conditional declaration, while AP-130 rejects a mode/condition and multiple names in the artifact body.\n\n**Suggested wording.** Replace AP-31 Fix with: 'Delete activity artifacts[]. Declare each produced file on its producing technique's output using one literal filename or token-template under #### artifact. Where a mode selects distinct file contracts, use the mode-specific producing operations described by artifact-name-is-filename.' Remove 'discriminator-keyed note' and cite AP-130 for filename grammar rather than attributing that grammar to AP-44.\n\n**Observing check.** Positive: A conditional multi-name artifact body is flagged once and split into valid declared file contracts. Negative: A single report.md or {package_name}-report.md declaration passes, and deleting activity artifacts[] does not introduce a conditional note.\n\nEvidence addresses: AP-31 lines 448–448; AP-44 lines 604–608; AP-130 lines 1708–1712.\n\n[Original candidate](reviews/ap_structures/findings-04.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-15",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-32"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-15\n\n**Confirmed · correction · P2**\n\nScope: [AP-32 · outcome-names-value](sources/anti-patterns.md#ap-32-outcome-names-value).\n\n**Assessment.** Rename invariance holds for both the desired value claim and the prohibited directory-created claim, so the stated Test cannot distinguish them.\n\n**Witness.** 'Evidence establishes the proposed merge is safe' survives a report filename change, as does 'Output directory created'. The former describes delivered value and the latter is an explicit bad class. Therefore rename invariance alone cannot separate the classes; treating the stated test as a positive Detect signal also reverses its intended polarity.\n\n**Suggested wording.** Replace Detect with: 'An outcome asserts only that storage or a variable exists, was written, or was populated, without naming what the user or next consumer can now know or do. A filename or id substitution alone must not change the claimed delivered value.' Retain the allowance for a mechanical name that supports a value statement. Make the positive failure predicate explicit rather than labeling the desired property as an unqualified Test.\n\n**Observing check.** Positive: 'Output directory created' and 'assessment variable populated' are flagged when they assert no further delivered result. Negative: 'Conflicting obligations identified with the evidence needed to choose a repair' is accepted whether its report filename changes or stays the same.\n\nEvidence addresses: AP-32 lines 454–460.\n\n[Original candidate](reviews/ap_structures/findings-04.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-16",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-39"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-16\n\n**Confirmed · correction · P2**\n\nScope: [AP-39 · hoist-universal-techniques](sources/anti-patterns.md#ap-39-hoist-universal-techniques).\n\n**Assessment.** Nine of ten activities is both nearly every and only some. Applicability to the tenth, not a percentage, determines whether hoisting is sound.\n\n**Witness.** Nine processing activities use a strategy; the tenth performs a terminal acknowledgment and does not use it. This is both 'nearly every' and 'only some'. Detect recommends hoisting while the exception recommends retaining local placement. No percentage threshold would establish applicability to the tenth activity.\n\n**Suggested wording.** Replace Detect with: 'A strategy's contract applies to every activity, but its declaration is repeated on individual activities rather than workflow.techniques.activity.' Do not flag: 'A strategy whose behavior applies to a proper subset, regardless of how large the subset is.' Fix: 'Verify applicability to every activity, then hoist and remove local copies; otherwise keep it on the activities that use it.'\n\n**Observing check.** Positive: Every activity requires the same strategy and duplicates its declaration: hoist it. Negative: A strategy applying to nine of ten activities stays local when the tenth has no such duty.\n\nEvidence addresses: AP-39 lines 540–544.\n\n[Original candidate](reviews/ap_structures/findings-04.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-17",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-43",
+      "AP-44",
+      "AP-66"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-17\n\n**Confirmed · improvement · P3**\n\nScope: [AP-43 · canonical-artifact-ids](sources/anti-patterns.md#ap-43-canonical-artifact-ids), [AP-44 · artifact-name-in-io](sources/anti-patterns.md#ap-44-artifact-name-in-io), [AP-66 · io-id-shape](sources/anti-patterns.md#ap-66-io-id-shape).\n\n**Assessment.** Literal artifact-reference defects and identifier-shape defects have overlapping homes. Consolidate ownership without merging separate semantic defects.\n\n**Witness.** 'Read assumptions-log.md' in Protocol triggers both AP-43 and AP-44 and has one repair. An assumptions_log_path id can also trigger AP-43 and AP-66. The overlap is observable; it is not contradictory.\n\n**Suggested wording.** Let one entry own artifact references in Protocol: 'A Protocol artifact reference uses a concrete filename/path rather than the declared I/O designator.' Let AP-66 own identifier shape. Retire or narrow the duplicate entry and update all citations, preserving the filename declaration exception and the opaque-collection distinction.\n\n**Observing check.** Positive: One literal report filename in Protocol produces one finding with a declared-id repair. Negative: The same filename under #### artifact is accepted; an independent identifier-shape defect can be reported separately.\n\nEvidence addresses: AP-43 lines 592–596; AP-44 lines 604–608; AP-66 lines 868–872.\n\n[Original candidate](reviews/ap_structures/findings-05.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-18",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-114",
+      "AP-157",
+      "AP-51",
+      "DP-25"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-18\n\n**Confirmed · correction · P1**\n\nScope: [AP-51 · canonical-technique-reference](sources/anti-patterns.md#ap-51-canonical-technique-reference), [AP-114 · pass-orchestration-in-technique](sources/anti-patterns.md#ap-114-pass-orchestration-in-technique), [AP-157 · unreachable-operation-reference](sources/anti-patterns.md#ap-157-unreachable-operation-reference), [DP-25 · Bind Sibling Techniques as Steps](sources/design-principles.md#25-bind-sibling-techniques-as-steps).\n\n**Assessment.** Replacing the raw tool with a wrapping-technique call in the same Protocol introduces the work invocation that pass-orchestration-in-technique removes.\n\n**Witness.** A local analysis technique says 'Use gitnexus_context on the symbol', and a shared context technique owns that capability. AP-51's Fix becomes 'Apply `[context](...)` (name: {symbol})' in the same Protocol. That exact call is an Apply of another technique for work and satisfies AP-114's Detect. Removing Apply but leaving a consult link invokes AP-157's separate availability check.\n\n**Suggested wording.** Replace AP-51 Fix with: 'Bind the owning shared technique at the activity or routine and pass its product to the local technique. Remove the local raw-call recipe. Where the local step is an explicitly permitted unaided recovery path, retain its raw tool call under the existing exception.' Clarify that canonical link syntax applies only on surfaces allowed to reference that technique; it does not authorize a Protocol-to-Protocol invocation. Reconcile invocation-format and missing-argument entries against this same allowed-surface boundary.\n\n**Observing check.** Positive: A local reimplementation of a shared call is replaced by a shared activity/routine bind and a declared input for the local consumer. Negative: The wrapper's own primitive call and an explicitly allowed unaided remedy remain valid; no Apply of a sibling is introduced into an ordinary technique Protocol.\n\nEvidence addresses: AP-51 lines 688–692; AP-114 lines 1464–1468; AP-157 lines 2032–2036; DP-25 lines 117–117.\n\n[Original candidate](reviews/ap_structures/findings-05.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-19",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-145",
+      "AP-53",
+      "DP-36"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-19\n\n**Narrowed · improvement · P2**\n\nScope: [AP-53 · dotted-rule-address](sources/anti-patterns.md#ap-53-dotted-rule-address), [DP-36 · A Technique Names Only What Its Reader Holds](sources/design-principles.md#36-a-technique-names-only-what-its-reader-holds), [AP-145 · pre-session-prose-defers-to-the-framework](sources/anti-patterns.md#ap-145-pre-session-prose-defers-to-the-framework).\n\n**Assessment.** The current text already warns that static spelling cannot establish reach. Make unknown delivery explicit and preserve current accepted address syntax until its resolver contract is verified; this review does not propose a new addressing grammar.\n\n**Witness.** A rule is on a same-library sibling contract that a role may or may not bundle with the citing leaf. The static files establish neither actual delivery nor a unique bare address. One reviewer may accept a bare slug because a route may exist; another may require owner.slug because it is outside ancestry. Neither has observed the effective bundle.\n\n**Suggested wording.** Keep the existing address grammar. State separately that a qualified address identifies an owner but does not prove the reader receives its rule. Record the known inheritance or bundle route; when a static review cannot determine that route, leave delivery unverified and name the missing evidence.\n\n**Observing check.** Positive: A bare rule slug declared only in another library, with no delivered contract, is flagged with its missing owner and delivery path. Negative: A uniquely resolved inherited rule is accepted; unknown role-bundle delivery remains an explicit evidence gap rather than a guessed verdict.\n\nEvidence addresses: AP-53 lines 712–716; DP-36 lines 161–161; AP-145 lines 1892–1892.\n\n[Original candidate](reviews/ap_structures/findings-05.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-20",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-148",
+      "AP-55"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-20\n\n**Confirmed · improvement · P2**\n\nScope: [AP-55 · hoist-shared-inputs](sources/anti-patterns.md#ap-55-hoist-shared-inputs), [AP-148 · inherited-input-re-declared](sources/anti-patterns.md#ap-148-inherited-input-re-declared).\n\n**Assessment.** The leaf-count exception and workflow-wide contextual-input remedy need explicit precedence. Scope ownership is more informative than how many sites share a spelling.\n\n**Witness.** Three leaves share a workflow-wide location input and no ancestor declares it. The leaf-count exception excuses them, while the Fix explicitly says workflow-wide contextual inputs hoist even when some leaves do not reference them. The exception and the workflow-wide case need an explicit order.\n\n**Suggested wording.** Prefer a scope test: 'Hoist an input when a common container owns that shared semantic contract; leaf-specific inputs stay at their leaves. Workflow-wide context belongs to the root contract regardless of use count.' If the two/three-leaf exception is intentional, state its limit and its precedence explicitly: 'For non-workflow-wide inputs, a duplicate declaration on at most three leaves may remain when their common ancestor has no other shared inputs.' Keep AP-148 as the separate inherited-duplicate check.\n\n**Observing check.** Positive: A workflow-wide planning location has one root declaration even when only three leaves consume it. Negative: Three unrelated leaf-specific values sharing a spelling are not merged merely to meet a count rule.\n\nEvidence addresses: AP-55 lines 736–740; AP-148 lines 1924–1928.\n\n[Original candidate](reviews/ap_structures/findings-06.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-21",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-108",
+      "AP-59",
+      "DP-31"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-21\n\n**Narrowed · correction · P2**\n\nScope: [AP-59 · constraint-as-blockquote](sources/anti-patterns.md#ap-59-constraint-as-blockquote), [DP-31 · Isolate Conditional Branches as Notes](sources/design-principles.md#31-isolate-conditional-branches-as-notes), [AP-108 · numbered-protocol-phases](sources/anti-patterns.md#ap-108-numbered-protocol-phases).\n\n**Assessment.** The exception must distinguish primary choice work from a conditional caveat on another instruction. Do not ban ordered work ladders or infer a renderer defect without implementation evidence.\n\n**Witness.** Under 'Resolve the endpoint', an indented If/Else-if/Otherwise ladder describes fallback cases of that instruction. It is a conditional caveat inside one step under DP-31, yet AP-59's 'at any indent' exemption appears to allow the sub-bullets whose flattening the Detect warns about. This is an exception boundary conflict, not a claim that every ordered ladder is prohibited.\n\n**Suggested wording.** Replace the ladder exception with: 'An ordered sub-action or precedence ladder that is itself the work instruction, rather than a conditional caveat on another instruction.' Add: 'Fallback branches qualifying one instruction use the same note form even when written as If/Else-if/Otherwise.' Keep the condition-to-structure distinction for branches that select whole steps or activities.\n\n**Observing check.** Positive: An indented fallback ladder qualifying one lookup is flagged until represented as a note under that lookup. Negative: A primary ordered work sequence remains ordered work; a proper conditional note and an activity-level structural branch both pass.\n\nEvidence addresses: AP-59 lines 784–788; DP-31 lines 141–141; AP-108 lines 1394–1394.\n\n[Original candidate](reviews/ap_structures/findings-06.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-22",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-10",
+      "AP-68",
+      "DP-20"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-22\n\n**Confirmed · correction · P2**\n\nScope: [AP-68 · technique-stage-agnostic](sources/anti-patterns.md#ap-68-technique-stage-agnostic), [AP-10 · loop-not-prose](sources/anti-patterns.md#ap-10-loop-not-prose), [DP-20 · Keep Orchestration in Structure](sources/design-principles.md#20-keep-orchestration-in-structure).\n\n**Assessment.** No separate commit step follows asserts surrounding run position, exactly the subject the entry rejects. Local iteration should remain scoped by the local-versus-session distinction.\n\n**Witness.** A technique says 'No separate commit step follows.' Its truth depends on what the binding run does after this technique, so it answers where/when in workflow flow; the same string is expressly placed under Do not flag. By contrast, 'final validation' can name a product without making a graph claim.\n\n**Suggested wording.** Remove 'no separate commit step follows' from Do not flag. Retain purpose examples such as 'final validation' only when they do not assert surrounding graph structure. Qualify Detect's loop language as 'an activity-level loop or iteration position'; explicitly retain a technique's internal iteration over its own input/output under AP-10's boundary.\n\n**Observing check.** Positive: 'No separate commit step follows' is flagged and the owning activity carries the sequencing fact. Negative: 'Validate each finding in the declared input and emit the assessment' remains local technique work, and 'final validation' alone is not flagged.\n\nEvidence addresses: AP-68 lines 892–896; AP-10 lines 186–186; DP-20 lines 97–97.\n\n[Original candidate](reviews/ap_structures/findings-06.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-23",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-04",
+      "AP-06",
+      "AP-07"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-23\n\n**Confirmed · improvement · P2**\n\nScope: [AP-04 · no-invented-naming](sources/anti-patterns.md#ap-04-no-invented-naming), [AP-06 · no-assumption-execution](sources/anti-patterns.md#ap-06-no-assumption-execution), [AP-07 · scope-reverify-completion](sources/anti-patterns.md#ap-07-scope-reverify-completion).\n\n**Assessment.** Source snapshots do not establish historical approval, questioning or search. Explicit evidence classes and an unevidenced disposition prevent both invented failures and unsupported passes.\n\n**Witness.** A well-formed name in a captured file provides no evidence that the author skipped convention search, just as a done statement alone does not show whether verification occurred. Treating absent history as a violation would be unsupported; treating the snapshot as a pass would also be unsupported.\n\n**Suggested wording.** Add a short evidence convention to the catalog: 'A conduct test names its required record: request/approval, scope manifest, session trace, or recorded check. A source snapshot proves only source properties. When the required conduct record is unavailable, report the criterion as unevidenced and state what record would settle it.' Attach that evidence requirement to AP-04, AP-06, AP-07, and the other conduct entries during a coordinated update.\n\n**Observing check.** Positive: A trace explicitly records choosing among two material intents and executing without a question: AP-06 can be decided and flagged. Negative: A source-only snapshot with no conversation trace is marked unevidenced for clarification conduct; an observed user-established default is accepted.\n\nEvidence addresses: AP-04 lines 104–104; AP-06 lines 132–134; AP-07 lines 144–146.\n\n[Original candidate](reviews/ap_structures/findings-06.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AS-24",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-144",
+      "AP-48",
+      "AP-54"
+    ],
+    "source": "recommendations-structures.md",
+    "text": "## AS-24\n\n**Confirmed · improvement · P3**\n\nScope: [AP-48 · brace-output-references](sources/anti-patterns.md#ap-48-brace-output-references), [AP-54 · anchored-protocol-references](sources/anti-patterns.md#ap-54-anchored-protocol-references), [AP-144 · reference-without-provenance](sources/anti-patterns.md#ap-144-reference-without-provenance).\n\n**Assessment.** The stricter output-reference style can coexist with general anaphora exceptions. Choose a semantic uniqueness or machine-format rationale explicitly; this is not a contradiction.\n\n**Witness.** 'Assemble {audit_report}. Persist the report.' has one output referent in the instruction. AP-48 prescribes repeating the designator; the general reference entries accept the anaphora. This is optional consistency and expression work, not a demonstrated logical contradiction between an entry and an exception on a different entry.\n\n**Suggested wording.** Choose and state one policy. Recommended Detect: 'An output reference cannot be resolved to exactly one declared output or field from the current instruction and its already anchored noun.' Do not flag: 'Same-instruction anaphora with a unique anchored output.' If every output mention must instead be a designator for machine processing, retain the stricter test and state that concrete requirement rather than calling every noun vague.\n\n**Observing check.** Positive: With two candidate outputs, 'persist the result' is flagged until the intended output is named. Negative: With one immediately anchored output, unambiguous anaphora passes under the recommended policy; the alternative machine-processing policy explicitly requires repetition.\n\nEvidence addresses: AP-48 lines 652–656; AP-54 lines 726–726; AP-144 lines 1878–1878.\n\n[Original candidate](reviews/ap_structures/findings-07.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AE-01",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-23",
+      "AP-37",
+      "AP-69"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-01\n\n**Confirmed · correction · P1**\n\nScope: [AP-69 · no-activity-prose-rules](sources/anti-patterns.md#ap-69-no-activity-prose-rules), [AP-23 · worker-rule-reach](sources/anti-patterns.md#ap-23-worker-rule-reach), [AP-37 · rule-audience-bucket](sources/anti-patterns.md#ap-37-rule-audience-bucket).\n\n**Assessment.** Activity-file guidance is a permitted repair in one entry and always a violation in another. The technique/shared-delivery solution satisfies both objectives.\n\n**Witness.** A worker-wide evidence constraint is placed on an activity binding several techniques. AP-23's Fix accepts that placement; AP-69 flags it even when it reaches the correct actor.\n\n**Suggested wording.** Keep AP-69's structural-only activity policy. Replace AP-23's first Fix sentence with: 'Keep a worker-directed rule on the owning technique or on a container contract delivered to every affected technique.' Clarify in AP-37 that workflow rules.activity is an audience bucket, distinct from rules authored on an activity file.\n\n**Observing check.** Positive: An activity-file behavioural rule moves to a delivered technique contract. Negative: A worker rule in workflow rules.activity is judged by its delivery bucket, without treating that field as activity-file prose.\n\nEvidence addresses: AP-69 lines 904–906; AP-23 lines 348–348.\n\n[Original candidate](reviews/ap_execution/findings-01.json) · [Independent disposition](reconciliation/ap-04.json)."
+  },
+  {
+    "id": "AE-02",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-70"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-02\n\n**Confirmed · correction · P2**\n\nScope: [AP-70 · capability-group-placement](sources/anti-patterns.md#ap-70-capability-group-placement).\n\n**Assessment.** Detect explicitly rejects consumer count as the classifier, but the remedy uses the number of consuming workflows. Locate ownership by the source of the contract.\n\n**Witness.** A reusable git primitive has one workflow consumer. Detect calls its client-workflow location wrong; the one-workflow branch of Fix directs it to that workflow's root.\n\n**Suggested wording.** Replace the classification with: 'Classify by what determines the contract: external tool or harness semantics belong to that capability's namespace; workflow-domain vocabulary shared across its activities belongs at the workflow root; a contract defined by one activity's input/output seam belongs to an activity-named group. Record the contract dependency establishing the class. Consumer count alone does not change it.' Retain the proper-subset test for group folders.\n\n**Observing check.** Positive: A client-local primitive determined wholly by a shared tool contract moves to that capability's namespace. Negative: Two callers of an activity-specific domain contract do not automatically turn it into an external library.\n\nEvidence addresses: AP-70 lines 916–916; AP-70 lines 920–920.\n\n[Original candidate](reviews/ap_execution/findings-01.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-03",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-23",
+      "AP-74",
+      "DP-06"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-03\n\n**Confirmed · correction · P1**\n\nScope: [AP-74 · no-duplicated-guidance](sources/anti-patterns.md#ap-74-no-duplicated-guidance), [AP-23 · worker-rule-reach](sources/anti-patterns.md#ap-23-worker-rule-reach), [DP-06 · One Authoritative Home](sources/design-principles.md#6-one-authoritative-home).\n\n**Assessment.** Confirmed on the isolated-worker witness: flagging necessary copies is itself flagged by worker-rule-reach. Resolve the local audit prescription by proving delivery from one editable owner.\n\n**Witness.** Two isolated workers each receive one non-meta leaf technique. Both must receive the same behavioural constraint; neither receives a common owning text. Repeated wording meets AP-74 Detect, while flagging these required copies meets AP-23 Detect. The meta exception does not apply.\n\n**Suggested wording.** Add AP-74 Do not flag: 'Copies required for isolated readers to receive a rule, provided they are delivered from one authoritative statement rather than independently maintained.' Replace Fix with: 'Hoist or deliver the authoritative statement to every affected reader, then remove independently maintained duplicates. A pointer replaces text only after its reader can resolve it before acting.' Align AP-23 with the same one-edit-home condition.\n\n**Observing check.** Positive: Two independently maintained copies received by the same worker consolidate into their delivered owner. Negative: One canonical rule injected into two isolated worker contexts is accepted despite repeated delivered wording.\n\nEvidence addresses: AP-74 lines 968–968; AP-23 lines 344–344; AP-23 lines 348–348; DP-06 lines 41–41.\n\n[Original candidate](reviews/ap_execution/findings-01.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-04",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-72"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-04\n\n**Confirmed · improvement · P3**\n\nScope: [AP-72 · complete-bootstrap-path](sources/anti-patterns.md#ap-72-complete-bootstrap-path).\n\n**Assessment.** A declared initial activity and its first-step prerequisites provide a reproducible bootstrap endpoint without executing domain work.\n\n**Witness.** One reviewer stops at a session id; another requires the initial activity and its first-step prerequisites. The same path can receive opposite completeness verdicts.\n\n**Suggested wording.** Replace 'reach the first meaningful action' with 'resolve and load the declared initial activity with the identifiers, authorization and inputs its first step requires'. Add: 'Record the selected start state and the returned field supplying each subsequent call argument.'\n\n**Observing check.** Positive: A session id with no discoverable initial activity id exposes a missing hop. Negative: A path loading the declared initial activity and resolving first-step prerequisites passes without executing domain work.\n\nEvidence addresses: AP-72 lines 944–944.\n\n[Original candidate](reviews/ap_execution/findings-01.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-05",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-75"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-05\n\n**Narrowed · improvement · P2**\n\nScope: [AP-75 · describe-tool-value](sources/anti-patterns.md#ap-75-describe-tool-value).\n\n**Assessment.** The existing value requirement need not imply exhaustive field documentation. Name the omitted capability and the caller decision it enables; unused telemetry is not a counterexample requiring documentation.\n\n**Witness.** A description identifies the returned activity and usable cursor but omits elapsed milliseconds. Nothing in the test shows why that missing field should or should not count.\n\n**Suggested wording.** Replace Detect with: 'A legitimate tool description omits a returned capability or field needed to choose the call, bind its result, or perform the next declared action. Name the omitted value and the decision or binding it enables.' Add Do not flag: 'Incidental response metadata with no role in that usage contract.'\n\n**Observing check.** Positive: A next-activity description hides the returned next definition and causes a prescribed redundant fetch; flag that omission. Negative: Telemetry unused by the caller's declared work may be omitted.\n\nEvidence addresses: AP-75 lines 980–980.\n\n[Original candidate](reviews/ap_execution/findings-01.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-06",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-76"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-06\n\n**Confirmed · correction · P1**\n\nScope: [AP-76 · no-redundant-tools](sources/anti-patterns.md#ap-76-no-redundant-tools).\n\n**Assessment.** Return-set inclusion does not account for state transition, ordering, freshness or effects. A preview cannot be replaced by a later mutating superset call.\n\n**Witness.** A read-current-activity call returns a definition; a required later advance call returns that definition plus a cursor and changes the pointer. The read-only pre-advance observation cannot be replaced by advancing early, but the strict-subset test flags it.\n\n**Suggested wording.** Replace Detect with: 'At the point of the extra call, another required call has already supplied the needed values for the same subject and state, with sufficient freshness; the extra call contributes no required effect, failure check or permitted observation.' Exempt distinct transitions, preconditions, freshness and failure semantics. Retire a tool only after checking its whole supported contract and consumers.\n\n**Observing check.** Positive: A routing fetch repeats fields just returned for the same activity with no new observation or effect; remove it. Negative: A read-only preview remains valid when a later mutating call returns a superset.\n\nEvidence addresses: AP-76 lines 992–992; AP-76 lines 994–994.\n\n[Original candidate](reviews/ap_execution/findings-02.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-07",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-77",
+      "DP-08"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-07\n\n**Confirmed · improvement · P2**\n\nScope: [AP-77 · impl-before-confirmed-approach](sources/anti-patterns.md#ap-77-impl-before-confirmed-approach), [DP-08 · Confirm Before Irreversible Changes](sources/design-principles.md#8-confirm-before-irreversible-changes).\n\n**Assessment.** The approval policy is stronger than the cited irreversible-change principle, which is allowed. Recognizing prior concrete authorization is a proposed policy refinement, not a contradiction.\n\n**Witness.** A user gives exact instructions for a reversible field edit. It is neither a typo nor continuation of a separately presented plan, so the stated exceptions still demand another approach-confirmation exchange.\n\n**Suggested wording.** Recommended replacement: 'A modification begins without authorization covering its scope and material approach choices. A request specifying the concrete change supplies that authorization; a material ambiguity or unapproved impact requires confirmation before dependent work.' Retain DP-08's explicit-impact requirement for semi-reversible and irreversible actions.\n\n**Observing check.** Positive: An unapproved gate removal introduces a material impact; dependent edits await the decision. Negative: An exact, already authorized reversible edit proceeds without repeating the decision.\n\nEvidence addresses: AP-77 lines 1008–1008; DP-08 lines 49–49.\n\n[Original candidate](reviews/ap_execution/findings-02.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-08",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-79",
+      "DP-09"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-08\n\n**Confirmed · correction · P1**\n\nScope: [AP-79 · structure-backed-constraints](sources/anti-patterns.md#ap-79-structure-backed-constraints), [DP-09 · Encode Constraints as Structure](sources/design-principles.md#9-encode-constraints-as-structure).\n\n**Assessment.** The repair must not turn an accepted guarantee into guidance merely because enforcement is difficult. Name the requirement owner and require a deliberate scope/guarantee change.\n\n**Witness.** A requirement makes publication depend on approval. Unable to express its predicate, the author reclassifies it as guidance. The written Fix is followed while the required guarantee disappears.\n\n**Suggested wording.** Add: 'A constraint is critical when a named requirement or accepted risk decision makes its breach invalidate the result or permission to proceed. Record that owner and the bypass its enforcement prevents.' Replace reclassification with: 'If the guarantee cannot be enforced, report the blocking gap. Downgrade only when the requirement owner explicitly changes the guarantee.'\n\n**Observing check.** Positive: Publication remains reachable without a required approval; flag missing enforcement. Negative: A declared style preference without an acceptance or authorization guarantee may remain guidance.\n\nEvidence addresses: AP-79 lines 1036–1036; DP-09 lines 53–53.\n\n[Original candidate](reviews/ap_execution/findings-02.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-09",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-81"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-09\n\n**Confirmed · improvement · P3**\n\nScope: [AP-81 · verify-format-literacy](sources/anti-patterns.md#ap-81-verify-format-literacy).\n\n**Assessment.** Pre-draft literacy and validation of committed bytes have independent evidence and failure cases. Separate identities make partial closure visible.\n\n**Witness.** One author reads the schema but commits without checks; another validates a draft produced without first reading the convention. These defects occur at different boundaries.\n\n**Suggested wording.** Split into two entries. Keep verify-format-literacy for 'Drafting begins before the author reads the applicable construct format and conventions'. Add a validation entry for 'A commit includes authored constructs without the required checks recorded for those bytes'. Give each the corresponding exception and Fix.\n\n**Observing check.** Positive: Missing pre-commit validation remains open after format literacy is established. Negative: A documented pre-draft read and required checks on the committed content close the independent obligations.\n\nEvidence addresses: AP-81 lines 1056–1056.\n\n[Original candidate](reviews/ap_execution/findings-02.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-10",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-84",
+      "AP-93"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-10\n\n**Narrowed · correction · P2**\n\nScope: [AP-84 · single-closeout-artifact](sources/anti-patterns.md#ap-84-single-closeout-artifact), [AP-93 · canonical-fact-home](sources/anti-patterns.md#ap-93-canonical-fact-home).\n\n**Assessment.** The fact-category detector can collapse different scoped facts. The closeout entry already targets restatement; refining its audience/purpose boundary is optional rather than proof all distinct terminal artifacts are banned.\n\n**Witness.** A project plan owns project-wide risks and a component plan owns that component's risks. Both have Risks sections, so AP-93 flags them despite no repeated fact. A machine attestation and a human lessons report likewise need not duplicate one another.\n\n**Suggested wording.** For AP-93 use: 'Several templates require independently maintained statements of the same operative fact about the same subject and revision.' Key the home map by that scoped fact. For AP-84 flag repeated close-out facts for the same audience and purpose; preserve distinct mandated products and link common facts to their owner.\n\n**Observing check.** Positive: Two close-out reports independently maintain the same release verdict for the same audience; consolidate that fact. Negative: Project and component registers containing different scoped risks remain separate homes.\n\nEvidence addresses: AP-84 lines 1096–1096; AP-93 lines 1204–1204.\n\n[Original candidate](reviews/ap_execution/findings-02.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-11",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-86"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-11\n\n**Confirmed · correction · P1**\n\nScope: [AP-86 · exception-only-verdict-tables](sources/anti-patterns.md#ap-86-exception-only-verdict-tables).\n\n**Assessment.** An all-pass per-item evidence ledger can establish coverage even without a parser. Its necessary observations must survive presentation compression.\n\n**Witness.** An acceptance matrix contains a passing observation and evidence link per requirement, without a downstream parser. Replacing it with one line removes which requirements were exercised and how each was proved.\n\n**Suggested wording.** Replace Detect with: 'A verdict table repeats a common status without recording distinct scope, observation, evidence or required traceability.' Add Do not flag: 'Per-item evidence or coverage needed to establish the verdict, even when all results pass.' A one-line verdict may link a complete retained evidence ledger.\n\n**Observing check.** Positive: A prefilled all-green table adds no observation beyond a supported aggregate verdict; condense it. Negative: An all-pass matrix with distinct evidence per requirement stays intact or linked as its canonical ledger.\n\nEvidence addresses: AP-86 lines 1120–1120; AP-86 lines 1124–1124.\n\n[Original candidate](reviews/ap_execution/findings-03.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-12",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-87"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-12\n\n**Confirmed · improvement · P2**\n\nScope: [AP-87 · omit-null-sections](sources/anti-patterns.md#ap-87-omit-null-sections).\n\n**Assessment.** Required empty representations and an evidenced zero result differ from decorative empty headings. Preserve actual consumer contracts.\n\n**Witness.** An externally consumed report requires a Findings section with an explicit empty result. Omitting it violates the consumer contract or becomes indistinguishable from a skipped review.\n\n**Suggested wording.** Add Do not flag: 'An explicit empty value or heading required by the artifact's consumer contract, or a zero-result observation with its scope and evidence.' Qualify Fix: 'Omit optional decorative sections; preserve required null representations and necessary evidence in their canonical home.'\n\n**Observing check.** Positive: An optional empty frustrations table without contractual or evidential purpose is omitted. Negative: A required findings field records zero findings and inspection scope without asking the user to confirm absence.\n\nEvidence addresses: AP-87 lines 1136–1136.\n\n[Original candidate](reviews/ap_execution/findings-03.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-13",
+    "metadata": "Narrowed · correction · P1",
+    "entries": [
+      "AP-88",
+      "AP-89"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-13\n\n**Narrowed · correction · P1**\n\nScope: [AP-88 · one-decision-one-checkpoint](sources/anti-patterns.md#ap-88-one-decision-one-checkpoint), [AP-89 · checkpoint-requires-decision](sources/anti-patterns.md#ap-89-checkpoint-requires-decision).\n\n**Assessment.** Shared option labels alone do not show shared decision meaning. The entry title already supplies one-decision intent, but its answer-space test and default-frequency claim need semantic scope, authority, timing and effects.\n\n**Witness.** Target-set approval and spending-limit approval each have Yes/No options; neither answer determines the other. A second approval after changed evidence likewise need not be redundant.\n\n**Suggested wording.** Replace AP-88's test with: 'For every reachable path, the first checkpoint's recorded decision and unchanged evidence determine the second's answer and effects; the second adds no distinct subject, authority, timing or information.' Delete AP-89's default-frequency sentence; refer to AP-88 only when semantic redundancy is proved.\n\n**Observing check.** Positive: A second confirmation repeats approval on unchanged evidence with identical effects; merge it. Negative: Two Yes/No decisions about distinct subjects remain separate even when both usually select Yes.\n\nEvidence addresses: AP-88 lines 1144–1144; AP-89 lines 1160–1160.\n\n[Original candidate](reviews/ap_execution/findings-03.json) · [Independent disposition](reconciliation/ap-05.json)."
+  },
+  {
+    "id": "AE-14",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-90"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-14\n\n**Narrowed · improvement · P3**\n\nScope: [AP-90 · no-guide-wrapper-ceremony](sources/anti-patterns.md#ap-90-no-guide-wrapper-ceremony).\n\n**Assessment.** Ceremony is the stated subject, so a useful contrast is not automatically a contradiction. Qualify the Good/Bad branch to retain examples that convey a necessary distinction.\n\n**Witness.** Two compact JSON examples distinguish an absent field from explicit null. They add a contract distinction, but the unqualified Good/Bad branch treats any pair as padding.\n\n**Suggested wording.** Change the branch to 'a Good/Bad pair that adds no operative distinction beyond the stated rule'. Add: 'Keep a minimal worked contrast that demonstrates a necessary boundary; give the rule one authoritative statement and avoid duplicate explanation.'\n\n**Observing check.** Positive: A contrast repeats an unambiguous preference and adds no diagnostic case; remove it. Negative: An absent-versus-null example disambiguating a consumer contract stays.\n\nEvidence addresses: AP-90 lines 1168–1168.\n\n[Original candidate](reviews/ap_execution/findings-03.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-15",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-91"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-15\n\n**Confirmed · correction · P1**\n\nScope: [AP-91 · lifecycle-row-update](sources/anti-patterns.md#ap-91-lifecycle-row-update).\n\n**Assessment.** The universal in-place update rule omits immutable event evidence. Separate one authoritative current-state view from distinct historical observations and approvals.\n\n**Witness.** An append-only log records a proposal, approval and later revocation. These are distinct historical facts. Keeping only the final row loses the earlier authority and rationale.\n\n**Suggested wording.** Scope Detect to 'independently maintained copies of the same current item state'. Add Do not flag: 'An append-only event history whose consumer requires sequence, actor or prior evidence; derived snapshots with explicit provenance.' Update the current view in place while retaining required events and durable aggregate evidence at their declared home.\n\n**Observing check.** Positive: Three sections each claim the current status and can disagree; retain one current row. Negative: An immutable history of distinct decisions remains alongside its derived current-state view.\n\nEvidence addresses: AP-91 lines 1184–1184.\n\n[Original candidate](reviews/ap_execution/findings-03.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-16",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-104",
+      "AP-113",
+      "AP-68",
+      "AP-92"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-16\n\n**Confirmed · correction · P1**\n\nScope: [AP-92 · resource-fills-not-does](sources/anti-patterns.md#ap-92-resource-fills-not-does), [AP-104 · operative-criteria-need-a-home](sources/anti-patterns.md#ap-104-operative-criteria-need-a-home), [AP-68 · technique-stage-agnostic](sources/anti-patterns.md#ap-68-technique-stage-agnostic), [AP-113 · session-interaction-in-technique](sources/anti-patterns.md#ap-113-session-interaction-in-technique).\n\n**Assessment.** Session gates and routing moved into technique Protocol violate the owning activity boundary. Presentation should be performed by the activity; the technique emits its declared evidence.\n\n**Witness.** A resource says 'after review, confirm at the checkpoint, then proceed to validation'. AP-92 moves it to Protocol, where AP-68 flags it. AP-104's 'present' instruction similarly creates the presentation phase AP-113 removes.\n\n**Suggested wording.** Replace AP-92 Fix with: 'Move domain work to technique Protocol. Move checkpoints, session cadence and routing to activity structure. Keep fill criteria and vocabularies in resources; reconnect moved values and anchors.' Replace AP-104's walker sentence with: 'The technique loads criteria, applies them and emits declared findings; the activity owns their presentation.'\n\n**Observing check.** Positive: Resource-owned gate routing becomes activity checkpoints and exits, with findings bound as inputs. Negative: Portable risk vocabulary stays in a resource; a technique derives classification without prescribing user interaction.\n\nEvidence addresses: AP-92 lines 1192–1192; AP-92 lines 1196–1196; AP-104 lines 1344–1344; AP-68 lines 896–896; AP-113 lines 1456–1456.\n\n[Original candidate](reviews/ap_execution/findings-04.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-17",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-79",
+      "AP-95"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-17\n\n**Confirmed · correction · P1**\n\nScope: [AP-95 · enforce-output-discipline](sources/anti-patterns.md#ap-95-enforce-output-discipline), [AP-79 · structure-backed-constraints](sources/anti-patterns.md#ap-79-structure-backed-constraints).\n\n**Assessment.** A line budget cannot establish fact ownership or semantic validity. Apply evidence-specific checks, and make an unresolved required invariant block completion.\n\n**Witness.** A two-line summary duplicates another artifact's authoritative verdict but meets its line budget. A longer necessary evidence ledger exceeds it. The proxy accepts the defect and rejects valid content.\n\n**Suggested wording.** Replace Fix with: 'Bind a verifier that checks each invariant against named evidence. Use mechanical checks for structural properties and explicit qualitative predicates for semantic ones. Repair within authorized scope, recheck, and make unresolved violations block completion. Use line budgets only when length itself is the invariant.' Keep user checkpoints limited to actual decisions.\n\n**Observing check.** Positive: A copied verdict below the line budget still fails an ownership check and blocks completion until resolved. Negative: A necessary evidence ledger passes semantic ownership and coverage checks unless a separate size contract applies.\n\nEvidence addresses: AP-95 lines 1232–1232.\n\n[Original candidate](reviews/ap_execution/findings-04.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-18",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-96"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-18\n\n**Confirmed · correction · P2**\n\nScope: [AP-96 · artifact-audience-declared](sources/anti-patterns.md#ap-96-artifact-audience-declared).\n\n**Assessment.** Audience alone does not determine a required serialization. This suggested policy repair also needs coordinated updates to check-audience and any corresponding schema/consumer tests; changing prose alone would be insufficient.\n\n**Witness.** A workflow emits OpenAPI YAML and links it for review. Human classification requires prose; agent classification mandates JSON. Either rule can destroy the required YAML consumer contract.\n\n**Suggested wording.** Replace the format part of Fix with: 'Declare the primary audience and honor the artifact's required consumer format. Agent lifecycle state defaults to structured JSON when no stronger format contract applies. Human review links do not change serialization. A human report may present prose and tables over retained machine evidence.'\n\n**Observing check.** Positive: An unconstrained agent lifecycle ledger uses structured JSON and declares its audience. Negative: A human-reviewed YAML or CSV artifact retains its required consumer format.\n\nEvidence addresses: AP-96 lines 1244–1244; AP-96 lines 1244–1244.\n\n[Original candidate](reviews/ap_execution/findings-04.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-19",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-97"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-19\n\n**Confirmed · improvement · P3**\n\nScope: [AP-97 · link-named-artifacts](sources/anti-patterns.md#ap-97-link-named-artifacts).\n\n**Assessment.** The artifact-link requirement does not justify changing every consumer-required filename to a numeric-prefix form.\n\n**Witness.** A checkpoint links a generated package.json or schema file. The path should be produced and linked, but a numeric prefix can make the file unusable.\n\n**Suggested wording.** Replace the prefix sentence with: 'The producing technique resolves the path under the artifact's naming contract.' Keep variable-based links; use numeric prefixes only where that contract requires them.\n\n**Observing check.** Positive: A numbered planning report is linked through its produced path rather than a hard-coded prefix. Negative: A stable consumer filename stays stable and remains linked through its produced path.\n\nEvidence addresses: AP-97 lines 1256–1256.\n\n[Original candidate](reviews/ap_execution/findings-04.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-20",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-98"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-20\n\n**Confirmed · improvement · P2**\n\nScope: [AP-98 · no-next-step-narration](sources/anti-patterns.md#ap-98-no-next-step-narration).\n\n**Assessment.** The witness is conditional on the actual presentation channel. Verify rendered notice before removing prose; no missing notice in the current client is asserted by this static review.\n\n**Witness.** Constructed case: a text-only checkpoint renders message and option labels but not autoAdvanceMs. Removing its sole timing notice hides the pending default action. This is a missing delivery premise, not a claim about the current client.\n\n**Suggested wording.** Qualify Fix: 'Keep one structural source for timing, defaults and routing. Remove manually maintained narration when the delivered checkpoint already renders decision-relevant timing and consequences; otherwise render the notice from the same fields.' Check the actual checkpoint delivery channel.\n\n**Observing check.** Positive: A client already renders its countdown and default; duplicate prose is removed. Negative: A channel lacking those displays receives notice derived from the same structural fields.\n\nEvidence addresses: AP-98 lines 1268–1268.\n\n[Original candidate](reviews/ap_execution/findings-04.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-21",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-100"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-21\n\n**Narrowed · improvement · P2**\n\nScope: [AP-100 · runtime-rules-only](sources/anti-patterns.md#ap-100-runtime-rules-only).\n\n**Assessment.** The current-session distinction can already cover an authoring run. Explicitly allow applying a cited authoring contract while continuing to forbid copied global criteria; do not classify all authoring obligations as misplaced.\n\n**Witness.** An authoring technique requires every emitted definition to conform to a cited schema. This constrains its current output, but the write-workflows signal classifies it as misplaced design-time policy.\n\n**Suggested wording.** Replace Detect with: 'A runtime rule independently restates general authoring criteria already owned by the canon, rather than imposing a current-work obligation by reference.' Add Do not flag: 'An authoring or audit run's obligation to apply the cited canon to its inputs or outputs, with the criteria remaining at their home.'\n\n**Observing check.** Positive: A Rules block recopies the general checkpoint-writing checklist; remove the duplicated criteria. Negative: A technique requires its emitted definitions to satisfy the referenced schema without restating it.\n\nEvidence addresses: AP-100 lines 1288–1288; AP-100 lines 1288–1288.\n\n[Original candidate](reviews/ap_execution/findings-05.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-22",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-102",
+      "AP-105"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-22\n\n**Narrowed · improvement · P3**\n\nScope: [AP-105 · no-shadow-audit-pass](sources/anti-patterns.md#ap-105-no-shadow-audit-pass), [AP-102 · no-technique-resource-dual-home](sources/anti-patterns.md#ap-102-no-technique-resource-dual-home).\n\n**Assessment.** The copied-criteria cases overlap. Thin scoped walkers are already explicitly exempted, so independent review is not inherently prohibited; clarify that exception and consolidate the duplicate criterion.\n\n**Witness.** A technique copies criteria from its linked catalog and another pass walks that catalog. Both entries report the same copied paragraph and prescribe deletion.\n\n**Suggested wording.** Fold AP-105's unique audit example into AP-102 and retire the redundant entry, repointing citations. Keep: 'Several passes may apply one authoritative home for distinct scopes or independent verification; each reads the criteria instead of maintaining a copy.' Shared criteria alone do not prove redundant work.\n\n**Observing check.** Positive: A copied audit checklist produces one ownership finding with one canonical remedy. Negative: Independent reviewers applying the same catalog without copied Detect prose remain legitimate.\n\nEvidence addresses: AP-105 lines 1352–1352; AP-102 lines 1312–1312.\n\n[Original candidate](reviews/ap_execution/findings-05.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-23",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-108",
+      "DP-15"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-23\n\n**Narrowed · improvement · P2**\n\nScope: [AP-108 · numbered-protocol-phases](sources/anti-patterns.md#ap-108-numbered-protocol-phases), [DP-15 · Phase by Sequenced Outcome](sources/design-principles.md#15-phase-by-sequenced-outcome).\n\n**Assessment.** The one-write exception already excludes the directory/write witness. Clarify its precedence over order-sensitivity; do not claim the full rule necessarily demands micro-phases.\n\n**Witness.** Creating a directory before writing its report must occur in order, yet both elaborate Persist Report. The reorder test flags them while the one-write exception excuses them.\n\n**Suggested wording.** Replace the test with: 'Name the distinct outcome established at each proposed boundary and consumed by later work. Split when the next phase begins a different outcome; ordered sub-actions jointly producing one outcome remain bullets. Reordering sensitivity is supporting evidence, not sufficient by itself.' Add the directory/write example.\n\n**Observing check.** Positive: Editing definitions, establishing validation results and recording accepted changes have distinct outcomes and phases. Negative: Ensuring a directory and writing the report remain subordinate actions of one persistence phase.\n\nEvidence addresses: AP-108 lines 1392–1392; AP-108 lines 1394–1394.\n\n[Original candidate](reviews/ap_execution/findings-05.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-24",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-109",
+      "AP-138"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-24\n\n**Confirmed · correction · P2**\n\nScope: [AP-109 · technique-outputs-declared](sources/anti-patterns.md#ap-109-technique-outputs-declared), [AP-138 · output-without-destination](sources/anti-patterns.md#ap-138-output-without-destination).\n\n**Assessment.** Potential future consumption is too broad to distinguish a local intermediate from a public output. Name the actual promised product or consumer before requiring a declaration.\n\n**Witness.** A local technique derives candidate_names solely to compute its declared selected_name. A later consumer could bind the candidates, so AP-109 requests an Output. No actual reader exists, so AP-138 deletes it. The external-library exception does not apply.\n\n**Suggested wording.** Replace AP-109's test with: 'The technique promises the value to a caller, persists it as an artifact, or has a named external consumer that needs to bind it.' Add Do not flag: 'Intermediate values consumed entirely within one application; use protocol locals when needed.' Preserve AP-138's external-caller exception for public library contracts.\n\n**Observing check.** Positive: A later checkpoint needs an undeclared verdict; declare it and name the consumer. Negative: A candidate collection consumed only inside its producing technique stays local.\n\nEvidence addresses: AP-109 lines 1404–1404; AP-138 lines 1804–1804; AP-138 lines 1808–1808.\n\n[Original candidate](reviews/ap_execution/findings-05.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-25",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-110",
+      "DP-18"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-25\n\n**Confirmed · correction · P1**\n\nScope: [AP-110 · duplicate-shared-capability](sources/anti-patterns.md#ap-110-duplicate-shared-capability), [DP-18 · Prefer Shared Capability](sources/design-principles.md#18-prefer-shared-capability).\n\n**Assessment.** An almost-fitting shared contract must satisfy the missing guarantee before the local implementation is deleted. The existing exception permits such owner changes but the prescribed repair omits that step.\n\n**Witness.** A shared lookup lacks a required include-archived input or evidence output. Rebinding without extending its contract loses the required scope or downstream evidence.\n\n**Suggested wording.** Prepend to Fix: 'Compare the caller's required inputs, outputs and guarantees with the shared contract. Close supported gaps at the shared owner and verify existing callers before rebinding and deleting the local recipe. When that surface cannot absorb the semantics, record the concrete incompatibility and keep a distinct capability with a truthful boundary.' Preserve the outcome under DP-38.\n\n**Observing check.** Positive: A reusable missing output is added and consumers verified before local deletion. Negative: Incompatible domain guarantees are not forced through an almost-fitting operation solely because its verb matches.\n\nEvidence addresses: AP-110 lines 1416–1416; AP-110 lines 1420–1420; DP-18 lines 89–89.\n\n[Original candidate](reviews/ap_execution/findings-05.json) · [Independent disposition](reconciliation/ap-06.json)."
+  },
+  {
+    "id": "AE-26",
+    "metadata": "Narrowed · correction · P1",
+    "entries": [
+      "AP-107",
+      "AP-114",
+      "AP-141",
+      "AP-51",
+      "DP-25"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-26\n\n**Narrowed · correction · P1**\n\nScope: [AP-114 · pass-orchestration-in-technique](sources/anti-patterns.md#ap-114-pass-orchestration-in-technique), [AP-107 · bind-site-is-orchestration-truth](sources/anti-patterns.md#ap-107-bind-site-is-orchestration-truth), [AP-51 · canonical-technique-reference](sources/anti-patterns.md#ap-51-canonical-technique-reference), [AP-141 · apply-omits-declared-input](sources/anti-patterns.md#ap-141-apply-omits-declared-input), [DP-25 · Bind Sibling Techniques as Steps](sources/design-principles.md#25-bind-sibling-techniques-as-steps).\n\n**Assessment.** The Protocol-invocation repair conflict is confirmed. The exception in bind-site-is-orchestration-truth only excludes that entry and is not global permission to invoke; removing or cross-referencing it is a consistency cleanup, not another contradiction.\n\n**Witness.** A local Protocol calls a raw tool with an existing shared wrapper. AP-51 prescribes replacement by a hyperlinked wrapping op with arguments; AP-114 immediately flags that work invocation. Repairing its omitted inputs under AP-141 leaves the AP-114 defect.\n\n**Suggested wording.** Adopt DP-25 for ordinary techniques: AP-51 binds the wrapper as an activity/routine step; AP-141 checks required inputs at those binding sites; AP-107 removes its sibling-Apply exception. Retire dependent Protocol-invocation guidance unless a specifically named engine-entry case cannot be represented at a run binding site; any such exception must match across affected entries.\n\n**Observing check.** Positive: A local wrapper call moves to a run step with complete bindings and no residual Protocol Apply. Negative: A primitive-owning technique invokes its raw tool and performs the reading without invoking another technique.\n\nEvidence addresses: AP-114 lines 1464–1464; AP-51 lines 692–692; AP-141 lines 1844–1844; AP-107 lines 1378–1378; DP-25 lines 117–117.\n\n[Original candidate](reviews/ap_execution/findings-06.json) · [Independent disposition](reconciliation/ap-07.json)."
+  },
+  {
+    "id": "AE-27",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-116",
+      "AP-130",
+      "DP-28"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-27\n\n**Confirmed · correction · P2**\n\nScope: [AP-116 · no-template-creation-guide](sources/anti-patterns.md#ap-116-no-template-creation-guide), [DP-28 · Creation Guide for Generated Documents](sources/design-principles.md#28-creation-guide-for-generated-documents), [AP-130 · artifact-name-is-filename](sources/anti-patterns.md#ap-130-artifact-name-is-filename).\n\n**Assessment.** The bare-filename trigger can miss token-templated authored planning documents. Bound the expansion to authored/fillable documents; raw captures and machine-format artifacts use their actual producer/format contract.\n\n**Witness.** A producer declares artifact {component_name}-review.md and cites its canonical output id in Protocol, without a guide. The principle requires one; the entry's bare-filename predicate does not clearly reach it.\n\n**Suggested wording.** Replace the opening Detect with: 'For each persisted planning artifact, whether its filename is literal, token-templated or resolved from a declared value, resolve the guide its producer cites. Flag a missing Template or operative fill Rules, or a competing Protocol layout.' Map artifact kinds or filename patterns to guides where one shape serves several names.\n\n**Observing check.** Positive: A token-named planning artifact without a guide receives a shape guide. Negative: Several resolved filenames sharing one documented shape do not need separate guides per concrete name.\n\nEvidence addresses: AP-116 lines 1488–1488; DP-28 lines 129–129; AP-130 lines 1710–1710.\n\n[Original candidate](reviews/ap_execution/findings-06.json) · [Independent disposition](reconciliation/ap-07.json)."
+  },
+  {
+    "id": "AE-28",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-121",
+      "AP-143"
+    ],
+    "source": "recommendations-execution.md",
+    "text": "## AE-28\n\n**Confirmed · correction · P2**\n\nScope: [AP-121 · rule-as-protocol-step](sources/anti-patterns.md#ap-121-rule-as-protocol-step), [AP-143 · inherited-rules-re-enumerated](sources/anti-patterns.md#ap-143-inherited-rules-re-enumerated).\n\n**Assessment.** The example explicitly follows rules already delivered. Moving that roster to Rules preserves a redundant obligation; delete that case before relocating unique invariants.\n\n**Witness.** A Protocol phase says to follow already delivered conduct rules throughout, with no work outcome. Moving it verbatim to Rules follows AP-121 but fails AP-143 because it adds no invariant.\n\n**Suggested wording.** Replace Fix with: 'Delete a standing duty already supplied by inherited or delivered rules. Move a unique cross-cutting invariant to its owning Rules surface, preserving every affected reader's reach. Keep work phases in Protocol.' Cite AP-143 for the redundant-citation branch.\n\n**Observing check.** Positive: A redundant follow-the-bundle phase is deleted without creating a Rules copy. Negative: A unique domain invariant written as a phase moves to the proper Rules entry and remains delivered.\n\nEvidence addresses: AP-121 lines 1552–1552; AP-143 lines 1864–1864; AP-143 lines 1868–1868.\n\n[Original candidate](reviews/ap_execution/findings-06.json) · [Independent disposition](reconciliation/ap-07.json)."
+  },
+  {
+    "id": "AC-01",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-124"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-01\n\n**Confirmed · correction · P1**\n\nScope: [AP-124 · alternate-ops-as-protocol-sequence](sources/anti-patterns.md#ap-124-alternate-ops-as-protocol-sequence).\n\n**Assessment.** Executable alternate slices sent to Rules violate the work/constraint boundary. Separating standing policy from executable alternatives makes the repair coherent.\n\n**Witness.** A technique has mutually exclusive Spawn and Resume phases, each containing calls and response handling. Moving those whole slices into operation_kind Rules follows AP-124 but leaves work instructions that AP-19 moves back to Protocol. A standing depth limit is legitimately a Rule; the spawn procedure is not. This is a repair conflict, not a claim that all alternate operations are impossible to represent.\n\n**Suggested wording.** Replace Fix with: \"Keep standing host policy in Rules. Express alternate work inside one outcome phase with conditional notes when it is one operation; give distinct operations separate techniques and select them at the binding site. Keep ordered outcomes in Protocol.\" Remove the standing-policy branch from Detect and cross-reference rule-as-protocol-step for that separate defect. Remove \"A caller Applies the selected rule section.\"\n\n**Observing check.** Positive: Flag Spawn and Resume as consecutive phases when exactly one runs; repair them as separate bound operations or branches of one invocation. Negative: Do not flag a cross-cutting maximum-depth Rule or one Dispatch phase with alternate argument choices and shared response handling.\n\nEvidence addresses: AP-124 lines 1584–1588; AP-19 lines 296–300; AP-25 lines 368–372.\n\n[Original candidate](reviews/ap_contracts/findings-01.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-02",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-125",
+      "AP-140",
+      "AP-141"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-02\n\n**Confirmed · correction · P1**\n\nScope: [AP-125 · technique-ref-in-io-contract](sources/anti-patterns.md#ap-125-technique-ref-in-io-contract), [AP-140 · declared-input-never-read](sources/anti-patterns.md#ap-140-declared-input-never-read), [AP-141 · apply-omits-declared-input](sources/anti-patterns.md#ap-141-apply-omits-declared-input).\n\n**Assessment.** The catalog both preserves and repairs Protocol Apply sites that pass-orchestration-in-technique removes. The supported bind site is the coherent common remedy.\n\n**Witness.** Technique A has an I/O entry \"via [B]\" and B requires project_id. AP-125 offers moving the Apply relationship into A Protocol; AP-141 then directs adding project_id to that Apply line. AP-114 flags exactly that invocation and moves B into steps[]. A separate binding-site solution exists, so this is an inconsistent repair path rather than an unsatisfiable canon.\n\n**Suggested wording.** AP-125 Fix: \"Keep I/O descriptions about meaning and shape. Put producer/consumer sequencing at activity or routine binds; put any technique-owned value assembly in its own Protocol.\" Remove its Protocol/Rules Apply carve-out. AP-140: remove the applied-op exemption and the final Apply-site repair sentence. Retire AP-141 as a Protocol-Apply repair, or replace its scope with: \"For each supported activity or routine technique bind, prove that every required effective input is supplied by an explicit bind, a same-name available value, or its declared default.\" Route Protocol Apply sites directly to pass-orchestration-in-technique.\n\n**Observing check.** Positive: Flag a required project_id missing from an actual technique bind; supply the value at that bind with a reachable producer. Negative: Do not flag an optional/defaulted input or a same-name value proved available at the bind. Do not repair a prohibited Protocol Apply by adding more arguments to it.\n\nEvidence addresses: AP-125 lines 1598–1600; AP-140 lines 1830–1832; AP-141 lines 1840–1844; AP-114 lines 1464–1468.\n\n[Original candidate](reviews/ap_contracts/findings-01.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-03",
+    "metadata": "Narrowed · correction · P1",
+    "entries": [
+      "AP-136",
+      "AP-144"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-03\n\n**Narrowed · correction · P1**\n\nScope: [AP-136 · phase-cited-by-ordinal](sources/anti-patterns.md#ap-136-phase-cited-by-ordinal), [AP-144 · reference-without-provenance](sources/anti-patterns.md#ap-144-reference-without-provenance).\n\n**Assessment.** A source name or heading is not delivered evidence. The witness is restricted to operative references whose required text or value is unavailable; orientation and locally delivered references remain valid.\n\n**Witness.** A leaf Protocol says \"step 3 in resolver guarantees the selected root.\" AP-136 permits replacing this with a link to resolver.md#3-selected-root; AP-144 permits naming resolver as the guarantee. The reference invokes nothing and needs undelivered text, which AP-157 flags.\n\n**Suggested wording.** AP-136 Fix: \"For a reference within the delivered Protocol, identify the outcome by its heading. Put cross-technique sequencing at the bind site. A consumer of an earlier result declares that value or checkable precondition; it does not link to an undelivered phase.\" AP-144 Do not flag: replace the other-technique guarantee with \"A declared precondition whose evidence this reader receives and can check.\" Fix: \"Name a supplied value or local producer, or declare the missing contract and arrange its binding. A supplier name alone does not supply the value.\"\n\n**Observing check.** Positive: Flag an undeclared \"already resolved root\" supported only by a link to another technique; introduce a bound selected_root with its required evidence. Negative: Do not flag a declared selected_root or a local earlier phase that produces it. An orientation README may still link to the resolver phase.\n\nEvidence addresses: AP-136 lines 1780–1784; AP-144 lines 1876–1880; AP-157 lines 2032–2036.\n\n[Original candidate](reviews/ap_contracts/findings-02.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-04",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-127"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-04\n\n**Narrowed · improvement · P2**\n\nScope: [AP-127 · bag-value-as-literal](sources/anti-patterns.md#ap-127-bag-value-as-literal).\n\n**Assessment.** The phrase where the placeholder belongs can already exclude a comparison constant. Make that boundary explicit; this is a false-positive prevention improvement, not proof that all literal predicates violate the rule.\n\n**Witness.** operation_type describes the selected operation and admits review/update. In \"when {operation_type} is review\", review is an operative enum literal and a declared slot carries operation-kind meaning. Replacing review with {operation_type} makes a self-comparison. AP-52 explicitly prescribes relating a literal to its input, and AP-112 requires gates to compare the authoritative variable directly.\n\n**Suggested wording.** Add to Detect: \"The literal substitutes for the current value of that slot; it is not an independently meaningful comparison operand or pattern.\" Add to Do not flag: \"Enum members and fixed constants used to test, classify, or select the declared value, such as when {operation_type} is review.\" Retain the replacement rule only for copied bound values. Where the consumer is a resource, put caller-specific bindings on the technique or activity and keep the resource parameter abstract.\n\n**Observing check.** Positive: Flag \"push to workflows\" when target_branch is the bound destination and may name another branch. Negative: Do not flag \"when {operation_type} is review\" or \"retry when {attempts} is below 3\" when 3 is the authoritative declared policy constant.\n\nEvidence addresses: AP-127 lines 1672–1676; AP-52 lines 704–704; AP-112 lines 1444–1444.\n\n[Original candidate](reviews/ap_contracts/findings-02.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-05",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-128"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-05\n\n**Confirmed · correction · P1**\n\nScope: [AP-128 · unproduced-value-read](sources/anti-patterns.md#ap-128-unproduced-value-read).\n\n**Assessment.** The same expression evaluated before and after a write can have different truth values. The exemption is insufficient to prove a producer dominates a read. A definedness repair must retain the domain predicate.\n\n**Witness.** enabled starts false. Step A produces result only when enabled. Step B sets enabled true. Step C reads result when enabled. A and C have the same expression, so the exemption excuses C even though this execution reaches C without result. Separately, an unseeded intent_detected gating its own sole producer cannot establish the first value.\n\n**Suggested wording.** Replace the same-expression carve-out with: \"Every path reaching the reader includes a producer or a valid seed; equivalent gates establish this only when the values they test cannot change between evaluations.\" Include conditions evaluated before a producer among readers. Fix: \"Add a definedness precondition while retaining any required domain predicate, or provide an exhaustive producer/seed whose meaning the consumer can distinguish.\"\n\n**Observing check.** Positive: Flag the false-to-true enabled path and an unseeded output used in its own producer gate. Negative: Do not flag matching gates with unchanged predicate inputs and a guaranteed producer before every read; a meaningful declared seed can also establish availability.\n\nEvidence addresses: AP-128 lines 1680–1688.\n\n[Original candidate](reviews/ap_contracts/findings-02.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-06",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-131"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-06\n\n**Confirmed · improvement · P3**\n\nScope: [AP-131 · resource-id-names-its-content](sources/anti-patterns.md#ap-131-resource-id-names-its-content).\n\n**Assessment.** A sibling suffix alone does not establish the applicable naming family, and the broad content-name exemption overlaps the detector.\n\n**Witness.** findings.md is a report template beside review-policy.md and decision-guide.md. It names its content, but one sibling carries -guide, so the Detect and the broad exemption support different dispositions.\n\n**Suggested wording.** Replace the suffix clause with: \"Within a documented family of the same resource kind, flag an id that omits that family established kind suffix and is ambiguous without opening the body.\" Do not flag: \"An unambiguous content noun, or a resource of another kind; a sibling suffix alone does not establish a convention.\" Keep verb-headed consult-resource detection.\n\n**Observing check.** Positive: Flag complete-wp for a close-out template, and an ambiguous outlier within a documented family of template names. Negative: Do not flag risk-vocabulary because a neighboring file is a decision-guide, or review-format merely because review can also be a verb.\n\nEvidence addresses: AP-131 lines 1720–1724.\n\n[Original candidate](reviews/ap_contracts/findings-02.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-07",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-133"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-07\n\n**Narrowed · improvement · P3**\n\nScope: [AP-133 · overlapping-rule-scopes](sources/anti-patterns.md#ap-133-overlapping-rule-scopes).\n\n**Assessment.** The existing final Detect test already requires undetermined behavior, so compatible cumulative rules do not reproduce a defect when the full test is applied. The useful change clarifies that grouping alone does not provide precedence.\n\n**Witness.** \"Every finding cites evidence\" and \"High findings name an owner\" both apply to a High finding without conflict or required order. Keys general and high do not, by themselves, settle two different default-owner choices.\n\n**Suggested wording.** Retain the current undetermined-behavior test. Add to Do not flag: Compatible cumulative constraints. Replace the group-key exemption with grouping that makes scopes disjoint or explicitly establishes precedence; a label alone is insufficient.\n\n**Observing check.** Positive: Flag two applicable fallback-selection rules whose chosen output depends on an unspecified precedence. Negative: Do not flag evidence-for-all plus owner-for-High, since both obligations are simultaneously and unambiguously satisfiable.\n\nEvidence addresses: AP-133 lines 1744–1748; AP-20 lines 308–312.\n\n[Original candidate](reviews/ap_contracts/findings-03.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-08",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-134"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-08\n\n**Confirmed · correction · P2**\n\nScope: [AP-134 · whole-resource-for-one-section](sources/anti-patterns.md#ap-134-whole-resource-for-one-section).\n\n**Assessment.** The bare-introduction exception and the whole-plus-section detector admit opposing dispositions for one delivered citation pair.\n\n**Witness.** A Protocol first says \"Consult `[guide](guide.md)`\" as an introduction, then \"Apply `[Rules](guide.md#rules)`\". Detect flags both delivered units; the bare-introduction exemption allows the first. DP-32 states every distinct citation is delivered.\n\n**Suggested wording.** Delete \"A bare citation that introduces the resource\" from Do not flag. Replace with: \"A bare citation is appropriate when this application consumes the whole body; use that single citation and avoid additional delivered section citations. Orientation outside a delivered technique may introduce a resource with a bare link.\"\n\n**Observing check.** Positive: Flag a delivered bare introduction plus an anchored citation when only the section is consumed. Negative: Do not flag a single bare citation for an audit of every entry, or only anchored citations for a narrow section consumer.\n\nEvidence addresses: AP-134 lines 1756–1760; DP-32 lines 145–145.\n\n[Original candidate](reviews/ap_contracts/findings-03.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-09",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-135"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-09\n\n**Narrowed · correction · P2**\n\nScope: [AP-135 · tool-contract-restated-in-protocol](sources/anti-patterns.md#ap-135-tool-contract-restated-in-protocol).\n\n**Assessment.** Keeping every reason is broader than retaining an operative constraint or fact. The fix should preserve necessary meaning and remove explanation that adds no obligation; this is a repair wording conflict, not a ban on useful context.\n\n**Witness.** After deleting a duplicated tool argument shape, AP-135 keeps \"Relay the map verbatim because the server performs the merge.\" The server-mechanism clause adds no constraint and AP-26 deletes it. This is a conflict in the prescribed retained prose, not in the caller obligation.\n\n**Suggested wording.** Replace Fix with: \"Keep the caller obligation and every fact needed to apply it. Drop argument shape the tool schema already declares. Put explanatory rationale in its design record; cite a canonical contract when the caller needs that contract.\"\n\n**Observing check.** Positive: Flag a prose field/type roster already supplied by the tool schema, and remove a rationale-only tail. Negative: Do not flag \"Pass the map verbatim\" or a state-dependent obligation the tool schema cannot express; those constrain the call.\n\nEvidence addresses: AP-135 lines 1768–1772; AP-26 lines 384–388.\n\n[Original candidate](reviews/ap_contracts/findings-03.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-10",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-137",
+      "AP-158"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-10\n\n**Narrowed · correction · P2**\n\nScope: [AP-137 · unowned-harness-capability](sources/anti-patterns.md#ap-137-unowned-harness-capability), [AP-158 · produce-path-without-a-reading](sources/anti-patterns.md#ap-158-produce-path-without-a-reading).\n\n**Assessment.** Repeated use of the same capability alone does not prove a useful shared technique contribution. The conflict occurs when extraction yields only a raw-return alias; different capabilities and a fixed-question wrapper are already exceptions. Do not claim every extraction cycles.\n\n**Witness.** Two substantive techniques call the same generic query tool with caller-supplied arguments and use its raw response locally for different derivations. No technique exposes that raw response as an output. AP-137 creates a generic call-and-return wrapper; AP-158 flags that wrapper because it adds no reading or fixed argument shape. This is a repair cycle unless the criterion first establishes useful shared work.\n\n**Suggested wording.** AP-137 Detect: \"Two or more techniques duplicate the same tool-facing interpretation, recovery policy, or argument selection for one named question, and no technique owns that shared product.\" Do not flag: \"Independent use of a raw primitive exactly as its tool contract defines, with distinct caller-owned interpretation.\" Fix: \"Extract the proven shared contribution; preserve direct primitive use where there is no such contribution.\" Cross-reference produce-path-without-a-reading as a precondition for the extraction.\n\n**Observing check.** Positive: Flag duplicated pagination interpretation and identical absence handling for the same domain query; one shared technique can own those decisions. Negative: Do not flag two domain techniques that use the same raw query primitive but ask different questions and interpret results differently.\n\nEvidence addresses: AP-137 lines 1792–1796; AP-158 lines 2044–2048; DP-26 lines 121–121.\n\n[Original candidate](reviews/ap_contracts/findings-03.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-11",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-138"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-11\n\n**Narrowed · improvement · P2**\n\nScope: [AP-138 · output-without-destination](sources/anti-patterns.md#ap-138-output-without-destination).\n\n**Assessment.** The entry already exempts external library callers and asks for a reader. Strengthen its name-search procedure to prove an actual route; do not treat a lack of visible external callers as unused.\n\n**Witness.** A local output selected_item is remapped to unused_item, while an unrelated unbound technique declares selected_item. A name-only search can count the unrelated input as a destination even though the producing output has no reader.\n\n**Suggested wording.** Add: \"Trace each output through actual reachable binds, remaps, artifact construction, and messages to a consumer in the declared review boundary. A same-name declaration without that route is not a reader. Record unknown external consumption separately from a proved unused local output.\" Align technique-outputs-declared with this distinction: internal locals stay locals; externally consumable products have declared Outputs.\n\n**Observing check.** Positive: Flag a local output whose only remap leads to a never-read variable, despite an unrelated matching input name. Negative: Do not flag an output consumed through a reachable remap or a sibling artifact template, or a public library contract whose external consumers are outside the review boundary.\n\nEvidence addresses: AP-138 lines 1804–1808; AP-109 lines 1404–1406.\n\n[Original candidate](reviews/ap_contracts/findings-04.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-12",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-140"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-12\n\n**Confirmed · correction · P1**\n\nScope: [AP-140 · declared-input-never-read](sources/anti-patterns.md#ap-140-declared-input-never-read).\n\n**Assessment.** The explicit Protocol-and-Rules lexical search misses input consumption in permitted Output recognition and artifact filename templates. Adding a bare mention is not a semantic repair.\n\n**Witness.** package_name is consumed only by artifact template {package_name}-plan.md, and the Protocol persists {plan}. Or confidence_floor is used by a declared Output recognition criterion while Protocol emits that Output by reference. Both inputs affect the result but AP-140 finds no occurrence in Protocol/Rules.\n\n**Suggested wording.** Detect: \"Resolve the effective contract and identify semantic reads in Protocol, Rules, Output recognition or construction, artifact templates, and supported binding/default expressions. Flag an input with no such use. A bare mention without consumption is not evidence of use.\" Fix: \"Delete a proved unused input, or wire it to the actual consumer; do not add prose solely to satisfy a text search.\"\n\n**Observing check.** Positive: Flag an input that appears only in its own description, or is named in a comment without affecting an operation or output. Negative: Do not flag package_name used by a declared filename template or confidence_floor used in Output recognition criteria referenced by the producing phase.\n\nEvidence addresses: AP-140 lines 1828–1832; AP-111 lines 1428–1432; AP-130 lines 1710–1710.\n\n[Original candidate](reviews/ap_contracts/findings-04.json) · [Independent disposition](reconciliation/ap-01.json)."
+  },
+  {
+    "id": "AC-13",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-143"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-13\n\n**Confirmed · improvement · P2**\n\nScope: [AP-143 · inherited-rules-re-enumerated](sources/anti-patterns.md#ap-143-inherited-rules-re-enumerated).\n\n**Assessment.** The exemption should cover a container-owned invariant, not every container entry including redundant rosters. Confirm actual inherited delivery before removing a roster.\n\n**Witness.** A root contract declares alpha and beta, and a nested group Rules entry says \"Honor alpha, beta\". Both root and group rules reach each leaf. The Detect finds a behavior-free repeated roster, but the blanket container exemption can excuse it.\n\n**Suggested wording.** Replace the container exemption with: \"A container entry that owns an invariant the loader delivers to descendants; being a container does not exempt a redundant enumeration of already-delivered rules.\" Require the evidence to name the actual delivery route; an uncertain bundle is not proof that the rule already arrives.\n\n**Observing check.** Positive: Flag the nested honor-alpha-and-beta roster after confirming both original invariants arrive at its readers. Negative: Do not flag the root definitions of alpha and beta, or a group-specific scope qualification that changes what its readers must do.\n\nEvidence addresses: AP-143 lines 1864–1868.\n\n[Original candidate](reviews/ap_contracts/findings-04.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-14",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-146"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-14\n\n**Narrowed · improvement · P3**\n\nScope: [AP-146 · instruction-narrates-an-actor](sources/anti-patterns.md#ap-146-instruction-narrates-an-actor).\n\n**Assessment.** The existing duty and deletion tests limit the detector, but its inclusion of README orientation invites an overly literal imperative rewrite. Clarify the instruction-versus-description boundary; ordinary present-tense orientation is not inherently a violation.\n\n**Witness.** README orientation says \"The worker produces the review report.\" As orientation this describes the system; if the third-person reader-duty test is applied literally after identifying workers among the audience, the suggested rewrite is \"Produce the review report.\" The latter changes the purpose of the passage.\n\n**Suggested wording.** Scope Detect: \"On an instruction surface, flag a required duty attributed to the reader only through third-person narration, or an account of another actor that supplies neither an actionable obligation nor checkable evidence.\" Add to Do not flag: \"Declarative purpose and behavior orientation on descriptions, Capability, and README surfaces, where it is not prescribing an extra duty.\" Keep the actor-reach and observability test for actual instructions.\n\n**Observing check.** Positive: Flag a worker instruction that narrates an orchestrator-only internal step and leaves the worker unable to act or verify a precondition. Negative: Do not flag a present-tense README explanation of who produces a report, or a checkable precondition drawn from the reader own tool response.\n\nEvidence addresses: AP-146 lines 1900–1904; DP-17 lines 85–85.\n\n[Original candidate](reviews/ap_contracts/findings-04.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-15",
+    "metadata": "Narrowed · correction · P1",
+    "entries": [
+      "AP-148"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-15\n\n**Narrowed · correction · P1**\n\nScope: [AP-148 · inherited-input-re-declared](sources/anti-patterns.md#ap-148-inherited-input-re-declared).\n\n**Assessment.** The incompatible case requires the leaf to advertise or be substitutable for the same shared contract. Mere inheritance does not by itself prove that promise. Under that promise an optional-to-required override rejects valid callers.\n\n**Witness.** The shared contract admits an absent filter. A leaf redeclares filter as required, then advertises the same shared contract. AP-148 exempts the change, but a consumer that legally binds the shared contract without filter cannot use that leaf.\n\n**Suggested wording.** Qualify the optionality exemption: When the leaf advertises a shared contract, its effective input preconditions and output guarantees preserve that contract. A leaf-specific stricter contract is explicitly distinct. Delete only redundant declarations; evaluate supported overrides against the effective contract and its callers.\n\n**Observing check.** Positive: Flag an optional-to-required override that breaks an otherwise valid shared-contract call. Negative: Do not flag deletion of duplicated wording, a permitted default within the same semantic contract, or an override that weakens an input precondition while preserving guarantees.\n\nEvidence addresses: AP-148 lines 1924–1928; DP-46 lines 201–201.\n\n[Original candidate](reviews/ap_contracts/findings-05.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-16",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "AP-149"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-16\n\n**Confirmed · improvement · P3**\n\nScope: [AP-149 · schema-semantics-restated](sources/anti-patterns.md#ap-149-schema-semantics-restated).\n\n**Assessment.** The schema-extension branch lies outside this detector and contradicts its exception for schema-inexpressible engine facts. Separately scope schema evolution.\n\n**Witness.** A duplicate operator roster can simply be deleted or linked. An actor-specific permission that the schema cannot state is instead protected by the exception; trying to put it in the schema is not the same repair and AP-02 separately constrains schema changes.\n\n**Suggested wording.** Replace the final schema-extension sentence with: \"A fact the schema does not express is not a restatement under this entry; keep it at its operative contract home. A proposed schema capability change is separately scoped schema work.\" Retain deletion/citation for facts the schema already owns.\n\n**Observing check.** Positive: Flag a copied operator roster whose authoritative field schema contains the same choices. Negative: Do not flag an engine-owned rule about which actor resolves a gate merely because the schema cannot encode that actor duty.\n\nEvidence addresses: AP-149 lines 1936–1940; AP-02 lines 80–84.\n\n[Original candidate](reviews/ap_contracts/findings-05.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-17",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-154",
+      "AP-155"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-17\n\n**Confirmed · improvement · P2**\n\nScope: [AP-154 · call-omits-required-argument](sources/anti-patterns.md#ap-154-call-omits-required-argument), [AP-155 · call-names-an-undeclared-argument](sources/anti-patterns.md#ap-155-call-names-an-undeclared-argument).\n\n**Assessment.** This is a proposed scope improvement, not an internal contradiction. External tools can be explicitly excluded; a correctness claim must then disclose that boundary rather than treating an exclusion as a pass.\n\n**Witness.** A workflow wraps an external harness tool whose visible schema requires repo_id. The signature omits repo_id, but the current nonregistered-tool exemption skips it. If the external schema is unavailable, the same call cannot honestly receive a correctness verdict.\n\n**Suggested wording.** Replace the registration exemption with: \"Apply when the tool authoritative schema is available at the reviewed revision, including an external harness contract. Where it is unavailable, record the call unevaluated with the missing source; do not invent a parameter contract.\" If scope is intentionally only server-registered tools, state that in Detect and report excluded external calls as outside coverage.\n\n**Observing check.** Positive: Check and flag an omitted required argument on an external tool whose schema is supplied in the review context. Negative: Do not assert failure or success for an external tool with no available authoritative contract; record the coverage limit.\n\nEvidence addresses: AP-154 lines 1996–2000; AP-155 lines 2008–2012; DP-21 lines 101–101.\n\n[Original candidate](reviews/ap_contracts/findings-05.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-18",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-155"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-18\n\n**Confirmed · correction · P2**\n\nScope: [AP-155 · call-names-an-undeclared-argument](sources/anti-patterns.md#ap-155-call-names-an-undeclared-argument).\n\n**Assessment.** A declared open map can admit keys without listing each property. Compare against effective schema admissibility before deleting a dynamic key.\n\n**Witness.** A registered tool declares labels as an object map from arbitrary string keys to strings. A signature passes labels: {owner: \"team-a\"}. owner is not an explicitly named property, but it is admitted by that map contract. Deleting it discards valid data.\n\n**Suggested wording.** Detect: \"Flag a supplied argument or nested key only when the effective schema excludes it at that position. Resolve object maps, admitted additional keys, key patterns, and applicable alternatives before comparing explicit property names.\" Do not flag: \"Keys admitted by an open map or pattern contract, provided their values conform.\" Keep renamed or withdrawn closed-object parameters as failures.\n\n**Observing check.** Positive: Flag session_index on a closed start_session argument object that admits no such field, including misspelled nested closed-object keys. Negative: Do not flag owner inside a labels map that explicitly admits arbitrary string keys, or a field admitted by the selected valid argument alternative.\n\nEvidence addresses: AP-155 lines 2008–2012.\n\n[Original candidate](reviews/ap_contracts/findings-05.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-19",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-160"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-19\n\n**Confirmed · correction · P1**\n\nScope: [AP-160 · relocation-without-a-preserved-outcome](sources/anti-patterns.md#ap-160-relocation-without-a-preserved-outcome).\n\n**Assessment.** An identical gate or output at a new site does not prove preserved paths or audience. The exemption needs the outcome comparison and confirming check required by the principle.\n\n**Witness.** An approval gate is relocated beneath a condition that skips it on one path. The receiving gate still names the same variable and options, satisfying the current exemption, but an action can now be reached without approval. A file-name match likewise cannot prove its former audience still receives it.\n\n**Suggested wording.** Detect: \"For a relocation, identify the preserved observable outcome and compare its producer, paths, consumers, options, and audience before and after. Flag a missing preservation claim or a missing check that supports it.\" Do not flag: \"An intentional removal recorded in the change scope, or preservation supported by a path/contract comparison or test; a matching declaration alone is insufficient.\" Fix: \"Record the claim and evidence in the change review or planning record; express the surviving runtime contract at its owner. Record intentional retirement in the change record.\"\n\n**Observing check.** Positive: Flag the relocated approval gate when an action becomes reachable through a path that skips it, even though the new gate text matches. Negative: Do not flag a move whose before/after path check preserves every required option and audience, with the evidence recorded beside the change.\n\nEvidence addresses: AP-160 lines 2068–2072; DP-38 lines 169–169; DP-17 lines 85–85.\n\n[Original candidate](reviews/ap_contracts/findings-06.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-20",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-161"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-20\n\n**Confirmed · correction · P1**\n\nScope: [AP-161 · unproducible-declared-value](sources/anti-patterns.md#ap-161-unproducible-declared-value).\n\n**Assessment.** Removing a promised value can mask an incomplete producer. Preserve required semantic distinctions by repairing the producing path, or explicitly scope a contract change.\n\n**Witness.** An output contract distinguishes cancelled from completed, but no branch records user cancellation. Deleting cancelled and folding it into completed makes the enum producible while falsely reporting work completed. In the provided unanswerable/none shape, the distinction may likewise be a required negative result.\n\n**Suggested wording.** Fix: \"Where the value is required by the intended contract, add or repair a reachable producer and preserve it through later assignments. Where the value is unintended, remove it only with its consumer and semantic changes accounted for. Keep an unexercised but reachable value as unevidenced, not defective.\" Test: \"For each feasible input class, trace assignments to the terminal state; flag a promised value that no feasible path leaves as the final value.\"\n\n**Observing check.** Positive: Flag cancelled if cancellation is an admitted input event but every terminal path records completed; repair the missing branch. Negative: Do not flag a reachable, preserved rare status merely because available fixtures have not exercised it. Removing an accidental unused status is valid when it changes no required distinction.\n\nEvidence addresses: AP-161 lines 2080–2084; DP-38 lines 169–169.\n\n[Original candidate](reviews/ap_contracts/findings-06.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-21",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "MR-01"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-21\n\n**Narrowed · improvement · P3**\n\nScope: [MR-01 · cut-comment-jsdoc-verbosity](sources/anti-patterns.md#mr-1-cut-comment-jsdoc-verbosity).\n\n**Assessment.** The Detect test already targets information redundancy. Remove pressure from the one-line remedy and exception; the constructed necessary multi-line invariant is not inherently redundant.\n\n**Witness.** A surprising invariant has two independent nonlocal conditions and neither is encoded in the type system. A two-line explanation preserves both facts. A rule that requires one why-line creates pressure to omit a condition although the comment is not narration.\n\n**Suggested wording.** Do not flag: \"The shortest clear statement of a non-obvious invariant, rationale, coupling, or public contract the code and types do not express.\" Fix: \"Delete redundant narration. Preserve every operative fact; condense or improve naming/structure when that communicates the same information more clearly.\"\n\n**Observing check.** Positive: Flag \"increments count\" beside count += 1 when it adds no information. Negative: Do not flag a concise multi-line safety invariant whose conditions are absent from the code and types.\n\nEvidence addresses: MR-01 lines 1612–1616.\n\n[Original candidate](reviews/ap_contracts/findings-06.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-22",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-129"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-22\n\n**Confirmed · improvement · P2**\n\nScope: [AP-129 · stale-restatement-after-change](sources/anti-patterns.md#ap-129-stale-restatement-after-change).\n\n**Assessment.** Exact phrase searches are discovery aids. Semantic paraphrases and operative Protocol/Rules statements need coverage in a change-surface review.\n\n**Witness.** A gate changes from unconditional resume to explicit resume intent. README contains the old exact phrase, while a Rule paraphrases it as \"all saved sessions resume automatically\". Searching only the old phrase and listed description surfaces can miss the operative Rule.\n\n**Suggested wording.** Detect: \"Enumerate the surfaces that state or consume the changed contract, including Protocol and Rules. Search old terms and related symbols to locate candidates, then compare each surviving claim with the current behavior. A phrase search alone is not the completeness proof.\" Fix: \"Update or remove each semantically stale claim and record the reviewed surface; retain permitted orientation without duplicating operative ownership.\"\n\n**Observing check.** Positive: Flag an old-behavior paraphrase in Rules even if its words differ from the edited README. Negative: Do not flag a historical planning record clearly describing the before-state, or an unaffected current claim.\n\nEvidence addresses: AP-129 lines 1696–1700.\n\n[Original candidate](reviews/ap_contracts/findings-06.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "AC-23",
+    "metadata": "Confirmed · correction · P1",
+    "entries": [
+      "AP-139"
+    ],
+    "source": "recommendations-contracts.md",
+    "text": "## AC-23\n\n**Confirmed · correction · P1**\n\nScope: [AP-139 · framing-outside-any-section](sources/anti-patterns.md#ap-139-framing-outside-any-section).\n\n**Assessment.** Short operative framing can be missed by the length heuristic, and a new heading alone does not supply existing consumers. The remedy must update and verify prerequisite delivery.\n\n**Witness.** An H1 introduction says only \"Counts include retries.\" before the first H2. A consumer loads an H2 table and computes counts. The missing sentence is operative and short, so the substantial-framing heuristic may miss it. Adding an H2 General Rules without changing the consumer still leaves the same missing rule.\n\n**Suggested wording.** Detect: \"For each section-delivered resource, identify operative facts outside the delivered sections that the consumer needs. Flag any missing fact regardless of length; length may prioritize inspection but cannot decide applicability.\" Fix: \"Move unique operative framing to an addressable section and update every dependent consumer to receive it, or place the fact within the consumed section. Verify the actual section delivery contains the needed obligation.\"\n\n**Observing check.** Positive: Flag the short retries-counting rule when a table consumer does not receive it; adding an unrequested heading alone does not close the finding. Negative: Do not flag a long orientation paragraph no section consumer needs, or a shared obligation explicitly loaded alongside each dependent section.\n\nEvidence addresses: AP-139 lines 1816–1820; DP-44 lines 193–193.\n\n[Original candidate](reviews/ap_contracts/findings-07.json) · [Independent disposition](reconciliation/ap-02.json)."
+  },
+  {
+    "id": "PD-01",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "DP-03"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-01\n\n**Narrowed · improvement · P3**\n\nScope: [DP-03 · Define Complete Scope Before Execution](sources/design-principles.md#3-define-complete-scope-before-execution).\n\n**Assessment.** DP-03 already gives an observable manifest-before-work and reconciliation duty. A newly discovered dependency does not prove that this broad principle is inconsistent or unmeasurable; it identifies a useful missing update instruction. The proposal must not turn discovery into authority to expand the task.\n\n**Retained issue.** Optional clarification of when a changed worklist becomes authoritative.\n\n**Suggested wording.** Use: \"List the intended files and edit root before their dependent edits. Add discovered dependencies to that list before changing them, within the approved scope. Resolve material scope or authority changes before dependent work, and reconcile the list before completion.\" Do not describe the initial manifest requirement itself as defective.\n\n**Observing check.** Positive: A newly identified consumer is listed and its existing scope authority checked before editing; completion reconciles the actual affected files. Negative: Silently editing an unlisted consumer fails. Merely discovering an additional file does not fail the principle or authorize changing it.\n\nEvidence addresses: DP-03 lines 27–30.\n\n[Original candidate](reviews/principles/findings-01.json) · [Independent disposition](reviews/principles/independent-review-01.json)."
+  },
+  {
+    "id": "PD-02",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "DP-04"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-02\n\n**Narrowed · correction · P2**\n\nScope: [DP-04 · Clarify Before Assuming](sources/design-principles.md#4-clarify-before-assuming).\n\n**Assessment.** The ask-then-assume wording is a real clarification opportunity, but the title and ordinary meaning of clarification already oppose acting on an unresolved choice. AP-08 explicitly waits for an answer before the next question, though it does not itself settle dependent work. Treat this as closing an operational omission, not a reproduced P1 runtime enforcement failure.\n\n**Retained issue.** Say that the answer, not the act of asking, resolves the dependent choice.\n\n**Suggested wording.** Use: \"When unresolved interpretations materially change the outcome, scope, authority, or acceptance test, ask one question and wait for its answer before dependent action. Existing explicit instructions resolve covered choices; independent investigation may continue.\" Classify as clarification of the decision boundary, with no claim that every uncertainty requires a new interview.\n\n**Observing check.** Positive: An unanswered choice between destructive and non-destructive behavior prevents the dependent edit. Negative: Read-only investigation independent of that choice, or action covered by an earlier explicit answer, does not require another decision.\n\nEvidence addresses: DP-04 lines 31–34.\n\n[Original candidate](reviews/principles/findings-01.json) · [Independent disposition](reviews/principles/independent-review-01.json)."
+  },
+  {
+    "id": "PD-03",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "DP-06",
+      "DP-29",
+      "DP-36"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-03\n\n**Narrowed · improvement · P2**\n\nScope: [DP-06 · One Authoritative Home](sources/design-principles.md#6-one-authoritative-home), [DP-29 · Cite Resource Policy; Do Not Restate It](sources/design-principles.md#29-cite-resource-policy-do-not-restate-it), [DP-36 · A Technique Names Only What Its Reader Holds](sources/design-principles.md#36-a-technique-names-only-what-its-reader-holds).\n\n**Assessment.** DP-29 expressly makes resource policy citation valid, and AP-157 explains that resource citations travel with the technique. Therefore the cited resource witness does not prove a same-scope contradiction or a need to inline that policy. The useful issue is DP-36 ambiguous description of available context, plus the difference between a qualified address and received instruction bytes. AP-53 spelling exclusions are not global permission to depend on undelivered text.\n\n**Retained issue.** Clarify delivery reach and single-edit ownership without duplicating resource policy or mandating a new projection framework.\n\n**Suggested wording.** Amend DP-36: \"A required fact is in the technique, its delivered contracts, or a resource section delivered or fetched before use. A qualified rule address identifies its owner; the reader must also receive the operative fact.\" DP-06 may add: \"A necessary delivery copy has an identifiable canonical source and is updated from that source.\" Keep DP-29 unchanged. Do not require every temporary copy to introduce a regeneration system.\n\n**Observing check.** Positive: A required policy is absent from every received section and the only supplied text is an external rule address: the dependency is unresolved. Negative: An anchored resource section actually delivered with the technique supplies the policy without an inline duplicate.\n\nEvidence addresses: DP-06 lines 39–42; DP-29 lines 131–134; DP-36 lines 159–162.\n\n[Original candidate](reviews/principles/findings-01.json) · [Independent disposition](reviews/principles/independent-review-01.json)."
+  },
+  {
+    "id": "PD-04",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "DP-08",
+      "DP-10"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-04\n\n**Narrowed · improvement · P2**\n\nScope: [DP-08 · Confirm Before Irreversible Changes](sources/design-principles.md#8-confirm-before-irreversible-changes), [DP-10 · Non-Destructive Updates](sources/design-principles.md#10-non-destructive-updates).\n\n**Assessment.** Neither DP-08 nor DP-10 requires a fresh duplicate confirmation after an existing informed approval; that claimed failure is an interpretation risk, not a literal requirement. Semi-reversible is the stronger target for clarification. Keep the separate removal rule intact rather than silently exempting reversible material deletion.\n\n**Retained issue.** Explain incomplete reversal and acknowledge authority that already covers the effect.\n\n**Suggested wording.** DP-08: \"A change whose reversal cannot restore the prior state, requires another party, or incurs material loss has explicit approval covering its target and impact before execution.\" DP-10: \"Identify removed material and verify that explicit approval covers that removal.\" Add to the shared confirmation convention: \"Approval remains effective for the same target and impact; a material change requires a new decision.\"\n\n**Observing check.** Positive: A new removal or residual external effect falls outside the recorded approval and requires a decision. Negative: An explicit instruction to remove the named obsolete file already supplies approval for that exact removal; no identical second approval is required.\n\nEvidence addresses: DP-08 lines 47–50; DP-10 lines 55–58.\n\n[Original candidate](reviews/principles/findings-01.json) · [Independent disposition](reviews/principles/independent-review-01.json)."
+  },
+  {
+    "id": "PD-05",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "DP-09"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-05\n\n**Narrowed · improvement · P2**\n\nScope: [DP-09 · Encode Constraints as Structure](sources/design-principles.md#9-encode-constraints-as-structure).\n\n**Assessment.** The principle is not unobservable: it names concrete structural mechanisms and a clear enforcement goal. The counterexample usefully distinguishes a field being present from a path actually being prevented. Do not define every critical constraint solely by start/commit/complete labels or mandate duplicate prose for a predicate already fully expressed by structure.\n\n**Retained issue.** Make enforcement evidence a reachable-path property.\n\n**Suggested wording.** Use: \"A constraint designated as a required execution or acceptance boundary is enforced by a checkpoint, condition, or validation result so that rejection or missing required evidence cannot reach the prohibited operation or accepted completion. Identify the predicate and failure route in their owning structure.\" Retain semantic guidance only where structure does not already state it.\n\n**Observing check.** Positive: A validation result is false or a required decision is absent, yet a feasible path reaches the gated effect: the claimed enforcement fails. Negative: The same failures route away from the effect, with a permitted pass route. A guidance-only rule does not need invented blocking machinery.\n\nEvidence addresses: DP-09 lines 51–54.\n\n[Original candidate](reviews/principles/findings-02.json) · [Independent disposition](reviews/principles/independent-review-02.json)."
+  },
+  {
+    "id": "PD-06",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-84",
+      "DP-12"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-06\n\n**Confirmed · correction · P2**\n\nScope: [DP-12 · Output Economy](sources/design-principles.md#12-output-economy), [AP-84 · single-closeout-artifact](sources/anti-patterns.md#ap-84-single-closeout-artifact).\n\n**Assessment.** One fact lacks a stable useful unit when applied to an artifact containing multiple newly produced findings or decisions. AP-84 is supporting evidence of intended document grain, not global authorization overriding DP-12. This is an ambiguity in the principle own unit of ownership, not a formal contradiction between an AP exclusion and a principle.\n\n**Retained issue.** Separate coherent artifact ownership from one checkpoint decision.\n\n**Suggested wording.** The proposed replacement is sound. Prefer: \"Each artifact has one declared audience and one coherent purpose; it owns the facts produced for that purpose and links facts owned elsewhere. A checkpoint presents one decision subject with the context needed to decide it.\" This avoids suggesting that its message must literally be an interrogative, which AP-99 separately addresses.\n\n**Observing check.** Positive: A close-out report repeats a complete validation section owned elsewhere, or a checkpoint combines two independent choices: flag the relevant ownership/decision problem. Negative: One report owns several distinct newly produced findings for its declared purpose; it does not need one file per scalar assertion.\n\nEvidence addresses: DP-12 lines 63–66; AP-84 lines 1090–1101.\n\n[Original candidate](reviews/principles/findings-02.json) · [Independent disposition](reviews/principles/independent-review-02.json)."
+  },
+  {
+    "id": "PD-07",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-114",
+      "AP-51",
+      "DP-16",
+      "DP-25",
+      "DP-42"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-07\n\n**Narrowed · correction · P2**\n\nScope: [DP-16 · Distinguish Designators from Parameters](sources/design-principles.md#16-distinguish-designators-from-parameters), [DP-25 · Bind Sibling Techniques as Steps](sources/design-principles.md#25-bind-sibling-techniques-as-steps), [DP-42 · A Routine Holds the Codified Path](sources/design-principles.md#42-a-routine-holds-the-codified-path), [AP-51 · canonical-technique-reference](sources/anti-patterns.md#ap-51-canonical-technique-reference), [AP-114 · pass-orchestration-in-technique](sources/anti-patterns.md#ap-114-pass-orchestration-in-technique).\n\n**Assessment.** The AP-51-to-AP-114 repair conflict is reproducible. DP-16 typography, however, does not by itself authorize a prohibited invocation, and DP-42 explicitly splices routines into activities, so DP-25 activity wording is compatible with expanded execution. Retain the stale-surface and authoring-ownership clarification without claiming these sentences form a formal contradiction.\n\n**Retained issue.** Unify supported work binding and remove repair advice that creates a prohibited Protocol call.\n\n**Suggested wording.** DP-25: \"Sibling and shared techniques are bound as steps in the activity or routine that owns their sequence.\" DP-16: retain braced value references and remove the Protocol technique-invocation argument rule if no supported Protocol invocation remains. Do not transplant italic/parenthesized Markdown argument syntax into YAML; use the actual binding schema. AP-51/56 and Apply repairs should route work to supported binds.\n\n**Observing check.** Positive: Replacing a raw tool call in a leaf Protocol with Apply another-technique still fails AP-114 and is not a complete repair. Negative: A reusable routine with sibling technique binds is valid composition, as is its expansion into the binding activity.\n\nEvidence addresses: DP-16 lines 79–82; DP-25 lines 115–118; DP-42 lines 183–186; AP-51 lines 682–693; AP-114 lines 1458–1469.\n\n[Original candidate](reviews/principles/findings-02.json) · [Independent disposition](reviews/principles/independent-review-02.json)."
+  },
+  {
+    "id": "PD-08",
+    "metadata": "Confirmed · improvement · P2",
+    "entries": [
+      "AP-110",
+      "DP-18"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-08\n\n**Confirmed · improvement · P2**\n\nScope: [DP-18 · Prefer Shared Capability](sources/design-principles.md#18-prefer-shared-capability), [AP-110 · duplicate-shared-capability](sources/anti-patterns.md#ap-110-duplicate-shared-capability).\n\n**Assessment.** This is a useful optional operationalization of cannot absorb diversity. The principle already has a qualitative contract-fit boundary; the improvement names the evidence for the local-recipe exception and agrees with AP-110 near-fit case.\n\n**Retained issue.** Record the actual unsatisfied semantic requirement before duplicating shared work.\n\n**Suggested wording.** Retain the proposed text, reading \"record\" as identifying the requirement in the existing design evidence, not requiring a new artifact for every choice. The comparison should distinguish a missing configurable value from a genuinely incompatible capability or contract.\n\n**Original wording retained within that adjustment.** Before a local recipe, record the behavior or contract requirement the shared capability cannot provide through its supported parameters, composition or justified shared extension. Reuse the shared owner where those mechanisms satisfy the requirement.\n\n**Observing check.** Positive: A local recipe repeats a shared operation solely to change a parameter the shared owner can support: no demonstrated exception exists. Negative: A documented semantic requirement cannot be supplied by the supported contract, composition, or justified shared extension; the local scope is reviewable.\n\nEvidence addresses: DP-18 lines 87–90; AP-110 lines 1410–1421.\n\n[Original candidate](reviews/principles/findings-02.json) · [Independent disposition](reviews/principles/independent-review-03.json)."
+  },
+  {
+    "id": "PD-09",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "DP-19"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-09\n\n**Narrowed · improvement · P3**\n\nScope: [DP-19 · Name Symbols Affirmatively](sources/design-principles.md#19-name-symbols-affirmatively).\n\n**Assessment.** The individual naming clauses are all observable. Boolean and collection clauses can be read as type-specific cases of meaningful naming, so multiple clauses alone do not prove a defective principle. Case and typography are separable convention details, making single ownership a worthwhile optional cleanup. DP-45 directly governs Rules entries, not every multi-clause principle.\n\n**Retained issue.** Keep the semantic stance concise and locate exact naming conventions once.\n\n**Suggested wording.** Use a principle such as: \"Symbol names identify their values affirmatively; type-specific forms make that meaning explicit.\" Cite the existing convention/AP homes for exact case, plurality, and spelling. Avoid introducing a second parallel list of stable sub-identifiers unless independent citation is actually needed.\n\n**Observing check.** Positive: A change to the spelling convention forces the same normative text to be edited in multiple homes: reduce that duplication. Negative: Several type-specific examples under one semantic naming principle are not unmeasurable merely because their predicates differ.\n\nEvidence addresses: DP-19 lines 91–94.\n\n[Original candidate](reviews/principles/findings-03.json) · [Independent disposition](reviews/principles/independent-review-03.json)."
+  },
+  {
+    "id": "PD-10",
+    "metadata": "Confirmed · correction · P2",
+    "entries": [
+      "AP-01",
+      "DP-22"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-10\n\n**Confirmed · correction · P2**\n\nScope: [DP-22 · Modular Over Inline](sources/design-principles.md#22-modular-over-inline), [AP-01 · no-inline-content](sources/anti-patterns.md#ap-01-no-inline-content).\n\n**Assessment.** Construct is unqualified in DP-22 while the catalog and schema-first principle distinguish separately authored definitions from inline schema structures. The proposal improves scope; it should not be described as an AP exemption granting universal permission.\n\n**Retained issue.** Restrict own-file guidance to constructs the schema supports as separately referenced definitions.\n\n**Suggested wording.** Use: \"A separately referenceable definition lives in its own file and its parent references it. Fields and steps that the schema owns inline remain on that parent.\" This avoids implying that any future or unsupported construct gains a file-reference form by analogy.\n\n**Observing check.** Positive: Embedding a separately referenceable activity body inside a parent is the modularity defect. Negative: An inline checkpoint or action required by the schema stays inline; extracting it to an unsupported referenced file is not a valid repair.\n\nEvidence addresses: DP-22 lines 103–106; AP-01 lines 62–73.\n\n[Original candidate](reviews/principles/findings-03.json) · [Independent disposition](reviews/principles/independent-review-03.json)."
+  },
+  {
+    "id": "PD-11",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-113",
+      "DP-24"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-11\n\n**Narrowed · improvement · P3**\n\nScope: [DP-24 · Keep Session Interaction in Activities](sources/design-principles.md#24-keep-session-interaction-in-activities), [AP-113 · session-interaction-in-technique](sources/anti-patterns.md#ap-113-session-interaction-in-technique).\n\n**Assessment.** The title already bounds DP-24 to session interaction, and activity ownership of when/how can include binding a domain delivery operation. AP-113 clarifies that boundary rather than contradicting the principle. The body word person is broader than necessary, so a concise wording improvement remains useful.\n\n**Retained issue.** Use operator/session presentation language and distinguish domain effects.\n\n**Suggested wording.** Use: \"Activities own in-session presentation and operator decisions. A bound technique may perform a domain delivery operation through its owning tool; the activity owns when that operation runs.\" Retain any declared delivery evidence without requiring every pure side effect to acquire a new Output.\n\n**Observing check.** Positive: A domain-analysis technique directly narrates its findings into operator chat: move that presentation to the activity. Negative: A bound notification or publication operation performs its domain effect. Its existence does not violate the session-presentation boundary or automatically authorize sending anything.\n\nEvidence addresses: DP-24 lines 111–114; AP-113 lines 1446–1457.\n\n[Original candidate](reviews/principles/findings-03.json) · [Independent disposition](reviews/principles/independent-review-03.json)."
+  },
+  {
+    "id": "PD-12",
+    "metadata": "Rejected · no change",
+    "entries": [
+      "AP-158",
+      "DP-26",
+      "DP-42"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-12\n\n**Rejected · no change**\n\nScope: [DP-26 · A Technique Is a Reading](sources/design-principles.md#26-a-technique-is-a-reading), [DP-42 · A Routine Holds the Codified Path](sources/design-principles.md#42-a-routine-holds-the-codified-path), [AP-158 · produce-path-without-a-reading](sources/anti-patterns.md#ap-158-produce-path-without-a-reading).\n\n**Assessment.** The broad metaphor complaint does not reproduce a criterion defect. DP-26 immediately explains reading as tool orientation for a situation, response interpretation, and recovery; these are concrete qualitative contributions. A wrapper fixing arguments for a named question performs the stated orientation, so the witness does not establish a conflict. DP-42 names routine sequence/iteration/branch/gate ownership and explicitly retains residual technique reading. AP-158 local exceptions are not global permission, but its fixed-question example also fits DP-26 itself.\n\n**Recommendation.** Retain DP-26 and DP-42. An optional example may illustrate fixed-question argument selection versus a raw alias, but do not replace the criterion or classify a deterministic reading as a routine merely because its own Protocol is stable.\n\n**Observing check.** Positive: A technique merely forwards arbitrary arguments and renames the raw response; no domain question, interpretation, qualification, derivation, or recovery is contributed. Negative: A technique fixes a meaningful domain question or interprets a response and remains a technique even when that judgment is consistent and repeatable. A reusable structural run has a routine owner.\n\nEvidence addresses: DP-26 lines 119–122; DP-42 lines 183–186; AP-158 lines 2038–2049.\n\n[Original candidate](reviews/principles/findings-03.json) · [Independent disposition](reviews/principles/independent-review-04.json)."
+  },
+  {
+    "id": "PD-13",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "AP-116",
+      "DP-28"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-13\n\n**Narrowed · improvement · P3**\n\nScope: [DP-28 · Creation Guide for Generated Documents](sources/design-principles.md#28-creation-guide-for-generated-documents), [AP-116 · no-template-creation-guide](sources/anti-patterns.md#ap-116-no-template-creation-guide).\n\n**Assessment.** A raw evidence capture is a useful omitted category, but machine-generated or schema-validated alone is not a sound exemption: an agent-authored planning ledger can be JSON and still need filling criteria. A creation guide can also instruct byte preservation, so the current rule does not inherently require altering a capture.\n\n**Retained issue.** Distinguish an authored planning artifact from a preserved external/tool-produced evidence format.\n\n**Suggested wording.** Use: \"Planning documents whose content a technique authors or fills have a creation guide. A byte-exact capture or producer-defined evidence format cites its producer/format contract and preserves its bytes; it needs no competing layout template. Structured authored planning data still has operative filling criteria, even when a schema validates its shape.\"\n\n**Observing check.** Positive: An authored decision report or JSON findings ledger lacks the criteria needed to fill its substantive fields: retain the creation-guide requirement. Negative: A byte-exact tool transcript with source identity and hash preserves its authoritative format without a second prose template.\n\nEvidence addresses: DP-28 lines 127–130; AP-116 lines 1482–1493.\n\n[Original candidate](reviews/principles/findings-04.json) · [Independent disposition](reviews/principles/independent-review-04.json)."
+  },
+  {
+    "id": "PD-14",
+    "metadata": "Narrowed · correction · P2",
+    "entries": [
+      "AP-134",
+      "DP-32",
+      "DP-44"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-14\n\n**Narrowed · correction · P2**\n\nScope: [DP-32 · Cite Resources at Section Grain](sources/design-principles.md#32-cite-resources-at-section-grain), [DP-44 · A Resource Splits for Section Delivery](sources/design-principles.md#44-a-resource-splits-for-section-delivery), [AP-134 · whole-resource-for-one-section](sources/anti-patterns.md#ap-134-whole-resource-for-one-section).\n\n**Assessment.** The missing shared-context delivery witness is sound: addressability does not prove receipt. The most-of-body phrase is a broad delivery-economy heuristic, however, and does not need a numeric threshold to be meaningful. The required rule is complete operative context, not a new size-ratio policy or a universal requirement that whole-body loads consume every byte.\n\n**Retained issue.** Ensure that every section consumer receives its required framing and shared constraints.\n\n**Suggested wording.** Amend DP-44: \"Before applying a section, the consumer receives that section and every shared definition, rule, or template fragment it requires; the required sections are named at the consumption site or as fetched prerequisites.\" Keep DP-32 minimal-sufficient citation guidance. State that loading a broader body is an optimization choice that may not omit required context; byte measurement is useful evidence when making a cost claim, not a prerequisite for the principle.\n\n**Observing check.** Positive: A fresh reader receives Template without its required shared Rules, even though Rules has a valid heading: the delivery dependency is incomplete. Negative: The required shared section is actually delivered or fetched before application. A whole-resource read for most needed content is not defective solely because a small unrelated section also arrives.\n\nEvidence addresses: DP-32 lines 143–146; DP-44 lines 191–194; AP-134 lines 1750–1761.\n\n[Original candidate](reviews/principles/findings-04.json) · [Independent disposition](reviews/principles/independent-review-04.json)."
+  },
+  {
+    "id": "PD-15",
+    "metadata": "Confirmed · improvement · P3",
+    "entries": [
+      "DP-35"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-15\n\n**Confirmed · improvement · P3**\n\nScope: [DP-35 · Prefer Removing the Thing That Needs a Prohibition](sources/design-principles.md#35-prefer-removing-the-thing-that-needs-a-prohibition).\n\n**Assessment.** The opening inference is overbroad: a warning can distinguish intentional capabilities or authorities rather than identify duplicate implementations. The final both-paths clause reduces the risk but does not repair the word means. The proposal supplies a useful semantic-equivalence check without numeric machinery.\n\n**Retained issue.** Treat a warning as a prompt to compare paths, not proof that one path is redundant.\n\n**Suggested wording.** Use: \"When a prohibition distinguishes paths that serve the same required capability under the same preconditions, authority, and lifecycle, choose one owner and retire the duplicate. Preserve intentional differences and cite the owner of each behavior.\" Preserve the existing preference rather than turning it into an absolute ban on alternatives.\n\n**Observing check.** Positive: Two implementations have the same required behavior and differ only in which one an instruction forbids: one authoritative implementation is preferable. Negative: Preview and effectful execution have distinct authority and side effects; a warning distinguishing them does not by itself justify deleting either capability.\n\nEvidence addresses: DP-35 lines 155–158.\n\n[Original candidate](reviews/principles/findings-04.json) · [Independent disposition](reviews/principles/independent-review-05.json)."
+  },
+  {
+    "id": "PD-16",
+    "metadata": "Confirmed · correction · P3",
+    "entries": [
+      "DP-39"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-16\n\n**Confirmed · correction · P3**\n\nScope: [DP-39 · A Phase Heading Names the Outcome](sources/design-principles.md#39-a-phase-heading-names-the-outcome).\n\n**Assessment.** The two-or-three requirement and past-four heuristic provide inconsistent audit cues at four words. They are not formally contradictory: the second sentence does not positively permit four words, and the first already excludes them. Treat this as a low-priority expression/boundary correction, not a logical impossibility.\n\n**Retained issue.** Use one word-count boundary if this exact count remains an intended convention.\n\n**Suggested wording.** The smallest repair preserving the stated policy is \"More than three words carries detail that belongs in the bullet\" in place of \"Past four words\". Do not silently invent a four-word allowance or proper-name exception; add an exception only if the convention owner intends it. Outcome clarity remains the design purpose.\n\n**Observing check.** Positive: Under the existing strict count policy, four- and five-word headings both require revision; the prose should communicate that same boundary. Negative: A two- or three-word heading that clearly names the outcome satisfies the count convention, though duplicating its bullet may still fail the independent outcome test.\n\nEvidence addresses: DP-39 lines 171–174.\n\n[Original candidate](reviews/principles/findings-04.json) · [Independent disposition](reviews/principles/independent-review-05.json)."
+  },
+  {
+    "id": "PD-17",
+    "metadata": "Narrowed · improvement · P2",
+    "entries": [
+      "AP-161",
+      "DP-41"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-17\n\n**Narrowed · improvement · P2**\n\nScope: [DP-41 · A Phase States Answers the Tool Has Returned](sources/design-principles.md#41-a-phase-states-answers-the-tool-has-returned), [AP-161 · unproducible-declared-value](sources/anti-patterns.md#ap-161-unproducible-declared-value).\n\n**Assessment.** An explicit evidence policy for rare or unsafe-to-trigger responses is a useful addition. AP-161 concerns output-value reachability, not every tool response interpretation, so its exception cannot override DP-41 or prove a contradiction. A contract-backed fixture demonstrates the intended branch handling but does not establish live harness behavior.\n\n**Retained issue.** Separate observed behavior from contract-backed but live-unobserved recovery logic.\n\n**Suggested wording.** Use: \"Response interpretations identify their evidence: a captured live response, or an authoritative response contract with a representative fixture. Claims that the tool has returned a response require observation; contract-backed but unobserved recovery remains labeled as such.\" Preserve deployment verification limits and avoid implying that absence of a sample proves impossibility.\n\n**Observing check.** Positive: The Protocol invents an empty-result meaning with neither actual observations nor an authoritative semantic contract: the interpretation is unsupported. Negative: A documented rare error has a tested recovery fixture and is explicitly marked live-unobserved; fixture success is not reported as an observed real-subject return.\n\nEvidence addresses: DP-41 lines 179–182; AP-161 lines 2074–2084.\n\n[Original candidate](reviews/principles/findings-05.json) · [Independent disposition](reviews/principles/independent-review-05.json)."
+  },
+  {
+    "id": "PD-18",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "DP-18",
+      "DP-43"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-18\n\n**Narrowed · improvement · P3**\n\nScope: [DP-43 · An Activity Reuses Activities](sources/design-principles.md#43-an-activity-reuses-activities), [DP-18 · Prefer Shared Capability](sources/design-principles.md#18-prefer-shared-capability).\n\n**Assessment.** May borrow/bind/include is a clear capability statement, not vague or impossible to apply. It lacks a prefer/before stance of the kind the principles overview promises, which supports a catalog-placement improvement rather than a missing enforcement rule. Adding another reuse obligation would duplicate DP-18.\n\n**Retained issue.** Place composition capability descriptions at the construct home and retain one reuse preference.\n\n**Suggested wording.** Prefer the first proposed branch: move the supported borrow/bind/include forms and library examples to the construct reference, and let DP-18 own the reuse preference. If a principle entry remains, make it a concise citation to that existing preference rather than a new independently maintained local-activity exception rule.\n\n**Observing check.** Positive: A catalog claiming one prefer/before invariant per heading contains only a permitted-feature inventory at this heading: reorganize the material for that declared purpose. Negative: The same feature statement is useful and clear in a construct reference. Failure to borrow is not itself a violation of the permissive sentence.\n\nEvidence addresses: DP-43 lines 187–190; DP-18 lines 87–90.\n\n[Original candidate](reviews/principles/findings-05.json) · [Independent disposition](reviews/principles/independent-review-05.json)."
+  },
+  {
+    "id": "PD-19",
+    "metadata": "Narrowed · improvement · P3",
+    "entries": [
+      "DP-46"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-19\n\n**Narrowed · improvement · P3**\n\nScope: [DP-46 · A Consumer Binds the Contract](sources/design-principles.md#46-a-consumer-binds-the-contract).\n\n**Assessment.** DP-46 is already a normative substitutability requirement: a definition advertising the contract must be usable in its place. It does not state that a declaration empirically proves compliance. Making preconditions and guarantees explicit is useful teaching/check guidance, but the allegation of nominal identity being sufficient is not supported. Invalid-input behavior is only a guarantee where the shared contract specifies it.\n\n**Retained issue.** Optional explanation of how to assess the existing substitutability obligation.\n\n**Suggested wording.** Use: \"A definition advertising a shared contract accepts every input admitted by that contract without stronger preconditions and preserves its promised outputs, failure behavior, and relevant effects. Consumers bind against those promises.\" Keep the observing check scoped to defined contract behavior; do not demand arbitrary invalid-input semantics or imply finite tests prove every possible substitution.\n\n**Observing check.** Positive: An implementation makes an inherited optional input required or omits a promised failure result: it violates the existing substitution obligation. Negative: Two implementations accept the same admitted inputs and meet the promised behavior. Unspecified behavior outside the contract preconditions is not an invented conformance obligation.\n\nEvidence addresses: DP-46 lines 199–202.\n\n[Original candidate](reviews/principles/findings-05.json) · [Independent disposition](reviews/principles/independent-review-05.json)."
+  },
+  {
+    "id": "PD-20",
+    "metadata": "Rejected · no change",
+    "entries": [
+      "DP-34",
+      "DP-47"
+    ],
+    "source": "recommendations-principles.md",
+    "text": "## PD-20\n\n**Rejected · no change**\n\nScope: [DP-47 · A Calibrated Surface Extends by Wrapping](sources/design-principles.md#47-a-calibrated-surface-extends-by-wrapping), [DP-34 · Edit the Owner](sources/design-principles.md#34-edit-the-owner).\n\n**Assessment.** The proposed witness changes a defective shared requirement, whereas DP-47 scopes itself to gaining a consumer need through a wrapper. It does not prohibit repairing the owner or intentionally changing the shared contract. DP-34 concerns synchronization caused by restated facts, not an assertion that every owner defect must be solved by wrapping. No same-scope conflict or missing boundary is demonstrated.\n\n**Recommendation.** Retain DP-47. If a separate change-validation principle is desired, propose it explicitly as an addition about invalidating dependent calibration after owner changes, rather than as a repair required by this witness.\n\n**Observing check.** Positive: A consumer-only adaptation changes a calibrated shared surface despite an adequate wrapper: this is the actual wrapping-preference case. Negative: An authorized correction to a defective shared contract is outside the consumer-only extension case. It still needs its own scoped validation, but DP-47 does not forbid the correction.\n\nEvidence addresses: DP-47 lines 203–205; DP-34 lines 151–154.\n\n[Original candidate](reviews/principles/findings-05.json) · [Independent disposition](reviews/principles/independent-review-06.json)."
+  }
+]
