@@ -1,0 +1,64 @@
+name: Full coverage walk
+
+# When the full coverage walk runs. The walk itself is `coverage.yml` on the corpus branch, whose
+# subject is that tree; this file only starts it, and changes nothing about what it measures.
+#
+# Why the trigger lives here rather than there. GitHub reads a push's workflows from the branch
+# pushed to. `coverage.yml` is a file of the corpus branch, so a `push:` written into it would never
+# see a merge here.
+#
+# And this is a branch worth walking from. The walker, the policies and the coverage helpers are
+# files of this tree, which is why the corpus job already treats a change to any of them as cause to
+# walk the whole roster: a merge here can move what every walk reaches while no definition moved.
+
+on:
+  push:
+    branches: [main, 'i[0-9][0-9]/main']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  dispatch:
+    name: Start the full walk on the corpus this tree serves
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # The corpus the walk measures is the one this engine serves, the same pairing `verify.yml`
+      # resolves: an initiative's code and definitions land on `iNN/main` and `iNN/workflows`, so a
+      # push to one walks the initiative's other half where that branch exists, and `workflows`
+      # otherwise. Dispatching a fixed ref would walk one half of an initiative against the other
+      # half's counterpart.
+      - name: Resolve the corpus branch to walk
+        id: pair
+        env:
+          BRANCH: ${{ github.ref_name }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          ref=workflows
+          case "$BRANCH" in
+            i[0-9][0-9]/main)
+              candidate="${BRANCH%/main}/workflows"
+              if git ls-remote --exit-code --heads "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" "$candidate" > /dev/null; then ref="$candidate"; fi
+              ;;
+          esac
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "Corpus branch: $ref"
+
+      # `coverage.yml` already accepts a dispatch, and its walk step already runs for every event
+      # that is not a pull request, with no scope set — which is the full roster. So the walk needs
+      # nothing added to it; it needs an event, and this is the event.
+      #
+      # `workflow_dispatch` is one of the two events a job's own token may raise that still start a
+      # run, so `actions: write` above is the whole of what this needs. No action is used here, so
+      # there is no `uses:` to pin; one added later takes a full-length commit SHA with its tag as a
+      # trailing comment, the form `docker-publish.yml` already writes.
+      - name: Dispatch the coverage walk
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          CORPUS_REF: ${{ steps.pair.outputs.ref }}
+        run: gh workflow run coverage.yml --ref "$CORPUS_REF"
