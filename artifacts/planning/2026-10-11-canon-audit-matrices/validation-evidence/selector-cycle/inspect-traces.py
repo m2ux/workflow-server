@@ -9,18 +9,22 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 
+def trace_paths(walk):
+    return sorted(set((ROOT / walk).glob('trace-*.json')) | set((ROOT / walk).glob('read-trace*.json')))
+
+
 def records(walk):
-    for path in sorted((ROOT / walk).glob('trace-*.json')):
+    for path in trace_paths(walk):
         data = json.loads(path.read_text())
-        rows = data.get('records', []) if isinstance(data, dict) else data
-        for row in rows:
+        rows = data.get('records', data.get('entries', [])) if isinstance(data, dict) else data
+        for index, row in enumerate(rows, 1):
             args = row.get('arguments', row.get('args', row.get('call', {}).get('args', {})))
             raw = row.get('raw_return', row.get('result', {}))
             if isinstance(raw, dict) and raw.get('status') == 'fulfilled':
                 raw = raw['value']
             command = args.get('cmd') if isinstance(args, dict) else None
             command = command or row.get('cmd') or row.get('command')
-            yield path.name, row.get('sequence', row.get('id')), command, raw
+            yield path.name, row.get('sequence', row.get('id', index)), command, raw
 
 
 def main():
@@ -41,7 +45,7 @@ def main():
             'nonzero': [[r[1], r[3].get('exit_code')] for r in commands if r[3].get('exit_code') not in (0, None)],
             'truncation_markers': [r[1] for r in commands if re.search(r'Warning: truncated|\d+ tokens truncated|output truncated', r[3].get('output', ''), re.IGNORECASE)],
             'raw_characters': sum(len(r[3].get('output', '')) for r in commands),
-            'trace_files': [{'path': p.name, 'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in sorted((ROOT / args.walk).glob('trace-*.json'))]
+            'trace_files': [{'path': p.name, 'bytes': p.stat().st_size, 'sha256': hashlib.sha256(p.read_bytes()).hexdigest()} for p in trace_paths(args.walk)]
         }, indent=2))
     elif args.mode == 'record':
         found = [r for r in rr if str(r[1]) == args.sequence]

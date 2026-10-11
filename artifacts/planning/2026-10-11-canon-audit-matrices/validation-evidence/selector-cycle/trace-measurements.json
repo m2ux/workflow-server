@@ -1,0 +1,247 @@
+{
+  "measurements": [
+    {
+      "walk": "author-one",
+      "records": 44,
+      "commands": 41,
+      "nonzero": [
+        [
+          12,
+          1
+        ]
+      ],
+      "truncation_markers": [],
+      "raw_characters": 98551,
+      "trace_files": [
+        {
+          "path": "trace-001.json",
+          "bytes": 19166,
+          "sha256": "c95634b50261c58d4c98ebecd65fe1f0e7972985e85631f6e0ae589ad26fa262"
+        },
+        {
+          "path": "trace-002.json",
+          "bytes": 18471,
+          "sha256": "b5133d171040d0d8e675a059fe31fef127d753a2b557c9ba5bd6f898663666f1"
+        },
+        {
+          "path": "trace-003.json",
+          "bytes": 16021,
+          "sha256": "30d2b37105f3c5672c8261876a494f6d2546854cf67da4b3e2399fad1b794b4b"
+        },
+        {
+          "path": "trace-004.json",
+          "bytes": 22218,
+          "sha256": "6f737d90aa4ad73249d3f82bb6f4da406c8a10dd2729bf7956e6684b14086eb9"
+        },
+        {
+          "path": "trace-005.json",
+          "bytes": 20233,
+          "sha256": "d727584e98bc812563fc47b60b75089f233ca364dd35f5016eb4114fc3da4170"
+        },
+        {
+          "path": "trace-006.json",
+          "bytes": 18469,
+          "sha256": "e1dcf0e15ba2bbc1f3b3fb783dc7ed00159a743002ec2c1a5cff539539f860e6"
+        },
+        {
+          "path": "trace-007.json",
+          "bytes": 19704,
+          "sha256": "f4e49c327e97b28f8329be959d8f93c14cc4d10b88e4a620ed6d724dc6d8b13b"
+        },
+        {
+          "path": "trace-index.json",
+          "bytes": 13539,
+          "sha256": "0760c2ec66d2ae7c8af2036caa35c0e3e68a5b4a5c43041aa3df7271d8ab809a"
+        }
+      ]
+    },
+    {
+      "walk": "author-two",
+      "records": 30,
+      "commands": 28,
+      "nonzero": [
+        [
+          28,
+          2
+        ]
+      ],
+      "truncation_markers": [],
+      "raw_characters": 81984,
+      "trace_files": [
+        {
+          "path": "trace-001.json",
+          "bytes": 21911,
+          "sha256": "fe61df0ab99a34262963ab7b02827a14a08eb2b2a85d3bf1bd5de6b87c2d1804"
+        },
+        {
+          "path": "trace-002.json",
+          "bytes": 8790,
+          "sha256": "fc68f7d277a6571bcd742ccb3fe7186d56118b08a67a2ff6a68475855faed843"
+        },
+        {
+          "path": "trace-003.json",
+          "bytes": 21939,
+          "sha256": "0be9316aa70bfa2a92a2effb58ad244af026afa6d54041398819fe976984b63d"
+        },
+        {
+          "path": "trace-004.json",
+          "bytes": 26729,
+          "sha256": "fb39bb31d620bb67df258be06b2ab7ff99c059f53f27d56c2abf92f1dcafde0d"
+        },
+        {
+          "path": "trace-005.json",
+          "bytes": 15008,
+          "sha256": "4547abf0529f86d7dcc703f7b63252829084e54f91b231bafcb0e258c6045221"
+        },
+        {
+          "path": "trace-006.json",
+          "bytes": 21111,
+          "sha256": "b727ab71859f1a3de8de5c659d1c2576f2965af2cdf6e3723e8ffe3fac8e1642"
+        },
+        {
+          "path": "trace-close.json",
+          "bytes": 122838,
+          "sha256": "9f0ca3048735d24429f9966fe71f98001ee8d5d335930918769d692694232ff7"
+        }
+      ]
+    },
+    {
+      "walk": "audit-one",
+      "records": 61,
+      "commands": 54,
+      "nonzero": [],
+      "truncation_markers": [
+        "planning-record-artifact-context"
+      ],
+      "raw_characters": 154980,
+      "trace_files": [
+        {
+          "path": "trace-001.json",
+          "bytes": 29126,
+          "sha256": "183207f395206dac2fddc9435346e698b3be3392fee99aea163e49d9609e3f91"
+        },
+        {
+          "path": "trace-002.json",
+          "bytes": 28553,
+          "sha256": "420490e1f1e1b1d65b1e7b69be9cd9ed8201f44df8e15518bbd740b256ca8ce4"
+        },
+        {
+          "path": "trace-003.json",
+          "bytes": 28364,
+          "sha256": "2522374eb647e40930206ec9987cbf890427c30a66fe8d4e434701a86e22c026"
+        },
+        {
+          "path": "trace-004.json",
+          "bytes": 30037,
+          "sha256": "c2f151b777c79e5c6e5ebc8ae4fb807196b2845a0527a1acd12040dd3bbcf2ed"
+        },
+        {
+          "path": "trace-005.json",
+          "bytes": 28561,
+          "sha256": "f8c8f4ab2cbcbd5db2014cb9e0177fb3e9482181e3b3f7eed81bbb42eabd0d95"
+        },
+        {
+          "path": "trace-006.json",
+          "bytes": 9306,
+          "sha256": "f9dfb9d64e812e4c851557f2a7b1b1d3e63da5b3ce341d82db6b56ab9f1ebd68"
+        },
+        {
+          "path": "trace-007.json",
+          "bytes": 21645,
+          "sha256": "27455e4ca004169fb69a18bfb28c39b3bfd9794290dedceca9968b9393ed4a9c"
+        },
+        {
+          "path": "trace-008.json",
+          "bytes": 28426,
+          "sha256": "922880681bbf162a38ff4371cb99c4a3c3ee54e914919821954e790e3aba71fd"
+        },
+        {
+          "path": "trace-009.json",
+          "bytes": 2011,
+          "sha256": "e9df88da0ab9644984c6ea2127a3eb304c57dbe6cbf350762648aaa50217cb7e"
+        },
+        {
+          "path": "trace-export-001.json",
+          "bytes": 14850,
+          "sha256": "43cffdb82c12208d454d036033b9192caff1bb9b713293ed6b99fc9919a67bc1"
+        },
+        {
+          "path": "trace-export-002.json",
+          "bytes": 30697,
+          "sha256": "e5b8fe6873ca6098293ba45abc9ceb0d184d9933704d80f1b3604cc1f8e399e0"
+        },
+        {
+          "path": "trace-export-003.json",
+          "bytes": 29977,
+          "sha256": "e505b8485482925e2ea11d11d72f75cea4a0494ca135713c28ae2bef4d10d0fa"
+        },
+        {
+          "path": "trace-export-004.json",
+          "bytes": 30010,
+          "sha256": "ef5f908df27575c64011aee5280f426936409fb0730d3b0d244ff28f5a7a0e10"
+        },
+        {
+          "path": "trace-export-005.json",
+          "bytes": 32282,
+          "sha256": "a7cad470f2c0072a4eec965045684a961dc531f71eb5e696d7fb2a233c0076ad"
+        },
+        {
+          "path": "trace-export-006.json",
+          "bytes": 29918,
+          "sha256": "8dfea6f55a0e5fcfd427e1ab946c7b0ef3bf3b06dced0c26cfb0b49de677ca2f"
+        },
+        {
+          "path": "trace-export-007.json",
+          "bytes": 10027,
+          "sha256": "43c385cdd840ab126d45e10455895a120653bc16743cc416d0f4342a377c497b"
+        },
+        {
+          "path": "trace-export-008.json",
+          "bytes": 22499,
+          "sha256": "c91271946a6d3a52f42efa23c7e9ad1b514a70021733913f2cb258fb6c2f7912"
+        },
+        {
+          "path": "trace-export-009.json",
+          "bytes": 29769,
+          "sha256": "4f620a341005e439d70738c820dc96f33ce1bc4156cafe4a3f08350af8a8bfda"
+        },
+        {
+          "path": "trace-export-010.json",
+          "bytes": 2645,
+          "sha256": "92a7e3598e42c0a8a3c195323c9f37a7ee979d2678343eb8107bc7f981b2d292"
+        },
+        {
+          "path": "trace-export-011.json",
+          "bytes": 4975,
+          "sha256": "665660f09382ccb35bd8e304201be3606acbfa6718a66ea4263b8e05d631e027"
+        },
+        {
+          "path": "trace-index.json",
+          "bytes": 3931,
+          "sha256": "433fd1ade034e087ed590f93f50d369ff48da434cb135136052eef659f6bb3d3"
+        }
+      ]
+    },
+    {
+      "walk": "audit-two",
+      "records": 35,
+      "commands": 34,
+      "nonzero": [],
+      "truncation_markers": [],
+      "raw_characters": 103728,
+      "trace_files": [
+        {
+          "path": "read-trace-closing.json",
+          "bytes": 140649,
+          "sha256": "19272ec48919ea74c2a64baebb504dd32b0b9046d5906f554d5a6123fa3a415c"
+        },
+        {
+          "path": "read-trace.json",
+          "bytes": 121905,
+          "sha256": "2f005a6975a7bcd2fafd5086d2d8f699951fe381faccfce42fbbbc46c3fda99b"
+        }
+      ]
+    }
+  ],
+  "limits": "Counts include retained closing command receipts where present. Raw-character and file-byte counts are not model tokens; a truncated combined presentation is separately described in the review."
+}

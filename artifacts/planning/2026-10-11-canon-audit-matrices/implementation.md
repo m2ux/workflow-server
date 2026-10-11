@@ -11,7 +11,8 @@
 - [x] Independent skill walks, with failed disclosure behavior retained as an acceptance limitation.
 - [x] Commit and push implementation and incremental evidence.
 - [x] Publish final qualification evidence and hand off the requested [AP/DP quality review](../2026-10-11-canon-quality-review/README.md).
-- [ ] Strict skill disclosure acceptance: observed unrelated reads fail T12; no unqualified Revise-mode completion claim.
+- [x] Finish the declared four-walk check-selector cycle and preserve its result without further retries.
+- [ ] Strict skill disclosure acceptance: three final walks fail T12 through prerequisite ordering or unrelated reads; no unqualified Revise-mode completion claim. The bounded work is stopped with this acceptance gap recorded.
 
 ## Scope
 
@@ -25,7 +26,7 @@ The coordinator owns durable state and immutable worker returns. Assignment plan
 
 ## Delivery
 
-The skill implementation is published on [skill/canon-audit-matrices](https://github.com/m2ux/workflow-server/tree/skill/canon-audit-matrices), at commit `ac53785df35d5d1cbf8cac3af2f1ab16609f9f65`. Plain pushes and remote ref reads establish that publication. Its latest commit makes qualification scoring accept a principle's exact captured name with or without the numeric heading prefix. It preserves the fixed reference, source-location match and one-to-one result reconciliation; ordinal-only and unrelated names remain rejected. [Before](validation-evidence/qualification-names-before.json) and [after](validation-evidence/qualification-names-after.json) observations retain the two-round reproduction.
+The skill implementation is published on [skill/canon-audit-matrices](https://github.com/m2ux/workflow-server/tree/skill/canon-audit-matrices), at commit `e8be42ce97eeb427e337214890da52ce3c1e8906`. Plain pushes and remote ref reads establish that publication. The latest documentation change selects checks from the declared task/project contract and requires an identified comparison base for a delta. Core audit tools remain at their qualified bytes. The preceding `ac53785d` makes qualification scoring accept a principle's exact captured name with or without the numeric heading prefix. It preserves the fixed reference, source-location match and one-to-one result reconciliation; ordinal-only and unrelated names remain rejected. [Before](validation-evidence/qualification-names-before.json) and [after](validation-evidence/qualification-names-after.json) observations retain the two-round reproduction.
 
 Engineering checkpoints `803c3408189df763568c1e4e10c6a42f460e16b4`, `51e45d0a` and `8453ecf6` are committed and pushed. They preserve implementation tests, corpus captures, original live runs, completed current applicability verification and exact reading traces. Final current qualification passes; its evidence is linked below. Raw evidence retains captured source/tool bytes, including their original whitespace; a clean prose/source diff does not imply whitespace-normalized raw evidence.
 
@@ -38,7 +39,7 @@ The paired engine composes borrowed technique contracts from the namespace where
 | Audit inventory, lifecycle and adversarial regressions | 35 passing tests | [Output](validation-evidence/canon-audit-unit-final.txt) |
 | Existing definition edit guard | 36 passing tests | [Output](validation-evidence/canon-edit-guard-final.txt) |
 | Shared skill mode summaries | 3 passing tests | [Output](validation-evidence/canon-summaries-final.txt) |
-| Local Markdown references and metadata | 210 links resolve; repository fields validate | [Output](validation-evidence/canon-links-final.json) |
+| Local Markdown references and metadata | 211 links resolve at the final selector revision; repository fields validate | [Output](validation-evidence/selector-cycle/static-checks.json) |
 | Generic skill validator | Rejects the pre-existing hooks field; repository guidelines explicitly allow it | Compatibility limitation; not a new skill metadata defect |
 
 The independent gate review exposed stale confirmations, incomplete packet costing, absent proposed inventories, replay/overwrite seams and insufficient source-span evidence. Regressions cover each correction. Findings can contain several distinct violations per cell; duplicate reports cannot silently lower severity or band. A live inventory pilot subsequently disputed missing supplemental/check projections, and the packet contract now exposes them.
@@ -92,6 +93,8 @@ The isolated negative test supplies a missing DP, missing second clause, omitted
 Fresh live qualification traces repeat the affected worker paths. Their observed reads and outcomes are evaluated separately from structural tests. No context-token savings or guaranteed detection of unknown defects is inferred from file sizes or successful controlled fixtures.
 
 The [final independent disclosure review](validation-evidence/final-disclosure-review.md) inspects three further fresh instruction walks. All reach the required procedure, but all fail the strict disclosure rule through unnecessary conditional reads. It records five confirmed extra section bodies, three schema body lines, four unsupported production-check recipe selections, nonzero discovery commands and incomplete bootstrap provenance. These walks are procedural explanations, not semantic audits. T12 and the Revise-mode disclosure acceptance condition remain partial/failed despite successful implementation checks and complete controlled semantic coverage; the skill revision is not reported as an unqualified guideline pass.
+
+The subsequent [bounded selector cycle](validation-evidence/selector-cycle/review.md) tests the one supported routing correction at `e8be42ce` with two fresh Author and two fresh Audit contexts. All four reach the supplied checker and generic operation without loading unsupported production-check or report branches. One passes the bounded procedural retrieval check; three load the check specification before its prerequisite section, two also read unrelated historical material, and one lacks the planning-owner instruction receipt. Correct final explanations do not erase those retrieval failures. The four-walk cycle is finished and stopped; no additional repair, rerun or canon implementation is started. The [complete canon-quality review](../2026-10-11-canon-quality-review/review-report.md) remains a separate delivered review with proposed fixes and additions.
 
 The final [documentation review](documentation-review.md) found and verified corrections for worker finding prerequisites, confirmation-rule ownership and one template heading. Its scoped structural checks pass. Live disclosure behavior and fresh-context repeat limitations remain separate evidence gaps.
 

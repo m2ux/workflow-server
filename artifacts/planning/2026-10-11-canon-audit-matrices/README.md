@@ -19,6 +19,8 @@ The intended outcome is a reviewable coverage map that is checked for accuracy b
 | [Documentation Review](documentation-review.md) | Independent rule ownership, routing and template checks |
 | [Dispatch Budget Review](dispatch-budget-review.md) | Reproduced evidence-context defect and measured correction |
 | [Coordinator Observations](root-validation-notes.md) | Independent confirmations, interpretation limits and recovery |
+| [Bounded Selector Review](validation-evidence/selector-cycle/review.md) | Final four instruction walks, strict acceptance failure and stopping boundary |
+| [Canon Quality Review](../2026-10-11-canon-quality-review/review-report.md) | Complete principle/anti-pattern review, proposed corrections and additions |
 | [W01: Inventories](w01.md) | Source and criterion inventory work |
 | [W02: Matrices](w02.md) | Section tables and mapping evidence work |
 | [W03: Verification](w03.md) | Independent mapping verification and completion gates |
