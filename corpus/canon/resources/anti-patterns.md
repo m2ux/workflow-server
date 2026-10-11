@@ -604,7 +604,7 @@ A rule sits in the wrong rules.* audience bucket.
 
 **Fires on:** `workflow.rules.workflow`, `workflow.rules.activity`, `workflow.rules.universal`
 
-**Detect:** Classify each rule by who must act: orchestrator (`get_workflow` only), worker (`get_activity` inject), or both identically. Flag worker directives (write-immediately, no-permission-questions, blocker-surfacing, artifact-verification, lens-loading-by-worker) under `rules.workflow`. Flag orchestration directives (dispatch isolation, output forwarding, checkpoint cadence, orchestrator handoff) under `rules.activity`.
+**Detect:** Classify each rule by who must act: orchestrator (`get_workflow` only), worker (`get_activity` inject), or both identically. Flag worker directives (write-immediately, no-permission-questions, blocker-surfacing, artifact-verification, lens-loading-by-worker) under `rules.workflow`. Flag orchestration directives (dispatch isolation, output forwarding, checkpoint cadence, orchestrator handoff) under `rules.activity`. These buckets are workflow audience lists; an activity definition file carries no `rules` entry at all (`no-activity-prose-rules`).
 
 **Do not flag:** Orchestrator directives in `rules.workflow`, worker directives in `rules.activity`, and the same directive for both in `rules.universal`. A rule that describes the other actor's mechanics (`instruction-narrates-an-actor`). Moving a mis-filed rule does not strike a narrating clause.
 
@@ -1074,7 +1074,7 @@ Technique folder/name disagrees with shape-origin (reuse boundary, activity seam
 
 **Do not flag:** Activity-named group used only to organize seam-driven ops (protocols inside stay stage-agnostic — `technique-stage-agnostic`); multiple distinct capability groups composed by one activity; inventing a group for a hypothetical second cluster (YAGNI).
 
-**Fix:** Place the group at its reuse boundary: an activity-seam 1:1 set → activity-named group; a set one workflow's activities share → that workflow's root, capability-named; a set many workflows share → a namespace of its own, capability-named. A shared namespace driving a system outside the server is a library; one describing how a run itself proceeds belongs to the workflow whose subject that is. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in the namespace-root `TECHNIQUE.md`.
+**Fix:** Classify by what determines the contract: external tool or harness semantics belong to that capability's namespace; workflow-domain vocabulary its activities share belongs at the workflow root, capability-named; a contract defined by one activity's input/output seam belongs to an activity-named group. Record the contract dependency establishing that class; consumer count alone does not change it. A shared namespace driving a system outside the server is a library; one describing how a run itself proceeds belongs to the workflow whose subject that is. Use a group folder only to bound a subset against other top-level techniques; otherwise standalone `techniques/<op>.md` with shared contract in the namespace-root `TECHNIQUE.md`.
 
 ## Tool-Technique-Doc Consistency
 
@@ -1102,11 +1102,11 @@ The bootstrap path has a discoverability gap between hops.
 
 **Fires on:** `technique`, `resource`
 
-**Detect:** An authoritative bootstrap sequence (meta bootstrap / engine technique / orchestrator prompt) omits a tool or step required to reach the first meaningful action, given what the prior tools actually return (e.g. no `initialActivity` and no `get_workflow`).
+**Detect:** An authoritative bootstrap sequence (meta bootstrap / engine technique / orchestrator prompt) omits a tool or step required to resolve and load the declared initial activity with the identifiers, authorization and inputs its first step requires, given what the prior tools actually return (e.g. no `initialActivity` and no `get_workflow`).
 
 **Do not flag:** Non-engine techniques that correctly omit tool recipes (`no-tool-usage-prescription`).
 
-**Fix:** Complete the path on the authoritative bootstrap surface so every hop is discoverable from the prior tool's real return.
+**Fix:** Complete the path on the authoritative bootstrap surface, recording the selected start state and the returned field that supplies each subsequent call argument.
 
 ### AP-73. consistent-tool-names
 
@@ -1134,7 +1134,7 @@ The same behavioural guidance is multi-homed across techniques and tool docs.
 
 **Do not flag:** One home with pointers elsewhere. A meta surface whose domain is tool usage. A mechanically derived copy needed for a reader that cannot receive the authoritative home; a plain reference alone does not establish that reach (`worker-rule-reach`).
 
-**Fix:** Keep one editable home and replace each duplicate a reader can reach with a reference to it. Where a reader cannot receive that home, derive its copy from there and record the source. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Deliver the authoritative statement to every affected reader, then remove the independently maintained duplicates. A pointer replaces text only where its reader can resolve it before acting; otherwise derive that reader's copy from the one home and record the source. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-75. describe-tool-value
 
@@ -1144,9 +1144,9 @@ A tool description undersells the value of the real return.
 
 **Fires on:** `technique`, `resource`
 
-**Detect:** On surfaces that legitimately describe tools (meta engine/bootstrap/tool docs), a description states mechanics or a partial return and omits the value the agent actually receives (e.g. "moves to the next activity" without the full activity definition payload).
+**Detect:** On surfaces that legitimately describe tools (meta engine/bootstrap/tool docs), a description omits a returned capability or field needed to choose the call, bind its result, or perform the next declared action (e.g. "moves to the next activity" without the full activity definition payload). Name the omitted value and the decision or binding it enables.
 
-**Do not flag:** Non-engine techniques that do not describe tools at all (`no-tool-usage-prescription`).
+**Do not flag:** Non-engine techniques that do not describe tools at all (`no-tool-usage-prescription`). Incidental response metadata with no role in that usage contract.
 
 **Fix:** Describe the value of the real return.
 
@@ -1154,15 +1154,15 @@ A tool description undersells the value of the real return.
 
 "Also call get_activities for the routing"
 
-A tool is redundant because its output is a strict subset of another tool's return.
+A tool call contributes nothing another required call has already supplied.
 
 **Fires on:** `technique`, `resource`
 
-**Detect:** Authored guidance or the harness surface exposes/recommends a tool whose output is a strict subset of another tool already required (e.g. a routing-only helper after `next_activity`).
+**Detect:** At the point of the extra call, another required call has already supplied the needed values for the same subject and state, with sufficient freshness, and the extra call contributes no required effect, failure check or permitted observation (e.g. a routing-only helper after `next_activity`).
 
-**Do not flag:** Tools that return non-subset value; distinct audiences/permissions.
+**Do not flag:** A distinct transition, precondition, freshness or failure semantic; distinct audiences or permissions.
 
-**Fix:** Remove or stop recommending the redundant tool; document the surviving tool's return fully (`describe-tool-value`).
+**Fix:** Stop recommending the call whose whole supported contract and consumers are covered elsewhere; document the surviving tool's return fully (`describe-tool-value`).
 
 ## Execution
 
@@ -1176,11 +1176,11 @@ Implementation starts before the approach is confirmed.
 
 **Fires on:** `*`
 
-**Detect:** File/workflow modifications begin before the user has confirmed the proposed approach for the change.
+**Detect:** A modification begins without authorization covering its scope and its material approach choices.
 
-**Do not flag:** Trivial typos/formatting the user already authorized; continuing an explicitly approved plan.
+**Do not flag:** A request that specifies the concrete change, which is itself that authorization; trivial typos or formatting the user already authorized; continuing an explicitly approved plan.
 
-**Fix:** Present the approach; wait for confirmation; then modify. See [Confirm Before Irreversible Changes](./design-principles.md#8-confirm-before-irreversible-changes).
+**Fix:** Present the approach and wait for confirmation where a material ambiguity or an unapproved impact remains, then modify. See [Confirm Before Irreversible Changes](./design-principles.md#8-confirm-before-irreversible-changes).
 
 ### AP-78. follow-through-on-recommend
 
@@ -1204,11 +1204,11 @@ A critical constraint is text-only with no structural enforcement.
 
 **Fires on:** `workflow.rules`, `activity.rules`, `technique.rules`, `activity.steps`, `activity.exits`
 
-**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or exit `when`).
+**Detect:** A critical rule in `rules[]` (workflow / activity) or technique `## Rules` can be violated by ignoring the text and has no structural backing (checkpoint, condition, validate action, or exit `when`). A constraint is critical when a named requirement or an accepted risk decision makes its breach invalidate the result or the permission to proceed; name that owner and the bypass the enforcement prevents.
 
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
 
-**Fix:** Add structural enforcement (checkpoint, condition, validate, exit `when`), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+**Fix:** Bind a verifier that checks the invariant against named evidence — a mechanical check for a structural property, an explicit qualitative predicate for a semantic one — and make an unresolved violation block completion. Where the guarantee cannot be enforced, report the blocking gap; it is downgraded only when the requirement owner explicitly changes the guarantee. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
 
@@ -1278,11 +1278,11 @@ Multiple close-out documents re-narrate the same session.
 
 **Fires on:** `resource`, `readme`
 
-**Detect:** More than one terminal artifact (or README footer) re-states delivered items, decisions, validation, follow-ups, or lessons.
+**Detect:** More than one terminal artifact (or README footer) re-states the same close-out facts — delivered items, decisions, validation, follow-ups, or lessons — for the same audience and purpose.
 
-**Do not flag:** A single close-out artifact with retrospective as a section; engine session summary presented but not persisted as a second artifact.
+**Do not flag:** A single close-out artifact with retrospective as a section; engine session summary presented but not persisted as a second artifact; distinct mandated products with their own audience.
 
-**Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only.
+**Fix:** Collapse to one close-out document; retarget retrospective writes to it; keep README as an index line only. Where a separate product is mandated, link the common facts to their owner rather than restating them.
 
 ### AP-85. link-dont-copy-sections
 
@@ -1306,11 +1306,11 @@ A verdict table lists all-green rows instead of exceptions only.
 
 **Fires on:** `resource`
 
-**Detect:** A template requires a verdict or status table whose expected steady state is all-pass (every row "✅ Met", "✅ Done", or "✓").
+**Detect:** A verdict table repeats a common status without recording distinct scope, observation, evidence or required traceability (every row "✅ Met", "✅ Done", or "✓" and nothing else).
 
-**Do not flag:** Vocabularies downstream steps parse (severity counts, README progress-tracker statuses) — data, not ceremony.
+**Do not flag:** Vocabularies downstream steps parse (severity counts, README progress-tracker statuses) — data, not ceremony. Per-item evidence or coverage needed to establish the verdict, even where every result passes.
 
-**Fix:** Replace with a one-line all-pass form plus a divergences-only table.
+**Fix:** State the all-pass verdict in one line, linking the complete retained evidence ledger, and table the divergences.
 
 ### AP-87. omit-null-sections
 
@@ -1322,9 +1322,9 @@ Null/empty results get headed sections or confirmation ceremony.
 
 **Detect:** Artifacts include "None"/"N/A" headed sections or empty tables, or checkpoints ask the user to confirm a null result.
 
-**Do not flag:** Sections with real content; a one-line logged null without a headed empty section.
+**Do not flag:** Sections with real content; a one-line logged null without a headed empty section; an explicit empty value or heading the artifact's consumer contract requires, or a zero-result observation carrying its scope and evidence.
 
-**Fix:** Omit empty sections (mark templates `[Omit if none]`); log nulls in one line and proceed — no null-confirmation checkpoint.
+**Fix:** Omit the optional decorative section (mark templates `[Omit if none]`); log nulls in one line and proceed — no null-confirmation checkpoint. Preserve a required null representation and its evidence at their canonical home.
 
 ### AP-88. one-decision-one-checkpoint
 
@@ -1334,9 +1334,9 @@ One decision is split across multiple checkpoints.
 
 **Fires on:** `activity.steps`
 
-**Detect:** Two declared checkpoints share one decision: the second's answer space is subsumed by the first's options. An agent combining checkpoints the definition already separated is `atomic-checkpoints`.
+**Detect:** Two declared checkpoints share one decision: on every reachable path the first checkpoint's recorded decision and unchanged evidence determine the second's answer and effects, and the second adds no distinct subject, authority, timing or information. An agent combining checkpoints the definition already separated is `atomic-checkpoints`.
 
-**Do not flag:** Distinct decisions with non-overlapping answer spaces.
+**Do not flag:** Distinct decisions with non-overlapping answer spaces; a second approval carrying its own subject, authority or timing, whatever its option labels.
 
 **Fix:** Merge into one checkpoint whose options cover the full decision space plus an escape hatch for the subsumed judgement; move recording side-effects to the survivor; delete variables whose only consumer was the removed checkpoint's condition.
 
@@ -1352,7 +1352,7 @@ A checkpoint has no real decision in its options.
 
 **Do not flag:** Attestation gates (DCO sign-off) that record a certification with identity/timestamp — genuine decisions.
 
-**Fix:** Convert it to an `action: message` step. A checkpoint always answered with its default is `one-decision-one-checkpoint`.
+**Fix:** Convert it to an `action: message` step. Where a second checkpoint is shown to be semantically redundant, that is `one-decision-one-checkpoint`.
 
 ### AP-90. no-guide-wrapper-ceremony
 
@@ -1362,11 +1362,11 @@ A guide is wrapper ceremony around a template.
 
 **Fires on:** `resource`
 
-**Detect:** An agent-facing resource pads a template with ceremony — a Purpose or Overview that restates the title, a Good/Bad pair, a Quality Checklist that restates the body, or a relationship table. What stays is the template plus the operative rules: decision criteria, thresholds, format rules, classification vocabularies.
+**Detect:** An agent-facing resource pads a template with ceremony — a Purpose or Overview that restates the title, a Good/Bad pair that adds no operative distinction beyond the stated rule, a Quality Checklist that restates the body, or a relationship table. What stays is the template plus the operative rules: decision criteria, thresholds, format rules, classification vocabularies.
 
-**Do not flag:** Behavioral reference documents (mode mappings, review criteria) that are mostly operative — cut ceremony, keep every mapping.
+**Do not flag:** Behavioral reference documents (mode mappings, review criteria) that are mostly operative — cut ceremony, keep every mapping. A minimal worked contrast demonstrating a necessary boundary.
 
-**Fix:** Rewrite as template + rules; fold each Good/Bad lesson into one rule bullet; drop wrapper sections; verify referenced heading anchors survive.
+**Fix:** Rewrite as template + rules; give the rule one authoritative statement and fold each redundant Good/Bad lesson into it; drop wrapper sections; verify referenced heading anchors survive.
 
 ### AP-91. lifecycle-row-update
 
@@ -1376,11 +1376,11 @@ Lifecycle rows are append-only instead of updated in place.
 
 **Fires on:** `resource`
 
-**Detect:** A tracked item gets a new section (or appended block) at each lifecycle stage instead of one row updated in place. Aggregate scorecards are persisted in the log rather than presented in-session.
+**Detect:** A tracked item's current state is held as independently maintained copies — a new section or appended block at each lifecycle stage — instead of one row updated in place. Aggregate scorecards are persisted in the log rather than presented in-session.
 
-**Do not flag:** A full per-item block while the item is still OPEN (deleted on resolution; outcome lives in the row).
+**Do not flag:** A full per-item block while the item is still OPEN (deleted on resolution; outcome lives in the row). An append-only event history whose consumer requires sequence, actor or prior evidence; a derived snapshot carrying explicit provenance.
 
-**Fix:** One row per item, updated in place across stages; present aggregate scorecards in-session, not persisted. Rewrite stage techniques as row updates, not appends.
+**Fix:** One row per item, updated in place across stages; present aggregate scorecards in-session, not persisted. Rewrite stage techniques as row updates, retaining required events and durable aggregate evidence at their declared home.
 
 ### AP-92. resource-fills-not-does
 
@@ -1394,7 +1394,7 @@ A resource owns DOES procedure (session cadence or operational HOW) instead of f
 
 **Do not flag:** Artifact templates/anchors, format skeletons, category/risk/status **labels**, probe lists framed as fill vocabulary (not "Ask after each…"), reference lexicons, calibration benchmarks, and fill Rules that constrain row/section **shape** (null-row format, one-row-per-item) without prescribing when to interview or which activity runs next.
 
-**Fix:** Move does-sections to the owning technique as protocol phases or named rules; leave templates + consult vocabulary; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Move domain work to technique Protocol; move checkpoints, session cadence and routing to activity structure; keep fill criteria and vocabularies in the resource, and dissolve it when nothing template-shaped remains. Reconnect moved values and anchors: retarget stranded heading anchors, and ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-93. canonical-fact-home
 
@@ -1404,11 +1404,11 @@ A fact is multi-homed across templates.
 
 **Fires on:** `resource`
 
-**Detect:** Several templates in one workflow each mandate a full section for the same fact category (problem statement, success criteria, assumptions, decisions, risks).
+**Detect:** Several templates require independently maintained statements of the same operative fact about the same subject and revision (problem statement, success criteria, assumptions, decisions, risks).
 
-**Do not flag:** Distinct fact categories with genuinely different homes.
+**Do not flag:** Distinct fact categories with genuinely different homes; the same category scoped to a different subject or revision.
 
-**Fix:** Declare a canonical-home map (fact category → exactly ONE home template); other templates use a one-line link slot to the home; back with a conformance gate (`enforce-output-discipline`).
+**Fix:** Declare a canonical-home map keyed by that scoped fact (fact category, subject and revision → exactly ONE home template); other templates use a one-line link slot to the home; back with a conformance gate (`enforce-output-discipline`).
 
 ### AP-94. link-only-input-slots
 
@@ -1436,7 +1436,7 @@ Output-discipline rules exist without a verify gate.
 
 **Do not flag:** Rules already paired with a bound verify/fix-in-place gate (verify-readme-conforms pattern).
 
-**Fix:** Pair every output-discipline ruleset with a verify technique at a workflow boundary — mechanical checks for structural rules, declared line budgets otherwise; gate verifies and fixes in place with no checkpoint, loop, or routing variable.
+**Fix:** Bind a verifier at a workflow boundary that checks each invariant against named evidence — a mechanical check for a structural property, an explicit qualitative predicate for a semantic one, a line budget only where length itself is the invariant. It repairs within authorized scope, rechecks, and leaves an unresolved violation blocking completion, with no checkpoint, loop, or routing variable; a checkpoint stays for an actual decision.
 
 ### AP-96. artifact-audience-declared
 
@@ -1450,7 +1450,7 @@ An artifact's primary audience is undeclared.
 
 **Do not flag:** An output with no `#### artifact`. Audience is a property of a file on disk.
 
-**Fix:** Declare the audience. `human` is prose. `agent` is structured one-entry-per-item data, serialized as JSON (`check-audience` enforces the format; `audience-declared` enforces the presence). Where a person is pointed at the artifact — a progress-inventory row, a gate message linking it — that reader is the one the format serves.
+**Fix:** Declare the primary audience and honour the artifact's required consumer format. `human` is prose. Agent lifecycle state defaults to structured one-entry-per-item JSON where no stronger format contract applies (`check-audience` enforces the format; `audience-declared` enforces the presence). A human review link does not change the serialization; a human report may present prose and tables over the retained machine evidence.
 
 ### AP-97. link-named-artifacts
 
@@ -1464,7 +1464,7 @@ A durable artifact is named in a message but not linked.
 
 **Do not flag:** Pure in-chat subjects (no durable file); internal `set`/`log` diagnostics that are not user-presented artifact references.
 
-**Fix:** Declare a path output on the producing technique. Persist before the message when the file does not exist yet. Interpolate `[label]({path_variable})`. The write technique assigns a numeric prefix. On a checkpoint the message stays a statement (`checkpoint-requires-decision`).
+**Fix:** Declare a path output on the producing technique, which resolves the path under the artifact's naming contract. Persist before the message when the file does not exist yet. Interpolate `[label]({path_variable})`. On a checkpoint the message stays a statement (`checkpoint-requires-decision`).
 
 ### AP-98. no-next-step-narration
 
@@ -1478,7 +1478,7 @@ A message narrates the next step or auto-advance.
 
 **Do not flag:** Pure factual status clauses with no routing/timing narration.
 
-**Fix:** Delete the narration; keep timing in `autoAdvanceMs` and `defaultOption`, routing in `exits` and the workflow `graph`, and the rest in option labels only.
+**Fix:** Keep one structural source for timing, defaults and routing — `autoAdvanceMs` and `defaultOption` for timing, `exits` and the workflow `graph` for routing, option labels for the rest. Delete the manually maintained narration where the delivered checkpoint already renders the decision-relevant timing and consequences; otherwise render that notice from those same fields.
 
 ### AP-99. statement-not-question
 
