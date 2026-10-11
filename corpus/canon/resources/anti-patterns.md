@@ -1566,7 +1566,7 @@ Reusable criteria live only in a technique with no catalog/resource home.
 
 **Do not flag:** One-off orchestration (step order, which files to open, how to present findings). A thin walker that names a home and applies it (`no-technique-resource-dual-home`). Criteria already homed in a resource or the catalogue while the technique is still fat.
 
-**Fix:** Migrate the criteria into a resource or this catalogue. Leave the technique as a walker: load the home, apply it, present. A prohibited pattern belongs in the catalogue. A positive checklist belongs in a resource. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Migrate the criteria into a resource or this catalogue. The technique then loads the criteria, applies them and emits its declared findings; the activity owns their presentation. A prohibited pattern belongs in the catalogue. A positive checklist belongs in a resource. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-105. no-shadow-audit-pass
 
@@ -1606,7 +1606,7 @@ A pass inventory disagrees with authoritative YAML bind sites.
 
 **Detect:** Prose outside activity YAML enumerates an ordered or complete list of activities, steps, or technique passes, and that list is not generated from the authoritative bind sites (`steps[]` / loop bodies / `technique:`, plus `initialActivity` / the workflow `graph`). Test: the prose must change when a bind changes, but the YAML was not the source of the list.
 
-**Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
+**Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`).
 
 **Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
@@ -1622,9 +1622,9 @@ Discrete sequential protocol phases are collapsed into one numbered step.
 
 **Fires on:** `technique.protocol`
 
-**Detect:** A technique `## Protocol` has a numbered `### N. Title` whose body holds two or more bullets, or imperative sentences, that are distinct sequential phases. Each produces a different outcome, or must complete before the next. Test: reordering or dropping a bullet changes the phase sequence.
+**Detect:** A technique `## Protocol` has a numbered `### N. Title` whose body holds two or more bullets, or imperative sentences, that are distinct sequential phases. Test: name the outcome established at each proposed boundary and consumed by later work; the heading splits where the next bullet begins a different outcome, such as creating the directory and then writing into it. Reordering sensitivity supports that reading without settling it.
 
-**Do not flag:** Bullets that elaborate one phase — how-to for one write, constraints on one apply, a loop body over one entry, mode branches of one action. A `>` caveat under a primary instruction. A single-bullet step.
+**Do not flag:** Ordered sub-actions jointly producing one outcome — how-to for one write, constraints on one apply, a loop body over one entry, mode branches of one action. A `>` caveat under a primary instruction. A single-bullet step.
 
 **Fix:** Split into consecutive `### N. Title` steps, one phase per heading. Keep an elaborating bullet under the phase it refines. See [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
 
@@ -1636,9 +1636,9 @@ Capability or Protocol produces a value that is not declared on Outputs.
 
 **Fires on:** `technique.capability`, `technique.protocol`, `technique.outputs`
 
-**Detect:** Technique Capability or Protocol assembles, derives, or returns a durable or gateable value — a plan, findings, a summary, a classification, a path, a count, a structured assessment — with no matching `### <id>` under `## Outputs`. Test: a later step, checkpoint, or consumer could bind or cite the value. A file also needs `#### artifact` (`artifact-not-buried`).
+**Detect:** Technique Capability or Protocol assembles, derives, or returns a durable or gateable value — a plan, findings, a summary, a classification, a path, a count, a structured assessment — with no matching `### <id>` under `## Outputs`. Test: the technique promises the value to a caller, persists it as an artifact, or has a named external consumer that needs to bind it. A file also needs `#### artifact` (`artifact-not-buried`).
 
-**Do not flag:** A pure side-effect with no bindable product (push, open a PR, mark ready) when no path or number is captured. A value already declared on Outputs. An input-only gap (`technique-inputs-declared`). Protocol that only presents a value to a user (`session-interaction-in-technique`); still declare the output when it is gateable.
+**Do not flag:** A pure side-effect with no bindable product (push, open a PR, mark ready) when no path or number is captured. An intermediate value consumed entirely within one application, which uses a protocol local where it needs a name. A value already declared on Outputs. An input-only gap (`technique-inputs-declared`). Protocol that only presents a value to a user (`session-interaction-in-technique`); still declare the output when it is gateable.
 
 **Fix:** Declare `### <id>` under `## Outputs` naming what the value is, and reference `{id}` where Protocol assembles it. Add `#### artifact` when the value is a file. The activity surfaces `{id}` (`session-interaction-in-technique`).
 
@@ -1654,7 +1654,7 @@ A workflow-local technique re-implements a capability a shared namespace already
 
 **Do not flag:** A change to the shared op itself that keeps existing callers working — a new optional input, default, output, or small protocol branch. A new shared op when no shared capability exists yet. A local technique that only assembles caller-specific values while the activity binds the shared op. Session-level `dispatch-activity`.
 
-**Fix:** Delete the local harness recipe. Bind the shared op from the activity, or borrow an activity that already binds it. Keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps).
+**Fix:** Compare the caller's required inputs, outputs and guarantees with the shared contract. Close a supported gap at the shared owner and verify existing callers before rebinding and deleting the local recipe; where that surface cannot absorb the semantics, record the concrete incompatibility and keep a distinct capability with a truthful boundary. Bind the shared op from the activity, or borrow an activity that already binds it, and keep caller-specific value assembly in a local technique when the activity needs it (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). See [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Bind Sibling Techniques as Steps](./design-principles.md#25-bind-sibling-techniques-as-steps).
 
 ### AP-111. contract-not-procedure
 
@@ -1734,7 +1734,7 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 
 **Fires on:** `technique.protocol`, `resource`
 
-**Detect:** A technique persists a session planning artifact by bare filename and either no workflow resource owns that filename with a `## Template` (or named template anchor), or Protocol embeds a competing section or table recipe rather than citing the guide. Shared satellites may share one guide.
+**Detect:** For each persisted planning artifact — its filename literal, token-templated, or resolved from a declared value — resolve the guide its producer cites. Flag a missing `## Template` (or named template anchor), missing operative fill Rules, or a competing section or table recipe embedded in Protocol. Where one shape serves several names, the map keys on the artifact kind or filename pattern, and shared satellites may share one guide.
 
 **Do not flag:** A non-planning output (a variable, a PR, a commit). A cite of an existing Template with short when/which bullets. Wrapper ceremony around a template (`no-guide-wrapper-ceremony`). Fill content that lives in the resource Template while Protocol only orders persist.
 
@@ -1808,7 +1808,7 @@ A standalone / cross-cutting rule is encoded as a numbered Protocol (or bootstra
 
 **Do not flag:** A work phase that cites a Rule or resource policy while doing work. A step-local `>` caveat (`constraint-as-blockquote`). One-step guidance filed as a Rule (`no-one-step-rules`). A Rule that restates Protocol (`no-rule-protocol-restatement`).
 
-**Fix:** Move the invariant into `## Rules` — the technique, the prompt resource, or the container `TECHNIQUE.md`. Keep Protocol as sequenced work outcomes. On a prompt or bootstrap surface, a standing duty belongs under that resource's Rules.
+**Fix:** Delete a standing duty that inherited or delivered rules already supply (`inherited-rules-re-enumerated`). Move a unique cross-cutting invariant to its owning `## Rules` surface — the technique, the prompt resource, or the container `TECHNIQUE.md` — preserving every affected reader's reach. Keep Protocol as sequenced work outcomes.
 
 ### AP-122. prompt-restates-owned-mechanics
 
@@ -2104,7 +2104,7 @@ A declared output has no reader.
 
 **Detect:** For each `### <id>` under `## Outputs`, name where it lands: an `#### artifact` on the entry; a binding, remap, gate, `validate` target, or same-named input in a workflow that can bind the op; or `{id}` in the binding activity's message or checkpoint. Flag an entry with none, including one mentioned only as "return `{id}`", and one whose `variables[]` slot nothing reads. Test: the only reader is the worker's own report.
 
-**Do not flag:** A library op, or one bound cross-workflow, whose callers sit outside the tree. An output consumed by a sibling `#### artifact` template on the same technique. A terminal product the binding activity actually surfaces.
+**Do not flag:** A library op, or one bound cross-workflow, whose external callers sit outside the tree. An output consumed by a sibling `#### artifact` template on the same technique. A terminal product the binding activity actually surfaces.
 
 **Fix:** A file takes `#### artifact` (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling document is a `####` of that output. A later step binds it and declares the input. A human sees `{id}` from the binding activity (`session-interaction-in-technique`). Otherwise delete the declaration and the variable that shadowed it. The inverse is `technique-outputs-declared`.
 
@@ -2138,17 +2138,17 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 ### AP-145. apply-omits-declared-input
 
-"Apply [continue-agent] with the composed prompt"
+"`technique: { name: continue-agent }` with the composed prompt left unpassed"
 
-A Protocol Apply passes some of the applied technique's declared inputs and omits others, so the applied op runs on whatever the bag happens to hold.
+A site binds a technique and passes some of its declared inputs, so the op runs on whatever the bag happens to hold.
 
 **Fires on:** `technique.protocol`, `technique.inputs`
 
-**Detect:** For each Protocol `Apply` or `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: a required slot of the target is absent from the Apply line and from the applying technique's own contract.
+**Detect:** For each site that binds a technique for work — an activity `steps[]` entry, a routine technique bind, or a permitted `::` invocation — resolve the target's `## Inputs`, including any merged from its container. Flag a required input the binding site neither passes nor covers by a declared `#### default`, and that no same-name slot in the binding contract makes ambient. Test: a required slot of the target is absent from the bind and from the binding contract.
 
-**Do not flag:** An input the target marks optional or backs with a `#### default`. An input the applying technique declares under the same id. A container-merged input the whole group shares. An activity `steps[]` bind. An agent-entry technique naming the techniques of a loop whose activity YAML is the bind site (`prompt-restates-owned-mechanics`).
+**Do not flag:** An input the target marks optional or backs with a `#### default`. An input the binding contract declares under the same id. A container-merged input the whole group shares. An agent-entry technique naming the techniques of a loop whose activity YAML is the bind site (`prompt-restates-owned-mechanics`).
 
-**Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. A slot declared and never passed on is `declared-input-never-read`.
+**Fix:** Name the omitted input at the binding site. Where the value has no home there, declare it first, then pass it. A slot declared and never passed on is `declared-input-never-read`.
 
 ### AP-146. branch-on-undeclared-threshold
 
