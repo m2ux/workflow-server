@@ -59,18 +59,22 @@ Corpus revision: `e70b44778f71d9d699f746f78a16b892531c82d3`. Paired engine: `e88
 
 These tests qualify capture, rendering, sizing and ownership against existing corpus bytes. The assignment counts use an illustrative structural profile of 80 output units and two seconds per cell with three slots, not measured full-canon semantic costs. They do not claim completed semantic audits: their cells remain unresolved and their completion gates remain closed. [Measured results](corpus-specimens/current-generation/results.json) retain identities, estimates and elapsed time for the corrected tool generation.
 
-### Renumbered Catalog
+### Moving Catalogs
 
-A later corpus revision retires three entries, adds one and renumbers the catalog from AP-61 onward. Capture absorbs it without a skill change, because criterion identity is the canonical named entry and the AP number is a display alias.
+Criterion identity is the canonical named entry and the AP number is a display alias, so capture reads whatever catalog it is given. Two later corpus revisions with different catalog shapes measure that. The paired engine is unchanged in both.
 
-Corpus revision: `4d333ca073440a6399f3ee896c665a31253d2a7a`. Paired engine unchanged. 159 APs and 47 DPs are included.
+| Corpus revision | Catalog | Specimen | Rows | Criteria | Cells | Elapsed |
+| --- | --- | --- | ---: | ---: | ---: | ---: |
+| `4d333ca0` | 159 AP + 47 DP | MVW | 211 | 206 | 43,466 | 8.079s |
+| `4d333ca0` | 159 AP + 47 DP | Routine conformance | 743 | 206 | 153,058 | 42.409s |
+| `d5e2ace1` | 166 AP + 47 DP | MVW | 119 | 213 | 25,347 | 7.883s |
+| `d5e2ace1` | 166 AP + 47 DP | Routine conformance | 618 | 213 | 131,634 | 37.445s |
 
-| Specimen | Rows | Criteria | Cells | Elapsed | Structural Result |
-| --- | ---: | ---: | ---: | ---: | --- |
-| MVW coverage | 211 | 206 | 43,466 | 8.079s | Every assertion holds; four types and relationship context retained |
-| Routine conformance coverage | 743 | 206 | 153,058 | 42.409s | Distinct routine instantiations and unchanged callers retained |
+Every assertion holds in all four runs, and each cell count is the exact row × criterion product. `4d333ca0` retires three entries, adds one and renumbers from AP-61 onward. `d5e2ace1` is the integration target: it carries a Fires-on index on every entry, principle and convention section, promotes the four manual-review entries to AP entries, retires the MR designator, and adds `inherited-input-never-spent`. The two revisions are independent of each other, not successive.
 
-Both cell counts are the exact row × criterion product at 206 criteria, and the rows are unchanged because the specimens' own sources did not move. [Measured results](corpus-specimens/renumbered-catalog/results.json) retain the identities and estimates. This measures structural capture against the changed catalog; it resolves no semantic cell and opens no completion gate.
+Row counts differ between revisions because the specimens' own sources moved, not because criteria changed. Fires-on remains a prioritization hint that cannot remove a cell, so an index landing on every entry changes no cell count. The synthetic qualification fixtures carry their own self-contained corpora and name neither the retired activity-level decision construct nor any Fires-on shape, so they are not pinned to a superseded catalog.
+
+[Renumbered results](corpus-specimens/renumbered-catalog/results.json) and [integration-target results](corpus-specimens/integration-target/results.json) retain the identities and estimates. These measure structural capture against changed catalogs; they resolve no semantic cell and open no completion gate. Semantic qualification remains pinned at `e70b4477`, and a merged catalog is a further shape that neither run measures.
 
 The first global packing experiment was interrupted after excessive repeated cost calculations. Criterion/kind seams and cached source/canon spans bound that search. Interrupted exits 143 and 130 remain failed observations, not passing specimen tests. The final experiments take about 8 and 40 seconds; exact current measurements are in the results artifact.
 
