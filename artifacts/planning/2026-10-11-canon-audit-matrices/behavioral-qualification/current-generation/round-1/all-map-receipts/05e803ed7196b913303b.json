@@ -1,0 +1,120 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+  "assignment": "05e803ed7196b913303b",
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-05e803ed7196b913303b",
+  "records": [
+    {
+      "items": [
+        "cbb292d61ff63c7740d065be",
+        "bbb0ef5214ae8bbcce715c65",
+        "71fd5507f4b74e2ec91c2b3e",
+        "f2a200e38a51bc411ee5e057",
+        "2e52133101ac058519a8aa51",
+        "8d0a1adc7b4ff87710b48af6"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "343988e91c335d3bdef76586",
+        "cc39f8b8ebb2b96169d05005",
+        "b1f517596f87f82a15830709"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done. The workflow defines initialActivity run and graph exit done to null. Its graph/identifier surfaces and workflow-to-activity relationships are not technique emission instructions; AP1 expressly excludes graph labels.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "f30ba6f42d4230bf27814f3a",
+        "ca06cc90126da20e026a0486",
+        "96797ae8488cf51f8878572b"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. The workflow defines initialActivity run and graph exit done to null. Its graph/identifier surfaces and workflow-to-activity relationships are not technique emission instructions; AP1 expressly excludes graph labels.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "A",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8. The owned Protocol surface contains the concrete report-emission instruction: Validate the report, then emit it. AP1 applies to each such instruction regardless of whether validation is required.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

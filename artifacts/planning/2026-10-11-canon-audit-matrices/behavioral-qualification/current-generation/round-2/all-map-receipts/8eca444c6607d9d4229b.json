@@ -1,0 +1,138 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b",
+  "assignment": "8eca444c6607d9d4229b",
+  "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-2-8eca444c6607d9d4229b",
+  "records": [
+    {
+      "items": [
+        "69bbe5f010e4e9c6cc42b36b",
+        "4c9b9e3283acb76acd0c593c",
+        "eb0acb5f69509bc093ccb4c4",
+        "8f71acc678543f1dedd6da64",
+        "85d58778322169b7eb358fb2",
+        "460145b3f2b47abf7cc6997a",
+        "7a49531ccbd7063bf5c4dd03"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/id, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/packet, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name. The activity defines run and invokes routine deliver with argument key packet. Its identifiers, routine-call fields and call relationship are YAML orchestration/binding surfaces; AP1 expressly excludes routine calls and bindings from emission instructions.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "d10a33e1908da3335366adaa",
+        "a3b7b46de80a7e60f06f33aa",
+        "1fff788717e68470ea335f4a"
+      ],
+      "status": "A",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2. The owned Rules surface includes the second semicolon clause, emit the report without validation. This governs report emission, so AP1 applies to that clause independently of the neighboring retention clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "2f83f57df858c2cf145efffc"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/rules/line-11/clause-1. The owned first semicolon clause is Retain the report ID. It directs retention only; the emitting second clause has a separate row and cannot make this clause an emission instruction.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "9d43a5459db3bcbd7c1b6759"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/rules/line-12. Destination is public declares a destination without directing artifact emission; AP1 expressly excludes destination declarations.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "541cffe238719bcc6a46fe77",
+        "06d002e75cf36ea1b43c83b1"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5. The ancestor contains only a Capability description and the constraint Destination must be archive. These inherited declarations do not direct artifact emission in a leaf Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+id: run
+steps:
+  - id: delivery
+    routine:
+      name: deliver
+      arguments: {packet: sealed}

@@ -1,0 +1,97 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b",
+  "assignment": "a662956bc7f187dca5fa",
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-a662956bc7f187dca5fa",
+  "records": [
+    {
+      "items": [
+        "3f2fc1d2f91b27a5d46f0504",
+        "8862878198e6198ef77c1f28",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972"
+      ],
+      "status": "A",
+      "reason": "dp:2; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This workflow-to-run graph relationship contributes to the workflow reachability obligation. The complete workflow starts at run and its only done edge leads to run; DP2 must judge a finite path to null across that full graph, not infer termination from a matching activity ID.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "f82d1cd9016de1cdd797e170",
+        "569231fa0b1023abbf3fc5e4",
+        "7567be6ff4d583433092c972",
+        "90bd5ed8d7c0859a6fbe41a1",
+        "0e0de76a45b1ce5cc0a55a2d",
+        "0dfaae8a980c43d6afea14bc",
+        "19723157905da0f5874e77db"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/routines/deliver.yaml#@element. The routine defines Inputs, an emit.report export and a produce step/call. These local steps and execution relationships do not add workflow graph exits under DP2; the workflow rows own the finite-path obligation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "094759e3ffb8236db086b566",
+        "9a13e148e0a434d148bef242",
+        "e0fcd50974c10678a3e2fb44"
+      ],
+      "status": "A",
+      "reason": "dp:2; owned rows corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done. This owned workflow start/graph/whole-element surface participates in the whole-workflow finite-path requirement. The complete graph starts at run and has only done to run; DP2 applies using that full graph rather than an isolated row or activity-ID match.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

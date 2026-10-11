@@ -1,0 +1,56 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "b6da8bd377463e317cb2",
+  "attempt": "current-author-evaluate-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "15ee43746437cfdf860b1519",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "355ce3ec841005b898e3d8d3",
+        "381dd396d48f156e5b5332ba",
+        "8bfa310664405693e5cee00b",
+        "91a7785154a1a018658ccae8",
+        "a406c04573c91f8ad82577e3",
+        "dafc343685f5a84041beee97",
+        "eb3d9f625d45294630564c36"
+      ],
+      "reason": "The explicit qualification/run/delivery/deliver/emit chain places produce under TECHNIQUE.md. Its Destination archive equals the inherited archive requirement.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23"
+}

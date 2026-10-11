@@ -1,0 +1,135 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-b",
+  "assignment": "f45a0c9712f5f9f6f0e3",
+  "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-2-f45a0c9712f5f9f6f0e3",
+  "records": [
+    {
+      "items": [
+        "2228315b4ed81fce11373514",
+        "2160f33c3a701883bf507397",
+        "b707f101a68f594abdbb9fc8",
+        "d5d35100c716e2ed184e7476"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This owned native routine row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "f442830158e33a5d097e4514",
+        "21f9cfbf2718ad51d2976c98",
+        "32efcf3836cf4d26fc113577",
+        "dafc343685f5a84041beee97"
+      ],
+      "status": "A",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "67bbb2cf737f1d39490640e1",
+        "9aa00375bff5d32993c718d0",
+        "46e28f2007abc40979497fc9",
+        "263ad09bd2d440e2a894ee63"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#/graph, corpus/qualification/workflow.yaml#/graph/run, corpus/qualification/workflow.yaml#/graph/run/done, corpus/qualification/workflow.yaml#@element. This owned native workflow row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "533e91f3401233d0974551eb",
+        "fbafce4f79dd46979495549a"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8. The owned leaf Capability/Outputs/Protocol or report-retention/emission clause contains no Destination declaration. DP1 targets the separate leaf destination row and explicit inheritance relationship; artifact production/emission wording alone does not establish this row as a destination surface.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    }
+  ]
+}

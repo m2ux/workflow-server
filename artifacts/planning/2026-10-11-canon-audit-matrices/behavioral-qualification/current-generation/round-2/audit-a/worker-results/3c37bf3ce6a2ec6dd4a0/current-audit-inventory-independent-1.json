@@ -1,0 +1,207 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "3c37bf3ce6a2ec6dd4a0",
+  "attempt": "current-audit-inventory-independent-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/canon/resources/design-principles.md"
+      ],
+      "reason": "This complete principles home is a non-seed, unselected canon resource with no definition reference. Both principles remain in the criterion inventory; the destination text supplies the explicitly captured execution/inheritance context. No additional executable source is implied by the remaining lines.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/activities/run.yaml"
+      ],
+      "reason": "run is an undeleted selected scope seed. Its only concrete routine reference is delivery -> deliver with argument envelope; the target routine, producer and ancestor are all selected closure sources. The manifest preserves this native binding site and the workflow selects run. Full source inspection adds no missing reference.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/routines/deliver.yaml"
+      ],
+      "reason": "deliver is correctly selected as an undeleted non-seed consumer: run invokes it and its emit step calls the touched produce technique. The manifest includes that declaration call and the separate execution instantiation with workflow, activity and ancestor context. Inputs envelope and export emit.report remain visible even if a binding fails later evaluation.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "reason": "The ancestor is correctly selected as an undeleted non-seed because produce inherits its archive requirement in the executing qualification workflow. Its full source has no outgoing call. The incoming ancestor relationship and explicit execution context include this otherwise unchanged contract file.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/techniques/produce.md"
+      ],
+      "reason": "produce is an undeleted selected scope seed and deliver is its resolved consumer. The manifest preserves the ancestor contract reference; the explicit execution relationship retains all five context sources. The leaf declares report and Destination archive; these concrete values affect later checks, not closure membership.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "inventory:scope:corpus/qualification/workflow.yaml"
+      ],
+      "reason": "qualification is an undeleted selected seed. initialActivity and graph node run resolve the captured activity, and run.done has destination null. The manifest distinguishes node/exit ownership from the null terminal, which adds no activity target. The complete definition and manifest imply no further activity or missing file.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf"
+}

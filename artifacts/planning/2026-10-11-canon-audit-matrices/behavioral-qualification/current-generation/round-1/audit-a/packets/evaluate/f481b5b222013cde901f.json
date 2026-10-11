@@ -1,0 +1,673 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "evaluate": {
+          "evidence": "Prior generation Audit DP1 output averaged 1175.45 bytes/item; Author evaluated 94 cells in 836.52 seconds excluding its recorded permission-review pause bracket. Conservative bytes/token1 with output/work margin; new generation decisions and receipts are required.",
+          "output_tokens_per_item": 1600,
+          "seconds_per_item": 10
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            1,
+            6
+          ],
+          [
+            15,
+            21
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ]
+      },
+      "input_tokens_estimate": 30248,
+      "output_tokens_estimate": 16000,
+      "work_seconds_estimate": 100
+    },
+    "id": "f481b5b222013cde901f",
+    "items": [
+      "fc60645fdab03b4f360b972e",
+      "ece85719689c1a3411d52a12",
+      "366a1ced08e276234b09d365",
+      "e4e1d36386ad37dc4007d953",
+      "f45b86c19f25461cbe667622",
+      "23d52f087c143d67f67da445",
+      "82c8e910cc4b4df96a89e369",
+      "790b168511688f3580f49f17",
+      "e6707d2a492bbb28eafc3a21",
+      "387b3abcf94e6a19aabbf992"
+    ],
+    "mappings": {
+      "23d52f087c143d67f67da445": "908d6b7630359fe1decad826192a8369f2b03ce2da217754ae1a773c92aaa2dc",
+      "366a1ced08e276234b09d365": "d0b6ba148851c1b4826d70a3a2451a8f94e8560b1de877d88fe5c471e8cf11ff",
+      "387b3abcf94e6a19aabbf992": "8777ec8217de7a5bf75c0fcc1b6e242a916f8d8f543507a143f7a26bf3e29160",
+      "790b168511688f3580f49f17": "52d75c5ee12dbc84a12a28d3e3740ce4f76641b779723cf4513312ebf982604d",
+      "82c8e910cc4b4df96a89e369": "08f0c63beee1ec6de44f7ff979c541dfec42e43a70d1b6e279f0861a8ee92a4a",
+      "e4e1d36386ad37dc4007d953": "59447821bd4386ced378e314e15c3831c081df3b5dd1aa38079e6d0c7a780932",
+      "e6707d2a492bbb28eafc3a21": "057954e5041fbc4e95cf39b1be9e95e8a6c34775c66617e1c66ae4ff0b975be5",
+      "ece85719689c1a3411d52a12": "a28f6024cef6ac2b045c9ce160740e13059c572ea8737b0442e6f6a75bb70825",
+      "f45b86c19f25461cbe667622": "1af3e5475d253740b289169cf36edfd84ce1e06badfcdf74597117059821c8f4",
+      "fc60645fdab03b4f360b972e": "4c670d0b3b0275fabcea063d31932f4a6612a970faa932ee71eeed87d01acf70"
+    },
+    "phase": "evaluate",
+    "returned": [],
+    "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a/sources",
+  "cells": {
+    "23d52f087c143d67f67da445": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "ap:broken-binding"
+    ],
+    "366a1ced08e276234b09d365": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "ap:broken-binding"
+    ],
+    "387b3abcf94e6a19aabbf992": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "ap:broken-binding"
+    ],
+    "790b168511688f3580f49f17": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "ap:broken-binding"
+    ],
+    "82c8e910cc4b4df96a89e369": [
+      "corpus/qualification/routines/deliver.yaml#/steps",
+      "ap:broken-binding"
+    ],
+    "e4e1d36386ad37dc4007d953": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "ap:broken-binding"
+    ],
+    "e6707d2a492bbb28eafc3a21": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "ap:broken-binding"
+    ],
+    "ece85719689c1a3411d52a12": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "ap:broken-binding"
+    ],
+    "f45b86c19f25461cbe667622": [
+      "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "ap:broken-binding"
+    ],
+    "fc60645fdab03b4f360b972e": [
+      "corpus/qualification/activities/run.yaml#/steps",
+      "ap:broken-binding"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "ap:broken-binding": {
+      "end": 21,
+      "family": "Controlled Qualification",
+      "hash": "7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8",
+      "id": "ap:broken-binding",
+      "label": "AP-02",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.",
+      "title": "AP-02. broken-binding"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "23d52f087c143d67f67da445": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "c2bd5063016f19c15dfe27fe7175fa1cb4c224fa41d122bdb6caf2c7328999d0",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name. The routine name deliver resolves this concrete activity invocation to Inputs [envelope]. Its sibling arguments have the single key envelope; AP2 requires resolving and checking every concrete invocation against its declared input keys.",
+      "status": "A"
+    },
+    "366a1ced08e276234b09d365": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "c99085a80ef3eabed34239996feb9eb53bef80ae6e5b4f8674c2ba727472d1d5",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    },
+    "387b3abcf94e6a19aabbf992": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "b33ecaad013fccaff555",
+      "attempt": "current-source-map-round-1-b33ecaad013fccaff555",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "b607c2db7c80e8b755f8f33598fcf4d7104f44b2a323db55662430c734226e67",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output report; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    "790b168511688f3580f49f17": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "b33ecaad013fccaff555",
+      "attempt": "current-source-map-round-1-b33ecaad013fccaff555",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "d4591ca2df8d8772127b1eea47524971f592b4142c5cdb22a5565253b6219a8b",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output report; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    "82c8e910cc4b4df96a89e369": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "b33ecaad013fccaff555",
+      "attempt": "current-source-map-round-1-b33ecaad013fccaff555",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "268fd5ab79f83f21de524cb23e9493630d77801eaf0d4394b4f147f66d0f6a63",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output report; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    "e4e1d36386ad37dc4007d953": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "0ed8dd74c35164d1c6d8901159a2b8e26b703b5e87545a3a6d0c561ba7b7dcf5",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    },
+    "e6707d2a492bbb28eafc3a21": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "b33ecaad013fccaff555",
+      "attempt": "current-source-map-round-1-b33ecaad013fccaff555",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "7e5508306820b898a7acc99593ee7d2d6745ca8ffe52edc464b11133e14864a8",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#/steps, corpus/qualification/routines/deliver.yaml#/steps/id=emit, corpus/qualification/routines/deliver.yaml#/steps/id=emit/id, corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique. This producer step/call surface resolves emit to technique produce for the routine binding emit.report. The called technique declares output report; AP2 explicitly requires step and technique resolution before comparing the referenced output name.",
+      "status": "A"
+    },
+    "ece85719689c1a3411d52a12": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "6b45c4456eb13d6079cf33b95fd95b8d9c600bb0cac0ad41c25562e6353fd6e0",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    },
+    "f45b86c19f25461cbe667622": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "ae41933ecf769e76df606a5a4a4c29247bbe63202056c705b924957937818f90",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    },
+    "fc60645fdab03b4f360b972e": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "47d28cd1e27c887b955e",
+      "attempt": "current-source-map-round-1-47d28cd1e27c887b955e",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "3ef6662927a918345757fd196f03dd748dbe31342ff8328a6320e24e2b8b0b96",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "status": "A"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery": {
+      "address": "/steps/id=delivery",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "kind": "section",
+      "label": "/steps/id=delivery",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine": {
+      "address": "/steps/id=delivery/routine",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments": {
+      "address": "/steps/id=delivery/routine/arguments",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine/arguments",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope": {
+      "address": "/steps/id=delivery/routine/arguments/envelope",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/arguments/envelope",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name": {
+      "address": "/steps/id=delivery/routine/name",
+      "end": 5,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/name",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit": {
+      "address": "/steps/id=emit",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "kind": "section",
+      "label": "/steps/id=emit",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id": {
+      "address": "/steps/id=emit/id",
+      "end": 5,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "kind": "item",
+      "label": "/steps/id=emit/id",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique": {
+      "address": "/steps/id=emit/technique",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "kind": "item",
+      "label": "/steps/id=emit/technique",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 6,
+      "type": "routine"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {envelope: sealed}"
+    },
+    {
+      "end": 6,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 1,
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n"
+    },
+    {
+      "end": 21,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares."
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 12,
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### report\n\n## Protocol\n- Validate the report, then emit it.\n\n## Rules\n- Retain the report ID; validate the report before each emission.\n- Destination is archive."
+    }
+  ],
+  "supplemental": {}
+}

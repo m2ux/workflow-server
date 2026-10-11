@@ -1,0 +1,58 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "97905333cd1d9d41c380",
+  "attempt": "current-author-evaluate-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "findings": [
+        {
+          "band": "Contract",
+          "entry": "1. Honor the executing workflow's inherited destination",
+          "fix": "Set the leaf Destination to the inherited archive requirement.",
+          "location": "corpus/qualification/techniques/produce.md#/rules/line-12",
+          "origin": "diff",
+          "severity": "High",
+          "summary": "The leaf declares public while its executing workflow ancestor requires archive."
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "The executing leaf declares public against inherited archive. The explicit call/inheritance chain establishes the DP1 declaration conflict.",
+      "status": "finding"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

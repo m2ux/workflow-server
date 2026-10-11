@@ -1,0 +1,909 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_author_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "evaluate": {
+          "evidence": "Prior generation Audit DP1 output averaged 1175.45 bytes/item; Author evaluated 94 cells in 836.52 seconds excluding its recorded permission-review pause bracket. Conservative bytes/token1 with output/work margin; new generation decisions and receipts are required.",
+          "output_tokens_per_item": 1600,
+          "seconds_per_item": 10
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            8
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/TECHNIQUE.md": [
+          [
+            1,
+            5
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 37566,
+      "output_tokens_estimate": 16000,
+      "work_seconds_estimate": 100
+    },
+    "id": "e6a02551969bdf4dfb61",
+    "items": [
+      "f442830158e33a5d097e4514",
+      "21f9cfbf2718ad51d2976c98",
+      "32efcf3836cf4d26fc113577",
+      "dafc343685f5a84041beee97",
+      "381dd396d48f156e5b5332ba",
+      "355ce3ec841005b898e3d8d3",
+      "eb3d9f625d45294630564c36",
+      "15ee43746437cfdf860b1519",
+      "8bfa310664405693e5cee00b",
+      "91a7785154a1a018658ccae8"
+    ],
+    "mappings": {
+      "15ee43746437cfdf860b1519": "53c879088b27d54bb9c85280b8736cee3bb3677a5d798e59634b917896c6a65c",
+      "21f9cfbf2718ad51d2976c98": "1840fa3abb901aadeb5bffaaa55147774152034a2936f93a607cea106a14ed49",
+      "32efcf3836cf4d26fc113577": "a32c6e9d5ed010eed2a91effb2534c50358c4648a18c44517d2d0f7d6593709d",
+      "355ce3ec841005b898e3d8d3": "a8d1e3e2104e520a9a5cae8cb6d99911e3c2cb9e8f2323d4419697de718d31c6",
+      "381dd396d48f156e5b5332ba": "afb3727ebe1e733ea82694612fafbdd78a7d202ee542d6fb5846a09438cf2ff4",
+      "8bfa310664405693e5cee00b": "8778228966f92a4caecbf435983f5143a9d66ae7c9f60dc32d71d3de15d88881",
+      "91a7785154a1a018658ccae8": "c0d7442d75e22765cbf210e6a4563b49b9464d4ac89f66642dfe09617f480b47",
+      "dafc343685f5a84041beee97": "791e5791813fd92fb2e47123a0d990bda8b70acb82f819637758bc7eae864dab",
+      "eb3d9f625d45294630564c36": "cd4f6dc6c41e8dcef745dbe55d4fb1b6dee85b2d529c998630fa84bd2520b9de",
+      "f442830158e33a5d097e4514": "784a362dc041f3a2737a80210f278cb7d997f9cdde93e9e4b9cdc48275caa875"
+    },
+    "phase": "evaluate",
+    "returned": [],
+    "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b/sources",
+  "cells": {
+    "15ee43746437cfdf860b1519": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "dp:1"
+    ],
+    "21f9cfbf2718ad51d2976c98": [
+      "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "dp:1"
+    ],
+    "32efcf3836cf4d26fc113577": [
+      "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "dp:1"
+    ],
+    "355ce3ec841005b898e3d8d3": [
+      "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "dp:1"
+    ],
+    "381dd396d48f156e5b5332ba": [
+      "corpus/qualification/techniques/produce.md#/rules",
+      "dp:1"
+    ],
+    "8bfa310664405693e5cee00b": [
+      "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "dp:1"
+    ],
+    "91a7785154a1a018658ccae8": [
+      "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "dp:1"
+    ],
+    "dafc343685f5a84041beee97": [
+      "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "dp:1"
+    ],
+    "eb3d9f625d45294630564c36": [
+      "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "dp:1"
+    ],
+    "f442830158e33a5d097e4514": [
+      "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593",
+      "dp:1"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "dp:1": {
+      "end": 8,
+      "family": "1. Honor the executing workflow's inherited destination",
+      "hash": "68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3",
+      "id": "dp:1",
+      "label": "DP-01",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 5,
+      "text": "## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n",
+      "title": "1. Honor the executing workflow's inherited destination"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "15ee43746437cfdf860b1519": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "42b502b453c4492186cc",
+      "attempt": "current-source-map-round-2-42b502b453c4492186cc",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "ac6b0c84ca9a8f73c49c0d93282eccbd95b09b600e610c8c973cb64da7152916",
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "21f9cfbf2718ad51d2976c98": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "145d9cc913a49382cad3",
+      "attempt": "current-source-map-round-2-145d9cc913a49382cad3",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "7251efbcb67650f449fe3170a5355049a79b42d59215b0d26cef3169c794f5d8",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "32efcf3836cf4d26fc113577": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "145d9cc913a49382cad3",
+      "attempt": "current-source-map-round-2-145d9cc913a49382cad3",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "98777bb676c78014fded3e9e770f3399bdecef66fb61209c9b6ac6753c0ff555",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "355ce3ec841005b898e3d8d3": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "fc982586dd4b0a5c9e14",
+      "attempt": "current-source-map-round-2-fc982586dd4b0a5c9e14",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "2dc964934d1d09c7a0b85fdca5b00b4c919eb9f42e69269a5dd91fc39c95b7e2",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-12. The owned leaf surface contains its Destination declaration, so DP1 applies in the executing inheritance context: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. Applicability leaves the comparison result to evaluation.",
+      "status": "A"
+    },
+    "381dd396d48f156e5b5332ba": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "fc982586dd4b0a5c9e14",
+      "attempt": "current-source-map-round-2-fc982586dd4b0a5c9e14",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "f5fcb9eb64085b27b0eb6bdd51ac9e5d22b3728e5fae35a1104cb6cdfd7e4598",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-12. The owned leaf surface contains its Destination declaration, so DP1 applies in the executing inheritance context: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. Applicability leaves the comparison result to evaluation.",
+      "status": "A"
+    },
+    "8bfa310664405693e5cee00b": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "1a8002a0f89b717a8655",
+      "attempt": "current-source-map-round-2-1a8002a0f89b717a8655",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "b9642bf3885d04455e6903a6cdd985a25d22704174ddd09d8e95c2b61c8667de",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8. This explicit leaf-to-ancestor relationship carries the inherited destination constraint to the executing leaf instance: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 requires that relationship comparison.",
+      "status": "A"
+    },
+    "91a7785154a1a018658ccae8": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "1a8002a0f89b717a8655",
+      "attempt": "current-source-map-round-2-1a8002a0f89b717a8655",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "25852266203754a1dff02569ed934731f4f65639afceacba3319e321ab15ef29",
+      "reason": "dp:1; owned rows corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "dafc343685f5a84041beee97": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "145d9cc913a49382cad3",
+      "attempt": "current-source-map-round-2-145d9cc913a49382cad3",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "1d25093541cbab219e99f20cd1415ddd2c908b58edaae68ac251f0b6976a45fb",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "eb3d9f625d45294630564c36": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "42b502b453c4492186cc",
+      "attempt": "current-source-map-round-2-42b502b453c4492186cc",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "f28a4f8cf39979fe8494dc5b8e1a408386022d0513ade78e20040d47893335cf",
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    "f442830158e33a5d097e4514": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "145d9cc913a49382cad3",
+      "attempt": "current-source-map-round-2-145d9cc913a49382cad3",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "fingerprint": "47b35aa599eac8abfb13cc4e744e89c0e02b3765ddf34f03542d8124fefe6fd9",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593, corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877, corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55, corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7": {
+      "address": "@relationship/3a2f0d25e0e017f7",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "kind": "relationship",
+      "label": "produce",
+      "origin": "consumer",
+      "relationship": {
+        "address": "/steps/id=emit/technique",
+        "context": [],
+        "label": "produce",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96": {
+      "address": "@relationship/50a64427faa3df96",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "kind": "relationship",
+      "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+      "origin": "consumer",
+      "relationship": {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/workflow.yaml"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/produce.md#/rules": {
+      "address": "/rules",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 10,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-12": {
+      "address": "/rules/line-12",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "kind": "item",
+      "label": "/rules/line-12",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 12,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8": {
+      "address": "@relationship/f075d23fadb959c8",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "kind": "relationship",
+      "label": "declared contract context",
+      "origin": "touched",
+      "relationship": {
+        "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+        "context": [],
+        "label": "declared contract context",
+        "source": "corpus/qualification/techniques/produce.md",
+        "target": "corpus/qualification/techniques/TECHNIQUE.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593": {
+      "address": "@relationship/27bf829b0e84c593",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 2
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"
+    },
+    {
+      "end": 5,
+      "hash": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run"
+    },
+    {
+      "end": 8,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 1,
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n"
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 5,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "start": 1,
+      "text": "## Capability\nConstrain inherited delivery.\n\n## Rules\n- Destination must be archive."
+    },
+    {
+      "end": 12,
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public."
+    }
+  ],
+  "supplemental": {}
+}

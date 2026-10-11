@@ -1,0 +1,11 @@
+# Current applicability mapping provenance
+
+All eight current runs have fresh receipts: 128 assignments, 1,584 cells, with 376 A, 1,208 N and 0 U. Each round has 64 assignments and 792 cells. The coordinator reports both rounds accepted; independent mapping verification remains separate.
+
+- Read all 99 distinct row definitions, all four complete criteria and all ten unique captured source hashes (4,341 original bytes). Exact source hashes and row/criterion/source-map fingerprints establish two groups of four identical runs; only those source facts and resulting reasoning are reused. No earlier accepted receipts, hidden outcomes, baseline results or evaluation findings were read or imported.
+- Every receipt is bound to its current run, assignment, snapshot and actual actor. Each record includes all owned row sources and the full criterion span. Applicable destination call relationships cite workflow, activity, routine, leaf and ancestor context. Grouped cells share the same source facts, reason and evidence.
+- Assignments contain 7–14 cells. Packets are 12,001–18,915 bytes; receipts are 3,975–8,728 bytes and fit each 16,000-byte output allowance. The 128 packets total 2,093,356 bytes; receipts total 765,044 bytes. Per-assignment hashes, counts, estimates and receipt sizes are in each round's all-map-measurements.json.
+- Required semantic content was returned in chunks of at most 7,000 characters (7,011 UTF-8 bytes). Recorded source/row/criterion/current-dispatch content totals 67,402 returned bytes; the separate self-generated judgment table totals 6,568 bytes. Tool framing, helper-code reads and compact diagnostic metadata are outside that content-only measurement.
+- Shared session timing: 2026-10-11T11:16:27.181908+00:00 through 2026-10-11T11:34:51.421247+00:00, 1104.239 seconds. These timestamps include source reading, manual judgment, context continuity and serialization. Per-assignment durations in the measurement files are mechanical serialization/validation/write durations only. This work does not establish isolated per-assignment reasoning time or a new calibration.
+
+The source-complete mapping makes no conformance or final qualification claim. Production scripts and canonical ledgers were not modified by this agent. Exact trace: all-map-read-trace.txt, copied from /tmp/qualify-current-map-transcript.txt.

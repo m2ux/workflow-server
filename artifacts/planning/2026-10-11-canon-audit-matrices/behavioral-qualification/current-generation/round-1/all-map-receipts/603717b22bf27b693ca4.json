@@ -1,0 +1,158 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-a",
+  "assignment": "603717b22bf27b693ca4",
+  "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-603717b22bf27b693ca4",
+  "records": [
+    {
+      "items": [
+        "b3f616c2c1a987217e5cf61b",
+        "67ae926240e520bfdb63b1a3",
+        "b6ad6f9e4c3bf6bcd7517234",
+        "3dd8981b7cf70f3489f0cb9a",
+        "69c0652ae2e85de91e1e5de4"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/TECHNIQUE.md#@element. The ancestor declares Destination must be archive. DP1 explicitly treats this as the inherited constraint, not a conflicting leaf destination; the owned ancestor surface is not independently judged as a leaf instance.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "b7876638c82ca7835e6ecd54",
+        "52eadd327712a19ac6cca68e"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/report. The owned leaf Capability/Outputs/Protocol or report-retention/emission clause contains no Destination declaration. DP1 targets the separate leaf destination row and explicit inheritance relationship; artifact production/emission wording alone does not establish this row as a destination surface.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "cf440ff1717daba3ba33af52",
+        "af24593c352cedfdf9a972fa",
+        "65dd3d64e8c54c7713685121"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/routines/deliver.yaml#@element. This owned native routine row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519"
+      ],
+      "status": "A",
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination archive and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    },
+    {
+      "items": [
+        "263ad09bd2d440e2a894ee63",
+        "665c1a7ad6f6a7650e3f374a"
+      ],
+      "status": "N",
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#@element, corpus/qualification/workflow.yaml#/initialActivity. This owned native workflow row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5,
+          "end": 8
+        }
+      ]
+    }
+  ]
+}

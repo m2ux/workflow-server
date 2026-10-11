@@ -1,0 +1,94 @@
+{
+  "cases": [
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "ccbc0a5c5046e959cab68e5d4b290086a43607c53bfc1b6a0fe7cfe73214a2a6",
+      "prior_tool_is_stale": true,
+      "run": "round-1/author-a",
+      "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+      "unknown_cells": 196
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "a345f72e4b37abff362d4617e28438aea150597c06a720247659141069d2aa2d",
+      "prior_tool_is_stale": true,
+      "run": "round-1/author-b",
+      "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+      "unknown_cells": 200
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "4d56c488fee329d522c6fe8efd8b002401ed7218d076fd9d76eecd0ee1e0c4ef",
+      "prior_tool_is_stale": true,
+      "run": "round-1/audit-a",
+      "snapshot": "f8b567874839f2b6884b80ad0fe7ad9cf22763968966413d77cd11bc8894e9e8",
+      "unknown_cells": 196
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "f98a133a20e1bd6037da00adc63aeb68f1bd0033c008c6bef050f7f02d793ecb",
+      "prior_tool_is_stale": true,
+      "run": "round-1/audit-b",
+      "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7",
+      "unknown_cells": 200
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "6cf42fd5ea1e2d0cb855bb8b61b4bbb16668b378ed2baf35c7d74f3e11ef4e9c",
+      "prior_tool_is_stale": true,
+      "run": "round-2/author-a",
+      "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+      "unknown_cells": 196
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "2debad79d3f7bd7d84f96cd02ea06bdc26977ca87424e347e08eb9598ba2f5cd",
+      "prior_tool_is_stale": true,
+      "run": "round-2/author-b",
+      "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+      "unknown_cells": 200
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "8a3725e6142c077674aa46cbe55facb00e329e9167a25196e587562eecf052f9",
+      "prior_tool_is_stale": true,
+      "run": "round-2/audit-a",
+      "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf",
+      "unknown_cells": 196
+    },
+    {
+      "accepted_results": 0,
+      "identical_rows_criteria_sources": true,
+      "inventory_pending": 16,
+      "prior_snapshot": "3385628755635a68b747e59dc49cb55d24a0580ba70f1f6e938782534763ab90",
+      "prior_tool_is_stale": true,
+      "run": "round-2/audit-b",
+      "snapshot": "5d831a0d6a65af1ea658c94311fbea03e2f515e8d410802df59ad4b0d1ca419d",
+      "unknown_cells": 200
+    }
+  ],
+  "scope": "New capture under corrected dispatch code. Prior accepted evidence is not imported.",
+  "tools": {
+    "audit_common.py": "13c6e815e85acf6312fbcb562467c1b0d7f4abe08444fc942cebf80faa4dbb23",
+    "audit_dispatch.py": "7d6b6f2f2f9e721cb461c004d5235cd9f6957c1f1ef0b1e6e70a322205c6b168",
+    "audit_inventory.py": "ef805b527f1b0345fe1fe991e17cbd00ab6ed2c4f9b569fc2be73339fbca97ae",
+    "audit_render.py": "54f5d85138d11e53975b6d663ba4d196b69dfbdf3135297ca935608635ea089f",
+    "audit_state.py": "3326df131aba0a4542e2754d8e7138109fdb60d48046d70969c83e498fcb213b",
+    "audit_surface.py": "f9671529456110a10a0b5aa50d9487e8194c3e118f2cd6f09e719cc65e2df98d",
+    "audit_yaml.mjs": "ddd3e96f5ac3c7e96f1b562c290e310839165c27440b72515c87d701c217a9a5"
+  }
+}

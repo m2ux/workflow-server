@@ -1,0 +1,450 @@
+{
+  "actor": "/root/qualify_audit_one",
+  "assignment": "3c85521f12d9ce14ee8d",
+  "attempt": "current-independent-round-2-3c85521f12d9ce14ee8d",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b6ad6f9e4c3bf6bcd7517234"
+      ],
+      "reason": "N verified for /capability: TECHNIQUE.md declares the inherited archive constraint. DP1 explicitly distinguishes that ancestor declaration from a leaf destination.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "3dd8981b7cf70f3489f0cb9a"
+      ],
+      "reason": "N verified for /capability/line-2: TECHNIQUE.md declares the inherited archive constraint. DP1 explicitly distinguishes that ancestor declaration from a leaf destination.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b7876638c82ca7835e6ecd54"
+      ],
+      "reason": "N verified for /outputs: This Capability/Outputs/Protocol or retention/emission row contains no Destination declaration; DP1 assigns the leaf destination separately.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "52eadd327712a19ac6cca68e"
+      ],
+      "reason": "N verified for /outputs/report: This Capability/Outputs/Protocol or retention/emission row contains no Destination declaration; DP1 assigns the leaf destination separately.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "cf440ff1717daba3ba33af52"
+      ],
+      "reason": "N verified for /inputs: The routine file has no leaf Destination declaration. DP1 exempts independent file rows; explicit producer/execution relationships carry inheritance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "af24593c352cedfdf9a972fa"
+      ],
+      "reason": "N verified for /inputs/0: The routine file has no leaf Destination declaration. DP1 exempts independent file rows; explicit producer/execution relationships carry inheritance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36"
+      ],
+      "reason": "A verified for /steps/id=emit/technique: This call lies on qualification/run to deliver/emit to produce. DP1 explicitly carries the ancestor archive rule to leaf destination archive.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "A verified for execution/qualification/run/delivery/deliver/emit: This call lies on qualification/run to deliver/emit to produce. DP1 explicitly carries the ancestor archive rule to leaf destination archive.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "65dd3d64e8c54c7713685121"
+      ],
+      "reason": "N verified for @element: The routine file has no leaf Destination declaration. DP1 exempts independent file rows; explicit producer/execution relationships carry inheritance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "665c1a7ad6f6a7650e3f374a"
+      ],
+      "reason": "N verified for /initialActivity: The workflow file has no leaf Destination declaration. DP1 exempts independent file rows while explicit execution relationships carry the rule.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "69c0652ae2e85de91e1e5de4"
+      ],
+      "reason": "N verified for @element: TECHNIQUE.md declares the inherited archive constraint. DP1 explicitly distinguishes that ancestor declaration from a leaf destination.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "8bfa310664405693e5cee00b"
+      ],
+      "reason": "A verified for ancestor/corpus/qualification/techniques/TECHNIQUE.md: This explicit ancestor relation connects produce destination archive to the archive rule in its executing qualification workflow. DP1 covers it.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "91a7785154a1a018658ccae8"
+      ],
+      "reason": "A verified for /steps/id=delivery/routine/name: This call lies on qualification/run to deliver/emit to produce. DP1 explicitly carries the ancestor archive rule to leaf destination archive.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "9fff88eaae065adb66759e66"
+      ],
+      "reason": "N verified for /id: The workflow file has no leaf Destination declaration. DP1 exempts independent file rows while explicit execution relationships carry the rule.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a406c04573c91f8ad82577e3"
+      ],
+      "reason": "A verified for @element: This leaf surface contains Destination archive. Qualification/run calls deliver then produce, inheriting archive; DP1 requires that comparison.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "a93639cc3c5c1ad866587c2e"
+      ],
+      "reason": "N verified for /id: The activity file has no leaf Destination declaration. DP1 exempts independent file rows; its explicit call relationship carries inheritance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "bf312e511dcc8f4eda77a41a"
+      ],
+      "reason": "N verified for /id: The routine file has no leaf Destination declaration. DP1 exempts independent file rows; explicit producer/execution relationships carry inheritance.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "fd8572c700cc4625bf5e2e78"
+      ],
+      "reason": "N verified for @element: The activity file has no leaf Destination declaration. DP1 exempts independent file rows; its explicit call relationship carries inheritance.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf"
+}

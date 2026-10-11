@@ -1,0 +1,38 @@
+[
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "e18e861382270af9c26d",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/e18e861382270af9c26d.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "924ff826b6e5b5b404cf",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/packets/inventory/924ff826b6e5b5b404cf.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "cdc165c72d8156e649bc",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cdc165c72d8156e649bc.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b"
+  },
+  {
+    "actor": "/root/qualify_author_one",
+    "assignment": "cf782be6101bfda08d04",
+    "check_observation": null,
+    "mode": "author",
+    "packet": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/packets/inventory/cf782be6101bfda08d04.json",
+    "phase": "inventory",
+    "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b"
+  }
+]

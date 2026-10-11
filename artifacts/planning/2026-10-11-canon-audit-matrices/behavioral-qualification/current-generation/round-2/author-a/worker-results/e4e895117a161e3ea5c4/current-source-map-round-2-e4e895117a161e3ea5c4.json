@@ -1,0 +1,111 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "e4e895117a161e3ea5c4",
+  "attempt": "current-source-map-round-2-e4e895117a161e3ea5c4",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "330d9855c61f1fa6db1e92b2",
+        "a5b35e7460c5ba032ea3ab9c",
+        "a09b4b5068e60047e85b9d20",
+        "4e129aea04e56ac3f5e18eac",
+        "235d809af28915c83b47a336",
+        "cb6557b6c858a3df047947ff",
+        "cced7364e2269714c048fe3b"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/id, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name. This owned native activity row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "381dd396d48f156e5b5332ba",
+        "355ce3ec841005b898e3d8d3"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-12. The owned leaf surface contains its Destination declaration, so DP1 applies in the executing inheritance context: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination archive and the executing workflow ancestor TECHNIQUE.md requires archive. Applicability leaves the comparison result to evaluation.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "69a9fd68e24025b700e9bbb1",
+        "9e2179b4c1fbfc73dc6b4981",
+        "acca57d9a610cd2900940f11",
+        "36ee15fe5284f5e03e6afdc4",
+        "b82b83027689277cdcc2042f"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-1, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2, corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2. The owned leaf Capability/Outputs/Protocol or report-retention/emission clause contains no Destination declaration. DP1 targets the separate leaf destination row and explicit inheritance relationship; artifact production/emission wording alone does not establish this row as a destination surface.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea"
+}

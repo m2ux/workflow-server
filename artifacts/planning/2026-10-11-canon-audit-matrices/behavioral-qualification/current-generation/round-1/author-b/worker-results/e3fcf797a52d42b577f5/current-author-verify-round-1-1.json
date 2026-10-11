@@ -1,0 +1,185 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "e3fcf797a52d42b577f5",
+  "attempt": "current-author-verify-round-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "reason": "Independently verified N. The activity or delivery-step ID only names its owner. It neither supplies an argument key nor resolves the producer step of a routine output; the separately inventoried call and arguments carry AP2.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "0f13f165ba007a4540cef470",
+        "185e903ef3c4ae26da231a32",
+        "4c3a69d6842d941bb1b4ae64",
+        "547682eae905cf61fddd33be",
+        "6dff2018269cdd7f6ce3a242",
+        "883f9febadc76de8d4b64dd6",
+        "923c5917ea2c9d4abe29e519",
+        "a03eed5b1543ec6c3d53b66c",
+        "a30b577290e3406e29334f7b"
+      ],
+      "reason": "Independently verified N. This leaf prose describes production, validation/emission, retention or destination. It contains neither of AP2's binding forms; Markdown artifact mentions are explicitly excluded.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "1682a187cf7dd36419e2a143",
+        "7f71a92e9f425b2094dec98d"
+      ],
+      "reason": "Independently verified A. The routine exports report from emit.report. Resolving emit to produce and comparing report with the declared technique Outputs is exactly the second AP2 binding responsibility.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "23d52f087c143d67f67da445",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "ece85719689c1a3411d52a12",
+        "f1186a7f61ea9f6493402006",
+        "fc60645fdab03b4f360b972e"
+      ],
+      "reason": "Independently verified A. The concrete delivery invocation names deliver and supplies its argument-key set. AP2 requires resolving that routine and comparing the actual keys with Inputs [envelope], including otherwise valid calls.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "30d521174c6c7f6c4a8579ad",
+        "8020bba4283a65b31df0f113",
+        "94b820a882f196103f835741",
+        "e3964a7ca7f68e7c40793e11",
+        "e8a18028e34e1ace5d01fcf3",
+        "f0755acc68e9a62e580665a3",
+        "fc47360bf214ca94a9c2f752"
+      ],
+      "reason": "Independently verified N. Workflow IDs, initial selection and graph exit relationships carry neither routine argument-key sets nor step-id.output-name exports. Both AP2 binding forms are absent from this owned surface.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "387b3abcf94e6a19aabbf992",
+        "790b168511688f3580f49f17",
+        "82c8e910cc4b4df96a89e369",
+        "e6707d2a492bbb28eafc3a21"
+      ],
+      "reason": "Independently verified A. These routine step/call constructs resolve the emit component of emit.report to technique produce. AP2 explicitly requires that resolution before checking the referenced producer output.",
+      "status": "verified"
+    },
+    {
+      "evidence": [
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        }
+      ],
+      "items": [
+        "5fb3f06992383a0be7318734",
+        "c9c06fb4ee9924c6c63c553f"
+      ],
+      "reason": "Independently verified N. The complete ancestor declares Capability and an inherited destination constraint. It has no routine Inputs, invocation keys, output export, or producer Outputs declaration governed by AP2.",
+      "status": "verified"
+    }
+  ],
+  "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467"
+}

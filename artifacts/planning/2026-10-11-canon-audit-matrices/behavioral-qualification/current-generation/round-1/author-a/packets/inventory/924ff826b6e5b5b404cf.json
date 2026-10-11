@@ -1,0 +1,1094 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_author_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "inventory": {
+          "evidence": "Round 1 inventory pilot: 16 items, 50703 input bytes, 15847 output bytes, 221.644 seconds. Conservative one-byte token upper bound with margin; one child slot allocated to inventory verification.",
+          "output_tokens_per_item": 1600,
+          "seconds_per_item": 18
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {},
+      "input_tokens_estimate": 39195,
+      "output_tokens_estimate": 9600,
+      "work_seconds_estimate": 108
+    },
+    "id": "924ff826b6e5b5b404cf",
+    "items": [
+      "inventory:scope:corpus/canon/resources/design-principles.md",
+      "inventory:scope:corpus/qualification/activities/run.yaml",
+      "inventory:scope:corpus/qualification/routines/deliver.yaml",
+      "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md",
+      "inventory:scope:corpus/qualification/techniques/produce.md",
+      "inventory:scope:corpus/qualification/workflow.yaml"
+    ],
+    "mappings": {},
+    "phase": "inventory",
+    "returned": [],
+    "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a/sources",
+  "cells": {},
+  "corpus_manifest": {
+    "corpus/canon/resources/design-principles.md": {
+      "deleted": false,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "references": [],
+      "seed": false,
+      "selected": false
+    },
+    "corpus/qualification/activities/run.yaml": {
+      "deleted": false,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "references": [
+        {
+          "address": "/steps/id=delivery/routine/name",
+          "context": [],
+          "label": "deliver",
+          "source": "corpus/qualification/activities/run.yaml",
+          "target": "corpus/qualification/routines/deliver.yaml"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    },
+    "corpus/qualification/routines/deliver.yaml": {
+      "deleted": false,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "references": [
+        {
+          "address": "/steps/id=emit/technique",
+          "context": [],
+          "label": "produce",
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "target": "corpus/qualification/techniques/produce.md"
+        },
+        {
+          "address": "execution/qualification/run/delivery/deliver/emit",
+          "context": [
+            "corpus/qualification/activities/run.yaml",
+            "corpus/qualification/techniques/TECHNIQUE.md",
+            "corpus/qualification/workflow.yaml"
+          ],
+          "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "target": "corpus/qualification/techniques/produce.md"
+        }
+      ],
+      "seed": false,
+      "selected": true
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md": {
+      "deleted": false,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "references": [],
+      "seed": false,
+      "selected": true
+    },
+    "corpus/qualification/techniques/produce.md": {
+      "deleted": false,
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "references": [
+        {
+          "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+          "context": [],
+          "label": "declared contract context",
+          "source": "corpus/qualification/techniques/produce.md",
+          "target": "corpus/qualification/techniques/TECHNIQUE.md"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    },
+    "corpus/qualification/workflow.yaml": {
+      "deleted": false,
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "references": [
+        {
+          "address": "/initialActivity",
+          "context": [],
+          "label": "graph:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        },
+        {
+          "address": "/graph/run",
+          "context": [],
+          "label": "graph-entry:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        },
+        {
+          "address": "/graph/run/done",
+          "context": [],
+          "label": "graph-entry:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    }
+  },
+  "criteria": {
+    "dp:1": {
+      "end": 8,
+      "family": "1. Honor the executing workflow's inherited destination",
+      "hash": "68de73ad5b5321b9fef65593dd7e5615d3331a251287408ea0c2ca6bc69d41a3",
+      "id": "dp:1",
+      "label": "DP-01",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 5,
+      "text": "## 1. Honor the executing workflow's inherited destination\n\nA leaf technique's Destination declaration must satisfy the Rules of the ancestor TECHNIQUE.md in its executing workflow's techniques directory. This fixture executes produce through qualification's run activity and deliver routine, so it inherits qualification/techniques/TECHNIQUE.md. Compare the leaf's destination value with the inherited required value. The ancestor's constraint is a declaration, not a conflicting leaf destination. Files without a leaf destination declaration are not independently checked for this principle; explicit call and inheritance relationships must carry the rule to the leaf instance.\n",
+      "title": "1. Honor the executing workflow's inherited destination"
+    },
+    "dp:2": {
+      "end": 11,
+      "family": "2. Provide a terminating workflow path",
+      "hash": "78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5",
+      "id": "dp:2",
+      "label": "DP-02",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.",
+      "title": "2. Provide a terminating workflow path"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {},
+  "obligations": {
+    "inventory:scope:corpus/canon/resources/design-principles.md": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/canon/resources/design-principles.md"
+      ]
+    },
+    "inventory:scope:corpus/qualification/activities/run.yaml": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ]
+    },
+    "inventory:scope:corpus/qualification/routines/deliver.yaml": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ]
+    },
+    "inventory:scope:corpus/qualification/techniques/TECHNIQUE.md": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ]
+    },
+    "inventory:scope:corpus/qualification/techniques/produce.md": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ]
+    },
+    "inventory:scope:corpus/qualification/workflow.yaml": {
+      "context_mode": "manifest",
+      "kind": "inventory",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ]
+    }
+  },
+  "required_checks": [
+    "check:guards"
+  ],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/activities/run.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery": {
+      "address": "/steps/id=delivery",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery",
+      "kind": "section",
+      "label": "/steps/id=delivery",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/id": {
+      "address": "/steps/id=delivery/id",
+      "end": 3,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/id",
+      "kind": "item",
+      "label": "/steps/id=delivery/id",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 3,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine": {
+      "address": "/steps/id=delivery/routine",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments": {
+      "address": "/steps/id=delivery/routine/arguments",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments",
+      "kind": "section",
+      "label": "/steps/id=delivery/routine/arguments",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope": {
+      "address": "/steps/id=delivery/routine/arguments/envelope",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/arguments/envelope",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 6,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name": {
+      "address": "/steps/id=delivery/routine/name",
+      "end": 5,
+      "id": "corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name",
+      "kind": "item",
+      "label": "/steps/id=delivery/routine/name",
+      "origin": "touched",
+      "section": "steps",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 5,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/routines/deliver.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "consumer",
+      "section": "id",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs": {
+      "address": "/outputs",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/outputs/report": {
+      "address": "/outputs/report",
+      "end": 3,
+      "id": "corpus/qualification/routines/deliver.yaml#/outputs/report",
+      "kind": "item",
+      "label": "/outputs/report",
+      "origin": "consumer",
+      "section": "outputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 3,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit": {
+      "address": "/steps/id=emit",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "kind": "section",
+      "label": "/steps/id=emit",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id": {
+      "address": "/steps/id=emit/id",
+      "end": 5,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "kind": "item",
+      "label": "/steps/id=emit/id",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique": {
+      "address": "/steps/id=emit/technique",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "kind": "item",
+      "label": "/steps/id=emit/technique",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 6,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7": {
+      "address": "@relationship/3a2f0d25e0e017f7",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7",
+      "kind": "relationship",
+      "label": "produce",
+      "origin": "consumer",
+      "relationship": {
+        "address": "/steps/id=emit/technique",
+        "context": [],
+        "label": "produce",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96": {
+      "address": "@relationship/50a64427faa3df96",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96",
+      "kind": "relationship",
+      "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+      "origin": "consumer",
+      "relationship": {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md",
+          "corpus/qualification/workflow.yaml"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "context",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules": {
+      "address": "/rules",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5": {
+      "address": "/rules/line-5",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5",
+      "kind": "item",
+      "label": "/rules/line-5",
+      "origin": "context",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/techniques/TECHNIQUE.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "context",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/TECHNIQUE.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability": {
+      "address": "/capability",
+      "end": 3,
+      "id": "corpus/qualification/techniques/produce.md#/capability",
+      "kind": "section",
+      "label": "/capability",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/capability/line-2": {
+      "address": "/capability/line-2",
+      "end": 2,
+      "id": "corpus/qualification/techniques/produce.md#/capability/line-2",
+      "kind": "item",
+      "label": "/capability/line-2",
+      "origin": "touched",
+      "section": "capability",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 2,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs": {
+      "address": "/outputs",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs",
+      "kind": "section",
+      "label": "/outputs",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 4,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/outputs/report": {
+      "address": "/outputs/report",
+      "end": 6,
+      "id": "corpus/qualification/techniques/produce.md#/outputs/report",
+      "kind": "section",
+      "label": "/outputs/report",
+      "origin": "touched",
+      "section": "outputs",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 5,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/protocol": {
+      "address": "/protocol",
+      "end": 9,
+      "id": "corpus/qualification/techniques/produce.md#/protocol",
+      "kind": "section",
+      "label": "/protocol",
+      "origin": "touched",
+      "section": "protocol",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 7,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/protocol/line-8": {
+      "address": "/protocol/line-8",
+      "end": 8,
+      "id": "corpus/qualification/techniques/produce.md#/protocol/line-8",
+      "kind": "item",
+      "label": "/protocol/line-8",
+      "origin": "touched",
+      "section": "protocol",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 8,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules": {
+      "address": "/rules",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules",
+      "kind": "section",
+      "label": "/rules",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 10,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11": {
+      "address": "/rules/line-11",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11",
+      "kind": "item",
+      "label": "/rules/line-11",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1": {
+      "address": "/rules/line-11/clause-1",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-1",
+      "kind": "item",
+      "label": "/rules/line-11/clause-1",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2": {
+      "address": "/rules/line-11/clause-2",
+      "end": 11,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-11/clause-2",
+      "kind": "item",
+      "label": "/rules/line-11/clause-2",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 11,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#/rules/line-12": {
+      "address": "/rules/line-12",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#/rules/line-12",
+      "kind": "item",
+      "label": "/rules/line-12",
+      "origin": "touched",
+      "section": "rules",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 12,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@element": {
+      "address": "@element",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8": {
+      "address": "@relationship/f075d23fadb959c8",
+      "end": 12,
+      "id": "corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8",
+      "kind": "relationship",
+      "label": "declared contract context",
+      "origin": "touched",
+      "relationship": {
+        "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+        "context": [],
+        "label": "declared contract context",
+        "source": "corpus/qualification/techniques/produce.md",
+        "target": "corpus/qualification/techniques/TECHNIQUE.md"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/techniques/produce.md",
+      "source_kind": "technique",
+      "sources": [
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md"
+      ],
+      "start": 1,
+      "type": "technique"
+    },
+    "corpus/qualification/workflow.yaml#/graph": {
+      "address": "/graph",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph",
+      "kind": "section",
+      "label": "/graph",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 4,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run": {
+      "address": "/graph/run",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run",
+      "kind": "section",
+      "label": "/graph/run",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run/done": {
+      "address": "/graph/run/done",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run/done",
+      "kind": "item",
+      "label": "/graph/run/done",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/id": {
+      "address": "/id",
+      "end": 1,
+      "id": "corpus/qualification/workflow.yaml#/id",
+      "kind": "item",
+      "label": "/id",
+      "origin": "touched",
+      "section": "id",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/initialActivity": {
+      "address": "/initialActivity",
+      "end": 2,
+      "id": "corpus/qualification/workflow.yaml#/initialActivity",
+      "kind": "item",
+      "label": "/initialActivity",
+      "origin": "touched",
+      "section": "initialActivity",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 2,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@element": {
+      "address": "@element",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "touched",
+      "section": "Whole Element",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [],
+  "supplemental": {}
+}

@@ -1,0 +1,164 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+  "assignment": "d6ff6379acdb68eeea20",
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-d6ff6379acdb68eeea20",
+  "records": [
+    {
+      "items": [
+        "5551fe05b667e60209399004",
+        "ca0a66d25c90e652baa92f28"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/workflow.yaml#@element, corpus/qualification/workflow.yaml#/id. The workflow defines initialActivity run and graph exit done to null. Its graph/identifier surfaces and workflow-to-activity relationships are not technique emission instructions; AP1 expressly excludes graph labels.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "6d000a7587cb7a720d3ce09a"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/activities/run.yaml#@element. The activity defines run and invokes routine deliver with argument key envelope. Its identifiers, routine-call fields and call relationship are YAML orchestration/binding surfaces; AP1 expressly excludes routine calls and bindings from emission instructions.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "8ab5a44208c83cc6801721f8"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#@relationship/f075d23fadb959c8. This row owns the leaf-to-ancestor contract relationship. The ancestor requires archive and the leaf declares archive; carrying an inherited destination is not itself a Protocol instruction or Rules clause that directs emission.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "9156a757fd93955348ca5766"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#/id. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "d074a916d8f80c61b3aa18a0"
+      ],
+      "status": "A",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#@element. This leaf owns both an emitting Protocol instruction (Validate the report, then emit it.) and an emitting Rules clause (validate the report before each emission). AP1 requires each instruction/clause to be considered independently; applicability does not assert its conformance.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "e42353cfc8fe3169b809b996"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53. The activity defines run and invokes routine deliver with argument key envelope. Its identifiers, routine-call fields and call relationship are YAML orchestration/binding surfaces; AP1 expressly excludes routine calls and bindings from emission instructions.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

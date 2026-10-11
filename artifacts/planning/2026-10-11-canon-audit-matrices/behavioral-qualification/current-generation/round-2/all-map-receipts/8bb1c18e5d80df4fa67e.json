@@ -1,0 +1,191 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-b",
+  "assignment": "8bb1c18e5d80df4fa67e",
+  "snapshot": "090c865520a859fde87978508843f79273505b51ddf7fa859f860838baef2ca2",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-2-8bb1c18e5d80df4fa67e",
+  "records": [
+    {
+      "items": [
+        "6eb38943804944cf6cfbb4ed",
+        "dadf707dc4833496ce962762",
+        "9839de920cafa86c93f9e319",
+        "7e07755f91a05aa3f3a47b42",
+        "a700a3294be653eb8e533547",
+        "cc4fea783a74407b8fdb654e"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2, corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary, corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8. The technique owns Capability/Outputs/Protocol/Rules text or an inheritance relationship. None defines initialActivity or workflow graph exit targets, so it has no DP2 finite-path responsibility.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "7c49f2961aec4917ed955bd7",
+        "ad7314b738ea597d93ae3b23"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report. The routine defines Inputs, an emit.report export and a produce step/call. These local steps and execution relationships do not add workflow graph exits under DP2; the workflow rows own the finite-path obligation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "a6cc9c95bd8a15eec9337ab9"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7. The routine defines Inputs, an emit.report export and a produce step/call. These local steps and execution relationships do not add workflow graph exits under DP2; the workflow rows own the finite-path obligation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "7616d539ed6effba75237723"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. The routine defines Inputs, an emit.report export and a produce step/call. These local steps and execution relationships do not add workflow graph exits under DP2; the workflow rows own the finite-path obligation.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "d9b55f0b6cbe3ed6ab868ed5",
+        "4da9396f20f50a18673256c5",
+        "54a73e1bf111128988cf03fe"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/techniques/TECHNIQUE.md#@element. The technique owns Capability/Outputs/Protocol/Rules text or an inheritance relationship. None defines initialActivity or workflow graph exit targets, so it has no DP2 finite-path responsibility.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    },
+    {
+      "items": [
+        "36c8e451b93d39512aae352f"
+      ],
+      "status": "N",
+      "reason": "dp:2; owned rows corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53. The activity invokes deliver inside its steps. DP2 states that activity/routine steps do not add workflow graph exits; this activity surface or activity-to-routine call does not own initialActivity/graph reachability.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1,
+          "end": 3
+        },
+        {
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 9,
+          "end": 11
+        }
+      ]
+    }
+  ]
+}

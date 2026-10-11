@@ -1,0 +1,157 @@
+{
+  "actor": "/root/qualify_audit_two",
+  "assignment": "95a42db57a9aa3305f05",
+  "attempt": "current-source-map-round-1-95a42db57a9aa3305f05",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "ab40e04b150dd3790c5764db",
+        "791a31ca8731b94c89d67e5c",
+        "cf440ff1717daba3ba33af52",
+        "af24593c352cedfdf9a972fa",
+        "65dd3d64e8c54c7713685121"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/routines/deliver.yaml#/inputs, corpus/qualification/routines/deliver.yaml#/inputs/0, corpus/qualification/routines/deliver.yaml#@element. This owned native routine row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b3f616c2c1a987217e5cf61b",
+        "67ae926240e520bfdb63b1a3",
+        "b6ad6f9e4c3bf6bcd7517234",
+        "3dd8981b7cf70f3489f0cb9a"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/techniques/TECHNIQUE.md#/rules, corpus/qualification/techniques/TECHNIQUE.md#/rules/line-5, corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2. The ancestor declares Destination must be archive. DP1 explicitly treats this as the inherited constraint, not a conflicting leaf destination; the owned ancestor surface is not independently judged as a leaf instance.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "b7876638c82ca7835e6ecd54",
+        "8b527c51fa312ce306f5d8f4"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary. The owned leaf Capability/Outputs/Protocol or report-retention/emission clause contains no Destination declaration. DP1 targets the separate leaf destination row and explicit inheritance relationship; artifact production/emission wording alone does not establish this row as a destination surface.",
+      "status": "N"
+    },
+    {
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "eb3d9f625d45294630564c36",
+        "15ee43746437cfdf860b1519"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7, corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. This explicit call/execution relationship lies on the concrete executing chain: qualification initialActivity run invokes deliver from delivery; deliver calls produce from emit; produce declares Destination public and the executing workflow ancestor TECHNIQUE.md requires archive. DP1 expressly requires call and inheritance relationships to carry the rule to that leaf instance, even when the caller file has no destination declaration.",
+      "status": "A"
+    },
+    {
+      "evidence": [
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        },
+        {
+          "end": 3,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 8,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 5
+        }
+      ],
+      "items": [
+        "665c1a7ad6f6a7650e3f374a"
+      ],
+      "reason": "dp:1; owned rows corpus/qualification/workflow.yaml#/initialActivity. This owned native workflow row has no leaf Destination declaration. DP1 says such files are not independently checked; their separately inventoried explicit call/execution relationships carry the inherited constraint to produce.",
+      "status": "N"
+    }
+  ],
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7"
+}

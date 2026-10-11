@@ -1,0 +1,477 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_audit_two",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "map": {
+          "evidence": "Round 1 required-work pilots: 49 cells in 186.767 seconds and 201.295 seconds; returned JSON 17806 and 41952 bytes. Conservative one-byte token upper bound plus margin yields 1024 output tokens per cell and 6 seconds per cell. Pilot receipts and transcripts are retained; source/tool refresh requires current judgments. One child slot is allocated to each mode's queue within the three-child pool. The 18-byte observed estimate overrun raised the output allowance to 1100.",
+          "output_tokens_per_item": 1100,
+          "seconds_per_item": 6
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/design-principles.md": [
+          [
+            1,
+            5
+          ],
+          [
+            9,
+            11
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/workflow.yaml": [
+          [
+            1,
+            5
+          ]
+        ]
+      },
+      "input_tokens_estimate": 17715,
+      "output_tokens_estimate": 15400,
+      "work_seconds_estimate": 84
+    },
+    "id": "a662956bc7f187dca5fa",
+    "items": [
+      "3f2fc1d2f91b27a5d46f0504",
+      "8862878198e6198ef77c1f28",
+      "48da822c85267d96ea48c4c2",
+      "5453a725eb6086baaa72c972",
+      "f82d1cd9016de1cdd797e170",
+      "569231fa0b1023abbf3fc5e4",
+      "7567be6ff4d583433092c972",
+      "90bd5ed8d7c0859a6fbe41a1",
+      "094759e3ffb8236db086b566",
+      "9a13e148e0a434d148bef242",
+      "e0fcd50974c10678a3e2fb44",
+      "0e0de76a45b1ce5cc0a55a2d",
+      "0dfaae8a980c43d6afea14bc",
+      "19723157905da0f5874e77db"
+    ],
+    "mappings": {},
+    "phase": "map",
+    "returned": [],
+    "snapshot": "533fea39cf960a51d1002811b4eb02b148b4dc47a2421485b8f7ce3fc3ac0467",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-b/sources",
+  "cells": {
+    "094759e3ffb8236db086b566": [
+      "corpus/qualification/workflow.yaml#/graph",
+      "dp:2"
+    ],
+    "0dfaae8a980c43d6afea14bc": [
+      "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "dp:2"
+    ],
+    "0e0de76a45b1ce5cc0a55a2d": [
+      "corpus/qualification/routines/deliver.yaml#/inputs",
+      "dp:2"
+    ],
+    "19723157905da0f5874e77db": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "dp:2"
+    ],
+    "3f2fc1d2f91b27a5d46f0504": [
+      "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593",
+      "dp:2"
+    ],
+    "48da822c85267d96ea48c4c2": [
+      "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "dp:2"
+    ],
+    "5453a725eb6086baaa72c972": [
+      "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "dp:2"
+    ],
+    "569231fa0b1023abbf3fc5e4": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "dp:2"
+    ],
+    "7567be6ff4d583433092c972": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "dp:2"
+    ],
+    "8862878198e6198ef77c1f28": [
+      "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "dp:2"
+    ],
+    "90bd5ed8d7c0859a6fbe41a1": [
+      "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "dp:2"
+    ],
+    "9a13e148e0a434d148bef242": [
+      "corpus/qualification/workflow.yaml#/graph/run",
+      "dp:2"
+    ],
+    "e0fcd50974c10678a3e2fb44": [
+      "corpus/qualification/workflow.yaml#/graph/run/done",
+      "dp:2"
+    ],
+    "f82d1cd9016de1cdd797e170": [
+      "corpus/qualification/routines/deliver.yaml#/steps",
+      "dp:2"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "dp:2": {
+      "end": 11,
+      "family": "2. Provide a terminating workflow path",
+      "hash": "78a6dac33d364b864a13195d42f402c1231bab6a0ca633b9752e937d3040d9a5",
+      "id": "dp:2",
+      "label": "DP-02",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect.",
+      "title": "2. Provide a terminating workflow path"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {},
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/routines/deliver.yaml#/inputs": {
+      "address": "/inputs",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs",
+      "kind": "section",
+      "label": "/inputs",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/inputs/0": {
+      "address": "/inputs/0",
+      "end": 2,
+      "id": "corpus/qualification/routines/deliver.yaml#/inputs/0",
+      "kind": "item",
+      "label": "/inputs/0",
+      "origin": "consumer",
+      "section": "inputs",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 2,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps": {
+      "address": "/steps",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps",
+      "kind": "section",
+      "label": "/steps",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit": {
+      "address": "/steps/id=emit",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit",
+      "kind": "section",
+      "label": "/steps/id=emit",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id": {
+      "address": "/steps/id=emit/id",
+      "end": 5,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/id",
+      "kind": "item",
+      "label": "/steps/id=emit/id",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 5,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique": {
+      "address": "/steps/id=emit/technique",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#/steps/id=emit/technique",
+      "kind": "item",
+      "label": "/steps/id=emit/technique",
+      "origin": "consumer",
+      "section": "steps",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 6,
+      "type": "routine"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    },
+    "corpus/qualification/workflow.yaml#/graph": {
+      "address": "/graph",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph",
+      "kind": "section",
+      "label": "/graph",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 4,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run": {
+      "address": "/graph/run",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run",
+      "kind": "section",
+      "label": "/graph/run",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#/graph/run/done": {
+      "address": "/graph/run/done",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#/graph/run/done",
+      "kind": "item",
+      "label": "/graph/run/done",
+      "origin": "touched",
+      "section": "graph",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 5,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593": {
+      "address": "@relationship/27bf829b0e84c593",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/27bf829b0e84c593",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877": {
+      "address": "@relationship/3b27fd01db44f877",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/3b27fd01db44f877",
+      "kind": "relationship",
+      "label": "graph:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/initialActivity",
+        "context": [],
+        "label": "graph:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55": {
+      "address": "@relationship/475a98faaf5b9a55",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/475a98faaf5b9a55",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    },
+    "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b": {
+      "address": "@relationship/aa4b84de66a9776b",
+      "end": 5,
+      "id": "corpus/qualification/workflow.yaml#@relationship/aa4b84de66a9776b",
+      "kind": "relationship",
+      "label": "graph-entry:run",
+      "origin": "touched",
+      "relationship": {
+        "address": "/graph/run/done",
+        "context": [],
+        "label": "graph-entry:run",
+        "source": "corpus/qualification/workflow.yaml",
+        "target": "corpus/qualification/activities/run.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/workflow.yaml",
+      "source_kind": "workflow",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/workflow.yaml"
+      ],
+      "start": 1,
+      "type": "workflow"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"
+    },
+    {
+      "end": 5,
+      "hash": "be38d65675bed55315fdb8dcb8b2ebe468cbf5a9ba63ac9a281ecd0549e63fc1",
+      "source": "corpus/qualification/workflow.yaml",
+      "start": 1,
+      "text": "id: qualification\ninitialActivity: run\ngraph:\n  run:\n    done: run"
+    },
+    {
+      "end": 5,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 1,
+      "text": "# Controlled qualification design principles\n\nThese two principles apply only to this controlled qualification dialect. They do not stand in for the project's full canon.\n\n## 1. Honor the executing workflow's inherited destination"
+    },
+    {
+      "end": 11,
+      "hash": "6c205b2ef7f2ef9498ffe1d801a42438a5350bddac684702a58ea9a525bf2121",
+      "source": "corpus/canon/resources/design-principles.md",
+      "start": 9,
+      "text": "## 2. Provide a terminating workflow path\n\nA workflow must have at least one finite path from initialActivity through its graph to a null destination. Each graph key names an activity and each nested label names an exit whose value is the next activity or null. A self-loop is legal only when another reachable path terminates. Assess this as a whole-workflow invariant; matching individual activity IDs does not prove termination. Activity and routine steps do not add graph exits in this dialect."
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    }
+  ],
+  "supplemental": {}
+}

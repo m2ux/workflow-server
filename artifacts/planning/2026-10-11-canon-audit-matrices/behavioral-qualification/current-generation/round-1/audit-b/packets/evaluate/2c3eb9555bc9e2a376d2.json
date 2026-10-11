@@ -1,0 +1,270 @@
+{
+  "assignment": {
+    "actor": "/root/qualify_audit_one",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "evaluate": {
+          "evidence": "Prior generation Audit DP1 output averaged 1175.45 bytes/item; Author evaluated 94 cells in 836.52 seconds excluding its recorded permission-review pause bracket. Conservative bytes/token1 with output/work margin; new generation decisions and receipts are required.",
+          "output_tokens_per_item": 1600,
+          "seconds_per_item": 10
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {
+        "corpus/canon/resources/anti-patterns.md": [
+          [
+            1,
+            6
+          ],
+          [
+            15,
+            21
+          ]
+        ],
+        "corpus/qualification/activities/run.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/routines/deliver.yaml": [
+          [
+            1,
+            6
+          ]
+        ],
+        "corpus/qualification/techniques/produce.md": [
+          [
+            1,
+            12
+          ]
+        ]
+      },
+      "input_tokens_estimate": 12088,
+      "output_tokens_estimate": 3200,
+      "work_seconds_estimate": 20
+    },
+    "id": "2c3eb9555bc9e2a376d2",
+    "items": [
+      "eeab805ea4653756496776b5",
+      "fa301823ccd44ed9374ce575"
+    ],
+    "mappings": {
+      "eeab805ea4653756496776b5": "d48946c2d1fbf7824c6fb0629be6655f6f7b6b65f244b79304808e2ffca9ca90",
+      "fa301823ccd44ed9374ce575": "a6d34b2bd0474b02423f83b7a5ce274ea3eefe3645331b59d642ceb7006689b1"
+    },
+    "phase": "evaluate",
+    "returned": [],
+    "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b/sources",
+  "cells": {
+    "eeab805ea4653756496776b5": [
+      "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "ap:broken-binding"
+    ],
+    "fa301823ccd44ed9374ce575": [
+      "corpus/qualification/routines/deliver.yaml#@element",
+      "ap:broken-binding"
+    ]
+  },
+  "corpus_manifest": {},
+  "criteria": {
+    "ap:broken-binding": {
+      "end": 21,
+      "family": "Controlled Qualification",
+      "hash": "7ee32d0bbe5dc4d5bcc89c9943bb02ab73353c5ee9fe58a6c9e98bed1b3e7cc8",
+      "id": "ap:broken-binding",
+      "label": "AP-02",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares.",
+      "title": "AP-02. broken-binding"
+    }
+  },
+  "diagnostics": [],
+  "mappings": {
+    "eeab805ea4653756496776b5": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "97db7afd44cb3170fa69",
+      "attempt": "current-source-map-round-1-97db7afd44cb3170fa69",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "d531df18c333b686aa1adcb32bd78ff470fc5012641d3375142dc31923e93cae",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53. This activity-to-deliver call relationship carries the concrete argument key set {packet} and the target Inputs [envelope]. AP2 expressly checks that invocation contract, independently of routine validity.",
+      "status": "A"
+    },
+    "fa301823ccd44ed9374ce575": {
+      "actor": "/root/qualify_audit_two",
+      "assignment": "97db7afd44cb3170fa69",
+      "attempt": "current-source-map-round-1-97db7afd44cb3170fa69",
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1
+        },
+        {
+          "end": 21,
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15
+        }
+      ],
+      "fingerprint": "e281fc5845a5a0087f26ac7f9cc7c60474abb4faa84cdb8eb653f8aed0922b98",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/routines/deliver.yaml#@element. This routine/execution surface connects the delivery argument key packet to Inputs [envelope] and resolves exported emit.report through emit to produce Outputs [summary]. Both concrete binding responsibilities are within AP2; this receipt records applicability only.",
+      "status": "A"
+    }
+  },
+  "obligations": {},
+  "required_checks": [],
+  "rows": {
+    "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53": {
+      "address": "@relationship/5a93bb0629055f53",
+      "end": 6,
+      "id": "corpus/qualification/activities/run.yaml#@relationship/5a93bb0629055f53",
+      "kind": "relationship",
+      "label": "deliver",
+      "origin": "touched",
+      "relationship": {
+        "address": "/steps/id=delivery/routine/name",
+        "context": [],
+        "label": "deliver",
+        "source": "corpus/qualification/activities/run.yaml",
+        "target": "corpus/qualification/routines/deliver.yaml"
+      },
+      "section": "Relationships",
+      "source": "corpus/qualification/activities/run.yaml",
+      "source_kind": "activity",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "activity"
+    },
+    "corpus/qualification/routines/deliver.yaml#@element": {
+      "address": "@element",
+      "end": 6,
+      "id": "corpus/qualification/routines/deliver.yaml#@element",
+      "kind": "element",
+      "label": "@element",
+      "origin": "consumer",
+      "section": "Whole Element",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "source_kind": "routine",
+      "sources": [
+        "corpus/qualification/routines/deliver.yaml"
+      ],
+      "start": 1,
+      "type": "routine"
+    }
+  },
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "audit",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 1
+  },
+  "source_excerpts": [
+    {
+      "end": 6,
+      "hash": "e53c6d5d9ae4db6015872c0df77b1a2111f7736f2e0c7712f058940ed08f4813",
+      "source": "corpus/qualification/activities/run.yaml",
+      "start": 1,
+      "text": "id: run\nsteps:\n  - id: delivery\n    routine:\n      name: deliver\n      arguments: {packet: sealed}"
+    },
+    {
+      "end": 6,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "source": "corpus/qualification/routines/deliver.yaml",
+      "start": 1,
+      "text": "id: deliver\ninputs: [envelope]\noutputs: {report: emit.report}\nsteps:\n  - id: emit\n    technique: produce"
+    },
+    {
+      "end": 6,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 1,
+      "text": "# Controlled qualification anti-patterns\n\nThese two entries are test criteria, not the project's full canon. Interpret only the binding and instruction constructs defined here. Each distinct failing instruction or binding is one finding; section and whole-element rows can expose the same finding.\n\n## Controlled Qualification\n"
+    },
+    {
+      "end": 21,
+      "hash": "0c5b2c9f9813d5f4545fc938f1a0e41b167b3ad6e450db95f35a0f3ef6084025",
+      "source": "corpus/canon/resources/anti-patterns.md",
+      "start": 15,
+      "text": "### AP-02. broken-binding\n\nDetect: Either binding contract fails: (1) an activity's routine invocation has an argument-key set different from the routine's Inputs list; or (2) a routine Outputs binding of the form step-id.output-name names an output absent from the technique called by that step. Resolve the step and technique before comparing their names. The keys below a technique's Outputs heading declare its output names. Check each concrete routine invocation, even when its routine declaration is valid.\n\nDo not flag: Matching argument keys and declared output names satisfy the contract. Argument values such as sealed are opaque test values. The fixture has no optional parameters or aliases. Markdown artifact mentions are not bindings. An output's declared name need not match the name of its exported routine binding.\n\nFix: Match the routine's exact input names at the invocation and bind only outputs that its called technique declares."
+    },
+    {
+      "end": 12,
+      "hash": "27aec38a4461c1024c390cf4601ccb17ae6f07a40a3c0d5c43dc6b0c7a6b0729",
+      "source": "corpus/qualification/techniques/produce.md",
+      "start": 1,
+      "text": "## Capability\nProduce a report.\n\n## Outputs\n### summary\n\n## Protocol\n- Emit the report without validation.\n\n## Rules\n- Retain the report ID; emit the report without validation.\n- Destination is public."
+    }
+  ],
+  "supplemental": {}
+}

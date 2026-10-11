@@ -1,0 +1,125 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/author-a",
+  "assignment": "9d8a293b7e57f1274de2",
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-9d8a293b7e57f1274de2",
+  "records": [
+    {
+      "items": [
+        "fc60645fdab03b4f360b972e",
+        "ece85719689c1a3411d52a12",
+        "366a1ced08e276234b09d365",
+        "e4e1d36386ad37dc4007d953",
+        "f45b86c19f25461cbe667622"
+      ],
+      "status": "A",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps, corpus/qualification/activities/run.yaml#/steps/id=delivery, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments, corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/arguments/envelope. The owned invocation/argument surface contains the concrete argument key envelope for deliver, whose Inputs declares envelope. AP2 requires comparing these key sets; sealed is an opaque value and does not settle applicability.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "03b141fa3c167d6b5347f32a"
+      ],
+      "status": "N",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps/id=delivery/id. This owned row is an activity or activity-step identifier. It neither declares an invocation argument key nor resolves an exported routine output; the activity routine-call and argument rows carry the concrete AP2 responsibilities.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "23d52f087c143d67f67da445"
+      ],
+      "status": "A",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/activities/run.yaml#/steps/id=delivery/routine/name. The routine name deliver resolves this concrete activity invocation to Inputs [envelope]. Its sibling arguments have the single key envelope; AP2 requires resolving and checking every concrete invocation against its declared input keys.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    },
+    {
+      "items": [
+        "a30b577290e3406e29334f7b",
+        "6dff2018269cdd7f6ce3a242",
+        "923c5917ea2c9d4abe29e519",
+        "a03eed5b1543ec6c3d53b66c",
+        "185e903ef3c4ae26da231a32",
+        "4c3a69d6842d941bb1b4ae64",
+        "883f9febadc76de8d4b64dd6"
+      ],
+      "status": "N",
+      "reason": "ap:broken-binding; owned rows corpus/qualification/techniques/produce.md#/rules, corpus/qualification/techniques/produce.md#/rules/line-11, corpus/qualification/techniques/produce.md#/rules/line-11/clause-1, corpus/qualification/techniques/produce.md#/rules/line-11/clause-2, corpus/qualification/techniques/produce.md#/rules/line-12, corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2. The owned Capability/Protocol/Rules surface contains prose about producing, retaining or routing a report. AP2 expressly excludes artifact mentions in Markdown prose; the separate Outputs declaration supplies the producer name used by the routine binding.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 15,
+          "end": 21
+        }
+      ]
+    }
+  ]
+}

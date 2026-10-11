@@ -1,0 +1,39 @@
+{
+  "actor": "/root/qualify_author_one",
+  "assignment": "953d0bd948811d0bb5b9",
+  "attempt": "current-author-evaluate-1-1",
+  "records": [
+    {
+      "evidence": [
+        {
+          "end": 11,
+          "source": "corpus/canon/resources/design-principles.md",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "094759e3ffb8236db086b566",
+        "48da822c85267d96ea48c4c2",
+        "5453a725eb6086baaa72c972",
+        "8862878198e6198ef77c1f28",
+        "9a13e148e0a434d148bef242",
+        "c7fdcca69a6f6d3b3cfa7009",
+        "e0fcd50974c10678a3e2fb44",
+        "e5c1842a573eccbf8d7d7e60"
+      ],
+      "reason": "The complete graph starts at run and its done exit leads directly to null. The finite path run --done--> null satisfies DP2.",
+      "status": "pass"
+    }
+  ],
+  "snapshot": "57c028b88c0e5e8cb825a4745ac49760d1760bb1573f4456454b5c0fa668bd23"
+}

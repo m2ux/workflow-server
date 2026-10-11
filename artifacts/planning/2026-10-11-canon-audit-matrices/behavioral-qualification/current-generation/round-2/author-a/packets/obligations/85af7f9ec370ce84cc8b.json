@@ -1,0 +1,178 @@
+{
+  "assignment": {
+    "actor": "/root",
+    "budgets": {
+      "bytes_per_token": 1,
+      "calibration": {
+        "obligations": {
+          "evidence": "Root required-work check pilot: 5954 packet bytes,1538 receipt bytes,22.580 seconds; conservative bytes/token1. root-obligations-pilot-measurement.json",
+          "output_tokens_per_item": 2048,
+          "seconds_per_item": 30
+        }
+      },
+      "context_tokens": 258400,
+      "output_tokens": 16000,
+      "reserve_tokens": 20000,
+      "safety_tokens": 30000,
+      "slots": 1,
+      "work_seconds": 600
+    },
+    "estimate": {
+      "context": {},
+      "input_tokens_estimate": 6535,
+      "output_tokens_estimate": 2048,
+      "work_seconds_estimate": 30
+    },
+    "id": "85af7f9ec370ce84cc8b",
+    "items": [
+      "check:guards"
+    ],
+    "mappings": {},
+    "phase": "obligations",
+    "returned": [],
+    "snapshot": "b1550ae4b0e8320711c422c06455ff99020de0f449c1b8d807d0e5b84f0125ea",
+    "status": "pending"
+  },
+  "authority": "Read captured sources and return evidence; the coordinator owns state and edits.",
+  "captured_sources": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/author-a/sources",
+  "cells": {},
+  "corpus_manifest": {
+    "corpus/qualification/activities/run.yaml": {
+      "deleted": false,
+      "hash": "21a952302624f808b1450bb9910245607741471ed3e8401a4cd53b74932d267a",
+      "references": [
+        {
+          "address": "/steps/id=delivery/routine/name",
+          "context": [],
+          "label": "deliver",
+          "source": "corpus/qualification/activities/run.yaml",
+          "target": "corpus/qualification/routines/deliver.yaml"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    },
+    "corpus/qualification/routines/deliver.yaml": {
+      "deleted": false,
+      "hash": "ee37bfa52b91453754fed501b94fc62d03177e68f02a5b38e76b5339f1e059f1",
+      "references": [
+        {
+          "address": "/steps/id=emit/technique",
+          "context": [],
+          "label": "produce",
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "target": "corpus/qualification/techniques/produce.md"
+        },
+        {
+          "address": "execution/qualification/run/delivery/deliver/emit",
+          "context": [
+            "corpus/qualification/activities/run.yaml",
+            "corpus/qualification/techniques/TECHNIQUE.md",
+            "corpus/qualification/workflow.yaml"
+          ],
+          "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "target": "corpus/qualification/techniques/produce.md"
+        }
+      ],
+      "seed": false,
+      "selected": true
+    },
+    "corpus/qualification/techniques/TECHNIQUE.md": {
+      "deleted": false,
+      "hash": "dd68739fd074be026cbe01f93d2509e9d0c65fa0aa4a19eb1b2f60b4d3441c8b",
+      "references": [],
+      "seed": false,
+      "selected": true
+    },
+    "corpus/qualification/techniques/produce.md": {
+      "deleted": false,
+      "hash": "53367edcf890fd3d39b34e55f325affa64db1663fe33b1aeefb8796519bf8f77",
+      "references": [
+        {
+          "address": "ancestor/corpus/qualification/techniques/TECHNIQUE.md",
+          "context": [],
+          "label": "declared contract context",
+          "source": "corpus/qualification/techniques/produce.md",
+          "target": "corpus/qualification/techniques/TECHNIQUE.md"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    },
+    "corpus/qualification/workflow.yaml": {
+      "deleted": false,
+      "hash": "02fd7e717221514e930f4417209eb5d3b7ff9fd0a8809f4aab65ddd558912771",
+      "references": [
+        {
+          "address": "/initialActivity",
+          "context": [],
+          "label": "graph:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        },
+        {
+          "address": "/graph/run",
+          "context": [],
+          "label": "graph-entry:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        },
+        {
+          "address": "/graph/run/done",
+          "context": [],
+          "label": "graph-entry:run",
+          "source": "corpus/qualification/workflow.yaml",
+          "target": "corpus/qualification/activities/run.yaml"
+        }
+      ],
+      "seed": true,
+      "selected": true
+    }
+  },
+  "criteria": {},
+  "diagnostics": [],
+  "mappings": {},
+  "obligations": {
+    "check:guards": {
+      "context_mode": "manifest",
+      "kind": "check",
+      "sources": [
+        "corpus/qualification/activities/run.yaml",
+        "corpus/qualification/routines/deliver.yaml",
+        "corpus/qualification/techniques/TECHNIQUE.md",
+        "corpus/qualification/techniques/produce.md",
+        "corpus/qualification/workflow.yaml"
+      ]
+    }
+  },
+  "required_checks": [],
+  "rows": {},
+  "scope": {
+    "checks": [
+      "guards"
+    ],
+    "paths": [
+      "corpus/qualification/workflow.yaml",
+      "corpus/qualification/activities/run.yaml",
+      "corpus/qualification/techniques/produce.md"
+    ],
+    "qualification_mode": "author",
+    "relationships": [
+      {
+        "address": "execution/qualification/run/delivery/deliver/emit",
+        "context": [
+          "corpus/qualification/workflow.yaml",
+          "corpus/qualification/activities/run.yaml",
+          "corpus/qualification/techniques/TECHNIQUE.md"
+        ],
+        "label": "qualification/run#delivery invokes deliver#emit; export emit.report; inherit qualification destination",
+        "source": "corpus/qualification/routines/deliver.yaml",
+        "target": "corpus/qualification/techniques/produce.md"
+      }
+    ],
+    "repeat": 2
+  },
+  "source_excerpts": [],
+  "supplemental": {}
+}

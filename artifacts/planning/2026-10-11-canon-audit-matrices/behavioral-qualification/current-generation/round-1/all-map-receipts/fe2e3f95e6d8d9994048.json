@@ -1,0 +1,209 @@
+{
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-1/audit-b",
+  "assignment": "fe2e3f95e6d8d9994048",
+  "snapshot": "1a49a0da298528d4749ba8687d9ea8dd10ffe689f7d37cca7e45bc544f0a4cf7",
+  "actor": "/root/qualify_audit_two",
+  "attempt": "current-source-map-round-1-fe2e3f95e6d8d9994048",
+  "records": [
+    {
+      "items": [
+        "668f2c03b5c1dfffd6143cc5",
+        "7f339716e8d7474fb2512654"
+      ],
+      "status": "A",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/protocol, corpus/qualification/techniques/produce.md#/protocol/line-8. The owned Protocol surface contains the concrete report-emission instruction: Emit the report without validation. AP1 applies to each such instruction regardless of whether validation is required.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "8f64e24f8a4caa9482d28228",
+        "232c484eaf1003ef830d4ffa",
+        "2ec151da2546cd9066780932"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#/outputs, corpus/qualification/routines/deliver.yaml#/outputs/report, corpus/qualification/routines/deliver.yaml#@element. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "afeb129e1e03e4f353693950"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#@relationship/3a2f0d25e0e017f7. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "7b47769dd43afb09823a4b14"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/routines/deliver.yaml#@relationship/50a64427faa3df96. The routine declares input envelope, exports report as emit.report and calls technique produce. These declaration, binding and call/execution surfaces do not themselves direct emission in a technique Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1,
+          "end": 6
+        },
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "d9eb0eb2cb8f9fb790e82eee",
+        "720f7eeadf6be862dd39b7ab",
+        "01bc60dde7d03c634b92d11c"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/TECHNIQUE.md#/capability, corpus/qualification/techniques/TECHNIQUE.md#/capability/line-2, corpus/qualification/techniques/TECHNIQUE.md#@element. The ancestor contains only a Capability description and the constraint Destination must be archive. These inherited declarations do not direct artifact emission in a leaf Protocol instruction or Rules clause.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "e00abe344b2cf11c702b34f1",
+        "b055cfe76040cd42f5d207a8"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/outputs, corpus/qualification/techniques/produce.md#/outputs/summary. The owned Outputs surface declares the name summary; an output declaration does not direct emission under AP1.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    },
+    {
+      "items": [
+        "e192558242a4ed960c5d7a46",
+        "e3b51412d1cbb5b26dbb8664"
+      ],
+      "status": "N",
+      "reason": "ap:emission-without-validation; owned rows corpus/qualification/techniques/produce.md#/capability, corpus/qualification/techniques/produce.md#/capability/line-2. Capability describes the service as Produce a report; AP1 expressly excludes descriptive Capability text from the imperative Protocol/Rules emission check.",
+      "evidence": [
+        {
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1,
+          "end": 12
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 1,
+          "end": 5
+        },
+        {
+          "source": "corpus/canon/resources/anti-patterns.md",
+          "start": 7,
+          "end": 14
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "actor": "/root",
+  "assignment": "37d87206b8543af5e153",
+  "attempt": "root-current-support",
+  "records": [
+    {
+      "check": {
+        "command": [
+          "/usr/bin/python3",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/check.py",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test/fixtures/audit-qualification/clean",
+          "/home/mike1/projects/dev/workflow-server/.worktrees/engine-pin"
+        ],
+        "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/skill/canon-audit-matrices/skills/workflow-canon/test",
+        "exit_code": 0,
+        "output": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a/fixture-guard.txt"
+      },
+      "evidence": [
+        {
+          "end": 6,
+          "source": "corpus/qualification/activities/run.yaml",
+          "start": 1
+        },
+        {
+          "end": 6,
+          "source": "corpus/qualification/routines/deliver.yaml",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/techniques/TECHNIQUE.md",
+          "start": 1
+        },
+        {
+          "end": 12,
+          "source": "corpus/qualification/techniques/produce.md",
+          "start": 1
+        },
+        {
+          "end": 5,
+          "source": "corpus/qualification/workflow.yaml",
+          "start": 1
+        }
+      ],
+      "items": [
+        "check:guards"
+      ],
+      "reason": "The recorded controlled guard command completed with exit 0: eight sources parse, the four controlled criteria are present, and required IDs, steps and graph shapes satisfy its assertions. This does not assert engine-schema or semantic conformance.",
+      "status": "pass"
+    }
+  ],
+  "run": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-11-canon-audit-matrices/behavioral-qualification/current-generation/round-2/audit-a",
+  "snapshot": "b6e3494c63131fe1f8c885f9b3fa92c2524105ffbbd5730b44ee70021be0aadf"
+}
