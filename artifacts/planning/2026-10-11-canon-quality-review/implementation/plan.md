@@ -24,9 +24,17 @@ Every policy-dependent recommendation carries a user answer. Explicitly approved
 ## Progress
 
 - [x] Resolve the requested recommendation set and isolate the reviewed branch.
-- [ ] Apply reconciled wording in disjoint draft slices and integrate related repairs.
-- [ ] Verify corrected entries, repair examples, cross-entry consistency and affected consumers.
-- [ ] Commit and push each completed concern, then reconcile all 95 candidate dispositions.
+- [x] Apply reconciled wording in disjoint draft slices and integrate related repairs.
+- [x] Verify corrected entries, repair examples, cross-entry consistency and affected consumers.
+- [x] Commit and push each completed concern, then reconcile all 95 candidate dispositions.
+
+All 93 retained proposals are applied across eight commits; [dispositions](dispositions.md) accounts for every candidate. The slices were applied directly rather than dispatched, because reconciliation had already settled the exact replacement wording.
+
+## Verification
+
+Each commit was measured against the [guard baseline](guard-baseline.md) before it landed. No commit introduced a guard failure. The structural pass reduced `fires-on-ids` from 209 to 207, matching the net removal of two entries; that index is open initiative work this change does not own.
+
+The verification surface is the review's candidate inventory and its linked repair cases. A rewritten criterion has not been semantically re-applied to every production definition, and the guard suite does not read criterion prose, so a clean run is evidence that the corpus still parses and links, not that each criterion now judges its subject correctly.
 
 ## Bounded collaboration
 
