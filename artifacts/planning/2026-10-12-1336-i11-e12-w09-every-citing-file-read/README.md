@@ -13,6 +13,7 @@ It matters because the check is the instrument every criterion of this epic name
 | Artifact | What it holds |
 | --- | --- |
 | [W09](w09.md) | The work item: the symmetric caller test and the parts of the work |
+| [Tests](tests.md) | The checks run for the unit, the specimen each rests on, and what the rule reports over every skill and over W08's head |
 
 ## Links
 
