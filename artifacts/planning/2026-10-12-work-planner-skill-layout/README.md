@@ -38,25 +38,29 @@ It matters because the guidelines now state rules the skill does not follow, and
 - **The free rows are numbered after the delivered ones.**
   W07, W08 and W09 start after W05 and W06, which a merged pull request names and renumbering cannot touch, so the free numbers begin above them.
 
+- **The caller test is settled by semantics, not by cases.**
+  Three corrections to one rule, each written against the cases in hand and each undone by the next piece of work. The reading that holds is the one the shared guidelines state: a file is a caller where one of its procedures runs the command, applied to every citing file alike, with a procedure recognised by carrying a numbered step rather than by a heading spelled Procedure. W09 landed it. W10 settles the one case it leaves: whether a route written as a sentence runs the commands it names.
+- **The move finishes on its own branch.**
+  The symmetric rule uncovers ten further specifications in the catalog, each masked before by a citation that names a command without running it. They are the move's remainder under the criterion the move already carries, so they land in its pull request rather than in a row beside it.
+
 ## Joins
 
-[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints nineteen eligible pairs in E12. Two share a pull request and seventeen do not.
+[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints twenty-nine eligible pairs in E12. Two share a pull request and twenty-seven do not.
 
 - **W03 and W04 share one.**
   They are the same change in two skills: the canonical section set applied to Work Planner's mode files and to Workflow Canon's. Landing them apart leaves the shared check red against one skill for as long as the gap lasts, and the reviewer reads the rule's effect once rather than twice.
 - **W05 and W06 share one.**
   Both correct a rule the check already carries, in the same two files, against specimens built the same way. One review reads the check's behaviour whole rather than meeting it twice a fortnight apart.
+- **The rule corrections join neither the moves nor the renames.**
+  W05, W06, W07, W09 and W10 change the instrument; W03, W04, W08 and W12 change the files it measures. A pull request carrying both would move the measure and the measured together, and a finding that appeared or vanished could not be read back to either.
+- **Each correction joins none of the others.**
+  W07, W09 and W10 each answer a case the reading before it had not been asked about, and each is found by the work that follows it rather than by its own tests. A correction is reviewed against the findings it restores, which the correction before it has to have landed to produce.
 - **W08 joins no other row.**
   W08 redistributes 870 lines across seventeen files, and its review is a comparison of every moved specification against its original. The Workflow Canon restructure corrupted four specifications in exactly this move, and the damage was found only by reading the files, after a link check, 71 tests and a structural check had all passed over it. That diff is read on its own.
-- **W10 joins no other row.**
-  W10 records a measurement over each mode's retrieval and changes no rule and no mode file. Joining a walk's evidence to a rename or a rule correction would put two unrelated kinds of change under one review.
-- **The rule corrections join neither the moves nor the renames.**
-  W05, W06 and W07 change the instrument; W03, W04, W08 and W09 change the files it measures. A pull request carrying both would move the measure and the measured together, and a finding that appeared or vanished could not be read back to either.
-- **W07 joins neither W05 nor W06.**
-  Those have merged. W07 corrects what their review found, against the base they left, and its own review reads the narrowed rule against the findings it restores.
-
-- **W08 and W09 do not share one.**
-  Each moves the specifications of one skill, and the move is the change whose review is a comparison of every moved specification against its original. One diff of that kind is read at a time, and the second move starts against a reviewed first.
+- **W08 and W12 do not share one.**
+  Each moves the specifications of one skill, and the move is the change whose review is that comparison. One diff of that kind is read at a time, and the second move starts against a reviewed first.
+- **W11 joins no other row.**
+  W11 records a measurement over each mode's retrieval and changes no rule and no mode file. Joining a walk's evidence to a rename or a rule correction would put two unrelated kinds of change under one review.
 
 ## Artifacts
 
