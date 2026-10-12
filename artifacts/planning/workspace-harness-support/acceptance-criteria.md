@@ -7,7 +7,8 @@ behind each one and the evidence for its standing.
 
 Instruments are the suites `python3 scripts/test-harnesses.py` runs, named by
 their test method, and the read-only runtime diagnostic
-`.codex/scripts/check_runtime.py`. Standing is measured at `295410d4`.
+`.codex/scripts/check_runtime.py`. Standing is measured at `fe430e51`, where
+twenty of the twenty-three criteria hold.
 
 ## Shared policy
 
@@ -79,16 +80,14 @@ launcher's own arguments, because the kernel decides the boundary.
 
 | Id | Criterion | Instrument | Standing |
 | --- | --- | --- | --- |
-| AC20 | Every script path named in `rules/bash-composition.md` and `docs/harness.md` resolves to a file on the branch that names it. | Inspection of both documents against the file tree | Fails |
+| AC20 | Every script path named in `rules/bash-composition.md` and `docs/harness.md` resolves to a file on the branch that names it. | Inspection of both documents against the file tree | Holds |
 
-AC20 fails at `295410d4`. `docs/harness.md` names the corpus edit guard at
-`skills/workflow-canon/scripts/edit_guard.py`, and
-[.claude/hooks/edit_guard.py](https://github.com/m2ux/workflow-server/blob/295410d4574646f4801d542f5abd7a9a7e582883/.claude/hooks/edit_guard.py#L14)
-resolves the same path. The branch carries `skills/workflow-canon/SKILL.md` but
-not that script, which `origin/workspace` holds. A session opened in the branch
-worktree therefore meets exit status 2 on every edit, reporting that corpus
-guards cannot measure it. Bringing the branch up to date with its target
-resolves the criterion.
+Seventeen paths are named and seventeen resolve. The criterion exists because
+`.claude/hooks/edit_guard.py` resolves the corpus guard by a path it hard-codes
+and `docs/harness.md` states the same path, so a document and an adapter agree
+on a file neither of them creates. A branch that carries the adapter without the
+guard scripts registers a PostToolUse hook that answers exit status 2 on every
+edit, reporting that corpus guards cannot measure it.
 
 ## Live enforcement
 

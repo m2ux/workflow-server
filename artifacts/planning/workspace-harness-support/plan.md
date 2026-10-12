@@ -73,7 +73,7 @@ Sources: [Codex hooks](https://learn.chatgpt.com/docs/hooks) and
 
 ## Validation evidence
 
-Observations come from `295410d4` in a linked worktree of
+Observations come from `fe430e51` in a linked worktree of
 `workspace-harness-support`, run from a host shell because the containment check
 launches its own bubblewrap sandbox.
 
@@ -145,14 +145,10 @@ unresolved.
 ### Documented paths
 
 Every script path `rules/bash-composition.md` and `docs/harness.md` name is read
-out of those documents and resolved against the branch. Sixteen of the seventeen
-resolve. `docs/harness.md` names the corpus edit guard at
-`skills/workflow-canon/scripts/edit_guard.py`, and `.claude/hooks/edit_guard.py`
-resolves the same path, which the branch does not carry. The branch holds
-`skills/workflow-canon/SKILL.md` alone, while `origin/workspace` holds the
-scripts directory. A session opened in the branch worktree therefore meets exit
-status 2 on every edit, reporting that corpus guards cannot measure it. Bringing
-the branch up to date with its target supplies the file.
+out of those documents and resolved against the branch. Seventeen are named and
+seventeen resolve, the corpus edit guard at
+`skills/workflow-canon/scripts/edit_guard.py` among them, which
+`.claude/hooks/edit_guard.py` also hard-codes.
 
 ### Live enforcement
 
