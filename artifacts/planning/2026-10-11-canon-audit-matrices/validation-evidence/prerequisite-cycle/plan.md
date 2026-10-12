@@ -44,6 +44,16 @@ A walk can fail the gate on an untargeted anti-pattern while passing on ordering
 
 One cycle of four. A failure is preserved and the cycle stops with the finding recorded; an equivalent retry is not a remedy and none is started. Previous failures remain observed failures and are not relabelled.
 
+## Amendment: the trace is observed, not reported
+
+Recorded before the second dispatch and after the first produced no observations. Scenarios, acceptance rules, prediction and stopping condition are unchanged; only the instrument changes.
+
+Each dispatch writes a transcript holding the worker's tool calls. The coordinator projects the retrieval trace from that transcript. Briefs ask for the procedure alone and say nothing about reads, logs or process.
+
+This is a stronger instrument than the one it replaces, for three reasons beyond unblocking the cycle. The record is independent, so a worker cannot tidy, omit or misremember it. A worker told nothing about reading behaves as it otherwise would, where one asked to account for its wasted reads may not. And the projection applies to transcripts already on disk, including the four the first dispatch left.
+
 ## Limits accepted in advance
 
-Workers self-report their reads, because a subagent's tool calls are not independently visible to the coordinator. That is the previous cycle's property too, so the comparison holds, but neither cycle independently proves a reported read occurred or that an unreported one did not. Four walks measure neither consistency nor a rate. No token saving or detection improvement is inferred.
+The projection observes retrieval, never comprehension: a received byte range is not an understood one. Its transcript layout is specific to this dispatch path and needs revisiting if that path changes. Workers reach files through shell commands as well as the read tool, so a command string is normalised into a path and range before scoring, and a shape the normaliser does not recognise is reported as unparsed rather than counted as no read.
+
+Four walks measure neither consistency nor a rate. No token saving or detection improvement is inferred.
