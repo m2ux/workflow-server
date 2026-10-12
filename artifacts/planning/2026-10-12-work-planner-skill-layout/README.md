@@ -27,18 +27,26 @@ It matters because the guidelines now state rules the skill does not follow, and
 - **Workflow Canon is brought to the set in this epic.**
   The rule stands in the shared guidelines and the check is shared, so the moment it lands it fails Canon's audit and review modes, which carry six bespoke sections between them. Holding those findings under an exemption would ship an instrument with a suppression built in, and leaving the check red teaches people to ignore it. W04 brings Canon to the set, against files restructured in the week before.
 - **The catalog survives, smaller.**
-  Thirty-one specifications have one caller and move; forty-eight have several and stay. Work Planner keeps a catalog where workflow-canon dissolved one, because the shared rule holds a catalog to be correct where most of its entries have several callers.
+  Thirty-six specifications have one caller and move; forty-three have several and stay. Work Planner keeps a catalog where workflow-canon dissolved one, because the shared rule holds a catalog to be correct where most of its entries have several callers.
+- **The check's own faults are rows of this epic.**
+  A review of the epic base over W01, W03 and W04 found four: the caller count drops the file holding the specification, a catalog counts every third-level heading as one, a caller under another root raises rather than reports, and the section rule never checks that Procedure and Rules are present. They are faults in the instrument this epic builds, so they are corrected here under AC8 to AC11 rather than carried to another epic or left as debt. W05 takes the specification rule, W06 the section rule.
+- **The one-caller count is the instrument.**
+  W02 is scoped against what the check reports over the catalog, not against a figure read off it by hand.
 
 ## Joins
 
-[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints four eligible pairs in E12. One shares a pull request and three do not.
+[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints thirteen eligible pairs in E12. Two share a pull request and eleven do not.
 
 - **W03 and W04 share one.**
   They are the same change in two skills: the canonical section set applied to Work Planner's mode files and to Workflow Canon's. Landing them apart leaves the shared check red against one skill for as long as the gap lasts, and the reviewer reads the rule's effect once rather than twice.
-- **W02 joins neither W03 nor W04.**
+- **W05 and W06 share one.**
+  Both correct a rule the check already carries, in the same two files, against specimens built the same way. One review reads the check's behaviour whole rather than meeting it twice a fortnight apart.
+- **W02 joins no other row.**
   W02 redistributes 870 lines across seventeen files, and its review is a comparison of every moved specification against its original. The Workflow Canon restructure corrupted four specifications in exactly this move, and the damage was found only by reading the files, after a link check, 71 tests and a structural check had all passed over it. That diff is read on its own.
-- **W04 does not join W05.**
-  W05 records a measurement over Work Planner's modes and changes no file Canon owns. Joining a walk's evidence to a section rename would put two unrelated kinds of change under one review.
+- **W07 joins no other row.**
+  W07 records a measurement over each mode's retrieval and changes no rule and no mode file. Joining a walk's evidence to a rename or a rule correction would put two unrelated kinds of change under one review.
+- **The rule corrections join neither the moves nor the renames.**
+  W05 and W06 change the instrument; W02, W03 and W04 change the files it measures. A pull request carrying both would move the measure and the measured together, and a finding that appeared or vanished could not be read back to either.
 
 ## Artifacts
 
