@@ -1,5 +1,6 @@
-# Dependencies
-node_modules/
+# Dependencies. Unanchored and without a trailing slash, so a symlink to an
+# installed tree is ignored as well as a directory.
+node_modules
 
 # Nested worktrees (per-checkout parent; not $INSTALL/worktrees). The
 # `workflows` branch dest is `.worktrees/workflows`.
