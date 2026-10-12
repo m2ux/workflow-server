@@ -13,7 +13,11 @@ Four fresh contexts were dispatched against the scenarios and acceptance rules f
 | Audit one | Terminated, API safeguard | None |
 | Audit two | Terminated, API safeguard | None |
 
-Three distinct scenario briefs hit the same error, and the one walk that began work died at its first step, so the cause sits with the dispatch environment rather than with any scenario, the skill or the briefs.
+The briefs were distinct only in scenario. All four closed with the same request: a complete ordered log of every read the worker performed, explicitly including unnecessary reads, empty returns and discarded searches, with nothing tidied or omitted. That is a request for the worker to surface its own process, and the error names reasoning extraction.
+
+A control probe discriminates. One worker dispatched through the same path with a minimal brief and no self-reporting request completed normally, in three tool calls and seventeen seconds. So the dispatch path works, and the common factor among the four failures is the instruction they shared rather than the environment they ran in.
+
+The probe does not isolate which part of that instruction is responsible, and one success is not a rate. It is enough to place the cause in the brief design.
 
 ## What this does and does not establish
 
@@ -28,6 +32,12 @@ The strict disclosure gate remains failed on the earlier evidence. DA-05, DA-06 
 The error suggests changing model, which would probably let the walks run. It was not done, for a reason that outlives this cycle: the comparison these scenarios exist to support holds the agent constant and varies the skill revision. A different model reads differently, so a clean ordering result under one would not establish that the prerequisite index produced it.
 
 That argument is weaker than it first appears in one direction worth stating: the earlier cycle's model is not recorded in its evidence, so the comparison was already imperfect. Substituting now would add a known uncontrolled variable to an already unproven one. A run under a different model is a separate labelled experiment, not this cycle.
+
+## The method's own exposure
+
+This bears on more than one cycle. A coordinator cannot see a subagent's tool calls, so every walk cycle has measured retrieval by asking the worker to report its own reads. That dependency is now a live constraint on this dispatch path: the request that makes a walk measurable is the one the four walks died on.
+
+A rerun needs the evidence gathered some other way — a worker writing receipts to files as it goes, a dispatch path that exposes tool calls to the coordinator, or a narrower reporting request that does not ask the worker to account for its discarded work. Which of those is viable is unestablished. Until one is, the walk method is blocked here for reasons that have nothing to do with the skill it is meant to test.
 
 ## Stopping
 
