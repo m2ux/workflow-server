@@ -13,6 +13,7 @@ It matters because the placement rule binds every skill in the repository, and W
 | Artifact | What it holds |
 | --- | --- |
 | [W13](w13.md) | The work item: each specification's destination and the parts of the work |
+| [Test results](test-results.md) | Each check, measured at the base and at the head, with the body comparison in full |
 
 ## Links
 
