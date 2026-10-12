@@ -14,6 +14,7 @@ It matters because the rule and its instrument already stand. A check that is re
 | --- | --- |
 | [W03](w03.md) | The work item for Work Planner's mode files |
 | [W04](w04.md) | The work item for Workflow Canon's mode files |
+| [Tests](tests.md) | Each check run for the unit, with its output and what it clears |
 
 ## Links
 
