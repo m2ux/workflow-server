@@ -30,11 +30,11 @@ Every policy-dependent recommendation carries a user answer. Explicitly approved
 
 All 93 retained proposals are applied across nine commits; [dispositions](dispositions.md) accounts for every candidate. The slices were applied directly rather than dispatched, because reconciliation had already settled the exact replacement wording.
 
-The branch expresses those corrections against the reviewed revision. It is 343 commits behind `origin/workflows`, whose canon has since gained the Fires-on index, promoted the manual-review entries into AP numbering, and retired the activity-level `decision` for exits bound in the graph. [Integration drift](integration-drift.md) measures what a merge has to reconcile; until that merge, five sentences on this branch name a construct the integration target no longer carries.
+The reviewed revision was the tip of a branch whose pull request had already merged, so the corrections were first written against a canon 343 commits stale. The branch is rebased onto `origin/workflows` at `d5e2ace11c66` — 0 behind, 9 ahead — and every corrected entry is expressed against the canon it targets. [Integration drift](integration-drift.md) records what moved, how each contested entry was settled, and why the base was wrong.
 
 ## Verification
 
-Each commit was measured against the [guard baseline](guard-baseline.md) before it landed. No commit introduced a guard failure. The structural pass reduced `fires-on-ids` from 209 to 207, matching the net removal of two entries; that index is open initiative work this change does not own.
+[Checks](checks.md) holds the test-plan evidence: the guard run, the recommendation evidence, the catalog numbering and the currency of the branch, each with what it does not establish. `origin/workflows` passes 60 of 60 guards and so does this branch, so there is no delta to attribute. The [guard baseline](guard-baseline.md) records the superseded `e70b4477` measurement, where ten guards failed as standing debt that the target no longer carries.
 
 The verification surface is the review's candidate inventory and its linked repair cases. A rewritten criterion has not been semantically re-applied to every production definition, and the guard suite does not read criterion prose, so a clean run is evidence that the corpus still parses and links, not that each criterion now judges its subject correctly.
 

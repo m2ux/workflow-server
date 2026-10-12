@@ -11,7 +11,10 @@ import subprocess
 from pathlib import Path
 
 CORPUS = Path('/home/mike1/projects/dev/workflow-server/.worktrees/workflow/technique-vocabulary')
-BASE = 'e70b4477'
+# Scope ids address the reviewed revision, so names resolve there. Whether this
+# branch changed an entry is measured against the revision it is cut from.
+REVIEWED = 'e70b4477'
+BASE = 'origin/workflows'
 CATALOG = 'corpus/canon/resources/anti-patterns.md'
 PRINCIPLES = 'corpus/canon/resources/design-principles.md'
 
@@ -36,9 +39,9 @@ head_ap = entries((CORPUS / CATALOG).read_text(), AP_HEADING)
 base_dp = entries(show(BASE, PRINCIPLES), DP_HEADING)
 head_dp = entries((CORPUS / PRINCIPLES).read_text(), DP_HEADING)
 
-ap_name = {m.group(1): m.group(2) for m in re.finditer(AP_HEADING, show(BASE, CATALOG), re.M)}
+ap_name = {m.group(1): m.group(2) for m in re.finditer(AP_HEADING, show(REVIEWED, CATALOG), re.M)}
 ap_name.update({f'MR-{int(k.split("-")[1]):02d}': v for k, v in list(ap_name.items()) if k.startswith('MR-')})
-dp_name = {f'DP-{int(m.group(1)):02d}': m.group(2) for m in re.finditer(DP_HEADING, show(BASE, PRINCIPLES), re.M)}
+dp_name = {f'DP-{int(m.group(1)):02d}': m.group(2) for m in re.finditer(DP_HEADING, show(REVIEWED, PRINCIPLES), re.M)}
 
 RETIRED = {'local-rule-as-note', 'artifact-name-in-io', 'no-shadow-audit-pass'}
 
