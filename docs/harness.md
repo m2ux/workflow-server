@@ -30,6 +30,7 @@ Python 3.11 or later and the existing Linux bubblewrap launcher are required.
 | `.codex/hooks/adapter.py` | Codex event translation and native approval delegation |
 | `.claude/scripts/render.py`, `.codex/scripts/render.py` | Harness-specific configuration formats |
 | `.codex/scripts/trust.py` | Codex project trust during deployment |
+| `.codex/scripts/install_plugin.py` | Codex marketplace registration and plugin installation |
 | `.codex/scripts/check_runtime.py` | Inspect native hook discovery, trust, and loaded instructions |
 | `scripts/render-harnesses.py` | Discover and run harness configuration renderers |
 | `scripts/sbx` | Filesystem and network containment |
@@ -55,7 +56,8 @@ python3 scripts/render-harnesses.py --check
 ```
 
 These commands render the machine-local files `.claude/settings.json`,
-`.codex/config.toml`, and `.codex/hooks.json`. The template under `.claude/`
+`.codex/config.toml`, the Codex plugin under `.codex/plugin/`, and the local
+marketplace manifest `.agents/plugins/marketplace.json`. The template under `.claude/`
 contains only Claude-specific settings. Local rendering preserves the current
 Codex MCP server configuration; a fresh rendering reads `.mcp.json`. Deployment
 supplies its resolved MCP configuration through stdin.
@@ -72,12 +74,21 @@ branch introduced exits 2 with the report on stderr and as `additional_context`,
 import both hand it back after the edit. The permission adapter stays on PreToolUse; this hook does not
 grant or deny the edit.
 
-Codex registers `.codex/hooks/adapter.py` for both hook events and discovers the
-registrations beside its configuration. Start a new session
-in the trusted workspace, open `/hooks`, and review and trust both registrations.
-Codex tracks trust against each hook definition and skips untrusted hooks.
-This applies to clients using the Codex runtime, including CLI and IDE sessions.
-Existing sessions retain their loaded configuration. [Codex hook reference](https://learn.chatgpt.com/docs/hooks)
+Codex registers `.codex/hooks/adapter.py` for both hook events, and reaches
+those registrations through an installed plugin: a registration file beside the
+configuration is not a location Codex reads. The workspace is therefore a local
+marketplace of one plugin. `.codex/scripts/install_plugin.py` adds the
+marketplace and installs the plugin, and deployment runs it; a machine without
+Codex skips that step and still deploys the other harnesses. The plugin cache
+keys on version, and the rendered version tracks the registration's content, so
+a changed registration installs as a new version.
+
+Start a new session in the trusted workspace, open `/hooks`, and review and
+trust both registrations. Codex tracks trust against each hook definition and
+skips untrusted hooks, which `check_runtime.py` reports under
+`awaiting_trust_review`. This applies to clients using the Codex runtime,
+including CLI and IDE sessions. Existing sessions retain their loaded
+configuration. [Codex hook reference](https://learn.chatgpt.com/docs/hooks)
 
 ## Native behavior and limits
 
@@ -139,10 +150,13 @@ alone. A request the adapter cannot read is denied; the preceding pipeline
 stayed silent, and the suite records that outcome.
 
 The Codex runtime check starts a local app-server without a model turn and reads
-its hook inventory and effective configuration. It exits unsuccessfully if the
-workspace hooks are missing, disabled, or untrusted, or the loaded instructions
-and skill link do not match the workspace. Use `--codex /path/to/codex` to check
-a particular installation. This requires normal access to Codex's runtime cache.
-It neither changes trust nor proves hook execution in an existing conversation.
-Live validation requires a session opened in the rendered workspace, trusted
-hook registrations, and observed hook decisions on that session's tool calls.
+its hook inventory and effective configuration. It reports what the workspace
+controls, and exits unsuccessfully if the workspace hooks are missing or
+disabled, or the loaded instructions and skill link do not match the workspace.
+A hook awaiting its trust review is named under `awaiting_trust_review` rather
+than failing the check, because a person grants that trust. Use
+`--codex /path/to/codex` to check a particular installation. This requires
+normal access to Codex's runtime cache. It neither changes trust nor proves hook
+execution in an existing conversation. Live validation requires a session opened
+in the rendered workspace, trusted hook registrations, and observed hook
+decisions on that session's tool calls.

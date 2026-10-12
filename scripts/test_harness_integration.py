@@ -29,7 +29,7 @@ class HarnessIntegrationTests(unittest.TestCase):
         cls.rendered = renderer.render(ROOT, cls.home, {'mcpServers': {}})
         cls.registrations = {
             'claude': json.loads(cls.rendered['.claude/settings.json'])['hooks'],
-            'codex': json.loads(cls.rendered['.codex/hooks.json'])['hooks'],
+            'codex': json.loads(cls.rendered['.codex/plugin/hooks/hooks.json'])['hooks'],
         }
 
     def dispatch(self, harness, event, name, args, *, cwd=ROOT):

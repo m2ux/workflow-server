@@ -1,5 +1,11 @@
 """Inspect hook discovery, trust, and instructions in a fresh local Codex runtime.
 
+Codex discovers hooks through an installed plugin, so the check reports what the
+workspace controls: the generated registrations reach the runtime, are enabled,
+and carry the instructions and skill link the workspace renders. Each hook a
+person has yet to review through /hooks is reported under awaiting_trust_review,
+and an unreviewed hook does not run.
+
 This read-only check does not execute hooks, approve trust, or start a model turn.
 It cannot establish enforcement inside an already-running conversation.
 """
@@ -51,11 +57,14 @@ def inspect(workspace: Path, executable: str) -> dict:
                 adapter = str(workspace / '.codex/hooks/adapter.py')
                 registered = [hook for hook in hooks['hooks'] if adapter in shlex.split(hook.get('command', ''))]
                 events = {hook['eventName'] for hook in registered}
-                trusted = bool(registered) and all(hook['enabled'] and hook['trustStatus'] in ('trusted', 'managed') for hook in registered)
-                expected = json.loads((workspace / '.codex/hooks.json').read_text())
+                expected = json.loads((workspace / '.codex/plugin/hooks/hooks.json').read_text())
                 rendered = tomllib.loads((workspace / '.codex/config.toml').read_text())
                 instructions_match = config.get('developer_instructions') == rendered.get('developer_instructions')
                 skills_resolve = (workspace / '.agents/skills').is_dir() and (workspace / '.agents/skills').resolve() == workspace / 'skills'
+                discovered = events == {'preToolUse', 'permissionRequest'}
+                enabled = bool(registered) and all(hook['enabled'] for hook in registered)
+                awaiting_trust = sorted(hook['eventName'] for hook in registered
+                                        if hook['trustStatus'] not in ('trusted', 'managed'))
                 return {
                     'runtime': initialized['userAgent'], 'workspace': str(workspace),
                     'generated_events': sorted(expected['hooks']),
@@ -64,7 +73,10 @@ def inspect(workspace: Path, executable: str) -> dict:
                     'instructions_match': instructions_match,
                     'skill_link_resolves': skills_resolve,
                     'warnings': hooks['warnings'], 'errors': hooks['errors'],
-                    'ready': events == {'preToolUse', 'permissionRequest'} and trusted and instructions_match and skills_resolve and not hooks['errors'],
+                    # What the workspace itself controls, and what the exit status reports.
+                    'ready': discovered and enabled and instructions_match and skills_resolve and not hooks['errors'],
+                    # Each hook a person reviews through /hooks before it can run.
+                    'awaiting_trust_review': awaiting_trust,
                     'live_enforcement_verified': False,
                 }
         finally:

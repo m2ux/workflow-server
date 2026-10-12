@@ -8,7 +8,7 @@ import tempfile
 import tomllib
 import unittest
 
-from render import codex_config, render
+from render import MARKETPLACE_NAME, PLUGIN, codex_config, plugin_version, render
 from permissions import ROOT, load_policy
 
 
@@ -32,7 +32,7 @@ class ConfigTests(unittest.TestCase):
         self.assertIn("call the `discover` tool", config["developer_instructions"])
         self.assertEqual(config["mcp_servers"]["example-server"]["args"], ["a path/entry.js"])
         self.assertEqual(config["sandbox_workspace_write"]["writable_roots"], load_policy()["directories"])
-        hooks = json.loads(rendered[".codex/hooks.json"])["hooks"]
+        hooks = json.loads(rendered[".codex/plugin/hooks/hooks.json"])["hooks"]
         self.assertEqual(set(hooks), {"PreToolUse", "PermissionRequest"})
         command = shlex.split(hooks["PermissionRequest"][0]["hooks"][0]["command"])
         self.assertEqual(Path(command[1]), ROOT / ".codex/hooks/adapter.py")
@@ -40,6 +40,28 @@ class ConfigTests(unittest.TestCase):
                                 "tool_input": {"command": "git status"}, "hook_event_name": "PermissionRequest"}),
                                 text=True, capture_output=True, cwd="/tmp", check=True)
         self.assertEqual(json.loads(result.stdout)["hookSpecificOutput"]["decision"]["behavior"], "allow")
+
+    def test_plugin_is_discoverable_through_a_local_marketplace(self):
+        """Codex reads hooks from an installed plugin, so the workspace is a marketplace of one."""
+        rendered = render(ROOT, Path.home(), {"mcpServers": {}})
+        marketplace = json.loads(rendered[".agents/plugins/marketplace.json"])
+        entry = marketplace["plugins"][0]
+        manifest = json.loads(rendered[".codex/plugin/.codex-plugin/plugin.json"])
+        self.assertEqual(marketplace["name"], MARKETPLACE_NAME)
+        self.assertEqual(entry["name"], manifest["name"])
+        self.assertEqual(entry["source"], {"source": "local", "path": f"./{PLUGIN}"})
+        self.assertIn(f"{PLUGIN}/hooks/hooks.json", rendered)
+        self.assertIn(f"{PLUGIN}/.codex-plugin/plugin.json", rendered)
+
+    def test_plugin_version_tracks_the_registration(self):
+        """The plugin cache keys on version, so a changed registration must reinstall."""
+        first = json.loads(render(ROOT, Path.home(), {"mcpServers": {}})[
+            ".codex/plugin/.codex-plugin/plugin.json"])["version"]
+        changed = plugin_version({"hooks": {"PreToolUse": [{"matcher": "^Other$"}]}})
+        self.assertNotEqual(first, changed)
+        again = json.loads(render(ROOT, Path.home(), {"mcpServers": {}})[
+            ".codex/plugin/.codex-plugin/plugin.json"])["version"]
+        self.assertEqual(first, again)
 
     def test_existing_mcp_configuration_is_preserved(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -1,5 +1,6 @@
 """Render Codex instructions, native permissions, MCP config, and hooks."""
 
+import hashlib
 import json
 from functools import partial
 from pathlib import Path
@@ -37,6 +38,46 @@ def codex_config(workspace: Path, home: Path, policy: dict, mcp: dict) -> str:
 
 
 
+#: Codex discovers hooks through an installed plugin, so the workspace carries a
+#: local marketplace of one. PLUGIN is its directory, relative to the workspace.
+PLUGIN = ".codex/plugin"
+PLUGIN_NAME = "workspace-command-policy"
+MARKETPLACE_NAME = "workflow-server-workspace"
+
+
+def plugin_manifest(version: str) -> dict:
+    return {
+        "name": PLUGIN_NAME,
+        "version": version,
+        "description": "Workspace command policy: blocking rules, confirmation requirements "
+                       "and approval grants, shared with Claude Code and Cursor.",
+        "interface": {
+            "displayName": "Workspace Command Policy",
+            "shortDescription": "One command policy across every harness.",
+            "category": "Developer Tools",
+        },
+    }
+
+
+def marketplace_manifest() -> dict:
+    return {
+        "name": MARKETPLACE_NAME,
+        "interface": {"displayName": "Workflow Server Workspace"},
+        "plugins": [{
+            "name": PLUGIN_NAME,
+            "source": {"source": "local", "path": f"./{PLUGIN}"},
+            "policy": {"installation": "AVAILABLE"},
+            "category": "Developer Tools",
+        }],
+    }
+
+
+def plugin_version(hooks: dict) -> str:
+    """A version the plugin cache keys on, so a changed registration reinstalls."""
+    digest = hashlib.sha256(as_json(hooks).encode()).hexdigest()
+    return f"0.1.{int(digest[:8], 16)}"
+
+
 def render(workspace: Path, home: Path, mcp: dict | None = None) -> dict[str, str]:
     if mcp is None:
         config = workspace / ".codex/config.toml"
@@ -51,5 +92,7 @@ def render(workspace: Path, home: Path, mcp: dict | None = None) -> dict[str, st
     }}
     return {
         ".codex/config.toml": codex_config(workspace, home, load_policy(workspace, home), mcp),
-        ".codex/hooks.json": as_json(hooks),
+        f"{PLUGIN}/hooks/hooks.json": as_json(hooks),
+        f"{PLUGIN}/.codex-plugin/plugin.json": as_json(plugin_manifest(plugin_version(hooks))),
+        ".agents/plugins/marketplace.json": as_json(marketplace_manifest()),
     }
