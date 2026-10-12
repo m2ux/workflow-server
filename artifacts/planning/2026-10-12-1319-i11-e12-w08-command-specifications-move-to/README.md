@@ -13,6 +13,7 @@ It matters because the reader currently meets an operation through a link out of
 | Artifact | What it holds |
 | --- | --- |
 | [W08](w08.md) | The work item: the move, its order and the parts of the work |
+| [destinations.md](destinations.md) | Each specification the check names, the file it moves to, and the comparison of every moved body against its original |
 
 ## Links
 
