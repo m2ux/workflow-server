@@ -132,15 +132,23 @@ The containment test launches a real bubblewrap subprocess and verifies project
 writes, blocked sibling and symlink writes, network isolation and explicit extra
 roots. Real linked-worktree fixtures verify the script and symlink boundaries.
 
+### Codex plugin discovery
+
+Codex discovers hooks from plugins it has installed, so the workspace carries a
+local marketplace of one plugin and `install_plugin.py` registers it during
+deployment. The plugin cache keys on version, and the rendered version derives
+from the registration's content, so a changed registration installs as a new
+version. A machine without Codex skips the step and still deploys the other
+harnesses.
+
 ### Codex runtime
 
 `python3 .codex/scripts/check_runtime.py --codex ~/.local/bin/codex` starts
 standalone CLI 0.157.1 without a model turn. It reports `instructions_match` and
-`skill_link_resolves` true, with no warnings or errors, and
-`generated_events` holding `PermissionRequest` and `PreToolUse`. It reports
-`discovered_hooks` empty, so `ready` and `live_enforcement_verified` are false
-and the check exits unsuccessfully. The cause of the empty inventory is
-unresolved.
+`skill_link_resolves` true, with no warnings and no errors, and
+`discovered_hooks` holding `preToolUse` and `permissionRequest`, each enabled.
+`ready` is true and the check exits successfully. Both registrations are listed
+under `awaiting_trust_review`, which a person clears through `/hooks`.
 
 ### Documented paths
 
@@ -153,10 +161,15 @@ seventeen resolve, the corpus edit guard at
 ### Live enforcement
 
 No session has been observed applying a workspace hook decision to a tool call,
-in any of the three harnesses. Client inspection through `/hooks`, hook trust
-review and observed live dispatch remain outstanding. The adapter contract tests
-prove that an adapter decides correctly when it is called; they establish
-nothing about whether a harness calls it.
+in any of the three harnesses. Hook trust review and observed live dispatch
+remain outstanding, and both need an interactive session, so neither is
+reachable from a non-interactive run. The adapter contract tests prove that an
+adapter decides correctly when it is called; they establish nothing about
+whether a harness calls it.
+
+AC22 and AC23 are deferred on that basis. Codex enforces no local command checks
+today, so a registration awaiting its trust review leaves every harness where it
+stands and nothing regresses while they are outstanding.
 
 ## Delivery
 

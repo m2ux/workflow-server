@@ -7,8 +7,9 @@ behind each one and the evidence for its standing.
 
 Instruments are the suites `python3 scripts/test-harnesses.py` runs, named by
 their test method, and the read-only runtime diagnostic
-`.codex/scripts/check_runtime.py`. Standing is measured at `fe430e51`, where
-twenty of the twenty-three criteria hold.
+`.codex/scripts/check_runtime.py`. Standing is measured at `346e9255`, where
+twenty-one of the twenty-three criteria hold and two are deferred to a live
+session.
 
 ## Shared policy
 
@@ -89,32 +90,38 @@ on a file neither of them creates. A branch that carries the adapter without the
 guard scripts registers a PostToolUse hook that answers exit status 2 on every
 edit, reporting that corpus guards cannot measure it.
 
-## Live enforcement
+## Runtime registration
 
 | Id | Criterion | Instrument | Standing |
 | --- | --- | --- | --- |
-| AC21 | The Codex runtime diagnostic lists the workspace hook registrations in its discovered inventory. | `.codex/scripts/check_runtime.py` exit status | Fails |
-| AC22 | A Codex session opened in the rendered workspace applies a workspace hook decision to a tool call. | The observed transcript of that session | Not observed |
-| AC23 | A Claude session and a Cursor session each apply a workspace hook decision to a tool call. | The observed transcript of each session | Not observed |
+| AC21 | The Codex runtime lists both workspace hook registrations in its discovered inventory, enabled and free of warnings and errors. | `.codex/scripts/check_runtime.py` exit status | Holds |
 
-AC21 fails against standalone CLI 0.157.1 and Cursor's Codex runtime
-0.154.0-alpha.6.2. Both load the rendered instructions and resolve the skill
-link, and both report an empty hook inventory. The cause is unresolved.
+Codex discovers hooks from plugins it has installed. A registration file beside
+the configuration is read by nothing, which is why the runtime reported an empty
+inventory while loading the same workspace's instructions and skill link. The
+workspace is a local marketplace of one plugin, and `install_plugin.py` adds the
+marketplace and installs the plugin during deployment.
 
-AC22 and AC23 are the criteria no adapter contract test can reach. A contract
-test proves the adapter decides correctly when it is called; only a session
-shows that the harness calls it. They stay unobserved until a session is opened
-in the rendered workspace, its hook registrations are reviewed through `/hooks`,
-and a tool call's decision is seen.
+The criterion stops at discovery because that is the boundary of what the
+workspace controls. Trust is a person's decision, taken in a client session, and
+belongs to the deferred criteria below.
 
-### Open question
+## Live enforcement, deferred
 
-Whether the Codex adapter is delivered while its runtime discovers no hook
-registration, or delivery waits on that discovery.
+| Id | Criterion | Instrument | Standing |
+| --- | --- | --- | --- |
+| AC22 | A Codex session opened in the rendered workspace applies a workspace hook decision to a tool call. | The observed transcript of that session | Deferred |
+| AC23 | A Claude session and a Cursor session each apply a workspace hook decision to a tool call. | The observed transcript of each session | Deferred |
 
-The recommendation is to deliver. Claude and Cursor gain enforcement from the
-same change, and the Codex adapter at rest costs nothing: a runtime that
-discovers no hook behaves exactly as it does today, with the rule text and no
-local checks. Holding the whole change back would keep two harnesses on the old
-arrangement to wait on a third. AC21 to AC23 stay unticked and name what is
-owed, and the runtime diagnostic reports when the inventory fills.
+These are the criteria no adapter contract test can reach. A contract test
+proves the adapter decides correctly when it is called; only a session shows
+that the harness calls it. Each needs an interactive session in the rendered
+workspace, with the hook registrations reviewed through `/hooks`, so neither can
+be observed from a non-interactive run.
+
+They are deferred rather than failing. Codex enforces no local command checks
+today, so a registration awaiting its trust review leaves every harness exactly
+where it stands: Claude and Cursor keep the enforcement they already had, and
+Codex gains instructions plus a hook a person can turn on. Nothing regresses
+while they are outstanding, and `check_runtime.py` names each registration
+awaiting review under `awaiting_trust_review`.
