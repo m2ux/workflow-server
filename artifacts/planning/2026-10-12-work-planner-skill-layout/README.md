@@ -43,6 +43,8 @@ It matters because the guidelines now state rules the skill does not follow, and
 | Resource | Link |
 | --- | --- |
 | I11 Work Planner | https://github.com/m2ux/workflow-server/issues/1166 |
+| I11:E12 Skill Layout | https://github.com/m2ux/workflow-server/issues/1319 |
+| Planning board | https://github.com/users/m2ux/projects/17 |
 | I11:E10 Conformance Checks | https://github.com/m2ux/workflow-server/issues/1181 |
 | Workflow Canon command localisation | https://github.com/m2ux/workflow-server/pull/1296 |
 | Canon audit matrices record | https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-10-11-canon-audit-matrices |
