@@ -1336,7 +1336,7 @@ A checkpoint has no real decision in its options.
 
 **Detect:** Every option leads to the same next step, sets no variable, and exists only so the user can acknowledge guidance. An `autoAdvanceMs` that changes nothing is the same fault.
 
-**Do not flag:** Attestation gates (DCO sign-off) that record a certification with identity/timestamp — genuine decisions.
+**Do not flag:** Attestation gates (DCO sign-off) that record a certification with identity/timestamp — genuine decisions. A review gate whose halt is the product: its message carries or links a durable artifact the run has already persisted, and stopping the run for someone to read it is what the gate delivers.
 
 **Fix:** Convert it to an `action: message` step. Where a second checkpoint is shown to be semantically redundant, that is `one-decision-one-checkpoint`.
 
@@ -2074,7 +2074,7 @@ A declared output has no reader.
 
 **Fires on:** `technique.outputs`, `activity.steps`
 
-**Detect:** For each `### <id>` under `## Outputs`, trace it through the actual reachable binds, remaps, artifact construction, gates, `validate` targets and messages to a consumer inside the declared review boundary. Flag an entry that reaches none, including one mentioned only as "return `{id}`", and one whose `variables[]` slot nothing reads. A same-name declaration with no such route is not a reader. Record unknown external consumption separately from a proved unused local output.
+**Detect:** For each `### <id>` under `## Outputs`, trace it through the actual reachable binds, remaps, artifact construction, gates, `validate` targets and messages to a consumer inside the declared review boundary. Flag an entry that reaches none, including one mentioned only as "return `{id}`", and one whose `variables[]` slot nothing reads. A same-name declaration with no such route is not a reader, and neither is an `action: set` naming the value in its prose, which carries it nowhere the run reads (`no-valueless-control-set`). Record unknown external consumption separately from a proved unused local output.
 
 **Do not flag:** A library op, or one bound cross-workflow, whose external callers sit outside the tree. An output consumed by a sibling `#### artifact` template on the same technique. A terminal product the binding activity actually surfaces.
 
