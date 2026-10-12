@@ -8,10 +8,12 @@ Four fresh contexts were dispatched against the scenarios and acceptance rules f
 
 | Walk | Outcome | Output produced |
 | --- | --- | --- |
-| Author one | Terminated, API safeguard | None |
-| Author two | Terminated, API safeguard | One line, before any read |
-| Audit one | Terminated, API safeguard | None |
-| Audit two | Terminated, API safeguard | None |
+| Author one | Terminated, API safeguard | No visible text |
+| Author two | Terminated, API safeguard | One line of text, over nine tool calls |
+| Audit one | Terminated, API safeguard | No visible text |
+| Audit two | Terminated, API safeguard | No visible text |
+
+The output column counts what the worker said, which is not what it did. Author two's single line of text sits on top of nine tool calls, among them a whole-file read of the skill entry point, bounded reads of the change-surface and canon-context sections, and a 146-line range of the command catalog. A worker's visible return understates its retrieval, and the dispatch transcript holds the rest.
 
 The briefs were distinct only in scenario. All four closed with the same request: a complete ordered log of every read the worker performed, explicitly including unnecessary reads, empty returns and discarded searches, with nothing tidied or omitted. That is a request for the worker to surface its own process, and the error names reasoning extraction.
 
