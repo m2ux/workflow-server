@@ -25,6 +25,11 @@ makes a change to the policy a change in one file rather than three.
 | [Plan](plan.md) | The scope, the assessment of each harness's contracts, the implementation sequence, the decisions, the delivery state, and one validation-evidence section per check |
 | [Acceptance criteria](acceptance-criteria.md) | Each criterion, the instrument that observes it, where it stands, and the reasoning behind it |
 | [Session validation](session-validation.md) | The live-session objective and sequence, and the observations behind the Codex runtime result |
+| [Separate sessions](separate-sessions.md) | Why each harness is validated in a session of its own, and why those tasks do not share a pull request |
+| [W01](w01.md) | Shared policy, adapters and generated configuration |
+| [W02](w02.md) | Codex session validation of the delivered policy |
+| [W03](w03.md) | Cursor session validation of the delivered policy |
+| [W04](w04.md) | Claude Code session validation of the delivered policy |
 
 ## Links
 
