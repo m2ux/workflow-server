@@ -1,6 +1,8 @@
 # Destinations
 
-Each command specification the shared skill-file check reports over `skills/work-planner` at `b2fb799b`, with the catalog section it stood in and the file it moves to. The destination is the file the check names, read from its report rather than chosen by hand.
+Each command specification the shared skill-file check reports over `skills/work-planner`, with the catalog section it stood in and the file it moves to. The destination is the file the check names, read from its report rather than chosen by hand.
+
+The move runs in two passes, against two revisions of the check. The first is the thirty-six the check reports at `b2fb799b`. The second is the ten the symmetric caller test uncovers at `fb53546f`, each masked until then by a citation that names a command without running it.
 
 | # | Specification | Catalog section | Destination |
 | --- | --- | --- | --- |
@@ -41,16 +43,35 @@ Each command specification the shared skill-file check reports over `skills/work
 | 35 | Release Row | Scripts | `references/deliver-mode.md` |
 | 36 | Run Tests | Scripts | `references/revise-mode.md` |
 
+## The second pass
+
+The symmetric caller test asks of every citing file, the holding file included, whether a procedure of it carries the citation, and reads a procedure as a top-level section carrying a numbered step rather than a heading spelled `Procedure`. Ten specifications that had appeared to have several callers prove to have one. Each was masked by a citation that names a command without running it: an entry-point prose list, a Rules bullet, or a sibling specification.
+
+| # | Specification | Catalog section | Destination |
+| --- | --- | --- | --- |
+| 1 | List Labels | Issues | `references/propose-mode.md` |
+| 2 | Patch Pull Request Body | Pull Requests | `references/understand-mode.md` |
+| 3 | Find Theme Board | Project Boards | `references/sync-mode.md` |
+| 4 | Create Board | Project Boards | `references/sync-mode.md` |
+| 5 | Create Proposals Board | Project Boards | `references/propose-mode.md` |
+| 6 | Find Status Field | Project Boards | `references/sync-mode.md` |
+| 7 | Fetch Board Items with Status | Project Boards | `references/sync-mode.md` |
+| 8 | Create Task Worktree | Sessions | `references/deliver-mode.md` |
+| 9 | Create Pull Request Worktree | Sessions | `references/understand-mode.md` |
+| 10 | Index Repository | Graph | `references/understand-mode.md` |
+
 ## What each file receives
+
+Both passes together, forty-four specifications across twelve files.
 
 | Destination | Count |
 | --- | --- |
 | `references/work-breakdown.md` | 8 |
-| `references/understand-mode.md` | 5 |
-| `references/sync-mode.md` | 4 |
-| `references/deliver-mode.md` | 3 |
+| `references/understand-mode.md` | 8 |
+| `references/sync-mode.md` | 8 |
+| `references/propose-mode.md` | 5 |
+| `references/deliver-mode.md` | 4 |
 | `references/hoist-mode.md` | 3 |
-| `references/propose-mode.md` | 3 |
 | `references/align-mode.md` | 2 |
 | `references/review-passes.md` | 2 |
 | `references/advance-mode.md` | 1 |
@@ -58,9 +79,13 @@ Each command specification the shared skill-file check reports over `skills/work
 | `references/revise-mode.md` | 1 |
 | `references/standup-mode.md` | 1 |
 
-## The two that stay
+## The two named against the entry point
 
-List Initiative Titles and Development Access are named from `SKILL.md`, which carries no Procedure and which the shared guidelines bar from holding a command of its own. Neither citation is a procedure running the command, so neither specification has a caller to move to and both stand in the catalog. The Proposal states the reasoning.
+List Initiative Titles and Development Access were reported against `SKILL.md`, which the shared guidelines bar from holding a command of its own. Both stood in the catalog rather than moving there. Under the symmetric test neither is reported: `SKILL.md`'s Themes and Boards and Dependencies sections name the commands without running them, so List Initiative Titles has no caller and stands where it is, and Development Access is run by two procedures.
+
+## The sections the move empties
+
+`Sources` and `Sessions` hold nothing once their specifications leave, so neither heading remains. A heading that promises content and carries none is not a section.
 
 ## Comparison against the originals
 
@@ -70,11 +95,13 @@ Every specification is matched by name across the base and the head and its body
 | --- | --- |
 | Third-level sections at the base | 100 |
 | Third-level sections at the head | 99 |
-| Specifications moved | 34 |
-| Specifications in place | 65 |
+| Specifications moved | 44 |
+| Specifications in place | 55 |
 | Bodies differing beyond a link target | 0 |
-| Bodies identical but for a retargeted link | 20 |
+| Bodies identical but for a retargeted link | 21 |
 | Present at the base and absent at the head | 1 |
 | Absent at the base and present at the head | 0 |
 
-The one section absent at the head is `Execution`, which the conventions carry into `references/command-conventions.md` as a second-level heading of that file. The twenty retargeted bodies are the specifications whose cross-references name an anchor that has changed file.
+The base is `fb53546f`, the revision this branch merges and the one carrying the symmetric caller test. The one section absent at the head is `Execution`, which the conventions carry into `references/command-conventions.md` as a second-level heading of that file. The twenty-one retargeted bodies are the specifications whose cross-references name an anchor that has changed file.
+
+Against `b2fb799b`, the revision this branch was cut from, the same comparison reports one further difference: the `Task Delivery` section of `references/work-breakdown.md`, which W09 rewrote for a unit that changes two long-lived branches. It arrives here by merge and is not part of this move.
