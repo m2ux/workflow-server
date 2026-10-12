@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -33,6 +33,12 @@ Array of file paths to stage, relative to `{worktree_path}`.
 
 `false`
 
+## Outputs
+
+### commit_sha
+
+The full identifier of the commit this operation made.
+
 ## Protocol
 
 ### 1. Stage Paths
@@ -45,6 +51,10 @@ Array of file paths to stage, relative to `{worktree_path}`.
 - Take the trailer argument from `{carries_signoff}`: `--no-signoff` where it is false, and nothing where it is true.
 - When `{is_signed}` is true, `git -C {worktree_path} commit -S` with both arguments.
 - When `{is_signed}` is not true, `git -C {worktree_path} commit --no-gpg-sign` with both arguments.
+
+### 3. Name The Commit
+
+- Read `git -C {worktree_path} rev-parse HEAD` and record it as `{commit_sha}`.
 
 ## Rules
 
