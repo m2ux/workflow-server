@@ -140,9 +140,27 @@ standalone CLI 0.157.1 without a model turn. It reports `instructions_match` and
 `generated_events` holding `PermissionRequest` and `PreToolUse`. It reports
 `discovered_hooks` empty, so `ready` and `live_enforcement_verified` are false
 and the check exits unsuccessfully. The cause of the empty inventory is
-unresolved. Client inspection through `/hooks`, hook trust review, and observed
-live dispatch remain outstanding, and the adapter contract tests establish no
-live Claude or Cursor enforcement.
+unresolved.
+
+### Documented paths
+
+Every script path `rules/bash-composition.md` and `docs/harness.md` name is read
+out of those documents and resolved against the branch. Sixteen of the seventeen
+resolve. `docs/harness.md` names the corpus edit guard at
+`skills/workflow-canon/scripts/edit_guard.py`, and `.claude/hooks/edit_guard.py`
+resolves the same path, which the branch does not carry. The branch holds
+`skills/workflow-canon/SKILL.md` alone, while `origin/workspace` holds the
+scripts directory. A session opened in the branch worktree therefore meets exit
+status 2 on every edit, reporting that corpus guards cannot measure it. Bringing
+the branch up to date with its target supplies the file.
+
+### Live enforcement
+
+No session has been observed applying a workspace hook decision to a tool call,
+in any of the three harnesses. Client inspection through `/hooks`, hook trust
+review and observed live dispatch remain outstanding. The adapter contract tests
+prove that an adapter decides correctly when it is called; they establish
+nothing about whether a harness calls it.
 
 ## Delivery
 
