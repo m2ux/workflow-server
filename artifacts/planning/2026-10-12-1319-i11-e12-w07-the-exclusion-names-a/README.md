@@ -14,6 +14,7 @@ It matters because W08 moves what the report names. A specification the report d
 | --- | --- |
 | [W07](w07.md) | The work item: the narrowed rule and the parts of the work |
 | [Suppressions](suppressions.md) | Each of the twenty suppressed specifications, the section of its own file that cites it, and the procedure that runs it |
+| [Tests](tests.md) | The checks run for the unit, with the specimen each rests on and the finding counts over every skill |
 
 ## Links
 
