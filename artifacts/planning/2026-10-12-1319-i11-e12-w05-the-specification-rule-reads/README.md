@@ -14,6 +14,7 @@ It matters because the rest of the epic is measured by this instrument. W02 move
 | --- | --- |
 | [W05](w05.md) | The work item for the specification rule's three faults |
 | [W06](w06.md) | The work item for the section rule's missing presence check |
+| [Test record](tests.md) | Each check of the pull request's test plan, its cases and its result |
 
 ## Links
 
