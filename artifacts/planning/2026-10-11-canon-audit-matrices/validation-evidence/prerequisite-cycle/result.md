@@ -68,3 +68,15 @@ Not scored here. Ordering is decided by delivery order, which the trace settles;
 Four walks measure neither consistency nor a rate. The scenario pairs a real corpus with a fixture-dialect checker that cannot run against it, which three walks independently measured and reported; the mismatch does not affect ordering, which depends on which sections were retrieved rather than on whether a check would pass, but the scenario is less realistic than intended. The projection observes retrieval, never comprehension.
 
 Two normaliser defects were found and fixed while scoring, both of which had silently hidden reads: a relative path following a `cd`, and a flag between a command and its path. Both were found because unrecognised commands are reported rather than dropped. A third shape may remain.
+
+## What the repair became
+
+The catalog is distributed rather than reordered. Each reference file carries the command specifications its own procedure runs, under its own conventions, and skill-wide conventions sit in a 33-line `command-conventions.md` that every mode reads once. The largest file falls from 653 lines to 256, and the skill loses 62 lines in all, almost every one of them a citation.
+
+This settles the measured defect without the move the cycle recorded. `Run Corpus Checks`, `Run Option Coverage` and the canon check conventions they cite now share one file, so neither citation crosses a boundary a sequential reader can lose. The ordering question stops arising, which is a stronger outcome than turning the two citations backward.
+
+The passes are what justified the larger change. A convention reachable only through a citation that 115 of 124 pairs never needed is a convention the file layout was already supplying. Distributing the catalog supplies it by position, to the reader this instrument observed: one that takes the file.
+
+Intra-file prerequisite citation is gone from the skill, and the guideline that introduced it is retired in favour of one that admits a citation only where the target sits in another file. One such citation remains, `plan-audit-assignments` to `audit-dispatch.md#sizing`, which is the configuration this cycle found load-bearing.
+
+Delivered at `be7bf1ab` and `ff1c0518` on `skill/canon-audit-matrices`. Static checks at those bytes: 195 local links in the skill, 71 audit and edit-guard tests, three mode-summary tests. No walk has been run against the distributed layout, so the volume prediction it implies is unmeasured.
