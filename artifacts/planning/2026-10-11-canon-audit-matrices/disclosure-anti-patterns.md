@@ -144,4 +144,6 @@ A completeness claim spans trace entries stored only as summaries.
 
 A repeat walk that exposes excess again is not confirmation; the reviews stopped the cycle rather than retry it, because repetition established recurrence and not compliance. Treat a clean single walk the same way: Author two passed its bounded scenario, and that did not make the set compliant.
 
+An entry that graduates into the catalog travels by its kebab name, and its number is derived at the destination. The catalog is numbered by file order, so retiring or inserting one entry renumbers every entry after it: the same change that produced the merged shape above took the catalog from 166 to 164. A promotion recorded by number goes stale on the next retirement, and anything citing it goes with it.
+
 Severity sits with the acceptance rule, not with line counts. [Revise](https://github.com/m2ux/workflow-server/blob/d36ad4e260bd993f3c9b7f6220bd53e86e615c5a/skills/workflow-canon/references/revise-mode.md) requires disclosure verification to succeed for every affected mode, and the [observed-behavior rule](https://github.com/m2ux/workflow-server/blob/d36ad4e260bd993f3c9b7f6220bd53e86e615c5a/skills/guidelines.md#disclosure-verification) counts a missing prerequisite or unrelated content as failure, so one instance of any entry above keeps a revision unqualified.
