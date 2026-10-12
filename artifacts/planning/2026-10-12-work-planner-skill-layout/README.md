@@ -18,6 +18,8 @@ It matters because the guidelines now state rules the skill does not follow, and
   Both new rules are added to `skills/scripts/check_skill_files.py`, which binds every skill in the repository. workflow-canon already conforms to both, so the cost is bounded, and gitnexus is measured rather than assumed.
 - **Scope stops at work-planner and the shared check.**
   Extending the check turns gitnexus red. Those findings are hoisted as their own issue rather than carried by this epic, which would otherwise take on a skill that has had no guideline review at all.
+- **REQ-F045 is amended rather than worked around.**
+  The marked source required every command to be "specified once in a commands file", with mode files linking to it by name, so a localised specification would have contradicted it and failed the Correct characteristic. Its rationale is about duplication — several places to correct — which localisation does not cause, since a specification moves whole and is never copied. The requirement now states that a specification sits in the file whose procedure runs it where one procedure runs it, and in a commands file where several do. The disclosure work over the sibling skill is listed as SRC-DOC001 and cited from the requirement.
 - **The catalog survives, smaller.**
   Thirty-one specifications have one caller and move; forty-eight have several and stay. Work Planner keeps a catalog where workflow-canon dissolved one, because the shared rule holds a catalog to be correct where most of its entries have several callers.
 

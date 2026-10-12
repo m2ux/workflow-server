@@ -12,7 +12,7 @@ Requirements derive from twelve recorded working sessions in which the skill was
 
 ### 2.1 Product and Solution Documents
 
-None.
+**SRC-DOC001**: [Canon Audit Matrices](../2026-10-11-canon-audit-matrices/README.md) — The disclosure measurement over the sibling skill, and the command localisation it settled. — MC
 
 ### 2.2 Meeting Transcripts
 
@@ -251,9 +251,9 @@ The rewrite replaces content a person wrote, so it is preserved where it can sti
 
 Only those fields affect whether a request reaches the skill, and the listing that carries the description is budgeted, so every word in it competes. A mode nothing triggers is a mode that is never used. [[1](../../meetings/2026-09-29-a0b1179e.md#045151), [2](../../meetings/2026-09-30-6f5a01ac.md#140648--skillcanon-modes), [3](../../meetings/2026-09-30-6f5a01ac.md#142036), [4](../../meetings/2026-09-30-6f5a01ac.md#155429)] (MC)
 
-🕒 **REQ-F045: Every command the skill runs SHALL be specified once in a commands file, one specification per operation named for what that operation does, with mode files linking to it by name**
+🕒 **REQ-F045: Every command the skill runs SHALL be specified once, in the file whose procedure runs it where one procedure runs it and in a commands file where several do, one specification per operation named for what that operation does, with the calling prose linking to it by name**
 
-A command repeated across mode files is several places to correct when it changes. Naming a specification for the operation rather than the script makes the calling prose say what happens. [[1](../../meetings/2026-09-29-a0b1179e.md#052756--skillinitiative-planning-header), [2](../../meetings/2026-09-29-a0b1179e.md#052805--skillinitiative-planning-header), [3](../../meetings/2026-09-30-6f5a01ac.md#140932), [4](../../meetings/2026-09-30-6f5a01ac.md#155429)] (MC)
+A command repeated across mode files is several places to correct when it changes, and a specification sits in one place for that reason alone. Where that place is follows from what the reader pays: a catalog every mode opens to reach a few operations is a file read mostly for content the mode never runs. Naming a specification for the operation rather than the script makes the calling prose say what happens. [[1](../../meetings/2026-09-29-a0b1179e.md#052756--skillinitiative-planning-header), [2](../../meetings/2026-09-29-a0b1179e.md#052805--skillinitiative-planning-header), [3](../../meetings/2026-09-30-6f5a01ac.md#140932), [4](../../meetings/2026-09-30-6f5a01ac.md#155429), [5](../2026-10-11-canon-audit-matrices/README.md)] (MC)
 
 🕒 **REQ-F046: The skill's markdown SHALL place each paragraph and list item on one line, SHALL use markdown links rather than bare URLs, and SHALL write a bold lead as a label followed by a full sentence**
 
