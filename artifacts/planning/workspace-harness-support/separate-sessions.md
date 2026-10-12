@@ -1,8 +1,21 @@
 # Separate sessions
 
 The dependency check reports three pairs of tasks that could share a pull
-request and do not name each other in Joins: W02 and W03, W02 and W04, W03 and
-W04. Each pair stays separate, and this file records why.
+request and do not name each other in Joins: W03 and W04, W03 and W05, W04 and
+W05. Each pair stays separate, and this file records why.
+
+## Who may deliver each one
+
+A task naming a harness is delivered only by that harness. The record a session
+writes carries the runtime identity its harness reports, and the check W02
+builds fails a record whose declared harness does not match that identity, so a
+mismatch is reported rather than noticed.
+
+A session in the wrong harness stops and says so. It does not describe what the
+named harness would do, and it does not hand the row to a reviewer as though it
+were discharged. The constraint is on the evidence, not on good intentions: a
+Codex record cannot be produced from Cursor, because the identity Codex reports
+is not readable from inside another harness.
 
 ## Why they do not share a pull request
 

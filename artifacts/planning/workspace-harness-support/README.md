@@ -27,9 +27,10 @@ makes a change to the policy a change in one file rather than three.
 | [Session validation](session-validation.md) | The live-session objective and sequence, and the observations behind the Codex runtime result |
 | [Separate sessions](separate-sessions.md) | Why each harness is validated in a session of its own, and why those tasks do not share a pull request |
 | [W01](w01.md) | Shared policy, adapters and generated configuration |
-| [W02](w02.md) | Codex session validation of the delivered policy |
-| [W03](w03.md) | Cursor session validation of the delivered policy |
-| [W04](w04.md) | Claude Code session validation of the delivered policy |
+| [W02](w02.md) | Session record contract and harness identity check |
+| [W03](w03.md) | Codex session validation of the delivered policy |
+| [W04](w04.md) | Cursor session validation of the delivered policy |
+| [W05](w05.md) | Claude Code session validation of the delivered policy |
 
 ## Links
 
