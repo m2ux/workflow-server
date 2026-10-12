@@ -69,18 +69,80 @@ Sources: [Codex hooks](https://learn.chatgpt.com/docs/hooks) and
 - [x] Connect harness adapters and deployment.
 - [x] Validate decisions and generated configuration.
 - [x] Commit and push the completed implementation.
+- [x] Measure adapter outcomes against the preceding Claude hook pipeline.
 
 ## Validation evidence
 
-- Fourteen standard-library tests pass, including command decision fixtures,
-  imported Cursor events, Codex native approval delegation, and rendering drift.
-- All 169 permission grants match the original Claude template after normalizing
-  its equivalent shell pattern spellings.
-- Deployment Bash syntax and Git whitespace checks pass.
-- Installed Codex CLI 0.155.1 reports hooks enabled and its app-server starts with
-  strict configuration validation against the generated worktree configuration.
-- Hook invocation tests exercise the registered dispatcher from a different
-  working directory. Live hook activation requires Codex's user trust review.
+Observations come from `295410d4` in a linked worktree of
+`workspace-harness-support`, run from a host shell because the containment check
+launches its own bubblewrap sandbox.
+
+### Harness suite
+
+`python3 scripts/test-harnesses.py` runs 49 standard-library tests in six
+interpreters and reports OK for each: 13 shared classifier and policy tests, 16
+workspace tests covering rendering, deployment, containment and the generated
+entry points, 7 Claude adapter and edit-guard tests, 4 Codex adapter tests, 2
+Claude configuration tests and 7 Codex configuration and trust tests. Command
+fixtures are classified as data; no fixture is executed.
+
+### Adapter equivalence
+
+`scripts/test_refactor_equivalence.py` extracts revision `41717141`, the
+preceding six-hook Claude pipeline, into a temporary checkout, deploys its
+settings template there, and sends one corpus of 55 shell requests and 4 web
+requests to both registrations. It compares the effective outcome: the merged
+hook verdict, deny over ask over allow, or the allow-list match where every hook
+abstains. Every request agrees. The baseline spread is 24 allow, 20 deny, 10
+abstain and 4 ask.
+
+Three mutations of the adapter confirm the comparison is sensitive. A grant
+dropped from `config/permissions.json` diverges on `npm ci`, allow against
+abstain. The same grant respelled `npm ci:*` fails the retired-spelling check,
+because `matches_rule` honours a trailing ` *` alone. Hoisting the GitHub API
+check above the dynamic-shell denial diverges on
+`gh api repos/o/r -X DELETE && echo $HOME`, deny against ask.
+
+A request the adapter cannot read is denied, where the preceding pipeline exited
+silently and left the harness to prompt. The suite records that outcome rather
+than asserting equivalence for it.
+
+### Permission grant parity
+
+All 169 permission grants match the Claude settings template of revision
+`41717141`, under the spelling in which a trailing `:*` and a trailing ` *`
+denote the same command pattern. `additionalDirectories` matches. No command
+pattern in `config/permissions.json` ends in `:*`.
+
+### Generated configuration
+
+`python3 scripts/render-harnesses.py` writes `.claude/settings.json`,
+`.codex/config.toml` and `.codex/hooks.json`, and `--check` then exits
+successfully against them. The check reports all three as outdated in a checkout
+where they have not been rendered.
+
+### Deployment script
+
+`bash -n scripts/deploy-workspace.sh` reports no syntax error. Git whitespace
+checks pass.
+
+### Sandbox containment
+
+The containment test launches a real bubblewrap subprocess and verifies project
+writes, blocked sibling and symlink writes, network isolation and explicit extra
+roots. Real linked-worktree fixtures verify the script and symlink boundaries.
+
+### Codex runtime
+
+`python3 .codex/scripts/check_runtime.py --codex ~/.local/bin/codex` starts
+standalone CLI 0.157.1 without a model turn. It reports `instructions_match` and
+`skill_link_resolves` true, with no warnings or errors, and
+`generated_events` holding `PermissionRequest` and `PreToolUse`. It reports
+`discovered_hooks` empty, so `ready` and `live_enforcement_verified` are false
+and the check exits unsuccessfully. The cause of the empty inventory is
+unresolved. Client inspection through `/hooks`, hook trust review, and observed
+live dispatch remain outstanding, and the adapter contract tests establish no
+live Claude or Cursor enforcement.
 
 ## Delivery
 
