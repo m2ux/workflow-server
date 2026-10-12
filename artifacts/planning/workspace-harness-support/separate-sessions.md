@@ -6,10 +6,21 @@ W05. Each pair stays separate, and this file records why.
 
 ## Who may deliver each one
 
-A task naming a harness is delivered only by that harness. The record a session
-writes carries the runtime identity its harness reports, and the check W02
-builds fails a record whose declared harness does not match that identity, so a
-mismatch is reported rather than noticed.
+The binding applies to a task that names a harness, and to nothing else.
+
+- **W01 and W02 are open to any harness.**
+  W01 delivers the policy, the adapters and the generated configuration; W02
+  delivers the record contract and the identity check. Both are ordinary code
+  and documentation, verified by suites any harness can run, so whichever one
+  the session happens to be makes no difference to the result.
+- **W03, W04 and W05 are each bound to one harness.**
+  Their subject is the harness itself, and the only instrument that observes it
+  is a session of that harness. A record from anywhere else is evidence about
+  the wrong thing, whatever it says.
+
+The record a session writes carries the runtime identity its harness reports,
+and the check W02 builds fails a record whose declared harness does not match
+that identity, so a mismatch on a bound row is reported rather than noticed.
 
 A session in the wrong harness stops and says so. It does not describe what the
 named harness would do, and it does not hand the row to a reviewer as though it
