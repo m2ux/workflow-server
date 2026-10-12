@@ -43,6 +43,22 @@ Moving `Canon Check Conventions` under the `## Conventions` heading at the top o
 
 This is an indicated repair, not a verified one. It is recorded here and not applied, because applying it inside the cycle that measured the defect would leave the fix unmeasured in turn.
 
+## What the passes are worth
+
+Of 124 intra-file pairs across the four walks, 115 resolved inside a single call. Three walks read the catalog whole in one command, so every pair they reached was settled by that one read's internal line order. Only Author two, which read the catalog in pieces, shows a pair resolving across separate calls, and only three times.
+
+A pair settled inside one bulk read would have settled identically with no citation present. The citation did no work that this measurement can see. So the cycle's roughly 120 passes are not evidence that point-of-use citation routes a reader; they are evidence that a reader who loads the file gets its earlier lines first.
+
+The failures are the opposite. A forward citation fails even under a bulk read, because no amount of reading breadth changes which line comes first. That is why the negative result is solid and the positive one is not.
+
+## The one citation that crosses a document
+
+Exactly one prerequisite citation in the skill names another file: `plan-audit-assignments` cites `audit-dispatch.md#sizing`. Three walks delivered that section before the specification citing it; one delivered it after.
+
+A cross-document citation cannot be satisfied by file-order accident, since the target is not in the file being read. It can still be satisfied by breadth: a reader who opens `audit-dispatch.md` because the procedure needs it receives `#sizing` whether or not it acted on the citation, and that is what these three traces show. The confound changes shape and does not disappear.
+
+The consequence for the convention is narrow and useful. A citation is load-bearing exactly where its target would otherwise go unread. Where the target sits in a document the reader opens anyway, the citation is decorative, and no walk can distinguish a reader that followed it from one that did not. Any future test of citation efficacy needs a cited target that broad reading does not already reach; absent that, the instrument can only detect citations failing, never succeeding.
+
 ## Strict disclosure, the standing gate
 
 Not scored here. Ordering is decided by delivery order, which the trace settles; the gate turns on whether retrieved content was necessary, which needs the per-section necessity judgement the earlier reviews performed by hand. The four traces are retained for it. Nothing in this cycle reopens the gate, and the earlier failures stand.
