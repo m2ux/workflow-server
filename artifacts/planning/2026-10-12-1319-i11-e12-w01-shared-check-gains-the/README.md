@@ -13,6 +13,7 @@ It matters because the rules land before the restructures that satisfy them. W02
 | Artifact | What it holds |
 | --- | --- |
 | [W01](w01.md) | The work item: overview, problem, proposal and the parts of the work |
+| [Test Record](tests.md) | The revision under test, each check's procedure and what it observed |
 
 ## Links
 
