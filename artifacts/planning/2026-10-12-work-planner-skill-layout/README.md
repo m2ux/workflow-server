@@ -33,20 +33,27 @@ It matters because the guidelines now state rules the skill does not follow, and
 - **The one-caller count is the instrument.**
   W02 is scoped against what the check reports over the catalog, not against a figure read off it by hand.
 
+- **The exclusion is narrowed to a procedure's citation.**
+  W05 stopped the check reporting a specification its own file cites. A catalog holds no procedure, so a cross-reference between two of its specifications now excludes one: eleven entries of `commands.md` fall out of the report, each cited by a sibling specification and by one procedure elsewhere. W07 counts the holding file only where one of its procedures cites the specification, and classifies the nine in `canon-context.md` and `change-surface.md` the same way. W08 is scoped against what the narrowed rule reports.
+- **The free rows are numbered after the delivered ones.**
+  W07, W08 and W09 start after W05 and W06, which a merged pull request names and renumbering cannot touch, so the free numbers begin above them.
+
 ## Joins
 
-[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints thirteen eligible pairs in E12. Two share a pull request and eleven do not.
+[Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints fourteen eligible pairs in E12. Two share a pull request and twelve do not.
 
 - **W03 and W04 share one.**
   They are the same change in two skills: the canonical section set applied to Work Planner's mode files and to Workflow Canon's. Landing them apart leaves the shared check red against one skill for as long as the gap lasts, and the reviewer reads the rule's effect once rather than twice.
 - **W05 and W06 share one.**
   Both correct a rule the check already carries, in the same two files, against specimens built the same way. One review reads the check's behaviour whole rather than meeting it twice a fortnight apart.
-- **W02 joins no other row.**
-  W02 redistributes 870 lines across seventeen files, and its review is a comparison of every moved specification against its original. The Workflow Canon restructure corrupted four specifications in exactly this move, and the damage was found only by reading the files, after a link check, 71 tests and a structural check had all passed over it. That diff is read on its own.
-- **W07 joins no other row.**
-  W07 records a measurement over each mode's retrieval and changes no rule and no mode file. Joining a walk's evidence to a rename or a rule correction would put two unrelated kinds of change under one review.
+- **W08 joins no other row.**
+  W08 redistributes 870 lines across seventeen files, and its review is a comparison of every moved specification against its original. The Workflow Canon restructure corrupted four specifications in exactly this move, and the damage was found only by reading the files, after a link check, 71 tests and a structural check had all passed over it. That diff is read on its own.
+- **W09 joins no other row.**
+  W09 records a measurement over each mode's retrieval and changes no rule and no mode file. Joining a walk's evidence to a rename or a rule correction would put two unrelated kinds of change under one review.
 - **The rule corrections join neither the moves nor the renames.**
-  W05 and W06 change the instrument; W02, W03 and W04 change the files it measures. A pull request carrying both would move the measure and the measured together, and a finding that appeared or vanished could not be read back to either.
+  W05, W06 and W07 change the instrument; W03, W04 and W08 change the files it measures. A pull request carrying both would move the measure and the measured together, and a finding that appeared or vanished could not be read back to either.
+- **W07 joins neither W05 nor W06.**
+  Those have merged. W07 corrects what their review found, against the base they left, and its own review reads the narrowed rule against the findings it restores.
 
 ## Artifacts
 
