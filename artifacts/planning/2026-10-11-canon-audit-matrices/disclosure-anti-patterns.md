@@ -2,7 +2,7 @@
 
 Nine recurring failures observed while qualifying the Workflow Canon audit skill, drawn from seven fresh instruction walks across two independent reviews. Every one is reproduced in this record's evidence; none is hypothetical.
 
-These describe how an agent retrieves skill instructions. They are not corpus canon: the `DA-` namespace is local to this planning record, and an entry here never carries an AP or DP number. The [anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/4d333ca073440a6399f3ee896c665a31253d2a7a/corpus/canon/resources/anti-patterns.md) governs workflow definitions and is a separate subject.
+These describe how an agent retrieves skill instructions. They are not corpus canon: the `DA-` namespace is local to this planning record, and an entry here never carries an AP or DP number. The [anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/corpus/canon/resources/anti-patterns.md) governs workflow definitions and is a separate subject.
 
 Owner names where a repair could live. `skill` means routing or wording can prevent it; `host` means it originates outside the skill's control; `method` means it constrains what the evidence can prove rather than what an agent did.
 
