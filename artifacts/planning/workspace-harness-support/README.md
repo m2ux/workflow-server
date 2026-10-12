@@ -30,7 +30,7 @@ makes a change to the policy a change in one file rather than three.
 
 | Resource | Link |
 | --- | --- |
-| Pull request | [#934 Workspace harnesses: share hooks and permissions through dedicated adapters](https://github.com/m2ux/workflow-server/pull/934) |
+| Pull request | [#1300 Workspace harnesses: share hooks and permissions through dedicated adapters](https://github.com/m2ux/workflow-server/pull/1300) |
 | Issue | [#1299 Shared Harness Policy: Every Harness Enforces the Same Command Checks](https://github.com/m2ux/workflow-server/issues/1299) |
 | Codex hooks | [learn.chatgpt.com/docs/hooks](https://learn.chatgpt.com/docs/hooks) |
 | Codex command rules | [learn.chatgpt.com/docs/agent-configuration/rules](https://learn.chatgpt.com/docs/agent-configuration/rules) |
