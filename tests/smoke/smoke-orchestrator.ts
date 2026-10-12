@@ -25,6 +25,7 @@ import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../e2e/harness.js';
+import { corpusRoot } from '../corpus-root.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../e2e/harness.js';
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../e2e/walker.js';
 import { type Graph, destinationTargets } from '../../src/schema/workflow.schema.js';
@@ -95,7 +96,13 @@ function setupSandbox() {
   }
   // Render the worker MCP config from the template.
   const tpl = readFileSync(join(HERE, 'worker-mcp.template.json'), 'utf8');
-  const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', target);
+  // The worker's server resolves the corpus for itself, so a run on a corpus that is not the
+  // primary checkout's serves the worker a different tree than the orchestrator opened its session
+  // on — and the workflow under test is absent from it.
+  const cfg = tpl
+    .replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST)
+    .replace('__SANDBOX_WORKSPACE__', target)
+    .replace('__WORKFLOW_DIR__', corpusRoot());
   const cfgPath = join(root, 'worker-mcp.json');
   writeFileSync(cfgPath, cfg);
   return { root, target, cfgPath };
@@ -408,7 +415,13 @@ async function main() {
     // Assert rather than narrate. A run that reads well in the log and wrote outside its contracts,
     // or never moved the session at all, is the failure this exists to catch — and reading the log
     // by hand is what let both go unnoticed until someone looked.
-    const contract = await checkSession(finalState, resolve(WORKTREE, 'workflows'), { runComplete: true });
+    // The corpus the session was opened on. A fixed sibling path reports the session's own
+    // workflow as one that does not load whenever the run is against another corpus.
+    //
+    // Run completion is asserted only of a walk that reached its own end. A walk `--activities`
+    // stopped short wrote variables and completed no activity by design, which is the shape the
+    // no-progress check exists to catch in a walk that claimed to finish.
+    const contract = await checkSession(finalState, corpusRoot(), { runComplete: current === null });
     log(`session contract: ${contract.checkedWrites} write(s) measured`
       + `${contract.unattributedWrites ? `, ${contract.unattributedWrites} unattributed` : ''}`);
     // What the worker said it produced has to be what the bag received: the relay is the only path,
