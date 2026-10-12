@@ -1,0 +1,39 @@
+{
+  "main": {
+    "expected_tree": "a5e2af5d1ebde8035c06324d275954fae46339df",
+    "aggregate_commit": "e342f5b278b6bfde33a239ecdee3e463fd298780",
+    "aggregate_tree": "a5e2af5d1ebde8035c06324d275954fae46339df",
+    "overlap_resolutions": [
+      {
+        "epic": "e06",
+        "paths": [
+          "tests/guard-registry.test.ts"
+        ],
+        "output": "6c98ef1a5c2321803ed85629bd96ac2085620092\n100644 e4e3cbf17634821edb73b594c7b7365b9334768c 1\ttests/guard-registry.test.ts\n100644 8cf198b8603758435ba8f5d9698887e9ba57a9fa 2\ttests/guard-registry.test.ts\n100644 0d834d8553c92d048ce7cccb9560b53728b58b1f 3\ttests/guard-registry.test.ts\n\nAuto-merging guards/guards.ts\nAuto-merging package.json\nAuto-merging tests/guard-registry.test.ts\nCONFLICT (content): Merge conflict in tests/guard-registry.test.ts\n"
+      },
+      {
+        "epic": "e09",
+        "paths": [
+          "tests/guard-registry.test.ts"
+        ],
+        "output": "813c807b625408832d3d450da9e14080d2311d34\n100644 e4e3cbf17634821edb73b594c7b7365b9334768c 1\ttests/guard-registry.test.ts\n100644 8f10086da82d6262a1c976f014b91a10afacd924 2\ttests/guard-registry.test.ts\n100644 d6685ae022356632100a93e7fc020dbe9bd31238 3\ttests/guard-registry.test.ts\n\nAuto-merging tests/guard-registry.test.ts\nCONFLICT (content): Merge conflict in tests/guard-registry.test.ts\n"
+      }
+    ],
+    "remaining_diff": ""
+  },
+  "workflows": {
+    "expected_tree": "0b769f2d342f35bdd7e288203a73eb61f278cac7",
+    "aggregate_commit": "358d3b3e812fc749b65ccd3fe86290b76282047b",
+    "aggregate_tree": "0b769f2d342f35bdd7e288203a73eb61f278cac7",
+    "overlap_resolutions": [
+      {
+        "epic": "e09",
+        "paths": [
+          "corpus/work-package/techniques/update-pr/TECHNIQUE.md"
+        ],
+        "output": "eb96706283ee594d1b5b56cacc5ee6ab4c2de020\n100644 c4039fb9c6d7aad20da7603816222a42c9cb2a82 1\tcorpus/work-package/techniques/update-pr/TECHNIQUE.md\n100644 03c7ff91c8c9f29fd34713b0b5ffe7da7eb5e3bf 2\tcorpus/work-package/techniques/update-pr/TECHNIQUE.md\n100644 89c94b27c0b0ea0eb247ea3916b0213fba75faee 3\tcorpus/work-package/techniques/update-pr/TECHNIQUE.md\n\nAuto-merging corpus/remediate-vuln/activities/01-start.yaml\nAuto-merging corpus/work-package/activities/02-design-philosophy.yaml\nAuto-merging corpus/work-package/activities/06-plan-prepare.yaml\nAuto-merging corpus/work-package/activities/07-assumptions-review.yaml\nAuto-merging corpus/work-package/activities/09-lean-coding-audit.yaml\nAuto-merging corpus/work-package/activities/13-submit-for-review.yaml\nAuto-merging corpus/work-package/activities/15-codebase-comprehension.yaml\nAuto-merging corpus/work-package/activities/16-prism-decision.yaml\nAuto-merging corpus/work-package/activities/21-implementation-join.yaml\nAuto-merging corpus/work-package/routines/residual-assumption-interview.yaml\nAuto-merging corpus/work-package/techniques/update-pr/TECHNIQUE.md\nCONFLICT (content): Merge conflict in corpus/work-package/techniques/update-pr/TECHNIQUE.md\nAuto-merging corpus/workflow-authoring/activities/06-scope-and-draft.yaml\nAuto-merging corpus/workflow-design/activities/03-requirements-refinement.yaml\nAuto-merging corpus/workflow-design/activities/05-impact-analysis.yaml\nAuto-merging corpus/workflow-design/activities/06-scope-and-draft.yaml\nAuto-merging corpus/workflow-design/activities/08-quality-review.yaml\nAuto-merging corpus/workflow-design/activities/09-validate-and-commit.yaml\n"
+      }
+    ],
+    "remaining_diff": ""
+  }
+}

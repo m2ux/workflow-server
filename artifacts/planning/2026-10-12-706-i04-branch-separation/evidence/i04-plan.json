@@ -1,0 +1,599 @@
+{
+  "main": {
+    "source": "c2bfb89e2532ce91289e7c066040fdd72b4a0e4c",
+    "ancestor": "9fc2a1d5498b003d3af9a0cb2f92c12858acf2a1",
+    "target": "c1a97f236e20db64c8d36ba919ef0e7a4c1b671e",
+    "groups": {
+      "e09": [
+        1146
+      ],
+      "e06": [
+        1184,
+        1202
+      ],
+      "e03": [
+        1188,
+        1191,
+        1195,
+        1197
+      ],
+      "e04": [
+        1186,
+        1196
+      ],
+      "e05": [
+        1185,
+        1192,
+        1198,
+        1200
+      ],
+      "e01": [
+        1204,
+        1206,
+        1209
+      ],
+      "e00": [
+        1211
+      ]
+    },
+    "files": {
+      ".github/workflows/coverage-walk.yml": [
+        "e04"
+      ],
+      "docs/api.md": [
+        "e05"
+      ],
+      "docs/checkpoint.md": [
+        "e05"
+      ],
+      "docs/development.md": [
+        "e04"
+      ],
+      "docs/fidelity.md": [
+        "e05"
+      ],
+      "docs/routine.md": [
+        "e05"
+      ],
+      "guards/README.md": [
+        "e05"
+      ],
+      "guards/check-condition-survey.ts": [
+        "e05"
+      ],
+      "guards/check-decision-order.ts": [
+        "e05"
+      ],
+      "guards/check-declared-fallbacks.ts": [
+        "e01"
+      ],
+      "guards/check-inherited-input-never-spent.ts": [
+        "e09"
+      ],
+      "guards/check-operation-contract.ts": [
+        "e06"
+      ],
+      "guards/check-role-barred-calls.ts": [
+        "e01"
+      ],
+      "guards/condition-sites.ts": [
+        "e05"
+      ],
+      "guards/condition-survey.ts": [
+        "e05"
+      ],
+      "guards/guards.ts": [
+        "e01",
+        "e06"
+      ],
+      "package.json": [
+        "e01",
+        "e06"
+      ],
+      "schemas/activity.schema.json": [
+        "e05"
+      ],
+      "schemas/routine.schema.json": [
+        "e05"
+      ],
+      "scripts/generate-site-data.ts": [
+        "e05"
+      ],
+      "site/api/schemas.html": [
+        "e05"
+      ],
+      "site/api/tools.html": [
+        "e05"
+      ],
+      "site/specs/checkpoints.html": [
+        "e05"
+      ],
+      "src/loaders/workflow-loader.ts": [
+        "e05"
+      ],
+      "src/schema/activity.schema.ts": [
+        "e05"
+      ],
+      "src/tools/workflow-tools.ts": [
+        "e05"
+      ],
+      "tests/batch-loop-gates.test.ts": [
+        "e03"
+      ],
+      "tests/checkpoint-response.test.ts": [
+        "e05"
+      ],
+      "tests/condition-survey.test.ts": [
+        "e05"
+      ],
+      "tests/converted-gates.test.ts": [
+        "e05"
+      ],
+      "tests/coverage-walk-triggers.test.ts": [
+        "e04"
+      ],
+      "tests/decision-order-guard.test.ts": [
+        "e05"
+      ],
+      "tests/declared-fallbacks-guard.test.ts": [
+        "e01"
+      ],
+      "tests/e2e/all-workflows-walk.test.ts": [
+        "e00"
+      ],
+      "tests/e2e/batched-dispatch.test.ts": [
+        "e03"
+      ],
+      "tests/e2e/policies.ts": [
+        "e05"
+      ],
+      "tests/e2e/records.test.ts": [
+        "e00"
+      ],
+      "tests/e2e/records.ts": [
+        "e00"
+      ],
+      "tests/e2e/snapshot.test.ts": [
+        "e00"
+      ],
+      "tests/e2e/walker.ts": [
+        "e00"
+      ],
+      "tests/fixtures/batched-dispatch/batch-fixture/activities/01-first-stop.yaml": [
+        "e03"
+      ],
+      "tests/fixtures/batched-dispatch/batch-fixture/techniques/surplus/TECHNIQUE.md": [
+        "e03"
+      ],
+      "tests/fixtures/checkpoint-response/answer-fixture/activities/00-answer-activity.yaml": [
+        "e05"
+      ],
+      "tests/fixtures/checkpoint-response/answer-fixture/activities/01-followup-activity.yaml": [
+        "e05"
+      ],
+      "tests/fixtures/checkpoint-response/answer-fixture/workflow.yaml": [
+        "e05"
+      ],
+      "tests/fixtures/converted-gates.json": [
+        "e05"
+      ],
+      "tests/fixtures/wrong-records/doubled-contract/activities/01-announces-twice.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/doubled-contract/activities/02-announces-once.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/doubled-contract/techniques/audit-findings.md": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/doubled-contract/techniques/refresh-findings.md": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/doubled-contract/workflow.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/meta/activities/01-bootstrap.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/meta/workflow.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/activities/01-guards-the-record.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/activities/02-records-regardless.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/routines/guarded-assumption-run.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/routines/ungated-assumption-run.yaml": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/techniques/review-assumptions/TECHNIQUE.md": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/techniques/review-assumptions/record.md": [
+        "e00"
+      ],
+      "tests/fixtures/wrong-records/review-record/workflow.yaml": [
+        "e00"
+      ],
+      "tests/gate-differential.test.ts": [
+        "e05"
+      ],
+      "tests/guard-registry.test.ts": [
+        "e04",
+        "e05",
+        "e06",
+        "e09"
+      ],
+      "tests/inherited-input-never-spent-guard.test.ts": [
+        "e09"
+      ],
+      "tests/mcp-server.test.ts": [
+        "e05"
+      ],
+      "tests/operation-contract-guard.test.ts": [
+        "e06"
+      ],
+      "tests/role-barred-calls-guard.test.ts": [
+        "e01"
+      ],
+      "tests/rule-hygiene-reach.test.ts": [
+        "e01"
+      ],
+      "tests/variable-seeding.test.ts": [
+        "e05"
+      ]
+    }
+  },
+  "workflows": {
+    "source": "47732727e993eda0c25c0c96b882af0139aac96b",
+    "ancestor": "027b0438948a053fa45d2e9fdbbba0e589c0a7ad",
+    "target": "d5e2ace11c66e6b7742d5b2e591abd4af271bb55",
+    "groups": {
+      "e03": [
+        1187,
+        1194
+      ],
+      "e06": [
+        1183
+      ],
+      "e05": [
+        1193
+      ],
+      "e09": [
+        1203,
+        1207,
+        1210,
+        1212,
+        1213
+      ],
+      "e01": [
+        1205,
+        1208
+      ]
+    },
+    "files": {
+      "corpus/cicd-pipeline-security-audit/activities/03-primary-scan.yaml": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/activities/04-report-generation.yaml": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/activities/06-sub-verification.yaml": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/activities/07-sub-merge.yaml": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/compose-verification-brief.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/list-output-files.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/inventory-workflows/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/inventory-workflows/build-summary.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/merge-scan-findings/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/merge-scan-findings/load-outputs.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/assemble-results.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/load-patterns.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/scan-p6.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/score-cicd-severity/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/score-cicd-severity/calibrate.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/produce-gap-report.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/validate-structure.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/verify-file-coverage.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/verify-pattern-coverage.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/write-cicd-report/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/techniques/write-cicd-report/write-report.md": [
+        "e09"
+      ],
+      "corpus/cicd-pipeline-security-audit/workflow.yaml": [
+        "e09"
+      ],
+      "corpus/codebase-wiki/activities/03-lint-wiki.yaml": [
+        "e05"
+      ],
+      "corpus/meta/techniques/workflow-engine/evaluate-transition.md": [
+        "e05"
+      ],
+      "corpus/meta/techniques/workflow-engine/present-checkpoint-to-user.md": [
+        "e05"
+      ],
+      "corpus/meta/techniques/workflow-engine/respond-checkpoint.md": [
+        "e05"
+      ],
+      "corpus/meta/techniques/workflow-engine/step-control.md": [
+        "e05"
+      ],
+      "corpus/plain-language/activities/01-intake-and-profile.yaml": [
+        "e05"
+      ],
+      "corpus/plain-language/activities/02-source-analysis.yaml": [
+        "e05"
+      ],
+      "corpus/plain-language/activities/04-evaluate.yaml": [
+        "e05"
+      ],
+      "corpus/plain-language/techniques/TECHNIQUE.md": [
+        "e01"
+      ],
+      "corpus/prism-audit/activities/01-prompt-generation.yaml": [
+        "e05",
+        "e06"
+      ],
+      "corpus/prism/activities/00-select-mode.yaml": [
+        "e05"
+      ],
+      "corpus/prism/techniques/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/prism/techniques/emit-run-manifest.md": [
+        "e06"
+      ],
+      "corpus/prism/techniques/subsystem-analysis/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/remediate-vuln/activities/01-start.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/requirements-refinement/activities/01-intake.yaml": [
+        "e05"
+      ],
+      "corpus/specimens/work-package-discovery-fan-conformance/activities/02-gather-discovery.yaml": [
+        "e09"
+      ],
+      "corpus/substrate-node-security-audit/activities/03-primary-audit.yaml": [
+        "e06"
+      ],
+      "corpus/substrate-node-security-audit/activities/05-report-generation.yaml": [
+        "e06"
+      ],
+      "corpus/substrate-node-security-audit/activities/10-sub-crate-review.yaml": [
+        "e06"
+      ],
+      "corpus/substrate-node-security-audit/activities/14-sub-output-verification.yaml": [
+        "e06"
+      ],
+      "corpus/support/atlassian/techniques/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/support/atlassian/techniques/resolve-cloud-id.md": [
+        "e09"
+      ],
+      "corpus/support/git/techniques/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/support/git/techniques/push-branch.md": [
+        "e01"
+      ],
+      "corpus/support/github/techniques/create-pr.md": [
+        "e01"
+      ],
+      "corpus/support/github/techniques/list-issues.md": [
+        "e01"
+      ],
+      "corpus/support/github/techniques/list-prs.md": [
+        "e01"
+      ],
+      "corpus/work-package/activities/02-design-philosophy.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/03-requirements-elicitation.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/04-research.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/05-implementation-analysis.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/06-plan-prepare.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/07-assumptions-review.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/08-implement.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/09-lean-coding-audit.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/11-validate.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/13-submit-for-review.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/14-complete.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/15-codebase-comprehension.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/16-prism-decision.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/activities/17-code-review.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/19-test-suite-review.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/20-contract-tests.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/activities/21-implementation-join.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/routines/challenge-concerns.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/routines/converge-assumptions.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/routines/publish-planning-artifacts.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/routines/residual-assumption-interview.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/work-package/routines/settle-assumptions.yaml": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/codebase-comprehension/TECHNIQUE.md": [
+        "e06"
+      ],
+      "corpus/work-package/techniques/codebase-comprehension/survey.md": [
+        "e06"
+      ],
+      "corpus/work-package/techniques/finalize-documentation/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/review-assumptions/README.md": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/review-assumptions/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/review-assumptions/collect.md": [
+        "e09"
+      ],
+      "corpus/work-package/techniques/review-diff.md": [
+        "e06"
+      ],
+      "corpus/work-package/techniques/update-pr/TECHNIQUE.md": [
+        "e01",
+        "e09"
+      ],
+      "corpus/work-package/techniques/update-pr/post-review-comment.md": [
+        "e01"
+      ],
+      "corpus/workflow-authoring/activities/06-scope-and-draft.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-authoring/activities/08-quality-review.yaml": [
+        "e09"
+      ],
+      "corpus/workflow-authoring/techniques/TECHNIQUE.md": [
+        "e09"
+      ],
+      "corpus/workflow-authoring/techniques/intake-classification.md": [
+        "e09"
+      ],
+      "corpus/workflow-authoring/techniques/synthesize-change-brief.md": [
+        "e09"
+      ],
+      "corpus/workflow-authoring/workflow.yaml": [
+        "e09"
+      ],
+      "corpus/workflow-design/activities/03-requirements-refinement.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-design/activities/04-pattern-analysis.yaml": [
+        "e09"
+      ],
+      "corpus/workflow-design/activities/05-impact-analysis.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-design/activities/06-scope-and-draft.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-design/activities/08-quality-review.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-design/activities/09-validate-and-commit.yaml": [
+        "e05",
+        "e09"
+      ],
+      "corpus/workflow-design/activities/11-retrospective.yaml": [
+        "e09"
+      ],
+      "corpus/workflow-design/techniques/audit-rule-hygiene.md": [
+        "e01"
+      ],
+      "ledgers/unproduced-read-triage.json": [
+        "e09"
+      ]
+    }
+  }
+}

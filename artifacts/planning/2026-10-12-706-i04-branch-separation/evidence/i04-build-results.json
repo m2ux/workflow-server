@@ -1,0 +1,285 @@
+[
+  {
+    "base": "main",
+    "epic": "e00",
+    "branch": "i04/e00/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e00/main",
+    "prs": [
+      1211
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'tests/e2e/all-workflows-walk.test.ts' cleanly.\nFalling back to direct application...\nFalling back to direct application...\nApplied patch to 'tests/e2e/snapshot.test.ts' cleanly.\nApplied patch to 'tests/e2e/walker.ts' cleanly.\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "1244edf92249b9ee16d51dcdf81394d9ebfbe363"
+  },
+  {
+    "base": "main",
+    "epic": "e01",
+    "branch": "i04/e01/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e01/main",
+    "prs": [
+      1204,
+      1206,
+      1209
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Falling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\n"
+      },
+      {
+        "kind": "shared-pr-1204",
+        "exit": 0,
+        "output": "Applied patch to 'guards/guards.ts' cleanly.\nApplied patch to 'package.json' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1209",
+        "exit": 0,
+        "output": "Applied patch to 'guards/guards.ts' cleanly.\nApplied patch to 'package.json' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "71459f89157e5a901c84d684bd635ef41b74aafa"
+  },
+  {
+    "base": "main",
+    "epic": "e03",
+    "branch": "i04/e03/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e03/main",
+    "prs": [
+      1188,
+      1191,
+      1195,
+      1197
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'tests/batch-loop-gates.test.ts' cleanly.\nApplied patch to 'tests/e2e/batched-dispatch.test.ts' cleanly.\nApplied patch to 'tests/fixtures/batched-dispatch/batch-fixture/activities/01-first-stop.yaml' cleanly.\nFalling back to direct application...\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "da484ada43b5d07faf09288f8f668476a819b37f"
+  },
+  {
+    "base": "main",
+    "epic": "e04",
+    "branch": "i04/e04/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e04/main",
+    "prs": [
+      1186,
+      1196
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Falling back to direct application...\nApplied patch to 'docs/development.md' cleanly.\nFalling back to direct application...\n"
+      },
+      {
+        "kind": "shared-pr-1186",
+        "exit": 0,
+        "output": "Applied patch to 'tests/guard-registry.test.ts' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "0ca57a8d812e2c20f7ef702b7bfd810a27c52c0b"
+  },
+  {
+    "base": "main",
+    "epic": "e05",
+    "branch": "i04/e05/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e05/main",
+    "prs": [
+      1185,
+      1192,
+      1198,
+      1200
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'docs/api.md' cleanly.\nApplied patch to 'docs/checkpoint.md' cleanly.\nApplied patch to 'docs/fidelity.md' cleanly.\nApplied patch to 'docs/routine.md' cleanly.\nApplied patch to 'guards/README.md' cleanly.\nFalling back to direct application...\nApplied patch to 'guards/check-decision-order.ts' cleanly.\nFalling back to direct application...\nFalling back to direct application...\nApplied patch to 'schemas/activity.schema.json' cleanly.\nApplied patch to 'schemas/routine.schema.json' cleanly.\nApplied patch to 'scripts/generate-site-data.ts' cleanly.\nApplied patch to 'site/api/schemas.html' cleanly.\nApplied patch to 'site/api/tools.html' cleanly.\nApplied patch to 'site/specs/checkpoints.html' cleanly.\nApplied patch to 'src/loaders/workflow-loader.ts' cleanly.\nApplied patch to 'src/schema/activity.schema.ts' cleanly.\nApplied patch to 'src/tools/workflow-tools.ts' cleanly.\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nApplied patch to 'tests/decision-order-guard.test.ts' cleanly.\nApplied patch to 'tests/e2e/policies.ts' cleanly.\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nFalling back to direct application...\nApplied patch to 'tests/mcp-server.test.ts' cleanly.\nApplied patch to 'tests/variable-seeding.test.ts' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1185",
+        "exit": 1,
+        "output": "Applied patch to 'tests/guard-registry.test.ts' with conflicts.\nU tests/guard-registry.test.ts\n"
+      }
+    ],
+    "conflicts": [
+      "tests/guard-registry.test.ts"
+    ],
+    "head": "a047e97995088c128c47920123f648b7f9dcee5b"
+  },
+  {
+    "base": "main",
+    "epic": "e06",
+    "branch": "i04/e06/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e06/main",
+    "prs": [
+      1184,
+      1202
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'guards/check-operation-contract.ts' cleanly.\nApplied patch to 'tests/operation-contract-guard.test.ts' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1202",
+        "exit": 1,
+        "output": "Applied patch to 'guards/guards.ts' cleanly.\nApplied patch to 'package.json' cleanly.\nApplied patch to 'tests/guard-registry.test.ts' with conflicts.\nU tests/guard-registry.test.ts\n"
+      }
+    ],
+    "conflicts": [
+      "tests/guard-registry.test.ts"
+    ],
+    "head": "0857dce2bbae29da0773a6e89658cf25c04dcf88"
+  },
+  {
+    "base": "main",
+    "epic": "e09",
+    "branch": "i04/e09/main",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e09/main",
+    "prs": [
+      1146
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Falling back to direct application...\nFalling back to direct application...\n"
+      },
+      {
+        "kind": "shared-pr-1146",
+        "exit": 0,
+        "output": "Applied patch to 'tests/guard-registry.test.ts' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "a6f80b8ac800905c8c3eac3306b952a80a046bac"
+  },
+  {
+    "base": "workflows",
+    "epic": "e01",
+    "branch": "i04/e01/workflows",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e01/workflows",
+    "prs": [
+      1205,
+      1208
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/plain-language/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/support/git/techniques/push-branch.md' cleanly.\nApplied patch to 'corpus/support/github/techniques/create-pr.md' cleanly.\nApplied patch to 'corpus/support/github/techniques/list-issues.md' cleanly.\nApplied patch to 'corpus/support/github/techniques/list-prs.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/update-pr/post-review-comment.md' cleanly.\nApplied patch to 'corpus/workflow-design/techniques/audit-rule-hygiene.md' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1208",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/work-package/techniques/update-pr/TECHNIQUE.md' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "5cf25fbb280dbb5fe7d025ce2ca1e837a3c4cc25"
+  },
+  {
+    "base": "workflows",
+    "epic": "e03",
+    "status": "absorbed",
+    "prs": [
+      1187,
+      1194
+    ]
+  },
+  {
+    "base": "workflows",
+    "epic": "e05",
+    "branch": "i04/e05/workflows",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e05/workflows",
+    "prs": [
+      1193
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/codebase-wiki/activities/03-lint-wiki.yaml' cleanly.\nApplied patch to 'corpus/meta/techniques/workflow-engine/evaluate-transition.md' cleanly.\nApplied patch to 'corpus/meta/techniques/workflow-engine/present-checkpoint-to-user.md' cleanly.\nApplied patch to 'corpus/meta/techniques/workflow-engine/respond-checkpoint.md' cleanly.\nApplied patch to 'corpus/meta/techniques/workflow-engine/step-control.md' cleanly.\nApplied patch to 'corpus/plain-language/activities/01-intake-and-profile.yaml' cleanly.\nApplied patch to 'corpus/plain-language/activities/02-source-analysis.yaml' cleanly.\nApplied patch to 'corpus/plain-language/activities/04-evaluate.yaml' cleanly.\nApplied patch to 'corpus/prism/activities/00-select-mode.yaml' cleanly.\nApplied patch to 'corpus/requirements-refinement/activities/01-intake.yaml' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1193",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/prism-audit/activities/01-prompt-generation.yaml' cleanly.\nApplied patch to 'corpus/remediate-vuln/activities/01-start.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/02-design-philosophy.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/06-plan-prepare.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/07-assumptions-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/09-lean-coding-audit.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/13-submit-for-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/15-codebase-comprehension.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/16-prism-decision.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/21-implementation-join.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/residual-assumption-interview.yaml' cleanly.\nApplied patch to 'corpus/workflow-authoring/activities/06-scope-and-draft.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/03-requirements-refinement.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/05-impact-analysis.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/06-scope-and-draft.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/08-quality-review.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/09-validate-and-commit.yaml' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "f09eb5135fd35002a0c564780a177126be771fbd"
+  },
+  {
+    "base": "workflows",
+    "epic": "e06",
+    "branch": "i04/e06/workflows",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e06/workflows",
+    "prs": [
+      1183
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/prism/techniques/emit-run-manifest.md' cleanly.\nApplied patch to 'corpus/substrate-node-security-audit/activities/03-primary-audit.yaml' cleanly.\nApplied patch to 'corpus/substrate-node-security-audit/activities/05-report-generation.yaml' cleanly.\nApplied patch to 'corpus/substrate-node-security-audit/activities/10-sub-crate-review.yaml' cleanly.\nApplied patch to 'corpus/substrate-node-security-audit/activities/14-sub-output-verification.yaml' cleanly.\nApplied patch to 'corpus/work-package/techniques/codebase-comprehension/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/codebase-comprehension/survey.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/review-diff.md' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1183",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/prism-audit/activities/01-prompt-generation.yaml' cleanly.\n"
+      }
+    ],
+    "conflicts": [],
+    "head": "2a5d0e765d152443c971a90369efdd616b0e05d7"
+  },
+  {
+    "base": "workflows",
+    "epic": "e09",
+    "branch": "i04/e09/workflows",
+    "worktree": "/home/mike1/projects/dev/workflow-server/.worktrees/i04/e09/workflows",
+    "prs": [
+      1203,
+      1207,
+      1210,
+      1212,
+      1213
+    ],
+    "steps": [
+      {
+        "kind": "net-single-owner",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/cicd-pipeline-security-audit/activities/03-primary-scan.yaml' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/activities/04-report-generation.yaml' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/activities/06-sub-verification.yaml' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/activities/07-sub-merge.yaml' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/compose-verification-brief.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/dispatch-scanners/list-output-files.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/inventory-workflows/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/inventory-workflows/build-summary.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/merge-scan-findings/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/merge-scan-findings/load-outputs.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/assemble-results.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/load-patterns.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/scan-injection-patterns/scan-p6.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/score-cicd-severity/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/score-cicd-severity/calibrate.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/produce-gap-report.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/validate-structure.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/verify-file-coverage.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/verify-scan-output/verify-pattern-coverage.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/write-cicd-report/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/techniques/write-cicd-report/write-report.md' cleanly.\nApplied patch to 'corpus/cicd-pipeline-security-audit/workflow.yaml' cleanly.\nApplied patch to 'corpus/prism/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/prism/techniques/subsystem-analysis/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/specimens/work-package-discovery-fan-conformance/activities/02-gather-discovery.yaml' cleanly.\nApplied patch to 'corpus/support/atlassian/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/support/atlassian/techniques/resolve-cloud-id.md' cleanly.\nApplied patch to 'corpus/support/git/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/work-package/activities/03-requirements-elicitation.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/04-research.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/05-implementation-analysis.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/08-implement.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/11-validate.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/14-complete.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/17-code-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/19-test-suite-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/20-contract-tests.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/challenge-concerns.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/converge-assumptions.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/publish-planning-artifacts.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/settle-assumptions.yaml' cleanly.\nApplied patch to 'corpus/work-package/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/finalize-documentation/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/review-assumptions/README.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/review-assumptions/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/work-package/techniques/review-assumptions/collect.md' cleanly.\nApplied patch to 'corpus/workflow-authoring/activities/08-quality-review.yaml' cleanly.\nApplied patch to 'corpus/workflow-authoring/techniques/TECHNIQUE.md' cleanly.\nApplied patch to 'corpus/workflow-authoring/techniques/intake-classification.md' cleanly.\nApplied patch to 'corpus/workflow-authoring/techniques/synthesize-change-brief.md' cleanly.\nApplied patch to 'corpus/workflow-authoring/workflow.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/04-pattern-analysis.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/11-retrospective.yaml' cleanly.\nApplied patch to 'ledgers/unproduced-read-triage.json' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1210",
+        "exit": 0,
+        "output": "Applied patch to 'corpus/workflow-authoring/activities/06-scope-and-draft.yaml' cleanly.\n"
+      },
+      {
+        "kind": "shared-pr-1213",
+        "exit": 1,
+        "output": "Applied patch to 'corpus/remediate-vuln/activities/01-start.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/02-design-philosophy.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/06-plan-prepare.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/07-assumptions-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/09-lean-coding-audit.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/13-submit-for-review.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/15-codebase-comprehension.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/16-prism-decision.yaml' cleanly.\nApplied patch to 'corpus/work-package/activities/21-implementation-join.yaml' cleanly.\nApplied patch to 'corpus/work-package/routines/residual-assumption-interview.yaml' cleanly.\nApplied patch to 'corpus/work-package/techniques/update-pr/TECHNIQUE.md' with conflicts.\nApplied patch to 'corpus/workflow-authoring/activities/06-scope-and-draft.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/03-requirements-refinement.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/05-impact-analysis.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/06-scope-and-draft.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/08-quality-review.yaml' cleanly.\nApplied patch to 'corpus/workflow-design/activities/09-validate-and-commit.yaml' cleanly.\nU corpus/work-package/techniques/update-pr/TECHNIQUE.md\n"
+      }
+    ],
+    "conflicts": [
+      "corpus/work-package/techniques/update-pr/TECHNIQUE.md"
+    ],
+    "head": "f0a4e1e19ea5e737eabfc0a2bf28000339ce96dd"
+  }
+]
