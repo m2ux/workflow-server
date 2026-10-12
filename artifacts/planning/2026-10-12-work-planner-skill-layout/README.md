@@ -43,6 +43,11 @@ It matters because the guidelines now state rules the skill does not follow, and
 - **The move finishes on its own branch.**
   The symmetric rule uncovers ten further specifications in the catalog, each masked before by a citation that names a command without running it. They are the move's remainder under the criterion the move already carries, so they land in its pull request rather than in a row beside it.
 
+- **A step is what calls a command.**
+  The guidelines already said it, and the epic assumed the opposite: that a route written as a sentence runs the commands it names. Four passages of Workflow Canon settle it. Two of the same shape divide on mood, two that open alike divide on order, and two more divide on count, so every feature that separates one pair joins another. A test over prose would be a conjunction fitted to the sentences in hand, which is what each earlier correction was and why the work after it undid each one. Enumeration is the one mark an author, a reader and the check read alike.
+- **Canon's routes are restated, not excused.**
+  The twelve specifications the rule leaves silent measure a skill that writes its routes as prose. W12 states those routes as steps, which makes the call visible to the reader and countable in the same edit, and W13 then moves whatever that leaves with one caller.
+
 ## Joins
 
 [Check Dependencies](https://github.com/m2ux/workflow-server/blob/fae97e9e/skills/work-planner/references/commands.md#check-dependencies) prints twenty-nine eligible pairs in E12. Two share a pull request and twenty-seven do not.
