@@ -13,6 +13,7 @@ It matters because the split was made on a retrieval argument and is the one dec
 | Artifact | What it holds |
 | --- | --- |
 | [W14](w14.md) | The work item: the options weighed, the one taken and the parts of the work |
+| [results.md](results.md) | The retrieval walk per mode over the base and the head, the shared check and its suite |
 
 ## Links
 
