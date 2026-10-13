@@ -3,23 +3,26 @@ name: Verify
 # Typecheck, the test suite against the definitions this engine serves, and the delivery-cost gate
 # against a fixture under `tests/fixtures/`.
 #
-# What this job leaves to the corpus branch: grading the definitions themselves. The guard sweep and
-# the coverage roster run in `verify-corpus.yml` on that branch, against the tree under review there.
-# This job asks the other question — whether the engine still serves the definitions it ships
-# alongside — so a change on either side of that boundary is measured by one of the two.
+# What this workflow leaves to the corpus branch: grading the definitions themselves. The guard
+# sweep and the coverage roster run in `verify-corpus.yml` on that branch, against the tree under
+# review there. This one asks the other question — whether the engine still serves the definitions
+# it ships alongside — so a change on either side of that boundary is measured by one of the two.
 #
 # One guard runs here as well as there, because it is the one whose inputs straddle the boundary:
 # `check-tool-call-shape` reads the calls the definitions describe against the schemas this source
 # registers. Running it on both sides is what makes the sentence above true of it.
 #
-# That guard is a job of its own, so its verdict is a check of its own. Its two inputs are the
-# corpus tip and this source, and the corpus tip moves without the change under review: a pull
-# request against `main` is paired with the `workflows` tip, and one against `workflows` with the
-# `main` tip. Sharing a job with the suite and the delivery-cost gate would let that drift decide
-# whether the change under review is measured at all, which is how an undeclared `start_session`
-# argument held both skipped on every pull request from 2026-10-07 to 2026-10-09 (#1277).
+# Three questions, three jobs, because a job is the unit GitHub reports a verdict for and a step
+# behind a failing one is recorded as skipped. The guard's two inputs are the corpus tip and this
+# source, and the corpus tip moves without the change under review: a pull request against `main` is
+# paired with the `workflows` tip, and one against `workflows` with the `main` tip. A guard sharing
+# a job with the suite lets that drift decide whether the change under review is measured at all,
+# which is how an undeclared `start_session` argument held both skipped on every pull request from
+# 2026-10-07 to 2026-10-09 (#1277). The delivery-cost gate reads neither the suite's result nor the
+# definitions, so what a change costs to deliver is reported whatever the suite concludes.
 #
-# Each job resolves and checks out the definitions for itself, so neither waits on the other.
+# No job names `needs`, and each resolves for itself the definitions it reads, so none waits on
+# another.
 
 on:
   push:
@@ -86,7 +89,7 @@ jobs:
         run: npx tsx guards/check-tool-call-shape.ts --root workflows
 
   verify:
-    name: Typecheck, tests, and the fixture delivery gate
+    name: Typecheck, schemas, and the test suite
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -160,11 +163,28 @@ jobs:
           WORKFLOWS_DIR: workflows
         run: npm run test:ci
 
-      # Delivery cost is the one property no guard measures, because it is a property of a WALK
-      # rather than of a file. The gate walks the `delivery-fixture` under tests/fixtures/token-bench
-      # and compares the characters delivered against benchmark/fixtures/token-benchmark-baseline.json.
-      #
-      # A change that adds delivery on that fixture fails here at 1%. Confirm the increase is
-      # wanted, re-record the fixture in the same commit, and say what the walk gained.
+  # Delivery cost is the one property no guard measures, because it is a property of a WALK rather
+  # than of a file. The gate walks the `delivery-fixture` under tests/fixtures/token-bench and
+  # compares the characters delivered against benchmark/fixtures/token-benchmark-baseline.json.
+  #
+  # Both of its inputs are in this tree, so the job resolves no definitions and reads no suite
+  # result. That independence is what puts the answer in front of a reviewer of a change that
+  # reddens a test, which is when the cost of the change is least obvious from the diff.
+  #
+  # A change that adds delivery on that fixture fails here at 1%. Confirm the increase is wanted,
+  # re-record the fixture in the same commit, and say what the walk gained.
+  delivery-cost:
+    name: The delivery cost of a walk against the recorded baseline
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
       - name: Gate delivery cost against the recorded baseline
         run: npm run --silent bench:token -- --workflow=delivery-fixture --fixture-corpus --label=ci --context-mode=fresh --gate --reference=benchmark/fixtures/token-benchmark-baseline.json > /dev/null
