@@ -13,9 +13,18 @@
  *
  * Scope is a literal a file READS. A test that builds a synthetic corpus writes the same shape of
  * path into a temp tree — `write('meta/techniques/plan.md', …)` — and that path is authored by the
- * test rather than borrowed from the corpus, so it is skipped and counted. A literal whose leading
- * segment is not a workflow directory is a fixture id (`wf/`, `alpha/`) and is skipped the same way.
- * Both counts print on a clean run, so the reach of the check is visible rather than assumed.
+ * test rather than borrowed from the corpus, so it is skipped and counted. A bare literal whose
+ * workflow segment is not a workflow directory is a fixture id (`wf/`, `alpha/`) and is skipped the
+ * same way. Both counts print on a clean run, so the reach of the check is visible rather than
+ * assumed.
+ *
+ * A pin is spelled from whichever root the file reading it resolves against, so the workflow segment
+ * may sit behind leading directories — a suite reading through `liveCorpusRoot()` writes the corpus
+ * checkout's own `corpus/meta/techniques/…`. The construct directory is what locates the workflow
+ * segment within the literal, and everything ahead of it is path context the finding quotes back.
+ * Where those leading segments name a directory the checkout holds, the literal is addressed at
+ * that checkout and resolves whole or is reported: a workflow the corpus retires leaves a pin whose
+ * workflow segment names nothing, which is the rot this exists for rather than a fixture id.
  *
  * JSON ledgers are out of scope: `binding-fidelity-triage.json` already reports an entry that
  * matches nothing, and a second check over the same sites would be a second home for that verdict.
@@ -35,32 +44,50 @@ const SOURCE_DIRS = ['guards', 'scripts', 'src', 'tests'];
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'coverage', '.git', '.worktrees', 'fixtures']);
 
 /**
- * A quoted repo-relative corpus path: `<workflow>/<construct-dir>/…/<file>.md|.yaml`. The construct
- * directory is what separates a corpus path from any other slashed string in these sources.
+ * A quoted corpus path: `…/<workflow>/<construct-dir>/…/<file>.md|.yaml`. The construct directory is
+ * what separates a corpus path from any other slashed string in these sources, and the segment
+ * ahead of it is the workflow. Leading segments are the root the literal is spelled from, taken
+ * lazily so the first segment that fronts a construct directory is read as the workflow.
  */
-const PINNED = /['"`]([a-z0-9][a-z0-9-]*)\/(techniques|activities|resources)\/([A-Za-z0-9/_.-]+\.(?:md|ya?ml))['"`]/g;
-
-/** Calls that author a path into a temp tree rather than read one from the corpus. */
-const AUTHORING_CALL = /\b(write|writeFile|writeFileSync|mkdir|mkdirSync|outputFile)\s*\(/;
-
-/** The same call with nothing after its open paren — the opening line of one that wraps. */
-const AUTHORING_CALL_OPENS = /\b(write|writeFile|writeFileSync|mkdir|mkdirSync|outputFile)\s*\($/;
+const PINNED = /['"`]((?:[A-Za-z0-9_.-]+\/)*?)([a-z0-9][a-z0-9-]*)\/(techniques|activities|resources)\/([A-Za-z0-9/_.-]+\.(?:md|ya?ml))['"`]/g;
 
 /**
- * True when the literal is an argument of an authoring call. A call long enough to wrap puts its
- * path on a line of its own, so the call name sits above rather than beside the literal — the walk
- * back over blank and comment lines finds it there, and a fixture write is read as a fixture write
- * whatever its layout. Only a line that ends at the open paren qualifies, so a literal several
- * arguments into an unrelated call does not borrow the exemption.
+ * Calls that author a path into a temp tree rather than read one from the corpus. `withCorpus` is
+ * among them: it takes a map of path to body, so every key is a file the test writes.
+ */
+const AUTHORING_CALL = /\b(write|writeFile|writeFileSync|mkdir|mkdirSync|outputFile|withCorpus)\s*\(/;
+
+/** How far a line opens or closes a parenthesis, counting only the two characters. */
+function parenShift(text: string): number {
+  let shift = 0;
+  for (const ch of text) {
+    if (ch === '(') shift += 1;
+    else if (ch === ')') shift -= 1;
+  }
+  return shift;
+}
+
+/**
+ * True when the literal sits inside an authoring call's argument list.
+ *
+ * A call long enough to wrap puts each path on a line of its own, and a call taking a map of path
+ * to body puts several there, so the call name is above the literal rather than beside it. The
+ * walk down from the top of the file opens at an authoring call and stays open until its paren
+ * closes, which reads every path of a multi-file fixture as the fixture write it is. A literal in
+ * an unrelated call is outside any such span and takes no exemption.
  */
 export function authorsIntoFixture(lines: string[], lineNo: number): boolean {
   if (AUTHORING_CALL.test(lines[lineNo]!)) return true;
-  for (let above = lineNo - 1; above >= 0; above -= 1) {
-    const text = lines[above]!.trim();
-    if (text === '' || text.startsWith('//') || text.startsWith('*') || text.startsWith('/*')) continue;
-    return AUTHORING_CALL_OPENS.test(text);
+  let depth = 0;
+  for (const text of lines.slice(0, lineNo)) {
+    if (depth > 0) {
+      depth += parenShift(text);
+      continue;
+    }
+    const opens = AUTHORING_CALL.exec(text);
+    if (opens) depth = parenShift(text.slice(opens.index + opens[0].length - 1));
   }
-  return false;
+  return depth > 0;
 }
 
 /**
@@ -91,7 +118,7 @@ export interface PinnedPathTally {
   findings: Finding[];
   /** Literals a file authors into its own fixture tree. */
   authored: number;
-  /** Literals whose leading segment names no workflow — a synthetic corpus id. */
+  /** Literals whose workflow segment names no workflow — a synthetic corpus id. */
   foreign: number;
   /** Literals illustrating a shape in a comment rather than naming a path the code resolves. */
   illustrative: number;
@@ -99,7 +126,13 @@ export interface PinnedPathTally {
   checked: number;
 }
 
-export function collect(root: string): PinnedPathTally {
+/**
+ * Every pin in `repo`'s own TypeScript, resolved against the corpus at `root`.
+ *
+ * `repo` is this repository. A test names a tree of its own to put a particular source line in
+ * front of the scan, which is how a spelling the scan once passed over is held to a verdict.
+ */
+export function collect(root: string, repo: string = REPO): PinnedPathTally {
   const corpus = indexCorpus(root);
   const workflows = new Set(corpus.workflows.keys());
   const findings: Finding[] = [];
@@ -108,17 +141,13 @@ export function collect(root: string): PinnedPathTally {
   let illustrative = 0;
   let checked = 0;
 
-  for (const file of sources(REPO).filter((f) => SOURCE_DIRS.some((d) => f.startsWith(join(REPO, d))))) {
+  for (const file of sources(repo).filter((f) => SOURCE_DIRS.some((d) => f.startsWith(join(repo, d))))) {
     const text = readFileSync(file, 'utf-8');
     const lines = text.split('\n');
     for (const [lineNo, line] of lines.entries()) {
       for (const match of line.matchAll(PINNED)) {
-        const [, workflow, construct, tail] = match;
-        const rel = `${workflow}/${construct}/${tail}`;
-        if (!workflows.has(workflow!)) {
-          foreign += 1;
-          continue;
-        }
+        const [, prefix, workflow, construct, tail] = match;
+        const rel = `${prefix}${workflow}/${construct}/${tail}`;
         if (inComment(line, match.index)) {
           illustrative += 1;
           continue;
@@ -127,12 +156,24 @@ export function collect(root: string): PinnedPathTally {
           authored += 1;
           continue;
         }
+        // A literal spelled from the corpus checkout's own layout is addressed at that checkout,
+        // and a suite reading through `liveCorpusRoot()` is the only thing that spells one. The
+        // workflow segment is then no exemption: a workflow the corpus retired leaves a pin naming
+        // no workflow at all, which is the very rot this reports.
+        const fromRoot = prefix !== '' && existsSync(join(root, prefix!));
+        if (!fromRoot && !workflows.has(workflow!)) {
+          foreign += 1;
+          continue;
+        }
         checked += 1;
-        const held = workflowSubdir(corpus, workflow!, join(construct!, tail!));
+        if (fromRoot && existsSync(join(root, rel))) continue;
+        const held = workflows.has(workflow!)
+          ? workflowSubdir(corpus, workflow!, join(construct!, tail!))
+          : null;
         if (held && existsSync(held)) continue;
         findings.push({
           check: 'dangling-pin',
-          site: `${relative(REPO, file)}:${lineNo + 1}`,
+          site: `${relative(repo, file)}:${lineNo + 1}`,
           detail:
             `names \`${rel}\`, which the pinned corpus does not hold — the corpus renamed or removed `
             + 'it and nothing failed, so whatever this line asserts now rests on a path that is gone. '

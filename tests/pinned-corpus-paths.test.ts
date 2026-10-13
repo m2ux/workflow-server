@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { cpSync, mkdirSync, mkdtempSync, renameSync, rmSync } from 'node:fs';
+import { cpSync, mkdirSync, mkdtempSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { authorsIntoFixture, collect } from '../guards/check-pinned-corpus-paths.js';
@@ -35,6 +35,28 @@ describe.skipIf(!liveCorpusRoot())('pinned corpus paths', () => {
       rmSync(root, { recursive: true, force: true });
     }
   });
+
+  /**
+   * A suite reading through `liveCorpusRoot()` spells a pin from the corpus checkout's own layout,
+   * `corpus/<workflow>/…`, and a retired workflow leaves such a pin naming no workflow at all. The
+   * path is assembled from its segments so this check does not become a dangling pin of its own.
+   */
+  it('reports a pin naming a workflow the corpus retired', () => {
+    const retired = ['corpus', 'midnight-system-review', 'activities', '01-scope-intake.yaml'].join('/');
+    const repo = mkdtempSync(join(tmpdir(), 'pinned-retired-'));
+    try {
+      mkdirSync(join(repo, 'tests', 'e2e'), { recursive: true });
+      writeFileSync(
+        join(repo, 'tests', 'e2e', 'walk-protocol.test.ts'),
+        `const files = [\n  '${retired}',\n];\n`,
+      );
+      const { findings } = collect(liveCorpusRoot()!, repo);
+      expect(findings.map((f) => f.site)).toEqual(['tests/e2e/walk-protocol.test.ts:2']);
+      expect(findings[0]!.detail).toContain(retired);
+    } finally {
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
 });
 
 /**
@@ -67,6 +89,17 @@ describe('a path authored into a fixture tree', () => {
       '  );',
     ];
     expect(authorsIntoFixture(lines, 1)).toBe(false);
+  });
+
+  it('is recognised on every key of a fixture map, not only its first', () => {
+    const lines = [
+      '    withCorpus({',
+      "      'wf/resources/one.md': resource('Severities', BODY),",
+      "      'wf/resources/two.md': resource('Severities', BODY),",
+      '    }, (root) => {',
+    ];
+    expect(authorsIntoFixture(lines, 1)).toBe(true);
+    expect(authorsIntoFixture(lines, 2)).toBe(true);
   });
 
   it('is not claimed by an argument of a call the authoring call already closed', () => {
