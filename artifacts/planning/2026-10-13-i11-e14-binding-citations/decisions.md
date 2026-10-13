@@ -87,6 +87,8 @@ A Prerequisites section carries what every step needs, or what its first step ne
   Simple to state, and it pays the retrieval cost twice on every long procedure.
 - **Weighed: a freshness qualifier on reuse.**
   Reuse holds within a stated distance and a citation beyond it reloads. Precise, and it adds a measure every author must judge.
+- **The canonical form is the spelling at the step.**
+  `Read [Name](target) first.` stays. Preceding text governs a set of citations; this form governs one, where it stands, and it is the only citation obligation the shared check can decide.
 - **The instances.**
   Three in Work Planner state a condition and sit far from their use: Delivery State in `plan-mode.md` and `work-breakdown.md`, and Graph Conventions in `understand-mode.md`. The command-conventions line every Prerequisites section carries holds, since every step's commands need it.
 
