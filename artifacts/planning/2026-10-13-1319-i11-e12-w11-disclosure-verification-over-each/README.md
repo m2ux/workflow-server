@@ -13,6 +13,8 @@ It matters because an epic that restructured a skill on a readability argument s
 | Artifact | What it holds |
 | --- | --- |
 | [W11](w11.md) | The work item: the scenarios, the walk and the parts of the work |
+| [walk.py](walk.py) | The instrument: each mode's retrieval counted over one skill layout |
+| [results.md](results.md) | The walk's per-mode results over both layouts, the findings and the checks |
 
 ## Links
 
