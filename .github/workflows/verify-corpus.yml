@@ -1,6 +1,7 @@
 name: Verify corpus
 
-# The guards and the walks whose subject is this tree run against a pull request on THIS branch.
+# The guards and the walks whose subject is this tree run against a pull request on THIS branch, and
+# against the tip of a corpus branch each time one is pushed to.
 #
 # Check programs live on the engine tree this job checks out. This branch holds definitions only —
 # no package.json — so the job borrows that tooling and points it at the corpus under review.
@@ -14,6 +15,11 @@ name: Verify corpus
 # own (coverage.yml) so a coverage regression is not read as a guard failure.
 
 on:
+  push:
+    # A corpus branch takes a merge directly and reaches no pull request of its own, so the tip a
+    # merge produces is swept by the push that produced it. A glob does not cross `/`, so each
+    # depth is its own pattern.
+    branches: [workflows, 'i[0-9]+/workflows', 'i[0-9]+/e[0-9]+/workflows']
   pull_request:
   workflow_dispatch:
 
@@ -70,8 +76,8 @@ jobs:
           ref: ${{ steps.pair.outputs.ref }}
           submodules: false
 
-      # The corpus under review. For a pull request this is the branch tip; for a manual run it is
-      # the ref the run was dispatched on.
+      # The corpus under review. For a pull request this is the branch tip; for a push it is the
+      # commit pushed; for a manual run it is the ref the run was dispatched on.
       #
       # The tip, not the merge result. GitHub computes a pull request's merge commit asynchronously,
       # so the sha in the event payload can name a merge of the previous push — the run then grades a
