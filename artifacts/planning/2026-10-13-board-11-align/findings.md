@@ -52,9 +52,19 @@ Renumbering a criterion relabels the test plans of the pull requests that cite i
 | `i14/e07/main` was empty | Zero commits ahead of `main` when the pass began | #1404 has since merged into it and draft review #1411 is open |
 | Thirty-six merged pull requests link no issue | Development is empty on #701–#703, #1144–#1146, #1155, #1179–#1213 and #1281 | None owed a link: every one delivers a row that has no task issue of its own |
 
+## Beyond the three initiatives
+
+| Finding | Measurement | Resolution |
+| --- | --- | --- |
+| A closed epic showed two rows undelivered | #737 `[I05:E02]` is closed as completed with all four criteria ticked, while W01 and W03 carried no Done tick and linked nothing | Both delivered by planning records rather than pull requests: W01 by the [stage 2 dispositions](../2026-09-11-routines-remediation/stage-2-dispositions.md), twelve rows measured with the live behaviour changes named; W03 by the [structured-condition survey](../2026-10-07-750-i04-e05-w01-survey-every-structured-condition/survey.md), which dispositions `07-assumptions-review` `post-summary-review` as convert. Both rows now link their record and tick Done |
+| #737 cited its own initiative | `format.py` reported R3 naming #735 on the same board | Removed; #737 reports nothing |
+
+Row 11 of the disposition record, the per-item gate's dismissibility, was left to the owner when that record was written. The survey settled it in the convert direction, which is what makes #737 AC4 true.
+
 ## Still open
 
 - Six advisory numbering gaps, which the pinning rule blocks.
 - #1146's two test-plan disagreements, which #1138 W09 is the row to close.
 - #708 AC1, AC2 and AC4, which wait on the guard-imports row now in E04.
-- #1242 AC3, observable only by a live sidecar walk.
+- #1242 AC1, which needs the live two-instance walk W02 carries.
+- `sync.py` reports #1287 unmatched on #1242: it merged E02's work onto `main` without an epic base.

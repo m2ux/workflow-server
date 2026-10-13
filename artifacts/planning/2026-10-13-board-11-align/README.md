@@ -51,8 +51,12 @@ A workflow sourcing its own inputs cannot reach a slot its library declares, so 
 | Review References cite task merges that git cannot show | Kept. The bases were rebuilt as one squashed commit each, so sync reports `merged none` on every one until it merges |
 | I14 E07's criteria were out of sequence | Renumbered to AC1-AC3, with #1404's test plan relabelled |
 | No reference carries the Source marker | Left unmarked. Every reference is background, and each criterion stands on the instrument it names |
+| I14 E02 AC3 sat unticked on a merged row | Verified by the tests #1281 delivered: `serving-bind` and `config` pass on the `main` tip, 62 tests. AC3 ticked and W01 Done |
+| #737, outside the three initiatives, showed two rows undelivered on a closed epic | Investigated and repaired with the user's approval: both rows link the planning record that delivered them and tick Done |
 
 ## Corrections
+
+I14 E02's AC3 was first read as observable only by a live sidecar walk. #1281 carries five test-plan rows against it, and `serving-bind.test.ts` observes what the criterion states: a walk opened on an instance configured with a corpus pin answers with `serving.corpus_pin`, and a record built from that response disagrees with the pin the walk set out with once a rebind moved the instance. The container labels are stubbed rather than live. AC1 is the criterion that needs two concurrent instances.
 
 I14 AC7, AC8 and AC13 were first read as restatements of single epic criteria. AC13 states what E06 achieves across its three harnesses where E06's own criteria are per-harness, and AC7 and AC8 each stand above four of E03's. Only I13 carried duplicates.
 
