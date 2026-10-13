@@ -107,7 +107,7 @@ describe('guard registry', () => {
   /**
    * Engine CI measures this tree: typecheck, the suite, and the fixture delivery gate.
    */
-  it('the engine job runs typecheck, the suite, and the fixture gate', () => {
+  it('engine CI runs typecheck, the suite, and the fixture gate', () => {
     const verify = readFileSync(join(REPO, '.github/workflows/verify.yml'), 'utf-8');
     expect(verify).toContain('npm run typecheck');
     expect(verify).toContain('npm run test:ci');
