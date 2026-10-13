@@ -32,3 +32,26 @@ What survives is the gating, and the decision taken is that the definitions-call
 Three initiatives hold open review pull requests against their epics, so each is In Progress while that work is live, and the priority order takes effect as it drains. I14:E02 returns to In Progress with the initiative, its criteria being unticked and its rows undelivered.
 
 Forty-three closed pull requests naming an epic were retitled to the epic's new id, since an epic's pull requests are found by that prefix. Two closed integration pull requests, 1225 and 1226, name the retired initiative and target branches that no longer exist; they keep their titles as the record of what was open against them.
+
+## Verification of the criteria sync reported ready
+
+Twelve criteria across five epics had merged delivery and no tick. Each was read against the instrument it names, on the branch that carries the work. None holds.
+
+| Criterion | Verdict | What the instrument says |
+| --- | --- | --- |
+| I15:E01 AC1, AC2, AC4 | does not hold | `tests/batch-loop-gates.test.ts` fails on `i15/e01/main`, one file of 144, including the case that decides nothing from a continue field on the envelope |
+| I14:E04 AC1, AC2, AC4 | does not hold | `check-role-barred-calls.ts` imports three names `src/loaders/core-ops.ts` does not export, so the guard cannot load and the tools typecheck fails |
+| I14:E02 AC3 | does not hold | the run-record instruction pins identity from the reload and the container labels, both read before the walk |
+| I13:E01 AC1, AC2, AC3 | unconfirmed | the guard sweep carrying the inherited-input guard fails on `i13/e01/workflows` |
+| I15:E02 AC12 | unconfirmed | the test job fails on `i15/e02/main` and the sweep on `i15/e02/workflows` |
+| I14:E04 AC3 | half | the sweep passes on `i14/e04/workflows`, so the corpus half holds; the historical fire rides the failing test job |
+
+I15:E01's W02 and W03 lose their delivery marks, a row not being delivered while a criterion it covers is unticked.
+
+I14:E04's W01 depends on I14:E07:W01: the guard whose registration AC1 asserts is the guard whose imports that task repairs.
+
+## Carried, not resolved
+
+- Twelve criteria on the closed epics I15:E00, I14:E00 and I14:E01 are covered by a merged pull request that names no test. The epics stay closed.
+- The observing-test rows of I14:E03, I14:E04 and I13:E01 carry an empty Coverage cell, which the format check reports for a decision. The shape predates the split and is the same in all three.
+- Four open questions wait for their epic to be readied: the gitnexus chain input, the group readings, the workflow a walk test moves to, and the source a newer `gh` comes from.
