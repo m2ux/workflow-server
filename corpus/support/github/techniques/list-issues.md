@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.2
+  version: 1.2.0
 ---
 
 ## Capability
@@ -15,7 +15,11 @@ List issues via REST search or listing.
 
 ### list_query
 
-*(optional)* Query string for the issues list when `{search_text}` is unset (e.g. `state=open&labels=bug`). Default `state=open`. Pull requests appear in the issues list endpoint unless filtered out in post-processing.
+*(optional)* Query string for the issues list when `{search_text}` is unset (e.g. `state=open&labels=bug`). Pull requests appear in the issues list endpoint unless filtered out in post-processing.
+
+#### default
+
+`state=open`
 
 ## Outputs
 
@@ -29,5 +33,5 @@ Issues the search or listing returned, one JSON object per issue.
 
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 2. When `{search_text}` is set, write the search query to a temp file, per `github.authored-prose-by-file`: `{search_text}`, then ` repo:{owner}/{repo} type:issue`. `gh api search/issues --paginate -F q=@<file>`.
-3. When `{search_text}` is unset: `gh api "repos/{owner}/{repo}/issues?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.
+3. When `{search_text}` is unset: `gh api "repos/{owner}/{repo}/issues?{list_query}" --paginate`.
 4. Set `{issue_records}` to the parsed array either branch returned.
