@@ -170,7 +170,7 @@ describe('corpus discovery', () => {
     expect(workflowIdFromCorpusPath('prism/techniques/plan-analysis.md')).toBe('prism');
     expect(workflowIdFromCorpusPath('security/audits/prism/techniques/plan-analysis.md')).toBe('prism');
     expect(workflowIdFromCorpusPath('security/audits/prism/workflow.yaml')).toBe('prism');
-    expect(workflowIdFromCorpusPath('security/audits/prism/activities/patterns/01-pass.yaml')).toBe('prism');
+    expect(workflowIdFromCorpusPath('security/audits/meta/activities/patterns/02-supervisor.yaml')).toBe('meta');
     expect(workflowIdFromCorpusPath('LICENSE')).toBeNull();
   });
 
