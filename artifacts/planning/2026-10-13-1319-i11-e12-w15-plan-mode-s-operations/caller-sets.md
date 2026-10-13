@@ -33,10 +33,14 @@ Run in the unit's worktree of `m2ux/workflow-server`, under `scripts/sbx`.
 
 - **At `d4b4c0eb`, the base.**
   `skills/scripts/check_skill_files.py skills/work-planner` reports `28 files checked, 3 findings`, all three in `references/work-breakdown.md` at lines 118 to 120: inline bold leads of 230, 110 and 214 characters against the hundred-character limit. No finding names a command specification with one caller.
-- **At `99abeb30`, the head.**
+- **At `5fd293b0`, the head.**
   `skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon` reports `57 files checked, 0 findings`.
 - **The check's own suite.**
   `python3 -m unittest discover -s skills/test -p test_check_skill_files.py` runs 57 tests, all passing, at both revisions.
+- **The head carries no diff against the epic base.**
+  `workspace` fixed the same three bullets in the same window, in wording the base merge took, so the branch's net change against `i11/e12/workspace` is empty and the delivery of AC19 is this record.
+- **The base merge carried its own fixes.**
+  Merging `workspace` into `i11/e12/workspace` at `3693c10c` brought an Approval section whose four bold leads exceeded the limit and whose Fetch Merge Readiness citation pointed at the catalog, where this epic's rule had moved the specification into the Work Breakdown Guide. Both are resolved in that merge commit.
 
 ## What the sets decide
 
