@@ -17,10 +17,11 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 
 | Goal clause | Initiative criterion | Epic | Epic criteria |
 | --- | --- | --- | --- |
-| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC5, AC6 |
-| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC3, AC4 |
-| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC7, AC8 |
-| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC9 |
+| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC6, AC7 |
+| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC3, AC8, AC9 |
+| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC4, AC5 |
+| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC10, AC11 |
+| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC12 |
 
 AC32 answers no requirement of the initiative's source specification. It states what this session's measurement found: the specification requires calling prose to link a specification by name, and says nothing about what the reader owes that link.
 
@@ -36,6 +37,19 @@ The text preceding a set of citations states when they are loaded. Where it stat
   Every binding citation takes a canonical form, as `Read [Name](target) first.` already does. It is unambiguous and decidable by the check, and it adds words to dense step prose across both skills.
 - **Why the preceding statement settles it.**
   A rule that asks the reader to classify each citation leaves the judgment where the gap already is. A statement ahead of a set of citations puts it on the author, once, in the file that carries them, and the default decides the step whose author said nothing.
+
+## The condition a whole-file citation carries
+
+The prose ahead of a citation whose boundary is a whole file states the case in which that file is read. Where it states none, the file is read in every case.
+
+- **Chosen.**
+  A whole file is the largest claim a citation can make, so it is the one that owes the reader a condition. The entry point's mode listing states its condition — the selected mode — and its template listing names six whole template files with none, for a reader who takes the one its issue kind calls for.
+- **The default is the strongest reading.**
+  An omitted condition means always, not sometimes. The cost of leaving it out falls on the author who left it out, so the pressure runs toward stating the condition or narrowing the scope, never toward a reader guessing which case applies.
+- **Weighed: an omitted condition meaning the reader decides.**
+  It keeps the prose as written and returns the judgment to the reader, which is the gap this epic closes.
+- **Weighed: forbidding a whole-file citation outright.**
+  Short single-subject files, templates and mode files are read entire, so a prohibition would be worked around with a title anchor that says less than a stated condition does.
 
 ## The scope a citation may name
 
