@@ -42,9 +42,9 @@ describe('coverage scope', () => {
     });
 
     it('takes a product activity under corpus/ for resolution against the graphs', () => {
-      const c = classifyChange(['corpus/work-package/activities/01-create-work-package.yaml']);
+      const c = classifyChange(['corpus/work-package/activities/01-start-work-package.yaml']);
       expect([...c.workflows]).toEqual([]);
-      expect([...c.activityFiles]).toEqual(['corpus/work-package/activities/01-create-work-package.yaml']);
+      expect([...c.activityFiles]).toEqual(['corpus/work-package/activities/01-start-work-package.yaml']);
     });
 
     it('takes a nested activity file for resolution against the graphs', () => {
