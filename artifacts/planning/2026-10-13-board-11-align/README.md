@@ -38,8 +38,14 @@ A workflow sourcing its own inputs cannot reach a slot its library declares, so 
 | Ten review pull requests heading epic bases were ready while their epics had undelivered rows | Converted to draft: #1381, #1382, #1383, #1387–#1390, #1397–#1399 |
 | Twelve unmet rows could be ticked on the merge or verified | Verified each against its epic base; three ticked, nine left unticked with the measurement recorded |
 | The library residue could sit in a new epic, in rows on two epics, or be excluded by narrowing the criteria | A new epic under Corpus Debt, #1410, owning `corpus/meta` and the prism-evaluate declaration |
+| Three rows added tests for criteria their epic covered elsewhere, and carried no Coverage | Each epic gained a criterion for the test that row adds, cited from the row |
+| I13 restated seven of its epics' criteria | Raised to seven criteria stating what the epics achieve together, with the Coverage cells remapped |
+| The 131 task pairs that could share a pull request | Named in [Separate deliveries](joins.md), each delivering on its own |
+| Red Trunk was to be renumbered below Missing Checks | Refused by the script: a pull request names E03, E04 and E06, and work a pull request names keeps its number. The dependency stays and the numbering disagrees with it |
 
 ## Corrections
+
+I14 AC7, AC8 and AC13 were first read as restatements of single epic criteria. AC13 states what E06 achieves across its three harnesses where E06's own criteria are per-harness, and AC7 and AC8 each stand above four of E03's. Only I13 carried duplicates.
 
 The I15 E01 corpus share was first read as stranded, because its two merges are contained in no integration branch and no `i15/e01/workflows` base exists. The branch-separation record states that `i04/e03/workflows` was absorbed — #1187 and #1194 changed only lines later epics rewrote — and its validation shows the aggregate tree reproducing the integration tree with no residual diff. The epic legitimately carries one base, and the three criteria were verified against the `workflows` tip.
 

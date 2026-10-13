@@ -8,7 +8,7 @@ Every departure the alignment of I13, I14 and I15 found, by area, with the measu
 | --- | --- | --- |
 | I14's table ticked E03 Done while #707 is open | `sync.py` initiative sync reports `cleared: E03` | Patched #1380 |
 | I14 AC7 and AC8 are ticked while E03 is undelivered | `sync.py` reports both `ticked early` | Unticked |
-| Initiative criteria restate single epic criteria | I13 AC6 and AC7 are word for word #1116 AC1 and AC2; I13 AC1, AC2, AC4, AC5 restate #948 AC5, #948 AC6, #1138 AC8, #1138 AC10; I14 AC7, AC8, AC13 restate their epics' | Open |
+| I13 criteria restate single epic criteria | Seven of ten were near-verbatim: AC1 and AC2 from #948 AC4 and AC6, AC4 and AC5 from #1138 AC8 and AC10, AC6 and AC7 from #1116 AC1 and AC2, AC9 from #948 AC9. I14 AC7, AC8 and AC13 each stand above several epic criteria and are not duplicates | Raised to seven criteria stating what the epics achieve together, with Coverage remapped |
 | References link issues on the same board | #1380 cited #637, #638, #652, #678, #947; #707 cited #637, #638; #708 cited #652, #678, #947 | Removed; #708 and #1380 cite the replan record in their place |
 | No reference carries the Source marker | None of the three initiatives marks a reference `**Source.**`, so no criterion answers to a document | Open |
 
