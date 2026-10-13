@@ -117,7 +117,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](benchmark.md#appendix). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs two jobs, each of which checks the `workflows` branch out at `workflows/` for itself. One runs `guards/check-tool-call-shape.ts` against that checkout and reports that guard's verdict as a check of its own. The other runs `npm run typecheck`, `npm run check:schemas`, `npm run test:ci` with `WORKFLOWS_DIR` set to the checkout, and the [fixture delivery gate](benchmark.md#appendix). The two are independent, so a corpus tip that has drifted from this source reddens the guard's check and leaves the suite and the gate measuring the change under review. Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## What runs after a merge
 

@@ -11,6 +11,15 @@ name: Verify
 # One guard runs here as well as there, because it is the one whose inputs straddle the boundary:
 # `check-tool-call-shape` reads the calls the definitions describe against the schemas this source
 # registers. Running it on both sides is what makes the sentence above true of it.
+#
+# That guard is a job of its own, so its verdict is a check of its own. Its two inputs are the
+# corpus tip and this source, and the corpus tip moves without the change under review: a pull
+# request against `main` is paired with the `workflows` tip, and one against `workflows` with the
+# `main` tip. Sharing a job with the suite and the delivery-cost gate would let that drift decide
+# whether the change under review is measured at all, which is how an undeclared `start_session`
+# argument held both skipped on every pull request from 2026-10-07 to 2026-10-09 (#1277).
+#
+# Each job resolves and checks out the definitions for itself, so neither waits on the other.
 
 on:
   push:
@@ -29,6 +38,53 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # The one guard with an input on each side of the engine/definitions boundary: it reads the calls
+  # the definitions describe against the schemas this source registers for those tools. Every other
+  # guard reads definitions against definitions, so the corpus branch's sweep measures each of its
+  # inputs; this one's other input is here, and a parameter renamed in `src/tools/` falsifies a
+  # corpus nobody is touching. The suite would not catch it — it drives the server directly rather
+  # than through the operation text, which is how a contract change reached the corpus without its
+  # callers (#788). So the sweep keeps grading the definitions on their own branch, and this single
+  # guard also runs where its other input changes, which puts the failure on the pull request that
+  # caused it.
+  tool-call-shape:
+    name: The definitions call the tools this engine registers
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Resolve the definitions branch this change pairs with
+        id: pair
+        env:
+          BASE: ${{ github.base_ref || github.ref_name }}
+        run: |
+          ref=workflows
+          case "$BASE" in
+            i[0-9]*/*)
+              candidate="${BASE%%/*}/workflows"
+              if git ls-remote --exit-code --heads origin "$candidate" > /dev/null; then ref="$candidate"; fi
+              ;;
+          esac
+          echo "ref=$ref" >> "$GITHUB_OUTPUT"
+          echo "Definitions branch: $ref"
+
+      - name: Check out the definitions the engine serves
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ steps.pair.outputs.ref }}
+          path: workflows
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify the definitions call the tools this engine registers
+        run: npx tsx guards/check-tool-call-shape.ts --root workflows
+
   verify:
     name: Typecheck, tests, and the fixture delivery gate
     runs-on: ubuntu-latest
@@ -93,18 +149,6 @@ jobs:
       # subject is the files the generator writes, including the technique schema.
       - name: Verify the generated schemas match their Zod sources
         run: npm run check:schemas
-
-      # The one guard with an input on each side of the engine/definitions boundary: it reads the
-      # calls the definitions describe against the schemas this source registers for those tools.
-      # Every other guard reads definitions against definitions, so the corpus branch's sweep
-      # measures each of its inputs; this one's other input is here, and a parameter renamed in
-      # `src/tools/` falsifies a corpus nobody is touching. The suite would not catch it — it drives
-      # the server directly rather than through the operation text, which is how a contract change
-      # reached the corpus without its callers (#788). So the sweep keeps grading the definitions on
-      # their own branch, and this single guard also runs where its other input changes, which puts
-      # the failure on the pull request that caused it.
-      - name: Verify the definitions call the tools this engine registers
-        run: npx tsx guards/check-tool-call-shape.ts --root workflows
 
       # `npm test` is vitest in watch mode; `test:ci` is the single-run entry point so the job cannot
       # hang waiting for file changes.
