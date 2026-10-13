@@ -1,0 +1,9 @@
+id: announces-once
+version: 1.0.0
+name: Announces Once
+description: The control. One technique step, so the contract composed for this activity names the findings file once.
+
+steps:
+  - kind: technique
+    id: audit
+    technique: audit-findings
