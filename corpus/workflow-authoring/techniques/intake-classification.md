@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Boolean — true when the review target set resolves to concrete, existing workf
 
 ### headless_mode
 
-Boolean — default **true** (soft mid-flow gates auto-resolve); false only when `{user_description}` explicitly requests interactive soft-gate behaviour (signals include "interactive", "not headless", "with checkpoints").
+Boolean — default **true** (soft mid-flow gates auto-resolve); false only when `{user_request}` explicitly requests interactive soft-gate behaviour (signals include "interactive", "not headless", "with checkpoints").
 
 ### workflow_id
 
@@ -55,7 +55,7 @@ Per-target baseline of the existing definition — file counts by kind, entity c
 
 ### change_category
 
-In update mode, the categorised change request from `{user_description}`: one or more of the categories in [Change Categories](../resources/update-mode-guide.md#change-categories). Unset otherwise.
+In update mode, the categorised change request from `{user_request}`: one or more of the categories in [Change Categories](../resources/update-mode-guide.md#change-categories). Unset otherwise.
 
 ## Protocol
 
@@ -68,9 +68,9 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 ### 2. Derive Intent Gap Flag and Headless
 
-- In update mode set `{change_request_clear}` from whether `{user_description}` states a concrete change; leave it true in create and review
+- In update mode set `{change_request_clear}` from whether `{user_request}` states a concrete change; leave it true in create and review
 - Compute `{intent_needs_confirmation}` as true when `{operation_type_ambiguous}` is true, or update with `{change_request_clear}` false, or review with an unresolved target set; otherwise false
-- Leave `{headless_mode}` true by default; set it false only on an explicit interactive opt-out in `{user_description}`
+- Leave `{headless_mode}` true by default; set it false only on an explicit interactive opt-out in `{user_request}`
 
 ### 3. Baseline the Target Definitions
 
@@ -79,7 +79,7 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 ### 4. Categorise the Change Request
 
-- In update mode, categorise the change `{user_description}` asks for into `{change_category}` per [Change Categories](../resources/update-mode-guide.md#change-categories); a request spanning more than one category records each
+- In update mode, categorise the change `{user_request}` asks for into `{change_category}` per [Change Categories](../resources/update-mode-guide.md#change-categories); a request spanning more than one category records each
 
 ## Rules
 

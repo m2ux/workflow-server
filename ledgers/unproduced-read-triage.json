@@ -243,12 +243,6 @@
     },
     {
       "site": "remediate-vuln :: start",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: start",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -266,30 +260,6 @@
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/assumptions-review",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/assumptions-review",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/code-review",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/code-review",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "remediate-vuln :: work-package/complete",
       "name": "issue_number",
       "verdict": "fix-later",
@@ -302,54 +272,12 @@
       "rationale": "placeholder-default-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/complete",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "remediate-vuln :: work-package/design-philosophy",
       "name": "issue_record",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
     },
     {
-      "site": "remediate-vuln :: work-package/design-philosophy",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/design-philosophy",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/implement",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/implement",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/implementation-analysis",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/implementation-analysis",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
       "site": "remediate-vuln :: work-package/plan-prepare",
       "name": "pr_number",
       "verdict": "fix-later",
@@ -360,12 +288,6 @@
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/prism-decision",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
     },
     {
       "site": "remediate-vuln :: work-package/prism-decision",
@@ -393,36 +315,6 @@
     },
     {
       "site": "remediate-vuln :: work-package/post-impl-review",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/post-impl-review",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/requirements-elicitation",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/requirements-elicitation",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/research",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/research",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -483,30 +375,6 @@
     },
     {
       "site": "remediate-vuln :: work-package/submit-for-review",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/test-suite-review",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/test-suite-review",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/validate",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/validate",
       "name": "target_path",
       "verdict": "fix-later",
       "rationale": "input-without-a-producer"
@@ -588,18 +456,6 @@
       "name": "assumption_outcome",
       "verdict": "fix-later",
       "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
-      "name": "pr_number",
-      "verdict": "fix-later",
-      "rationale": "placeholder-default-without-a-producer"
-    },
-    {
-      "site": "remediate-vuln :: work-package/codebase-comprehension",
-      "name": "target_path",
-      "verdict": "fix-later",
-      "rationale": "input-without-a-producer"
     },
     {
       "site": "substrate-node-security-audit :: scope-setup",

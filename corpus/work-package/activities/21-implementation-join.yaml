@@ -5,17 +5,12 @@ description: Join the contract-test results with the implementation.
 variables:
   reads:
     - implement_outputs
-    - branch_name
-    - component_git_dir
     - contract_tests_outputs
     - default_branch
     - implementation_plan
     - is_review_mode
     - planning_folder_path
-    - pr_number
     - problem_statement
-    - requirements
-    - target_path
     - target_repo
   writes:
     - name: task_implementation

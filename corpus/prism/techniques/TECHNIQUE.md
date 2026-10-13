@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Shared inputs and isolation, evidence, and write-discipline invariants for every
 
 ### target_content
 
-The code or text to analyze — a file path or inline content.
+*(optional)* The code or text to analyze — a file path or inline content. Absent where the caller supplies none.
 
 ### target_type
 

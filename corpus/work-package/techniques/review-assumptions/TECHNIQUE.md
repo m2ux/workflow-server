@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.1
+  version: 3.2.2
 ---
 
 ## Capability
@@ -8,14 +8,6 @@ metadata:
 The assumption lifecycle a work package runs on: what an assumption is, the categories it is classified into, and the log that holds its outcome.
 
 ## Inputs
-
-### assumption_source
-
-The work the assumptions are drawn from — the design decision, the plan, the analysis, or the change under construction.
-
-### assumption_categories
-
-The categories an assumption is classified into.
 
 ### assumptions_log
 

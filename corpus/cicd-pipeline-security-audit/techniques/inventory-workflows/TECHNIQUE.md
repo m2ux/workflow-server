@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -14,34 +14,6 @@ Confirm the audit's target submodules and build the scope inventory: discover an
 Comma-separated submodule paths to inventory, or `all` to inventory every submodule containing `.github/workflows/`.
 
 ## Outputs
-
-### workflow_inventory
-
-Complete [inventory of workflow files](../../resources/intermediate-artifact-schemas.md#workflow-inventory) with classification data.
-
-#### artifact
-
-`reconnaissance-summary.json`
-
-#### audience
-
-`agent`
-
-#### workflow_files
-
-All workflow file paths with metadata.
-
-#### trigger_classification
-
-Per-workflow trigger types.
-
-#### permission_map
-
-Per-workflow permission scopes.
-
-#### checkout_patterns
-
-Per-workflow checkout configurations.
 
 ### ai_config_inventory
 

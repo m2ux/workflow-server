@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -15,27 +15,27 @@ Path to this work package's planning folder under `.engineering/artifacts/planni
 
 ### requirements
 
-Elicited requirements with success criteria and scope
+*(optional)* Elicited requirements with success criteria and scope. Absent when the run has not elicited them.
 
 ### problem_statement
 
-Clear problem definition with system understanding
+*(optional)* Clear problem definition with system understanding. Absent when the run has not written one.
 
 ### target_path
 
-Filesystem path to the work package's target submodule worktree — the codebase being analysed, built, and operated on
+*(optional)* Filesystem path to the work package's target submodule worktree — the codebase being analysed, built, and operated on. Absent when the run has not opened that worktree.
 
 ### branch_name
 
-The work package's feature branch
+*(optional)* The work package's feature branch. Absent when the run has not opened one.
 
 ### pr_number
 
-The work package's pull request number
+*(optional)* The work package's pull request number. Absent when the run has not opened a pull request.
 
 ### component_git_dir
 
-Absolute path of the component's git working tree — the checkout whose `origin` remote names the component's repository.
+*(optional)* Absolute path of the component's git working tree — the checkout whose `origin` remote names the component's repository. Absent when the run has not resolved that checkout.
 
 ### target_repo
 

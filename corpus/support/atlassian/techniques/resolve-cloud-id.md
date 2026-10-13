@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,10 +11,10 @@ Obtain the Atlassian cloud id for the target site.
 
 ### cloudId
 
-UUID of the cloud site, used by every product-specific tool
+UUID of the cloud site a site-scoped tool passes
 
 ## Protocol
 
 ### 1. Resolve the Cloud Id
 
-- Call `getAccessibleAtlassianResources` and use the first `{cloudId}` returned (or the one matching the user's site). This step must run before any product-specific Atlassian tool; if such a tool was called without a resolved `{cloudId}`, apply [resolve-cloud-id](./resolve-cloud-id.md) and retry the original technique with the returned `{cloudId}`. If the call is rejected for lack of permission, verify Jira/Confluence permissions and project roles.
+- Call `getAccessibleAtlassianResources` and use the first `{cloudId}` returned (or the one matching the user's site). This step must run before any site-scoped Atlassian tool; if such a tool was called without a resolved `{cloudId}`, apply [resolve-cloud-id](./resolve-cloud-id.md) and retry the original technique with the returned `{cloudId}`. If the call is rejected for lack of permission, verify Jira/Confluence permissions and project roles.

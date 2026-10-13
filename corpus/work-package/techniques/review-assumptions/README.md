@@ -2,7 +2,7 @@
 
 > Part of [techniques](../README.md)
 
-The assumption lifecycle a work package runs on: what an assumption is, the categories it is classified into, and the log that holds its outcome.
+The assumption log a work package keeps, and the rules that record an assumption's category, position and outcome.
 
 The shared contract every technique here inherits is in [`TECHNIQUE.md`](TECHNIQUE.md); what each one contributes is below.
 
