@@ -26,14 +26,16 @@ Every departure the alignment of I13, I14 and I15 found, by area, with the measu
 
 | Finding | Measurement | Resolution |
 | --- | --- | --- |
-| One backward reference | `deps.py` reports `E04:W01: depends on later epic E07:W01` in I14 | Open; the edge is sound and the renumber is refused, see Numbering |
+| One backward reference | `deps.py` reported `E04:W01: depends on later epic E07:W01` in I14 | Resolved by moving the guard-imports work into E04, which owns its inputs. E07 keeps the pinned-paths and verify-gate rows |
 | Sixteen redundant edges | `deps.py` reported `already implied` eight times in I13 E01 W08, once in I13 E03 W11, twice in I14 E03 W04, five times across I15 E01 W06, E02 W06 and E03 W04 | Corrected; `deps.py` now reports none |
 | Joins unfinished | `deps.py` reports 74 eligible unjoined pairs in I13, 38 in I14 and 19 in I15 | Named in [Separate deliveries](joins.md) |
 | Six advisory numbering gaps | `deps.py` advisory section, two in I13 and four in I14 | Open |
 
 ## Numbering
 
-I14 E04 W01 depends on I14 E07 W01, the guard-imports task, and the dependency is real: `check-role-barred-calls.ts` does not load on the E04 base. Moving Red Trunk below Missing Checks is refused, because a pull request names each of E03, E04 and E06 and work a pull request names keeps its number. The edge stays and the numbering disagrees with it.
+I14 E04 W01 depended on I14 E07 W01, the guard-imports task, and the dependency was real: `check-role-barred-calls.ts` does not load on the E04 base. Moving Red Trunk below Missing Checks is refused, because a pull request names each of E03, E04 and E06 and work a pull request names keeps its number. The guard-imports row and its criterion sit in E04 instead, which is the epic that owns the inputs, and `deps.py` reports no problem on any of the three initiatives.
+
+E07's criteria are now AC2, AC3 and AC5. The labels are out of sequence, which `format.py` reports, and #1404 names W02, so the renumber that would close them touches work a pull request names.
 
 ## Delivery
 
