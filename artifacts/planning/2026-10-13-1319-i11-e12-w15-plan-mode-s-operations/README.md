@@ -13,6 +13,7 @@ It matters because a citation is not a run. The symmetric caller test the epic s
 | Artifact | What it holds |
 | --- | --- |
 | [W15](w15.md) | The work item: the options weighed, the one taken and the parts of the work |
+| [Caller sets](caller-sets.md) | Each of the eight catalog operations Plan mode cites, named against the procedures that run it |
 
 ## Links
 
