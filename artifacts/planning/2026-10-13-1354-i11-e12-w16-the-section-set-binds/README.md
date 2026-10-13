@@ -13,6 +13,7 @@ It matters because the author of the next such file has a precedent to copy rath
 | Artifact | What it holds |
 | --- | --- |
 | [W16](w16.md) | The work item: the options weighed, the one taken and the parts of the work |
+| [Tests](tests.md) | The two checks the work item names, with the output each produced |
 
 ## Links
 
