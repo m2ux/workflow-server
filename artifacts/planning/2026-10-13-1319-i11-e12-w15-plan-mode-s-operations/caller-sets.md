@@ -27,6 +27,17 @@ Paths are relative to `skills/work-planner`. Cites lists every file whose prose 
 | [Retarget Pull Request](https://github.com/m2ux/workflow-server/blob/workspace/skills/work-planner/references/commands.md#retarget-pull-request) | `align-mode.md`, `plan-mode.md` | none |
 | [Sync Epic](https://github.com/m2ux/workflow-server/blob/workspace/skills/work-planner/references/commands.md#sync-epic) | `align-mode.md`, `plan-mode.md`, `sync-mode.md`, `work-breakdown.md` | `commands.md`, `deliver-mode.md` |
 
+## Check results
+
+Run in the unit's worktree of `m2ux/workflow-server`, under `scripts/sbx`.
+
+- **At `d4b4c0eb`, the base.**
+  `skills/scripts/check_skill_files.py skills/work-planner` reports `28 files checked, 3 findings`, all three in `references/work-breakdown.md` at lines 118 to 120: inline bold leads of 230, 110 and 214 characters against the hundred-character limit. No finding names a command specification with one caller.
+- **At `99abeb30`, the head.**
+  `skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon` reports `57 files checked, 0 findings`.
+- **The check's own suite.**
+  `python3 -m unittest discover -s skills/test -p test_check_skill_files.py` runs 57 tests, all passing, at both revisions.
+
 ## What the sets decide
 
 - **Seven are shared in fact.**
