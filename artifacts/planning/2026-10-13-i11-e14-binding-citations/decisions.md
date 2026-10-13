@@ -17,25 +17,25 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 
 | Goal clause | Initiative criterion | Epic | Epic criteria |
 | --- | --- | --- | --- |
-| A reader can tell from the instructions that a citation must be read | AC32 | E14 | AC1, AC2 |
+| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC5, AC6 |
 | The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC3, AC4 |
-| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC5, AC6 |
-| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC7 |
+| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC7, AC8 |
+| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC9 |
 
 AC32 answers no requirement of the initiative's source specification. It states what this session's measurement found: the specification requires calling prose to link a specification by name, and says nothing about what the reader owes that link.
 
 ## The obligation a citation carries
 
-A citation inside a procedure step is read before that step runs. A citation the reader may decline says so in its own prose.
+The text preceding a set of citations states when they are loaded. Where it states nothing, a citation inside a procedure step is read before that step runs.
 
 - **Chosen.**
-  The obligation is the default and the exception is marked. The reader needs no rule-by-rule judgment, and an author who wants a citation left optional says which one.
+  The form both skills already use is the rule. The entry point states that the selected mode's file is read in full before its links are followed, and a mode file's Prerequisites states that the command conventions are read before its first specification. Stating that form makes the timing an author's statement rather than a reader's inference, and the default covers the step whose prose says nothing.
 - **Weighed: a verb set.**
   A citation whose sentence carries a conditioning verb — follows, meets, defines, governs, states — binds, and the rest do not. It fits the prose as written and adds no words, and it makes the obligation turn on a word the author chose for its sense rather than for its force.
 - **Weighed: a marker on each binding citation.**
   Every binding citation takes a canonical form, as `Read [Name](target) first.` already does. It is unambiguous and decidable by the check, and it adds words to dense step prose across both skills.
-- **Why the default settles it.**
-  The reader's judgment is what the current wording leaves exposed, and a rule that still asks the reader to classify each citation leaves it exposed. Marking the exceptions puts the judgment on the author, once, in the file that carries the citation.
+- **Why the preceding statement settles it.**
+  A rule that asks the reader to classify each citation leaves the judgment where the gap already is. A statement ahead of a set of citations puts it on the author, once, in the file that carries them, and the default decides the step whose author said nothing.
 
 ## The scope a citation may name
 
