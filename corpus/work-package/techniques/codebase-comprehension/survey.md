@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,23 +17,7 @@ Whether the codebase under work has a usable GitNexus index; selects between git
 
 ### comprehension_survey
 
-Initial survey of the codebase area, taking the shape and fill rules of the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template).
-
-#### architecture_overview
-
-Module structure, boundaries and responsibilities, dependency relationships, and overarching patterns (layered, event-driven, actor, plugin, etc.) for the surveyed area.
-
-#### key_abstractions
-
-Core types, traits/interfaces, and data structures forming the domain model, with type hierarchies, error-handling strategy, and state-management approach.
-
-#### design_rationale
-
-Rationale inferred for each significant design choice, with the trade-off it carries and what it constrains in later changes.
-
-#### domain_glossary
-
-Mapping of domain-specific terms to the technical modules/constructs that implement them, connected to the problem statement.
+Initial survey of the codebase area, taking the shape and fill rules of the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template) — its Structure sections for the module map, the core types and the patterns, its Behaviour sections for what happens at run time, and its Design Rationale and Glossary for the choices read out of the code and the domain terms mapped onto constructs.
 
 ## Protocol
 

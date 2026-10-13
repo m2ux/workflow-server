@@ -1,5 +1,5 @@
 id: sub-output-verification
-version: 1.2.0
+version: 1.3.0
 name: "Sub-Agent: Output Verification"
 description: Mechanically validate primary-agent output completeness.
 variables:
@@ -8,8 +8,8 @@ variables:
     - planning_folder_path
   writes:
     - name: verification_report
-      type: string
-      description: Scan completeness verification with gaps and re-scan recommendations
+      type: object
+      description: "Scan completeness verification, carrying the tables the verifier publishes: { dispatch_manifest, coverage_table, missing_tables, redispatch_recommendations }."
 required: false
 steps:
   - kind: technique

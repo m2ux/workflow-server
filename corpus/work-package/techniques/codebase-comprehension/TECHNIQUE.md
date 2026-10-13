@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.3
+  version: 2.2.0
 ---
 
 ## Capability
@@ -21,23 +21,7 @@ Absolute path of the cumulative comprehension corpus — the directory whose art
 
 ### comprehension_artifact
 
-Cumulative [corpus artifact](../../resources/codebase-comprehension.md#corpus-artifact-template) covering the relevant codebase area
-
-#### architecture_overview
-
-Module structure, dependencies, and design patterns
-
-#### key_abstractions
-
-Core types, traits, data structures with domain context
-
-#### design_rationale
-
-Inferred rationale for significant design choices
-
-#### domain_glossary
-
-Mapping of domain terms to technical constructs
+Cumulative [corpus artifact](../../resources/codebase-comprehension.md#corpus-artifact-template) covering the relevant codebase area, as the template's own sections lay it out: module structure and dependencies, the core types and the design patterns, the rationale behind the significant choices, and the domain terms mapped onto technical constructs
 
 ### comprehension_log
 
