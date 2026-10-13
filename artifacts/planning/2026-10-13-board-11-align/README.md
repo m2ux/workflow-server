@@ -41,7 +41,16 @@ A workflow sourcing its own inputs cannot reach a slot its library declares, so 
 | Three rows added tests for criteria their epic covered elsewhere, and carried no Coverage | Each epic gained a criterion for the test that row adds, cited from the row |
 | I13 restated seven of its epics' criteria | Raised to seven criteria stating what the epics achieve together, with the Coverage cells remapped |
 | The 131 task pairs that could share a pull request | Named in [Separate deliveries](joins.md), each delivering on its own |
-| Red Trunk was to be renumbered below Missing Checks | Refused by the script: a pull request names E03, E04 and E06, and work a pull request names keeps its number. The dependency stays and the numbering disagrees with it |
+| Red Trunk was to be renumbered below Missing Checks | Refused by the script: a pull request names E03, E04 and E06, and work a pull request names keeps its number. The guard-imports row moved to E04, the epic that owns its inputs |
+| I15 E02 had ticked AC2 and AC3 while 29 steps still carried a structured condition | Both unticked, AC12 restated as the outcome alone, AC15 added for the differential harness W04 delivered, and W05 added to convert the 29 |
+| Thirty-six merged pull requests link no issue | Each checked against its row: none delivers a row that has a task issue, so none is owed a link. #948 W04 and W05 now link #1274 and #1275, which their rows omitted |
+| Ten epic base commits name I04 | Left as they are; each base squash-merges, so the pull request title is what lands on the long-lived branch |
+| #1300 targeted `workspace` with no epic base | `i14/e06/workspace` cut and #1300 retargeted at it, merging cleanly |
+| #723 is claimed by I14 E03 W01 and W02 and by the closed I05 E02 W02 | I14 E03's rows cite commit `dbb69ddc` instead, leaving the closed epic untouched |
+| I13 E01 and E05 would each wait for the other | E01's AC1-AC3 narrowed to inputs each workflow declares, which its merged rows delivered. The corpus-wide statement stays on the initiative's AC3, cited by both epics, and E01's AC9 is retired |
+| Review References cite task merges that git cannot show | Kept. The bases were rebuilt as one squashed commit each, so sync reports `merged none` on every one until it merges |
+| I14 E07's criteria were out of sequence | Renumbered to AC1-AC3, with #1404's test plan relabelled |
+| No reference carries the Source marker | Left unmarked. Every reference is background, and each criterion stands on the instrument it names |
 
 ## Corrections
 
