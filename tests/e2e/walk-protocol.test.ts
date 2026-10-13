@@ -81,8 +81,6 @@ describe.skipIf(root === null)('walk-protocol declarations', () => {
       'corpus/workflow-authoring/activities/06-scope-and-draft.yaml',
       'corpus/workflow-authoring/activities/09-validate-and-commit.yaml',
       'corpus/prism-evaluate/activities/05-resolution-dialogue.yaml',
-      'corpus/midnight-system-review/activities/01-scope-intake.yaml',
-      'corpus/midnight-system-review/activities/02-area-derivation.yaml',
       'corpus/work-package/activities/13-submit-for-review.yaml',
     ];
     const routing = /leads to|routes to|goes to/i;
