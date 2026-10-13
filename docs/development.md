@@ -117,7 +117,7 @@ Zero means the edit reaches nothing in flight. A non-zero count is the set of ru
 
 ## What runs on a pull request
 
-[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) checks the `workflows` branch out at `workflows/`, then runs `npm run typecheck`, `npm run check:schemas`, `guards/check-tool-call-shape.ts` against that checkout, `npm run test:ci` with `WORKFLOWS_DIR` set to it, and the [fixture delivery gate](benchmark.md#appendix). Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs three jobs, each reporting a verdict of its own. One runs `guards/check-tool-call-shape.ts` against the `workflows` branch, which it checks out at `workflows/` for itself. The second runs `npm run typecheck`, `npm run check:schemas` and `npm run test:ci` with `WORKFLOWS_DIR` set to its own checkout of that branch. The third runs the [fixture delivery gate](benchmark.md#appendix), whose inputs are both in this tree, so it resolves no definitions. The three are independent, so a corpus tip that has drifted from this source reddens the guard's check alone, and a change that reddens a test still carries a statement about what it costs to deliver. Live-corpus tests skip when that checkout is absent. The guard sweep runs on corpus CI rather than engine CI — see [`guards/README.md`](../guards/README.md#one-sweep-one-registry).
 
 ## What runs after a merge
 
