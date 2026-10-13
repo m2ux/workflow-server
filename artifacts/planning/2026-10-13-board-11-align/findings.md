@@ -1,0 +1,44 @@
+# Findings
+
+Every departure the alignment of I13, I14 and I15 found, by area, with the measurement behind it. A finding carrying a resolution names where it was taken.
+
+## Issue bodies
+
+| Finding | Measurement | Resolution |
+| --- | --- | --- |
+| I14's table ticked E03 Done while #707 is open | `sync.py` initiative sync reports `cleared: E03` | Patched #1380 |
+| I14 AC7 and AC8 are ticked while E03 is undelivered | `sync.py` reports both `ticked early` | Open |
+| Initiative criteria restate single epic criteria | I13 AC6 and AC7 are word for word #1116 AC1 and AC2; I13 AC1, AC2, AC4, AC5 restate #948 AC5, #948 AC6, #1138 AC8, #1138 AC10; I14 AC7, AC8, AC13 restate their epics' | Open |
+| References link issues on the same board | #1380 cites #637, #638, #652, #678, #947; #707 cites #637, #638; #708 cites #652, #678, #947 | Open |
+| No reference carries the Source marker | None of the three initiatives marks a reference `**Source.**`, so no criterion answers to a document | Open |
+
+## Work breakdowns
+
+| Finding | Measurement | Resolution |
+| --- | --- | --- |
+| Three rows cover no criterion | `format.py` reports `Coverage does not name the criteria it delivers` for #1138 W09, #707 W05, #708 W08 | Open |
+| Two of those Descriptions overrun eight words | #1138 W09 runs to 9, #707 W05 to 11 | Open |
+| Twelve rows are unmet | `sync.py` reports `unmet` for #1138 W02–W04, #708 W01–W02, #710 W02–W03, #750 W04, #1242 W01 | Verified; #710 ticked, the rest open |
+| Eight test-plan disagreements | `sync.py` reports `covered and no test observes it` for #1146, #1208, #1209, #723 | Open |
+| Two rows link another epic's pull request | #707 W01 and W02 both link #723, titled `[I05:E02]` | Open |
+
+## Dependencies
+
+| Finding | Measurement | Resolution |
+| --- | --- | --- |
+| One backward reference | `deps.py` reports `E04:W01: depends on later epic E07:W01` in I14 | Open; the edge is sound, the numbering disagrees |
+| Sixteen redundant edges | `deps.py` reports `already implied` eight times in I13 E01 W08, once in I13 E03 W11, twice in I14 E03 W04, five times across I15 E01 W06, E02 W06 and E03 W04 | Open |
+| Joins unfinished | `deps.py` reports 71 eligible unjoined pairs in I13 and 19 in I15 | Open |
+| Six advisory numbering gaps | `deps.py` advisory section, two in I13 and four in I14 | Open |
+
+## Delivery
+
+| Finding | Measurement | Resolution |
+| --- | --- | --- |
+| Ten review pull requests were ready, not draft | Each heads an epic base whose epic has undelivered rows | Converted to draft |
+| Every epic base commit names I04 | `[I04:E09] Unspent Inputs on workflows`, `[I04:E00] Wrong Records on main`, `[I04:E03] Worker Continuation on main`, and so on across ten bases | Open |
+| Review bodies carry a Test Plan | #1390 and #1381 each hold T1 and T2 rows, which the review pull request rule excludes | Open |
+| Review References do not cite their task merges | #1390 names #1203, #1207, #1210, #1212 and #1213 in prose; its References cite the branch-separation record alone | Open |
+| One task pull request bypasses its epic base | #1300 targets `workspace`; no `i14/e06/workspace` base exists | Open |
+| One empty base | `i14/e07/main` is zero commits ahead of `main` | Open |
+| Thirty-one merged pull requests link no issue | Development is empty on #701–#703, #1144–#1146, #1155, #1183–#1213 as listed by the link fetch | Open |
