@@ -17,11 +17,13 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 
 | Goal clause | Initiative criterion | Epic | Epic criteria |
 | --- | --- | --- | --- |
-| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC6, AC7 |
-| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC3, AC8, AC9 |
-| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC4, AC5 |
-| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC10, AC11 |
-| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC12 |
+| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC3, AC5, AC7 |
+| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC8, AC9, AC10 |
+| A prerequisite is met where the step that needs it stands | AC32 | E14 | AC11, AC12, AC13 |
+| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC4, AC6 |
+| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC14, AC15 |
+| A bound step is performed with the content its citation names | AC33 | E14 | AC16 |
+| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC17 |
 
 AC32 answers no requirement of the initiative's source specification. It states what this session's measurement found: the specification requires calling prose to link a specification by name, and says nothing about what the reader owes that link.
 
@@ -73,6 +75,45 @@ The shared skill-file check gains the heading rule after both skills comply.
 - 150 citations across the two skills name no heading, so a check that reports them lands red on the branch it grades.
 - The rule is stated first, both skills are brought to it, and the check is the last task, so no branch carries a failing gate.
 
+## Where a prerequisite stands
+
+A Prerequisites section carries what every step needs, or what its first step needs. A prerequisite one later step needs is cited in that step.
+
+- **Chosen.**
+  The guidelines already call a citation pointing further down its own file a defect, because a sequential reader meets it after the point it was meant to serve. The same reasoning runs backwards: a prerequisite stated eight steps before its use is held across work that does not need it, and the rule reusing content already read at the same revision tells the reader not to load it again where it is needed. Stating it at the step closes both.
+- **A link is not content.**
+  Re-citing at the point of use does not refresh what was read; it re-presents the pointer. The gain is that the reader meets the obligation where the work is. Placement is what makes that gain reliable, which is why the rule moves the prerequisite rather than qualifying the reuse.
+- **Weighed: a point-of-use citation overriding reuse.**
+  Simple to state, and it pays the retrieval cost twice on every long procedure.
+- **Weighed: a freshness qualifier on reuse.**
+  Reuse holds within a stated distance and a citation beyond it reloads. Precise, and it adds a measure every author must judge.
+- **The instances.**
+  Three in Work Planner state a condition and sit far from their use: Delivery State in `plan-mode.md` and `work-breakdown.md`, and Graph Conventions in `understand-mode.md`. The command-conventions line every Prerequisites section carries holds, since every step's commands need it.
+
+## The default outside a procedure
+
+A citation in a Rules or Reference section is read when the reader reaches a case the rule carrying it governs. Where its prose states no case, it is read in every case.
+
+- **Chosen.**
+  The binding sections of both skills are Rules sections, so leaving them unbound would leave the gap this epic closes in the place it matters most. Tying the read to the rule's own trigger costs nothing on entry.
+- **Weighed: the step default applied everywhere.**
+  One rule and no section test, and a Rules section carrying ten citations would load ten files on entry.
+- **Weighed: no obligation outside a Procedure.**
+  The smallest change, and it exempts exactly the citations that carry the skill's binding rules.
+
+## What the epic must evidence
+
+Each efficacy scenario puts the content that decides its outcome outside the files a broad read loads, so the result shows whether the citation was honoured.
+
+- **Chosen.**
+  The guidelines state that retrieval order measures file layout wherever the reader loads the file whole, so a walk shows a citation failing and never shows one working. A target broad reading does not reach is the only design that can show one working.
+- **Scenario design.**
+  A scenario names a task whose correct outcome follows from a rule held in a section no step of the selected mode file loads by itself, and whose incorrect outcome is what an agent produces from the mode file alone. The record names each scenario, its target, the outcome that distinguishes them, and the result.
+- **Weighed: the retrieval record alone.**
+  It satisfies the initiative's retrieval criterion and measures cost rather than obedience, leaving the epic with no behavioural evidence.
+- **Weighed: a scored eval suite.**
+  The strongest ongoing signal and an epic's worth of work on its own.
+
 ## Chains
 
 Four longest chains, each of three steps, with W01 on every one: W01 to W02 or W03, then to W04 or W05. No whole-epic edge binds the epic.
@@ -82,4 +123,8 @@ Four longest chains, each of three steps, with W01 on every one: W01 to W02 or W
 W02 and W03 share one pull request: one rule applied across two skills, where the second skill's citations are the evidence that the rule reads the same in a file the first skill never had. No other eligible pair shares a pull request.
 
 - **W04 and W05.**
-  W04 is the check and its specimen suite; W05 is a retrieval record over the live skills. Neither reads the other's output.
+  W04 states the whole-file case rule and applies it to the citations themselves; W05 moves a prerequisite to the step that uses it. Each lands its own rule in the guidelines, and a reviewer reading one diff should not have to separate two rules in it.
+- **W04 and W06, W05 and W06.**
+  W06 is the check and its specimen suite, in the shared script. It merges after the prose it grades, so pairing it with either prose task would put a rule and the check of that rule in one review.
+- **W06 and W07.**
+  W06 is a script and its tests; W07 is a record of live walks over the finished instructions. Neither reads the other's output, and W07 measures what W04 and W05 produce rather than what W06 reports.
