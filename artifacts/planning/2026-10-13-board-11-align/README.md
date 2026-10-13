@@ -68,6 +68,7 @@ The I15 E01 corpus share was first read as stranded, because its two merges are 
 | --- | --- |
 | [Findings](findings.md) | Every departure the pass found, by area, with the measurement behind it |
 | [Separate deliveries](joins.md) | The 131 task pairs that could share a pull request and do not, and why each delivers on its own |
+| [Advance](advance.md) | The queue the board holds after the alignment, and the sync that preceded it |
 
 ## Links
 
