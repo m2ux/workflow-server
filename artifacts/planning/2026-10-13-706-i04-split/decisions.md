@@ -36,11 +36,23 @@ A priority label is `priority:` and a positive integer, larger being higher. I00
 
 **Answer.** Server takes 2, the slot I04 held, so it joins I08 and I11 In Progress. Corpus takes 1, joining I00 at Ready. Infrastructure carries no priority label and stays in Backlog. Nothing else on the board moves.
 
-## D6. The number server debt carries
+## D6. Work in flight on a lower-priority initiative
+
+**Options.** Hold each initiative In Progress while a pull request names one of its epics; force the priority order at once; finish the open work first and advance afterwards.
+
+**Answer.** The in-flight rule stands. An initiative is In Progress while a review pull request on one of its epics is open, and falls to its priority position as that work lands. The ordering is a statement about what is taken up next, not a reason to strand work already under review.
+
+## D7. The verify step and the suite
+
+**Options.** The definitions-call-the-tools step reports without gating; it keeps gating; it moves to the corpus workflow.
+
+**Answer.** It reports its own verdict and does not decide whether the suite and the delivery-cost gate run. The step measures a corpus and engine pairing that moves independently of the change under review, so a failure there says nothing about the change and should not remove its test results.
+
+## D8. The number server debt carries
 
 Multi-Root Corpus holds I12, raised the same day against the same board. Server debt takes I15, the next free number, so the two do not share epic ids; corpus debt and instrument debt keep I13 and I14. A number is an address, not a rank, and the priority labels carry the ordering.
 
-## D7. Epic bases and the pull requests on them
+## D9. Epic bases and the pull requests on them
 
 An epic base is named for its initiative, its epic and its long-lived branch, so renumbering renames eleven live branches under eleven open pull requests.
 

@@ -15,6 +15,7 @@ The split makes priority expressible. A single initiative holds one priority lab
 | [Decisions](decisions.md) | Each decision taken, the options weighed, and the answer |
 | [Mapping](mapping.md) | Every epic, task, pull request and branch, with its source id and its new one |
 | [Hoist](hoist.md) | Each orphan issue, its placement and the reason |
+| [Review](review.md) | The review findings, the red-trunk re-measurement and the board |
 
 ## Links
 
