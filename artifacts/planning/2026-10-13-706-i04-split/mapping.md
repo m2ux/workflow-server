@@ -6,7 +6,7 @@ Every epic, criterion, pull request and branch, with the id it held under the si
 
 | Initiative | Issue | Area | Priority | Board status |
 | --- | --- | --- | --- | --- |
-| I12 Server Debt | 1378 | The engine, its schema, its session store | `priority: 2` | In Progress |
+| I15 Server Debt | 1378 | The engine, its schema, its session store | `priority: 2` | In Progress |
 | I13 Corpus Debt | 1379 | The definitions the engine walks | `priority: 1` | Ready |
 | I14 Instrument Debt | 1380 | Guards, tests, walks, roster, continuous integration | none | Backlog |
 
@@ -14,10 +14,10 @@ Every epic, criterion, pull request and branch, with the id it held under the si
 
 | Source | New | Issue | State | Area read |
 | --- | --- | --- | --- | --- |
-| I04:E08 Safe Ground | I12:E00 | 528 | closed | Session dispatch and the cost record the server writes |
-| I04:E03 Worker Continuation | I12:E01 | 710 | open | The advance path and the batch reading it continues from |
-| I04:E05 Inline Gates | I12:E02 | 750 | open | The activity schema's gate forms |
-| I04:E11 Session Naming | I12:E03 | 1199 | open | The session store's folder naming |
+| I04:E08 Safe Ground | I15:E00 | 528 | closed | Session dispatch and the cost record the server writes |
+| I04:E03 Worker Continuation | I15:E01 | 710 | open | The advance path and the batch reading it continues from |
+| I04:E05 Inline Gates | I15:E02 | 750 | open | The activity schema's gate forms |
+| I04:E11 Session Naming | I15:E03 | 1199 | open | The session store's folder naming |
 | I04:E06 Declared Shapes | I13:E00 | 948 | open | Technique declarations and contract values |
 | I04:E09 Unspent Inputs | I13:E01 | 1138 | open | Steps binding inputs nothing holds |
 | I04:E07 Red Guards | I13:E02 | 1116 | open | Corpus reads and checkpoints two guards report on |
@@ -34,10 +34,10 @@ Every epic, criterion, pull request and branch, with the id it held under the si
 
 | Source | New |
 | --- | --- |
-| I04 AC16, AC17 | I12 AC1, AC2 |
-| I04 AC5, AC6, AC7 | I12 AC3, AC4, AC5 |
-| I04 AC10, AC11 | I12 AC6, AC7 |
-| I04 AC23, AC24 | I12 AC8, AC9 |
+| I04 AC16, AC17 | I15 AC1, AC2 |
+| I04 AC5, AC6, AC7 | I15 AC3, AC4, AC5 |
+| I04 AC10, AC11 | I15 AC6, AC7 |
+| I04 AC23, AC24 | I15 AC8, AC9 |
 | I04 AC12, AC13 | I13 AC1, AC2 |
 | I04 AC18, AC19, AC21 | I13 AC3, AC4, AC5 |
 | I04 AC14, AC15 | I13 AC6, AC7 |
@@ -59,9 +59,9 @@ GitHub's branch rename retargets a pull request that *targets* the renamed branc
 | 1306 | i04/e00/main | i14/e03/main | 1381 | 707 |
 | 1307 | i04/e01/main | i14/e04/main | 1382 | 708 |
 | 1313 | i04/e01/workflows | i14/e04/workflows | 1383 | 708 |
-| 1308 | i04/e03/main | i12/e01/main | 1384 | 710 |
-| 1310 | i04/e05/main | i12/e02/main | 1385 | 750 |
-| 1314 | i04/e05/workflows | i12/e02/workflows | 1386 | 750 |
+| 1308 | i04/e03/main | i15/e01/main | 1397 | 710 |
+| 1310 | i04/e05/main | i15/e02/main | 1398 | 750 |
+| 1314 | i04/e05/workflows | i15/e02/workflows | 1399 | 750 |
 | 1311 | i04/e06/main | i13/e00/main | 1387 | 948 |
 | 1315 | i04/e06/workflows | i13/e00/workflows | 1388 | 948 |
 | 1312 | i04/e09/main | i13/e01/main | 1389 | 1138 |
