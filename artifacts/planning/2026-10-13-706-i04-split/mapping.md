@@ -4,11 +4,11 @@ Every epic, criterion, pull request and branch, with the id it held under the si
 
 ## Initiatives
 
-| Initiative | Area | Priority | Board status |
-| --- | --- | --- | --- |
-| I12 Server Debt | The engine, its schema, its session store | `priority: 2` | In Progress |
-| I13 Corpus Debt | The definitions the engine walks | `priority: 1` | Ready |
-| I14 Instrument Debt | Guards, tests, walks, roster, continuous integration | none | Backlog |
+| Initiative | Issue | Area | Priority | Board status |
+| --- | --- | --- | --- | --- |
+| I12 Server Debt | 1378 | The engine, its schema, its session store | `priority: 2` | In Progress |
+| I13 Corpus Debt | 1379 | The definitions the engine walks | `priority: 1` | Ready |
+| I14 Instrument Debt | 1380 | Guards, tests, walks, roster, continuous integration | none | Backlog |
 
 ## Epics
 
@@ -52,21 +52,22 @@ Every epic, criterion, pull request and branch, with the id it held under the si
 
 ## Pull requests and epic bases
 
-A base is renamed with GitHub's branch rename, which retargets the open pull requests on it.
+GitHub's branch rename retargets a pull request that *targets* the renamed branch and closes one whose *head* is renamed. An epic review pull request has its base as its head, so each of the ten was closed by the rename and reopened from the renamed base, carrying its title and body, with its epic relinked through `addCloseIssueReferences`.
 
-| Pull request | Head base | New base | New title prefix |
-| --- | --- | --- | --- |
-| 1306 | i04/e00/main | i14/e03/main | [I14:E03] |
-| 1307 | i04/e01/main | i14/e04/main | [I14:E04] |
-| 1313 | i04/e01/workflows | i14/e04/workflows | [I14:E04] |
-| 1308 | i04/e03/main | i12/e01/main | [I12:E01] |
-| 1310 | i04/e05/main | i12/e02/main | [I12:E02] |
-| 1314 | i04/e05/workflows | i12/e02/workflows | [I12:E02] |
-| 1311 | i04/e06/main | i13/e00/main | [I13:E00] |
-| 1315 | i04/e06/workflows | i13/e00/workflows | [I13:E00] |
-| 1312 | i04/e09/main | i13/e01/main | [I13:E01] |
-| 1316 | i04/e09/workflows | i13/e01/workflows | [I13:E01] |
-| 1300 | workspace-harness-support | unchanged | [I14:E06] |
+| Review pull request | Epic base | New base | New review pull request | Epic |
+| --- | --- | --- | --- | --- |
+| 1306 | i04/e00/main | i14/e03/main | 1381 | 707 |
+| 1307 | i04/e01/main | i14/e04/main | 1382 | 708 |
+| 1313 | i04/e01/workflows | i14/e04/workflows | 1383 | 708 |
+| 1308 | i04/e03/main | i12/e01/main | 1384 | 710 |
+| 1310 | i04/e05/main | i12/e02/main | 1385 | 750 |
+| 1314 | i04/e05/workflows | i12/e02/workflows | 1386 | 750 |
+| 1311 | i04/e06/main | i13/e00/main | 1387 | 948 |
+| 1315 | i04/e06/workflows | i13/e00/workflows | 1388 | 948 |
+| 1312 | i04/e09/main | i13/e01/main | 1389 | 1138 |
+| 1316 | i04/e09/workflows | i13/e01/workflows | 1390 | 1138 |
+
+Pull request 1300 heads a task branch onto `workspace` and keeps both, retitled `[I14:E06]`.
 
 Task branches under `i04/` are the history of merged work and keep the names they merged under. A base for a closed epic keeps its name for the same reason.
 
