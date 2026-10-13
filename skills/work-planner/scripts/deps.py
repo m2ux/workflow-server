@@ -8,6 +8,7 @@ Each file is an epic issue body holding the agent-engineering Work Breakdown tab
 A task's id links each pull request associated with it, open or merged:
   | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | |
 A row is the task its Task cell opens with, however many deliveries that id links.
+A task id is a W and two digits, and the run names one in a Task cell that departs from it.
 Cells are read by column name, so the column order does not matter.
 
 A dependency is one of:
@@ -19,7 +20,7 @@ A dependency is one of:
   I05:E00:W02     another initiative's epic or task, not checked
 Markdown links are read by their text, so [E01:W02](https://…/issues/937) is E01:W02.
 
-Problems (exit status 1): a Task cell naming a second, different task id, unknown references,
+Problems (exit status 1): a Task cell naming a malformed or a second, different task id, unknown references,
 a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. The tasks a whole-epic dependency expands to are not reported as
@@ -45,6 +46,7 @@ RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 TASK = re.compile(r'E\d\d:W\d\d')
 EPIC = re.compile(r'E\d\d')
 WID = re.compile(r'W\d\d')
+WID_SHAPED = re.compile(r'W\d+')
 EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
 MAX_CHAINS = 10
@@ -70,11 +72,16 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict, list[tuple[str
                 continue
             row = dict(zip(header, parsed))
             cell = row.get('Task', '')
-            head = WID.match(cell)
-            if not head:
+            ids = WID_SHAPED.findall(cell)
+            if not ids or not cell.startswith(ids[0]):
                 continue
-            wid = head[0]
-            disagreeing = sorted({other for other in WID.findall(cell) if other != wid})
+            wid = ids[0]
+            malformed = sorted({i for i in ids if not WID.fullmatch(i)})
+            if malformed:
+                problems.append(f'{epic}: Task cell names malformed task id {", ".join(malformed)}')
+            if wid in malformed:
+                continue
+            disagreeing = sorted({i for i in ids[1:] if i != wid and i not in malformed})
             if disagreeing:
                 problems.append(f'{epic}:{wid}: Task cell also names {", ".join(disagreeing)}')
             rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
