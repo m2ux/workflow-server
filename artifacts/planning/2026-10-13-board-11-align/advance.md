@@ -15,24 +15,26 @@ Four of the five open initiatives were already current. Instrument Debt was not,
 
 ## Queue
 
-`advance.py` reports the queue current: no `order` line and no `ask` line, so every open initiative already carries the priority its position needs.
+`advance.py` printed no `order` line and no `ask` line: every open initiative already carried a priority. Corpus Debt carried the number below the two initiatives that wait on it, and the user raised it to join them.
 
 | Initiative | Priority | Status | Why |
 | --- | --- | --- | --- |
+| [I13] Corpus Debt | 2 | In Progress | The highest set |
 | [I14] Instrument Debt | 2 | In Progress | The highest set |
 | [I15] Server Debt | 2 | In Progress | The highest set |
-| [I13] Corpus Debt | 1 | In Progress | The next set, held In Progress by four open pull requests |
 | [I00] Workflow Runner | 1 | Ready | The next set |
 | [I12] Multi-Root Corpus | none | Backlog | No priority label |
 
-- **Waiting.**
-  I13 keeps In Progress while #1387, #1388, #1389 and #1390 are open. It moves to Ready when they merge, and its epics move with it.
+- **The raise.**
+  At priority 1, I13 would drop to Ready the moment #1387, #1388, #1389 and #1390 merged, stopping the corpus work that I14 and I15 wait on. At 2 it runs alongside them, and E04 Described Inputs moved to Ready with it.
 - **Next.**
-  I14's Ready epics are E05 Merge Gate, E08 Measured Reasons and E09 Green Integration. I15 has none: all three of its epics are partly delivered. I13's epics are not reported, since the initiative is not in the set that is In Progress.
+  I13's Ready epics are E03 Unproduced Reads and E04 Described Inputs. I14's are E05 Merge Gate, E08 Measured Reasons and E09 Green Integration. I15 has none: all three of its epics are partly delivered.
+- **E05 Library Inputs stays in Backlog.**
+  Its prerequisites do not hold. W01 to W03 depend on `[E01:W01]` and W04 on `[I14:E04:W02]`, neither delivered, so the epic is not next.
 
 ## Labels
 
 Two label readings stand outside the Priorities rule and change nothing the queue does:
 
-- #527 carries `priority: 1` and `priority: highest`. Only the integer is read.
+- #527 carries `priority: 1` and `priority: highest`. Only the integer is read. I13's raise replaced its label rather than adding a second, so the initiative carries one.
 - #707, #708 and #710 are epics carrying `priority: high` and `priority: medium`. A priority label belongs to an initiative.
