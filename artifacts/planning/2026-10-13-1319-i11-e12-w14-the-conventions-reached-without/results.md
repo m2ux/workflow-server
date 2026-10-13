@@ -91,3 +91,12 @@ OK
 ```
 
 57 tests, none regressed.
+
+## After the Merge
+
+The three checks were re-run on the epic base at `d4b4c0eb`, after [Update Epic Base](https://github.com/m2ux/workflow-server/blob/workspace/skills/work-planner/references/work-breakdown.md#update-epic-base) brought `workspace` in and pull request #1360 merged.
+
+- **T1 holds.** Work Planner's files opened stand at 84, the same ten modes each one fewer than the base, with lines loaded at 14297 under the content `workspace` added.
+- **T3 holds.** 57 tests, OK.
+- **T2 reports three findings, all arriving with `workspace`.**
+  `work-breakdown.md` lines 118, 119 and 120 carry inline bold leads of 230, 110 and 214 characters against the 100-character limit, written by `4e54ab79` on `skill/corpus-audit-criterion` and merged to `workspace` as #1359. They stand on the epic base at `43c5c441`, before #1360 merged into it, and the finding set either side of that merge is identical. They are hoisted rather than fixed here, since a fix belongs on the branch that wrote them.
