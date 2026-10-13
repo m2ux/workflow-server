@@ -24,7 +24,8 @@ AC3 was then narrowed. As written it asked for a green verify on every integrati
 
 | Pair | Why they are separate |
 | --- | --- |
-| W04 and W05 | Both change continuous integration, and each delivers a criterion the other does not. The sweep's trigger is read from a run on the corpus branch; the cost gate's verdict is read from a pull request whose suite failed. One pull request would carry two unrelated observations, and a failure in either would hold the other back. |
+| E07 W04 and W05 | Both change continuous integration, and each delivers a criterion the other does not. The sweep's trigger is read from a run on the corpus branch; the cost gate's verdict is read from a pull request whose suite failed. One pull request would carry two unrelated observations, and a failure in either would hold the other back. |
+| E09 W01, W02 and W03 | Each lands on a different initiative's branches and carries that initiative's judgment about what its pairing should be. One pull request cannot span three branch pairs, and each needs its own owner's approval. |
 
 ## Artifacts
 
@@ -37,6 +38,7 @@ AC3 was then narrowed. As written it asked for a green verify on every integrati
 | Resource | Link |
 | --- | --- |
 | Epic | [I14:E07 Red Trunk](https://github.com/m2ux/workflow-server/issues/1395) |
+| Epic the integration branches became | [I14:E09 Green Integration](https://github.com/m2ux/workflow-server/issues/1417) |
 | Initiative | [I14 Instrument Debt](https://github.com/m2ux/workflow-server/issues/1380) |
 | W01+W02 delivery record | [2026-10-13-1395-i14-e07-w01-guard-imports-that-resolve](../2026-10-13-1395-i14-e07-w01-guard-imports-that-resolve/README.md) |
 | W03 delivery record | [2026-10-13-1395-i14-e07-w03-a-verify-step-that](../2026-10-13-1395-i14-e07-w03-a-verify-step-that/README.md) |
