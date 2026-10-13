@@ -3,5 +3,8 @@
 /.gitmodules
 /.worktrees/
 /.claude/settings.json
-/.codex/
+/.codex/*
+!/.codex/hooks/
+!/.codex/scripts/
+/.agents/plugins/
 *__pycache__
