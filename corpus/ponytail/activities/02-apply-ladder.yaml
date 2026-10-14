@@ -5,8 +5,13 @@ description: Produce the minimal solution by climbing the rungs, marking deliber
 variables:
   reads:
     - artifact_dir
+    - climb_round
     - task_description
   writes:
+    - name: climb_round
+      type: number
+      description: Count of climbs put to the reader for this change
+      defaultValue: 0
     - name: safety_floor_cleared
       type: boolean
       description: Whether the minimal solution clears the safety floor
@@ -27,7 +32,7 @@ steps:
         id: climb-ladder
         technique: apply-ladder
       - kind: checkpoint
-        id: safety-floor-cleared
+        id: safety-floor-cleared#{climb_round}
         message: "The minimal solution stands at its chosen rung, with every safety-floor obligation the change implicates either satisfied or still open."
         options:
           - id: confirmed
@@ -42,6 +47,12 @@ steps:
             effect:
               setVariable:
                 safety_floor_cleared: false
+      - kind: action
+        id: count-climb-round
+        actions:
+          - action: set
+            target: climb_round
+            message: Increment the climb round by one.
 exits:
   - id: safety-floor-cleared
     when: safety_floor_cleared == true

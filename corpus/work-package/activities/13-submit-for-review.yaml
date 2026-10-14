@@ -4,6 +4,7 @@ name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
   reads:
+    - await_round
     - branch_name
     - changed_files
     - component_git_dir
@@ -24,6 +25,7 @@ variables:
     - requirements
     - squash_merge_supported
     - stealth_mode
+    - summary_round
     - target_path
     - target_repo
   writes:
@@ -38,6 +40,10 @@ variables:
         - certify
         - flag-legal
       defaultValue: certify
+    - name: await_round
+      type: number
+      description: Count of waits put to the reader while reviewer feedback is outstanding.
+      defaultValue: 0
     - name: awaiting_review
       type: boolean
       description: True while submit-for-review is waiting for reviewer feedback.
@@ -109,6 +115,10 @@ variables:
       type: boolean
       description: Whether the reviewer asked for the consolidated summary to be rendered again before posting.
       defaultValue: false
+    - name: summary_round
+      type: number
+      description: Count of consolidated summaries put to the reader for this review.
+      defaultValue: 0
     - name: summary_refinement
       type: string
       description: Text the reviewer typed naming the adjustments the consolidated summary takes when it is rendered again.
@@ -158,7 +168,7 @@ steps:
             target: summary_completeness_findings == []
             message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
       - kind: checkpoint
-        id: review-summary-approval
+        id: review-summary-approval#{summary_round}
         message: "Consolidated review summary, ready to post as a pull-request review: {review_summary}"
         options:
           - id: post-approve
@@ -200,6 +210,12 @@ steps:
               setVariable:
                 review_posted: false
                 summary_refine_requested: false
+      - kind: action
+        id: count-summary-round
+        actions:
+          - action: set
+            target: summary_round
+            message: Increment the summary round by one.
   - kind: technique
     id: persist-review-summary
     technique:
@@ -424,7 +440,7 @@ steps:
         when: stealth_mode != true
         actions: []
       - kind: checkpoint
-        id: review-received
+        id: review-received#{await_round}
         condition:
           type: and
           conditions:
@@ -450,6 +466,12 @@ steps:
             effect:
               setVariable:
                 awaiting_review: true
+      - kind: action
+        id: count-await-round
+        actions:
+          - action: set
+            target: await_round
+            message: Increment the await round by one.
   - kind: technique
     id: process-review-comments
     technique: respond-to-pr-review

@@ -6,6 +6,7 @@ variables:
   reads:
     - branch_name
     - component_git_dir
+    - comprehension_pass
     - gitnexus_indexed
     - host_repo_path
     - needs_comprehension
@@ -34,6 +35,10 @@ variables:
     - name: comprehension_dir
       type: string
       description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
+    - name: comprehension_pass
+      type: number
+      description: Count of deep-dive passes put to the reader for this work package.
+      defaultValue: 0
     - name: comprehension_scope
       type: string
       description: Whether the next deep-dive deepens the area under study or moves to a different one.
@@ -128,7 +133,7 @@ steps:
           inputs:
             artifact_content: comprehension_log
       - kind: checkpoint
-        id: comprehension-sufficient
+        id: comprehension-sufficient#{comprehension_pass}
         condition:
           type: simple
           variable: has_open_questions
@@ -158,6 +163,12 @@ steps:
               setVariable:
                 needs_comprehension: true
                 comprehension_scope: new-area
+      - kind: action
+        id: count-comprehension-pass
+        actions:
+          - action: set
+            target: comprehension_pass
+            message: Increment the comprehension pass by one.
 exits:
   - id: needs-elicitation
     when: needs_elicitation == true

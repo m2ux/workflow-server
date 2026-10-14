@@ -14,6 +14,7 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_statement
+    - provenance_round
     - requirements
     - target_path
     - target_repo
@@ -68,6 +69,10 @@ variables:
       type: boolean
       description: True when one or more symbols have unconfirmed provenance.
       defaultValue: false
+    - name: provenance_round
+      type: number
+      description: Count of provenance traces put to the reader for this task.
+      defaultValue: 0
     - name: uncertain_symbols
       type: string
       description: Symbols whose provenance could not be confirmed, one per line.
@@ -180,7 +185,7 @@ steps:
             id: self-review
             technique: task-completion-review
           - kind: checkpoint
-            id: symbol-provenance-confirmed
+            id: symbol-provenance-confirmed#{provenance_round}
             condition:
               type: simple
               variable: needs_symbol_confirmation
@@ -203,6 +208,12 @@ steps:
                 effect:
                   setVariable:
                     needs_symbol_confirmation: true
+          - kind: action
+            id: count-provenance-round
+            actions:
+              - action: set
+                target: provenance_round
+                message: Increment the provenance round by one.
   - kind: routine
     id: settle-assumptions
     routine: settle-assumptions

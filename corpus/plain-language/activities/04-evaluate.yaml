@@ -63,7 +63,7 @@ steps:
           outputs:
             written_artifact: evaluation_report_path
       - kind: checkpoint
-        id: evaluation-reviewed
+        id: evaluation-reviewed#{revision_round}
         message: "Round {revision_round}: {open_issue_count} open issues against `{document_title}` ([evaluation report]({evaluation_report_path}))."
         defaultOption: revise
         autoAdvanceMs: 30000
