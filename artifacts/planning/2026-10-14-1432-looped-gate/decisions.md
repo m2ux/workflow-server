@@ -61,3 +61,13 @@ That makes one piece order-dependent. `gate-inside-loop` is red against definiti
 **Weighed against it.** An initiative pair, `iNN/main` and `iNN/workflows`, which is what the `iNN/*` branch of the pairing exists for and would let the two trees go green together as one unit. Rejected for this work because the issue is delivered standalone, with no initiative to number the pair under; raising one to carry a single fix would plan the work this choice was made to avoid.
 
 **Weighed against it.** Dropping `comprehension-sufficient` from the thirteen, which would have made the definitions branch green against `main` as it stands and reduced this to two pull requests. Rejected: it leaves one of the reported gates replaying, which is the defect.
+
+## What the stack cost
+
+The order held, and the stacking did not. #1441 was opened against `fix/1432-gate-identity` so it could be verified on top of #1439, to be retargeted to `main` when that merged. It was merged into its feature base after #1439 had already taken that base into `main`, so the branch moved one commit ahead of the trunk and the guard commit never reached it. `main` carried the engine half and the acceptance criterion it was meant to meet stayed unmet, with every pull request reporting merged.
+
+[#1444](https://github.com/m2ux/workflow-server/pull/1444) carries that one commit from the feature branch onto `main`. A stack's last merge is worth checking by content rather than by state: `git merge-base --is-ancestor <sha> origin/main`, not four pull requests each saying merged.
+
+## Closure
+
+The issue closed itself on #1439's merge, as COMPLETED, with two pull requests still open and AC3 unmet — the repository's auto-close setting was on while believed off, and neither REST nor `gh 2.46` GraphQL can read it. It was reopened, the setting was turned off, and the issue was closed deliberately once the fourth pull request landed and every criterion was verified against the trunk.

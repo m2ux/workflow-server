@@ -147,3 +147,30 @@ The two walks `verify-corpus.yml` runs on the definitions branch pass against th
 ### T8 — Typecheck
 
 `tsc --noEmit` and `tsc -p tsconfig.tools.json`, at `174932e9`. Both exit 0 with no diagnostic.
+
+### T9 — The guard rule on the merged trees
+
+`main` at `8fab4a08` against `workflows` at `c9c0609d`, which is what the trunk now serves.
+
+`npx tsx guards/check-loop-shape.ts`:
+
+```text
+loop-shape: OK — every loop declares the fields its iteration type uses, and every gate in a body asks once per round
+```
+
+The same guard against `workflows` at `7a2d660d`, a tree whose definitions carry the shape:
+
+```text
+loop-shape: 13 violation(s) — give an item loop its collection and item, a repeat-until loop its continuation test, and a loop-body gate a round in its id
+  [gate-inside-loop] plain-language/activities/04-evaluate.yaml[evaluate-revise-loop].evaluation-reviewed
+  … 12 more
+```
+
+`npx vitest run tests/loop-shape-guard.test.ts tests/looped-gate.test.ts`:
+
+```text
+Test Files  2 passed (2)
+     Tests  19 passed (19)
+```
+
+The rule reports each of the thirteen on a tree carrying them and none on the tree serving now, which is **AC3** on the trunk.

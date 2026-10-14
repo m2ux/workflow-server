@@ -19,8 +19,8 @@ This work makes the shape measurable and brings every site to it: a `gate-inside
 
 | Resource | Link |
 | --- | --- |
-| Issue | [#1432 Looped Gate](https://github.com/m2ux/workflow-server/issues/1432) |
-| Gate identity, merged first | [#1439](https://github.com/m2ux/workflow-server/pull/1439) into `main` |
-| Definitions, merged second | [#1440](https://github.com/m2ux/workflow-server/pull/1440) into `workflows` |
-| Loop-gate guard, merged last | [#1441](https://github.com/m2ux/workflow-server/pull/1441), stacked on #1439 |
+| Issue | [#1432 Looped Gate](https://github.com/m2ux/workflow-server/issues/1432), closed completed |
+| Gate identity, merged first | [#1439](https://github.com/m2ux/workflow-server/pull/1439) into `main` at `593580cb` |
+| Definitions, merged second | [#1440](https://github.com/m2ux/workflow-server/pull/1440) into `workflows` at `c9c0609d` |
+| Loop-gate guard | [#1441](https://github.com/m2ux/workflow-server/pull/1441) into `fix/1432-gate-identity`, then [#1444](https://github.com/m2ux/workflow-server/pull/1444) into `main` at `8fab4a08` |
 | The separator both populations use | [workflow-loader.ts](https://github.com/m2ux/workflow-server/blob/bf3be7b8/src/loaders/workflow-loader.ts#L465-L486) |
