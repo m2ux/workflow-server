@@ -1,0 +1,59 @@
+id: revise-activity
+version: 1.0.0
+name: Revise Activity
+description: A repeat-until loop whose body holds one gate, asked once per round.
+variables:
+  reads:
+    - needs_revision
+    - review_round
+  writes:
+    - name: last_answer
+      type: string
+      description: The option the round just answered chose.
+    - name: needs_revision
+      type: boolean
+      description: Whether the loop takes another round.
+      defaultValue: true
+    - name: review_round
+      type: number
+      description: The round the loop is on.
+      defaultValue: 1
+steps:
+  - kind: loop
+    id: revise-loop
+    name: Revise Loop
+    loopType: doWhile
+    maxIterations: 5
+    continueWhile:
+      type: simple
+      variable: needs_revision
+      operator: ==
+      value: true
+    steps:
+      - kind: checkpoint
+        id: round-reviewed#{review_round}
+        message: "Round {review_round}: decide whether another round is owed."
+        options:
+          - id: revise
+            label: Revise and go again
+            description: The round's work is not done, so the loop takes another.
+            effect:
+              setVariable:
+                last_answer: revise
+                needs_revision: true
+          - id: accept
+            label: Accept and close the loop
+            description: The round's work stands, so the loop ends here.
+            effect:
+              setVariable:
+                last_answer: accept
+                needs_revision: false
+      - kind: action
+        id: count-review-round
+        actions:
+          - action: set
+            target: review_round
+            message: Increment the review round by one.
+exits:
+  - id: done
+    isDefault: true

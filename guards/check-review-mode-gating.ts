@@ -35,6 +35,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
+import { baseId } from '../src/loaders/workflow-loader.js';
 import { type Graph, destinationTargets } from '../src/schema/workflow.schema.js';
 import { assertScanned, corpusWorkflows, defaultCorpusDest, ownDefinitionsIn, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
@@ -48,6 +49,10 @@ const REVIEW_BAG = { is_review_mode: true } as const;
  * `<workflow>::<activity>::<checkpoint>`. An entry belongs here only when the default RECORDS an
  * assessment the run can stand behind headlessly. A default that creates, publishes, pushes, or
  * approves anything does not qualify — gate it on `is_review_mode` instead.
+ *
+ * The checkpoint is its base id. A gate in a loop body carries a discriminator so each round asks
+ * and answers for itself, and every round reaches the one definition this acceptance judges, so an
+ * entry naming the base covers them all and no entry is written per round.
  */
 export const ACCEPTED_HEADLESS_AUTO_ADVANCE: Record<string, string> = {
   'work-package::codebase-comprehension::comprehension-sufficient':
@@ -214,7 +219,7 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
         if (mentionsReview(cp)) continue; // mode-aware: intentionally review-conditioned
         if (!hasConsequentialDefault(cp)) continue; // no silent stateful auto-advance
         out.push({
-          key: `${workflow}::${actId}::${cp.id ?? '?'}`,
+          key: `${workflow}::${actId}::${baseId(cp.id ?? '?')}`,
           detail: `checkpoint reachable while is_review_mode == true is not mode-aware and auto-advances to default option '${cp.defaultOption}', which applies an effect the user did not choose — gate it on is_review_mode or drop the consequential default`,
         });
       }

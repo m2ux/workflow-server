@@ -85,7 +85,7 @@ const SessionFileBaseSchema = z.object({
 
   completedActivities: z.array(z.string().describe('Identifier of a completed activity.')).default([]).describe('Identifiers of completed activities.'),
 
-  checkpointResponses: z.record(CheckpointResponseSchema).default({}).describe('Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity\'s current visit: entering an activity clears the ones an earlier visit recorded.'),
+  checkpointResponses: z.record(CheckpointResponseSchema).default({}).describe('Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity\'s current visit: entering an activity clears the ones an earlier visit recorded. A gate in a loop body is yielded under a discriminated id, so its key names the round and one round\'s answer replays only within that round.'),
 
   history: z.array(HistoryEntrySchema).default([]).describe('Chronological record of session progress.'),
 

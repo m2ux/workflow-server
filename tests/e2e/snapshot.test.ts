@@ -15,6 +15,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { liveCorpusRoot } from '../corpus-root.js';
 import { workflowSubdir } from '../../src/loaders/corpus-index.js';
+import { baseId } from '../../src/loaders/workflow-loader.js';
 
 /**
  * Expected numeric prefix of each activity, read from the activity FILENAMES
@@ -135,9 +136,13 @@ describe.skipIf(!liveCorpusRoot())('work-package walk snapshots (baseline)', () 
    * Every checkpoint below is either in an activity review mode skips (implement) or is gated
    * `is_review_mode != true`; one surfacing in a review walk is a spurious "skip this create step"
    * prompt back in the review path.
+   *
+   * Named by base id, because the list names definitions: a gate in a loop body is declared with a
+   * discriminator so each round answers for itself, and every round is the one definition reached
+   * again. Matching the whole id would let such a gate past the list by the name it rounds under.
    */
   it('[review-mode] presents no create-mode checkpoints', () => {
-    const fired = new Set(walks.get(reviewModePolicy.name)!.steps.flatMap((s) => s.checkpoints.map((c) => c.checkpointId)));
+    const fired = new Set(walks.get(reviewModePolicy.name)!.steps.flatMap((s) => s.checkpoints.map((c) => baseId(c.checkpointId))));
     const forbidden = [
       'switch-model-pre-impl', 'switch-model-post-impl', 'symbol-provenance-confirmed',
       'implementation-assumption-interview', 'pr-creation', 'issue-verification',
