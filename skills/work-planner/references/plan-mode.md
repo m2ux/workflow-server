@@ -78,8 +78,8 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
   A row's issue is raised when its unit is dispatched, as [Deliver Mode](deliver-mode.md#raise-task-issue) states, so the board holds an issue for the rows in flight. This mode raises none.
 - **The corpus audit.**
   An epic whose tasks change workflow definitions carries the [corpus audit criterion](work-breakdown.md#corpus-audit), with a final task row that delivers it.
-- **Technical-debt initiatives.**
-  A [technical-debt initiative](work-breakdown.md#technical-debt) is raised with its theme's board, carrying the criterion and labels that section states, and a further one wherever the user wants another. Each epic of one is raised when the initiative it is named for defers its first item.
+- **The deferred-debt epic.**
+  An initiative that defers its first item takes a [deferred-debt epic](work-breakdown.md#deferred-debt) as its last, carrying the criterion and labels that section states, and the initiative takes the criterion that epic's row covers.
 - **The discussion PR.**
   Merging it is the user's call.
 - **Pull request bodies.**

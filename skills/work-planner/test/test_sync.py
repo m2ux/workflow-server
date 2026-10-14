@@ -397,6 +397,11 @@ class InitiativeClose(unittest.TestCase):
                              issue(3, '[I01:E01] Second: Epic')])
         self.assertIn('closable: no (undelivered E01)', out)
 
+    def test_an_open_deferred_debt_epic_leaves_the_initiative_unclosable(self):
+        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed'),
+                             issue(3, '[I01:E01] Deferred Debt: The Clear-Up This Initiative Owes')])
+        self.assertIn('closable: no (undelivered E01)', out)
+
     def test_a_cancelled_epic_does_not_deliver_the_initiative(self):
         epic = issue(2, '[I01:E00] First: Epic', 'closed')
         epic['state_reason'] = 'not_planned'

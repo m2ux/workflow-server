@@ -136,8 +136,6 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - Its title is the theme's name, a colon, and its description. In the example, Canon is `Canon: Definitions Checked Against the Design Canon`.
   - It is linked to the repository.
   - It holds the theme's initiatives, their epics, and a task issue for each row in flight, which [Deliver Mode](references/deliver-mode.md#raise-task-issue) raises as it dispatches that row.
-- **Technical debt.**
-  Each board carries at least one standing [technical-debt initiative](references/work-breakdown.md#technical-debt), which its theme's delivery defers debt to, and takes more than one.
 - **Assignees.**
   An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee.
 - **Standalone issues.**  A standalone issue sits on no board.
@@ -156,9 +154,8 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
   - **Declined.**
     It will not become an initiative. It has no assignee.
 - **A new theme.**
-  - It needs its label, its board and one technical-debt initiative before an initiative takes it.
+  - It needs its label and its board before an initiative takes it.
   - [Create Board](references/sync-mode.md#create-board) copies the Initiative Template, titles the copy as above, and links it to the repository.
-  - [Plan Mode](references/plan-mode.md#rules) raises the technical-debt initiative onto it.
 
 ## Rules
 

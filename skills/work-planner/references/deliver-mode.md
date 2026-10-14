@@ -68,7 +68,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Merge.**
   Record check results with [Patch Pull Request Body](understand-mode.md#patch-pull-request-body), following [Test Plan](work-breakdown.md#test-plan), then follow [Task Merge](work-breakdown.md#task-merge), which verifies and ticks the criteria of each task issue the unit delivers before the merge.
 - **Defer the technical debt the validation found.**
-  Classify each item as this mode's Technical debt rule states and confirm it with the user. A deferred item is created as a standalone issue with [Create Issue](commands.md#create-issue) and hoisted with [Hoist Mode](hoist-mode.md), its placement a new task in the epic a [technical-debt initiative](work-breakdown.md#technical-debt) of the board holds for this initiative.
+  Classify each item as this mode's Technical debt rule states and confirm it with the user. A deferred item is created as a standalone issue with [Create Issue](commands.md#create-issue) and hoisted with [Hoist Mode](hoist-mode.md), its placement a new task in this initiative's [deferred-debt epic](work-breakdown.md#deferred-debt).
 - **Hoist arising issues.**
   Create each issue that arose during delivery as a standalone issue with [Create Issue](commands.md#create-issue), with no agent-engineering prefix. Then run [Hoist Mode](hoist-mode.md) for each such issue, prompting the user for its placement across open initiatives and epics.
 
@@ -103,7 +103,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
     The unit's own criteria cannot be verified without it, so the unit fixes it, whatever its size.
   - **Trivial.**  It blocks nothing and needs no work item of its own, so the unit fixes it.
   - **Non-trivial.**
-    It blocks nothing and would warrant a work item of its own. The unit defers it to a [technical-debt initiative](work-breakdown.md#technical-debt) of the board, and the epic in hand keeps the scope it was planned with.
+    It blocks nothing and would warrant a work item of its own. The unit defers it to this initiative's [deferred-debt epic](work-breakdown.md#deferred-debt), and the epic in hand keeps the scope it was planned with.
   - The session classifies each item and puts it to the user as an [Interview](interview.md), its classification the recommended answer, before the fix or the deferral.
 
 ## Commands

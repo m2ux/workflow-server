@@ -144,26 +144,24 @@ An epic whose tasks change workflow definitions carries this criterion, and a fi
   A row that only changes the engine, continuous integration or the workspace does not bring the criterion.
 - [Check Format](commands.md#check-format) reports a corpus epic whose criteria omit it.
 
-#### Technical Debt
+#### Deferred Debt
 
-A standing technical-debt initiative holds the debt a theme's delivery defers. Its title name is `Technical Debt` and its subtitle names the debt it takes; it carries the theme's label, `tech-debt` and a priority label, and one is raised with the theme's board. It carries this criterion, which every epic row of it covers:
+A final epic of the initiative holds the debt that initiative's delivery defers. Its title name is `Deferred Debt` and its subtitle names the clear-up it takes; it carries its initiative's theme label and `tech-debt`, and it is raised when the initiative defers its first item. The initiative carries this criterion, which the epic's row covers:
 
 ```markdown
-- [ ] **AC1.** The technical debt this theme's delivery defers is fixed, as the Done column of the Work Breakdown shows.
+- [ ] **ACn.** The technical debt this initiative's delivery defers is fixed, as the Done column of its final epic's Work Breakdown shows.
 ```
 
-- **It opens with no work.**
-  Its Work Breakdown is the header row alone. A theme that defers nothing leaves it there, and the initiative stays open.
-- **Its priority keeps it waiting.**
-  Its number sits below the board's planned work, so [Advance Mode](advance-mode.md) holds it in Backlog until the user raises it, which is how a clear-up is scheduled rather than run against the work in flight. Where a board carries several, their numbers rank them against each other.
-- **A board carries at least one, and takes more.**
-  Each has its own subtitle, priority and epics, and the user names which one an item goes to where a board carries several. One alone needs no asking.
-- **An epic per source initiative.**
-  The debt one initiative defers is one epic, raised when that initiative defers its first item. Its title name is that initiative's, so the row reads as the work the debt came out of, and each deferred item is a task row with the criteria that state what fixing it makes true.
+- **It is the initiative's last epic.**
+  Its number follows every other epic of the initiative, so the epics in flight are planned and delivered ahead of it and the clear-up competes with none of them.
+- **A deferred item is a task row.**
+  Each row covers the criterion stating what fixing that item makes true, and those statements are the epic's criteria.
 - **It takes the debt its own delivery defers.**
-  Debt a unit of this initiative finds in resolving its row becomes a further row of the epic holding that row, so the clear-up absorbs what fixing it uncovers.
-- **Its epics deliver like any other.**
-  Each takes its bases from the long-lived branches its rows change, and [Issue Closure](#issue-closure) closes it. The initiative stays open across its epics, since the theme goes on deferring debt.
+  Debt a unit of this epic finds in resolving its row becomes a further row of the epic, so the clear-up absorbs what fixing it uncovers.
+- **It delivers like any other epic.**
+  It takes its bases from the long-lived branches its rows change, carries the [corpus audit](#corpus-audit) criterion where those rows change workflow definitions, and [Issue Closure](#issue-closure) closes it.
+- **The initiative stays open while it stands.**
+  Its row is undelivered and its criterion unticked until the epic closes, which [Sync Initiative](commands.md#sync-initiative) reports as not closable.
 
 [Deliver Mode](deliver-mode.md#rules) states what qualifies as deferred debt and how it arrives.
 
