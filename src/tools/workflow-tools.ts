@@ -2773,7 +2773,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       }
 
       return {
-        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, message, options, session_index }) }],
+        // The gate is presented under the id it was yielded with, which is the id its answer is
+        // recorded against. A loop-body gate's definition carries a discriminator still in its
+        // template form, so the definition's own id names no single round.
+        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, id: active.checkpointId, message, options, session_index }) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));

@@ -197,7 +197,7 @@
             "description": "Recorded checkpoint choice, response time, and effects."
           },
           "default": {},
-          "description": "Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity's current visit: entering an activity clears the ones an earlier visit recorded."
+          "description": "Checkpoint decisions keyed by `activityId-checkpointId`, holding the answers of each activity's current visit: entering an activity clears the ones an earlier visit recorded. A gate in a loop body is yielded under a discriminated id, so its key names the round and one round's answer replays only within that round."
         },
         "history": {
           "type": "array",

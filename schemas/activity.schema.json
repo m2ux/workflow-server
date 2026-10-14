@@ -348,7 +348,7 @@
                   },
                   "id": {
                     "type": "string",
-                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. With the activity identifier it forms the key a recorded response replays under on resume."
+                    "description": "Checkpoint identifier, unique within its step list (the top-level steps, or one loop body). A duplicate excludes its activity from the load; in a routine file, it excludes each activity that refers to that routine. With the activity identifier it forms the key a recorded response replays under on resume. In a loop body it ends in `#{expression}`, read against the bag each round, so each round asks and answers for itself while reaching this one definition."
                   },
                   "message": {
                     "type": "string",
