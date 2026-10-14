@@ -20,7 +20,7 @@ This work makes the shape measurable and brings every site to it: a `gate-inside
 | Resource | Link |
 | --- | --- |
 | Issue | [#1432 Looped Gate](https://github.com/m2ux/workflow-server/issues/1432) |
-| Gate identity (main) | branch `fix/1432-gate-identity` |
-| Definitions (workflows) | branch `fix/1432-looped-gate-corpus` |
-| Loop-gate guard (main) | branch `fix/1432-loop-gate-guard` |
+| Gate identity, merged first | [#1439](https://github.com/m2ux/workflow-server/pull/1439) into `main` |
+| Definitions, merged second | [#1440](https://github.com/m2ux/workflow-server/pull/1440) into `workflows` |
+| Loop-gate guard, merged last | [#1441](https://github.com/m2ux/workflow-server/pull/1441), stacked on #1439 |
 | The separator both populations use | [workflow-loader.ts](https://github.com/m2ux/workflow-server/blob/bf3be7b8/src/loaders/workflow-loader.ts#L465-L486) |
