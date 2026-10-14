@@ -38,6 +38,7 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 | A link is what the reader opens | AC32 | E14 | AC13, AC14, AC15 |
 | A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC16, AC17, AC18 |
 | The payload a run injects is derived and reviewed rather than inferred | AC32 | E14 | AC19, AC20, AC21 |
+| A check is met as a purpose rather than a path | AC32 | E14 | AC24, AC25, AC26 |
 | A bound step is performed with the content its citation names | AC33 | E14 | AC22 |
 | The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC23 |
 
@@ -144,6 +145,23 @@ The shared script derives each mode's read set from its own citations and writes
   Lowest cost and no new surface, and it leaves two conformant runs free to inject different sets, which is the variance the fidelity target exists to remove.
 - **Every skill.**
   The manifest is generated for each skill directory in the repository, not for these two, since the rule it derives from binds the workspace.
+- **Validation only.**
+  Nothing in a run reads it. It detects a prose edit that moves the payload and it shows a maintainer what a mode costs; it does not enforce the set a run injects, and two runs can still differ.
+- **Weighed: the run reading its step's row.**
+  It would remove the last inference, and it puts a generated file in every run's context and lets a stale manifest change behaviour rather than fail a check.
+- **Weighed: the manifest as the authority.**
+  Maximum determinism, and an author editing prose would no longer be editing behaviour, which inverts the rule that the prose is a citation's single home.
+
+## Where a check is defined
+
+The shared guide defines each check the workspace runs — what it decides, which skills it binds, how it is run, where its tests live — and prose names a check by linking to that entry.
+
+- **Chosen.**
+  The guide names `skills/scripts/check_skill_files.py` as a bare code span and states the folder layout without saying what any check decides, so a reader meets a path and no purpose. A defined entry gives a check the same treatment a command specification already gets.
+- **Same defect class as the rest of the epic.**
+  A bare path is a citation naming no target and carrying no obligation. The Links rule reaches markdown files only, which is why scripts fell outside it.
+- **A gap it exposes.**
+  Workflow Canon carries ten scripts and no test folder. The entry for each of its checks has to say what keeps it, which is where that gap becomes visible rather than inferred.
 
 ## What the sample settled
 
@@ -170,3 +188,5 @@ W02 and W03 share one pull request: one rule applied across two skills, where th
   W08 decides a citation's scope and case; W09 derives a read set and compares it with the prose. Separate outputs, separate specimen suites, and a manifest generator that fails should not hold back a scope check that works.
 - **The measurement tasks: W08 and W10, W09 and W10.**
   W10 records live walks over the finished instructions. It measures what W05, W06 and W07 produce rather than what either script reports, so it reads neither one's output.
+- **The checks task against the rest: W06 and W11, W07 and W11, W09 and W11, W10 and W11.**
+  W11 defines every check the workspace runs and retires the bare paths naming them. It is a subject of its own, and pairing it with a prose rule, the manifest generator or the walks would put two unrelated reviews in one diff.
