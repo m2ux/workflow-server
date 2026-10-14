@@ -179,7 +179,7 @@ steps:
     when: operation_type == 'create' && headless_mode != true
     steps:
       - kind: checkpoint
-        id: capture-dimension
+        id: capture-dimension#{current_dimension}
         message: "Record the answers for `{current_dimension}` at the capture depth [Dimensions](../resources/elicitation-guide.md#dimensions) states. A question an earlier dimension already settled is omitted."
         options:
           - id: recorded
