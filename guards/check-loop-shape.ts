@@ -1,5 +1,6 @@
 /**
- * check-loop-shape — a loop declares the fields its iteration type uses, and no others (#594).
+ * check-loop-shape — a loop declares the fields its iteration type uses, and a gate in its body
+ * asks once per iteration (#594, #1432).
  *
  * A loop step answers three separate questions, and until `continueWhile` existed two of them shared
  * one field. `condition` was documented as an entry gate and used by every repeat-until loop as a
@@ -25,8 +26,24 @@
  * ceiling rule is needed. `condition` on a loop needs no rule either: a step kind is a closed
  * object, so the field is already a schema error.
  *
+ * A checkpoint in a loop body is one definition the run reaches once per round, and its answer is
+ * recorded under `<activity>-<checkpoint>`. An id that reads the same every round therefore holds
+ * one answer for the whole loop, and every round after the first replays it: the operator is asked
+ * once where the definition declares a decision per round. The discriminator `<base>#{<expression>}`
+ * is what separates them — `getCheckpoint` resolves a qualified id back to the one definition, so a
+ * key per round costs the definition nothing but the id it is yielded under. `gate-inside-loop`
+ * reads shape alone: that the id carries an expression, not that the expression names a value the
+ * bag changes each round.
+ *
+ * A gate a routine declares is unmeasured here. A `kind: routine` step in a loop body splices that
+ * routine's steps in at load under a prefix fixed for the site, so a gate inside it reaches this
+ * guard in the routine's own file, where no loop encloses it, and its spliced id repeats each round.
+ * The two populations do not meet today — of the thirteen routines a loop body refers to, none
+ * declares a checkpoint — so the reach stands on what the splice means rather than on a site that
+ * exercises it.
+ *
  * Hard zero, no baseline: every loop in the corpus satisfies both partitions the moment the
- * continuation test moves to its own key.
+ * continuation test moves to its own key, and every gate in a body names its round.
  *
  * Run: npx tsx guards/check-loop-shape.ts [--root <workflows-dir>] [--json]
  */
@@ -105,6 +122,36 @@ function checkLoop(loop: LoopStep, site: string, findings: Finding[]): void {
   }
 }
 
+/**
+ * The discriminator that gives one checkpoint definition an identity per round: an expression read
+ * against the bag, which the yielded id carries resolved. A literal discriminator reads the same
+ * every round, so it separates nothing and does not count.
+ */
+const DISCRIMINATOR = /#\{[^}]+\}/;
+
+/**
+ * Every gate the loop body holds directly. A gate in a nested loop belongs to that loop's own pass,
+ * which reports it once, and the discriminator it needs is the inner round's.
+ */
+function checkBodyGates(steps: unknown, site: string, findings: Finding[]): void {
+  if (!Array.isArray(steps)) return;
+  for (const step of steps) {
+    if (!step || typeof step !== 'object') continue;
+    const record = step as Record<string, unknown>;
+    if (record.kind !== 'checkpoint') continue;
+    const id = typeof record.id === 'string' ? record.id : '?';
+    if (DISCRIMINATOR.test(id)) continue;
+    findings.push({
+      check: 'gate-inside-loop',
+      site: `${site}.${id}`,
+      detail: 'a checkpoint records its answer under `<activity>-<checkpoint>`, and this one is '
+        + 'yielded under the same id every round, so the loop holds one answer and every round after '
+        + `the first replays it — name the round in the id (\`${id}#{<variable>}\`), whose base still `
+        + 'resolves to this one definition',
+    });
+  }
+}
+
 /** Every `kind: loop` step under any `steps[]`, nested loop bodies included. */
 function walk(node: unknown, file: string, findings: Finding[]): void {
   if (Array.isArray(node)) { for (const child of node) walk(child, file, findings); return; }
@@ -113,6 +160,7 @@ function walk(node: unknown, file: string, findings: Finding[]): void {
   if (record.kind === 'loop') {
     const id = typeof record.id === 'string' ? record.id : '?';
     checkLoop(record as LoopStep, `${file}[${id}]`, findings);
+    checkBodyGates(record.steps, `${file}[${id}]`, findings);
   }
   for (const value of Object.values(record)) walk(value, file, findings);
 }
@@ -154,7 +202,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('loop-shape', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every loop declares the fields its iteration type uses, and no others',
-    remedy: 'give an item loop its collection and item, and a repeat-until loop its continuation test',
+    okMessage: 'every loop declares the fields its iteration type uses, and every gate in a body asks once per round',
+    remedy: 'give an item loop its collection and item, a repeat-until loop its continuation test, and a loop-body gate a round in its id',
   });
 }
