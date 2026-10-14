@@ -6,12 +6,13 @@ import { declareFixtureWorkflows } from './corpus-fixture.js';
 import { collectFindings } from '../guards/check-loop-shape.js';
 
 /**
- * A loop declares the fields its iteration type uses, and no others.
+ * A loop declares the fields its iteration type uses, and a gate in its body asks once per round.
  *
  * An item loop is bounded by its collection and states no continuation test; a repeat-until loop is
- * bounded by its test and iterates no collection. The corpus satisfies both partitions, which is
- * what leaves the live tree unable to show that the checks still bite — so the synthetic roots below
- * carry each fault and the shape it is a fault against.
+ * bounded by its test and iterates no collection. A checkpoint in either body carries a
+ * discriminator, so each round records an answer of its own rather than replaying the first. The
+ * corpus satisfies all three, which is what leaves the live tree unable to show that the checks
+ * still bite — so the synthetic roots below carry each fault and the shape it is a fault against.
  */
 
 const roots: string[] = [];
@@ -19,22 +20,32 @@ afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true });
 });
 
-/** A corpus root holding one activity whose single step is the given loop. */
-function rootWithLoop(loop: string): string {
+const ACTION_BODY = ['      - kind: action', '        id: do-something'].join('\n');
+
+/** A corpus root holding one activity whose single step is the given loop, over the given body. */
+function rootWithLoop(loop: string, body: string = ACTION_BODY): string {
   const root = mkdtempSync(join(tmpdir(), 'loop-shape-'));
   roots.push(root);
   const dir = join(root, 'demo', 'activities');
   mkdirSync(dir, { recursive: true });
   writeFileSync(
     join(dir, '01-demo.yaml'),
-    ['id: demo', 'name: Demo', 'steps:', loop,
-      '    steps:', '      - kind: action', '        id: do-something',
+    ['id: demo', 'name: Demo', 'steps:', loop, '    steps:', body,
       'transitions: []', ''].join('\n'),
   );
   return declareFixtureWorkflows(root);
 }
 
-const checks = (loop: string): string[] => collectFindings(rootWithLoop(loop)).map((f) => f.check);
+/** A checkpoint body under the given id, with the two options a gate needs. */
+const gateBody = (id: string): string => [
+  '      - kind: checkpoint', `        id: ${id}`,
+  '        message: Decide.', '        options:',
+  '          - id: go', '            label: Go',
+  '          - id: stop', '            label: Stop',
+].join('\n');
+
+const checks = (loop: string, body?: string): string[] =>
+  collectFindings(rootWithLoop(loop, body)).map((f) => f.check);
 
 const ITEM_LOOP = ['  - kind: loop', '    id: item-cycle', '    loopType: forEach',
   '    variable: current_item', '    over: work_items'].join('\n');
@@ -110,6 +121,67 @@ describe('loop shape', () => {
     ].join('\n'));
     expect(collectFindings(declareFixtureWorkflows(root)).map((f) => f.site))
       .toEqual(['demo/activities/01-demo.yaml[inner-cycle]']);
+  });
+
+  /**
+   * The answer key is `<activity>-<checkpoint>`, so an id that reads the same every round holds one
+   * answer for the whole loop and the rounds after the first replay it. These pin the shape that
+   * separates them (#1432).
+   */
+  describe('a gate in the body', () => {
+    it('refuses an id that reads the same every round', () => {
+      expect(checks(ITEM_LOOP, gateBody('approve'))).toEqual(['gate-inside-loop']);
+      expect(checks(REPEAT_LOOP, gateBody('approve'))).toEqual(['gate-inside-loop']);
+    });
+
+    it('accepts an id carrying an expression read against the bag', () => {
+      expect(checks(ITEM_LOOP, gateBody('approve#{current_item}'))).toEqual([]);
+      expect(checks(REPEAT_LOOP, gateBody('approve#{fix_round}'))).toEqual([]);
+    });
+
+    it('refuses a literal discriminator, which reads the same every round', () => {
+      expect(checks(ITEM_LOOP, gateBody('approve#1'))).toEqual(['gate-inside-loop']);
+    });
+
+    it('names the gate it found, under the loop that holds it', () => {
+      const findings = collectFindings(rootWithLoop(ITEM_LOOP, gateBody('approve')));
+      expect(findings.map((f) => f.site)).toEqual(['demo/activities/01-demo.yaml[item-cycle].approve']);
+    });
+
+    it('leaves a gate outside any loop alone', () => {
+      const root = mkdtempSync(join(tmpdir(), 'loop-shape-top-gate-'));
+      roots.push(root);
+      const dir = join(root, 'demo', 'activities');
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, '01-demo.yaml'), [
+        'id: demo', 'name: Demo', 'steps:',
+        gateBody('approve').replace(/^ {6}/gm, '  '),
+        'transitions: []', '',
+      ].join('\n'));
+      expect(collectFindings(declareFixtureWorkflows(root))).toEqual([]);
+    });
+
+    /**
+     * A gate in a nested body belongs to the inner loop's round, and the inner loop's own pass
+     * reports it — so it is reported once, against the loop whose round it needs to name.
+     */
+    it('reports a gate in a nested body once, against the inner loop', () => {
+      const root = mkdtempSync(join(tmpdir(), 'loop-shape-nested-gate-'));
+      roots.push(root);
+      const dir = join(root, 'demo', 'activities');
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, '01-demo.yaml'), [
+        'id: demo', 'name: Demo', 'steps:', ITEM_LOOP, '    steps:',
+        '      - kind: loop', '        id: inner-cycle', '        loopType: doWhile',
+        '        continueWhile:', '          type: simple', '          variable: needs_fixes',
+        '          operator: "=="', '          value: true',
+        '        steps:', gateBody('approve').replace(/^ {6}/gm, '          '),
+        'transitions: []', '',
+      ].join('\n'));
+      const findings = collectFindings(declareFixtureWorkflows(root));
+      expect(findings.map((f) => f.check)).toEqual(['gate-inside-loop']);
+      expect(findings[0]!.site).toBe('demo/activities/01-demo.yaml[inner-cycle].approve');
+    });
   });
 
   /**
