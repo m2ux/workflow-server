@@ -2,6 +2,19 @@
 
 The obligation a citation carries, the scope it may name, and the order the check lands in.
 
+## Targets
+
+Three targets every reading rule in the workspace serves, stated in the shared guide because they bind any skill, not these two.
+
+- **Payload size.**
+  The sections a run injects are as few as the work allows. A rule that pulls a file where a section serves spends context the work never uses.
+- **Sameness across runs.**
+  Two runs of one mode inject the same set. A rule that leaves the reader to decide what a step needs buys variance, which is why the defaults are stated and the read set is derived rather than inferred.
+- **A maintainer can read it.**
+  The rule and the prose it governs can be reviewed without running either. A form a script decides is worth its constraint only where a human reading the same line reaches the same verdict.
+
+Where one target costs another, the guide states which it buys. The manifest is the case in point: it spends a generated file to make the payload reviewable and the injection set determinate.
+
 ## Measurements
 
 Counted over each skill's `SKILL.md`, `references/` and `templates/`, excluding fenced blocks and code spans, on `3c0f1ff5`.
@@ -17,13 +30,16 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 
 | Goal clause | Initiative criterion | Epic | Epic criteria |
 | --- | --- | --- | --- |
-| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC1, AC2, AC3, AC5, AC7 |
-| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC8, AC9, AC10 |
-| A prerequisite is met where the step that needs it stands | AC32 | E14 | AC11, AC12, AC13 |
-| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC4, AC6 |
-| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC14, AC15 |
-| A bound step is performed with the content its citation names | AC33 | E14 | AC16 |
-| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC17 |
+| An author weighing two layouts has the targets to weigh them against | AC32 | E14 | AC1 |
+| A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC2, AC3, AC4 |
+| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC5, AC6 |
+| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC7, AC8, AC9 |
+| A prerequisite is met where the step that needs it stands | AC32 | E14 | AC10, AC11, AC12 |
+| A link is what the reader opens | AC32 | E14 | AC13, AC14, AC15 |
+| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC16, AC17, AC18 |
+| The payload a run injects is derived and reviewed rather than inferred | AC32 | E14 | AC19, AC20, AC21 |
+| A bound step is performed with the content its citation names | AC33 | E14 | AC22 |
+| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC23 |
 
 AC32 answers no requirement of the initiative's source specification. It states what this session's measurement found: the specification requires calling prose to link a specification by name, and says nothing about what the reader owes that link.
 
@@ -116,17 +132,41 @@ Each efficacy scenario puts the content that decides its outcome outside the fil
 - **Weighed: a scored eval suite.**
   The strongest ongoing signal and an epic's worth of work on its own.
 
+## How the read set is made determinate
+
+The shared script derives each mode's read set from its own citations and writes it as a manifest beside the skill. The check reports a manifest that disagrees with the prose it came from.
+
+- **Chosen.**
+  The prose stays the single home of every citation, so nothing drifts; the manifest is what a maintainer reads to see what a run costs; and a reader with a derived set no longer infers one. It serves all three targets at the price of a generated file.
+- **Weighed: a hand-written read set per mode.**
+  Visible in the file itself and determinate, and it duplicates every citation, so the prose and the list disagree the first time either is edited.
+- **Weighed: per-step citations alone.**
+  Lowest cost and no new surface, and it leaves two conformant runs free to inject different sets, which is the variance the fidelity target exists to remove.
+- **Every skill.**
+  The manifest is generated for each skill directory in the repository, not for these two, since the rule it derives from binds the workspace.
+
+## What the sample settled
+
+[Plan mode rewritten under every rule](sample-plan-mode.md) is the reviewable instance. Two findings came out of writing it.
+
+- **A body template carries no heading of its own.**
+  The six templates open at `## Overview`, and an `# H1` would land inside every issue body written from them. The heading rule therefore binds a citation only where its target carries a heading; a template is cited whole, with its case stated.
+- **A per-file lead-in costs more than it buys.**
+  A first draft opened the Procedure with a line citing the shared Links rule. Ten mode files each citing the shared guide means ten runs opening a file they otherwise would not, against a target the rule is meant to serve. The obligation stands once in the entry point every mode already opens.
+
 ## Chains
 
-Four longest chains, each of three steps, with W01 on every one: W01 to W02 or W03, then to W04 or W05. No whole-epic edge binds the epic.
+Fourteen longest chains, each of five steps, with W01 and W02 on every one: the targets, then the timing rules, then a skill's citations, then one of the three rule tasks, then the check or the walks. No whole-epic edge binds the epic.
 
 ## Joins
 
 W02 and W03 share one pull request: one rule applied across two skills, where the second skill's citations are the evidence that the rule reads the same in a file the first skill never had. No other eligible pair shares a pull request.
 
-- **W04 and W05.**
-  W04 states the whole-file case rule and applies it to the citations themselves; W05 moves a prerequisite to the step that uses it. Each lands its own rule in the guidelines, and a reviewer reading one diff should not have to separate two rules in it.
-- **W04 and W06, W05 and W06.**
-  W06 is the check and its specimen suite, in the shared script. It merges after the prose it grades, so pairing it with either prose task would put a rule and the check of that rule in one review.
-- **W06 and W07.**
-  W06 is a script and its tests; W07 is a record of live walks over the finished instructions. Neither reads the other's output, and W07 measures what W04 and W05 produce rather than what W06 reports.
+- **The three rule tasks: W05 and W06, W05 and W07, W06 and W07.**
+  Each lands one rule in the shared guide and applies it across both skills. A reviewer reading one diff should not have to separate two rules in it, and a rule that proves wrong is reverted without taking the others with it.
+- **The script tasks against the rule tasks: W06 and W08, W07 and W08.**
+  W08 is the check and its specimen suite, in the shared script. It merges after the prose it grades, so pairing it with a prose task would put a rule and the check of that rule in one review.
+- **The script tasks against each other: W08 and W09.**
+  W08 decides a citation's scope and case; W09 derives a read set and compares it with the prose. Separate outputs, separate specimen suites, and a manifest generator that fails should not hold back a scope check that works.
+- **The measurement tasks: W08 and W10, W09 and W10.**
+  W10 records live walks over the finished instructions. It measures what W05, W06 and W07 produce rather than what either script reports, so it reads neither one's output.

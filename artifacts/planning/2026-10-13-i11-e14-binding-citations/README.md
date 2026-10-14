@@ -12,7 +12,8 @@ It matters because a step that reads as complete without its citation gets perfo
 
 | Artifact | What it holds |
 | --- | --- |
-| [Decisions](decisions.md) | The obligation a citation carries, how scope is bounded, and the order the gate lands in |
+| [Decisions](decisions.md) | The targets a reading rule serves, the obligation a citation carries, how scope is bounded, how the read set is derived, and the order the gate lands in |
+| [Sample mode file](sample-plan-mode.md) | Plan mode rewritten under every rule the epic states, for review before the work starts |
 
 ## Links
 
