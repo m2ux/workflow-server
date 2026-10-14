@@ -165,7 +165,7 @@ The shared guide defines each check the workspace runs — what it decides, whic
 
 ## What the sample settled
 
-[Plan mode rewritten under every rule](sample-plan-mode.md) is the reviewable instance. Two findings came out of writing it.
+[Plan mode rewritten under every rule](sample-plan-mode.md) is the shape the user approved on 2026-10-14, and the reference every citation task follows. Two findings came out of writing it.
 
 - **A body template carries no heading of its own.**
   The six templates open at `## Overview`, and an `# H1` would land inside every issue body written from them. The heading rule therefore binds a citation only where its target carries a heading; a template is cited whole, with its case stated.
