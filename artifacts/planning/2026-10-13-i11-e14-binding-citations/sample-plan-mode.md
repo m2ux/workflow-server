@@ -13,6 +13,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
    - When no proposal is named, understand the problem and gather the evidence as [Propose Mode](propose-mode.md#procedure) does under Understand the problem and Gather evidence.
    - Every later review tests against these clauses.
 2. **Planning record.**
+
    Keep one for a new initiative, or for a change whose decisions need a record. A one-epic addition with no open decision goes straight to Draft bodies.
    - Add the record with [Add Planning Record](commands.md#add-planning-record), and fill it as the [planning layout](planning-layout.md#planning-layout) describes.
    - Draft the discussion pull request's body from the [pull request template](../templates/pull-request.md) and open it as a draft. The user merges it.
@@ -34,6 +35,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
    - State each finding as [Report](review-passes.md#report) states.
    - Fold every gap and problem in and run both again. No issue is created while either reports one. An acceptance criterion is created only once it complies with this mode's Criteria at creation rule.
 5. **Create issues.**
+
    Create them with [Create Issue](commands.md#create-issue), so that every number exists before it is cited:
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, with placeholders in Depends on for any epic it cites that does not exist yet;
@@ -41,6 +43,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
    4. Where a task needs an issue of its own, draft it from the [task template](../templates/task.md), its acceptance criteria written to this mode's Criteria at creation rule;
    5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
 6. **Review.**
+
    Run the [Review Passes](review-passes.md#procedure):
    - Fetch the issues as [Fetch](review-passes.md#fetch) states.
    - The goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
@@ -49,12 +52,14 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
 
    State each finding as [Report](review-passes.md#report) states. Fold each finding in and record it in the planning record.
 7. **Keep in step.**
+
    Read [Delivery State](commands.md#delivery-state) first.
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Coverage cells change when criteria are renumbered.
    - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
    - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
+
    Ready each epic before it starts. No task of the epic starts until all hold:
    - **Epic prerequisites hold.**
      Confirm [Epic prerequisites](work-breakdown.md#epic-prerequisites) before creating its bases or starting a task. An unmet prerequisite leaves implementation pending.
@@ -69,6 +74,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
 
    Fetch as [Fetch](review-passes.md#fetch) states. Run the goal pass, and the ordering pass when tasks or dependencies change. State each finding as [Report](review-passes.md#report) states.
 9. **Deliver.**
+
    Read [Delivery State](commands.md#delivery-state) first. Once work lands, run [Sync Mode](sync-mode.md#sync-mode).
 
 ## Rules
