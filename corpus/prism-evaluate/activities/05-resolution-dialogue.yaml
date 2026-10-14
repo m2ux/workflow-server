@@ -8,6 +8,7 @@ variables:
     - evaluation_description
     - evaluation_output_path
     - evaluation_target_type
+    - refinement_pass
     - target_path
   writes:
     - name: accepted_count
@@ -41,6 +42,10 @@ variables:
       type: boolean
       description: Whether the user asked for the accepted mitigations to be applied to the target
       defaultValue: false
+    - name: refinement_pass
+      type: number
+      description: Count of mitigation proposals put to the reader, counting across findings
+      defaultValue: 0
 techniques:
   - scatter-gather
 steps:
@@ -70,7 +75,7 @@ steps:
             id: propose-mitigation
             technique: resolve-findings::propose-mitigation-by-tier
           - kind: checkpoint
-            id: finding-decision
+            id: finding-decision#{refinement_pass}
             message: "Finding {current_finding.id} ({current_finding.severity}, tier {current_finding.tier}), with a proposed mitigation for it."
             options:
               - id: accept
@@ -106,6 +111,12 @@ steps:
                 target: mitigation_discussion
                 value: "{mitigation_context}"
                 description: The context just given, appended to the contexts the finding is discussed under.
+          - kind: action
+            id: count-refinement-pass
+            actions:
+              - action: set
+                target: refinement_pass
+                message: Increment the refinement pass by one.
       - kind: technique
         id: record-decision
         technique: resolve-findings::record-finding-decision

@@ -7,6 +7,7 @@ variables:
     - task_implementation
     - floor_breached
     - is_review_mode
+    - simplification_cycle
   writes:
     - name: floor_breached
       type: boolean
@@ -23,6 +24,10 @@ variables:
       type: boolean
       description: Whether accepted simplifications remain to apply.
       defaultValue: false
+    - name: simplification_cycle
+      type: number
+      description: Count of apply cycles put to the reader for this change.
+      defaultValue: 0
 required: true
 steps:
   - kind: action
@@ -96,7 +101,7 @@ steps:
           outputs:
             review_findings: lean_audit_findings
       - kind: checkpoint
-        id: safety-floor-cleared
+        id: safety-floor-cleared#{simplification_cycle}
         message: "The applied simplifications stand re-scored against the over-engineering taxonomy, with every safety-floor obligation the change implicates either satisfied or still open."
         options:
           - id: floor-held-cycle-complete
@@ -120,6 +125,12 @@ steps:
               setVariable:
                 needs_simplification: false
                 floor_breached: true
+      - kind: action
+        id: count-simplification-cycle
+        actions:
+          - action: set
+            target: simplification_cycle
+            message: Increment the simplification cycle by one.
 exits:
   - id: done
     isDefault: true

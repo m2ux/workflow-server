@@ -17,6 +17,7 @@ variables:
     - requirements
     - research_outputs
     - research_direction
+    - research_pass
     - review_summary
     - stealth_mode
     - target_path
@@ -78,6 +79,10 @@ variables:
     - name: research_document
       type: object
       description: The research findings document, hoisted from the research branch when the discovery fan ran.
+    - name: research_pass
+      type: number
+      description: Count of reconciliation passes put to the reader for this plan
+      defaultValue: 0
     - name: stakeholder_overview
       type: string
       description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
@@ -172,7 +177,7 @@ steps:
             research_direction: research_direction
         when: has_reconcilable_research == true
       - kind: checkpoint
-        id: research-convergence
+        id: research-convergence#{research_pass}
         condition:
           type: simple
           variable: has_reconcilable_research
@@ -192,6 +197,12 @@ steps:
               recordReply: research_direction
               setVariable:
                 has_reconcilable_research: true
+      - kind: action
+        id: count-research-pass
+        actions:
+          - action: set
+            target: research_pass
+            message: Increment the research pass by one.
   - kind: checkpoint
     id: context-scope-declaration
     condition:

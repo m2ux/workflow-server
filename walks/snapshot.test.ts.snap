@@ -179,6 +179,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -472,6 +473,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "merge-contract-tests",
         "run-contract-tests",
         "self-review",
+        "count-provenance-round",
         "settle-assumptions.converge.convergence.query-flows",
         "settle-assumptions.converge.convergence.reconcile",
         "settle-assumptions.converge.convergence.challenge-pass.challenge",
@@ -873,7 +875,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
         {
-          "id": "review-received",
+          "id": "review-received#{await_round}",
           "option": "yes-review",
           "setVariable": {
             "awaiting_review": false,
@@ -907,6 +909,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "merge-strategy-guidance",
         "mark-ready",
         "await-review",
+        "count-await-round",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -1159,6 +1162,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -1446,6 +1450,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "merge-contract-tests",
         "run-contract-tests",
         "self-review",
+        "count-provenance-round",
         "settle-assumptions.converge.convergence.query-flows",
         "settle-assumptions.converge.convergence.reconcile",
         "settle-assumptions.converge.convergence.challenge-pass.challenge",
@@ -1712,7 +1717,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
         {
-          "id": "review-received",
+          "id": "review-received#{await_round}",
           "option": "yes-review",
           "setVariable": {
             "awaiting_review": false,
@@ -1746,6 +1751,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "merge-strategy-guidance",
         "mark-ready",
         "await-review",
+        "count-await-round",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -1998,6 +2004,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -2291,6 +2298,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "merge-contract-tests",
         "run-contract-tests",
         "self-review",
+        "count-provenance-round",
         "settle-assumptions.converge.convergence.query-flows",
         "settle-assumptions.converge.convergence.reconcile",
         "settle-assumptions.converge.convergence.challenge-pass.challenge",
@@ -2692,7 +2700,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
         {
-          "id": "review-received",
+          "id": "review-received#{await_round}",
           "option": "yes-review",
           "setVariable": {
             "awaiting_review": false,
@@ -2726,6 +2734,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "merge-strategy-guidance",
         "mark-ready",
         "await-review",
+        "count-await-round",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -2977,6 +2986,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -3214,6 +3224,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "merge-contract-tests",
         "run-contract-tests",
         "self-review",
+        "count-provenance-round",
         "settle-assumptions.converge.convergence.query-flows",
         "settle-assumptions.converge.convergence.reconcile",
         "settle-assumptions.converge.convergence.challenge-pass.challenge",
@@ -3480,7 +3491,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
         {
-          "id": "review-received",
+          "id": "review-received#{await_round}",
           "option": "yes-review",
           "setVariable": {
             "awaiting_review": false,
@@ -3514,6 +3525,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "merge-strategy-guidance",
         "mark-ready",
         "await-review",
+        "count-await-round",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -3737,6 +3749,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -4100,7 +4113,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       ],
       "checkpoints": [
         {
-          "id": "review-summary-approval",
+          "id": "review-summary-approval#{summary_round}",
           "option": "post-approve",
           "setVariable": {
             "review_posted": true,
@@ -4125,10 +4138,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "publish-review-artifacts.resolve",
         "publish-review-artifacts.commit",
         "generate-review-summary",
+        "count-summary-round",
         "persist-review-summary",
         "prepare-review-comment",
         "post-pr-review",
         "await-review",
+        "count-await-round",
         "announce-completion",
       ],
       "unresolved": [],
@@ -4361,6 +4376,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "challenge-open-questions.combine",
         "update-artifact",
         "record-log",
+        "count-comprehension-pass",
       ],
       "unresolved": [],
     },
@@ -4548,6 +4564,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "merge-contract-tests",
         "run-contract-tests",
         "self-review",
+        "count-provenance-round",
         "settle-assumptions.converge.convergence.query-flows",
         "settle-assumptions.converge.convergence.reconcile",
         "settle-assumptions.converge.convergence.challenge-pass.challenge",
@@ -4814,7 +4831,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
         {
-          "id": "review-received",
+          "id": "review-received#{await_round}",
           "option": "yes-review",
           "setVariable": {
             "awaiting_review": false,
@@ -4848,6 +4865,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "merge-strategy-guidance",
         "mark-ready",
         "await-review",
+        "count-await-round",
         "process-review-comments",
         "analyze-review-outcome",
         "announce-completion",
@@ -4922,8 +4940,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 21,
-  "declaredTotal": 456,
-  "executedTotal": 215,
+  "declaredTotal": 462,
+  "executedTotal": 219,
   "perActivity": [
     {
       "activity": "assumptions-review",
@@ -4937,8 +4955,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "codebase-comprehension",
-      "declared": 15,
-      "executed": 9,
+      "declared": 16,
+      "executed": 10,
     },
     {
       "activity": "complete",
@@ -4967,17 +4985,17 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "implementation-join",
-      "declared": 23,
-      "executed": 11,
+      "declared": 24,
+      "executed": 12,
     },
     {
       "activity": "lean-coding-audit",
-      "declared": 9,
+      "declared": 10,
       "executed": 3,
     },
     {
       "activity": "plan-prepare",
-      "declared": 18,
+      "declared": 19,
       "executed": 12,
     },
     {
@@ -5017,8 +5035,8 @@ exports[`work-package walk snapshots (baseline) > runs only steps the activity d
     },
     {
       "activity": "submit-for-review",
-      "declared": 33,
-      "executed": 21,
+      "declared": 35,
+      "executed": 23,
     },
     {
       "activity": "test-suite-review",

@@ -188,7 +188,7 @@ steps:
           outputs:
             written_artifact: drafting_plan_path
       - kind: checkpoint
-        id: file-approach-confirmed
+        id: file-approach-confirmed#{current_file.path}
         condition:
           type: simple
           variable: operation_type
@@ -243,7 +243,7 @@ steps:
           outputs:
             written_artifact: file_review_note_path
       - kind: checkpoint
-        id: file-review
+        id: file-review#{current_file.path}
         condition:
           type: simple
           variable: operation_type
@@ -282,7 +282,7 @@ steps:
             draft_correction: file_draft_correction
         when: file_draft_disposition == 'revise' || file_draft_disposition == 'redraft'
       - kind: checkpoint
-        id: preservation-check
+        id: preservation-check#{current_file.path}
         condition:
           type: and
           conditions:
