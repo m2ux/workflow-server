@@ -1,0 +1,17 @@
+id: gate-fixture
+version: 1.0.0
+title: Looped Gate Fixture
+description: Fixture workflow whose loop body holds one gate, reached once per round (#1432).
+initialActivity: revise-activity
+graph:
+  revise-activity:
+    done: __terminal__
+variables:
+  - name: review_round
+    type: number
+    description: The round the revise loop is on, which the gate's id names.
+    defaultValue: 1
+  - name: needs_revision
+    type: boolean
+    description: Whether the loop takes another round.
+    defaultValue: true
