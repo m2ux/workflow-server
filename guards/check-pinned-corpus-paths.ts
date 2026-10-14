@@ -14,17 +14,27 @@
  * Scope is a literal a file READS. A test that builds a synthetic corpus writes the same shape of
  * path into a temp tree — `write('meta/techniques/plan.md', …)` — and that path is authored by the
  * test rather than borrowed from the corpus, so it is skipped and counted. A bare literal whose
- * workflow segment is not a workflow directory is a fixture id (`wf/`, `alpha/`) and is skipped the
- * same way. Both counts print on a clean run, so the reach of the check is visible rather than
- * assumed.
+ * leading segment names no workflow is a fixture id (`wf/`, `alpha/`) and is skipped the same way.
+ * Both counts print on a clean run, so the reach of the check is visible rather than assumed.
  *
- * A pin is spelled from whichever root the file reading it resolves against, so the workflow segment
- * may sit behind leading directories — a suite reading through `liveCorpusRoot()` writes the corpus
- * checkout's own `corpus/meta/techniques/…`. The construct directory is what locates the workflow
- * segment within the literal, and everything ahead of it is path context the finding quotes back.
- * Where those leading segments name a directory the checkout holds, the literal is addressed at
- * that checkout and resolves whole or is reported: a workflow the corpus retires leaves a pin whose
- * workflow segment names nothing, which is the rot this exists for rather than a fixture id.
+ * A pin is spelled from whichever root the file reading it resolves against, so the namespace
+ * segment may sit behind leading directories — a suite reading through `liveCorpusRoot()` writes
+ * the corpus checkout's own `corpus/meta/techniques/…`. The construct directory is what locates the
+ * namespace segment within the literal, and everything ahead of it is path context the finding
+ * quotes back. Where those leading segments name a directory the checkout holds, the literal is
+ * first addressed at that checkout.
+ *
+ * A served corpus is one tree per root it joins, and the index that walks it reaches each of them:
+ * an overlay mounting the public corpus under a submodule holds `canon` at `upstream/corpus/canon`,
+ * and the pin spelled from the public root reaches it there. So a literal that does not resolve
+ * whole at the handed root is resolved through the namespace the index holds, wherever that
+ * namespace sits. A pin that resolves at no joined root is reported, which is the rot this exists
+ * for: a workflow the corpus retires leaves a literal naming a namespace no root offers.
+ *
+ * The namespace is the unit, not the workflow. `canon` holds `resources/` and declares no
+ * definition, so a check that resolved only workflows would report every pin into it the moment the
+ * handed root stopped holding it directly — the guard disagreeing with itself across two roots of
+ * one corpus.
  *
  * JSON ledgers are out of scope: `binding-fidelity-triage.json` already reports an entry that
  * matches nothing, and a second check over the same sites would be a second home for that verdict.
@@ -34,7 +44,7 @@ import { join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { report, requireRootOrExit, type Finding } from './guard-protocol.js';
 import { defaultCorpusDest } from './workflows-root.js';
-import { indexCorpus, workflowSubdir } from '../src/loaders/corpus-index.js';
+import { indexCorpus, namespaceSubdir } from '../src/loaders/corpus-index.js';
 
 const REPO = resolve(import.meta.dirname, '..');
 const DEFAULT_ROOT = defaultCorpusDest(REPO);
@@ -44,10 +54,10 @@ const SOURCE_DIRS = ['guards', 'scripts', 'src', 'tests'];
 const SKIP_DIRS = new Set(['node_modules', 'dist', 'coverage', '.git', '.worktrees', 'fixtures']);
 
 /**
- * A quoted corpus path: `…/<workflow>/<construct-dir>/…/<file>.md|.yaml`. The construct directory is
- * what separates a corpus path from any other slashed string in these sources, and the segment
- * ahead of it is the workflow. Leading segments are the root the literal is spelled from, taken
- * lazily so the first segment that fronts a construct directory is read as the workflow.
+ * A quoted corpus path: `…/<namespace>/<construct-dir>/…/<file>.md|.yaml`. The construct directory
+ * is what separates a corpus path from any other slashed string in these sources, and the segment
+ * ahead of it is the namespace. Leading segments are the root the literal is spelled from, taken
+ * lazily so the first segment that fronts a construct directory is read as the namespace.
  */
 const PINNED = /['"`]((?:[A-Za-z0-9_.-]+\/)*?)([a-z0-9][a-z0-9-]*)\/(techniques|activities|resources)\/([A-Za-z0-9/_.-]+\.(?:md|ya?ml))['"`]/g;
 
@@ -118,7 +128,7 @@ export interface PinnedPathTally {
   findings: Finding[];
   /** Literals a file authors into its own fixture tree. */
   authored: number;
-  /** Literals whose workflow segment names no workflow — a synthetic corpus id. */
+  /** Literals whose namespace segment names no workflow — a synthetic corpus id. */
   foreign: number;
   /** Literals illustrating a shape in a comment rather than naming a path the code resolves. */
   illustrative: number;
@@ -127,7 +137,8 @@ export interface PinnedPathTally {
 }
 
 /**
- * Every pin in `repo`'s own TypeScript, resolved against the corpus at `root`.
+ * Every pin in `repo`'s own TypeScript, resolved against the corpus served at `root` — the tree
+ * that root names and every tree it joins.
  *
  * `repo` is this repository. A test names a tree of its own to put a particular source line in
  * front of the scan, which is how a spelling the scan once passed over is held to a verdict.
@@ -146,8 +157,8 @@ export function collect(root: string, repo: string = REPO): PinnedPathTally {
     const lines = text.split('\n');
     for (const [lineNo, line] of lines.entries()) {
       for (const match of line.matchAll(PINNED)) {
-        const [, prefix, workflow, construct, tail] = match;
-        const rel = `${prefix}${workflow}/${construct}/${tail}`;
+        const [, prefix, namespace, construct, tail] = match;
+        const rel = `${prefix}${namespace}/${construct}/${tail}`;
         if (inComment(line, match.index)) {
           illustrative += 1;
           continue;
@@ -158,19 +169,20 @@ export function collect(root: string, repo: string = REPO): PinnedPathTally {
         }
         // A literal spelled from the corpus checkout's own layout is addressed at that checkout,
         // and a suite reading through `liveCorpusRoot()` is the only thing that spells one. The
-        // workflow segment is then no exemption: a workflow the corpus retired leaves a pin naming
-        // no workflow at all, which is the very rot this reports.
+        // namespace segment is then no exemption: a workflow the corpus retired leaves a pin naming
+        // no namespace at all, which is the very rot this reports.
         const fromRoot = prefix !== '' && existsSync(join(root, prefix!));
-        if (!fromRoot && !workflows.has(workflow!)) {
+        if (!fromRoot && !workflows.has(namespace!)) {
           foreign += 1;
           continue;
         }
         checked += 1;
         if (fromRoot && existsSync(join(root, rel))) continue;
-        const held = workflows.has(workflow!)
-          ? workflowSubdir(corpus, workflow!, join(construct!, tail!))
-          : null;
-        if (held && existsSync(held)) continue;
+        // The handed root does not hold it whole, so the namespace the index found is where it
+        // sits — one joined root down, where an overlay mounts the corpus this pin was spelled
+        // from. A namespace no root offers leaves `held` null and the pin is reported.
+        const held = namespaceSubdir(corpus, namespace!, join(construct!, tail!));
+        if (held !== null && existsSync(held)) continue;
         findings.push({
           check: 'dangling-pin',
           site: `${relative(repo, file)}:${lineNo + 1}`,
