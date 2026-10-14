@@ -25,6 +25,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
    Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line. A `blocked merge` line names a criterion to verify: take it through that procedure's Verify step, then run the command again.
+   - An epic those merges complete has its review pull request marked ready, as [Review pull request](work-breakdown.md#review-pull-request) states, and its board item set to In Review with [Set Item Status](commands.md#set-item-status).
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
@@ -40,7 +41,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - The session is left running.
 9. **Report.**
-   Each pull request merged, and each left open by a conflict or by an unverified criterion; each review pull request updated; each unit dispatched, with its record, issue, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+   Each pull request merged, and each left open by a conflict or by an unverified criterion; each review pull request updated, and each marked ready with the epic it set In Review; each unit dispatched, with its record, issue, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Reference
 
@@ -94,7 +95,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
 - **Status.**
-  This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
+  This mode sets a dispatched unit's task issue and its epic to In Progress, and an epic whose review pull request it marks ready to In Review. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**
   Issues arising from the delivery of a single work item are raised as standalone issues and hoisted through [Hoist Mode](hoist-mode.md) once the pull request is open and the epic synced.
 - **Technical debt the validation finds.**

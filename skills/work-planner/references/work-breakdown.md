@@ -23,7 +23,7 @@ Merge each open task pull request whose [Test Plan](#test-plan) has passed and w
 4. **Record delivery.**
    Fetch the merged pull request, then run [Sync Task Issue](commands.md#sync-task-issue) for its task issues and [Sync Epic](commands.md#sync-epic). Patch changed issue bodies, and complete eligible issues through [Close as Completed](commands.md#close-as-completed).
 5. **Update the review.**
-   Follow [Review pull request](#review-pull-request), opening a reported draft and updating its body for the merge.
+   Follow [Review pull request](#review-pull-request), opening a reported draft, updating its body for the merge, and marking it ready where this merge completed the epic.
 6. **Complete the epic.**
    Follow [Epic Merge](#epic-merge) when the epic is complete. A task merge alone does not sync the initiative or the board.
 
@@ -192,13 +192,16 @@ For each long-lived branch the epic's tasks change:
 
 #### Review Pull Request
 
-When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged base with no open pull request, open that base with [Open Epic Pull Request](#open-epic-pull-request) as a draft and leave the epic open. The user marks the draft ready when the epic is complete. An agent leaves a draft pending that action.
+When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged base with no open pull request, open that base with [Open Epic Pull Request](#open-epic-pull-request) as a draft and leave the epic open.
 
 - **The body states the branch.**
   - Overview is one paragraph on what the base carries. Changes holds one heading per area, with a bullet per functional change. References cites each task pull request merged into that base.
   - It carries no Test Plan, since it delivers no task of its own, and no statement about what the epic has yet to deliver. The epic's Work Breakdown is where delivery state is read.
 - **Each task merge updates it.**
   The session that merged a task pull request runs [Update Review Pull Request](sync-mode.md#update-review-pull-request) after [Sync Epic](commands.md#sync-epic), adding its unit's change under Changes and its pull request under References.
+- **A complete epic's draft is marked ready.**
+  [Sync Epic](commands.md#sync-epic) reports a base `unmerged` once every task is delivered and every criterion ticked, naming the pull request that merges it. A draft it names there is marked ready with [Ready Epic Pull Request](#ready-epic-pull-request), and its epic goes to In Review on its board.
+  - The mark states the epic is complete, not that it may merge. [Epic merge](#epic-merge) decides that, and [Approval](#approval) gives the merge to the reviewer where the target requires a review.
 - **References are measured against the merges.**
   [Sync Epic](commands.md#sync-epic) compares the pull requests a review body cites with the task pull requests merged into that base, and reports a difference naming both sets.
 
@@ -208,7 +211,7 @@ When [Sync Epic](commands.md#sync-epic) reports a draft line, or an unmerged bas
 
 - The repository prerequisite in [Issue closure](#issue-closure) is confirmed.
 - Every task is delivered, every epic criterion is verified and ticked, and the epic has no open questions or unresolved delivery discrepancies.
-- The user has marked the draft ready, and its head and target are the epic base and corresponding long-lived branch.
+- The pull request is ready for review, as [Review pull request](#review-pull-request) marks it, and its head and target are the epic base and corresponding long-lived branch.
 - [Update Epic Base](#update-epic-base) has brought in the current target, the criteria still hold on that result, and [Fetch Merge Readiness](#fetch-merge-readiness) confirms required checks and repository review requirements pass for the current head.
 - The review body describes the complete branch and cites its task merges. [Understand Mode](understand-mode.md) supplies its architecture overview before the merge.
 
@@ -407,11 +410,32 @@ Opens the draft pull request that merges an epic base into its long-lived branch
 - The title is the epic's prefix and name: `[I07:E00] Name`.
 - The head is the epic base and the base is the long-lived branch it was cut from, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
 - The body is drafted from the [pull request template](../templates/pull-request.md), in the shape [Review pull request](work-breakdown.md#review-pull-request) gives it: Overview, Changes and References, with no Test Plan. [Update Review Pull Request](sync-mode.md#update-review-pull-request) carries each later merge into it.
-- Open it as a draft, including when the first sync finds an already complete epic. The user's readiness step is [Review pull request](work-breakdown.md#review-pull-request).
+- Open it as a draft, including when the first sync finds an already complete epic. [Ready Epic Pull Request](#ready-epic-pull-request) then marks it ready on the same run, as [Review pull request](work-breakdown.md#review-pull-request) states.
 - [Link Pull Request to Issue](sync-mode.md#link-pull-request-to-issue) links the epic's issue once it is open, as the [Work Breakdown Guide](work-breakdown.md#delivery) states under Issue links.
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/pulls -f title='[I07:E00] Name' -f head='i07/e00/main' -f base='main' -F draft=true -F body=@body.md --jq .html_url
+```
+
+### Ready Epic Pull Request
+
+Takes an epic's review pull request out of draft, so it stands for review.
+
+- Run it when [Sync Epic](commands.md#sync-epic) names a draft on an `unmerged` base, as [Review pull request](work-breakdown.md#review-pull-request) states.
+- The first call reads the pull request's node id, which REST carries as `node_id`.
+- REST exposes no way to clear `draft`, so the mutation is the call. It carries the id inline and goes in a file, since a GraphQL variable is a literal `$`. The second call prints `false` once the pull request is out of draft.
+
+```bash
+gh api repos/{owner}/{repo}/pulls/980 --jq .node_id
+gh api graphql -F query=@ready-980.graphql --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
+```
+
+```graphql
+mutation {
+  markPullRequestReadyForReview(input: {pullRequestId: "PR_kwDOexample"}) {
+    pullRequest { number isDraft }
+  }
+}
 ```
 
 ### Fetch Merge Readiness

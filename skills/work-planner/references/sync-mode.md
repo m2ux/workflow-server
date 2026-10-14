@@ -67,8 +67,8 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 9. **Patch.**
    Patch each changed body from its `--fix` file with [Patch Body](commands.md#patch-body).
 10. **Close.**
-    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged and names no open pull request, open it as [Review pull request](work-breakdown.md#review-pull-request) states.
-    - For each open epic pull request, follow [Epic merge](work-breakdown.md#epic-merge). Report a draft waiting for the user; merge a ready pull request once its conditions hold, or report it ready for approval where [Approval](work-breakdown.md#approval) gives the merge to the reviewer.
+    - When [Sync Epic](commands.md#sync-epic) reports an epic base unmerged, open it as [Review pull request](work-breakdown.md#review-pull-request) states where it names no open pull request, and mark a draft it names ready.
+    - For each open epic pull request, follow [Epic merge](work-breakdown.md#epic-merge). Merge a ready pull request once its conditions hold, or report it ready for approval where [Approval](work-breakdown.md#approval) gives the merge to the reviewer.
     - Fetch the pull requests again after merging and re-run [Sync Epic](commands.md#sync-epic).
     - [Close as Completed](commands.md#close-as-completed) each epic the re-run reports closable.
 11. **Sync the initiative.**
