@@ -39,6 +39,7 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 | A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC16, AC17, AC18 |
 | The payload a run injects is derived and reviewed rather than inferred | AC32 | E14 | AC19, AC20, AC21 |
 | A check is met as a purpose rather than a path | AC32 | E14 | AC24, AC25, AC26 |
+| A step's label is read apart from the instruction under it | AC32 | E14 | AC27, AC28, AC29 |
 | A bound step is performed with the content its citation names | AC33 | E14 | AC22 |
 | The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC23 |
 
@@ -190,3 +191,5 @@ W02 and W03 share one pull request: one rule applied across two skills, where th
   W10 records live walks over the finished instructions. It measures what W05, W06 and W07 produce rather than what either script reports, so it reads neither one's output.
 - **The checks task against the rest: W06 and W11, W07 and W11, W09 and W11, W10 and W11.**
   W11 defines every check the workspace runs and retires the bare paths naming them. It is a subject of its own, and pairing it with a prose rule, the manifest generator or the walks would put two unrelated reviews in one diff.
+- **The layout task against the rest: W06, W07, W09, W10 and W11 against W12.**
+  W12 is a layout rule over 23 steps, mechanical once stated. It touches almost every mode file, so pairing it with a task that edits the same files would bury a rule's diff under a reflow.
