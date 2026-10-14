@@ -43,11 +43,7 @@ steps:
         written_artifact: source_analysis_path
   - kind: checkpoint
     id: analysis-reviewed
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: audit
+    when: operation_type == "audit"
     message: "{finding_count} plain-language findings recorded against `{document_title}` ([source analysis]({source_analysis_path}))."
     defaultOption: accepted
     autoAdvanceMs: 30000

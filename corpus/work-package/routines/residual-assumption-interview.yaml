@@ -56,17 +56,7 @@ internals:
 steps:
   - kind: checkpoint
     id: batch-gate
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
+    when: is_review_mode != true && has_open_assumptions == true
     message: |-
       Open assumptions remain, each with the agent's favored position:
 

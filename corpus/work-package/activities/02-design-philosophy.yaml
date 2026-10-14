@@ -71,11 +71,7 @@ steps:
     technique: classify
   - kind: checkpoint
     id: classification-confirmed
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: "Classification: {problem_type}. Rationale: {classification_rationale}."
     options:
       - id: classification-accurate
@@ -88,11 +84,7 @@ steps:
           exit: revise-classification
   - kind: checkpoint
     id: workflow-path-selected
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: "The discovery activities this work package runs before planning."
     options:
       - id: full-workflow
@@ -158,17 +150,7 @@ steps:
     when: is_review_mode == true
   - kind: checkpoint
     id: ticket-completeness
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: ticket_gaps_documented
-          operator: ==
-          value: true
+    when: is_review_mode == true && ticket_gaps_documented == true
     message: The ticket carries completeness gaps.
     defaultOption: proceed-with-gaps
     autoAdvanceMs: 30000

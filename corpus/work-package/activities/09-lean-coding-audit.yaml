@@ -46,11 +46,7 @@ steps:
     when: has_debt_markers == true
   - kind: checkpoint
     id: audit-findings-confirmed
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: "Lean-coding audit findings against the over-engineering taxonomy, closing with the diff-scoped scoreboard: {lean_audit_findings}"
     options:
       - id: audit-accepted

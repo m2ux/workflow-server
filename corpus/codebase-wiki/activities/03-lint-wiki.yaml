@@ -29,11 +29,7 @@ steps:
     technique: lint
   - kind: checkpoint
     id: lint-findings-confirmed
-    condition:
-      type: simple
-      variable: lint_findings_count
-      operator: ">"
-      value: 0
+    when: lint_findings_count > 0
     message: |-
       Lint surfaced {lint_findings_count} finding(s):
 

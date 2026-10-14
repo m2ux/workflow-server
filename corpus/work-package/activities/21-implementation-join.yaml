@@ -181,11 +181,7 @@ steps:
             technique: task-completion-review
           - kind: checkpoint
             id: symbol-provenance-confirmed
-            condition:
-              type: simple
-              variable: needs_symbol_confirmation
-              operator: ==
-              value: true
+            when: needs_symbol_confirmation == true
             message: |-
               One or more symbols in this task could not be confirmed against the codebase or declared dependencies:
 

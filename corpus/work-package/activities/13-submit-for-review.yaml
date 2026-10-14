@@ -222,11 +222,7 @@ steps:
     when: is_review_mode == true && review_posted == true
   - kind: checkpoint
     id: dco-sign-off-confirmation
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     message: |-
       Before pushing: please certify the Developer Certificate of Origin for this work package ([provenance log]({provenance_log_path})).
 
@@ -261,11 +257,7 @@ steps:
         message: "Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run."
   - kind: checkpoint
     id: private-push-confirmation
-    condition:
-      type: simple
-      variable: stealth_mode
-      operator: ==
-      value: true
+    when: stealth_mode == true
     message: "The push target is remote `{push_remote}` ({push_remote_url}), and a stealth-mode run reaches a private remote only."
     options:
       - id: confirmed
@@ -312,21 +304,7 @@ steps:
         technique: update-pr::verify-body
   - kind: checkpoint
     id: body-non-conformant
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: body_conforms
-          operator: ==
-          value: false
+    when: is_review_mode != true && stealth_mode != true && body_conforms == false
     message: |-
       The PR body still fails `update-pr.pr-body-conformance`.
 
@@ -366,21 +344,7 @@ steps:
           {presented_merge_guidance}
   - kind: checkpoint
     id: build-artifact-check
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: project_type
-          operator: ==
-          value: rust-substrate
+    when: is_review_mode != true && stealth_mode != true && project_type == "rust-substrate"
     message: |-
       Build-dependent artifacts on a rust-substrate project — `.scale` files and node metadata — regenerate outside the working tree, so their currency is the user's to settle, and CI is otherwise the first signal that they are stale.
     options:
@@ -425,17 +389,7 @@ steps:
         actions: []
       - kind: checkpoint
         id: review-received
-        condition:
-          type: and
-          conditions:
-            - type: simple
-              variable: is_review_mode
-              operator: "!="
-              value: true
-            - type: simple
-              variable: stealth_mode
-              operator: "!="
-              value: true
+        when: is_review_mode != true && stealth_mode != true
         message: The pull request is open and awaiting reviewer feedback.
         options:
           - id: yes-review
@@ -460,17 +414,7 @@ steps:
     when: is_review_mode != true && stealth_mode != true
   - kind: checkpoint
     id: review-outcome
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
     message: |-
       Review outcome analysis complete.
 

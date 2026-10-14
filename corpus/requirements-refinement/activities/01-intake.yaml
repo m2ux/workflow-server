@@ -58,11 +58,7 @@ steps:
         message: "The run has no readable source: a document named for it is missing or empty, two share a file name, or the request names none (sources: {source_paths})."
   - kind: checkpoint
     id: target-doc-named
-    when: source_readable == true
-    condition:
-      type: simple
-      variable: target_doc_path
-      operator: notExists
+    when: 'source_readable == true && !(target_doc_path != null && (target_doc_path == false || target_doc_path == 0 || target_doc_path == "" || target_doc_path))'
     message: "The request names no target specification."
     options:
       - id: named

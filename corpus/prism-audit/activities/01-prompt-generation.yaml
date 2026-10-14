@@ -31,11 +31,7 @@ steps:
   - kind: checkpoint
     id: no-security-characteristics
     message: No security-relevant patterns were found in {target_path}, which is the shape a purely presentational or data-only codebase takes.
-    condition:
-      type: simple
-      variable: security_characteristics_count
-      operator: ==
-      value: 0
+    when: security_characteristics_count == 0
     options:
       - id: proceed
         label: Continue the audit

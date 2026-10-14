@@ -53,24 +53,7 @@ steps:
     technique: manage-registers::append-deferred-item
   - kind: checkpoint
     id: post-summary-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: exists
-        - type: simple
-          variable: has_deferred_assumptions
-          operator: ==
-          value: true
+    when: stealth_mode != true && is_review_mode != true && issue_platform != null && (issue_platform == false || issue_platform == 0 || issue_platform == "" || issue_platform) && has_deferred_assumptions == true
     message: Assumptions were deferred and need attention from stakeholders on {issue_platform}.
     options:
       - id: post-summary
