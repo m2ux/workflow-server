@@ -137,7 +137,7 @@ An epic states one slice of the initiative's design and lists the tasks that del
 - Numbering that does not follow start order is advisory.
 - Two epics or tasks claiming one piece of work have one owner, and the boundary is stated in both.
 - The same outcome as a task in two epics is a duplicate: remove one, or raise the initiative's.
-- An issue that several row ids link backs several tasks. No row id links it, and the epic cites it under References, or each task has its own issue.
+- An issue that several row ids link backs several tasks. No row id links it, and the epic cites it under References.
 
 #### One row
 

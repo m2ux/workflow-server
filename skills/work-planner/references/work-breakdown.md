@@ -12,17 +12,19 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 
 ### Task Merge
 
-Merge each open task pull request whose [Test Plan](#test-plan) has passed, both on a delivery run that finds it and in the session that opened it, without further confirmation. A task pull request targets an epic base, which carries no review requirement of its own; where one applies, [Approval](#approval) governs.
+Merge each open task pull request whose [Test Plan](#test-plan) has passed and whose task issues carry every criterion ticked, both on a delivery run that finds it and in the session that opened it, without further confirmation. A task pull request targets an epic base, which carries no review requirement of its own; where one applies, [Approval](#approval) governs.
 
 1. **Check.**
    Confirm the repository prerequisite in [Issue Closure](#issue-closure) and the task pull request's epic base.
-2. **Update and merge.**
+2. **Verify the task's criteria.**
+   For each task issue the pull request links, verify every criterion against the evidence the pull request and its planning record carry, then tick it with [Sync Task Issue](commands.md#sync-task-issue) and [Patch Body](commands.md#patch-body). What counts as evidence is [Coverage Reports](#coverage-reports). A criterion that cannot be confirmed leaves the pull request open, with what is missing reported.
+3. **Update and merge.**
    Run [Update Epic Base](#update-epic-base), then [Merge Pull Request](#merge-pull-request). If refused, run [Update Task Branch](commands.md#update-task-branch) and retry the merge. A conflict or repeated refusal leaves the pull request open with the blocker reported.
-3. **Record delivery.**
-   Fetch the merged pull request, then run [Sync Task Issue](commands.md#sync-task-issue) for its task issues and [Sync Epic](commands.md#sync-epic). Verify criteria before ticking them, patch changed issue bodies, and complete eligible issues through [Close as Completed](commands.md#close-as-completed).
-4. **Update the review.**
+4. **Record delivery.**
+   Fetch the merged pull request, then run [Sync Task Issue](commands.md#sync-task-issue) for its task issues and [Sync Epic](commands.md#sync-epic). Patch changed issue bodies, and complete eligible issues through [Close as Completed](commands.md#close-as-completed).
+5. **Update the review.**
    Follow [Review pull request](#review-pull-request), opening a reported draft and updating its body for the merge.
-5. **Complete the epic.**
+6. **Complete the epic.**
    Follow [Epic Merge](#epic-merge) when the epic is complete. A task merge alone does not sync the initiative or the board.
 
 ## Reference
@@ -41,7 +43,7 @@ Merge each open task pull request whose [Test Plan](#test-plan) has passed, both
 - **Row id.**
   - An initiative's row id is the epic, linked to its issue: `[E01](…/issues/937)`.
   - An epic's row id is the task, `W01`. What it links is [Task ids](#task-delivery). `W00` holds preparatory work that must land before the first real task.
-  - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue only when it needs discussion or evidence of its own.
+  - A task is a row, and gets its own `[Ixx:Eyy:Wzz]` issue when its unit is dispatched, as [Deliver Mode](deliver-mode.md#raise-task-issue) raises it. A row that takes an issue raised elsewhere, as [Hoist Mode](hoist-mode.md#placements) places one, carries that issue from the start.
 - **Description.**
   A short phrase naming what the row delivers, at most eight words, with no list, semicolon or detail.
   - In an epic: each detail is a criterion stating one invariant.
@@ -244,8 +246,9 @@ A branch whose protection or active rules require an approving review takes that
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
-- **Tasks with their own issue.**
+- **Task issues.**
   - A task issue belongs to one epic. Its title carries that epic's prefix.
+  - Its acceptance criteria are the ones its row's [work item](#work-item) states, and they gate the merge of the pull request that delivers the row, as [Task Merge](#task-merge) states.
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's Development field links the issue as [Delivery](#delivery) states under Issue links.
@@ -284,6 +287,7 @@ A branch whose protection or active rules require an approving review takes that
 - The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. Apply [Coverage Reports](#coverage-reports) when evaluating that evidence.
 - An instrument that does not exist yet is work the task carries, as [Verified](review-criteria.md#verified) defines. Use the project's own system test where it can observe the criterion.
 - Write one [Test Plan](#test-plan) row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+- The Coverage column names the epic criteria the unit's Coverage carries, which [Sync Epic](commands.md#sync-epic) measures the plan against. A task issue's own criteria are verified from these same checks and are named in the issue, not in the plan.
 
 #### Unplaced
 
@@ -293,7 +297,7 @@ When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, [Plan Mod
 
 One file per task, named for the task id in lower case, `w01.md`. The record's README links each file. The epic table follows [Task ids](#task-delivery).
 
-The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins.
+The file uses the epic template's Overview, Problem, Proposal, Acceptance Criteria and Work Breakdown. It carries no joins.
 
 - **Overview.**
   One paragraph on what the task delivers and why.
@@ -301,6 +305,8 @@ The file uses the epic template's Overview, Problem, Proposal, and Work Breakdow
   The friction, as a Problem is written for an epic.
 - **Proposal.**
   The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
+- **Acceptance Criteria.**
+  What the row makes true, each of one invariant, and written to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule. Together they reach every epic criterion the row's Coverage names, at the grain of this row's own work. They are the criteria the row's issue carries when its unit is dispatched, and they gate that unit's merge.
 - **Work Breakdown.**
   A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description. The test row names the checks the content calls for, including the project's system test when the work is something that test can exercise.
 - **The work only.**

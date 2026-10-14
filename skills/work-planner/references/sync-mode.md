@@ -29,10 +29,10 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - Read its changes and description against the tasks' Descriptions, and name the tasks it works on: one task, or tasks that name each other in Joins.
    - Put any match that is not clear to the user as an [Interview](interview.md).
 5. **Sync each task issue.**
-   - Run [Sync Task Issue](commands.md#sync-task-issue) when a merged pull request delivered it.
-   - Verify and tick its criteria as in steps 7–8.
-   - Record the pull request on it with [Comment on Issue](commands.md#comment-on-issue): `Delivered by #950.`
-   - [Close as Completed](commands.md#close-as-completed) when it reports closable.
+   - Run [Sync Task Issue](commands.md#sync-task-issue) with the pull request that delivers it, open or merged.
+   - Verify and tick its criteria as in steps 7–8. An open pull request's evidence is what it and its planning record carry, and ticking those criteria is what lets it merge, as [Task Merge](work-breakdown.md#task-merge) states.
+   - Record the pull request on it once it has merged, with [Comment on Issue](commands.md#comment-on-issue): `Delivered by #950.`
+   - [Close as Completed](commands.md#close-as-completed) when it reports closable, which waits on the merge.
 6. **Sync each epic.**
    Run [Sync Epic](commands.md#sync-epic), linking every match from step 4, open or merged, with the task issues. Linking a pull request replaces the planning-record link on that task, as [Task ids](work-breakdown.md#task-delivery) defines. It reports:
    - **Conflict.**
@@ -47,7 +47,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - **References.**
      A review pull request citing a set of pull requests that differs from the task pull requests merged into its base. Bring the body up to the merges with [Update Review Pull Request](#update-review-pull-request), as [Review pull request](work-breakdown.md#review-pull-request) states.
    - **Uncited.**
-     A linked pull request whose task has its own issue and does not link it, or the review pull request where it does not link the epic's issue. Set the link with [Link Pull Request to Issue](#link-pull-request-to-issue), then [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links) again.
+     A linked pull request that does not link its task's issue, or the review pull request where it does not link the epic's issue. Set the link with [Link Pull Request to Issue](#link-pull-request-to-issue), then [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links) again.
    - **Note.**  A row links its task issue. Link the pull request as in step 4.
    - **Unplaced.**
      A task issue of this epic whose id is not a row. [Plan Mode](plan-mode.md) adds the row, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, then this sync is run again.

@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import issue, item, pr, run, url
+from fixtures import issue, item, links, pr, run, url
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
@@ -29,6 +29,14 @@ def epic(number: int, *rows: tuple[str, str, str, str], which: str = '07:E00') -
     return issue(number, f'[I{which}] Queue Plan: Work', body=epic_body(*rows))
 
 
+def task(number: int, *criteria: bool, which: str = '07:E00:W01') -> dict:
+    """A task issue whose acceptance criteria are ticked as given, AC1 ticked by default."""
+    marks = criteria or (True,)
+    lines = [f"- [{'x' if held else ' '}] **AC{n}.** Holds." for n, held in enumerate(marks, 1)]
+    return issue(number, f'[I{which}] Queue Plan: Work',
+                 body='\n'.join(['## Acceptance Criteria', '', *lines, '']))
+
+
 def staged(*entries: tuple[dict, str]) -> list[dict]:
     items = []
     for n, (content, status) in enumerate(entries):
@@ -39,14 +47,17 @@ def staged(*entries: tuple[dict, str]) -> list[dict]:
     return items
 
 
-def survey(items: list[dict], prs: list[dict] | None = None, *args: str) -> str:
+def survey(items: list[dict], prs: list[dict] | None = None, *args: str,
+           held: tuple[dict, ...] = ()) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         items_path, prs_path = root / 'items.json', root / 'prs.json'
+        links_path = root / 'links.json'
         items_path.write_text(json.dumps(items))
         prs_path.write_text('\n'.join(json.dumps(p) for p in prs or []))
+        links_path.write_text(json.dumps(list(held)))
         done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
-                   '--date', TODAY, *args)
+                   '--links', str(links_path), '--date', TODAY, *args)
         assert done.returncode == 0, done.stderr
         return done.stdout
 
@@ -156,11 +167,35 @@ class Survey(unittest.TestCase):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
-        output = survey(staged((record, 'In Progress')),
+        output = survey(staged((record, 'In Progress'), (task(637), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main',
-                            head='i07/e00/w01-queue-plan')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+                            head='i07/e00/w01-queue-plan')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
+
+    def test_an_unticked_task_criterion_withholds_the_merge(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (task(637, True, False), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('blocked merge #950 I07:E00: base i07/e00/main, AC2 unticked on #637', output)
+        self.assertIn('merge: 0', output)
+
+    def test_a_pull_request_linking_no_task_issue_withholds_the_merge(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
+        self.assertIn('blocked merge #950 I07:E00: base i07/e00/main, links no task issue', output)
+        self.assertIn('merge: 0', output)
+
+    def test_a_task_issue_without_criteria_withholds_the_merge(self):
+        bare = issue(637, '[I07:E00:W01] Queue Plan: Work', body='## Overview\n\nWork.\n')
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (bare, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('no acceptance criteria on #637', output)
+        self.assertIn('merge: 0', output)
 
     def test_an_open_pass_cell_is_not_merged(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
@@ -173,10 +208,12 @@ class Survey(unittest.TestCase):
 
     def test_a_linked_pass_result_allows_the_merge(self):
         evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t1'
-        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (task(637), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', f'[✓]({evidence})'),
-                            base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+                            base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
 
     def test_an_incomplete_linked_result_withholds_the_merge(self):
@@ -189,20 +226,15 @@ class Survey(unittest.TestCase):
                 self.assertNotIn('merge #', output)
                 self.assertIn('merge: 0', output)
 
-    def test_an_unticked_coverage_criterion_does_not_withhold_the_merge(self):
+    def test_an_unticked_epic_criterion_does_not_withhold_the_merge(self):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))
         record['body'] = record['body'].replace('| AC1 |', '| AC1, AC2 |', 1)
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
-        output = survey(staged((record, 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
-
-    def test_a_passed_plan_merges_while_no_criterion_is_ticked(self):
-        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
-        self.assertIn('merge: 1', output)
+        output = survey(staged((record, 'In Progress'), (task(637), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
 
     def test_a_merged_pull_request_is_not_merged_again(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))

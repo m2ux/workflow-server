@@ -135,7 +135,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **One board per theme.**
   - Its title is the theme's name, a colon, and its description. In the example, Canon is `Canon: Definitions Checked Against the Design Canon`.
   - It is linked to the repository.
-  - It holds the theme's initiatives, their epics and their task issues.
+  - It holds the theme's initiatives, their epics, and a task issue for each row in flight, which [Deliver Mode](references/deliver-mode.md#raise-task-issue) raises as it dispatches that row.
 - **Technical debt.**
   Each board carries at least one standing [technical-debt initiative](references/work-breakdown.md#technical-debt), which its theme's delivery defers debt to, and takes more than one.
 - **Assignees.**

@@ -1,13 +1,14 @@
 """Find the work available to dispatch on a theme board, and reserve or release a task row.
 
 Usage:
-  python3 deliver.py --items items.json --prs prs.json [--others issue-750.json ...] [--date 2026-10-06]
+  python3 deliver.py --items items.json --prs prs.json --links links.json [--others issue-750.json ...] [--date 2026-10-06]
   python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
   python3 deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
-requests as sync.py reads them. An issue a row depends on that is not on the board is given with
---others.
+requests as sync.py reads them. links.json holds the closing issue references GitHub holds for those
+pull requests, as Fetch Pull Request Issue Links writes them, and is where the task issues a pull
+request links are read. An issue a row depends on that is not on the board is given with --others.
 
 A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
 delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
@@ -18,8 +19,9 @@ a unit is one session's work.
 Printed: a unit line for each available unit, with the record folder, branch and worktree its ids and
 Description give it; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
-request that targets the epic base when its test plan has passed; and an unresolved line for an
-issue not given.
+request that targets the epic base when its test plan has passed and every criterion of each task
+issue it links is ticked; a blocked merge line naming what withholds one whose test plan has passed;
+and an unresolved line for an issue not given.
 
 --reserve sets the record folder as each row's single link. The record README links its work item.
 --release frees the row by replacing that folder link with its work-item file link. Both write the
@@ -34,10 +36,12 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, rows
-from statuses import key_of, label, pages, status_of
-from format import LINK, TICK, cell, done_mark, id_cell, join_sections, row, row_id, split_sections
-from sync import Unreadable, long_lived_names, plan_rows, pull_requests, table
+from board import Board, criteria_met, rows
+from statuses import TASK as TASK_TITLE, key_of, label, pages, status_of
+from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
+                    row_id, split_sections)
+from sync import (TICKED, Unreadable, attach_links, links_issue, long_lived_names, plan_rows,
+                  pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -59,19 +63,9 @@ def is_epic(issue: dict) -> bool:
     return bool(parsed) and bool(parsed[1]) and not parsed[2]
 
 
-def hrefs(ident: str) -> list[str]:
-    return [found[2] for found in LINK.finditer(ident)]
-
-
 def in_flight(ident: str) -> bool:
     """Whether the id links a pull request or a commit, which is work already under way."""
     return any('/pull/' in href or '/commit/' in href for href in hrefs(ident))
-
-
-def reservation(ident: str) -> str | None:
-    """The planning folder the id links, which holds the work. A file in a record is not one."""
-    return next((href for href in hrefs(ident)
-                 if '/artifacts/planning/' in href and not href.endswith('.md')), None)
 
 
 def slug(text: str, words: int = 4) -> str:
@@ -180,8 +174,35 @@ def plan_passed(body: str) -> bool:
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
-def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
-    """Open pull requests that target the epic base and whose test plan has passed."""
+def unticked(issue: dict) -> list[str]:
+    """The acceptance criteria an issue leaves unticked."""
+    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    lines = next((l for h, l in sections if h == 'Acceptance Criteria'), [])
+    return [f'AC{found[1]}' for line in lines
+            if (found := AC.match(line)) and not TICKED.match(line)]
+
+
+def criteria_gate(pull: dict, issues: dict, home: str) -> str:
+    """Why the task issues a pull request links withhold its merge, or '' when they let it through."""
+    tasks = [issue for key, issue in issues.items()
+             if links_issue(pull, key) and TASK_TITLE.match(issue.get('title') or '')]
+    if not tasks:
+        return 'links no task issue'
+    held = []
+    for task in sorted(tasks, key=key_of):
+        left = unticked(task)
+        if left:
+            held.append(f"{', '.join(left)} unticked on {label(key_of(task), home)}")
+        elif not criteria_met(task):
+            held.append(f'no acceptance criteria on {label(key_of(task), home)}')
+    return '; '.join(held)
+
+
+def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
+                 home: str) -> tuple[list[str], list[str]]:
+    """Open pull requests that target the epic base, split by whether they may merge.
+
+    A merge needs its test plan passed and every criterion of each task issue it links ticked."""
     epics = {}
     for issue in issues.values():
         parsed = tags(issue.get('title') or '')
@@ -203,8 +224,13 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> lis
             continue
         if not plan_passed(pull.get('body') or ''):
             continue
-        found.append((pull['number'], f"  merge #{pull['number']} I{initiative}:E{epic}: base {base}"))
-    return [line for _, line in sorted(found)]
+        where = f"#{pull['number']} I{initiative}:E{epic}: base {base}"
+        gate = criteria_gate(pull, issues, home)
+        found.append((pull['number'], bool(gate), f'  blocked merge {where}, {gate}' if gate
+                      else f'  merge {where}'))
+    ordered = sorted(found)
+    return ([line for _, blocked, line in ordered if not blocked],
+            [line for _, blocked, line in ordered if blocked])
 
 
 def survey(args: argparse.Namespace) -> int:
@@ -222,6 +248,8 @@ def survey(args: argparse.Namespace) -> int:
         status[key] = status_of(item)
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
     prs = pull_requests(args.prs) if args.prs else []
+    if args.prs:
+        attach_links(prs, args.links)
     lived = long_lived_names(args.project) if args.project else ()
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
     board = Board(issues, [], home, prs)
@@ -274,8 +302,8 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, branch {name["branch"]}{base}, worktree {name["worktree"]}')
             available += 1
-    merging = ready_merges(issues, prs, lived)
-    for line in merging:
+    merging, withheld = ready_merges(issues, prs, lived, home)
+    for line in merging + withheld:
         print(line)
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
@@ -348,6 +376,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--items', help='the board items with their Status')
     parser.add_argument('--prs', help='pull requests as JSON lines')
+    parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--others', nargs='*', default=[], help='issues the rows depend on that are off the board')
     parser.add_argument('--epic', help='the epic whose row is reserved or released')
     parser.add_argument('--reserve', help='task ids to hold, e.g. W01,W02')
@@ -367,6 +396,8 @@ def main() -> int:
         return edit(args)
     if not args.items:
         sys.exit('--items is required')
+    if args.prs and not args.links:
+        sys.exit('--prs needs --links, which holds the issue each pull request links')
     return survey(args)
 
 

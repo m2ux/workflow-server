@@ -267,7 +267,10 @@ Shared report meanings and inputs for matching pull requests and syncing epics.
 
 ### Sync Task Issue
 
-Records the pull request that delivered a task issue, ticks its criteria, and reports whether it is closable.
+Records the pull request that delivers a task issue, open or merged, ticks its criteria, and reports whether it is closable.
+
+- Its criteria are ready to verify while that pull request is open, since the evidence is what the pull request and its planning record carry. Ticking them is what lets the pull request merge, as [Task Merge](work-breakdown.md#task-merge) states.
+- The task is delivered, and so closable, once that pull request has merged.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md

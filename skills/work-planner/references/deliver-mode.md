@@ -1,6 +1,6 @@
 # Deliver mode
 
-Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, hoist arising issues, and defer the technical debt its validation finds.
+Starts the work a theme board makes available. It advances the board, merges each open pull request its test plan and its task issues let through, holds each available unit with a planning record and the issue its row carries, and dispatches one session per unit to plan, implement, open its pull request, merge it once its criteria are verified, hoist arising issues, and defer the technical debt its validation finds.
 
 ## Prerequisites
 
@@ -24,14 +24,15 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - **Blocked work.**
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
-   Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line.
+   Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line. A `blocked merge` line names a criterion to verify: take it through that procedure's Verify step, then run the command again.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
    For each confirmed unit, before its session starts:
    - Add its record with [Add Planning Record](commands.md#add-planning-record), named as the `unit` line gives it, and commit and push the engineering worktree.
    - Run [Reserve Row](#reserve-row) for the unit's tasks and [Patch Body](commands.md#patch-body) with the body it writes.
-   - Set each task issue of the unit, where one exists, to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
+   - Raise the issue for each task of the unit with [Raise Task Issue](#raise-task-issue). A row that already carries one keeps it.
+   - Set each task issue of the unit to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
 8. **Dispatch.**
    For each held unit:
    - [Create Task Worktree](#create-task-worktree), and write the [brief](#brief) to a file in that worktree.
@@ -39,7 +40,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - The session is left running.
 9. **Report.**
-   Each pull request merged, and each left open by a conflict; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+   Each pull request merged, and each left open by a conflict or by an unverified criterion; each review pull request updated; each unit dispatched, with its record, issue, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Reference
 
@@ -51,8 +52,10 @@ What the prompt tells one session, written from the facts the `unit` line and th
   The epic's issue URL, the unit's task ids, their Descriptions, the acceptance criteria its Coverage names, the branch, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines, and the epic base its pull request targets.
 - **The record.**
   The reserved folder, which is where its planning artifacts go.
+- **The issue.**
+  Each task issue the Hold step raised, whose criteria gate the unit's merge.
 - **Plan.**
-  Invoke the work-planner skill, and write one [work item](work-breakdown.md#work-item) per task into the record, with any further file the work needs, as the [planning layout](planning-layout.md) describes. Commit and push the engineering worktree.
+  Invoke the work-planner skill, and write one [work item](work-breakdown.md#work-item) per task into the record, with any further file the work needs, as the [planning layout](planning-layout.md) describes. Its acceptance criteria are the ones the task issue carries, so the record and the issue state one set. Commit and push the engineering worktree.
 - **Link the work items.**
   Link each work-item file from the record's README under [Planning README](planning-readme.md). The row retains its folder link while reserved.
 - **Match the tests to the criteria.**
@@ -61,8 +64,9 @@ What the prompt tells one session, written from the facts the `unit` line and th
   Deliver the work in the worktree, with every test the work item names, as the [Work Breakdown Guide](work-breakdown.md#tables) states.
 - **Open the pull request.**
   Open it with [Open Task Pull Request](#open-task-pull-request), which titles it for the epic, targets the epic base, fills the Test Plan table as [Test Coverage](work-breakdown.md#test-coverage) states, and links each task issue the unit delivers. Then run [Sync Epic](commands.md#sync-epic) for the unit's tasks and [Patch Body](commands.md#patch-body).
+  - The link is what the merge gate reads, so a unit whose pull request links none of its task issues does not merge.
 - **Merge.**
-  Record check results with [Patch Pull Request Body](understand-mode.md#patch-pull-request-body), following [Test Plan](work-breakdown.md#test-plan), then follow [Task Merge](work-breakdown.md#task-merge).
+  Record check results with [Patch Pull Request Body](understand-mode.md#patch-pull-request-body), following [Test Plan](work-breakdown.md#test-plan), then follow [Task Merge](work-breakdown.md#task-merge), which verifies and ticks the criteria of each task issue the unit delivers before the merge.
 - **Defer the technical debt the validation found.**
   Classify each item as this mode's Technical debt rule states and confirm it with the user. A deferred item is created as a standalone issue with [Create Issue](commands.md#create-issue) and hoisted with [Hoist Mode](hoist-mode.md), its placement a new task in the epic a [technical-debt initiative](work-breakdown.md#technical-debt) of the board holds for this initiative.
 - **Hoist arising issues.**
@@ -74,7 +78,11 @@ What the prompt tells one session, written from the facts the `unit` line and th
   The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
   - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
 - **The hold precedes the session.**
-  A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
+  A unit's record exists, its row carries that record's link, its issue is raised, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
+- **One issue per row, raised at dispatch.**
+  A dispatched row carries an issue, and a row waiting in an epic's Work Breakdown carries none, so the board holds an issue for the work in flight. A row that already carries one — hoisted onto the epic, or raised by an earlier dispatch — takes that issue, and no second is raised.
+- **The task's criteria gate its merge.**
+  A unit's pull request merges when the criteria of the issues its rows carry are verified and ticked, as [Task Merge](work-breakdown.md#task-merge) states. They are verifiable while that pull request is open, since its evidence is what the pull request and the record carry.
 - **The hold stands until the pull request.**
   A held row stays held while its session plans and implements. [Sync Epic](commands.md#sync-epic) replaces the record's link with the pull request's, which frees the row.
 - **One unit, one session.**
@@ -99,6 +107,20 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - The session classifies each item and puts it to the user as an [Interview](interview.md), its classification the recommended answer, before the fix or the deferral.
 
 ## Commands
+
+### Raise Task Issue
+
+Raises the issue one dispatched row carries, from the criteria its work item states.
+
+- Run it in the Hold step, from the row's [work item](work-breakdown.md#work-item) as planning wrote it, which is why the criteria exist before the session starts. A row that already carries an issue takes that one, and none is raised.
+- The title is the row's `[I07:E00:W01]` prefix, the name and the subtitle the [Formatting Scheme](../SKILL.md#formatting-scheme) gives it, drawn from the row's Description.
+- The labels are `type:task` and any of `enhancement`, `bug` and `tech-debt` the row's work calls for.
+- The body is drafted from the [task template](../templates/task.md): its Overview, Problem and Proposal from the row's [work item](work-breakdown.md#work-item), and its Acceptance Criteria that work item's, numbered `AC1` upward.
+- A work item stating no criteria leaves the row undispatchable. [Align Mode](align-mode.md) writes them.
+
+```bash
+gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00:W01] Queue Plan: The Order a Run Dispatches In' -F body=@w01-issue.md -f 'labels[]=type:task' --jq .number
+```
 
 ### Open Task Pull Request
 
@@ -154,16 +176,17 @@ git fetch origin i07/e00/main && git worktree add .worktrees/i07-e00-w01 -b i07/
 Reports each unit of work a theme board makes available, each row a session holds, and each row its dependencies block.
 
 - The rules are this mode's [Rules](#rules).
-- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](board.md#fetch-all-initiative-pull-requests).
+- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](board.md#fetch-all-initiative-pull-requests), and carries `--links`, the file [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links) writes for them, which is where the task issues a pull request links are read.
 - Give an issue it reports unresolved with `--others`.
 - `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. A base whose last segment is not one of those names is ignored.
 - `--bases` is the list [List Epic Bases](commands.md#list-epic-bases) prints for the board's epics, comma-separated.
 - A `unit` line names the tasks of one session's work, their coverage, and the record folder, branch, base and worktree their ids and Description give them. One base is `base i07/e00/main`. Several are `bases i07/e00/main i07/e00/workflows`.
 - A `hold` line names a row a session holds, and the record it links.
 - A `blocked` line names a free row whose dependencies are undelivered, or whose joined task is unavailable.
-- A `merge` line names an open pull request whose test plan has passed, and the epic base it targets. This mode merges it on the run.
+- A `merge` line names an open pull request whose test plan has passed and whose task issues carry every criterion ticked, and the epic base it targets. This mode merges it on the run.
+- A `blocked merge` line names one whose test plan has passed while its task issues withhold it, naming each unticked criterion and the issue carrying it, or saying the pull request links no task issue.
 - `--date` opens the records on another day than today.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --project <checkout> --bases i07/e00/main,i07/e00/workflows
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project <checkout> --bases i07/e00/main,i07/e00/workflows
 ```
