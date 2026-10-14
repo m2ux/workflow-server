@@ -456,6 +456,24 @@ class EpicClose(unittest.TestCase):
         self.assertNotIn('in flight:', out)
         self.assertNotIn('unmatched:', out)
 
+    def test_a_complete_epic_names_the_draft_to_ready(self):
+        """The signal Ready Epic Pull Request runs on: every row delivered, every criterion
+        ticked, and the pull request merging the base still a draft."""
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main (#980 draft)', out)
+
+    def test_an_unticked_criterion_withholds_the_draft_from_readying(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged:', out)
+
     def test_a_review_pull_request_that_links_no_issue_is_uncited(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
