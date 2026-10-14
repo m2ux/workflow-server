@@ -60,6 +60,72 @@ describe.skipIf(!liveCorpusRoot())('pinned corpus paths', () => {
 });
 
 /**
+ * A private corpus mounts the public one as a submodule, so the public canon sits a root down from
+ * the one the guard is handed. A pin spelled from the public root names a file that corpus serves,
+ * and the guard answers for the corpus served rather than for the single tree it was pointed at.
+ */
+describe.skipIf(!liveCorpusRoot())('a corpus joining a second root', () => {
+  /** The public corpus mounted under `corpus/upstream/`, the shape an overlay checkout holds. */
+  function overlay(): string {
+    const root = mkdtempSync(join(tmpdir(), 'pinned-overlay-'));
+    const mount = join(root, 'corpus', 'upstream');
+    mkdirSync(mount, { recursive: true });
+    cpSync(liveCorpusRoot()!, join(mount, 'public'), { recursive: true });
+    return root;
+  }
+
+  /**
+   * A repo naming one file the public canon holds and one a retired workflow left behind. The
+   * retired path is assembled from its segments so this fixture does not become a pin of its own.
+   */
+  function repoWithBothPins(): { repo: string; retired: string } {
+    const retired = ['corpus', 'midnight-system-review', 'activities', '01-scope-intake.yaml'].join('/');
+    const repo = mkdtempSync(join(tmpdir(), 'pinned-overlay-repo-'));
+    mkdirSync(join(repo, 'tests', 'e2e'), { recursive: true });
+    writeFileSync(
+      join(repo, 'tests', 'e2e', 'pins.test.ts'),
+      `const held = 'corpus/canon/resources/anti-patterns.md';\nconst gone = '${retired}';\n`,
+    );
+    return { repo, retired };
+  }
+
+  it('resolves the repo\'s pins through the root it joins', () => {
+    const root = overlay();
+    try {
+      const tally = collect(root);
+      expect(tally.checked).toBeGreaterThan(0);
+      expect(tally.findings).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it('reports a pin naming a file no joined root holds', () => {
+    const root = overlay();
+    const { repo, retired } = repoWithBothPins();
+    try {
+      const { findings } = collect(root, repo);
+      expect(findings.map((f) => f.site)).toEqual(['tests/e2e/pins.test.ts:2']);
+      expect(findings[0]!.detail).toContain(retired);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+
+  it('returns the verdict it returns at the root it joins', () => {
+    const root = overlay();
+    const { repo } = repoWithBothPins();
+    try {
+      expect(collect(root, repo).findings).toEqual(collect(liveCorpusRoot()!, repo).findings);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+      rmSync(repo, { recursive: true, force: true });
+    }
+  });
+});
+
+/**
  * A fixture write is a fixture write whichever line its path lands on. The exemption reads the call
  * rather than the line, so a wrapped write is exempt and a literal deeper in an unrelated call is not.
  */
