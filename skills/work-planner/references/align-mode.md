@@ -40,7 +40,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    Check every acceptance criterion of the issues being aligned against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the alignment is clear.
    - Align them with the sources the initiative's References mark, as the [Sources](review-criteria.md#sources) criteria define, and report each departure and each gap. Draft the criterion a gap calls for, and decide it with the user as an [Interview](interview.md).
 8. **Task criteria.**
-   For each open epic being aligned, read the [work item](work-breakdown.md#work-item) of every row no pull request delivers, and apply this mode's Task criteria rule to each that states none.
+   For each open epic being aligned, read the [task plan](work-breakdown.md#task-plan) of every row no pull request delivers, and apply this mode's Task criteria rule to each that is absent or states none.
 9. **Check Dependencies.**
    - Check them whenever an initiative or epic is aligned: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as an [Interview](interview.md). An initiative Depends on cell takes the epics it derives.
@@ -85,8 +85,8 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
   - The alignment is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
 - **Task criteria.**
-  A row whose [work item](work-breakdown.md#work-item) states no acceptance criteria cannot be dispatched, and one already in flight has nothing gating its merge. Draft them at the row's grain from its Description and the epic criteria its Coverage names, to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule, and decide them with the user as an [Interview](interview.md).
-  - Write them to the work item, then commit and push the engineering worktree.
+  A row whose [task plan](work-breakdown.md#task-plan) is absent or states no acceptance criteria cannot be dispatched, and one already in flight has nothing gating its merge. Draft them at the row's grain from its Description and the epic criteria its Coverage names, to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule, and decide them with the user as an [Interview](interview.md).
+  - Write them to the task plan, then commit and push the engineering worktree.
   - A row a session holds, or whose id links an open pull request, then takes its issue with [Raise Task Issue](deliver-mode.md#raise-task-issue). A row still waiting takes none.
   - A row that already carries an issue has those criteria written into it with [Patch Body](commands.md#patch-body).
 - **Source alignment.**

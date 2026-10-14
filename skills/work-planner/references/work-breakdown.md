@@ -249,7 +249,7 @@ A branch whose protection or active rules require an approving review takes that
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Task issues.**
   - A task issue belongs to one epic. Its title carries that epic's prefix.
-  - Its acceptance criteria are the ones its row's [work item](#work-item) states, and they gate the merge of the pull request that delivers the row, as [Task Merge](#task-merge) states.
+  - Its acceptance criteria are the ones its row's [task plan](#task-plan) states, and they gate the merge of the pull request that delivers the row, as [Task Merge](#task-merge) states.
   - When that epic's table has no row for its id, [Sync Epic](commands.md#sync-epic) reports it unplaced, and the row is added as [Unplaced](#unplaced) states. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's Development field links the issue as [Delivery](#delivery) states under Issue links.
@@ -294,11 +294,26 @@ A branch whose protection or active rules require an approving review takes that
 
 When [Sync Epic](commands.md#sync-epic) reports a task issue unplaced, [Plan Mode](plan-mode.md) adds its row, then the sync runs again.
 
+### Task Plan
+
+One file per task of an initiative, in that initiative's planning record, named for the task id in lower case, `w01.md`. [Plan Mode](plan-mode.md) writes it while it plans the row, and the record's README links each file.
+
+The file uses the epic template's Overview, Problem, Proposal and Acceptance Criteria. It carries no Work Breakdown.
+
+- **Overview, Problem and Proposal.**
+  What the row delivers and why, the friction, and the design, each as an epic writes it.
+- **Acceptance Criteria.**
+  What the row makes true, each of one invariant, and written to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule. Together they reach every epic criterion the row's Coverage names, at the grain of this row's own work.
+- **It is what the row's issue carries.**
+  [Raise Task Issue](deliver-mode.md#raise-task-issue) draws the issue from this file when the row's unit is dispatched, which is why the criteria exist before the session starts, and they gate that unit's merge.
+- **A row without one is undispatchable.**
+  [Align Mode](align-mode.md) writes the criteria a row in flight lacks.
+
 ### Work Item
 
-One file per task, named for the task id in lower case, `w01.md`. The record's README links each file. The epic table follows [Task ids](#task-delivery).
+One file per task in its unit's reserved planning record, named for the task id in lower case, `w01.md`. The dispatched session writes it, the record's README links each file, and the epic table follows [Task ids](#task-delivery).
 
-The file uses the epic template's Overview, Problem, Proposal, Acceptance Criteria and Work Breakdown. It carries no joins.
+The file uses the epic template's Overview, Problem, Proposal, and Work Breakdown. It carries no acceptance criteria and no joins: the row's criteria are its [task plan](#task-plan)'s, and the issue raised from them is where they are ticked.
 
 - **Overview.**
   One paragraph on what the task delivers and why.
@@ -306,8 +321,6 @@ The file uses the epic template's Overview, Problem, Proposal, Acceptance Criter
   The friction, as a Problem is written for an epic.
 - **Proposal.**
   The design, as a Proposal is written for an epic. The first part of it states the scene. A list of items is a bulleted list.
-- **Acceptance Criteria.**
-  What the row makes true, each of one invariant, and written to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule. Together they reach every epic criterion the row's Coverage names, at the grain of this row's own work. They are the criteria the row's issue carries when its unit is dispatched, and they gate that unit's merge.
 - **Work Breakdown.**
   A table decomposes the task into the parts of the work, such as analysis, plan, implementation, review, and test. A row is one part. The columns are the part and its description. The test row names the checks the content calls for, including the project's system test when the work is something that test can exercise.
 - **The work only.**

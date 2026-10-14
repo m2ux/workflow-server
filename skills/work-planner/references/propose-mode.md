@@ -31,7 +31,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
 6. **Place it.**
    - Find the board with [Find Proposals Board](#find-proposals-board). When it prints nothing, create the board with [Create Proposals Board](#create-proposals-board).
    - [Fetch Issue](commands.md#fetch-issue) for the new issue's id, then [Add Issue to Board](#add-issue-to-board).
-   - [Fetch Board Fields](commands.md#fetch-board-fields), then [Set Item Status](commands.md#set-item-status) to Suggested.
+   - [Fetch Board Fields](commands.md#fetch-board-fields), then [Set Item Status](#set-item-status) to Suggested.
    - Leave the issue unassigned. Suggested has no assignee, per [Themes and Boards](../SKILL.md#themes-and-boards).
 7. **Report.**  Give the issue's URL and the board's.
 
@@ -64,6 +64,16 @@ Adds an issue to a board and prints the new item's id. The issue's `id` comes fr
 
 ```bash
 gh api --method POST users/{owner}/projectsV2/13/items -f type=Issue -F id=3040123456 --jq .id
+```
+
+### Set Item Status
+
+Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch Board Fields](commands.md#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
+
+- This mode writes the Proposals board, whose statuses are its own. The theme boards are written through the jurisdictions [statuses.py](../scripts/statuses.py) holds, as [Plan Board Changes](sync-mode.md#plan-board-changes), [Advance Mode](advance-mode.md) and [Set Dispatch Status](deliver-mode.md#set-dispatch-status) render them.
+
+```bash
+gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
 ```
 
 ### List Labels

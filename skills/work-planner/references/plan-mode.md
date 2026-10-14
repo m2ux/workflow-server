@@ -28,7 +28,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
    - Complete cross-epic dependencies to rows, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, before any issue of the epic is created.
-   - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines, its acceptance criteria written to this mode's Criteria at creation rule. They are what the row's issue carries when its unit is dispatched, so a row is not planned without them.
+   - Write one file per task, as the [Task plan](work-breakdown.md#task-plan) section defines, its acceptance criteria written to this mode's Criteria at creation rule. They are what the row's issue carries when its unit is dispatched, so a row is not planned without them.
    - Apply [Task grain](work-breakdown.md#tables) and [Test Coverage](work-breakdown.md#test-coverage) to each task.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
@@ -51,7 +51,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Coverage cells change when criteria are renumbered.
-   - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
+   - The [task plans](work-breakdown.md#task-plan) stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
    - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
@@ -73,7 +73,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 
 - **Criteria at creation.**
   - An acceptance criterion complies with [Requirement characteristics](requirement-characteristics.md), the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), and, for an initiative, its [Acceptance Criteria](review-criteria.md#initiative-acceptance-criteria), when it is written.
-  - The issue that carries it is created only after the criterion complies. A task's criteria live in its [work item](work-breakdown.md#work-item) until its unit is dispatched, and comply when they are written there.
+  - The issue that carries it is created only after the criterion complies. A task's criteria live in its [task plan](work-breakdown.md#task-plan) until its unit is dispatched, and comply when they are written there.
 - **Task issues.**
   A row's issue is raised when its unit is dispatched, as [Deliver Mode](deliver-mode.md#raise-task-issue) states, so the board holds an issue for the rows in flight. This mode raises none.
 - **The corpus audit.**

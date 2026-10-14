@@ -1,13 +1,16 @@
 """Write a theme board's Status field, within one mode's jurisdiction.
 
-Two modes decide a board's Status, and each owns a part of it. Sync mode decides what delivery
+Three modes decide a board's Status, and each owns a part of it. Sync mode decides what delivery
 settles: Done, In Review, In Progress, and the Ready a task's dependencies earn. Advance mode
-decides the queue: which initiatives and epics are Backlog, Ready or In Progress. Each plans its
-own statuses and hands them here, which reads the board's items, writes the option body files,
-renders the gh call for every change, and refuses a change the calling mode does not own.
+decides the queue: which initiatives and epics are Backlog, Ready or In Progress. Deliver mode
+decides what a dispatch settles: the In Progress a held row and its epic take, and the In Review a
+completed epic takes. Each plans its own statuses and hands them here, which reads the board's
+items, writes the option body files, renders the gh call for every change, and refuses a change the
+calling mode does not own.
 
 DELIVERY refuses moving an initiative or an epic between Ready and Backlog.
 QUEUE refuses In Review, Done and any task.
+DISPATCH refuses every Status but In Progress and In Review, a task set In Review, and a removal.
 
 A Status write sends the body file written under the out directory.
 """
@@ -16,10 +19,11 @@ import re
 import sys
 from pathlib import Path
 
-DELIVERY, QUEUE = 'delivery', 'queue'
+DELIVERY, QUEUE, DISPATCH = 'delivery', 'queue', 'dispatch'
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
 PLACED = ('Backlog', 'Ready', 'In Progress')
 DECIDED = ('In Review', 'Done')
+DISPATCHED = ('In Progress', 'In Review')
 OPTIONAL = {'In Review': 'In Progress'}
 TASK = re.compile(r'^\[I\d\d:E\d\d:W\d\d\]')
 
@@ -132,6 +136,12 @@ class Changes:
                 raise Jurisdiction(f'{name}: the queue does not set {wanted}')
             if task:
                 raise Jurisdiction(f'{name}: the queue does not move a task')
+        elif self.scope == DISPATCH:
+            if wanted not in DISPATCHED:
+                raise Jurisdiction(f'{name}: a dispatch sets {" and ".join(DISPATCHED)}, '
+                                   f'not {wanted or "a removal"}')
+            if task and wanted == 'In Review':
+                raise Jurisdiction(f'{name}: a dispatch does not set a task In Review')
         elif not task and held != wanted and {held, wanted} <= {'Ready', 'Backlog'}:
             raise Jurisdiction(f'{name}: delivery does not move an initiative or an epic '
                                f'between Ready and Backlog')

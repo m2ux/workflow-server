@@ -307,3 +307,66 @@ class Reserve(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class DispatchStatus(unittest.TestCase):
+    """The Status a dispatch settles, within the DISPATCH jurisdiction."""
+
+    def fields(self, *names: str) -> list[dict]:
+        return [{'id': 7, 'name': 'Status',
+                 'options': [{'name': name, 'id': n} for n, name in enumerate(names, start=1)]}]
+
+    def place(self, entries: list[dict], *args: str,
+              statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            items_path, fields_path = root / 'items.json', root / 'fields.json'
+            items_path.write_text(json.dumps(entries))
+            fields_path.write_text(json.dumps(self.fields(*statuses)))
+            return run('deliver.py', '--items', str(items_path), '--board', 'users/o/projectsV2/9',
+                       '--fields', str(fields_path), '--out', str(root / 'out'),
+                       '--assignee', 'me', *args)
+
+    def board(self, *entries: tuple[dict, str]) -> list[dict]:
+        rows = []
+        for n, (content, status) in enumerate(entries):
+            content['id'] = 1000 + content['number']
+            content['assignees'] = [{'login': 'me'}]
+            rows.append({**item(content, status), 'id': 100 + n})
+        return rows
+
+    def test_a_held_row_and_its_epic_go_to_in_progress(self):
+        done = self.place(self.board((task(637), 'Ready'), (epic(943), 'Ready')),
+                          '--progress', '637,943')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('set #637 [I07:E00:W01] Queue Plan: Work: Ready → In Progress', done.stdout)
+        self.assertIn('set #943 [I07:E00] Queue Plan: Work: Ready → In Progress', done.stdout)
+
+    def test_a_complete_epic_goes_to_in_review(self):
+        done = self.place(self.board((epic(943), 'In Progress')), '--review', '943')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('set #943 [I07:E00] Queue Plan: Work: In Progress → In Review', done.stdout)
+
+    def test_a_board_without_in_review_falls_back_to_in_progress(self):
+        done = self.place(self.board((epic(943), 'Ready')), '--review', '943',
+                          statuses=('Backlog', 'Ready', 'In Progress', 'Done'))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('Ready → In Progress', done.stdout)
+
+    def test_a_task_is_not_set_in_review(self):
+        done = self.place(self.board((task(637), 'In Progress')), '--review', '637')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('a dispatch does not set a task In Review', done.stderr)
+
+    def test_an_issue_off_the_board_is_refused(self):
+        done = self.place(self.board((epic(943), 'Ready')), '--progress', '944')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('not on the board: #944', done.stderr)
+
+    def test_the_board_arguments_go_together(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            items_path = Path(tmp, 'items.json')
+            items_path.write_text(json.dumps(self.board((epic(943), 'Ready'))))
+            done = run('deliver.py', '--items', str(items_path), '--progress', '943')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--board is required with --progress or --review', done.stderr)

@@ -158,14 +158,6 @@ Saves a board's fields.
 gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
 ```
 
-### Set Item Status
-
-Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch Board Fields](#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
-
-```bash
-gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
-```
-
 ## Git
 
 ### List Epic Bases

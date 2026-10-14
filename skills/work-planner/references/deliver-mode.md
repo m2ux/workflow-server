@@ -25,7 +25,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
    Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line. A `blocked merge` line names a criterion to verify: take it through that procedure's Verify step, then run the command again.
-   - An epic those merges complete has its review pull request marked ready, as [Review pull request](work-breakdown.md#review-pull-request) states, and its board item set to In Review with [Set Item Status](commands.md#set-item-status).
+   - An epic those merges complete has its review pull request marked ready, as [Review pull request](work-breakdown.md#review-pull-request) states, and goes to In Review with [Set Dispatch Status](#set-dispatch-status).
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
@@ -33,7 +33,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - Add its record with [Add Planning Record](commands.md#add-planning-record), named as the `unit` line gives it, and commit and push the engineering worktree.
    - Run [Reserve Row](#reserve-row) for the unit's tasks and [Patch Body](commands.md#patch-body) with the body it writes.
    - Raise the issue for each task of the unit with [Raise Task Issue](#raise-task-issue). A row that already carries one keeps it.
-   - Set each task issue of the unit to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
+   - Set each task issue of the unit to In Progress with [Set Dispatch Status](#set-dispatch-status), and its epic with it.
 8. **Dispatch.**
    For each held unit:
    - [Create Task Worktree](#create-task-worktree), and write the [brief](#brief) to a file in that worktree.
@@ -56,7 +56,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **The issue.**
   Each task issue the Hold step raised, whose criteria gate the unit's merge.
 - **Plan.**
-  Invoke the work-planner skill, and write one [work item](work-breakdown.md#work-item) per task into the record, with any further file the work needs, as the [planning layout](planning-layout.md) describes. Its acceptance criteria are the ones the task issue carries, so the record and the issue state one set. Commit and push the engineering worktree.
+  Invoke the work-planner skill, and write one [work item](work-breakdown.md#work-item) per task into the record, from the row's [task plan](work-breakdown.md#task-plan), with any further file the work needs, as the [planning layout](planning-layout.md) describes. The criteria stay on the task issue, which is where they are ticked. Commit and push the engineering worktree.
 - **Link the work items.**
   Link each work-item file from the record's README under [Planning README](planning-readme.md). The row retains its folder link while reserved.
 - **Match the tests to the criteria.**
@@ -109,15 +109,28 @@ What the prompt tells one session, written from the facts the `unit` line and th
 
 ## Commands
 
+### Set Dispatch Status
+
+Renders the Status calls a dispatch settles, and refuses one it does not own.
+
+- `--progress` names each task issue a held unit carries and its epic. `--review` names each epic whose review pull request was marked ready.
+- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status), `--fields` [Fetch Board Fields](commands.md#fetch-board-fields), and `--assignee` the user [Find User](commands.md#find-user) prints.
+- The calls go through the same component sync and advance write with, in the dispatch jurisdiction: any Status but In Progress and In Review, a task set In Review, and a removal are refused. A board lacking In Review takes In Progress.
+- Run each call it prints, then confirm it with [Fetch Board Item](sync-mode.md#fetch-board-item), as [Sync Mode](sync-mode.md) does, since the item list lags a write.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux --progress 637,943 --review 944
+```
+
 ### Raise Task Issue
 
-Raises the issue one dispatched row carries, from the criteria its work item states.
+Raises the issue one dispatched row carries, from the criteria its task plan states.
 
-- Run it in the Hold step, from the row's [work item](work-breakdown.md#work-item) as planning wrote it, which is why the criteria exist before the session starts. A row that already carries an issue takes that one, and none is raised.
+- Run it in the Hold step, from the row's [task plan](work-breakdown.md#task-plan) in its initiative's planning record, which planning wrote and which is why the criteria exist before the session starts. A row that already carries an issue takes that one, and none is raised.
 - The title is the row's `[I07:E00:W01]` prefix, the name and the subtitle the [Formatting Scheme](../SKILL.md#formatting-scheme) gives it, drawn from the row's Description.
 - The labels are `type:task` and any of `enhancement`, `bug` and `tech-debt` the row's work calls for.
-- The body is drafted from the [task template](../templates/task.md): its Overview, Problem and Proposal from the row's [work item](work-breakdown.md#work-item), and its Acceptance Criteria that work item's, numbered `AC1` upward.
-- A work item stating no criteria leaves the row undispatchable. [Align Mode](align-mode.md) writes them.
+- The body is drafted from the [task template](../templates/task.md): its Overview, Problem, Proposal and Acceptance Criteria are the task plan's, the criteria numbered `AC1` upward.
+- A row with no task plan, or one stating no criteria, is undispatchable. [Align Mode](align-mode.md) writes them.
 
 ```bash
 gh api --method POST repos/{owner}/{repo}/issues -f title='[I07:E00:W01] Queue Plan: The Order a Run Dispatches In' -F body=@w01-issue.md -f 'labels[]=type:task' --jq .number

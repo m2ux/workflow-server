@@ -35,7 +35,7 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
      - Subsume the orphan.
    - **New task.**
      - Draft the row and its criteria in the epic.
-     - Write the row's [work item](work-breakdown.md#work-item), its acceptance criteria drafted from the orphan's outcomes and ratified with the user as an [Interview](interview.md).
+     - Write the row's [task plan](work-breakdown.md#task-plan), its acceptance criteria drafted from the orphan's outcomes and ratified with the user as an [Interview](interview.md).
      - Number it where it can start, with [Renumber Tasks](commands.md#renumber-tasks) when a task no pull request names must move.
      - Keep or subsume the orphan. A kept orphan becomes the row's issue, taking those criteria as its own.
    - **New epic.**
@@ -78,7 +78,7 @@ A placement is the choice of where an orphan's work goes. The table states what 
   - The orphan becomes the new task, epic or initiative issue.
   - It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items.
   - An initiative row links its epic issue. Task rows follow [Task ids](work-breakdown.md#task-delivery); a task issue's Development field links its delivery pull request.
-  - A kept orphan is the row's issue from the hoist, so its dispatch raises none, as [Deliver Mode](deliver-mode.md#rules) states. Its criteria are the ones the row's work item carries.
+  - A kept orphan is the row's issue from the hoist, so its dispatch raises none, as [Deliver Mode](deliver-mode.md#rules) states. Its criteria are the ones the row's task plan carries.
 - **Original body.**
   - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
   - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.
