@@ -14,6 +14,7 @@ It matters because a step that reads as complete without its citation gets perfo
 | --- | --- |
 | [Decisions](decisions.md) | The targets a reading rule serves, the obligation a citation carries, how scope is bounded, how the read set is derived, and the order the gate lands in |
 | [Sample mode file](sample-plan-mode.md) | Plan mode rewritten under every rule the epic states, for review before the work starts |
+| [Sample manifest](sample-manifest.md) | The read set derived from that file, its per-section cost, and what the generator must handle |
 
 ## Links
 
