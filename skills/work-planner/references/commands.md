@@ -158,14 +158,6 @@ Saves a board's fields.
 gh api --paginate "users/{owner}/projectsV2/9/fields?per_page=100" > fields.json
 ```
 
-### Set Item Status
-
-Sets one board item's Status. The body names the Status field id and the option id, both taken from [Fetch Board Fields](#fetch-board-fields): `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
-
-```bash
-gh api --method PATCH users/{owner}/projectsV2/13/items/1001 --input status-backlog.json --jq .id
-```
-
 ## Git
 
 ### List Epic Bases
@@ -267,7 +259,10 @@ Shared report meanings and inputs for matching pull requests and syncing epics.
 
 ### Sync Task Issue
 
-Records the pull request that delivered a task issue, ticks its criteria, and reports whether it is closable.
+Records the pull request that delivers a task issue, open or merged, ticks its criteria, and reports whether it is closable.
+
+- Its criteria are ready to verify while that pull request is open, since the evidence is what the pull request and its planning record carry.
+- The task is delivered, and so closable, once that pull request has merged.
 
 ```bash
 cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --pr 950 --tick AC1 --fix fixed-637.md

@@ -25,13 +25,14 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
      A `blocked` line is reported, not asked. Its dependencies decide when it becomes available.
 5. **Merge.**
    Follow [Task Merge](work-breakdown.md#task-merge) for each `merge` line.
+   - An epic those merges complete has its review pull request marked ready, as [Review pull request](work-breakdown.md#review-pull-request) states, and goes to In Review with [Set Dispatch Status](#set-dispatch-status).
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and confirm the set as an [Interview](interview.md). Dispatch only the units the user confirms.
 7. **Hold.**
    For each confirmed unit, before its session starts:
    - Add its record with [Add Planning Record](commands.md#add-planning-record), named as the `unit` line gives it, and commit and push the engineering worktree.
    - Run [Reserve Row](#reserve-row) for the unit's tasks and [Patch Body](commands.md#patch-body) with the body it writes.
-   - Set each task issue of the unit, where one exists, to In Progress with [Set Item Status](commands.md#set-item-status), and its epic with it.
+   - Set each task issue of the unit, where one exists, to In Progress with [Set Dispatch Status](#set-dispatch-status), and its epic with it.
 8. **Dispatch.**
    For each held unit:
    - [Create Task Worktree](#create-task-worktree), and write the [brief](#brief) to a file in that worktree.
@@ -39,7 +40,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - The session is left running.
 9. **Report.**
-   Each pull request merged, and each left open by a conflict; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+   Each pull request merged, and each left open by a conflict; each review pull request updated, and each marked ready with the epic it set In Review; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
 
 ## Reference
 
@@ -86,7 +87,7 @@ What the prompt tells one session, written from the facts the `unit` line and th
 - **Dispatch is confirmed.**
   No session starts until the user confirms the set of units.
 - **Status.**
-  This mode sets a dispatched unit's task issue and its epic to In Progress. The queue stays [Advance Mode](advance-mode.md)'s.
+  This mode sets a dispatched unit's task issue and its epic to In Progress, and an epic whose review pull request it marks ready to In Review. The queue stays [Advance Mode](advance-mode.md)'s.
 - **Arising issues.**
   Issues arising from the delivery of a single work item are raised as standalone issues and hoisted through [Hoist Mode](hoist-mode.md) once the pull request is open and the epic synced.
 - **Technical debt the validation finds.**
@@ -99,6 +100,19 @@ What the prompt tells one session, written from the facts the `unit` line and th
   - The session classifies each item and puts it to the user as an [Interview](interview.md), its classification the recommended answer, before the fix or the deferral.
 
 ## Commands
+
+### Set Dispatch Status
+
+Renders the Status calls a dispatch settles, and refuses one it does not own.
+
+- `--progress` names each task issue a held unit carries and its epic. `--review` names each epic whose review pull request was marked ready.
+- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status), `--fields` [Fetch Board Fields](commands.md#fetch-board-fields), and `--assignee` the user [Find User](commands.md#find-user) prints.
+- The calls go through the same component sync and advance write with, in the dispatch jurisdiction: any Status but In Progress and In Review, a task set In Review, and a removal are refused. A board lacking In Review takes In Progress.
+- Run each call it prints, then confirm it with [Fetch Board Item](sync-mode.md#fetch-board-item), as [Sync Mode](sync-mode.md) does, since the item list lags a write.
+
+```bash
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux --progress 637,943 --review 944
+```
 
 ### Open Task Pull Request
 
@@ -154,7 +168,7 @@ git fetch origin i07/e00/main && git worktree add .worktrees/i07-e00-w01 -b i07/
 Reports each unit of work a theme board makes available, each row a session holds, and each row its dependencies block.
 
 - The rules are this mode's [Rules](#rules).
-- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](board.md#fetch-all-initiative-pull-requests).
+- `--items` is [Fetch Board Items with Status](sync-mode.md#fetch-board-items-with-status). `--prs` is [Fetch All Initiative Pull Requests](board.md#fetch-all-initiative-pull-requests), and carries `--links`, the file [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links) writes for them, which is where the task issues a pull request links are read.
 - Give an issue it reports unresolved with `--others`.
 - `--project` is a checkout of the project, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. A base whose last segment is not one of those names is ignored.
 - `--bases` is the list [List Epic Bases](commands.md#list-epic-bases) prints for the board's epics, comma-separated.
@@ -165,5 +179,5 @@ Reports each unit of work a theme board makes available, each row a session hold
 - `--date` opens the records on another day than today.
 
 ```bash
-cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --project <checkout> --bases i07/e00/main,i07/e00/workflows
+cd <workspace> && <workspace>/scripts/sbx python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project <checkout> --bases i07/e00/main,i07/e00/workflows
 ```

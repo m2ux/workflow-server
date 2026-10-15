@@ -25,8 +25,9 @@ Status, first match wins:
   In Review    a task issue an open pull request ready for review delivers: its title names the
                epic by the initiative's row id, and its Development field links the issue; an open
                epic or initiative whose criteria are all ticked
-  In Progress  an open draft pull request links a task issue; an epic with an open pull request
-               and a criterion unticked
+  In Progress  an open draft pull request links a task issue; a task whose row links the planning
+               record a session holds it with; an epic with an open pull request and a criterion
+               unticked
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
   Backlog      a task otherwise
@@ -64,7 +65,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, cell, id_cell, row_id, split_sections
+from format import AC, LINK, cell, id_cell, reservation, row_id, split_sections
 from statuses import (DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items,
                       key_of, label)
 from sync import PR_REF, TICKED, Unreadable, attach_links, links_issue, pull_requests, table
@@ -301,6 +302,8 @@ def main() -> int:
                 status[task_issue] = 'Done' if completed(t) else None
             elif found := pr_status(epic_key, task_issue):
                 status[task_issue] = found
+            elif reservation(ident):
+                status[task_issue] = 'In Progress'
             elif (not open_questions(t)
                   and board.epic_dependencies_met(number, epic_ids, f'E{epic_key}:{tid}')
                   and board.met(cell(task_header, tr, 'Depends on'), number, epic_ids, f'E{epic_key}:{tid}')):

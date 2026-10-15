@@ -21,8 +21,10 @@ A pull request's title names the epic it works on: [I07:E00] Purpose. Which of t
 delivers is read from its changes against the tasks' Descriptions, and recorded by linking each task's
 id to it with --link.
 
-Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
-task's epic.
+Task issue ([I07:E00:W01]): --pr names the pull request that delivers it, open or merged, whose title
+names the task's epic. Its criteria are ready to verify while that pull request is open, since the
+evidence is what the pull request and its planning record carry. The task is delivered, and so
+closable, once that pull request has merged.
 Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
@@ -31,8 +33,10 @@ and every epic row is delivered. Initiatives group and track their epics; delive
 to epics and tasks.
 
 Reported for each acceptance criterion of a task, epic or initiative:
-  - ready to verify: unticked, and every row citing it is delivered (for a task issue, the task);
-  - ticked early: ticked while a row citing it is undelivered.
+  - ready to verify: unticked, and every row citing it is delivered (for a task issue, its pull
+    request is open or merged);
+  - ticked early: ticked while a row citing it is undelivered (for a task issue, while it has no
+    pull request).
 --tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
 Tick a criterion only once it is confirmed to hold. A task is closable when every criterion is ticked
 and every row is delivered. An epic is closable when those hold and every epic base its pull requests
@@ -656,15 +660,19 @@ def main() -> int:
 
     lines, start, end, grid = table(sections)
     delivered: dict[str, bool] = {}
+    verifiable: dict[str, bool] = {}
     citing: dict[int, list[str]] = {}
     rows = []
     if kind == 'task':
         pr = named.get(args.pr) if args.pr else None
-        if args.pr and not (pr and pr.get('merged_at')):
-            sys.exit(f'--pr {args.pr}: no merged pull request naming I{initiative}:E{epic}')
+        if args.pr and not pr:
+            sys.exit(f'--pr {args.pr}: no pull request naming I{initiative}:E{epic}')
+        merged = bool(pr and pr.get('merged_at'))
         if pr:
-            report['linked'].append(f"{task} delivered by #{pr['number']}")
-        delivered[task] = bool(pr)
+            report['linked'].append(f"{task} {'delivered by' if merged else 'in flight on'} "
+                                    f"#{pr['number']}")
+        delivered[task] = merged
+        verifiable[task] = bool(pr)
     else:
         if grid is None or 'Coverage' not in grid[0]:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
@@ -690,15 +698,19 @@ def main() -> int:
         a = label.match(line)
         if a:
             ticked[int(a[1])] = bool(TICKED.match(line))
+    # A task's evidence is its pull request, which is readable while that pull request is open; an
+    # epic's and an initiative's is what their rows have delivered.
+    observable = verifiable if kind == 'task' else delivered
     for n, is_ticked in ticked.items():
         rows_for = [task] if kind == 'task' else citing.get(n, [])
-        done = bool(rows_for) and all(delivered.get(t) for t in rows_for)
+        done = bool(rows_for) and all(observable.get(t) for t in rows_for)
         if not is_ticked and done:
             ready.add(n)
             report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
         if is_ticked and not done:
-            pending = [t for t in rows_for if not delivered.get(t)] or ['no row cites it']
-            report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} undelivered)")
+            pending = [t for t in rows_for if not observable.get(t)] or ['no row cites it']
+            why = 'has no pull request' if kind == 'task' else 'undelivered'
+            report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} {why})")
 
     to_tick = {int(t.strip()[len(tag):]) for t in args.tick.split(',') if t.strip()}
     refused = sorted(to_tick - ready)

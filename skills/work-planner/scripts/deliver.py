@@ -1,13 +1,17 @@
-"""Find the work available to dispatch on a theme board, and reserve or release a task row.
+"""Find the work available to dispatch on a theme board, set what a dispatch settles, and reserve
+or release a task row.
 
 Usage:
-  python3 deliver.py --items items.json --prs prs.json [--others issue-750.json ...] [--date 2026-10-06]
+  python3 deliver.py --items items.json --prs prs.json --links links.json [--others issue-750.json ...] [--date 2026-10-06]
+  python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
+      --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
   python3 deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
-requests as sync.py reads them. An issue a row depends on that is not on the board is given with
---others.
+requests as sync.py reads them. links.json holds the closing issue references GitHub holds for those
+pull requests, as Fetch Pull Request Issue Links writes them, and is where the task issues a pull
+request links are read. An issue a row depends on that is not on the board is given with --others.
 
 A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
 delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
@@ -20,6 +24,10 @@ Description give it; a hold line for each reserved row; a blocked line for a fre
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
 issue not given.
+
+--progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
+take, and the In Review a completed epic takes. The calls are rendered by statuses.py within the
+DISPATCH jurisdiction, which refuses any other Status, a task set In Review, and a removal.
 
 --reserve sets the record folder as each row's single link. The record README links its work item.
 --release frees the row by replacing that folder link with its work-item file link. Both write the
@@ -35,9 +43,12 @@ from datetime import date as day
 from pathlib import Path
 
 from board import Board, rows
-from statuses import key_of, label, pages, status_of
-from format import LINK, TICK, cell, done_mark, id_cell, join_sections, row, row_id, split_sections
-from sync import Unreadable, long_lived_names, plan_rows, pull_requests, table
+from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
+                      key_of, label, pages, status_of)
+from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
+                    row_id, split_sections)
+from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
+                  pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -59,19 +70,9 @@ def is_epic(issue: dict) -> bool:
     return bool(parsed) and bool(parsed[1]) and not parsed[2]
 
 
-def hrefs(ident: str) -> list[str]:
-    return [found[2] for found in LINK.finditer(ident)]
-
-
 def in_flight(ident: str) -> bool:
     """Whether the id links a pull request or a commit, which is work already under way."""
     return any('/pull/' in href or '/commit/' in href for href in hrefs(ident))
-
-
-def reservation(ident: str) -> str | None:
-    """The planning folder the id links, which holds the work. A file in a record is not one."""
-    return next((href for href in hrefs(ident)
-                 if '/artifacts/planning/' in href and not href.endswith('.md')), None)
 
 
 def slug(text: str, words: int = 4) -> str:
@@ -222,6 +223,8 @@ def survey(args: argparse.Namespace) -> int:
         status[key] = status_of(item)
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
     prs = pull_requests(args.prs) if args.prs else []
+    if args.prs:
+        attach_links(prs, args.links)
     lived = long_lived_names(args.project) if args.project else ()
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
     board = Board(issues, [], home, prs)
@@ -281,6 +284,27 @@ def survey(args: argparse.Namespace) -> int:
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, merge: {len(merging)}')
     return 0
+
+
+def place(args: argparse.Namespace) -> int:
+    """Render the Status calls a dispatch settles, within the DISPATCH jurisdiction."""
+    field = StatusField(args.fields, args.out, STATUSES)
+    wanted: dict[int, str] = {}
+    for given, status in ((args.progress, 'In Progress'), (args.review, 'In Review')):
+        for number in (n.strip() for n in (given or '').split(',') if n.strip()):
+            wanted[int(number)] = status
+    on_board = {issue['number']: (key, item_id, held, issue)
+                for key, item_id, held, issue in board_items(args.items)}
+    absent = sorted(set(wanted) - set(on_board))
+    if absent:
+        sys.exit('not on the board: ' + ', '.join(f'#{n}' for n in absent))
+    home = Counter(key[0] for key, _, _, _ in on_board.values()).most_common(1)[0][0]
+    changes = Changes(DISPATCH, args.board, field, args.assignee, ' (the board matches the dispatch)')
+    for number in sorted(wanted):
+        key, item_id, held, issue = on_board[number]
+        changes.place(key, f"{label(key, home)} {issue['title']}", issue,
+                      held, field.settle(wanted[number]), item_id, home)
+    return changes.report()
 
 
 def base_url(header: list[str], body: list[list[str]], given: str | None) -> str:
@@ -348,6 +372,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--items', help='the board items with their Status')
     parser.add_argument('--prs', help='pull requests as JSON lines')
+    parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--others', nargs='*', default=[], help='issues the rows depend on that are off the board')
     parser.add_argument('--epic', help='the epic whose row is reserved or released')
     parser.add_argument('--reserve', help='task ids to hold, e.g. W01,W02')
@@ -356,6 +381,12 @@ def main() -> int:
     parser.add_argument('--date', help='the day the record is opened, today by default')
     parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branches in config/branches')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
+    parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
+    parser.add_argument('--review', help='epics to set In Review, e.g. 943')
+    parser.add_argument('--board', help='the board, e.g. users/{owner}/projectsV2/9')
+    parser.add_argument('--fields', help="the board's fields")
+    parser.add_argument('--out', help='directory for the Status body files')
+    parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
@@ -367,6 +398,13 @@ def main() -> int:
         return edit(args)
     if not args.items:
         sys.exit('--items is required')
+    if args.progress or args.review:
+        for name in ('board', 'fields', 'out', 'assignee'):
+            if not getattr(args, name):
+                sys.exit(f'--{name} is required with --progress or --review')
+        return place(args)
+    if args.prs and not args.links:
+        sys.exit('--prs needs --links, which holds the issue each pull request links')
     return survey(args)
 
 
