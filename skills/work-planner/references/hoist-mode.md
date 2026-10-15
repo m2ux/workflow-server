@@ -35,9 +35,8 @@ Command operations use the [Command Conventions](../SKILL.md#command-conventions
      - Subsume the orphan.
    - **New task.**
      - Draft the row and its criteria in the epic.
-     - Write the row's [task plan](work-breakdown.md#task-plan), its acceptance criteria drafted from the orphan's outcomes and ratified with the user as an [Interview](interview.md).
      - Number it where it can start, with [Renumber Tasks](commands.md#renumber-tasks) when a task no pull request names must move.
-     - Keep or subsume the orphan. A kept orphan becomes the row's issue, taking those criteria as its own.
+     - Keep or subsume the orphan.
    - **New epic.**
      - Draft the epic from the [epic template](../templates/epic.md) and its row in the initiative, with the initiative criteria it serves.
      - Follow [Plan Mode](plan-mode.md)'s steps for creating and linking an epic.
@@ -78,7 +77,6 @@ A placement is the choice of where an orphan's work goes. The table states what 
   - The orphan becomes the new task, epic or initiative issue.
   - It takes every formatting rule of that kind: the title form, the labels, its template, and the scheme's rules for bodies, code references and succinct items.
   - An initiative row links its epic issue. Task rows follow [Task ids](work-breakdown.md#task-delivery); a task issue's Development field links its delivery pull request.
-  - A kept orphan is the row's issue from the hoist, so its dispatch raises none, as [Deliver Mode](deliver-mode.md#rules) states. Its criteria are the ones the row's task plan carries.
 - **Original body.**
   - A kept or left orphan's body is rewritten, so its body before the rewrite goes to a comment on the orphan first.
   - The comment opens with a line naming the layout it took: `The body before this issue took the [I07:E01:W04] layout:`, or `the standalone layout:` for a left orphan.
@@ -90,8 +88,8 @@ A placement is the choice of where an orphan's work goes. The table states what 
   - The orphan is then closed with a comment naming the issue that took it.
 - **Keep or subsume.**
   - An orphan that already references a [planning record](commands.md#add-planning-record), such as workflow-server's `2026-09-10-activity-representation`, is subsumed: the taking issue's References cite that folder beside the orphan, and the orphan closes.
-  - Otherwise keep the orphan as the row's issue when its body already states the problem and design that issue carries.
-  - Subsume it when its detail fits in rows, criteria and a reference. The row's own issue is then raised at dispatch, as [Deliver Mode](deliver-mode.md#raise-task-issue) states.
+  - Otherwise keep the orphan when its work needs discussion or evidence of its own, as a task with its own issue does.
+  - Subsume it when its detail fits in rows, criteria and a reference.
 - **Left.**
   An orphan left in place keeps no agent-engineering prefix, and takes the formatting rules of a standalone issue: the title form, the [issue template](../templates/issue.md), and the scheme's rules for bodies, code references and succinct items.
 - **Bodies state the result.**

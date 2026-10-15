@@ -135,7 +135,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 - **One board per theme.**
   - Its title is the theme's name, a colon, and its description. In the example, Canon is `Canon: Definitions Checked Against the Design Canon`.
   - It is linked to the repository.
-  - It holds the theme's initiatives, their epics, and a task issue for each row in flight, which [Deliver Mode](references/deliver-mode.md#raise-task-issue) raises as it dispatches that row.
+  - It holds the theme's initiatives, their epics and their task issues.
 - **Assignees.**
   An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee.
 - **Standalone issues.**  A standalone issue sits on no board.

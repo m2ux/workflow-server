@@ -39,12 +39,10 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 7. **Check criteria.**
    Check every acceptance criterion of the issues being aligned against [Requirement characteristics](requirement-characteristics.md), through the [Verifiable](review-criteria.md#verifiable) rule, and report each that fails it. This mode's Criteria check rule says when the alignment is clear.
    - Align them with the sources the initiative's References mark, as the [Sources](review-criteria.md#sources) criteria define, and report each departure and each gap. Draft the criterion a gap calls for, and decide it with the user as an [Interview](interview.md).
-8. **Task criteria.**
-   For each open epic being aligned, read the [task plan](work-breakdown.md#task-plan) of every row no pull request delivers, and apply this mode's Task criteria rule to each that is absent or states none.
-9. **Check Dependencies.**
+8. **Check Dependencies.**
    - Check them whenever an initiative or epic is aligned: take the initiative's and every epic's body with [Fetch Body](commands.md#fetch-body), and run [Check Dependencies](commands.md#check-dependencies).
    - Put each problem it reports to the user as an [Interview](interview.md). An initiative Depends on cell takes the epics it derives.
-10. **Coverage.**
+9. **Coverage.**
    For each epic being aligned, [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests), [Fetch Pull Request Issue Links](commands.md#fetch-pull-request-issue-links), and run [Sync Epic](commands.md#sync-epic) with `--fix`.
    - **Unmet.**
      Each task [Sync Epic](commands.md#sync-epic) reports unmet is a gap, as this mode's Gap rule states.
@@ -60,7 +58,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - **Ticked early.**
      An initiative criterion [Sync Mode](sync-mode.md) reports ticked early: it is ticked while an epic that cites it is undelivered.
    Put each of those to the user as an [Interview](interview.md). Verifying and ticking it is [Sync Mode](sync-mode.md). A Done change the fix file writes is applied with [Patch Body](commands.md#patch-body), without asking. The report follows [Coverage Reports](work-breakdown.md#coverage-reports).
-11. **Branches.**
+10. **Branches.**
     For an initiative being aligned, bring each open epic's branches to the structure the [Work Breakdown Guide](work-breakdown.md#delivery) states. Check [Epic prerequisites](work-breakdown.md#epic-prerequisites) before cutting a missing branch as [Missing branches](work-breakdown.md#missing-branches) states.
     - [List Long-Lived Branches](#list-long-lived-branches) prints the names, as the [Work Breakdown Guide](work-breakdown.md#delivery) defines. When it reports them unevaluable, the branch step stops and that report is the finding.
     - [Fetch Initiative Pull Requests](commands.md#fetch-initiative-pull-requests). [List Epic Bases](commands.md#list-epic-bases) for each open epic.
@@ -70,10 +68,10 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
     - An open pull request whose head is an epic base targets its corresponding long-lived branch.
     - A merged pull request is left as merged.
     - A base that is none of these is put to the user as an [Interview](interview.md).
-12. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
-13. **Review pull requests.**
+11. **Unplaced task issues.** Handle each one as [Unplaced](work-breakdown.md#unplaced) states.
+12. **Review pull requests.**
     Run [Sync Epic](commands.md#sync-epic) for each open epic, and open a reported base as [Review pull request](work-breakdown.md#review-pull-request) states.
-14. **Re-run.**
+13. **Re-run.**
    - Re-run the checks until they report nothing, or until every remaining finding is one the user chose to keep, within this mode's Criteria check rule.
    - Report what changed on each issue, including each finding the criteria check reported.
 
@@ -84,11 +82,6 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 - **Criteria check.**
   - The alignment is not clear while a criterion that fails [Requirement characteristics](requirement-characteristics.md) remains.
   - A finding from that check is not one the user keeps.
-- **Task criteria.**
-  A row whose [task plan](work-breakdown.md#task-plan) is absent or states no acceptance criteria cannot be dispatched, and one already in flight has nothing gating its merge. Draft them at the row's grain from its Description and the epic criteria its Coverage names, to [Plan Mode](plan-mode.md#rules)'s Criteria at creation rule, and decide them with the user as an [Interview](interview.md).
-  - Write them to the task plan, then commit and push the engineering worktree.
-  - A row a session holds, or whose id links an open pull request, then takes its issue with [Raise Task Issue](deliver-mode.md#raise-task-issue). A row still waiting takes none.
-  - A row that already carries an issue has those criteria written into it with [Patch Body](commands.md#patch-body).
 - **Source alignment.**
   - Apply the initiative [Sources](review-criteria.md#sources) criteria to every criterion of the issues being aligned.
   - The alignment is not clear while a marked source stays unread. A source whose link is dead is repaired, or the mark is removed and the criteria it bound are decided with the user.

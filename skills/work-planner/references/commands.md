@@ -261,7 +261,7 @@ Shared report meanings and inputs for matching pull requests and syncing epics.
 
 Records the pull request that delivers a task issue, open or merged, ticks its criteria, and reports whether it is closable.
 
-- Its criteria are ready to verify while that pull request is open, since the evidence is what the pull request and its planning record carry. Ticking them is what lets the pull request merge, as [Task Merge](work-breakdown.md#task-merge) states.
+- Its criteria are ready to verify while that pull request is open, since the evidence is what the pull request and its planning record carry.
 - The task is delivered, and so closable, once that pull request has merged.
 
 ```bash

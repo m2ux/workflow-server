@@ -174,28 +174,31 @@ class Survey(unittest.TestCase):
         self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
 
-    def test_an_unticked_task_criterion_withholds_the_merge(self):
+    def test_an_unticked_task_criterion_allows_a_passed_plan_to_merge(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
                                (task(637, True, False), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
                         held=(links(950, 637),))
-        self.assertIn('blocked merge #950 I07:E00: base i07/e00/main, AC2 unticked on #637', output)
-        self.assertIn('merge: 0', output)
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
 
-    def test_a_pull_request_linking_no_task_issue_withholds_the_merge(self):
+    def test_a_passed_plan_without_a_task_issue_can_merge(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertIn('blocked merge #950 I07:E00: base i07/e00/main, links no task issue', output)
-        self.assertIn('merge: 0', output)
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
 
-    def test_a_task_issue_without_criteria_withholds_the_merge(self):
+    def test_a_task_issue_without_criteria_allows_a_passed_plan_to_merge(self):
         bare = issue(637, '[I07:E00:W01] Queue Plan: Work', body='## Overview\n\nWork.\n')
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
                                (bare, 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
                         held=(links(950, 637),))
-        self.assertIn('no acceptance criteria on #637', output)
-        self.assertIn('merge: 0', output)
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
 
     def test_an_open_pass_cell_is_not_merged(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))

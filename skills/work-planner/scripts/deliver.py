@@ -22,9 +22,8 @@ a unit is one session's work.
 Printed: a unit line for each available unit, with the record folder, branch and worktree its ids and
 Description give it; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
-request that targets the epic base when its test plan has passed and every criterion of each task
-issue it links is ticked; a blocked merge line naming what withholds one whose test plan has passed;
-and an unresolved line for an issue not given.
+request that targets the epic base when its test plan has passed; and an unresolved line for an
+issue not given.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic takes. The calls are rendered by statuses.py within the
@@ -43,12 +42,12 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, criteria_met, rows
-from statuses import (DISPATCH, STATUSES, TASK as TASK_TITLE, Changes, StatusField, board_items,
+from board import Board, rows
+from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
-from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
+from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
                     row_id, split_sections)
-from sync import (TICKED, Unreadable, attach_links, links_issue, long_lived_names, plan_rows,
+from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -182,35 +181,8 @@ def plan_passed(body: str) -> bool:
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
-def unticked(issue: dict) -> list[str]:
-    """The acceptance criteria an issue leaves unticked."""
-    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    lines = next((l for h, l in sections if h == 'Acceptance Criteria'), [])
-    return [f'AC{found[1]}' for line in lines
-            if (found := AC.match(line)) and not TICKED.match(line)]
-
-
-def criteria_gate(pull: dict, issues: dict, home: str) -> str:
-    """Why the task issues a pull request links withhold its merge, or '' when they let it through."""
-    tasks = [issue for key, issue in issues.items()
-             if links_issue(pull, key) and TASK_TITLE.match(issue.get('title') or '')]
-    if not tasks:
-        return 'links no task issue'
-    held = []
-    for task in sorted(tasks, key=key_of):
-        left = unticked(task)
-        if left:
-            held.append(f"{', '.join(left)} unticked on {label(key_of(task), home)}")
-        elif not criteria_met(task):
-            held.append(f'no acceptance criteria on {label(key_of(task), home)}')
-    return '; '.join(held)
-
-
-def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
-                 home: str) -> tuple[list[str], list[str]]:
-    """Open pull requests that target the epic base, split by whether they may merge.
-
-    A merge needs its test plan passed and every criterion of each task issue it links ticked."""
+def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
+    """Open pull requests that target the epic base and whose test plan has passed."""
     epics = {}
     for issue in issues.values():
         parsed = tags(issue.get('title') or '')
@@ -232,13 +204,8 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
             continue
         if not plan_passed(pull.get('body') or ''):
             continue
-        where = f"#{pull['number']} I{initiative}:E{epic}: base {base}"
-        gate = criteria_gate(pull, issues, home)
-        found.append((pull['number'], bool(gate), f'  blocked merge {where}, {gate}' if gate
-                      else f'  merge {where}'))
-    ordered = sorted(found)
-    return ([line for _, blocked, line in ordered if not blocked],
-            [line for _, blocked, line in ordered if blocked])
+        found.append((pull['number'], f"  merge #{pull['number']} I{initiative}:E{epic}: base {base}"))
+    return [line for _, line in sorted(found)]
 
 
 def survey(args: argparse.Namespace) -> int:
@@ -310,8 +277,8 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, branch {name["branch"]}{base}, worktree {name["worktree"]}')
             available += 1
-    merging, withheld = ready_merges(issues, prs, lived, home)
-    for line in merging + withheld:
+    merging = ready_merges(issues, prs, lived)
+    for line in merging:
         print(line)
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')

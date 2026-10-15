@@ -28,7 +28,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - The initiative closes as the [Work Breakdown Guide](work-breakdown.md#delivery) defines.
    - Complete Joins as the [Work Breakdown Guide](work-breakdown.md#tables) defines. For each pair [Check Dependencies](commands.md#check-dependencies) prints, name each other in Joins, or name the pair in the planning record with why it does not share a pull request. No issue is created while a printed pair has neither.
    - Complete cross-epic dependencies to rows, as the [Work Breakdown Guide](work-breakdown.md#tables) defines, before any issue of the epic is created.
-   - Write one file per task, as the [Task plan](work-breakdown.md#task-plan) section defines, its acceptance criteria written to this mode's Criteria at creation rule. They are what the row's issue carries when its unit is dispatched, so a row is not planned without them.
+   - Write one file per task, as the [Work item](work-breakdown.md#work-item) section defines.
    - Apply [Task grain](work-breakdown.md#tables) and [Test Coverage](work-breakdown.md#test-coverage) to each task.
 4. **Review the drafts.**
    - Read the drafts as [Fetch](review-passes.md#fetch) states.
@@ -40,7 +40,8 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    1. the initiative, with a placeholder link for each epic's row id, such as `[E00](#E00)`;
    2. the epics in dependency order, with placeholders in Depends on for any epic it cites that does not exist yet;
    3. a [Patch Body](commands.md#patch-body) replacing every remaining placeholder, in the initiative and in any epic that holds one. Grep the local files for `#E[0-9]` until none is left;
-   4. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
+   4. a task issue from the [task template](../templates/task.md) for each task that needs one, its acceptance criteria written to this mode's Criteria at creation rule;
+   5. [Check Format](commands.md#check-format) with `--fix` on each epic, which links its epic references to their issues, and on the initiative, which gives each row its epic's title name; a [Patch Body](commands.md#patch-body) from each fixed body.
 6. **Review.**  Run the [Review Passes](review-passes.md):
    - Fetch the issues as [Fetch](review-passes.md#fetch) states.
    - The goal pass, whenever the goal, a criterion, a Problem, a Proposal, or an epic changes;
@@ -51,7 +52,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 7. **Keep in step.**
    - After each round, patch every changed issue, update the planning record and the discussion pull request's body from the [pull request template](../templates/pull-request.md), then commit and push.
    - Titles change with renumbering, and Coverage cells change when criteria are renumbered.
-   - The [task plans](work-breakdown.md#task-plan) stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
+   - The task files stay the tasks. A renamed or added task is a file. A removed task drops its file. The README lists the files that remain.
    - A task issue [Sync Epic](commands.md#sync-epic) reports unplaced is handled as [Unplaced](work-breakdown.md#unplaced) states.
 8. **Ready the epic.**
    Ready each epic before it starts. No task of the epic starts until all hold:
@@ -73,9 +74,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
 
 - **Criteria at creation.**
   - An acceptance criterion complies with [Requirement characteristics](requirement-characteristics.md), the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria), and, for an initiative, its [Acceptance Criteria](review-criteria.md#initiative-acceptance-criteria), when it is written.
-  - The issue that carries it is created only after the criterion complies. A task's criteria live in its [task plan](work-breakdown.md#task-plan) until its unit is dispatched, and comply when they are written there.
-- **Task issues.**
-  A row's issue is raised when its unit is dispatched, as [Deliver Mode](deliver-mode.md#raise-task-issue) states, so the board holds an issue for the rows in flight. This mode raises none.
+  - The issue that carries it is created only after the criterion complies.
 - **The corpus audit.**
   An epic whose tasks change workflow definitions carries the [corpus audit criterion](work-breakdown.md#corpus-audit), with a final task row that delivers it.
 - **The deferred-debt epic.**

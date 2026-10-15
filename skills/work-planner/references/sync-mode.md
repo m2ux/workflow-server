@@ -30,7 +30,7 @@ Before matching pull requests or syncing epics, read [Delivery State](commands.m
    - Put any match that is not clear to the user as an [Interview](interview.md).
 5. **Sync each task issue.**
    - Run [Sync Task Issue](commands.md#sync-task-issue) with the pull request that delivers it, open or merged.
-   - Verify and tick its criteria as in steps 7–8. An open pull request's evidence is what it and its planning record carry, and ticking those criteria is what lets it merge, as [Task Merge](work-breakdown.md#task-merge) states.
+   - Verify and tick its criteria as in steps 7–8. An open pull request's evidence is what it and its planning record carry.
    - Record the pull request on it once it has merged, with [Comment on Issue](commands.md#comment-on-issue): `Delivered by #950.`
    - [Close as Completed](commands.md#close-as-completed) when it reports closable, which waits on the merge.
 6. **Sync each epic.**
