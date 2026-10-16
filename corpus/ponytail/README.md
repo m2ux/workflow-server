@@ -45,7 +45,7 @@ graph TD
 
 ## Activities
 
-| # | Activity | Description |
+| # | Name | Description |
 |---|----------|-------------|
 | 01 | [Intake and Scope](activities/01-intake-and-scope.yaml)| Capture the task and target, set intensity and scope, and trace the real end-to-end flow before climbing |
 | 02 | [Apply Ladder](activities/02-apply-ladder.yaml)| Climb to the minimal solution, mark deliberate simplifications, leave one runnable check, and clear the safety floor |
@@ -57,7 +57,7 @@ graph TD
 
 ## Techniques
 
-| Technique | Capability |
+| Name | Description |
 |-----------|------------|
 | [scope-intake](techniques/scope-intake.md) | Capture and trace the change before a rung is chosen |
 | [apply-ladder](techniques/apply-ladder.md) | Climb to the minimal solution, mark ceilings, leave one check |
@@ -70,7 +70,7 @@ graph TD
 
 ## Resources
 
-| Resource | Owns |
+| Name | Description |
 |----------|------|
 | [the-ladder](resources/the-ladder.md) | The understand-first trace, the seven rungs, and the safety floor |
 | [review-taxonomy](resources/review-taxonomy.md) | The five over-engineering tags, the finding format, and the scoreboard |
