@@ -17,9 +17,11 @@ Use this workflow when you want to:
 - Surface and track the deliberate simplifications already sitting in a codebase
 - Get an honest accounting of the lean gain without fabricated savings numbers
 
+## Parameters
+
 The lazy lens has two dials:
-* **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built
-* **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
+* **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built. Selected once at intake and held for the pass.
+* **Scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
 
 ---
 
@@ -112,6 +114,3 @@ corpus/ponytail/
 ## Credit
 
 This workflow distills the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set — into the workflow-server model.
-
-- **Invoked for a piece of work.** Intensity is selected once at intake and held for the pass.
-- **Governs what is built.** The lens shapes the code and the artifacts the pass writes, not conversational style.
