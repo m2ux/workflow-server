@@ -20,7 +20,7 @@ Use this workflow when you want to:
 ## Parameters
 
 The lazy lens has two dials:
-* **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built. Selected once at intake and held for the pass.
+* **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built.
 * **Scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
 
 ---
