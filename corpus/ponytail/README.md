@@ -23,7 +23,7 @@ The lazy lens has two dials:
 
 ---
 
-## [Graph](workflow.yaml)
+## Graph
 
 ```mermaid
 graph TD
@@ -70,10 +70,10 @@ graph TD
 
 | Resource | Owns |
 |----------|------|
-| [the-ladder.md](resources/the-ladder.md) | The understand-first trace, the seven rungs, and the safety floor |
-| [review-taxonomy.md](resources/review-taxonomy.md) | The five over-engineering tags, the finding format, and the scoreboard |
-| [ponytail-marker-convention.md](resources/ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` marker convention and `no-trigger` flag |
-| [honesty-boundary.md](resources/honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure |
+| [the-ladder](resources/the-ladder.md) | The understand-first trace, the seven rungs, and the safety floor |
+| [review-taxonomy](resources/review-taxonomy.md) | The five over-engineering tags, the finding format, and the scoreboard |
+| [ponytail-marker-convention](resources/ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` marker convention and `no-trigger` flag |
+| [honesty-boundary](resources/honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure |
 
 ---
 
