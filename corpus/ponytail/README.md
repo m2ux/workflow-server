@@ -8,27 +8,22 @@
 
 Ponytail encodes the discipline of the lazy senior developer — lazy meaning *efficient*, not careless. The best code is the code that is never written, because every line that exists is a line to read, test, secure, and maintain. The workflow drives a change toward the leanest rung of [the ladder](resources/the-ladder.md#rungs) that still works, while holding a [safety floor](resources/the-ladder.md#safety-floor) that no shortcut may cross, and records each deliberate simplification as a [ponytail marker](resources/ponytail-marker-convention.md#convention) so the debt is tracked rather than forgotten.
 
-**Use this workflow when you want to:**
+## When to use
+
+Use this workflow when you want to:
 
 - Build a change at the leanest rung that solves the real problem, not the imagined one
 - Review a diff or a whole repo for over-engineering and quantify the cut
 - Surface and track the deliberate simplifications already sitting in a codebase
 - Get an honest accounting of the lean gain without fabricated savings numbers
 
-The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built; **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
+The lazy lens has two dials:
+* **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built
+* **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
 
 ---
 
-## Adaptation notes (skill → workflow)
-
-This workflow distills the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set — into the workflow-server model.
-
-- **Invoked for a piece of work.** Intensity is selected once at intake and held for the pass.
-- **Governs what is built.** The lens shapes the code and the artifacts the pass writes, not conversational style.
-
----
-
-## Workflow Flow
+## [Graph](workflow.yaml)
 
 ```mermaid
 graph TD
@@ -50,40 +45,28 @@ graph TD
 
 | # | Activity | Description |
 |---|----------|-------------|
-| 01 | **Intake and Scope** (`intake-and-scope`) | Capture the task and target, set intensity and scope, and trace the real end-to-end flow before climbing |
-| 02 | **Apply Ladder** (`apply-ladder`) | Climb to the minimal solution, mark deliberate simplifications, leave one runnable check, and clear the safety floor |
-| 03 | **Over-Engineering Review** (`over-engineering-review`) | Tag the change's over-engineering one line per finding, closing with a net line-count scoreboard |
-| 04 | **Repo Audit** (`repo-audit`) | Hunt repo-wide over-engineering biggest-cut-first (gated; `required: false`) |
-| 05 | **Harvest Debt and Report** (`harvest-debt-and-report`) | Harvest ponytail markers into a debt ledger and append an honest gain scoreboard |
-
-**Detailed documentation:** See [activities/README.md](activities/README.md) and the per-activity YAML definitions.
+| 01 | [Intake and Scope](activities/01-intake-and-scope.yaml)| Capture the task and target, set intensity and scope, and trace the real end-to-end flow before climbing |
+| 02 | [Apply Ladder](activities/02-apply-ladder.yaml)| Climb to the minimal solution, mark deliberate simplifications, leave one runnable check, and clear the safety floor |
+| 03 | [Over-Engineering Review](activities/03-over-engineering-review.yaml)| Tag the change's over-engineering one line per finding, closing with a net line-count scoreboard |
+| 04 | [Repo Audit](04-repo-audit.yaml) | Hunt repo-wide over-engineering biggest-cut-first (gated; `required: false`) |
+| 05 | [Harvest Debt and Report](activities/05-harvest-debt-and-report.yaml) | Harvest ponytail markers into a debt ledger and append an honest gain scoreboard |
 
 ---
 
 ## Techniques
 
-The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
-
-The lean-coding capability is owned by standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract and bound bare as `<op>`.
-
 | Technique | Capability |
 |-----------|------------|
-| `scope-intake` | Capture and trace the change before a rung is chosen |
-| `apply-ladder` | Climb to the minimal solution, mark ceilings, leave one check |
-| `review-over-engineering` | Tag a change's over-engineering with a net-lines scoreboard |
-| `audit-repo` | Hunt repo-wide over-engineering biggest-cut-first |
-| `harvest-debt` | Harvest ponytail markers into a debt ledger |
-| `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
-
-`scope-intake` also reaches the shared [`gitnexus`](/gitnexus/techniques/TECHNIQUE.md) `query` / `context` techniques for flow tracing when the codebase is indexed.
-
-**Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
+| [scope-intake](techniques/scope-intake.md) | Capture and trace the change before a rung is chosen |
+| [apply-ladder](techniques/apply-ladder.md) | Climb to the minimal solution, mark ceilings, leave one check |
+| [review-over-engineering](techniques/review-over-engineering.md) | Tag a change's over-engineering with a net-lines scoreboard |
+| [audit-repo](techniques/audit-repo.md) | Hunt repo-wide over-engineering biggest-cut-first |
+| [harvest-debt](techniques/harvest-debt.md) | Harvest ponytail markers into a debt ledger |
+| [report-gain](techniques/report-gain.md) | Append an honesty-bounded gain scoreboard to the ledger |
 
 ---
 
 ## Resources
-
-The reference files carry the discipline the techniques apply; each artifact a pass writes also has a creation guide, catalogued in [resources/README.md](resources/README.md).
 
 | Resource | Owns |
 |----------|------|
@@ -91,8 +74,6 @@ The reference files carry the discipline the techniques apply; each artifact a p
 | [review-taxonomy.md](resources/review-taxonomy.md) | The five over-engineering tags, the finding format, and the scoreboard |
 | [ponytail-marker-convention.md](resources/ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` marker convention and `no-trigger` flag |
 | [honesty-boundary.md](resources/honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure |
-
-**Detailed documentation:** See [resources/README.md](resources/README.md) for the catalog.
 
 ---
 
@@ -125,3 +106,12 @@ corpus/ponytail/
     ├── ponytail-marker-convention.md          # ponytail: marker convention + no-trigger
     └── honesty-boundary.md                    # Gain-reporting honesty rule
 ```
+
+---
+
+## Credit
+
+This workflow distills the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set — into the workflow-server model.
+
+- **Invoked for a piece of work.** Intensity is selected once at intake and held for the pass.
+- **Governs what is built.** The lens shapes the code and the artifacts the pass writes, not conversational style.
