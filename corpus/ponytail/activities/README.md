@@ -1,13 +1,5 @@
 # Ponytail Activities
 
-> Part of the [Ponytail Lean-Coding Workflow](../README.md)
-
-Activities that carry a coding task from intake through to a harvested debt ledger and honest gain report. The spine is linear — intake, climb, review — with one gated branch: the repo-wide audit is reached only when the lazy lens is set to its widest.
-
-This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, exits, and gates — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
-
----
-
 ### 01. Intake and Scope
 
 Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. **Value:** the change is understood and the lens calibrated before a single simplification is made.
