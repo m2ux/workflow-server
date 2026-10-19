@@ -24,4 +24,4 @@ Three changes answer this. Each skill declares its own directories in a `structu
 | --- | --- |
 | Pull request | [#1455 Layer Stack](https://github.com/m2ux/workflow-server/pull/1455) into `workspace` |
 | The carve-out this narrows | [#1452](https://github.com/m2ux/workflow-server/pull/1452), whose Direction rule permitted a protocol to run a mode |
-| Tested revision | [`ffbe1d71`](https://github.com/m2ux/workflow-server/commit/ffbe1d71de4615ae1fe32aa182012f4e55af2ca5) |
+| Tested revision | [`15eaa92e`](https://github.com/m2ux/workflow-server/commit/15eaa92e43a9a3c4cb58bbb9d30b915c23493a24) |

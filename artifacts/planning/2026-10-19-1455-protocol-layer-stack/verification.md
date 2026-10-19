@@ -1,6 +1,6 @@
 # Protocol Layer Stack — Verification
 
-Every check below ran against `skill/protocol-layer-stack` at [`ffbe1d71`](https://github.com/m2ux/workflow-server/commit/ffbe1d71de4615ae1fe32aa182012f4e55af2ca5), which carries `workspace` merged into the branch, under `scripts/sbx` in the branch's own linked worktree. Each section is one Test Plan row of [#1455](https://github.com/m2ux/workflow-server/pull/1455).
+Every check below ran against `skill/protocol-layer-stack` at [`15eaa92e`](https://github.com/m2ux/workflow-server/commit/15eaa92e43a9a3c4cb58bbb9d30b915c23493a24), which carries `workspace` merged into the branch, under `scripts/sbx` in the branch's own linked worktree. Each section is one Test Plan row of [#1455](https://github.com/m2ux/workflow-server/pull/1455).
 
 ## Baselines
 
@@ -28,7 +28,7 @@ Seventy-three of the tests predate the branch. Three are new and cover the contr
 `python3 -m unittest discover` from `skills/work-planner/test`, covering its documents, scripts and templates.
 
 ```text
-Ran 330 tests in 6.885s
+Ran 332 tests in 6.771s
 
 OK
 ```
