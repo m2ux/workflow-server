@@ -1,6 +1,6 @@
 # Protocol Layer Stack — Verification
 
-Every check below ran against `skill/protocol-layer-stack` at [`aff70f62`](https://github.com/m2ux/workflow-server/commit/aff70f624e9fd070d418fbd6d16f87a928eca41d), under `scripts/sbx` in the branch's own linked worktree. Each section is one Test Plan row of [#1455](https://github.com/m2ux/workflow-server/pull/1455).
+Every check below ran against `skill/protocol-layer-stack` at [`ffbe1d71`](https://github.com/m2ux/workflow-server/commit/ffbe1d71de4615ae1fe32aa182012f4e55af2ca5), which carries `workspace` merged into the branch, under `scripts/sbx` in the branch's own linked worktree. Each section is one Test Plan row of [#1455](https://github.com/m2ux/workflow-server/pull/1455).
 
 ## Baselines
 
