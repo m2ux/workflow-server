@@ -9,7 +9,7 @@ import unittest
 from fixtures import SCRIPTS, issue, pr
 
 sys.path.insert(0, str(SCRIPTS))
-from format import DEPENDENCY, Review  # noqa: E402
+from format import DEPENDENCY, PullRequestReview, Review  # noqa: E402
 
 
 def body(problem: str, proposal: str) -> str:
@@ -381,3 +381,61 @@ class CorpusAudit(unittest.TestCase):
         r = corpus_review('Holds.', 'i01/e00/workflows', corpus=None)
         self.assertFalse(any(WANTED in item for item in r.decide))
 
+
+
+PR_BODY = ('## Overview\n\nWhat it delivers.\n\n## Changes\n\nOne sentence.\n\n'
+           '### Queue Placement\n\n- **What it does.**\n  The behaviour as it is.\n\n'
+           '## Test Plan\n\n| Test | Description | Coverage | Pass |\n| --- | --- | --- | --- |\n'
+           '| T1 | The queue places a row | AC1 | [✓](https://example.com/record#t1) |\n')
+
+
+def reviewed(title: str = '[I07:E00] Queue Placement', body: str = PR_BODY,
+             head: str = 'i07/e00/w01-queue-plan', base: str = 'i07/e00/main') -> PullRequestReview:
+    review = PullRequestReview(pr(950, title, body=body, head=head, base=base))
+    review.run()
+    return review
+
+
+class PullRequestBody(unittest.TestCase):
+    def test_a_body_in_the_template_passes(self):
+        self.assertEqual(reviewed().decide, [])
+
+    def test_another_shape_names_its_missing_and_extra_sections(self):
+        body = '## What was built\n\nProse.\n\n## Test Plan\n\n| Test | Description | Coverage | Pass |\n' \
+               '| --- | --- | --- | --- |\n| T1 | A check | AC1 | [✓](https://e.com#t1) |\n'
+        decide = reviewed(body=body).decide
+        self.assertIn('required section missing: Overview', decide)
+        self.assertIn('required section missing: Changes', decide)
+        self.assertIn('extra section: What was built', decide)
+
+    def test_changes_without_an_area_heading_is_named(self):
+        body = PR_BODY.replace('### Queue Placement\n\n', '')
+        self.assertIn('Changes names no area: one heading per area, with a bullet per functional change',
+                      reviewed(body=body).decide)
+
+    def test_a_result_without_evidence_is_named(self):
+        body = PR_BODY.replace('[✓](https://example.com/record#t1)', '✓')
+        self.assertIn('Test Plan T1: a recorded result links its evidence, as [✓](URL#check)',
+                      reviewed(body=body).decide)
+
+    def test_a_criterion_no_check_observes_carries_no_result(self):
+        body = PR_BODY + '| | AC2 observed by nothing | AC2 | ok |\n'
+        self.assertTrue(any('carries a result: ok' in item for item in reviewed(body=body).decide))
+
+    def test_test_plan_columns_are_put_in_template_order(self):
+        body = PR_BODY.replace('| Test | Description | Coverage | Pass |',
+                               '| Test | Pass | Description | Coverage |')
+        review = reviewed(body=body)
+        self.assertIn('Test Plan columns put in template order', review.fixed)
+
+    def test_a_title_prefix_naming_a_task_is_named(self):
+        self.assertTrue(any('names no epic' in item for item in reviewed(title='[I07:E00:W01] Work').decide))
+
+    def test_a_review_pull_request_carries_no_test_plan(self):
+        review = reviewed(head='i07/e00/main', base='main')
+        self.assertTrue(any('review pull request carries no Test Plan' in item for item in review.decide))
+
+    def test_a_review_pull_request_without_one_passes(self):
+        body = PR_BODY.split('## Test Plan')[0] + \
+            '## References\n\n- **R1.** [#120](https://github.com/o/r/pull/120) — the task merged here.\n'
+        self.assertEqual(reviewed(body=body, head='i07/e00/main', base='main').decide, [])

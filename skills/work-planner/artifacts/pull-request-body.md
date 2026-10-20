@@ -18,7 +18,7 @@ One pull request body from supplied change and validation evidence.
 
 1. Populate the body from the [Template](#template) using the change and its evidence, using [Populate Review Body](#populate-review-body) for an epic review.
    - All populated fields must meet [Fields](#fields).
-2. Verify each result link against [Test Plan](#test-plan) before publishing the body.
+2. Check the populated body through [Validate Pull Request Body](#validate-pull-request-body), resolving its findings before publication.
 3. Return the complete body file and any unresolved evidence links to the caller for publication.
 
 ### *Populate* Review Body
@@ -33,6 +33,16 @@ The current change carried by one epic base.
    - Add its functional change under the corresponding area.
    - Cite the merged task pull request as the next reference.
 3. Return the complete updated body file to the caller.
+
+### *Validate* Pull Request Body
+
+The body's format findings against its template.
+
+**Inputs:** Pull request JSON, output body file.
+
+1. Run [Check Pull Request Body](#check-pull-request-body) with the supplied JSON and output file as `--fix`.
+2. Review the returned body against [Fields](#fields).
+3. Return the corrected body, mechanical diff and unresolved findings. A mechanical correction preserves wording; a missing section, an unnamed area and an unevidenced result need the caller's content.
 
 ### *Link* Architecture Overview
 
@@ -121,3 +131,24 @@ A task pull request carries a Test Plan.
 - The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. That evidence meets [Coverage Reports](issue-body.md#coverage-reports).
 - An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
 - One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+
+## Commands
+
+### Check Pull Request Body
+
+Checks one pull request against its template, and with `--fix` writes the body with the mechanical fixes made.
+
+**Inputs:** Pull request JSON and local output body file.
+
+- The input is one pull request as the REST API returns it, whose head and base tell a task pull request from the review of an epic base.
+- Exit status 1 when a finding is left to decide.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/format.py '<pull-request-json-file>' --pull-request --fix '<output-body-file>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/format.py pr-950.json --pull-request --fix fixed-950.md
+```
