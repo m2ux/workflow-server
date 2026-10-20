@@ -23,7 +23,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, a row whose linked issue carries neither this row's [Ixx:Eyy:Wzz] prefix nor type:task as unconverted, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -138,6 +138,14 @@ def compose_id(task: str, text: str, pr: dict, by_url: dict, initiative: str) ->
     return ', '.join(f'[{task}]({href})' for href in [*kept, url])
 
 
+def unconverted(task, issue, initiative, epic):
+    """What a row's linked issue lacks of this epic's task issue."""
+    prefix = f'[I{initiative}:E{epic}:{task}]'
+    labels = [l['name'] if isinstance(l, dict) else l for l in issue.get('labels', [])]
+    return ([f'title carries no {prefix} prefix'] if not issue['title'].startswith(prefix) else []) + \
+           ([] if 'type:task' in labels else ['labels carry no type:task'])
+
+
 def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
     delivered, by_pr = {}, {}
     given = {p['number']: p for p in prs}
@@ -186,6 +194,10 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
             number = issue_numbers[0]
             if number not in by_number:
                 report['note'].append(f'{task}: no --tasks issue for #{number}')
+            else:
+                missing = unconverted(task, by_number[number], initiative, epic)
+                if missing:
+                    report['unconverted'].append(f"{task} links #{number}, whose {' and '.join(missing)}")
             landed = issue_done(by_number[number]) if number in by_number else False
             report['note'].append(f'{task} links task issue #{number}; link its pull request')
         task_issue = by_task.get(task)
@@ -650,8 +662,9 @@ def main() -> int:
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
-    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
+    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'unconverted',
+                              'ready to verify', 'unmet', 'disagreement', 'ticked early', 'ticked', 'done',
+                              'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     lines, start, end, grid = table(sections)

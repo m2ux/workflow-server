@@ -226,7 +226,8 @@ An epic whose tasks change workflow definitions carries this criterion, and a fi
   - A link to an open pull request does not deliver the task.
   - A linked pull request whose title names another epic delivers the task once it has merged. The mismatch is reported, and the row stays open while a criterion its Coverage names is unticked.
 - **Tasks with their own issue.**
-  - A task issue belongs to one epic. Its title carries that epic's prefix.
+  - A task issue belongs to one epic. Its title carries that epic's prefix, and its labels carry `type:task`.
+  - A row's linked issue carrying neither is a task of this epic in the table alone, which [Delivery Findings](epic.md#delivery-findings) reports as unconverted. It takes the task's title, body and label before the row is delivered.
   - When that epic's table has no row for its id, the issue is unplaced. Once the row exists, that epic's planning manages the issue.
   - The row links the pull request, not the issue.
   - The pull request's Development field links the issue as [Issue Links](pull-request.md#issue-links) state.

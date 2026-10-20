@@ -306,6 +306,21 @@ class TaskLinks(unittest.TestCase):
         self.assertIn('ready to verify: AC1 (W01)', done.stdout)
         self.assertIn('note: W01 links task issue #3; link its pull request', done.stdout)
 
+    def test_a_row_linking_an_unprefixed_unlabelled_issue_is_unconverted(self):
+        task = issue(3, 'A Mark Reaches the Bundle', labels=('tech-debt',))
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, _ = self.run_sync(epic, [], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unconverted: W01 links #3, whose title carries no [I01:E00:W01] prefix '
+                      'and labels carry no type:task', done.stdout)
+
+    def test_a_row_linking_its_own_task_issue_is_converted(self):
+        task = issue(3, '[I01:E00:W01] Task: Done', labels=('type:task',))
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, _ = self.run_sync(epic, [], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('unconverted:', done.stdout)
+
 
 class DoneColumn(unittest.TestCase):
     def test_a_missing_done_column_is_added_empty(self):

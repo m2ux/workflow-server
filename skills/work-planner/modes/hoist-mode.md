@@ -39,7 +39,8 @@ The main path meets [Outcomes](#outcomes).
    - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records: [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue.
    - Resume review.
 6. **Review.**
-   - Run [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) on every issue the hoist changed or created.
+   - Run [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) on every issue the hoist placed, changed or created, with the field conditions of the kind its destination gives it.
+     - An issue a placement kept, whose title, body and labels are still the ones it was raised with, is a placement left unfinished: run [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for it, then validate the saved body.
    - Run [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) on each initiative that gained a task or epic.
    - Resolve each finding as [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) returns it: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states.
    - Apply confirmed body corrections through [Apply Body Corrections](../artifacts/issue-body.md#apply-body-corrections).

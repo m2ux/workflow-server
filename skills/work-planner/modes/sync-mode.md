@@ -14,6 +14,7 @@ Read these files first.
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
 - [Epic](../artifacts/epic.md)
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
+- [Placement](../artifacts/placement.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Board](../artifacts/board.md)
 - [Understand Mode](understand-mode.md)
@@ -88,6 +89,10 @@ The main path meets [Outcomes](#outcomes).
      - **Uncited.**
        - Set the link with [Link Pull Request to Issue](../artifacts/pull-request.md#link-pull-request-to-issue).
        - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
+     - **Unconverted.**
+       - Run [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) with that issue identity, the task kind, and the evidence and design its body carries.
+       - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the saved issue.
+       - Repeat Record Epic Delivery with the refreshed task records.
      - **Note.**
        - Link the pull request as in the match step.
      - **Unplaced.**
