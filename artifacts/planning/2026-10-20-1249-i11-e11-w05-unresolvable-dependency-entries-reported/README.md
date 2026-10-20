@@ -14,6 +14,7 @@ The two belong together because they are one report read two ways. A planner who
 | --- | --- |
 | [W05](w05.md) | The queue's third outcome for an entry it cannot resolve |
 | [W06](w06.md) | The advisory's two resolutions and the record check behind them |
+| [Tests](tests.md) | Each check the criteria require, and what its run observed |
 
 ## Links
 
