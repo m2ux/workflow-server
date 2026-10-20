@@ -439,3 +439,22 @@ class PullRequestBody(unittest.TestCase):
         body = PR_BODY.split('## Test Plan')[0] + \
             '## References\n\n- **R1.** [#120](https://github.com/o/r/pull/120) — the task merged here.\n'
         self.assertEqual(reviewed(body=body, head='i07/e00/main', base='main').decide, [])
+
+    def test_an_integration_branch_merging_its_long_lived_branch_is_no_review(self):
+        body = PR_BODY.split('## Test Plan')[0] + \
+            '## References\n\n- **R1.** [#120](https://github.com/o/r/pull/120) — the task merged here.\n'
+        self.assertIn('required section missing: Test Plan', reviewed(body=body, head='i10/main', base='main').decide)
+
+    def test_a_test_plan_without_a_separator_keeps_every_row(self):
+        body = ('## Overview\n\nWhat it delivers.\n\n## Changes\n\nOne sentence.\n\n'
+                '### Queue Placement\n\n- **What it does.**\n  The behaviour as it is.\n\n'
+                '## Test Plan\n\n| Test | Pass | Description | Coverage |\n'
+                '| T1 | [✓](https://example.com/record#t1) | The queue places a row | AC1 |\n'
+                '| T2 | [✓](https://example.com/record#t2) | The queue holds a row | AC2 |\n')
+        review = PullRequestReview(pr(950, '[I07:E00] Queue Placement', body=body,
+                                      head='i07/e00/w01-queue-plan', base='i07/e00/main'))
+        fixed = review.run()
+        self.assertEqual(review.decide, [])
+        self.assertIn('Test Plan separator added under the header', review.fixed)
+        self.assertIn('| T1 |', fixed)
+        self.assertIn('| T2 |', fixed)

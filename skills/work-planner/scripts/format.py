@@ -8,10 +8,11 @@ Usage:
 
 With --pull-request the input is a pull request as `gh api repos/{owner}/{repo}/pulls/950` returns it,
 and the format comes from artifacts/pull-request-body.md: its sections, their order, and its Test Plan
-columns. A pull request whose head is an epic base, whose last segment is the branch it targets, is the
-review of that epic and carries no Test Plan. Fixed: sections put in template order, Test Plan columns
-put in template order and missing ones added empty, rows padded to the header width. Printed as a title
-fix: a prefix separating its levels with spaces. Left to decide: a title prefix naming anything but an
+columns. A pull request whose head is an epic base, `iNN/eYY/<branch>`, merging into the branch that
+base names, is the review of that epic and carries no Test Plan. Fixed: sections put in template order,
+Test Plan columns put in template order and missing ones added empty, rows padded to the header width,
+and a table's separator supplied under its header. Printed as a title fix: a prefix separating its
+levels with spaces. Left to decide: a title prefix naming anything but an
 epic, or a title with no purpose after it; a missing, extra or out-of-template section; a Changes
 section naming no area; a review carrying a Test Plan; a Test Plan with no table or a column outside the
 template; a result recorded without a link to its evidence; a result on a row naming a criterion no check
@@ -124,6 +125,8 @@ OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
+SEPARATOR = re.compile(r':?-{3,}:?')
+EPIC_HEAD = re.compile(r'i\d\d/e\d\d/(.+)')
 DEPENDENCY = {
     'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d:W\d\d|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
     'initiative': re.compile(r'E\d\d|I\d\d:E\d\d|#\d+'),
@@ -160,6 +163,17 @@ def cells(line: str) -> list[str]:
 
 def row(values: list[str]) -> str:
     return '|' + '|'.join(f' {v} ' if v else ' ' for v in values) + '|'
+
+
+def table_rows(lines: list[str], start: int, end: int) -> tuple[list[str], list[list[str]], bool]:
+    """A table's header cells, its data rows, and whether the header carries its separator.
+
+    The separator is the alignment line a Markdown table renders from. A table written
+    without one holds a data row where the separator would sit, so the rows begin at the
+    header's next line and the rewrite supplies the separator."""
+    separator = start + 1 < end and all(SEPARATOR.fullmatch(c) for c in cells(lines[start + 1]))
+    first = start + 2 if separator else start + 1
+    return cells(lines[start]), [cells(l) for l in lines[first:end]], separator
 
 
 def template_body(kind: str) -> str:
@@ -644,7 +658,7 @@ class Review:
         end = start
         while end < len(lines) and lines[end].startswith('|'):
             end += 1
-        header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
+        header, rows, separator = table_rows(lines, start, end)
         unknown = [c for c in header if c not in columns]
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
@@ -724,9 +738,11 @@ class Review:
             ident = id_cell(columns, r)
             if not pattern.fullmatch(id_form(ident)):
                 self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: {row_id(ident)}')
-        table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
-        if header == columns and padded == rows:
+        if separator and header == columns and padded == rows:
             return lines
+        if not separator:
+            self.fixed.append('Work Breakdown separator added under the header')
+        table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
         return lines[:start] + table + lines[end:]
 
     def check_prose(self, lines: list[str]) -> None:
@@ -914,10 +930,11 @@ class PullRequestReview(Review):
     kind = 'pull-request'
 
     def review_body(self) -> bool:
-        """The pull request merges an epic base, whose last segment is its target."""
+        """The pull request merges an epic base, iNN/eYY/<branch>, into the branch it names."""
         head = (self.issue.get('head') or {}).get('ref') or ''
         base = (self.issue.get('base') or {}).get('ref') or ''
-        return bool(head) and head != base and head.rsplit('/', 1)[-1] == base
+        m = EPIC_HEAD.fullmatch(head)
+        return bool(m) and bool(base) and m[1] == base
 
     def run(self) -> str:
         self.number = None
@@ -982,7 +999,7 @@ class PullRequestReview(Review):
         end = start
         while end < len(lines) and lines[end].startswith('|'):
             end += 1
-        header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
+        header, rows, separator = table_rows(lines, start, end)
         unknown = [c for c in header if c not in columns]
         if unknown:
             self.decide.append(f'Test Plan column not in the template: {", ".join(unknown)}')
@@ -1002,8 +1019,10 @@ class PullRequestReview(Review):
                 self.fixed.append('Test Plan columns put in template order')
             padded = [[r[header.index(c)] if c in header else '' for c in columns] for r in padded]
         self.check_results(padded, columns)
-        if header == columns and padded == rows:
+        if separator and header == columns and padded == rows:
             return lines
+        if not separator:
+            self.fixed.append('Test Plan separator added under the header')
         return lines[:start] + [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded] + lines[end:]
 
     def check_results(self, rows: list[list[str]], columns: list[str]) -> None:
