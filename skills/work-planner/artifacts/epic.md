@@ -72,7 +72,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Unmerged | An epic base its pull requests target that has not merged into its long-lived branch, once every task is delivered and every criterion is ticked. A draft pull request is named draft. |
 | References | A review pull request whose cited pull requests differ from the task pull requests merged into its base. |
 | Uncited | A linked pull request whose task has its own issue and does not link it, or a review pull request that does not link the epic's issue. |
-| Unconverted | A row whose linked issue carries neither that row's prefix nor `type:task`, so the issue is a task of this epic in the table alone. |
+| Unconverted | A row whose linked issue lacks that row's prefix or `type:task`, so the issue is a task of this epic in the table alone. The finding names what the issue lacks. |
 | Note | A row that links its task issue. |
 | Unplaced | A task issue of this epic whose id is not a row. |
 | Open questions | The epic's Open Questions section remains. |

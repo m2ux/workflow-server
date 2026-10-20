@@ -118,7 +118,7 @@ One pull request created or updated from supplied content and metadata.
 
 **Inputs:** Repository, optional pull request number, task, epic or planning-discussion kind, body file and selected title, head or base changes, and, for a created delivery pull request, its delivery issue identity, the repository setting confirmed for the session and a link-snapshot destination.
 
-1. Check the supplied body against its template through [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body), with a record carrying the title, body, head and base being published.
+1. When the publication supplies a body, check it against its template through [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body), with a record carrying the title, body, head and base being published.
    - Publish the corrected body it returns.
    - Resolve each remaining finding before the body reaches the tracker.
 2. For creation, run [Open Task Pull Request](#open-task-pull-request), [Open Epic Pull Request](#open-epic-pull-request) or [Open Discussion Pull Request](#open-discussion-pull-request) for the supplied kind, body, title, head and base, preserving epic and discussion draft state.

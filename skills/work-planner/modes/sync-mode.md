@@ -90,7 +90,7 @@ The main path meets [Outcomes](#outcomes).
        - Set the link with [Link Pull Request to Issue](../artifacts/pull-request.md#link-pull-request-to-issue).
        - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
      - **Unconverted.**
-       - Run [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) with that issue identity, the task kind, and the evidence and design its body carries.
+       - Run [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) with that issue identity, the task kind, this epic and the row's id, and the evidence and design its body carries.
        - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the saved issue.
        - Repeat Record Epic Delivery with the refreshed task records.
      - **Note.**
