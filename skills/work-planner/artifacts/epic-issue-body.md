@@ -255,6 +255,8 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - `--project` is a checkout of the project. Without the long-lived branch names, an epic that would otherwise be closable is not.
 - `--link` names each task id and the pull request number it links. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
 
+- `--expect` is the copy of the body the derivation read, and refuses an issue that has changed since, as [Concurrent Edits](issue.md#concurrent-edits) states.
+
 `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs. Pass each task JSON file as a separate argument after `--tasks`.
 
 ```bash
@@ -272,6 +274,8 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 Ticks confirmed epic criteria, refusing any not ready to verify, and ticks completed rows.
 
 **Inputs:** Current epic JSON, pull request and link snapshots, verified criterion ids and destination body file.
+
+- `--expect` is the copy of the body the derivation read, and refuses an issue that has changed since, as [Concurrent Edits](issue.md#concurrent-edits) states.
 
 `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
@@ -293,6 +297,8 @@ Holds each named task row for one session, by setting its record folder as the r
 - `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
 - The caller supplies the planned folder identity; `--date` is the day it is opened.
 
+- `--expect` is the copy of the body the derivation read, and refuses an issue that has changed since, as [Concurrent Edits](issue.md#concurrent-edits) states.
+
 `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
 
 ```bash
@@ -311,6 +317,8 @@ Frees each named task row, by replacing the planning-folder link with its work-i
 
 **Inputs:** Epic JSON, confirmed held task ids, authorized release and output body file.
 - The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
+
+- `--expect` is the copy of the body the derivation read, and refuses an issue that has changed since, as [Concurrent Edits](issue.md#concurrent-edits) states.
 
 `<task-ids>` is a comma-separated list of task ids.
 

@@ -322,6 +322,10 @@ def edit(args: argparse.Namespace) -> int:
         sys.exit(f"title has no [Ixx:Eyy] prefix: {issue.get('title')}")
     initiative, epic, _ = parsed
     body = (issue.get('body') or '').replace('\r\n', '\n')
+    if args.expect:
+        held = Path(args.expect).read_text().replace('\r\n', '\n')
+        if held != body:
+            sys.exit(f"#{issue['number']} has changed since {args.expect}: read it again and repeat this run")
     preamble, sections = split_sections(body)
     lines, start, end, grid = table(sections)
     if grid is None:
@@ -377,6 +381,7 @@ def main() -> int:
     parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branches in config/branches')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--fix', help='write the body here')
+    parser.add_argument('--expect', help='the body this edit was derived from; refuse a changed issue')
     args = parser.parse_args()
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:

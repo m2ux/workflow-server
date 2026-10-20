@@ -20,6 +20,8 @@ One populated body and its metadata, written to the tracker.
 **Inputs:** Repository, optional existing issue number, populated body file, title and existing labels for creation; selected body or metadata changes for an existing issue. Optional comment file.
 
 1. Take the supplied body and metadata, preserving each field the caller does not change for an existing issue.
+   - For a body derived from a fetched copy, run [Fetch Tracker Issue](#fetch-tracker-issue) immediately before the write and compare it with the copy the derivation read, meeting [Concurrent Edits](#concurrent-edits).
+   - Derive the body again from the current issue where it has changed, and write that one.
 2. Return a missing-label result when an assignment names a label the repository does not contain.
 3. For a new issue, run [Create Tracker Issue](#create-tracker-issue) with the body's file, title and labels.
 4. For an existing issue, run [Patch Issue Body](#patch-issue-body), [Retitle Tracker Issue](#retitle-tracker-issue), [Add Issue Labels](#add-issue-labels) or [Remove Issue Label](#remove-issue-label) for the fields being changed.
@@ -146,6 +148,13 @@ The next unused number for one prefixed issue kind in the repository.
 - **Discussion.** A saved comment preserves the supplied text.
 - **State.**
   The issue is open or closed with its recorded completion reason. Completed work satisfies its criteria and delivery checks; transferred work identifies the issue tracking it.
+
+### Concurrent Edits
+
+An issue's body is written whole, so a write derived from a copy another write has replaced reverts that write. A derivation therefore reads the issue immediately before its own write, and a body that changed in between is derived again from the current one rather than published over it.
+
+- The scripts that derive a body take the copy the derivation read, and refuse to produce one from an issue that has changed since.
+- Several sessions writing one epic hold only the rows each one owns, so a refusal costs a re-read rather than another session's work.
 
 ### Auto-Close Setting
 

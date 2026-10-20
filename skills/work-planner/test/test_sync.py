@@ -891,3 +891,32 @@ class ReviewReferences(unittest.TestCase):
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
                     base='main', head='i01/e00/main')]
         self.assertNotIn('references:', self.run_sync(pulls, body=body))
+
+
+class ConcurrentEdits(unittest.TestCase):
+    def test_a_body_that_changed_since_the_derivation_read_it_is_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text(json.dumps(pr(950, '[I01:E00] Work')))
+            held = root / 'held.md'
+            held.write_text(epic['body'] + '\nanother session wrote this line\n')
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       '--expect', str(held), '--fix', str(root / 'fixed.md'))
+            self.assertNotEqual(done.returncode, 0)
+            self.assertIn('has changed since', done.stderr)
+
+    def test_an_unchanged_body_runs(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text(json.dumps(pr(950, '[I01:E00] Work')))
+            held = root / 'held.md'
+            held.write_text(epic['body'])
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       '--expect', str(held), '--fix', str(root / 'fixed.md'))
+            self.assertEqual(done.returncode, 0, done.stderr)

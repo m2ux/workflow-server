@@ -632,6 +632,7 @@ def main() -> int:
     parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branch names in config/branches')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
     parser.add_argument('--fix', help='write the body here')
+    parser.add_argument('--expect', help='the body this edit was derived from; refuse a changed issue')
     args = parser.parse_args()
     if args.names:
         return list_long_lived(args.project)
@@ -646,6 +647,10 @@ def main() -> int:
         sys.exit('--tick and --link need --fix, which holds the body')
 
     issue = json.loads(Path(args.issue).read_text())
+    if args.expect:
+        held = Path(args.expect).read_text().replace('\r\n', '\n')
+        if held != (issue.get('body') or '').replace('\r\n', '\n'):
+            sys.exit(f"#{issue['number']} has changed since {args.expect}: read it again and repeat this run")
     m = PREFIX.match(issue['title'])
     if not m:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {issue['title']}")
