@@ -16,9 +16,17 @@ Evidence: nine cases in `test/test_format.py` cover a conforming body, another s
 
 Observed against prosiform #100, whose body carried `What was built`, `Fixtures`, `Test Plan`, `References`: the check names the two missing sections, the two extra ones, and the unlinked result.
 
+## The Concurrent-Edit Refusal
+
+`sync.py` and `deliver.py` take `--expect`, the copy of the body the derivation read. Where the issue's current body differs from it, the run exits nonzero naming the issue and the copy, so the caller re-reads and repeats rather than publishing over another session's write.
+
+Evidence: four cases, two in `test/test_sync.py` and two in `test/test_deliver.py`, run each script against a body that has moved since the copy and against one that has not.
+
+Observed on prosiform #39, where ten concurrent sessions each patched the epic whole: ticks were dropped and re-applied twice, and deferred rows took W16, then W17, then W19 as sessions claimed ids between read and write.
+
 ## The Suite
 
-`python3 -m unittest discover -s test` in `skills/work-planner`: **408 tests, OK**, run under `scripts/sbx` at the delivered head.
+`python3 -m unittest discover -s test` in `skills/work-planner`: **414 tests, OK**, run under `scripts/sbx` at the delivered head.
 
 `python3 skills/scripts/check_skill_files.py skills/work-planner`: **49 files checked, 0 findings**.
 
