@@ -79,6 +79,28 @@ Against I11:E11's published body and the hoist record's joins artifact, the join
 
 49 files checked, 0 findings.
 
+## Every Reader
+
+The follow-on branch `skill/unresolvable-every-reader` at `2e0526ef3`, carrying the verdict into the delivery survey and the board sync.
+
+`python3 -m pytest skills/work-planner/test/test_deliver.py`
+
+- A row whose `Depends on` reads `E05 (W04)` prints `unresolvable I07:E00:W02: E05 (W04) cannot resolve`, while its free sibling is still offered as a unit. The summary reads `available: 1, held: 0, blocked: 0, unresolvable: 1` and the run exits 1.
+- An epic whose initiative row carries an unresolvable prerequisite prints `unresolvable I07:E00:W01: its epic's prerequisite cannot resolve`, so the line names the gate the verdict came from rather than the row's own empty cell.
+- A unit of one reserved row joined to one unresolvable row prints the unresolvable line and no hold line, and exits 1.
+
+31 tests, all passed.
+
+`python3 -m pytest skills/work-planner/test/test_board.py`
+
+- A task gated on `E05 (W04)` draws no Status call of its own: the run prints `cannot resolve E05 (W04)`, names no change for that task issue, and exits 1.
+
+33 tests, all passed.
+
+`python3 -m pytest skills/work-planner/test skills/test` — 474 tests and 934 subtests passed.
+
+`python3 skills/scripts/check_skill_files.py skills/work-planner` — 50 files checked, 0 findings.
+
 ## Review
 
 `/code-review 1467` over the branch returned seven findings: four defects the branch introduced and three claims its artifacts overstated. Each is corrected in `e40310835`, whose commit body names them, and each correction carries a check in the sections above or a narrowed statement in the artifact.
