@@ -2,6 +2,30 @@
 
 > Part of the [Work Package Implementation Workflow](../README.md)
 
+| # | Name | Description |
+|---|----------|-------------|
+| 01 | [**Start Work Package**](#01-start-work-package) | Verify/create issue, set up branch, PR, and planning folder |
+| 02 | [**Design Philosophy**](#02-design-philosophy) | Classify problem, assess complexity, determine workflow path |
+| 15 | [**Codebase Comprehension**](#codebase-comprehension-optional) | Build/augment mental model of codebase via persistent knowledge artifacts |
+| 03 | [**Requirements Elicitation**](#03-requirements-elicitation-optional) | Clarify requirements through stakeholder conversation |
+| 04 | [**Research**](#04-research-optional) | Discovery fan branch — knowledge-base and web research |
+| 05 | [**Implementation Analysis**](#05-implementation-analysis-optional) | Discovery fan branch — baselines and gaps |
+| 06 | [**Plan & Prepare**](#06-plan--prepare) | Discovery fan join — research gates, assumption ingest, plan |
+| 07 | [**Assumptions Review**](#07-assumptions-review) | Converge the open assumptions and settle what stays open with the user before implementation |
+| 08 | [**Implement**](#08-implement) | Execute tasks with implement-test-commit cycles |
+| 20 | [**Contract Tests**](#contract-tests) | Implementation fan branch — contract suites that fail on the base tree |
+| 21 | [**Implementation Join**](#implementation-join) | Implementation fan join — hoist both branches, run the suites, settle provenance |
+| 09 | [**Lean-Coding Audit**](#09-lean-coding-audit) | Tag and score over-engineering, harvest deliberate-simplification debt, apply accepted simplifications |
+| 16 | [**Prism Decision**](#prism-decision) | Settle whether structural analysis takes the full prism pipeline or the inline pass |
+| 17 | [**Code Review**](#code-review) | Automated review fan branch — code findings |
+| 18 | [**Structural Analysis**](#structural-analysis) | Automated review fan branch — inline structural pass |
+| 19 | [**Test Suite Review**](#test-suite-review) | Automated review fan branch — coverage map and test findings |
+| 10 | [**Post-Implementation Review**](#10-post-implementation-review) | Review fan join — manual diff gates, full prism when chosen, classify, fix cycle |
+| 11 | [**Validate**](#11-validate) | Run tests, build, and lint checks |
+| 12 | [**Strategic Review**](#12-strategic-review) | Ensure minimal, focused changes |
+| 13 | [**Submit for Review**](#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
+| 14 | [**Complete**](#14-complete) | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
+
 This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, exits, and artifacts — lives in the corresponding `NN-<id>.yaml` file.
 
 For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md).
