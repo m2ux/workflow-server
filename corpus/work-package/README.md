@@ -125,14 +125,6 @@ graph TD
 | 13 | [**Submit for Review**](activities/13-submit-for-review.yaml) | Push PR, mark ready, handle reviewer feedback |
 | 14 | [**Complete**](activities/14-complete.yaml) | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
 
-
-
-**Detailed documentation:**
-
-- **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose and role) and a link to each activity's authoritative YAML definition.
-- **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
-
 ---
 
 ## Techniques
@@ -142,8 +134,6 @@ graph TD
 | [Technique library](techniques/README.md) | Orientation to the workflow-specific and shared techniques |
 | [Shared contract](techniques/TECHNIQUE.md) | Inputs and rules inherited by the workflow techniques |
 | [Shared routines](routines/README.md) | Reusable activity steps |
-
-The cross-cutting [`variable-binding`](/meta/techniques/variable-binding.md) technique applies to every activity. An activity declares its own `techniques[]` block only for an activity-specific strategy technique such as [`scatter-gather`](/meta/techniques/scatter-gather.md), on activities that aggregate per-item outputs across iteration.
 
 ---
 
@@ -199,29 +189,3 @@ corpus/work-package/
 ├── techniques/     # Technique protocols and shared contracts
 └── resources/      # Reference material and artifact guides
 ```
-
----
-
-## Orchestration Model
-
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](/meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](/meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](/meta/techniques/workflow-engine/dispatch-activity.md). Work-package-specific mode behaviour is below.
-
----
-
-## Review Mode
-
-The workflow carries a work package over an existing pull request as well as over a new implementation. Review mode is ordinary state — a boolean `is_review_mode` variable, with every mode-specific behaviour expressed as a condition on a step, a checkpoint, or an exit predicate.
-
-[REVIEW-MODE.md](./REVIEW-MODE.md) is where review mode is documented: how it activates, what it changes, and where a review run still stops for a person.
-
----
-
-## Appendix: Artifact Locations
-
-| Location | Path | Purpose |
-|----------|------|---------|
-| Planning | `{planning_folder_path}` | Work package planning documents and review artifacts |
-| Session trace | `{planning_folder_path}/session-trace.md` | Lean mechanical close-out summary (tool counts, durations, errors, validation-warning clusters) when opaque handoff tokens resolve |
-| Reviews | `.engineering/artifacts/reviews` | PR review analysis documents |
-| ADR | `{adr_dir}` | Architecture Decision Records |
-| Comprehension | `{comprehension_dir}` | Persistent codebase knowledge artifacts (cumulative across work packages) |
