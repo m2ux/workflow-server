@@ -48,17 +48,22 @@ artifact lives in the run's planning folder.
 
 ## Flow
 
-```
-intake ── sources confirmed ──→ analyze-sources ── analysis confirmed ──→ update-specification
- │  ▲                             │  ▲                                        ▲  ▲         │
- │  └─ revise                     │  └─ revise                                │  │         ▼
- └─ source unreadable → end       │                                         │  │   validate-specification
-                                  │                                         │  │     │  │  │
-                                  │    revision requested ──────────────────┘  │     │  │  └─ critical / limit reached → report-failure
-                                  │         ▲                                  └─────┘  │     (correctable & under the limit)
-                                  │         │                                           │
-                                  │   finalize-specification ←── validation passed ─────┘
-                                  │         └─ accepted → end
+Arrow labels are exit ids from the [workflow graph](workflow.yaml). The correctable exit requires correctable issues, no critical issues, and fewer than three correction iterations; uncorrectable is the default exit when validation does not pass and that correction condition is not met. Report Failure has no outgoing graph edge and ends the run after recording the unresolved issues.
+
+```mermaid
+flowchart TD
+    startNode(["Start"]) --> IN["01 intake"]
+    IN -->|"sources-confirmed"| AS["02 analyze-sources"]
+    IN -->|"revise"| IN
+    IN -->|"source-unreadable"| endNode(["End"])
+    AS -->|"analysis-confirmed"| US["03 update-specification"]
+    AS -->|"revise"| AS
+    US -->|"done"| VS["04 validate-specification"]
+    VS -->|"validation-passed"| FS["05 finalize-specification"]
+    VS -->|"correctable"| US
+    VS -->|"uncorrectable"| RF(["06 report-failure — terminal"])
+    FS -->|"accepted"| endNode
+    FS -->|"revision-requested"| US
 ```
 
 The staged specification sits in the planning folder.
