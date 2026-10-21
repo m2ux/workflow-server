@@ -1,6 +1,8 @@
-# Work Package Techniques
+# Techniques
 
-These techniques support the work package from requirements and planning through implementation, review, and close-out. Shared contracts provide the context and rules used across related techniques.
+These techniques support requirements, planning, implementation, review, and close-out. Tables identify the source that owns each technique. The work-package catalog includes its local techniques and shared contracts; the other catalogs cover references from its activities and local routines, plus the cross-cutting meta strategies.
+
+## work-package
 
 | Name | Description |
 |------|-------------|
@@ -133,10 +135,83 @@ These techniques support the work package from requirements and planning through
 | [verify-contract-tests-fail](verify-contract-tests-fail.md) | Confirm the contract tests written for the current task fail against the base tree. |
 | [write-contract-tests](write-contract-tests.md) | Write integration tests for one plan task from its Contract alone. |
 
-## Shared techniques bound by this workflow
+## meta
 
-Techniques a shared namespace holds — `meta` (`workflow-engine`), `git`, `github`, `atlassian` and `gitnexus` — are referenced by qualified id from this workflow.
+| Name | Description |
+|------|-------------|
+| [scatter-gather](../../meta/techniques/scatter-gather.md) | A reusable fan-out shape: work units run inside a worker's loop or across the branches a graph fan opens, and reach one ordered keyed collection that a delegated combine folds. |
+| [variable-binding](../../meta/techniques/variable-binding.md) | Maps a step's bound technique onto the workflow variable bag by the technique's declared `inputs[]`/`outputs[]` signature. |
+| [create-readme](../../meta/techniques/workflow-engine/create-readme.md) | Planning-folder `README.md` from the universal planning Template under the bound readme-seed profile. |
+| [handle-sub-workflow](../../meta/techniques/workflow-engine/handle-sub-workflow.md) | Launch a workflow as a child of the current session, and report where it opens and where it writes. |
+| [read-session](../../meta/techniques/workflow-engine/read-session.md) | The live session record — its variable bag, the activities it stands on, and its execution trace — for a consumer that reasons over where the session stands and what it has done. |
 
-[`variable-binding`](/meta/techniques/variable-binding.md) rides every activity's delivery as part of the worker contract. The cross-cutting meta strategy technique [`scatter-gather`](/meta/techniques/scatter-gather.md) is declared at activity level, not bound per step.
+## atlassian
+
+| Name | Description |
+|------|-------------|
+| [comment-jira-issue](../../support/atlassian/techniques/comment-jira-issue.md) | Add a comment to a Jira issue. |
+| [edit-jira-issue](../../support/atlassian/techniques/edit-jira-issue.md) | Update fields on an existing Jira issue. |
+| [get-jira-issue](../../support/atlassian/techniques/get-jira-issue.md) | Read a single Jira issue. |
+| [transition-jira-issue](../../support/atlassian/techniques/transition-jira-issue.md) | Move an issue to a new status. |
+| [user-info](../../support/atlassian/techniques/user-info.md) | Get the current user's account ID. |
+
+## cargo
+
+| Name | Description |
+|------|-------------|
+| [preflight](../../support/cargo/techniques/preflight.md) | The unmet system dependencies a workspace's cargo build would need — `protoc`, openssl headers, `pkg-config` and their like — as a structured environment finding. |
+| [run-suite](../../support/cargo/techniques/run-suite.md) | One validation verdict for a rust-substrate project — compilation, lints, tests and formatting — with each check's diagnostics carried beside its status. The entry point for full validation. |
+| [test](../../support/cargo/techniques/test.md) | Run tests with bounded test parallelism; prefer nextest when configured. |
+
+## git
+
+| Name | Description |
+|------|-------------|
+| [create-worktree](../../support/git/techniques/create-worktree.md) | Working directory materialised as a git worktree of the component, on either a feature branch created fresh or an existing branch checked out. |
+| [push-branch](../../support/git/techniques/push-branch.md) | Push a local branch to its remote without staging or committing. |
+| [read-working-state](../../support/git/techniques/read-working-state.md) | What a working tree holds that its repository does not record — the tracked paths carrying modifications and the nested checkouts standing off the commits the tree names — read without writing anything. |
+| [resolve-host-repo](../../support/git/techniques/resolve-host-repo.md) | Outermost git host repository for a workspace path, derived from git rather than from prose. Answers *which repository owns this checkout*, never *which component is being worked on* — git.host-is-derived-component-is-named. |
+| [three-dot-name-status](../../support/git/techniques/three-dot-name-status.md) | Three-dot merge-base change surface for a working tree: name-status and per-file line counts against a base ref. |
+
+## github
+
+| Name | Description |
+|------|-------------|
+| [assign-issue](../../support/github/techniques/assign-issue.md) | Assign a user to a GitHub issue via REST. |
+| [comment-issue](../../support/github/techniques/comment-issue.md) | Post a markdown comment to a GitHub issue via REST. |
+| [list-issue-comments](../../support/github/techniques/list-issue-comments.md) | List top-level comments on an issue or pull request via REST (issues comments endpoint). |
+| [list-issues](../../support/github/techniques/list-issues.md) | List issues via REST search or listing. |
+| [list-pr-review-comments](../../support/github/techniques/list-pr-review-comments.md) | List inline pull request review comments via REST. |
+| [list-pr-reviews](../../support/github/techniques/list-pr-reviews.md) | List pull request reviews via REST. |
+| [list-prs](../../support/github/techniques/list-prs.md) | List pull requests via REST. |
+| [post-pr-review](../../support/github/techniques/post-pr-review.md) | Post a pull request review (approve, request changes, or comment) via REST. |
+| [view-issue](../../support/github/techniques/view-issue.md) | View an existing issue via REST. |
+| [view-pr](../../support/github/techniques/view-pr.md) | View an existing pull request via REST. |
+
+## gitnexus
+
+| Name | Description |
+|------|-------------|
+| [context](../../support/gitnexus/techniques/context.md) | 360-degree view of one symbol — callers, callees, and the execution flows it participates in. |
+| [detect-changes](../../support/gitnexus/techniques/detect-changes.md) | Map a git diff to the changed-symbol set and the execution flows it affects. |
+| [impact](../../support/gitnexus/techniques/impact.md) | Symbol blast radius — what depends on a symbol, at depth 1/2/3, with confidence and a risk level. The primary pre-edit safety check. |
+| [query](../../support/gitnexus/techniques/query.md) | Find execution flows related to a concept, symptom, or error string — the structural alternative to grepping for a concept. |
+
+## ponytail
+
+| Name | Description |
+|------|-------------|
+| [apply-ladder](../../ponytail/techniques/apply-ladder.md) | Produces the minimal change that solves the problem, with every deliberate ceiling marked so it can be harvested later. |
+| [harvest-debt](../../ponytail/techniques/harvest-debt.md) | Collects the deliberate simplifications standing in the tree into a ledger that can be tracked and paid down. |
+| [report-gain](../../ponytail/techniques/report-gain.md) | Summarises what the pass can honestly claim, into the ledger's gain field. |
+| [review-over-engineering](../../ponytail/techniques/review-over-engineering.md) | Tags what the change over-builds, one line per finding, with the lines each cut would save. |
+
+## prism
+
+| Name | Description |
+|------|-------------|
+| [read-definitive-findings](../../prism/techniques/read-definitive-findings.md) | A completed run's per-finding entries, loaded from the findings artifact into the triggering session's own context. |
+| [read-run-manifest](../../prism/techniques/read-run-manifest.md) | A triggered run's completion verdict and the location of everything it produced, read from the run's own manifest. |
+| [structural-analysis](../../prism/techniques/structural-analysis.md) | Apply L12 structural analysis lens to code for deep structural findings, conservation laws, and bug detection |
 
 The [shared routines](../routines/README.md) combine reusable activity steps.
