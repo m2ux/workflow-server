@@ -43,6 +43,12 @@ class Done(unittest.TestCase):
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
         self.assertNotIn('w01.md', fixed)
 
+    def test_a_table_whose_header_carries_no_separator_links_its_first_row(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        epic['body'] = '\n'.join(l for l in epic['body'].split('\n') if not l.startswith('| --- |'))
+        fixed = synced(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
+        self.assertIn(f"| [W01]({url('pull', 950)}) |", fixed)
+
     def test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')
@@ -305,6 +311,21 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('ready to verify: AC1 (W01)', done.stdout)
         self.assertIn('note: W01 links task issue #3; link its pull request', done.stdout)
+
+    def test_a_row_linking_an_unprefixed_unlabelled_issue_is_unconverted(self):
+        task = issue(3, 'A Mark Reaches the Bundle', labels=('tech-debt',))
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, _ = self.run_sync(epic, [], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unconverted: W01 links #3, whose title carries no [I01:E00:W01] prefix '
+                      'and labels carry no type:task', done.stdout)
+
+    def test_a_row_linking_its_own_task_issue_is_converted(self):
+        task = issue(3, '[I01:E00:W01] Task: Done', labels=('type:task',))
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Work', '')))
+        done, _ = self.run_sync(epic, [], tasks=[task])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertNotIn('unconverted:', done.stdout)
 
 
 class DoneColumn(unittest.TestCase):
@@ -876,3 +897,32 @@ class ReviewReferences(unittest.TestCase):
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
                     base='main', head='i01/e00/main')]
         self.assertNotIn('references:', self.run_sync(pulls, body=body))
+
+
+class ConcurrentEdits(unittest.TestCase):
+    def test_a_body_that_changed_since_the_derivation_read_it_is_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text(json.dumps(pr(950, '[I01:E00] Work')))
+            held = root / 'held.md'
+            held.write_text(epic['body'] + '\nanother session wrote this line\n')
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       '--expect', str(held), '--fix', str(root / 'fixed.md'))
+            self.assertNotEqual(done.returncode, 0)
+            self.assertIn('has changed since', done.stderr)
+
+    def test_an_unchanged_body_runs(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(epic))
+            pulls_path.write_text(json.dumps(pr(950, '[I01:E00] Work')))
+            held = root / 'held.md'
+            held.write_text(epic['body'])
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       '--expect', str(held), '--fix', str(root / 'fixed.md'))
+            self.assertEqual(done.returncode, 0, done.stderr)

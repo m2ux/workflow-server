@@ -104,8 +104,8 @@ def open_questions(issue: dict) -> bool:
 
 def rows(issue: dict) -> tuple[list[str], list[list[str]]]:
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    _, _, _, grid = table(sections)
-    return (grid[0], grid[2:]) if grid else ([], [])
+    _, _, _, header, data = table(sections)
+    return (header, data) if header else ([], [])
 
 
 def issue_url(url: str) -> Key | None:

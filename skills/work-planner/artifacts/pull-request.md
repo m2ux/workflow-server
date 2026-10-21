@@ -8,6 +8,7 @@ Read these files first.
 
 - [Issue](issue.md)
 - [Delivery Branches](delivery-branches.md)
+- [Pull Request Body](pull-request-body.md)
 
 ## Operations
 
@@ -117,11 +118,14 @@ One pull request created or updated from supplied content and metadata.
 
 **Inputs:** Repository, optional pull request number, task, epic or planning-discussion kind, body file and selected title, head or base changes, and, for a created delivery pull request, its delivery issue identity, the repository setting confirmed for the session and a link-snapshot destination.
 
-1. For creation, run [Open Task Pull Request](#open-task-pull-request), [Open Epic Pull Request](#open-epic-pull-request) or [Open Discussion Pull Request](#open-discussion-pull-request) for the supplied kind, body, title, head and base, preserving epic and discussion draft state.
+1. When the publication supplies a body, check it against its template through [Validate Pull Request Body](pull-request-body.md#validate-pull-request-body), with a record carrying the title, body, head and base being published.
+   - Publish the corrected body it returns.
+   - Resolve each remaining finding before the body reaches the tracker.
+2. For creation, run [Open Task Pull Request](#open-task-pull-request), [Open Epic Pull Request](#open-epic-pull-request) or [Open Discussion Pull Request](#open-discussion-pull-request) for the supplied kind, body, title, head and base, preserving epic and discussion draft state.
    - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).
-2. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields.
-3. Re-read through [Read Pull Request State](#read-pull-request-state).
-4. Return the saved state or discrepancy.
+3. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields.
+4. Re-read through [Read Pull Request State](#read-pull-request-state).
+5. Return the saved state or discrepancy.
 
 ### *Locate* Review Pull Request
 

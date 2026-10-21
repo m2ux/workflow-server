@@ -1,9 +1,22 @@
-"""Check a proposal, initiative, epic, task or standalone issue against its agent-engineering template, and
-fix what is mechanical.
+"""Check a proposal, initiative, epic, task or standalone issue, or a pull request, against its
+agent-engineering template, and fix what is mechanical.
 
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
+  python3 format.py pr-950.json --pull-request [--fix fixed-950.md]
+
+With --pull-request the input is a pull request as `gh api repos/{owner}/{repo}/pulls/950` returns it,
+and the format comes from artifacts/pull-request-body.md: its sections, their order, and its Test Plan
+columns. A pull request whose head is an epic base, `iNN/eYY/<branch>`, merging into the branch that
+base names, is the review of that epic and carries no Test Plan. Fixed: sections put in template order,
+Test Plan columns put in template order and missing ones added empty, rows padded to the header width,
+and a table's separator supplied under its header. Printed as a title fix: a prefix separating its
+levels with spaces. Left to decide: a title prefix naming anything but an
+epic, or a title with no purpose after it; a missing, extra or out-of-template section; a Changes
+section naming no area; a review carrying a Test Plan; a Test Plan with no table or a column outside the
+template; a result recorded without a link to its evidence; a result on a row naming a criterion no check
+observes; and a Coverage cell that does not name criteria.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
@@ -82,7 +95,9 @@ BODY_ARTIFACTS = {
     'epic': 'epic-issue-body.md',
     'task': 'task-body.md',
     'issue': 'standalone-body.md',
+    'pull-request': 'pull-request-body.md',
 }
+TABLE_SECTIONS = {'pull-request': 'Test Plan'}
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
@@ -110,6 +125,8 @@ OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
+SEPARATOR = re.compile(r':?-{3,}:?')
+EPIC_HEAD = re.compile(r'i\d\d/e\d\d/(.+)')
 DEPENDENCY = {
     'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d:W\d\d|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
     'initiative': re.compile(r'E\d\d|I\d\d:E\d\d|#\d+'),
@@ -146,6 +163,25 @@ def cells(line: str) -> list[str]:
 
 def row(values: list[str]) -> str:
     return '|' + '|'.join(f' {v} ' if v else ' ' for v in values) + '|'
+
+
+def is_separator(line: str) -> bool:
+    """The alignment line a Markdown table renders from, which sits under its header."""
+    return all(SEPARATOR.fullmatch(c) for c in cells(line))
+
+
+def first_row(lines: list[str], start: int, end: int) -> int:
+    """The index of a table's first data row.
+
+    A table written without its separator holds a data row where the separator would sit,
+    so the rows begin at the header's next line."""
+    return start + 2 if start + 1 < end and is_separator(lines[start + 1]) else start + 1
+
+
+def table_rows(lines: list[str], start: int, end: int) -> tuple[list[str], list[list[str]], bool]:
+    """A table's header cells, its data rows, and whether the header carries its separator."""
+    first = first_row(lines, start, end)
+    return cells(lines[start]), [cells(l) for l in lines[first:end]], first == start + 2
 
 
 def template_body(kind: str) -> str:
@@ -193,8 +229,9 @@ class Template:
         _, sections = split_sections(template_body(kind))
         self.headings = [h for h, _ in sections]
         self.optional = {h for h, lines in sections if 'delete the section' in '\n'.join(lines).lower()}
+        table = TABLE_SECTIONS.get(kind, 'Work Breakdown')
         self.columns = next((cells(l) for h, lines in sections for l in lines
-                             if h == 'Work Breakdown' and l.startswith('|')), None)
+                             if h == table and l.startswith('|')), None)
 
 
 def work_table(body: str) -> tuple[list[str], list[str]]:
@@ -202,7 +239,9 @@ def work_table(body: str) -> tuple[list[str], list[str]]:
     _, sections = split_sections(body.replace('\r\n', '\n'))
     lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
     table = [l for l in lines if l.startswith('|')]
-    return (cells(table[0]), table[2:]) if len(table) >= 2 else ([], [])
+    if not table:
+        return [], []
+    return cells(table[0]), table[first_row(table, 0, len(table)):]
 
 
 def epic_issues(body: str) -> dict[str, int]:
@@ -629,7 +668,7 @@ class Review:
         end = start
         while end < len(lines) and lines[end].startswith('|'):
             end += 1
-        header, rows = cells(lines[start]), [cells(l) for l in lines[start + 2:end]]
+        header, rows, separator = table_rows(lines, start, end)
         unknown = [c for c in header if c not in columns]
         if unknown:
             self.decide.append(f'Work Breakdown column not in the template: {", ".join(unknown)}')
@@ -709,9 +748,11 @@ class Review:
             ident = id_cell(columns, r)
             if not pattern.fullmatch(id_form(ident)):
                 self.decide.append(f'Work Breakdown row id not of the form {pattern.pattern}: {row_id(ident)}')
-        table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
-        if header == columns and padded == rows:
+        if separator and header == columns and padded == rows:
             return lines
+        if not separator:
+            self.fixed.append('Work Breakdown separator added under the header')
+        table = [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded]
         return lines[:start] + table + lines[end:]
 
     def check_prose(self, lines: list[str]) -> None:
@@ -894,6 +935,120 @@ class Review:
         return lines
 
 
+class PullRequestReview(Review):
+    """A pull request body against artifacts/pull-request-body.md."""
+    kind = 'pull-request'
+
+    def review_body(self) -> bool:
+        """The pull request merges an epic base, iNN/eYY/<branch>, into the branch it names."""
+        head = (self.issue.get('head') or {}).get('ref') or ''
+        base = (self.issue.get('base') or {}).get('ref') or ''
+        m = EPIC_HEAD.fullmatch(head)
+        return bool(m) and bool(base) and m[1] == base
+
+    def run(self) -> str:
+        self.number = None
+        self.check_pull_request_title()
+        return self.check_pull_request_body()
+
+    def check_pull_request_title(self) -> None:
+        title = self.issue['title']
+        m = PREFIX.match(title)
+        if not m:
+            name, colon, subtitle = title.partition(': ')
+            if colon:
+                self.check_title_shape(name, subtitle)
+            else:
+                self.decide.append('title has no "Name: Subtitle"; a pull request working on no epic takes one')
+            return
+        if ' ' in m[2]:
+            parts = re.findall(r'[EW]\d\d', m[2])
+            self.apply.append('title: [' + ':'.join([m[1], *parts]) + ']' + title[m.end():])
+        if len(re.findall(r'[EW]\d\d', m[2])) != 1 or 'W' in m[2]:
+            self.decide.append(f'title prefix names no epic: a pull request takes [I07:E00] Purpose, not {m[0]}')
+        elif not title[m.end():].strip():
+            self.decide.append('title has no purpose after the prefix')
+
+    def check_pull_request_body(self) -> str:
+        body = (self.issue.get('body') or '').replace('\r\n', '\n')
+        preamble, sections = split_sections(body)
+        template = Template(self.kind)
+        names = [h for h, _ in sections]
+        if '\n'.join(preamble).strip():
+            self.decide.append('text before the first section')
+        for h in template.headings:
+            if h in names or h in template.optional:
+                continue
+            if h == 'Test Plan' and self.review_body():
+                continue
+            self.decide.append(f'required section missing: {h}')
+        for h in names:
+            if h not in template.headings:
+                self.decide.append(f'extra section: {h}')
+        if 'Test Plan' in names and self.review_body():
+            self.decide.append('a review pull request carries no Test Plan: it delivers no task of its own, '
+                               "and the epic's Work Breakdown is where delivery state is read")
+        sections = self.reorder(sections, template)
+        for section in sections:
+            if section[0] == 'Changes':
+                self.check_areas(section[1])
+            elif section[0] == 'Test Plan' and template.columns:
+                section[1] = self.fix_test_plan(section[1], template.columns)
+        return join_sections(preamble, sections)
+
+    def check_areas(self, lines: list[str]) -> None:
+        """Changes holds one heading per area the changes sit in."""
+        if not any(l.startswith('### ') for l in lines):
+            self.decide.append('Changes names no area: one heading per area, with a bullet per functional change')
+
+    def fix_test_plan(self, lines: list[str], columns: list[str]) -> list[str]:
+        start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
+        if start is None:
+            self.decide.append('Test Plan has no table')
+            return lines
+        end = start
+        while end < len(lines) and lines[end].startswith('|'):
+            end += 1
+        header, rows, separator = table_rows(lines, start, end)
+        unknown = [c for c in header if c not in columns]
+        if unknown:
+            self.decide.append(f'Test Plan column not in the template: {", ".join(unknown)}')
+            return lines
+        width = len(header)
+        if any(len(r) > width for r in rows):
+            self.decide.append('Test Plan row wider than its header')
+            return lines
+        padded = [r + [''] * (width - len(r)) for r in rows]
+        if padded != rows:
+            self.fixed.append('Test Plan rows padded to the header width')
+        if header != columns:
+            missing = [c for c in columns if c not in header]
+            if missing:
+                self.fixed.append('Test Plan columns added: ' + ', '.join(missing))
+            if [c for c in columns if c in header] != header:
+                self.fixed.append('Test Plan columns put in template order')
+            padded = [[r[header.index(c)] if c in header else '' for c in columns] for r in padded]
+        self.check_results(padded, columns)
+        if separator and header == columns and padded == rows:
+            return lines
+        if not separator:
+            self.fixed.append('Test Plan separator added under the header')
+        return lines[:start] + [row(columns), row(['---'] * len(columns))] + [row(r) for r in padded] + lines[end:]
+
+    def check_results(self, rows: list[list[str]], columns: list[str]) -> None:
+        """A check's result links its evidence, and a criterion no check observes carries none."""
+        test, result = columns.index('Test'), columns.index('Pass')
+        covered = columns.index('Coverage') if 'Coverage' in columns else None
+        for r in rows:
+            name, value = r[test].strip(), r[result].strip()
+            if not name and value:
+                self.decide.append(f'Test Plan: a row naming a criterion no check observes carries a result: {value}')
+            elif value and not LINK.fullmatch(value):
+                self.decide.append(f'Test Plan {name}: a recorded result links its evidence, as [{value}](URL#check)')
+            if covered is not None and r[covered].strip() and not COVERAGE.fullmatch(r[covered].strip()):
+                self.decide.append(f'Test Plan {name}: Coverage names the criteria the check observes, AC1, AC3')
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue', help='issue JSON as the REST API returns it')
@@ -903,13 +1058,15 @@ def main() -> int:
     parser.add_argument('--fix', help='write the mechanically fixed body here')
     parser.add_argument('--prs', help='epic: pull requests as JSON lines, for the corpus audit check')
     parser.add_argument('--corpus', help='epic: the long-lived branch the corpus lives on')
+    parser.add_argument('--pull-request', action='store_true',
+                        help='the input is a pull request as the REST API returns it')
     args = parser.parse_args()
 
     issue = json.loads(Path(args.issue).read_text())
     initiative = json.loads(Path(args.initiative).read_text()) if args.initiative else None
     epics = [json.loads(Path(e).read_text()) for e in args.epic or []]
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else None
-    review = Review(issue, initiative, epics, prs, args.corpus)
+    review = PullRequestReview(issue) if args.pull_request else Review(issue, initiative, epics, prs, args.corpus)
     fixed = review.run()
     kind = getattr(review, 'kind', None) or 'unknown kind'
     print(f"#{issue.get('number')} {kind} ({issue.get('state')}): {len(review.fixed)} fixed, "

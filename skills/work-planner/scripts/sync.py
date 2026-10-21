@@ -23,7 +23,7 @@ id to it with --link.
 
 Task issue ([I07:E00:W01]): delivered by the merged pull request --pr names, whose title names the
 task's epic.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, a row whose linked issue lacks this row's [Ixx:Eyy:Wzz] prefix or type:task as unconverted, naming what it lacks, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -49,7 +49,8 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
+from format import (AC, LINK, TICK, cell, cells, first_row, id_cell, join_sections, row, row_id,
+                    split_sections)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -138,6 +139,14 @@ def compose_id(task: str, text: str, pr: dict, by_url: dict, initiative: str) ->
     return ', '.join(f'[{task}]({href})' for href in [*kept, url])
 
 
+def unconverted(task, issue, initiative, epic):
+    """What a row's linked issue lacks of this epic's task issue."""
+    prefix = f'[I{initiative}:E{epic}:{task}]'
+    labels = [l['name'] if isinstance(l, dict) else l for l in issue.get('labels', [])]
+    return ([f'title carries no {prefix} prefix'] if not issue['title'].startswith(prefix) else []) + \
+           ([] if 'type:task' in labels else ['labels carry no type:task'])
+
+
 def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
     delivered, by_pr = {}, {}
     given = {p['number']: p for p in prs}
@@ -186,6 +195,10 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
             number = issue_numbers[0]
             if number not in by_number:
                 report['note'].append(f'{task}: no --tasks issue for #{number}')
+            else:
+                missing = unconverted(task, by_number[number], initiative, epic)
+                if missing:
+                    report['unconverted'].append(f"{task} links #{number}, whose {' and '.join(missing)}")
             landed = issue_done(by_number[number]) if number in by_number else False
             report['note'].append(f'{task} links task issue #{number}; link its pull request')
         task_issue = by_task.get(task)
@@ -586,25 +599,28 @@ class Unreadable(ValueError):
 
 
 def table(sections):
+    """The Work Breakdown lines, the index its data rows start at, the index they end at,
+    its header cells and those rows."""
     lines = next((l for h, l in sections if h == 'Work Breakdown'), None)
     if lines is None:
-        return None, None, None, None
+        return None, None, None, None, None
     start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
     if start is None:
         raise Unreadable('Work Breakdown has no table')
     end = start
     while end < len(lines) and lines[end].startswith('|'):
         end += 1
-    grid = [cells(l) for l in lines[start:end]]
-    if 'Task' in grid[0]:
-        for r in grid[2:]:
-            ident = id_cell(grid[0], r)
+    first = first_row(lines, start, end)
+    header, data = cells(lines[start]), [cells(l) for l in lines[first:end]]
+    if 'Task' in header:
+        for r in data:
+            ident = id_cell(header, r)
             found = LINK.findall(ident)
             if len({text for text, _ in found}) > 1:
                 raise Unreadable(f'{row_id(ident)}: every link on a task row names that row; resolve the others')
             if len({href for _, href in found}) < len(found):
                 raise Unreadable(f'{row_id(ident)}: a task row links each delivery once; resolve the repeated links')
-    return lines, start, end, grid
+    return lines, first, end, header, data
 
 
 def main() -> int:
@@ -620,6 +636,7 @@ def main() -> int:
     parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branch names in config/branches')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
     parser.add_argument('--fix', help='write the body here')
+    parser.add_argument('--expect', help='the body this edit was derived from; refuse a changed issue')
     args = parser.parse_args()
     if args.names:
         return list_long_lived(args.project)
@@ -634,6 +651,10 @@ def main() -> int:
         sys.exit('--tick and --link need --fix, which holds the body')
 
     issue = json.loads(Path(args.issue).read_text())
+    if args.expect:
+        held = Path(args.expect).read_text().replace('\r\n', '\n')
+        if held != (issue.get('body') or '').replace('\r\n', '\n'):
+            sys.exit(f"#{issue['number']} has changed since {args.expect}: read it again and repeat this run")
     m = PREFIX.match(issue['title'])
     if not m:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz] prefix: {issue['title']}")
@@ -650,11 +671,12 @@ def main() -> int:
     links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
-    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
+    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'unconverted',
+                              'ready to verify', 'unmet', 'disagreement', 'ticked early', 'ticked', 'done',
+                              'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
-    lines, start, end, grid = table(sections)
+    lines, first, end, header, data = table(sections)
     delivered: dict[str, bool] = {}
     citing: dict[int, list[str]] = {}
     rows = []
@@ -666,9 +688,9 @@ def main() -> int:
             report['linked'].append(f"{task} delivered by #{pr['number']}")
         delivered[task] = bool(pr)
     else:
-        if grid is None or 'Coverage' not in grid[0]:
+        if header is None or 'Coverage' not in header:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
-        header, rows = grid[0], grid[2:]
+        rows = data
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
@@ -751,7 +773,7 @@ def main() -> int:
     if args.fix:
         rewrite = bool(report['linked']) and kind != 'task' or done_changed
         if rewrite:
-            lines[start + 2:end] = [row(r) for r in rows]
+            lines[first:end] = [row(r) for r in rows]
         Path(args.fix).write_text(join_sections(preamble, sections) if rewrite or report['ticked'] else body)
     return 0
 

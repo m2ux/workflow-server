@@ -9,7 +9,7 @@ from format import BODY_ARTIFACTS, Template, template_body
 
 
 class ArtifactTemplates(unittest.TestCase):
-    def test_every_issue_kind_reads_only_its_body_sections(self):
+    def test_every_body_kind_reads_only_its_own_sections(self):
         common = ['Overview', 'Problem', 'Proposal']
         for kind in BODY_ARTIFACTS:
             with self.subTest(kind=kind):
@@ -25,14 +25,17 @@ class ArtifactTemplates(unittest.TestCase):
                 expected.append('References')
                 if kind == 'proposal':
                     expected = ['Overview', 'Problem', 'Goal', 'Non-Goals', 'References']
+                if kind == 'pull-request':
+                    expected = ['Overview', 'Changes', 'Test Plan', 'Open Questions', 'References']
                 self.assertEqual(template.headings, expected)
                 self.assertEqual(template.optional,
-                                 {'Open Questions', 'References'} if kind in ('task', 'issue') else
-                                 {'Open Questions'} if kind == 'epic' else
+                                 {'Open Questions', 'References'} if kind in ('task', 'issue', 'pull-request')
+                                 else {'Open Questions'} if kind == 'epic' else
                                  {'References'} if kind == 'proposal' else set())
                 columns = (['Epic', 'Description', 'Coverage', 'Depends on', 'Done'] if kind == 'initiative'
                            else ['Task', 'Description', 'Coverage', 'Depends on', 'Joins', 'Done']
-                           if kind == 'epic' else None)
+                           if kind == 'epic' else ['Test', 'Description', 'Coverage', 'Pass']
+                           if kind == 'pull-request' else None)
                 self.assertEqual(template.columns, columns)
         self.assertFalse((SCRIPTS.parent / 'templates').exists())
 

@@ -322,11 +322,14 @@ def edit(args: argparse.Namespace) -> int:
         sys.exit(f"title has no [Ixx:Eyy] prefix: {issue.get('title')}")
     initiative, epic, _ = parsed
     body = (issue.get('body') or '').replace('\r\n', '\n')
+    if args.expect:
+        held = Path(args.expect).read_text().replace('\r\n', '\n')
+        if held != body:
+            sys.exit(f"#{issue['number']} has changed since {args.expect}: read it again and repeat this run")
     preamble, sections = split_sections(body)
-    lines, start, end, grid = table(sections)
-    if grid is None:
+    lines, first, end, header, data = table(sections)
+    if header is None:
         raise Unreadable('the body has no Work Breakdown section')
-    header, data = grid[0], grid[2:]
     when = args.date or day.today().isoformat()
     at = header.index('Task') if 'Task' in header else 0
     wanted = [t.strip() for t in (args.reserve or args.release).split(',') if t.strip()]
@@ -355,7 +358,7 @@ def edit(args: argparse.Namespace) -> int:
                 sys.exit(f'{task}: its id links no planning folder')
             r[at] = f'[{task}]({held.rstrip("/")}/{task.lower()}.md)'
             changed.append(f'{task} released from {held}')
-    lines[start + 2:end] = [row(r) for r in data]
+    lines[first:end] = [row(r) for r in data]
     Path(args.fix).write_text(join_sections(preamble, sections))
     action = 'reserved' if args.reserve else 'released'
     print(f"#{issue['number']} [I{initiative}:E{epic}]")
@@ -377,6 +380,7 @@ def main() -> int:
     parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branches in config/branches')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--fix', help='write the body here')
+    parser.add_argument('--expect', help='the body this edit was derived from; refuse a changed issue')
     args = parser.parse_args()
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:

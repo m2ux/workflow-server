@@ -164,6 +164,8 @@ Rows are numbered in the order they can start, so every dependency points to an 
 
 Work a pull request names keeps its number. Renumbering touches only a row no pull request names.
 
+A new row takes the next unused id in the body read immediately before its write, as [Concurrent Edits](issue.md#concurrent-edits) states, so two rows added at once take two ids.
+
 ### Reference Form
 
 Tables write references with colons, the form the scripts read. Prose uses a space.

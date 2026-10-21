@@ -19,7 +19,7 @@ Read these files first.
    - Pass the returned verified criterion ids to [Record Task Delivery](../artifacts/task-body.md#record-task-delivery).
    - Supply the issue JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids, and output body file.
 2. **Epic rows.**
-   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, and output body file.
+   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, the body file it was read from, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, and output body file.
    - Interpret the returned [Delivery Findings](../artifacts/epic.md#delivery-findings).
    - Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for a confirmed unplaced task.
    - Repeat Record Epic Delivery with the refreshed epic JSON and the same pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, and output body file.

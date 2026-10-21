@@ -31,6 +31,6 @@ Read these files first.
 4. **Close the epic.**
    After every epic base has merged:
    - Refresh the evidence.
-   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, and output body file.
+   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, the body file it was read from, pull request records, complete issue-link snapshot, task issue records, project checkout, and output body file.
    - Follow [Issue Closure](issue-closure.md) when eligible.
    - Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery) with the current initiative and every linked epic record. Initiative completion does not gate an epic merge. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.
