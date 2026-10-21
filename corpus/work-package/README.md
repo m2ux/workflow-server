@@ -27,7 +27,10 @@ Use this workflow when you want to:
 - [work request](techniques/review-mode-detection.md#user_request) describes the task and whether it calls for implementation or review.
 - [repository context](techniques/repo-root-resolution.md#inputs) identifies the host checkout and, when applicable, the component being worked on.
 - [issue reference (optional)](techniques/issue-reference-detection.md#issue_request) identifies an existing GitHub issue or Jira ticket by key, number, or URL.
-- For [review mode](REVIEW-MODE.md#state-driven-activation), the request supplies the existing pull request's number or URL; the run asks when that reference is missing.
+
+### Review Mode
+
+- [pull request reference](techniques/review-mode-detection.md#pr_reference) supplies the existing pull request's number or URL; the run asks when that reference is missing.
 
 ---
 
