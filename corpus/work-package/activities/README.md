@@ -26,11 +26,7 @@
 | 13 | [**Submit for Review**](#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
 | 14 | [**Complete**](#14-complete) | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
 
-This is the per-activity orientation map: each entry gives the activity's purpose, the value it delivers, how it connects to the rest of the workflow, and a link to its authoritative definition. The structured definition of each activity — its steps, checkpoints, loops, exits, and artifacts — lives in the corresponding `NN-<id>.yaml` file.
-
-For the activity-to-activity flow diagram, the feedback loops, and review-mode behaviour, see the [workflow README](../README.md).
-
-Each diagram follows the current activity definition. Boxes name steps; double-bordered boxes call shared routines. Diamonds show step conditions, checkpoints, loop tests, and exit selection. A false step condition skips that step. Checkpoint arrows name option ids; options on the same arrow continue through the same sequence after applying their effects. Loop tests show their declared iteration limits; a doWhile body runs before its test. Immediate exits leave directly from their checkpoint. Multiple destinations from one exit are parallel branches. Routine internals remain in the linked definitions.
+These activities approximate a software development life cycle (SDLC) for a single work package: understanding requirements, planning, implementation, testing, review, and close-out. Review mode assesses an existing pull request and records findings for its author.
 
 ---
 
