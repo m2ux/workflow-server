@@ -90,7 +90,7 @@ The main path meets [Outcomes](#outcomes).
    When no initiative or epic is selected, continue at step 13, Re-run.
    - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) for the selected initiative and epics.
    - Continue with its returned records.
-   - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout and output body file:
+   - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, the body file it was read from, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout and output body file:
      - **Unmet.**
        - Each task [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports unmet is a gap.
        - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot and output body path.

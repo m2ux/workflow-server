@@ -108,7 +108,7 @@ One pull request body referencing its published overview.
 
 ### Test Plan
 
-A task pull request carries a Test Plan.
+A pull request carries a Test Plan for the work it delivers. The review of an epic base, whose head is `iNN/eYY/<branch>` merging into the branch that base names, carries none: it delivers no task of its own, and the epic's Work Breakdown is where delivery state is read. Every other head carries one, an initiative integration branch such as `i10/main` included.
 
 - **Table.**
   The pull request's Test Plan section contains only one table, with columns Test, Description, Coverage and Pass, in that order.

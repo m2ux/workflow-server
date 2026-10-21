@@ -11,6 +11,7 @@ The current issue, its saved body and discussion.
 **Inputs:** Repository, issue number and output files; whether discussion is needed.
 
 1. Run [Fetch Tracker Issue](#fetch-tracker-issue) for the complete JSON, or [Fetch Issue Body](#fetch-issue-body) for its body, with the issue number and destination file.
+   - A read a derivation works from takes both, since the derivation is checked against the body file, meeting [Concurrent Edits](#concurrent-edits).
 2. Run [Fetch Issue Comments](#fetch-issue-comments) when the request depends on the discussion.
 
 ### *Save* Tracker Issue
@@ -153,7 +154,7 @@ The next unused number for one prefixed issue kind in the repository.
 
 An issue's body is written whole, so a write derived from a copy another write has replaced reverts that write. A derivation therefore reads the issue immediately before its own write, and a body that changed in between is derived again from the current one rather than published over it.
 
-- The scripts that derive a body take the copy the derivation read, and refuse to produce one from an issue that has changed since.
+- The scripts that derive a body take the copy the derivation read as `--expect`, and refuse to produce one from an issue that has changed since. That copy is the body file [Fetch Issue Body](#fetch-issue-body) saves at the read the derivation worked from.
 - Several sessions writing one epic hold only the rows each one owns, so a refusal costs a re-read rather than another session's work.
 
 ### Auto-Close Setting

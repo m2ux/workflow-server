@@ -130,6 +130,13 @@ A project states its long-lived branches in `config/branches` at its root, one n
 - Every pull request delivering the epic's tasks targets that epic base.
 - A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged.
 
+### Initiative Integration Branches
+
+- An initiative whose epics integrate before they reach a long-lived branch cuts one integration branch per long-lived branch it changes, named for the initiative and that branch: `i10/main`, `i10/workflows`, `i10/workspace`. Each epic base of that initiative roots in its integration branch, and the integration branch merges its long-lived branch when the initiative closes.
+- **Example.**
+  `i10/main` merges `main`, and `i10/e06/main` merges `i10/main`.
+- An integration branch is not an epic base, so the pull request merging it delivers its own work and carries a Test Plan.
+
 ### Review Worktrees
 
 A reviewed pull request is read in a detached worktree, named by its number under the worktree directory of the repository's main working tree.
