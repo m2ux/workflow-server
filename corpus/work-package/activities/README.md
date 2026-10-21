@@ -1,6 +1,6 @@
 # Work Package Activities
 
-> Part of the [Work Package Implementation Workflow](../README.md)
+These activities approximate a software development life cycle (SDLC) for a single work package: understanding requirements, planning, implementation, testing, review, and close-out. Review mode assesses an existing pull request and records findings for its author.
 
 | # | Name | Description |
 |---|----------|-------------|
@@ -25,8 +25,6 @@
 | 12 | [**Strategic Review**](#12-strategic-review) | Ensure minimal, focused changes |
 | 13 | [**Submit for Review**](#13-submit-for-review) | Push PR, mark ready, handle reviewer feedback |
 | 14 | [**Complete**](#14-complete) | Finalize documentation, create ADR, resolve session traces, and conduct retrospective |
-
-These activities approximate a software development life cycle (SDLC) for a single work package: understanding requirements, planning, implementation, testing, review, and close-out. Review mode assesses an existing pull request and records findings for its author.
 
 ---
 
