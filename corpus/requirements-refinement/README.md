@@ -38,9 +38,8 @@ Use this workflow when you want to:
 
 ## Parameters
 
-- The request names the source documents, and usually the target specification too.
-- When the request names no target, the run asks for its path. The target may be an existing specification, which the run **augments**, or a new path, where it **creates** one from scratch.
-- Every intermediate and final artifact lives in the run's planning folder.
+- The request names the [source document paths](techniques/resolve-inputs.md#source_paths) for the meeting transcripts and unstructured documents to refine from.
+- The [target specification path](techniques/record-intake.md#target_doc_path) identifies the specification to augment or create. When the request names no target, the run asks for its path.
 
 ---
 
