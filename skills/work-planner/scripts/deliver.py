@@ -327,10 +327,9 @@ def edit(args: argparse.Namespace) -> int:
         if held != body:
             sys.exit(f"#{issue['number']} has changed since {args.expect}: read it again and repeat this run")
     preamble, sections = split_sections(body)
-    lines, start, end, grid = table(sections)
-    if grid is None:
+    lines, first, end, header, data = table(sections)
+    if header is None:
         raise Unreadable('the body has no Work Breakdown section')
-    header, data = grid[0], grid[2:]
     when = args.date or day.today().isoformat()
     at = header.index('Task') if 'Task' in header else 0
     wanted = [t.strip() for t in (args.reserve or args.release).split(',') if t.strip()]
@@ -359,7 +358,7 @@ def edit(args: argparse.Namespace) -> int:
                 sys.exit(f'{task}: its id links no planning folder')
             r[at] = f'[{task}]({held.rstrip("/")}/{task.lower()}.md)'
             changed.append(f'{task} released from {held}')
-    lines[start + 2:end] = [row(r) for r in data]
+    lines[first:end] = [row(r) for r in data]
     Path(args.fix).write_text(join_sections(preamble, sections))
     action = 'reserved' if args.reserve else 'released'
     print(f"#{issue['number']} [I{initiative}:E{epic}]")

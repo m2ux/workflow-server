@@ -43,6 +43,12 @@ class Done(unittest.TestCase):
         self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
         self.assertNotIn('w01.md', fixed)
 
+    def test_a_table_whose_header_carries_no_separator_links_its_first_row(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        epic['body'] = '\n'.join(l for l in epic['body'].split('\n') if not l.startswith('| --- |'))
+        fixed = synced(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
+        self.assertIn(f"| [W01]({url('pull', 950)}) |", fixed)
+
     def test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')

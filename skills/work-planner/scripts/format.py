@@ -165,15 +165,23 @@ def row(values: list[str]) -> str:
     return '|' + '|'.join(f' {v} ' if v else ' ' for v in values) + '|'
 
 
-def table_rows(lines: list[str], start: int, end: int) -> tuple[list[str], list[list[str]], bool]:
-    """A table's header cells, its data rows, and whether the header carries its separator.
+def is_separator(line: str) -> bool:
+    """The alignment line a Markdown table renders from, which sits under its header."""
+    return all(SEPARATOR.fullmatch(c) for c in cells(line))
 
-    The separator is the alignment line a Markdown table renders from. A table written
-    without one holds a data row where the separator would sit, so the rows begin at the
-    header's next line and the rewrite supplies the separator."""
-    separator = start + 1 < end and all(SEPARATOR.fullmatch(c) for c in cells(lines[start + 1]))
-    first = start + 2 if separator else start + 1
-    return cells(lines[start]), [cells(l) for l in lines[first:end]], separator
+
+def first_row(lines: list[str], start: int, end: int) -> int:
+    """The index of a table's first data row.
+
+    A table written without its separator holds a data row where the separator would sit,
+    so the rows begin at the header's next line."""
+    return start + 2 if start + 1 < end and is_separator(lines[start + 1]) else start + 1
+
+
+def table_rows(lines: list[str], start: int, end: int) -> tuple[list[str], list[list[str]], bool]:
+    """A table's header cells, its data rows, and whether the header carries its separator."""
+    first = first_row(lines, start, end)
+    return cells(lines[start]), [cells(l) for l in lines[first:end]], first == start + 2
 
 
 def template_body(kind: str) -> str:
@@ -231,7 +239,9 @@ def work_table(body: str) -> tuple[list[str], list[str]]:
     _, sections = split_sections(body.replace('\r\n', '\n'))
     lines = next((l for h, l in sections if h == 'Work Breakdown'), [])
     table = [l for l in lines if l.startswith('|')]
-    return (cells(table[0]), table[2:]) if len(table) >= 2 else ([], [])
+    if not table:
+        return [], []
+    return cells(table[0]), table[first_row(table, 0, len(table)):]
 
 
 def epic_issues(body: str) -> dict[str, int]:

@@ -49,7 +49,8 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
+from format import (AC, LINK, TICK, cell, cells, first_row, id_cell, join_sections, row, row_id,
+                    split_sections)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -598,25 +599,28 @@ class Unreadable(ValueError):
 
 
 def table(sections):
+    """The Work Breakdown lines, the index its data rows start at, the index they end at,
+    its header cells and those rows."""
     lines = next((l for h, l in sections if h == 'Work Breakdown'), None)
     if lines is None:
-        return None, None, None, None
+        return None, None, None, None, None
     start = next((i for i, l in enumerate(lines) if l.startswith('|')), None)
     if start is None:
         raise Unreadable('Work Breakdown has no table')
     end = start
     while end < len(lines) and lines[end].startswith('|'):
         end += 1
-    grid = [cells(l) for l in lines[start:end]]
-    if 'Task' in grid[0]:
-        for r in grid[2:]:
-            ident = id_cell(grid[0], r)
+    first = first_row(lines, start, end)
+    header, data = cells(lines[start]), [cells(l) for l in lines[first:end]]
+    if 'Task' in header:
+        for r in data:
+            ident = id_cell(header, r)
             found = LINK.findall(ident)
             if len({text for text, _ in found}) > 1:
                 raise Unreadable(f'{row_id(ident)}: every link on a task row names that row; resolve the others')
             if len({href for _, href in found}) < len(found):
                 raise Unreadable(f'{row_id(ident)}: a task row links each delivery once; resolve the repeated links')
-    return lines, start, end, grid
+    return lines, first, end, header, data
 
 
 def main() -> int:
@@ -672,7 +676,7 @@ def main() -> int:
                               'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
-    lines, start, end, grid = table(sections)
+    lines, first, end, header, data = table(sections)
     delivered: dict[str, bool] = {}
     citing: dict[int, list[str]] = {}
     rows = []
@@ -684,9 +688,9 @@ def main() -> int:
             report['linked'].append(f"{task} delivered by #{pr['number']}")
         delivered[task] = bool(pr)
     else:
-        if grid is None or 'Coverage' not in grid[0]:
+        if header is None or 'Coverage' not in header:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
-        header, rows = grid[0], grid[2:]
+        rows = data
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
@@ -769,7 +773,7 @@ def main() -> int:
     if args.fix:
         rewrite = bool(report['linked']) and kind != 'task' or done_changed
         if rewrite:
-            lines[start + 2:end] = [row(r) for r in rows]
+            lines[first:end] = [row(r) for r in rows]
         Path(args.fix).write_text(join_sections(preamble, sections) if rewrite or report['ticked'] else body)
     return 0
 

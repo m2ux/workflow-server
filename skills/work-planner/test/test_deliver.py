@@ -320,14 +320,17 @@ class Reserve(unittest.TestCase):
         self.assertIn(f'| [W01]({record}w01.md) |', body)
         self.assertNotIn(f']({record})', body)
 
+    def test_reserve_reads_a_table_whose_header_carries_no_separator(self):
+        record = epic(943, ('W01', 'Queue plan', '', ''))
+        record['body'] = '\n'.join(l for l in record['body'].split('\n') if not l.startswith('| --- |'))
+        report, body, code = edit(record, '--reserve', 'W01', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assertIn(f'| [W01]({RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/) |', body)
+
     def test_release_refuses_a_free_row(self):
         report, _, code = edit(epic(943, ('W01', 'Queue plan', '', '')), '--release', 'W01')
         self.assertEqual(code, 1)
         self.assertIn('links no planning folder', report)
-
-
-if __name__ == '__main__':
-    unittest.main()
 
 
 class ConcurrentEdits(unittest.TestCase):
@@ -351,3 +354,7 @@ class ConcurrentEdits(unittest.TestCase):
         record = epic(2, ('W01', 'Work', '', ''))
         done, _ = self.reserve(record['body'])
         self.assertEqual(done.returncode, 0, done.stderr)
+
+
+if __name__ == '__main__':
+    unittest.main()
