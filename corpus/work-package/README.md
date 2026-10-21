@@ -24,7 +24,9 @@ Use this workflow when you want to:
 
 ## Parameters
 
-The request identifies the work package and target repository. [Review mode](REVIEW-MODE.md) determines whether the run implements a change or reviews an existing pull request. Discovery choices determine which optional activities run.
+- The request identifies the work package and target repository.
+- [Review mode](REVIEW-MODE.md) determines whether the run implements a change or reviews an existing pull request.
+- Discovery choices determine which optional activities run.
 
 ---
 
