@@ -23,30 +23,29 @@ matrix names the source each section came from and records that section as the h
 passage. Each new or updated requirement carries those headings so the specification's source list
 can link to them.
 
-The request names the source documents, and usually the target specification too. When the request
-names no target, the run asks for its path. The target may be an existing specification, which the run
-**augments**, or a new path, where it **creates** one from scratch. Every intermediate and final
-artifact lives in the run's planning folder.
+---
 
-**Use this workflow when you want to:**
+## When to use
+
+Use this workflow when you want to:
 
 - Fold the requirement changes from meetings and documents into a specification, with traceability.
 - Keep a specification conformant to a fixed protocol (entry format, identifier schemes, status rules).
 - Review proposed specification changes — analysis, working drafts, validation verdict, and a change
   summary — as planning-folder artifacts.
 
-## Activities
+---
 
-| # | Activity | Purpose |
-|---|----------|---------|
-| 01 | [Intake](activities/01-intake.yaml) | Establish readable, classified sources held in the repository, each transcript redacted, and the target specification |
-| 02 | [Analyze Sources](activities/02-analyze-sources.yaml) | Produce a confirmed analysis of the requirement changes the sources imply |
-| 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
-| 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
-| 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary |
-| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when a critical issue or the correction limit stops refinement |
+## Parameters
 
-## Flow
+The request names the source documents, and usually the target specification too. When the request
+names no target, the run asks for its path. The target may be an existing specification, which the run
+**augments**, or a new path, where it **creates** one from scratch. Every intermediate and final
+artifact lives in the run's planning folder.
+
+---
+
+## Graph
 
 Arrow labels are exit ids from the [workflow graph](workflow.yaml). The correctable exit requires correctable issues, no critical issues, and fewer than three correction iterations; uncorrectable is the default exit when validation does not pass and that correction condition is not met. Report Failure has no outgoing graph edge and ends the run after recording the unresolved issues.
 
@@ -68,9 +67,65 @@ flowchart TD
 
 The staged specification sits in the planning folder.
 
-## Structure
+---
+
+## Activities
+
+| # | Name | Description |
+|---|----------|---------|
+| 01 | [Intake](activities/01-intake.yaml) | Establish readable, classified sources held in the repository, each transcript redacted, and the target specification |
+| 02 | [Analyze Sources](activities/02-analyze-sources.yaml) | Produce a confirmed analysis of the requirement changes the sources imply |
+| 03 | [Update Specification](activities/03-update-specification.yaml) | Apply the analysis (or corrections) to a versioned working specification |
+| 04 | [Validate Specification](activities/04-validate-specification.yaml) | Validate (conformance + source coverage) and categorize issues |
+| 05 | [Finalize Specification](activities/05-finalize-specification.yaml) | Stage the final specification and change summary |
+| 06 | [Report Failure](activities/06-report-failure.yaml) | Compile a failure report when a critical issue or the correction limit stops refinement |
+
+---
+
+## Techniques
+
+| Name | Description |
+|-----------|-----------|
+| [resolve-inputs](techniques/resolve-inputs.md) | Read which source documents and which target specification a run is for, from the request and any correction the user typed |
+| [intake-sources](techniques/intake-sources.md) | Record whether every source document is readable and what type each one is |
+| [store-sources](techniques/store-sources.md) | Hold each source document in the repository under its own file name |
+| [redact-transcripts](techniques/redact-transcripts.md) | Redact the personal and off-topic conversation in each stored meeting transcript, keeping every heading |
+| [record-intake](techniques/record-intake.md) | Settle the target specification — where it is, and whether it is augmented or created — and record the intake |
+| [analyze-source](techniques/analyze-source.md) | Produce a structured analysis of the requirement changes the source documents imply, with a source-coverage matrix and the heading of each contributing passage |
+| [update-specification](techniques/update-specification.md) | Apply the analysis, correction findings, or requested revisions to a complete updated specification |
+| [validate-specification](techniques/validate-specification.md) | Validate the updated specification and categorize each issue |
+| [finalize-specification](techniques/finalize-specification.md) | Assemble the final specification and change summary |
+| [report-failure](techniques/report-failure.md) | Compile a failure report when refinement stops with unresolved issues |
+
+---
+
+## Resources
+
+| Name | Description |
+|----------|----------|
+| [specification-protocol](resources/specification-protocol.md) | The canonical specification layout and conventions, preserved verbatim |
+| [requirements-analysis-report](resources/requirements-analysis-report.md) | Structure for the analysis of requirement changes derived from a set of source documents |
+| [validation-rubric](resources/validation-rubric.md) | Validation checks and the severity/type categorization that labels each issue |
+| [change-summary](resources/change-summary.md) | Structure for the change summary that accompanies a finalized specification |
+| [intake-record](resources/intake-record.md) | Structure for the record of what a run was given: sources, target, the classification each source carries, each transcript's redactions, and augment-or-create mode |
+| [validation-report](resources/validation-report.md) | Structure for a pass's verdict, its issues, and any coverage gaps |
+| [failure-report](resources/failure-report.md) | Structure for the unresolved issues an uncorrectable run leaves, each with the manual resolution it needs |
+| [transcript-redaction](resources/transcript-redaction.md) | The conversation a stored meeting transcript redacts, and the marker that replaces it |
+
+---
+
+## File Structure
 
 - [`workflow.yaml`](workflow.yaml) — metadata and variables.
 - [`activities/`](activities/) — the pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.
+
+```
+corpus/requirements-refinement/
+├── workflow.yaml   # Workflow definition and graph
+├── README.md       # Workflow orientation
+├── activities/     # Activity definitions and orientation
+├── techniques/     # Technique protocols and shared contracts
+└── resources/      # Reference material and artifact guides
+```
