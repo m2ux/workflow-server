@@ -4,7 +4,7 @@ Delivery evidence for [issue #1470](https://github.com/m2ux/workflow-server/issu
 
 ## Scope
 
-Work Planner carries a proposal's exact designator into newly created board titles and finds those boards by theme. New tasks stay in epic rows with details in the epic and planning record. Planning retains existing hoisted issue records. The implementation changes five skill documents on branch `skill/1470-proposal-board-tasks`, commit `6e61bba48`.
+Work Planner carries a proposal's exact designator into newly created board titles and finds those boards by theme. New tasks stay in epic rows with details in the epic and planning record. Planning retains existing hoisted issue records. The implementation changes six skill documents on branch `skill/1470-proposal-board-tasks`. The initial implementation is commit `6e61bba48`; its review correction preserves proposal provenance in the initiative.
 
 ## Work Checklist
 
@@ -43,3 +43,11 @@ The affected routes are Plan's epic population and publication, and Sync's board
 The independent walkthrough inspected the entry point, selected modes, changed artifacts and supporting guidance. The agent recovered initially truncated guidance and repeated the bounded paths with proposal `[P12]`, an evidence-heavy task and the existing issue. It again scheduled zero task-issue creates and no mutation to #637, generated `[P12] Atlas: Reliable Delivery`, and executed the lookup filter successfully. The affected paths reach their governing rules and Plan's removed prerequisite matches its removed call.
 
 This is repeated targeted behavior evidence, not a completed Plan or Sync lifecycle. Transitive prerequisites of unrelated lifecycle operations were not exhausted. No external board or issue was created or changed during validation. Initial oversized reads required recovery; no context-efficiency improvement is claimed.
+
+## Change Review
+
+Review found a missing persistence contract: Sync required the originating proposal, but initiative drafting did not require retaining its identity. A fresh Sync session could therefore block creation after a valid planning session. The correction requires the proposal's exact title and issue URL in initiative References and makes Sync read that reference explicitly. Draft Initiative Issue Body already requires all Fields, so the provenance rule applies before publication. Sync already requires Initiative Issue Body, so the reference adds no missing prerequisite.
+
+The corrected skill passes the 49-file structure and link check with zero findings. The original 397-test result applies to the implementation before this prose-only correction; the correction changes no scripts or consumed templates.
+
+An independent review traced proposal identity from Plan's scoped-proposal input through Draft's required Fields, publication and saved-body readback, then into a fresh Sync session's References lookup. Repeated cases preserve `[P007]` and `[P12]` exactly; the documented jq filter matched both. No further concrete defect was found in the correction. This is instruction-path review and local lookup execution, not remote publication or a live Sync run.
