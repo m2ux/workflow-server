@@ -12,7 +12,7 @@ Work Planner carries a proposal's exact designator into newly created board titl
 - [x] Update their governing instructions and callers.
 - [x] Run local regression and structure checks.
 - [x] Exercise representative planning and lookup paths.
-- [ ] Publish the implementation pull request.
+- [x] Publish the implementation pull request: [#1471](https://github.com/m2ux/workflow-server/pull/1471), targeting `workspace`.
 
 ## Regression Checks
 
