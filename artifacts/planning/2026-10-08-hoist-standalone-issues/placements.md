@@ -38,10 +38,10 @@ Ten issues become the rows of a new epic, `[I04:E13] Unproduced Reads: Every Val
 
 | Issue | Placement | Kept |
 | --- | --- | --- |
-| #1241 | W01 of a new epic `[I11:E11]` | Kept as the task issue |
-| #1246 | W02 of the same epic | Kept as the task issue |
+| #1241 | W01 of a new epic `[I11:E11]` | Kept as the row's work item |
+| #1246 | W02 of the same epic | Kept as the row's work item |
 
-#1246 is one task issue carrying three criteria — the alignment repair, the diagnosis, and the public-reference check — rather than three rows, because one pull request on the skill delivers all three.
+W02 is one row carrying three criteria — the alignment repair, the diagnosis, and the public-reference check — rather than three rows, because one pull request on the skill delivers all three.
 
 ## Remaining
 
