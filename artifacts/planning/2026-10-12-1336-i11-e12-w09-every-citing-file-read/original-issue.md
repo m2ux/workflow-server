@@ -1,6 +1,6 @@
 # Original Issue
 
-> [Caller Test: One Rule for Every Citing File](https://github.com/m2ux/workflow-server/issues/1336) · opened 2026-10-12 · closed
+> Caller Test: One Rule for Every Citing File · issue #1336 · opened 2026-10-12 · closed
 
 The work item issue as it stood when its planning moved into this record. Its title, labels, body and every comment are carried unchanged, so the wording the issue gave each criterion and each piece of evidence is readable beside the work item.
 

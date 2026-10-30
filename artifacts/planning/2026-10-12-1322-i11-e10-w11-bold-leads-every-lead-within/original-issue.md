@@ -1,6 +1,6 @@
 # Original Issue
 
-> [Bold Leads: Every Lead Within the Width Limit](https://github.com/m2ux/workflow-server/issues/1322) · opened 2026-10-12 · open
+> Bold Leads: Every Lead Within the Width Limit · issue #1322 · opened 2026-10-12 · open
 
 The work item issue as it stood when its planning moved into this record. Its title, labels, body and every comment are carried unchanged, so the wording the issue gave each criterion and each piece of evidence is readable beside the work item.
 

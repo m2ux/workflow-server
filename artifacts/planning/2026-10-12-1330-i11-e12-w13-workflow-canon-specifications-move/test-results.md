@@ -97,4 +97,4 @@ $ scripts/sbx python3 -m unittest discover -s skills/workflow-canon/test -p 'tes
 **Result.** Pass on the measure this row makes, which is that the counts are identical.
 
 - **Evidence gap.**
-  38 of the 76 fail on an unset `CANON_TEST_ENGINE`, at the base as at the head. The failures are pre-existing and tracked as [#1325](https://github.com/m2ux/workflow-server/issues/1325). Those 38 tests observe nothing about this change, so the suite's evidence over the move is the 38 that pass and the equality of the two counts.
+  38 of the 76 fail on an unset `CANON_TEST_ENGINE`, at the base as at the head. The failures are pre-existing and tracked as [E10 W12](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1325-i11-e10-w12-canon-suite-the-prerequisite-stated/w12.md). Those 38 tests observe nothing about this change, so the suite's evidence over the move is the 38 that pass and the equality of the two counts.

@@ -1,6 +1,6 @@
 # Original Issue
 
-> [Entry Point: The Sections a SKILL.md Takes, Measured](https://github.com/m2ux/workflow-server/issues/1393) · opened 2026-10-13 · open
+> Entry Point: The Sections a SKILL.md Takes, Measured · issue #1393 · opened 2026-10-13 · open
 
 The work item issue as it stood when its planning moved into this record. Its title, labels, body and every comment are carried unchanged, so the wording the issue gave each criterion and each piece of evidence is readable beside the work item.
 

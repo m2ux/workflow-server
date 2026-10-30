@@ -1,6 +1,6 @@
 # Original Issue
 
-> [Coverage Cell: One Rule for What a Row Delivers](https://github.com/m2ux/workflow-server/issues/1323) · opened 2026-10-12 · open
+> Coverage Cell: One Rule for What a Row Delivers · issue #1323 · opened 2026-10-12 · open
 
 The work item issue as it stood when its planning moved into this record. Its title, labels, body and every comment are carried unchanged, so the wording the issue gave each criterion and each piece of evidence is readable beside the work item.
 

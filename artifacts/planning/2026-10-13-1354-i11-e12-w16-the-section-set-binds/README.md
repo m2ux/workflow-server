@@ -21,6 +21,6 @@ It matters because the author of the next such file has a precedent to copy rath
 | --- | --- |
 | Epic I11 E12 Skill Layout | [#1319](https://github.com/m2ux/workflow-server/issues/1319) |
 | Initiative I11 Work Planner | [#1166](https://github.com/m2ux/workflow-server/issues/1166) |
-| The section set task | [#1354](https://github.com/m2ux/workflow-server/issues/1354) |
+| The section set task | [E12 W16](w16.md) |
 | Epic planning record | [2026-10-12-work-planner-skill-layout](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-10-12-work-planner-skill-layout) |
 | Workflow Canon specifications moved | [2026-10-12-1330-i11-e12-w13-workflow-canon-specifications-move](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-10-12-1330-i11-e12-w13-workflow-canon-specifications-move) |

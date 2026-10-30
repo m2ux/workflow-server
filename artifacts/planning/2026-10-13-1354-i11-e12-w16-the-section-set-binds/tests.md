@@ -4,7 +4,7 @@ Both checks were run in the unit's worktree at `.worktrees/i11-e12-w16`, on bran
 
 ## T1 — The check's own suite
 
-Observes AC1 of [#1354](https://github.com/m2ux/workflow-server/issues/1354): the section set, its order and the Procedure heading applied to a file carrying a procedure outside a mode file, and not applied to a file carrying none.
+Observes AC17 of [I11 E12](https://github.com/m2ux/workflow-server/issues/1319): the section set, its order and the Procedure heading applied to a file carrying a procedure outside a mode file, and not applied to a file carrying none.
 
 ```text
 python3 -m unittest discover -s skills/test -p test_check_skill_files.py

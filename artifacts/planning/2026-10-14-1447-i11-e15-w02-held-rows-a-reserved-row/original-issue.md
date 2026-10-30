@@ -1,6 +1,6 @@
 # Original Issue
 
-> [Held Rows: A Reserved Row Reading as In Progress](https://github.com/m2ux/workflow-server/issues/1447) · opened 2026-10-14 · open
+> Held Rows: A Reserved Row Reading as In Progress · issue #1447 · opened 2026-10-14 · open
 
 The work item issue as it stood when its planning moved into this record. Its title, labels, body and every comment are carried unchanged, so the wording the issue gave each criterion and each piece of evidence is readable beside the work item.
 

@@ -18,6 +18,6 @@ This work moves the set to a statement the project owns, `config/branches`, reso
 
 | Resource | Link |
 | --- | --- |
-| Task issue | [#1262](https://github.com/m2ux/workflow-server/issues/1262) |
+| Task | E09 W05 |
 | Parent epic | [#1176](https://github.com/m2ux/workflow-server/issues/1176) |
 | Evidence | [midnight-agent-eng#80](https://github.com/shieldedtech/midnight-agent-eng/issues/80) |
