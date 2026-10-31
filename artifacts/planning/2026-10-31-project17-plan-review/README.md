@@ -6,12 +6,13 @@
 
 Review all 18 epics and 117 task rows on Project 17 for dependencies, gaps, Joins, consistency, contradictions and supersession. The graph is acyclic but the plan is not consistent enough for unrestricted parallel delivery.
 
-Six P1 findings and eleven P2 findings identify required reconciliation. No plan corrections or extra delivery sessions are applied. The prioritized E17 delivery continues with the relevant findings communicated to its agent.
+Six P1 findings and eleven P2 findings identify required reconciliation. Approved corrections are recorded below; the review snapshot retains the original findings. The prioritized E17 delivery continues with the relevant findings communicated to its agent.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
+| [Status contract](status-contract.md) | Approved reservation, readiness, Backlog and reviewed-handoff rules |
 | [Applied corrections](applied-corrections.md) | Approved AC36 placement and AC1 cancellation corrections |
 | [Findings](findings.md) | Seventeen evidenced findings and proposed corrections |
 | [Epic assessment](epic-assessment.md) | All board epics and their review outcome |
