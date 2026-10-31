@@ -1,0 +1,132 @@
+## Overview
+
+The scheme's rules divide into those a script decides and those a reader is trusted to remember. This epic moves the second group into the first: the conventions binding the skill's own files, and the delivery conventions binding the pull requests that carry initiative work, each reach a named operation the fixture suite runs.
+
+## Problem
+
+- **The skill's own files are checked by memory.**
+  The frontmatter's trigger phrases, the one-line prose layout, the single vocabulary and the split between the shared guide and the skill's own are stated as rules and enforced by whoever notices a departure. Only the mode summary has a check.
+- **A command can be spelled out twice.**
+  The rule that every command is specified once and reached by its operation name has no check, so a mode file that inlines a call reads as correct.
+- **The interface rule has no guard.**
+  The interface check must distinguish supported REST operations, capabilities requiring current GraphQL, and deprecated Projects (classic) APIs; a blanket non-REST rejection blocks required reads and writes.
+- **Delivery conventions go unreported.**
+  A renumbering that moves an identifier delivered work carries, an initiative pull request whose title names no epic, and a task pull request targeting anything other than its corresponding epic base are each caught, when they are caught, by review.
+- **A record file is named twice.**
+  The work item's name is composed once by the session writing the record's README and once by the operation writing the epic row's link, and nothing reads one against the other, so a row can link a file the record does not hold.
+
+## Proposal
+
+- **One check per rule, reached by name.**
+  Each rule gets an operation in the commands file and a check in the fixture suite, so a mode file names the operation and the suite decides the rule.
+- **The skill's files are an input like any other.**
+  The checks over the skill read its frontmatter, its mode files, its references and its scripts the way the format check reads an issue body.
+- **The delivery checks extend what already reads pull requests.**
+  The title and base conventions are decided where the sync already parses an initiative's pull requests, and the renumber refusal extends the one the renumber script already makes for linked work.
+- **A file carries one composition.**
+  The work item's name is composed the one way, and the operation that writes the row's link refuses a name the record does not hold.
+
+- **The interface follows capability.**
+  Use REST where it supports the operation and current GraphQL for everything REST cannot do, without a one-off exception. Command specifications state the REST capability gap; project operations use Projects V2, never deprecated Projects (classic) fields, types or mutations.
+
+- **Delivery integrates each epic.**
+  Task branches start from and their pull requests target the corresponding epic base, named `iNN/eNN/<long-lived-branch>`. Dependent tasks start after their prerequisites are delivered into that base.
+- **Each epic reaches its long-lived targets.**
+  A completed epic integrates each base into its corresponding configured long-lived branch after validation, current-head-and-base agent review and required human approval. An epic remains open until every base merges; other incomplete epics do not prevent its integration unless they are prerequisites.
+
+## Work Breakdown
+
+| Task | Description | Coverage | Depends on | Joins | Done |
+| --- | --- | --- | --- | --- | --- |
+| W01 | Skill frontmatter and prose layout checks | AC1, AC6 | | | |
+| W02 | Renumber and pull request delivery checks | AC8, AC9, AC10 | | | |
+| [W03](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-09-1269-i11-e10-w03-work-item-name-one-name/w03.md) | One name for a record work item | AC11, AC12 | | | |
+| W04 | Command specification and vocabulary checks | AC2, AC5 | W01 | W05 | |
+| W05 | Guide split and API capability checks | AC4, AC7 | W01 | W04 | |
+| W06 | Each house rule reaches a named operation | AC3 | W04 | | |
+| [W07](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1326-i11-e10-w07-duplicate-anchors-every-repeated-heading/w07.md) | Every repeated heading reported | AC13 | | | |
+| [W08](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1327-i11-e10-w08-heading-spacing-a-blank-line/w08.md) | A blank line above every heading | AC14 | | | |
+| [W09](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1323-i11-e10-w09-coverage-cell-one-rule-for/w09.md) | Coverage names what a row delivers | AC15 | | | |
+| [W10](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1332-i11-e10-w10-unit-record-one-folder-holds/w10.md) | One record folder holds a unit | AC16 | | | |
+| [W11](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1322-i11-e10-w11-bold-leads-every-lead-within/w11.md) | Bold leads within the width limit | AC17 | | | |
+| [W12](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1325-i11-e10-w12-canon-suite-the-prerequisite-stated/w12.md) | The canon suite states its prerequisite | AC18 | | | |
+| [W13](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1342-i11-e10-w13-entry-point-no-specification-in/w13.md) | The entry point holds no specification | AC19 | | | |
+| W14 | Closure rests on observable evidence | AC20 | | | |
+| [W15](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1350-i11-e10-w15-coverage-voice-one-mood-for/w15.md) | One mood for parallel selections | AC21 | | | |
+| [W16](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1352-i11-e10-w16-empty-sections-a-heading-left/w16.md) | A heading left without content | AC22 | | | |
+| [W17](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1353-i11-e10-w17-body-comparison-a-section-carried/w17.md) | A section body carried whole | AC23 | | | |
+| [W18](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1362-i11-e10-w18-skill-check-the-layout-check/w18.md) | The skill check reaches a gate | AC24 | | | |
+| [W19](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1372-i11-e10-w19-zero-callers-a-specification-no/w19.md) | A specification no procedure runs | AC25 | | | |
+| [W20](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1393-i11-e10-w20-entry-point-the-sections-a/w20.md) | An entry point's sections measured | AC26 | | | |
+| [W21](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1392-i11-e10-w21-check-scope-one-run-over/w21.md) | One run over every skill | AC27 | W20 | | |
+| [W22](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1400-i11-e10-w22-canon-conventions-the-file-every/w22.md) | Canon conventions reached without a further file | AC28, AC29 | | | |
+| [W23](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1402-i11-e10-w23-review-changes-prose-measured-against/w23.md) | A review body's prose measured against its branch | AC30, AC31, AC32 | | | |
+| [W24](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1406-i11-e10-w24-specification-reach-placement-measured-by/w24.md) | Placement measured by what a file must open | AC33, AC34 | | | |
+| [W25](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1407-i11-e10-w25-draft-report-a-base-named/w25.md) | A base named draft only where it leads | AC35 | | | |
+| [W26](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-13-1408-i11-e10-w26-throwaway-targets-a-fixture-is/w26.md) | A declared throwaway is no candidate | AC36, AC37 | | | |
+
+## Acceptance Criteria
+
+- [ ] **AC1.** The frontmatter check reports a mode the skill's description carries no trigger phrase for.
+- [ ] **AC2.** The commands check reports a command a mode file spells out instead of reaching by its operation name.
+- [ ] **AC3.** The rules check reports a house rule stated in prose that no named operation decides.
+- [ ] **AC4.** The guides check reports a convention stated both in the shared guide and in the skill's own.
+- [ ] **AC5.** The vocabulary check reports a concept named by two terms across the skill's instructions, references and scripts.
+- [ ] **AC6.** The layout check reports a departure from the layout the authoring guide states.
+- [ ] **AC7.** The interface check enforces the REST/current-GraphQL capability policy, as fixtures demonstrate accepted REST operations and GraphQL-only reads and writes, rejected GraphQL without a documented REST capability gap, and unconditional rejection of deprecated Projects (classic) APIs.
+- [ ] **AC8.** The renumber check refuses a map that moves an identifier delivered work carries.
+- [ ] **AC9.** The pull request check reports an initiative pull request whose title names no epic.
+- [ ] **AC10.** Delivery checks enforce the epic branch contract stated in Proposal, as fixtures cover valid routes, invalid task and integration targets, and met and unmet task prerequisites.
+- [ ] **AC11.** A planning record names its work item by the task id in lower case, the name the epic row's link carries.
+- [ ] **AC12.** The row-link operation refuses a work item file the record does not hold.
+- [ ] **AC13.** The duplicate-anchor check reports a heading whose title repeats another in the same file, whether or not a citation reaches it.
+- [ ] **AC14.** The layout check reports a heading that carries no blank line above it.
+- [ ] **AC15.** The format check reports an epic row whose Coverage cell does not name the criteria the row delivers, complete or open, as the check's own suite shows against a specimen epic carrying that fault.
+- [ ] **AC16.** The reserve operation holds every row of one unit with the single record folder the available-work report names for it.
+- [ ] **AC17.** The shared skill-file check reports no finding for the gitnexus skill, as a run of that check over the skill's folder shows.
+- [ ] **AC18.** The Workflow Canon suite reports no failure attributable to an unset engine variable, as a run of that suite in an environment that does not set it shows.
+
+- [ ] **AC19.** No skill entry point in the repository holds a command specification, as the shared skill-file check reports over every skill.
+
+- [ ] **AC20.** A closure check over a delivered issue passes on evidence GitHub exposes, taking no input the interface provides no field for, as a run of that check over a delivered task issue shows.
+
+- [ ] **AC21.** Sections of one skill that state the same kind of selection state it in one mood, as the shared skill-file check reports over that skill.
+
+- [ ] **AC22.** The shared skill-file check reports a heading whose section carries no content, as the check's own test suite shows against a specimen carrying one.
+- [ ] **AC23.** Comparing a skill's section bodies between two revisions is a check the repository holds, reporting each body that differs other than by a link target, as its own test suite shows against a specimen move.
+
+- [ ] **AC24.** The shared skill-file check runs in a job that gates the branch the skills live on, as a run of that job over a commit carrying a layout fault reports it.
+- [ ] **AC25.** A command specification no procedure runs is either reported by the shared skill-file check or excluded from the placement rule by a test the shared guidelines state, as the check's own test suite shows against a specimen carrying one.
+- [ ] **AC26.** The shared skill-file check reports a `SKILL.md` whose top-level sections depart from the set the shared guidelines name for an entry point, or from their order, as the check's own test suite shows against a specimen carrying each fault.
+- [ ] **AC27.** A run of the shared skill-file check over every skill in the repository reports no finding, as that run's output shows.
+- [ ] **AC28.** The Workflow Canon execution conventions stand where a mode reaching them opens no file it would not otherwise open, as a retrieval walk over each of that skill's modes records.
+- [ ] **AC29.** Every command specification the Workflow Canon skill states that one procedure runs stands in that procedure's file, whatever heading level or file title holds it, as the shared skill-file check reports over that skill's files.
+- [ ] **AC30.** Sync Epic reports a review pull request whose Changes section names a file absent from the head of the base it fronts, naming that path, as the script's own test suite shows against a specimen body carrying one.
+- [ ] **AC31.** The Review Pull Request rule states that a Changes bullet carries no count of the corpus, as a read of that rule shows.
+- [ ] **AC32.** Update Review Pull Request states that the merging session restates each standing bullet its unit's change makes false, as a read of that specification shows.
+- [ ] **AC33.** The shared skill-file check reports a command specification held in a mode file that another mode's file reaches, whether that reach is a procedure's citation or a command specification's, as the check's own test suite shows against a specimen carrying one.
+- [ ] **AC34.** A disclosure verification record measures each mode's retrieval over the layout at the skill's head and records no mode opening more files than the record of the layout it replaced, as that record shows.
+- [ ] **AC35.** Sync Epic reports an epic base as draft only where that base carries a commit its long-lived branch lacks, as the script's own test suite shows against a base level with its branch and one ahead of it.
+- [ ] **AC36.** List Orphans leaves an issue carrying a `throwaway:*` label out of the orphans and the cited standalone issues alike, as the script's own test suite shows against one of each.
+- [ ] **AC37.** Hoist mode states that a declared throwaway target is not a candidate, as a read of that mode shows.
+
+## References
+
+- **R1.** [Planning record](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-10-06-work-planner-retrospective) — The sessions the scheme was argued in, the review that derived these criteria, and the joins this epic leaves unpaired.
+- **R2.** [GitNexus findings](https://github.com/m2ux/workflow-server/issues/1355) — the six the shared check reports over that skill, each named with its line.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

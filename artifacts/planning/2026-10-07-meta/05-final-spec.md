@@ -295,13 +295,13 @@ The sources state no throughput, latency or capacity target for the skill.
 
 The epic reference is what links the pull request to the plan and lets a later pass match the two. Task identifiers make the title long enough that the purpose stops being readable. [[1](../../meetings/2026-09-27-b8c47927.md#115808--skillinitiative-planning), [2](../../meetings/2026-09-29-e08b3d64.md#035539)] (MC)
 
-🕒 **REQ-F025: Initiative work SHALL target that initiative's integration branch — `iNN/main`, `iNN/workflows` or `iNN/workspace` — created when none exists, with continuous integration treating the paired branches as one change**
+🕒 **REQ-F025: Task pull requests SHALL target their corresponding epic base; each completed epic base SHALL integrate into its corresponding configured long-lived branch**
 
-An initiative's changes land together or not at all, and an integration branch is where they accumulate until they do. Changes split across the engine and the corpus are one change in effect, so measuring them apart reports a failure neither of them has. [[1](../../meetings/2026-09-29-e08b3d64.md#035539), [2](../../meetings/2026-09-29-e08b3d64.md#035824), [3](../../meetings/2026-09-30-2a2c8d9b.md#033845), [4](../../meetings/2026-09-30-2a2c8d9b.md#034001), [5](../../meetings/2026-10-05-6b3a029b.md#091216)] (MC)
+Epic bases are named `iNN/eNN/<long-lived-branch>` and rooted in the corresponding long-lived branch after epic prerequisites are met. Validation, current-head-and-base agent review and required human approval govern integration. An epic stays open until every base merges; the initiative stays open until its own criteria and epics are complete. [Current decision](../2026-10-31-project17-plan-review/branch-contract.md); [original source](../../meetings/2026-09-30-2a2c8d9b.md#033845).
 
-🕒 **REQ-F026: Where an epic's tasks build on one another, their pull requests SHALL be delivered as a stack, each based on the one before**
+🕒 **REQ-F026: Dependent tasks SHALL start from their corresponding epic base after their prerequisite tasks are delivered into that base**
 
-Each pull request then shows only its own work, and a reviewer sees the task rather than everything underneath it. [[1](../../meetings/2026-09-30-2a2c8d9b.md#035631)] (MC)
+Task dependencies determine start order. Each task pull request targets the epic base. Cross-epic prerequisites require completed prerequisite epics with their delivery bases merged before the dependent epic starts. [Current decision](../2026-10-31-project17-plan-review/branch-contract.md); [original source](../../meetings/2026-09-30-2a2c8d9b.md#035631).
 
 ---
 
