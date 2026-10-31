@@ -11,6 +11,13 @@ The rules this skill's files follow beyond the [skill guidelines](../../guidelin
 
 - **Section order.**  Rules precedes Dependencies.
 
+## Mode Files
+
+- **Opening.**  `# <Name> Mode`, then a paragraph on what the mode does.
+- **Sections.**
+  A mode carries a procedure, so a mode file takes the [procedure-file sections](../../guidelines.md#procedure-files) and their order, and carries Rules as well as Procedure.
+- **Rules.**  A statement that binds only this mode goes in the mode's `## Rules`.
+
 ## Progressive Disclosure
 
 Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclosure) and [disclosure verification](../../guidelines.md#disclosure-verification) rules using the scenarios affected by the revision:

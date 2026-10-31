@@ -187,16 +187,42 @@ class InProgress(unittest.TestCase):
         self.assertEqual(section(out, 'Next'), [f"▶️ *I01:E00 First*, next W02 Free — {url('issues', 2)}"])
 
 
-class Next(unittest.TestCase):
-    def ready(self, number: int, epic: int, labels=()):
-        return item(issue(number, f'[I01:E{epic:02d}] Epic {epic}: Ready', body=epic_body(('W01', 'Go', '')),
-                          labels=labels), 'Ready')
+def refs(out: str) -> list[str]:
+    return [line.split('*')[1].split(' ')[0] for line in section(out, 'Next')]
 
-    def test_ranked_by_priority_label_then_reference(self):
-        items = [self.ready(10, 0, ['priority: 1']), self.ready(11, 1), self.ready(12, 2, ['priority: 5']),
-                 self.ready(13, 3, ['priority: 4']), self.ready(14, 4, ['priority: 3'])]
-        refs = [line.split('*')[1].split(' ')[0] for line in section(summary(items), 'Next')]
-        self.assertEqual(refs, ['I01:E02', 'I01:E03', 'I01:E04', 'I01:E00', 'I01:E01'])
+
+class Next(unittest.TestCase):
+    def ready(self, number: int, epic: int, initiative: int = 1, depends: str = '', labels=()):
+        return item(issue(number, f'[I{initiative:02d}:E{epic:02d}] Epic {epic}: Ready',
+                          body=epic_body(('W01', 'Go', depends)), labels=labels), 'Ready')
+
+    def initiative(self, number: int, which: int = 1, labels=(), *rows):
+        return item(issue(number, f'[I{which:02d}] Theme {which}: Work', body=initiative_body(*rows),
+                          labels=labels), 'In Progress')
+
+    def test_ranked_by_the_priority_label_of_their_initiative_then_reference(self):
+        items = [self.initiative(1, 1, ['priority: 1']), self.initiative(2, 2, ['priority: 5']),
+                 self.initiative(3, 3), self.ready(10, 0, 1), self.ready(11, 0, 2), self.ready(12, 0, 3)]
+        self.assertEqual(refs(summary(items)), ['I02:E00', 'I01:E00', 'I03:E00'])
+
+    def test_ranked_by_their_epics_own_priority_label_within_one_initiative(self):
+        items = [self.initiative(1), self.ready(10, 0, labels=('priority: 1',)),
+                 self.ready(11, 1), self.ready(12, 2, labels=('priority: 5',))]
+        self.assertEqual(refs(summary(items)), ['I01:E02', 'I01:E00', 'I01:E01'])
+
+    def test_an_epic_named_in_an_initiative_row_dependency_is_ranked_ahead(self):
+        items = [self.initiative(1, 1, (), (f"[E01]({url('issues', 11)})", 'E02'),
+                                 (f"[E02]({url('issues', 12)})", '')),
+                 self.ready(11, 1), self.ready(12, 2)]
+        self.assertEqual(refs(summary(items)), ['I01:E02', 'I01:E01'])
+
+    def test_an_epic_named_in_a_task_row_dependency_is_ranked_ahead(self):
+        items = [self.initiative(1), self.ready(11, 1, depends='E02:W01'), self.ready(12, 2)]
+        self.assertEqual(refs(summary(items)), ['I01:E02', 'I01:E01'])
+
+    def test_an_initiative_with_an_unreadable_work_breakdown_still_ranks_its_epics(self):
+        broken = item(issue(1, '[I01] Theme 1: Work', body='## Work Breakdown\n\nTBD\n'), 'In Progress')
+        self.assertEqual(refs(summary([broken, self.ready(11, 1)])), ['I01:E01'])
 
     def test_first_five_and_a_count_of_the_rest(self):
         lines = section(summary([self.ready(10 + n, n) for n in range(7)]), 'Next')
@@ -286,7 +312,7 @@ class Options(unittest.TestCase):
     def test_initiative_reports_no_other_initiative_epics(self):
         broken = item(issue(4, '[I09:E01] Broken: Epic', body='## Work Breakdown\n\nTBD\n'), 'Ready')
         done = progress([*self.items, broken], [], '--since', SINCE, '--initiative', 'I08')
-        self.assertEqual(done.stderr, '')
+        self.assertNotIn('I09', done.stderr)
 
     def test_pull_requests_without_their_issue_links_are_refused(self):
         with tempfile.TemporaryDirectory() as tmp:

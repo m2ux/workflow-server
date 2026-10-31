@@ -8,7 +8,7 @@ issues.json is every issue in the repository as `gh api --paginate
 another. Pull requests are skipped.
 
 An agent-engineering issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
-prefix. A proposal has no prefix and carries type:proposal, and it is not a hoist candidate. An open
+prefix. A proposal carries a [P00] prefix and type:proposal, and it is not a hoist candidate. An open
 issue without one of these prefixes, and without type:proposal, is standalone, and every
 standalone issue is a hoist candidate.
 An orphan is one that no open agent-engineering issue's body links, by URL or by #n; one that only

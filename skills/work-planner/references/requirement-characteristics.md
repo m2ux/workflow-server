@@ -1,6 +1,6 @@
 # Requirement Characteristics
 
-The characteristics an acceptance criterion meets, and the characteristics a set of them meets. Condensed from ISO/IEC/IEEE 29148:2018, clauses 5.2.4 to 5.2.7. [Plan](plan-mode.md) writes criteria to these, and [Align](align-mode.md) checks them.
+The characteristics an acceptance criterion meets, and the characteristics a set of them meets. Condensed from ISO/IEC/IEEE 29148:2018, clauses 5.2.4 to 5.2.7.
 
 ## Individual
 
@@ -23,9 +23,9 @@ Each criterion has these characteristics.
 - **Correct.**
   It states the need it came from, accurately.
 - **Conforming.**
-  It follows the acceptance-criterion form: an end state, one invariant, and a named instrument, as the [shared acceptance criteria](review-criteria.md#shared-acceptance-criteria) define.
+  It follows the acceptance-criterion form: an end state, one invariant, and a named instrument.
 
-## A set
+## A Set
 
 The criteria of one issue, taken together, have these characteristics.
 

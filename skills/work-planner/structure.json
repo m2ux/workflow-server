@@ -1,0 +1,17 @@
+{
+  "modes": {
+    "sections": ["Prerequisites", "Procedure", "Outcomes", "Guidance", "Operations"],
+    "required": ["Procedure", "Outcomes"],
+    "specifications": "Operations"
+  },
+  "protocols": {
+    "sections": ["Prerequisites", "Procedure", "Guidance"],
+    "required": ["Procedure"]
+  },
+  "artifacts": {
+    "sections": ["Prerequisites", "Operations", "Fields", "Guidance", "Commands"],
+    "required": ["Fields"],
+    "procedures": "Operations",
+    "keeps_commands": true
+  }
+}

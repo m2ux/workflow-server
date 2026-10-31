@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import issue, item, links, pr, run, url
+from fixtures import initiative_body, issue, item, links, pr, run, url
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
@@ -83,7 +83,7 @@ class Survey(unittest.TestCase):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')))
         self.assertIn('unit I07:E00:W01: coverage AC1, '
                       f'record {TODAY}-943-i07-e00-w01-queue-plan, '
-                      'branch i07/e00/w01-queue-plan, worktree .worktrees/i07-e00-w01', output)
+                      'branch i07/e00/w01-queue-plan, worktree .worktrees/i07/e00/w01-queue-plan', output)
         self.assertIn('available: 1, held: 0, blocked: 0', output)
 
     def test_a_unit_names_its_epic_base(self):
@@ -108,15 +108,23 @@ class Survey(unittest.TestCase):
         self.assertNotIn('unit', output)
         self.assertIn('available: 0', output)
 
-    def test_ready_epic_waits_for_its_task_prerequisites_to_reach_the_long_lived_branch(self):
+    def test_sibling_epics_offer_their_units_in_one_survey(self):
+        first = epic(943, ('W01', 'Shape', '', 'W02'), ('W02', 'Fit', '', 'W01'))
+        second = epic(944, ('W01', 'Draft', '', ''), ('W02', 'Extend', 'W01', ''), which='07:E01')
+        output = survey(staged((first, 'Ready'), (second, 'Ready')))
+        self.assertIn('unit I07:E00:W01+W02', output)
+        self.assertIn('unit I07:E01:W01', output)
+        self.assertIn('available: 2, held: 0, blocked: 1', output)
+
+    def test_only_the_row_naming_another_epic_waits_for_it(self):
         prerequisite = epic(943, (f"[W01]({url('pull', 9)})", 'Produce', '', ''))
         dependent = epic(944, ('W01', 'Independent work', '', ''),
                          ('W02', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
         pulls = [pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base='i07/e00/main')]
         output = survey(staged((prerequisite, 'In Review'), (dependent, 'Ready')), pulls)
-        self.assertNotIn('  unit ', output)
-        self.assertIn('available: 0, held: 0, blocked: 2', output)
-        self.assertIn('prerequisite epic not completed', output)
+        self.assertIn('unit I07:E01:W01', output)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('available: 1, held: 0, blocked: 1', output)
         prerequisite['state'], prerequisite['state_reason'] = 'closed', 'completed'
         output = survey(staged((prerequisite, 'Done'), (dependent, 'Ready')), pulls)
         self.assertIn('available: 2, held: 0, blocked: 0', output)
@@ -155,6 +163,57 @@ class Survey(unittest.TestCase):
         self.assertIn('unit I07:E00:W01', output)
         self.assertIn('blocked I07:E00:W02: depends on W01', output)
         self.assertIn('available: 1, held: 0, blocked: 1', output)
+
+    def test_an_entry_that_cannot_resolve_is_told_from_a_blocked_row(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            items_path, prs_path = root / 'items.json', root / 'prs.json'
+            items_path.write_text(json.dumps(staged(
+                (epic(943, ('W01', 'Queue plan', '', ''),
+                      ('W02', 'Dispatch', 'E05 (W04)', '')), 'In Progress'))))
+            prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
+            done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
+                       '--links', str(links_path), '--date', TODAY)
+        self.assertIn('unit I07:E00:W01', done.stdout)
+        self.assertIn('unresolvable I07:E00:W02: E05 (W04) cannot resolve', done.stdout)
+        self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 1', done.stdout)
+        self.assertEqual(done.returncode, 1)
+
+    def test_an_unresolvable_epic_prerequisite_names_itself(self):
+        initiative = issue(900, '[I07] Theme: Work', body=initiative_body(
+            (f"[E00]({url('issues', 943)})", 'E09 (W04)')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            items_path, prs_path = root / 'items.json', root / 'prs.json'
+            items_path.write_text(json.dumps(staged(
+                (initiative, 'In Progress'),
+                (epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'))))
+            prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
+            done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
+                       '--links', str(links_path), '--date', TODAY)
+        self.assertIn("unresolvable I07:E00:W01: its epic's prerequisite cannot resolve", done.stdout)
+        self.assertEqual(done.returncode, 1)
+
+    def test_a_held_sibling_does_not_hide_an_unresolvable_row(self):
+        folder = f'{RECORDS}/2026-10-06-943-i07-e00-w01-queue-plan/'
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            items_path, prs_path = root / 'items.json', root / 'prs.json'
+            items_path.write_text(json.dumps(staged(
+                (epic(943, (f'[W01]({folder})', 'Queue plan', '', 'W02'),
+                      ('W02', 'Dispatch', 'E05 (W04)', 'W01')), 'In Progress'))))
+            prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
+            done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
+                       '--links', str(links_path), '--date', TODAY)
+        self.assertIn('unresolvable I07:E00:W02: E05 (W04) cannot resolve', done.stdout)
+        self.assertNotIn('hold I07:E00:W01', done.stdout)
+        self.assertEqual(done.returncode, 1)
 
     def test_joined_tasks_are_one_unit(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', 'W02'),

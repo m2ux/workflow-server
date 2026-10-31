@@ -1,6 +1,6 @@
 # Skill Guidelines
 
-How a skill's own files are written: SKILL.md, the references, the templates, and the scripts' docstrings. Every change to a skill follows them. A skill with rules of its own keeps them in its `references/guidelines.md`, which adds to these.
+How a skill's own files are written: SKILL.md, the references, the templates, and the scripts' docstrings. Every change to a skill follows them. A skill with rules of its own keeps them in `guidelines.md` beside its entry point or in `references/guidelines.md`, and those rules define the structure of every directory it adds.
 
 ## Frontmatter
 
@@ -21,8 +21,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 - **SKILL.md.**  The skill's entry point, at the top of its folder.
 - **References.**
-  - `references/` holds one `<mode>-mode.md` per mode, `guidelines.md` when the skill has rules of its own, and each guide the modes share.
-  - Templates, scripts and tests each have a folder of their own.
+  - A mode file is named `<mode>-mode.md`. `references/` holds `guidelines.md` when the skill has rules of its own, and each guide the modes share.
+  - A skill may add directories of its own, one for its modes among them, and keep its guidelines beside SKILL.md. Its guidelines state what those files carry and the sections they take, and `structure.json` beside SKILL.md declares those sections to the shared check.
+  - Scripts and tests each have a folder of their own. Standalone templates use `templates/`.
 - **Shared.**
   `skills/` holds this file beside the `scripts/` and `test/` folders for checks that every skill runs. A check binding one skill lives in that skill's own folders.
 
@@ -61,13 +62,6 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - An alternative way in is a step of the Procedure.
 - **Procedure.**
   A `## Procedure` of numbered steps, each opening with a bold label. Where the file holds several procedures, each is a sub-section of it.
-
-## Mode files
-
-- **Opening.**  `# <Name> mode`, then a paragraph on what the mode does.
-- **Sections.**
-  A mode carries a procedure, so a mode file takes the [procedure-file sections](#procedure-files) and their order, and carries Rules as well as Procedure.
-- **Rules.**  A statement that binds only this mode goes in the mode's `## Rules`.
 
 ## Layout
 
@@ -124,7 +118,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Each spec opens with a one-line, succinct description of what the command does.
   - Detail a caller needs, such as flags, inputs or refusals, follows as bullets, then the command block.
 - **Named by link.**
-  - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check format](work-planner/references/commands.md#check-format) on each epic".
+  - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) on each epic".
   - A command body is inlined only in the file that owns the spec.
 - **Conventions.**
   - Session setup, execution location, example values and other skill-wide prerequisites stand where a procedure reaching them opens no further file: SKILL.md, which selects the mode, or the file holding the operations those procedures open anyway.
@@ -168,9 +162,13 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 ## Changes
 
+- **Worktrees.**
+  Make skill changes in a dedicated linked worktree on the change's branch. Preserve existing edits in the project-root checkout. Corrections to an open pull request stay on its branch.
+- **Current preferences.**
+  Keep the guidelines aligned with the user's explicit, non-reverted preferences. A later correction supersedes the earlier preference; update its existing rule in the same change. Shared rules belong here and skill-specific rules belong in that skill's guidelines.
 - **Everything that names it.**
   A rename or a move updates every reference: folder, `name`, heading, script paths, links and anchors.
 - **Stale claims.**
   After a behaviour change, search the skill for any description of the old behaviour and restate it.
 - **Verified.**
-  The skill's tests pass, `skills/scripts/check_skill_files.py` reports no finding for every skill the change touches, and [disclosure verification](#disclosure-verification) is recorded before the change is committed.
+  The skill's tests and affected shared-checker or integration suites pass, `skills/scripts/check_skill_files.py` reports no finding for every skill the change touches, and [disclosure verification](#disclosure-verification) is recorded before the change is committed. State which checks ran and distinguish local evidence from external workflow execution.

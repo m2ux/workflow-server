@@ -12,7 +12,7 @@ from pathlib import Path
 from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, links, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
-from board import Board  # noqa: E402
+from board import Board, Resolution  # noqa: E402
 from statuses import assignee_calls  # noqa: E402
 
 KEY = ('o/r', 12)
@@ -60,7 +60,7 @@ class RequiredLinks(unittest.TestCase):
         self.assertEqual(done.stderr.strip(), '--links is required')
 
 
-class EpicPrerequisites(unittest.TestCase):
+class RowPrerequisites(unittest.TestCase):
     def test_cross_repository_task_waits_for_its_epic(self):
         upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
                          body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
@@ -69,25 +69,96 @@ class EpicPrerequisites(unittest.TestCase):
         consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
         pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other')]
         board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
-        self.assertFalse(board.epic_dependencies_met(key, {}, 'consumer'))
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
         upstream['state'], upstream['state_reason'] = 'closed', 'completed'
-        self.assertTrue(board.epic_dependencies_met(key, {}, 'consumer'))
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.MET)
 
     def test_missing_prerequisite_is_reported_and_blocks(self):
         key = ('o/r', 3)
-        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(
-            ('W01', 'Consume', f"[E00:W01]({url('issues', 2)})")))
+        dependency = f"[E00:W01]({url('issues', 2)})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
         board = Board({key: consumer}, [], 'o/r')
-        self.assertFalse(board.epic_dependencies_met(key, {}, 'consumer'))
-        self.assertEqual(board.unresolved, ['consumer: #2 not given'])
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['consumer: cannot resolve E00:W01: #2 is not given'])
 
     def test_local_task_dependency_uses_the_task_merge(self):
         key = ('o/r', 2)
         epic = issue(2, '[I01:E00] Local: Work', body=epic_body(
             (f"[W01]({url('pull', 9)})", 'Produce', ''), ('W02', 'Consume', 'W01')))
         board = Board({key: epic}, [], 'o/r', [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z')])
-        self.assertTrue(board.epic_dependencies_met(key, {}, 'local'))
-        self.assertTrue(board.met('W01', key, {}, 'local'))
+        self.assertIs(board.met('W01', key, {}, 'local'), Resolution.MET)
+
+
+class UnresolvableDependencies(unittest.TestCase):
+    """An entry the cell cannot resolve, told apart from one waiting on delivery."""
+
+    def consumer(self, dependency: str) -> tuple[Board, tuple[str, int]]:
+        key = ('o/r', 3)
+        epic = issue(3, '[I01:E01] Consumer: Work', body=epic_body(
+            (f"[W01]({url('pull', 9)})", 'Produce', ''), ('W02', 'Consume', dependency)))
+        return Board({key: epic}, [], 'o/r', [pr(9, '[I01:E01] Produce', merged='2026-01-01T00:00:00Z')]), key
+
+    def test_an_entry_naming_no_row_and_linking_no_issue_cannot_resolve(self):
+        board, key = self.consumer('E05 (W04)')
+        self.assertIs(board.met('E05 (W04)', key, {}, 'E01:W02'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved,
+                         ['E01:W02: cannot resolve E05 (W04): it names no row and links no issue'])
+
+    def test_a_row_the_epic_does_not_carry_cannot_resolve(self):
+        board, key = self.consumer('W07')
+        self.assertIs(board.met('W07', key, {}, 'E01:W02'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W02: cannot resolve W07: #3 has no such row'])
+
+    def test_a_prerequisite_that_has_not_landed_is_unmet(self):
+        board, key = self.consumer('W02')
+        self.assertIs(board.met('W02', key, {}, 'E01:W03'), Resolution.UNMET)
+        self.assertEqual(board.unresolved, [])
+
+    def test_a_delivered_prerequisite_is_met(self):
+        board, key = self.consumer('W01')
+        self.assertIs(board.met('W01', key, {}, 'E01:W02'), Resolution.MET)
+
+    def test_every_entry_of_a_cell_is_read(self):
+        board, key = self.consumer('W07, W08')
+        self.assertIs(board.met('W07, W08', key, {}, 'E01:W02'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W02: cannot resolve W07: #3 has no such row',
+                                            'E01:W02: cannot resolve W08: #3 has no such row'])
+
+    def test_an_unresolvable_entry_outranks_an_unmet_one(self):
+        board, key = self.consumer('W02, W07')
+        self.assertIs(board.met('W02, W07', key, {}, 'E01:W03'), Resolution.UNRESOLVABLE)
+
+    def test_an_unreadable_table_cannot_resolve_rather_than_ending_the_run(self):
+        producer = issue(2, '[I01:E00] Producer: Work', body=epic_body(
+            (f"[W01]({url('pull', 9)}), [W02]({url('pull', 9)})", 'Produce', '')))
+        key = ('o/r', 3)
+        dependency = f"[E00:W01]({url('issues', 2)})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        board = Board({('o/r', 2): producer, key: consumer}, [], 'o/r')
+        self.assertIs(board.met(dependency, key, {}, 'E01:W01'), Resolution.UNRESOLVABLE)
+        self.assertEqual(board.unresolved, ['E01:W01: cannot resolve W01: W01: every link on a task row '
+                                            'names that row; resolve the others'])
+
+
+class EpicPrerequisites(unittest.TestCase):
+    def test_an_initiative_row_dependency_gates_the_whole_epic(self):
+        key = ('o/r', 3)
+        producer = issue(2, '[I01:E00] Producer: Work', body=epic_body(('W01', 'Produce', '')))
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Work', '')))
+        initiative = issue(1, '[I01] Theme: Work', body=initiative_body(
+            (f"[E00]({url('issues', 2)})", ''), (f"[E01]({url('issues', 3)})", f"[E00]({url('issues', 2)})")))
+        board = Board({('o/r', 1): initiative, ('o/r', 2): producer, key: consumer}, [], 'o/r')
+        self.assertIs(board.epic_prerequisites_met(key, {}, 'consumer'), Resolution.UNMET)
+        producer['state'], producer['state_reason'] = 'closed', 'completed'
+        self.assertIs(board.epic_prerequisites_met(key, {}, 'consumer'), Resolution.MET)
+
+    def test_a_task_row_dependency_leaves_the_epic_open(self):
+        key = ('o/r', 3)
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(
+            ('W01', 'Consume', f"[E00:W01]({url('issues', 2)})")))
+        initiative = issue(1, '[I01] Theme: Work', body=initiative_body((f"[E01]({url('issues', 3)})", '')))
+        board = Board({('o/r', 1): initiative, key: consumer}, [], 'o/r')
+        self.assertIs(board.epic_prerequisites_met(key, {}, 'consumer'), Resolution.MET)
 
 
 def board_fields(*names: str) -> list[dict]:
@@ -147,7 +218,8 @@ class InitiativeStatus(unittest.TestCase):
 
     def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
                   pulls: str = '', held: tuple[dict, ...] = (), tasks: tuple[dict, ...] = (),
-                  statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done')) -> str:
+                  statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done'),
+                  code: int = 0) -> str:
         epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         initiative = issue(1, '[I01] First: Initiative',
                            body=initiative_body((f"[E00]({url('issues', 2)})", '')))
@@ -181,8 +253,15 @@ class InitiativeStatus(unittest.TestCase):
                        '--links', str(held_links), *(['--tasks', *task_paths] if task_paths else []),
                        '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
                        '--out', str(Path(tmp, 'out')), '--assignee', 'me')
-            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(done.returncode, code, done.stderr)
             return done.stdout
+
+    def test_a_task_gated_on_an_unresolvable_entry_keeps_its_status(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', 'E05 (W04)')))
+        task = issue(3, '[I01:E00:W01] Go: Work')
+        out = self.open_pair('In Progress', 'Ready', epic, tasks=(task,), code=1)
+        self.assertIn('cannot resolve E05 (W04)', out)
+        self.assertNotIn('[I01:E00:W01] Go: Work:', out)
 
     def test_an_unstarted_epic_stays_in_backlog(self):
         out = self.open_pair('Backlog', 'Backlog')
@@ -217,6 +296,15 @@ class InitiativeStatus(unittest.TestCase):
         out = self.open_pair('In Progress', 'In Progress', epic, merged,
                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
         self.assertIn('set #2 [I01:E00] First: Epic: In Progress → In Review', out)
+
+    def test_a_task_is_ready_though_a_sibling_row_waits_on_another_epic(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            (f"[W01]({url('issues', 3)})", 'Go', ''),
+            ('W02', 'Consume', f"[E01:W01]({url('issues', 4)})")))
+        task = issue(3, '[I01:E00:W01] Go: Task')
+        out = self.open_pair('Ready', 'Ready', epic, tasks=(task,),
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('[I01:E00:W01] Go: Task: Backlog → Ready', out)
 
     def task_pair(self, held: tuple[dict, ...]) -> str:
         """An epic whose W01 links a task issue, and an open pull request naming the epic."""

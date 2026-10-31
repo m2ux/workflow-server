@@ -1,0 +1,6 @@
+{
+  "*-mode.md": {
+    "sections": ["Prerequisites", "Procedure", "Reference", "Rules", "Commands"],
+    "required": ["Procedure", "Rules"]
+  }
+}

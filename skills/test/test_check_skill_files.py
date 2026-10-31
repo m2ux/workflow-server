@@ -1,6 +1,7 @@
 """The shared skill-file check, over seeded skills in a temporary tree."""
 
 import io
+import json
 import os
 import shutil
 import sys
@@ -15,6 +16,30 @@ import check_skill_files as checker
 
 FENCE = chr(96) * 3
 
+# The specimen declares directories of its own, so the checks below exercise a
+# contract a skill states rather than one the checker knows by name.
+STRUCTURE = {
+    'modes': {
+        'sections': ['Prerequisites', 'Procedure', 'Outcomes', 'Guidance', 'Operations'],
+        'required': ['Procedure', 'Outcomes'],
+        'specifications': 'Operations',
+    },
+    'protocols': {
+        'sections': ['Prerequisites', 'Procedure', 'Guidance'],
+        'required': ['Procedure'],
+    },
+    'artifacts': {
+        'sections': ['Prerequisites', 'Operations', 'Fields', 'Guidance', 'Commands'],
+        'required': ['Fields'],
+        'procedures': 'Operations',
+        'keeps_commands': True,
+    },
+    '*-mode.md': {
+        'sections': ['Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands'],
+        'required': ['Procedure', 'Rules'],
+    },
+}
+
 
 def calling(title, target, heading='Procedure'):
     """A file whose procedure runs the command the target names, which is what
@@ -28,6 +53,7 @@ class SkillFileChecks(unittest.TestCase):
         self.addCleanup(shutil.rmtree, self.root)
         self.skill = self.root / 'specimen'
         (self.skill / 'references').mkdir(parents=True)
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
 
     def write(self, name, text):
         path = self.skill / name
@@ -37,11 +63,12 @@ class SkillFileChecks(unittest.TestCase):
 
     def findings(self):
         files = sorted(self.skill.rglob('*.md'))
-        cited, called = checker.citations(files)
+        declared = {}
+        cited, called = checker.citations(files, declared)
         cache = {}
         out = []
         for path in files:
-            out += checker.check(path, self.root, cache, cited, called)
+            out += checker.check(path, self.root, cache, cited, called, declared)
         return [(Path(where).name, line, kind) for where, line, kind, _ in out]
 
     def kinds(self):
@@ -385,6 +412,103 @@ class SkillFileChecks(unittest.TestCase):
     def test_a_trailing_blank_line_is_reported(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n')
         self.assertIn('trailing blank line', self.kinds())
+
+    def test_modes_directory_uses_outcomes_and_operations(self):
+        self.write('modes/plan-mode.md', '# Plan\n\n## Procedure\n\n'
+                   '1. **Check.**\n   Run [Check files](#check-files).\n\n'
+                   '## Outcomes\n\nThe files conform.\n\n## Operations\n\n'
+                   '### Check Files\n\nChecks files.\n')
+        self.assertEqual(self.findings(), [])
+
+    def test_modes_directory_requires_procedure_and_outcomes(self):
+        self.write('modes/plan.md', '# Plan\n')
+        self.assertEqual([kind for _, _, kind in self.findings()],
+                         ['section missing', 'section missing'])
+
+    def test_directory_layout_is_not_selected_by_filename_alone(self):
+        self.write('references/plan-mode.md', self.MODE + self.PROCEDURE + '\n## Outcomes\n\nDone.\n')
+        self.assertIn('section outside the set', self.kinds())
+        self.assertIn('section missing', self.kinds())
+
+    def test_artifacts_directory_accepts_single_step_and_command_only_contracts(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n### Read Tracker Issue\n\n'
+                   '- Run [Fetch issue](#fetch-issue).\n\n## Fields\n\nNumber.\n\n'
+                   '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+        self.write('artifacts/source.md', '# Source\n\n## Fields\n\nText.\n\n'
+                   '## Commands\n\n### Fetch Source\n\nFetches it.\n')
+        self.assertEqual(self.findings(), [])
+
+    def test_an_artifact_command_keeps_its_subject_with_one_external_caller(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
+                   '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+        self.write('modes/plan.md', calling('Plan', '../artifacts/issue.md#fetch-issue') +
+                   '\n## Outcomes\n\nThe issue is read.\n')
+        self.assertEqual(self.findings(), [])
+
+    def test_a_single_step_artifact_operation_is_a_caller(self):
+        path = self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n'
+                          '### Read Tracker Issue\n\n- Run [Fetch issue](#fetch-issue).\n\n'
+                          '## Fields\n\nNumber.\n\n## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+        _, called = checker.citations([path], {})
+        self.assertEqual(called[path]['fetch-issue'], {path})
+
+    def test_mode_operations_are_specifications_not_procedures(self):
+        path = self.write('modes/plan.md', '# Plan\n\n## Procedure\n\n'
+                          '1. **Check.**\n   Run [Check files](#check-files).\n\n'
+                          '## Outcomes\n\nDone.\n\n## Operations\n\n### Check Files\n\n'
+                          '1. A specimen naming [another](#other).\n\n### Other\n\nA command.\n')
+        _, called = checker.citations([path], {})
+        self.assertNotIn('other', called[path])
+
+    def test_a_structure_reaches_files_whatever_root_is_named(self):
+        """The contract comes from the nearest structure file above the file
+        under check, so naming the tree or one directory of a skill applies the
+        same contract as naming the skill."""
+        self.write('modes/plan.md', '# Plan\n\n## Procedure\n\n1. **Check.**  A step.\n\n'
+                   '## Outcomes\n\nDone.\n')
+        for root in (self.root, self.skill, self.skill / 'modes'):
+            with self.subTest(root=root.name):
+                printed = io.StringIO()
+                with redirect_stdout(printed):
+                    status = checker.main([str(root)])
+                self.assertEqual((status, printed.getvalue().splitlines()[-1]),
+                                 (0, '1 files checked, 0 findings'))
+
+    def test_a_structure_entry_without_sections_is_refused(self):
+        """An entry naming no sections would pass every file it covers, so the
+        check reports the contract rather than running on it."""
+        (self.skill / 'structure.json').write_text(json.dumps({'modes': {'required': ['Procedure']}}))
+        self.write('modes/plan.md', '# Plan\n')
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn('modes states no sections', printed.getvalue())
+
+    def test_an_unreadable_structure_is_refused(self):
+        (self.skill / 'structure.json').write_text('{')
+        self.write('modes/plan.md', '# Plan\n')
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn('unreadable structure', printed.getvalue())
+
+    def test_directory_sections_reject_wrong_order_and_rules(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n'
+                   '## Operations\n\n### Read Tracker Issue\n\n- Read it.\n\n## Rules\n\nOne.\n')
+        self.assertIn('sections out of order', self.kinds())
+        self.assertIn('section outside the set', self.kinds())
+
+    def test_an_artifact_without_fields_fails_even_without_steps(self):
+        self.write('artifacts/issue.md', '# Issue\n')
+        self.assertIn('section missing', self.kinds())
+
+    def test_a_nested_fence_keeps_template_headings_and_links_out_of_the_scan(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n### Template\n\n' +
+                   FENCE + '`markdown\n## Template Heading\n' + FENCE + 'bash\nexample\n' +
+                   FENCE + '\n## Another Heading\n[missing](absent.md)\n~~~\n' + FENCE + '`\n')
+        self.assertEqual(self.findings(), [])
 
     def run_command(self):
         with redirect_stdout(io.StringIO()):

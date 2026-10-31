@@ -13,7 +13,7 @@ from fixtures import issue, run
 class Proposals(unittest.TestCase):
     def test_a_proposal_is_not_an_orphan_or_an_initiative(self):
         issues = [
-            issue(1, 'Key Validation: Reject Bad Keys', labels=('type:proposal',), body='Overview.'),
+            issue(1, '[P00] Key Validation: Reject Bad Keys', labels=('type:proposal',), body='Overview.'),
             issue(2, 'Loose note'),
             issue(3, '[I07] Canon Walk: Definitions Checked', labels=('type:initiative', 'theme:canon')),
         ]

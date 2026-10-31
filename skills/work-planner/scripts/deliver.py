@@ -15,15 +15,18 @@ request links are read. An issue a row depends on that is not on the board is gi
 
 A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
 delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
-available when its epic is Ready or In Progress and its prerequisite epics are completed, its Done cell carries no tick, its id is free, and
-every entry in its Depends on cell is delivered. Tasks that name each other in Joins are one unit, and
-a unit is one session's work.
+available when its epic is Ready or In Progress and the prerequisite epics its initiative row names
+are completed, its Done cell carries no tick, its id is free, and every entry in its own Depends on
+cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
+one epic start in the order that epic's own graph sets, whatever its siblings wait on. Tasks that
+name each other in Joins are one unit, and a unit is one session's work.
 
 Printed: a unit line for each available unit, with the record folder, branch and worktree its ids and
-Description give it; a hold line for each reserved row; a blocked line for a free row whose
+Description give it; an unresolvable line for a row gated on a dependency entry nothing can resolve,
+naming the entry; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
-issue not given.
+issue not given. A run that met an unresolvable entry exits 1.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic takes. The calls are rendered by statuses.py within the
@@ -42,7 +45,7 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, rows
+from board import Board, Resolution, rows
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
@@ -99,9 +102,10 @@ def names(tag: str, text: str, ref: int, when: str) -> dict[str, str]:
     """The record folder, branch and worktree one unit's first task id and Description give it."""
     stem = tag.lower().replace(':', '-')
     short = slug(text)
+    branch = tag.lower().replace(':', '/') + (f'-{short}' if short else '')
     return {'folder': f'{when}-{ref}-{stem}' + (f'-{short}' if short else ''),
-            'branch': tag.lower().replace(':', '/') + (f'-{short}' if short else ''),
-            'worktree': f'{WORKTREES}/{stem}'}
+            'branch': branch,
+            'worktree': f'{WORKTREES}/{branch}'}
 
 
 def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
@@ -141,22 +145,30 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     if not header:
         raise Unreadable(f'{label(key, board.home)} has no Work Breakdown table')
     state, detail = {}, {}
-    prerequisites = board.epic_dependencies_met(key, epics, label(key, board.home))
+    prerequisites = board.epic_prerequisites_met(key, epics, label(key, board.home))
     for r in body:
         ident = id_cell(header, r)
         task = row_id(ident)
         if not task:
             continue
         held = reservation(ident)
+        cause = ''
         if done_mark(cell(header, r, 'Done')) == TICK:
             state[task] = 'done'
         elif in_flight(ident):
             state[task] = 'running'
         elif held:
             state[task] = 'held'
-        elif not prerequisites:
+        elif prerequisites is Resolution.UNRESOLVABLE:
+            state[task] = 'unresolvable'
+            cause = "its epic's prerequisite"
+        elif (answer := board.met(cell(header, r, 'Depends on'), key, epics,
+                                  f'{label(key, board.home)} {task}')) is Resolution.UNRESOLVABLE:
+            state[task] = 'unresolvable'
+            cause = cell(header, r, 'Depends on')
+        elif prerequisites is Resolution.UNMET:
             state[task] = 'prerequisite'
-        elif not board.met(cell(header, r, 'Depends on'), key, epics, f'{label(key, board.home)} {task}'):
+        elif answer is Resolution.UNMET:
             state[task] = 'blocked'
         else:
             state[task] = 'free'
@@ -164,6 +176,7 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
         detail[task] = {'description': cell(header, r, 'Description').split(' →', 1)[0].strip(),
                         'coverage': cell(header, r, 'Coverage'), 'held': held,
                         'issue': int(found[1]) if found else None,
+                        'cause': cause,
                         'depends': cell(header, r, 'Depends on')}
     return header, body, state, detail
 
@@ -235,7 +248,7 @@ def survey(args: argparse.Namespace) -> int:
             epics.setdefault(parsed[0], {})[f'E{parsed[1]}'] = key
 
     when = args.date or day.today().isoformat()
-    available = held = waiting = 0
+    available = held = waiting = unreadable = 0
     for key in sorted(issues):
         issue = issues[key]
         if not is_epic(issue) or status.get(key) not in STARTED:
@@ -253,6 +266,13 @@ def survey(args: argparse.Namespace) -> int:
             tag = ident_tag(initiative, epic, first)
             ids = '+'.join(unit)
             if states <= {'done', 'running'}:
+                continue
+            if 'unresolvable' in states:
+                for task in unit:
+                    if state[task] == 'unresolvable':
+                        print(f'  unresolvable I{initiative}:E{epic}:{task}: '
+                              f'{detail[task]["cause"]} cannot resolve')
+                        unreadable += 1
                 continue
             if 'held' in states:
                 for task in unit:
@@ -282,8 +302,9 @@ def survey(args: argparse.Namespace) -> int:
         print(line)
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
-    print(f'  available: {available}, held: {held}, blocked: {waiting}, merge: {len(merging)}')
-    return 0
+    print(f'  available: {available}, held: {held}, blocked: {waiting}, '
+          f'unresolvable: {unreadable}, merge: {len(merging)}')
+    return 1 if unreadable else 0
 
 
 def place(args: argparse.Namespace) -> int:

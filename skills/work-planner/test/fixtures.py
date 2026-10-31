@@ -39,6 +39,11 @@ def epic_body(*rows: tuple[str, str, str]) -> str:
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 
+def work_item(component: str) -> str:
+    """A work item whose declaration line names the component its implementation extends."""
+    return f'**Component:** {component}\n\n## Overview\n\nWhat the task delivers.\n'
+
+
 def initiative_body(*rows: tuple[str, str]) -> str:
     """An initiative body whose Work Breakdown holds rows of (epic id, depends on)."""
     lines = ['## Work Breakdown', '', '| Epic | Description | Coverage | Depends on | Done |',

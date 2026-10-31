@@ -26,6 +26,7 @@ first link read deciding where more than one does. Repository names match in any
   - A pull request titled with an epic's reference counts towards that epic when it lives in the
     epic's repository or its initiative's, the epic's own first. A row whose id links a pull
     request reads it by URL, whatever its title or repository.
+  - An epic names another when a task row names one of its rows or the initiative row names it whole.
 Sections, lines grouped under the epic they belong to:
   Initiatives  each initiative an item under Completed or In progress works for: its title's name
                and subtitle, the one-line outcome the agent-engineering title states. One neither
@@ -39,9 +40,10 @@ epic's repository.
   In progress  epics and task issues In Progress or In Review, each epic with its open pull
                requests that link none of its task issues In Progress or In Review, ready for
                review (In Review) or draft, or else, with no line under it, its next task.
-  Next         epics and task issues Ready, ranked by priority label (a larger number first;
-               no label after every number), then by reference; the first five, and a count of
-               the rest. An epic names its next task.
+  Next         epics and task issues Ready, ranked by the priority label of their initiative, then
+               by their epic's own (a larger number first; no label after every number) and then by
+               reference, and an epic ahead of any listed epic naming it; the first five,
+               and a count of the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
 task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
 while every pull request its id links is open. A task issue that
@@ -60,8 +62,8 @@ last. Each initiative, and each issue or pull request under Completed, In progre
 with the mark of its state. An initiative, and a group's heading, is done when its issue is Done,
 or closed if off the board; in review when In Review; else in progress. Its lines are done; in
 progress, in review or draft; and an epic's next task and each Next item are ready. Unresolved
-dependencies, unreadable epics, pull requests without a repository and worked initiatives not given
-print to stderr.
+dependencies, unreadable epics, pull requests without a repository and initiatives not given print
+to stderr.
 """
 import argparse
 import json
@@ -72,7 +74,7 @@ from collections.abc import Callable
 from datetime import date, datetime, time, timedelta, timezone
 from pathlib import Path
 
-from board import Board, PREFIX, PULL_REF, linked_issue
+from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
 from format import LINK, cell, epic_name, id_cell, phrase
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
@@ -307,8 +309,9 @@ def main() -> int:
             backing = on_board(linked_issue(id_cell(header, r)))
             if linked_issue(id_cell(header, r)) and (not backing or status.get(backing) in ACTIVE):
                 continue
-            if not board.row_delivered(ek, tid, ref) and board.met(
-                    cell(header, r, 'Depends on'), ek, epic_ids.get(scope_of_epic[ek], {}), f'{ref}:{tid}'):
+            if board.row_delivered(ek, tid, ref) is not Resolution.MET and board.met(
+                    cell(header, r, 'Depends on'), ek, epic_ids.get(scope_of_epic[ek], {}),
+                    f'{ref}:{tid}') is Resolution.MET:
                 return {t for t in (backing, owned.get(ek, {}).get(tid)) if t}, f'{tid} {task_name(r, header)}'
         return None
 
@@ -393,13 +396,46 @@ def main() -> int:
         context.append(f"{mark(k)} *{reference(initiatives[k][0])} {epic_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
+    def level(k: Key) -> int:
+        """An issue's priority label. A larger number is higher, and no label ranks below every
+        number."""
+        found = [int(matched.group(1)) for l in issues[k].get('labels', [])
+                 if (matched := PRIORITY.fullmatch(l['name']))]
+        return max(found) if found else 0
+
+    def priority(k: Key) -> tuple[int, int]:
+        """The priority an item ranks by: its initiative's, then its epic's own."""
+        if (ek := epic_for(k)) is None:
+            return 0, 0
+        scope = scope_of_epic[ek]
+        if (initiative := initiative_issue.get(scope)) is None:
+            unresolved.append(f'I{scope[1]} in {scope[0]}: its initiative is not on the board; '
+                              'give its issue with --initiatives')
+            return 0, level(ek)
+        return level(initiative), level(ek)
+
+    def named_by(k: Key) -> set[Key]:
+        """The epics the item's epic names, as the board holds them."""
+        if (ek := epic_for(k)) is None:
+            return set()
+        return {found for p in board.referenced_epics(ek, epic_ids.get(scope_of_epic[ek], {}))
+                if (found := on_board(p))}
+
     def rank(entry: tuple[Key, str]) -> tuple:
         k = entry[0]
-        levels = [int(matched.group(1)) for l in issues[k].get('labels', [])
-                  if (matched := PRIORITY.fullmatch(l['name']))]
-        return (-max(levels) if levels else 0), tagged[k], k[0].lower()
+        initiative, epic = priority(k)
+        return -initiative, -epic, tagged[k], k[0].lower()
 
     ready = sorted((e for e in ready if e[0] not in named_next), key=rank)
+    waiting = {k: named_by(k) & {listed for listed, _ in ready} for k, _ in ready}
+    ordered: list[tuple[Key, str]] = []
+    while ready:
+        entry = next((e for e in ready if not waiting[e[0]]), ready[0])
+        ready.remove(entry)
+        ordered.append(entry)
+        for held in waiting.values():
+            held.discard(entry[0])
+    ready = ordered
     upcoming = [f"{READY} *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
                 + f" — {issues[k]['html_url']}" for k, task in ready[:SHOWN]]
     if len(ready) > SHOWN:

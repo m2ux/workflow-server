@@ -71,7 +71,7 @@ class ModeSummaries(unittest.TestCase):
             'Sync of the board\'s open initiatives, so Status matches delivery',
             'A parallel work map when nothing is In Progress and no initiative has a priority',
             'The highest priority number In Progress together, and the next number Ready together',
-            'Partly completed epics In Progress on a running initiative, and its next unstarted epic Ready',
+            'Partly completed epics In Progress on a running initiative, and its highest set Ready',
         )
         for bullet in ruled:
             self.assertIsNotNone(problem(bullet), bullet)

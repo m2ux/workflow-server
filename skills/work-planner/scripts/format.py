@@ -6,10 +6,10 @@ Usage:
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
-from the title prefix: [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal has no prefix
-and carries type:proposal. No prefix and no type:proposal is a standalone issue, which belongs to no
-initiative and takes templates/issue.md. The format is read
-from templates/<kind>.md beside this script: its sections and their order, the sections it marks
+from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
+also carries type:proposal. No prefix and no type:proposal is a standalone issue, which belongs to no
+initiative and takes artifacts/standalone-body.md. The format is read
+from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
 Fixed in the body written to --fix, keeping the issue's wording:
@@ -75,8 +75,16 @@ import re
 import sys
 from pathlib import Path
 
-TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
+ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
+BODY_ARTIFACTS = {
+    'proposal': 'proposal-body.md',
+    'initiative': 'initiative-issue-body.md',
+    'epic': 'epic-issue-body.md',
+    'task': 'task-body.md',
+    'issue': 'standalone-body.md',
+}
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
+PROPOSAL = re.compile(r'^\[P\d\d\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
@@ -103,7 +111,7 @@ COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
-    'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d(?::W\d\d)?|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
+    'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d:W\d\d|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
     'initiative': re.compile(r'E\d\d|I\d\d:E\d\d|#\d+'),
 }
 
@@ -140,9 +148,49 @@ def row(values: list[str]) -> str:
     return '|' + '|'.join(f' {v} ' if v else ' ' for v in values) + '|'
 
 
+def template_body(kind: str) -> str:
+    """Read exactly one Markdown fence from Fields / Template in the body artifact.
+
+    Match the closing fence's character and length so embedded examples stay
+    inside the template. Missing, ambiguous or unclosed templates are errors.
+    """
+    path = ARTIFACTS / BODY_ARTIFACTS[kind]
+    fields = template = False
+    fence = None
+    body = []
+    found = []
+    for line in path.read_text().splitlines(keepends=True):
+        if fence:
+            marker, capture = fence
+            if re.fullmatch(re.escape(marker[0]) + '{' + str(len(marker)) + r',}\s*', line):
+                if capture:
+                    found.append(''.join(body))
+                fence = None
+            elif capture:
+                body.append(line)
+            continue
+        opening = re.match(r'^ {0,3}(`{3,}|~{3,})(.*)\s*$', line)
+        if opening:
+            capture = fields and template and opening[2].strip() == 'markdown'
+            fence = opening[1], capture
+            body = []
+            continue
+        heading = re.match(r'^(#{1,6})\s+(.+?)\s*$', line)
+        if heading:
+            level, title = len(heading[1]), heading[2]
+            if level <= 2:
+                fields = level == 2 and title == 'Fields'
+                template = False
+            elif level == 3:
+                template = fields and title == 'Template'
+    if fence or len(found) != 1 or not found[0].strip():
+        raise ValueError(f'{path}: expected one closed Markdown template under Fields / Template')
+    return found[0]
+
+
 class Template:
     def __init__(self, kind: str):
-        _, sections = split_sections((TEMPLATES / f'{kind}.md').read_text())
+        _, sections = split_sections(template_body(kind))
         self.headings = [h for h, _ in sections]
         self.optional = {h for h, lines in sections if 'delete the section' in '\n'.join(lines).lower()}
         self.columns = next((cells(l) for h, lines in sections for l in lines
@@ -254,10 +302,13 @@ class Review:
         title = self.issue['title']
         if 'type:proposal' in self.labels():
             self.kind, self.number = 'proposal', None
-            if ': ' not in title:
+            rest = PROPOSAL.sub('', title).strip()
+            if rest == title:
+                self.decide.append('title has no [P00] prefix')
+            if ': ' not in rest:
                 self.decide.append('title has no "Name: Subtitle"')
             else:
-                name, _, subtitle = title.partition(': ')
+                name, _, subtitle = rest.partition(': ')
                 self.check_title_shape(name, subtitle)
             self.check_labels()
             return self.check_body()
