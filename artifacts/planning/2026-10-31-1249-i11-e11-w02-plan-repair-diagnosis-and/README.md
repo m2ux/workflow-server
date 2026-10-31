@@ -22,3 +22,6 @@ W01 is merged into the epic base. W02 completes the remaining planned scope befo
 | Epic | https://github.com/m2ux/workflow-server/issues/1249 |
 | Epic review | https://github.com/m2ux/workflow-server/pull/1479 |
 | Theme board | https://github.com/users/m2ux/projects/17/views/4 |
+
+- [Implementation plan](design.md)
+- [Validation](validation.md)
