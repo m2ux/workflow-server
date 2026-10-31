@@ -4,7 +4,7 @@
 
 This is I11's current marked requirements source, reconciled on 2026-10-31 from the user's accepted board-review decisions and the current task contracts. It states intended behavior; a requirement's inclusion is not evidence that its implementation passes. The original 52 requirement IDs remain stable. The complete [historical specification](source-reconciliation/requirements-before.md) preserves its meeting links and the earlier branch/API reconciliations. The [initial review snapshot](snapshots/requirements.md) preserves the earlier wording before those reconciliations.
 
-For current planning and source alignment, the text below governs each listed requirement. Original text and completed epic criteria are historical provenance where this map supplies later wording. Runtime skill definitions remain implementation evidence, not authority to reverse an accepted contract. The cross-epic gate conflict below is explicitly unresolved; no map entry authorizes bypassing it.
+For current planning and source alignment, the text below governs each listed requirement. Original text and completed epic criteria are historical provenance where this map supplies later wording. Runtime skill definitions remain implementation evidence, not authority to reverse an accepted contract. The producer-availability rule below governs cross-epic starts.
 
 ## Stable requirement register
 
@@ -98,7 +98,7 @@ An epic identifier links its issue. An unreserved task links its lowercase work-
 
 Task dependencies name the producer rows whose outputs they consume, using qualified links across epics and no prose, duplicate or transitively redundant entries. Initiative whole-epic dependencies are derived only when every consumer row requires every producer row. Joins is mutual and means one PR for independent rows; each eligible separate pair has its own qualified pair decision. File contention controls scheduling, not semantic consumption.
 
-**Basis:** active-dependency-contract.md; joins-reconciliation.md; approved-priorities.json. Cross-epic delivery availability versus epic-closure gating remains the explicit decision below.
+**Basis:** active-dependency-contract.md; joins-reconciliation.md; approved-priorities.json. Cross-epic starts follow the approved producer-availability rule below.
 
 ### REQ-F016
 
@@ -162,9 +162,9 @@ Task PRs target the corresponding epic base iNN/eNN/<long-lived-branch>. Each co
 
 ### REQ-F026
 
-Within an epic, dependent tasks start from the epic base after prerequisite delivery into that base. Task PRs target the epic base and do not form a stack on preceding task branches. For cross-epic consumption, follow the explicit unresolved-gate decision below; the approved serial schedule remains in force pending its resolution.
+Within an epic, dependent tasks start from the epic base after prerequisite delivery into that base. Task PRs target the epic base and do not form a stack on preceding task branches. A cross-epic consumer starts only when its named producer rows are delivered and their required outputs are verified available at the pinned consumer-base commit. Record the producer row, delivery evidence, output identity and consumer commit; a merge into a separate producer base alone is insufficient. Unrelated producer rows and producer-epic closure are not additional start gates. Whole-epic dependencies exist only where the task graph establishes the all-rows relationship. Existing integration, review and human-approval requirements still apply.
 
-**Basis:** branch-contract.md versus active-dependency-contract.md; approved-priorities.json. This map does not silently choose between their conflicting cross-epic gates.
+**Basis:** branch-contract.md; active-dependency-contract.md; producer-availability/README.md; approved-priorities.json.
 
 ### REQ-F027
 
@@ -346,17 +346,12 @@ These clauses cover later accepted scope that the original register does not ful
 - **Reservation lifetime:** Historical REQ-F040 releases the folder link merely because planning finished. Current REQ-F040 retains it while the session holds the work, in agreement with I11 AC13 and the actual reservation representation.
 - **Review identity:** E17's current issue uses head-only wording in several places. CUR-09 and I11 AC36 require both head and base. The active issue wording is aligned by this reconciliation; its implementation and validation remain E17 delivery work.
 
-## Decision required: cross-epic prerequisite availability
+## Cross-epic prerequisite availability
 
-The accepted branch-contract record says any cross-epic prerequisite requires the producer epic closed and all its bases merged. The accepted dependency contract says a consumer depends only on the actual producer rows, and an initiative-wide epic edge exists only when all rows require all rows. Requiring full closure for one producer row recreates the broad gate the dependency review removed.
+A cross-epic consumer starts only when its named producer rows are delivered and their required outputs are verified available at the pinned consumer-base commit. Record the producer row, delivery evidence, output identity and consumer commit; a merge into a separate producer base alone is insufficient. Unrelated producer rows and producer-epic closure are not additional start gates. Whole-epic dependencies exist only where the task graph establishes the all-rows relationship. Existing integration, review and human-approval requirements still apply.
 
-Two concrete resolutions remain:
-
-- **A (recommended):** Gate each consumer row on its named producer rows and verified availability of their delivered output in the consumer's base. Derive a whole-epic gate only from the all-rows rule. A merge into a separate producer epic base alone does not prove availability; current integration and human-approval requirements remain in force.
-- **B:** Keep full producer-epic closure for every cross-epic edge as an explicit delivery restriction, accepting that row-level dependencies express traceability but cannot permit earlier starts.
-
-This choice changes the accepted start gate and is not inferred from this source pass. Until resolved, use the approved serial epic order and existing delivery gates; no new parallel dispatch is authorized. No graph edge, task ID or epic priority is changed by this map.
+Delivery evidence proves availability at the actual consumer revision, including any required generated artifact or configuration. Missing, stale, inaccessible or untraceable evidence leaves the consumer blocked and identifies the missing producer output. Refreshing the consumer base requires rechecking availability. The user-approved serial epic order remains in force; eligibility does not automatically change queue priority or authorize parallel dispatch.
 
 ## Verification boundary
 
-All 52 original requirement IDs occur once; each has a retained or reconciled statement. CUR-01 through CUR-10 trace later scope to existing owners. Original requirement/meeting text is preserved. Source-reference publication and exact issue readbacks are recorded separately. No criterion is ticked and no completed epic is reopened by this edit. F14's source/version map is published, with the cross-epic gate decision explicitly pending; F16 remains a separate evidence task.
+All 52 original requirement IDs occur once; each has a retained or reconciled statement. CUR-01 through CUR-10 trace later scope to existing owners. Original requirement/meeting text is preserved. Source-reference publication and exact issue readbacks are recorded separately. No criterion is ticked and no completed epic is reopened by this edit. F14's source/version map and cross-epic start rule are reconciled at plan level. Implementation belongs to existing delivery tasks; F16 remains a separate evidence task.

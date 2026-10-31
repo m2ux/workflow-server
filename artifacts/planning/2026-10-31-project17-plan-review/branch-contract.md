@@ -5,7 +5,7 @@ User selected A: task → epic base → long-lived branch.
 ## Rules
 
 - Each task PR targets the corresponding epic base, rooted in its configured long-lived target.
-- Dependent tasks start after prerequisite delivery into the epic base. Cross-epic prerequisites require completed epics with all bases merged.
+- Dependent tasks start after prerequisite delivery into the epic base. A cross-epic consumer starts only when its named producer rows are delivered and their required outputs are verified available at the pinned consumer-base commit. Record the producer row, delivery evidence, output identity and consumer commit; a merge into a separate producer base alone is insufficient. Unrelated producer rows and producer-epic closure are not additional start gates. Whole-epic dependencies exist only where the task graph establishes the all-rows relationship. Existing integration, review and human-approval requirements still apply.
 - Each completed epic integrates independently after validation, current-head-and-base review and required human approval. All bases must merge before epic closure. Initiative closure still requires its own criteria and completed epics.
 - Task branches do not target preceding task branches or initiative integration branches. A dependency remains a start gate; it does not require a PR stack.
 

@@ -87,7 +87,7 @@
     "id": "REQ-F015",
     "disposition": "Reconciled",
     "current": "Task dependencies name the producer rows whose outputs they consume, using qualified links across epics and no prose, duplicate or transitively redundant entries. Initiative whole-epic dependencies are derived only when every consumer row requires every producer row. Joins is mutual and means one PR for independent rows; each eligible separate pair has its own qualified pair decision. File contention controls scheduling, not semantic consumption.",
-    "basis": "active-dependency-contract.md; joins-reconciliation.md; approved-priorities.json. Cross-epic delivery availability versus epic-closure gating remains the explicit decision below."
+    "basis": "active-dependency-contract.md; joins-reconciliation.md; approved-priorities.json. Cross-epic starts follow the approved producer-availability rule below."
   },
   {
     "id": "REQ-F016",
@@ -152,8 +152,8 @@
   {
     "id": "REQ-F026",
     "disposition": "Reconciled",
-    "current": "Within an epic, dependent tasks start from the epic base after prerequisite delivery into that base. Task PRs target the epic base and do not form a stack on preceding task branches. For cross-epic consumption, follow the explicit unresolved-gate decision below; the approved serial schedule remains in force pending its resolution.",
-    "basis": "branch-contract.md versus active-dependency-contract.md; approved-priorities.json. This map does not silently choose between their conflicting cross-epic gates."
+    "current": "Within an epic, dependent tasks start from the epic base after prerequisite delivery into that base. Task PRs target the epic base and do not form a stack on preceding task branches. A cross-epic consumer starts only when its named producer rows are delivered and their required outputs are verified available at the pinned consumer-base commit. Record the producer row, delivery evidence, output identity and consumer commit; a merge into a separate producer base alone is insufficient. Unrelated producer rows and producer-epic closure are not additional start gates. Whole-epic dependencies exist only where the task graph establishes the all-rows relationship. Existing integration, review and human-approval requirements still apply.",
+    "basis": "branch-contract.md; active-dependency-contract.md; producer-availability/README.md; approved-priorities.json."
   },
   {
     "id": "REQ-F027",

@@ -8,6 +8,6 @@ User selected A to reconcile source contradictions. The [current requirements ma
 - E17's head-only wording is aligned to the already accepted integration-head-and-base identity, including stale-base fixtures. Its rows, reservation, criteria IDs, labels and status are preserved.
 - E10 W09's work item explicitly owns the remaining instruction that clears completed Coverage; implementation stays in its delivery task.
 - Format checks pass for I11 and E17. Source preservation and complete/unique source-ID checks pass. Runtime tests are not applicable to this planning-only change; no delivered behavior is claimed.
-- The cross-epic producer-row versus full-epic closure gate remains an explicit user decision. F14 has a usable source map but is not fully resolved until that decision. The approved serial order remains the safe schedule meanwhile.
+- The user approved producer-row delivery plus output availability in the consumer base as the cross-epic gate; [decision and validation](../producer-availability/README.md). F14 is reconciled at plan level. The approved serial order remains in force.
 
 Snapshots in this folder preserve the original source and before/after issue bodies. Historical closed epics, criteria and meeting transcripts are not rewritten.
