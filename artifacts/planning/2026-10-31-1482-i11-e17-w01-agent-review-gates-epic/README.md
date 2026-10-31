@@ -16,6 +16,7 @@ The base includes merged E11 and its verification fixes. The dependent corpus au
 | [Progress](progress.md) | Delivery checklist |
 | [Design](design.md) | Gate ownership, verification and review decisions |
 | [Validation](validation.md) | Executable checks and independent review/disclosure evidence |
+| [Delivery](delivery.md) | Exact task head, merge and tracker readbacks |
 
 ## Links
 
