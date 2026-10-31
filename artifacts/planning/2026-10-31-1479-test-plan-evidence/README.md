@@ -4,6 +4,7 @@
 
 | Artifact | Description |
 | --- | --- |
+| [Review and verification](review.md) | Findings, fixes, tested revision and regression results. |
 | [Architecture overview](architecture-overview.md) | Structure, flows and reading order for the current epic review head. |
 
 ## Links
