@@ -1,0 +1,18 @@
+{
+  "evidence_commit": "9478cab00",
+  "verified_criterion": "I11 AC17",
+  "issues": [
+    {
+      "issue": 946,
+      "updated_at": "2026-10-31T10:07:35Z",
+      "exact_body_readback": true,
+      "state_labels_assignees_milestone_preserved": true
+    },
+    {
+      "issue": 1166,
+      "updated_at": "2026-10-31T10:07:35Z",
+      "exact_body_readback": true,
+      "state_labels_assignees_milestone_preserved": true
+    }
+  ]
+}
