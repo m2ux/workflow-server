@@ -1,0 +1,2 @@
+#1166 initiative (open): 0 fixed, 0 to apply, 1 to decide
+  decide: E17: Coverage cites AC36, which is not a criterion

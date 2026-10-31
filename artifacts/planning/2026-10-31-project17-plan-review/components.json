@@ -1,0 +1,140 @@
+[
+  [
+    "E09",
+    "W06",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-1268-i11-e09-w06-delivery-reading-the-set-a/w06.md",
+    "**Component:** skills/work-planner/scripts/sync.py"
+  ],
+  [
+    "E10",
+    "W03",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-1269-i11-e10-w03-work-item-name-one-name/w03.md",
+    "**Component:** skills/work-planner/scripts/deliver.py"
+  ],
+  [
+    "E10",
+    "W07",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1326-i11-e10-w07-duplicate-anchors-every-repeated-heading/w07.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W08",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1327-i11-e10-w08-heading-spacing-a-blank-line/w08.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W09",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1323-i11-e10-w09-coverage-cell-one-rule-for/w09.md",
+    "**Component:** skills/work-planner/references/work-breakdown.md"
+  ],
+  [
+    "E10",
+    "W10",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1332-i11-e10-w10-unit-record-one-folder-holds/w10.md",
+    "**Component:** skills/work-planner/scripts/deliver.py"
+  ],
+  [
+    "E10",
+    "W11",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1322-i11-e10-w11-bold-leads-every-lead-within/w11.md",
+    "**Component:** skills/gitnexus/gitnexus-cli/SKILL.md"
+  ],
+  [
+    "E10",
+    "W12",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1325-i11-e10-w12-canon-suite-the-prerequisite-stated/w12.md",
+    "**Component:** skills/workflow-canon/test/audit_fixtures.py"
+  ],
+  [
+    "E10",
+    "W13",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1342-i11-e10-w13-entry-point-no-specification-in/w13.md",
+    "**Component:** skills/gitnexus/gitnexus-cli/SKILL.md"
+  ],
+  [
+    "E10",
+    "W15",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1350-i11-e10-w15-coverage-voice-one-mood-for/w15.md",
+    "**Component:** skills/workflow-canon/references/coverage.md"
+  ],
+  [
+    "E10",
+    "W16",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1352-i11-e10-w16-empty-sections-a-heading-left/w16.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W17",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-12-1353-i11-e10-w17-body-comparison-a-section-carried/w17.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W18",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1362-i11-e10-w18-skill-check-the-layout-check/w18.md",
+    "**Component:** .github/workflows/verify.yml"
+  ],
+  [
+    "E10",
+    "W19",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1372-i11-e10-w19-zero-callers-a-specification-no/w19.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W20",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1393-i11-e10-w20-entry-point-the-sections-a/w20.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W21",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1392-i11-e10-w21-check-scope-one-run-over/w21.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W22",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1400-i11-e10-w22-canon-conventions-the-file-every/w22.md",
+    "**Component:** skills/workflow-canon/SKILL.md"
+  ],
+  [
+    "E10",
+    "W23",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1402-i11-e10-w23-review-changes-prose-measured-against/w23.md",
+    "**Component:** skills/work-planner/scripts/sync.py"
+  ],
+  [
+    "E10",
+    "W24",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1406-i11-e10-w24-specification-reach-placement-measured-by/w24.md",
+    "**Component:** skills/scripts/check_skill_files.py"
+  ],
+  [
+    "E10",
+    "W25",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1407-i11-e10-w25-draft-report-a-base-named/w25.md",
+    "**Component:** skills/work-planner/scripts/sync.py"
+  ],
+  [
+    "E10",
+    "W26",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-13-1408-i11-e10-w26-throwaway-targets-a-fixture-is/w26.md",
+    "**Component:** skills/work-planner/scripts/orphans.py"
+  ],
+  [
+    "E17",
+    "W01",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-31-1482-i11-e17-w01-agent-review-gates-epic/w01.md",
+    "**Component:** skills/work-planner/protocols/review-pull-request.md"
+  ],
+  [
+    "E17",
+    "W02",
+    "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-31-1482-epic-review-hoist/w02.md",
+    "**Component:** skills/work-planner"
+  ]
+]

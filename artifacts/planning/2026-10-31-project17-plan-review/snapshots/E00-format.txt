@@ -1,0 +1,2 @@
+#1167 epic (closed): 0 fixed, 0 to apply, 1 to decide
+  decide: References: names I11, #1166; the References section does not link issues or pull requests on the same board

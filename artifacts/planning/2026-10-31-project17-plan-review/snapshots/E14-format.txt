@@ -1,0 +1,2 @@
+#1427 epic (open): 0 fixed, 0 to apply, 1 to decide
+  decide: References: names W06, W10; the References section does not link issues or pull requests on the same board
