@@ -12,6 +12,7 @@ Its implementation and instructions are reconciled with the current workspace la
 
 | Artifact | What it holds |
 | --- | --- |
+| [Architecture Overview](architecture-overview.md) | Measured dispatch structure and reviewer reading order |
 | [Validation](validation.md) | Revision, checks, criterion coverage and disclosure limits |
 
 ## Links
@@ -20,3 +21,4 @@ Its implementation and instructions are reconciled with the current workspace la
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1430 |
 | Task PR | https://github.com/m2ux/workflow-server/pull/1431 |
+| Epic review | https://github.com/m2ux/workflow-server/pull/1477 |

@@ -22,3 +22,7 @@ The epic base fast-forwarded to workspace `e795ef54a`. The task merge preserves 
 ## Plan Changes
 
 No task, epic, priority or scope change. Existing joined unit W01–W03 remains on PR #1431.
+
+## Merged Revision
+
+The work-planner suite passed all 421 tests again at merged revision b32496cfb8d051ab43cb9ac57ae7c504f678277c. W01–W03 and AC1–AC4 are recorded complete on epic #1430. Review #1477 has its complete Development link to #1430; Project 17 shows the epic In Review. Workspace requires one human approval.
