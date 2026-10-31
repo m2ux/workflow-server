@@ -1,0 +1,20 @@
+{
+  "source_commit": "f8b469f40",
+  "readbacks": [
+    {
+      "issue": 1166,
+      "updated_at": "2026-10-31T09:53:55Z",
+      "exact_body_readback": true,
+      "work_breakdown_preserved": true,
+      "labels_and_state_preserved": true
+    },
+    {
+      "issue": 1482,
+      "updated_at": "2026-10-31T09:53:59Z",
+      "exact_body_readback": true,
+      "work_breakdown_preserved": true,
+      "labels_and_state_preserved": true
+    }
+  ],
+  "pending_decision": "Cross-epic producer-row availability versus full producer-epic closure"
+}
