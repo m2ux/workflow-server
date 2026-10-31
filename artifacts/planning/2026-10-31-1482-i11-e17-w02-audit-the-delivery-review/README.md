@@ -18,6 +18,7 @@ The evaluated starting base is i11/e17/workspace at 7e5850eb2eea3bf863edb97e6599
 | [Disclosure](disclosure.md) | Independent observed trials, findings and limits |
 | [Agent review](agent-review.json) | Published final head/base review and finding dispositions |
 | [Delivery](delivery.md) | Task merge, exact revisions and handoff readback |
+| [Changes](changes.md) | Applied plan/delivery changes and remaining human boundary |
 
 ## Links
 

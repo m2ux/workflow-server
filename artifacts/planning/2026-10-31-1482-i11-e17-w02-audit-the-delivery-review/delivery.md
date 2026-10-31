@@ -18,4 +18,4 @@ The synchronizer reported AC4 ticked and W02 Done from the merged task's passed 
 
 ## Handoff
 
-Publication and final gate/readback pending. Workspace active rules require one human approval; no review has supplied it. There are zero configured required status checks and zero check runs/status contexts on this head; aggregate pending with total_count zero is not an outstanding check.
+Published review record fetched through GitHub Contents and linked from #1484. agent_review.py passed before readiness, after readiness, and after the board write against fresh REST metadata. Live readback confirms draft=false, head df57ac9a3c230614142364a654fe27a5d21bea1e, base04de875a8517dcf229462e3b939099e16ffe3e63, mergeable=true and #1482 In Review. Architecture overview is published under 2026-10-31-1484-epic-review-handoff and linked from the PR. No unrelated unit was dispatched. Workspace active rules require one human approval; no review has supplied it. There are zero configured required status checks and zero check runs/status contexts on this head; aggregate pending with total_count zero is not an outstanding check.
