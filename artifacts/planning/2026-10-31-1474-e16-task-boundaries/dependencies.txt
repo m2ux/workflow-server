@@ -1,0 +1,26 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+none
+
+--- advisory: numbering against start order
+E16:W04 (level 0) is numbered after E16:W03 (level 2)
+
+--- levels (0 = can start now)
+0 E16:W01 - The link relation read from each end
+0 E16:W04 - Run verification at a supplied revision
+1 E16:W02 - An unread relation named as missing evidence
+2 E16:W03 - Audit closure evidence across issues
+3 E16:W05 - Audit script reachability from artifact operations
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E16:W01, E16:W02
+
+--- epic priority (epics sharing a number start together)
+1 E16
+
+--- longest chains: 1, each of 4 steps
+on every chain: E16:W01, E16:W02, E16:W03, E16:W05
+E16:W01 -> E16:W02 -> E16:W03 -> E16:W05

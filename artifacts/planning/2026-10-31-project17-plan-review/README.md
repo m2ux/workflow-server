@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [E16 task split](../2026-10-31-1474-e16-task-boundaries/README.md) | Closure sweep, independent revision helper and final reachability audit |
 | [Retrieval baseline](retrieval-baseline.md) | Sole verdict owner, pinned source and per-scenario no-increase threshold |
 | [Caller and retrieval](caller-retrieval-contract.md) | Procedure-only callers, required reads and current placement ownership |
 | [Final skill verification](final-skill-verification.md) | Current E10 identities and whole-repository pass requirements |
