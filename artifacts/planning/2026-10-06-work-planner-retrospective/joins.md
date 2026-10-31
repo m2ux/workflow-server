@@ -13,20 +13,6 @@ Each task of E01, E02, E04 and E05 was a directive given on its own and answered
 | E04 | W02 with each of W03–W06 | W02 widens the summary across repositories; W03–W06 shape the summary's text and marks. |
 | E05 | W01 and W02 with each of W03–W06; W04 with W05 and W06 | W01 and W02 govern integration branches; W03–W06 govern what a row records. The two halves touch different parts of the mode. |
 
-## E09
+## Current open epics
 
-| Pair | Why they are separate |
-| --- | --- |
-| W01 with W03 and W04 | W01 changes what sync reads and retitles; W03 and W04 change how a board derives status. One pull request over both would mix two scripts and two reviews. |
-| W02 with W03 and W04 | W02 is a line in the skill's themes table; W03 and W04 are status derivation. |
-
-W01 and W02 share a pull request, and name each other.
-
-## E10
-
-| Pair | Why they are separate |
-| --- | --- |
-| W02 with each of W01, W03, W04 and W05 | W02 extends the renumber and sync scripts, which read issues and pull requests; the others add checks over the skill's own files. One pull request over both would mix two subjects and two reviews. |
-| W04 with W05 | W04 decides the guide split and the interface rule from static text; W05 decides each house rule against the operations the commands file names. |
-
-W03 and W04 share a pull request, and name each other.
+The current task meanings and pair decisions are recorded in [E09 pair decisions](../2026-10-31-project17-plan-review/joins/E09-pairs.md) and [E10 pair decisions](../2026-10-31-project17-plan-review/joins/E10-pairs.md). Those records supersede the earlier open-epic pairings; delivered-epic history above remains intact.

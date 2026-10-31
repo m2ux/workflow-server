@@ -1,0 +1,473 @@
+{
+  "E09:W01": {
+    "description": "Sync reads every epic and names its prefix",
+    "coverage": "AC6, AC7",
+    "deps": [],
+    "joins": [
+      "E09:W02"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E09:W02": {
+    "description": "Name the planning theme and its board",
+    "coverage": "AC8",
+    "deps": [],
+    "joins": [
+      "E09:W01"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E09:W03": {
+    "description": "Initiative membership and epic activity determine status",
+    "coverage": "AC2, AC3",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E09:W04": {
+    "description": "Ready and Backlog follow the initiative",
+    "coverage": "AC4, AC5",
+    "deps": [
+      "E09:W03"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E09:W05": {
+    "description": "A project names its own long-lived branches",
+    "coverage": "AC9, AC10, AC11",
+    "deps": [],
+    "joins": [],
+    "done": true,
+    "component": null
+  },
+  "E09:W06": {
+    "description": "The set a sync run reads",
+    "coverage": "AC12, AC13",
+    "deps": [
+      "E09:W05"
+    ],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/sync.py"
+  },
+  "E10:W01": {
+    "description": "Skill frontmatter and prose layout checks",
+    "coverage": "AC1, AC6",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E10:W02": {
+    "description": "Renumber and pull request delivery checks",
+    "coverage": "AC8, AC9, AC10",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E10:W03": {
+    "description": "One name for a record work item",
+    "coverage": "AC11, AC12",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/deliver.py"
+  },
+  "E10:W04": {
+    "description": "Command specification and vocabulary checks",
+    "coverage": "AC2, AC5",
+    "deps": [
+      "E10:W01"
+    ],
+    "joins": [
+      "E10:W05"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E10:W05": {
+    "description": "Guide split and API capability checks",
+    "coverage": "AC4, AC7",
+    "deps": [
+      "E10:W01"
+    ],
+    "joins": [
+      "E10:W04"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E10:W06": {
+    "description": "Each house rule reaches a named operation",
+    "coverage": "AC3",
+    "deps": [
+      "E10:W04"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E10:W07": {
+    "description": "Every repeated heading reported",
+    "coverage": "AC13",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W08": {
+    "description": "A blank line above every heading",
+    "coverage": "AC14",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W09": {
+    "description": "Coverage names what a row delivers",
+    "coverage": "AC15",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/references/work-breakdown.md"
+  },
+  "E10:W10": {
+    "description": "One record folder holds a unit",
+    "coverage": "AC16",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/deliver.py"
+  },
+  "E10:W11": {
+    "description": "Bold leads within the width limit",
+    "coverage": "AC17",
+    "deps": [],
+    "joins": [
+      "E10:W13"
+    ],
+    "done": false,
+    "component": "skills/gitnexus/gitnexus-cli/SKILL.md"
+  },
+  "E10:W12": {
+    "description": "The canon suite states its prerequisite",
+    "coverage": "AC18",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/workflow-canon/test/audit_fixtures.py"
+  },
+  "E10:W13": {
+    "description": "The entry point holds no specification",
+    "coverage": "AC19",
+    "deps": [],
+    "joins": [
+      "E10:W11"
+    ],
+    "done": false,
+    "component": "skills/gitnexus/gitnexus-cli/SKILL.md"
+  },
+  "E10:W14": {
+    "description": "Closure rests on observable evidence",
+    "coverage": "AC20",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E10:W15": {
+    "description": "One mood for parallel selections",
+    "coverage": "AC21",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/workflow-canon/references/coverage.md"
+  },
+  "E10:W16": {
+    "description": "A heading left without content",
+    "coverage": "AC22",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W17": {
+    "description": "A section body carried whole",
+    "coverage": "AC23",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W18": {
+    "description": "The skill check reaches a gate",
+    "coverage": "AC24",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "github/workflows/verify.yml"
+  },
+  "E10:W19": {
+    "description": "A specification no procedure runs",
+    "coverage": "AC25",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W20": {
+    "description": "An entry point's sections measured",
+    "coverage": "AC26",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W21": {
+    "description": "One run over every skill",
+    "coverage": "AC27",
+    "deps": [
+      "E10:W20"
+    ],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W22": {
+    "description": "Canon conventions reached without a further file",
+    "coverage": "AC28, AC29",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/workflow-canon/SKILL.md"
+  },
+  "E10:W23": {
+    "description": "A review body's prose measured against its branch",
+    "coverage": "AC30, AC31, AC32",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/sync.py"
+  },
+  "E10:W24": {
+    "description": "Placement measured by what a file must open",
+    "coverage": "AC33, AC34",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/scripts/check_skill_files.py"
+  },
+  "E10:W25": {
+    "description": "A base named draft only where it leads",
+    "coverage": "AC35",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/sync.py"
+  },
+  "E10:W26": {
+    "description": "A declared throwaway is no candidate",
+    "coverage": "AC36, AC37",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/scripts/orphans.py"
+  },
+  "E13:W01": {
+    "description": "A project declares the criteria its epics carry",
+    "coverage": "AC1",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E13:W02": {
+    "description": "The format check reads the declaration",
+    "coverage": "AC2",
+    "deps": [
+      "E13:W01"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E13:W03": {
+    "description": "The corpus audit moves to this project's declaration",
+    "coverage": "AC3",
+    "deps": [
+      "E13:W02"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W01": {
+    "description": "The targets a reading rule serves stated",
+    "coverage": "AC1",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W02": {
+    "description": "Citation timing and its defaults stated",
+    "coverage": "AC2, AC3, AC4",
+    "deps": [
+      "E14:W01"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W03": {
+    "description": "Work Planner citations named by section",
+    "coverage": "AC5",
+    "deps": [
+      "E14:W02"
+    ],
+    "joins": [
+      "E14:W04"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E14:W04": {
+    "description": "Workflow Canon citations named by section",
+    "coverage": "AC6",
+    "deps": [
+      "E14:W02"
+    ],
+    "joins": [
+      "E14:W03"
+    ],
+    "done": false,
+    "component": null
+  },
+  "E14:W05": {
+    "description": "Whole-file citations opening with their case",
+    "coverage": "AC7, AC8, AC9",
+    "deps": [
+      "E14:W03",
+      "E14:W04"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W06": {
+    "description": "Prerequisites stated where their step uses them",
+    "coverage": "AC10, AC11, AC12",
+    "deps": [
+      "E14:W03",
+      "E14:W04"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W07": {
+    "description": "A mode named rather than opened unlinked",
+    "coverage": "AC13, AC14, AC15",
+    "deps": [
+      "E14:W03",
+      "E14:W04"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W08": {
+    "description": "The shared check reads scope and case",
+    "coverage": "AC16, AC17, AC18",
+    "deps": [
+      "E14:W05"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W09": {
+    "description": "Every check defined where prose names it",
+    "coverage": "AC24, AC25, AC26",
+    "deps": [
+      "E14:W08"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W10": {
+    "description": "Each skill's read set generated and checked",
+    "coverage": "AC19, AC20, AC21",
+    "deps": [
+      "E14:W06",
+      "E14:W07",
+      "E14:W09"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E14:W11": {
+    "description": "Efficacy and retrieval walked over both skills",
+    "coverage": "AC22, AC23",
+    "deps": [
+      "E14:W10"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E16:W01": {
+    "description": "The link relation read from each end",
+    "coverage": "AC1, AC2, AC3",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E16:W02": {
+    "description": "An unread relation named as missing evidence",
+    "coverage": "AC4",
+    "deps": [
+      "E16:W01"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E16:W03": {
+    "description": "The closure sweep and the revision helper",
+    "coverage": "AC5, AC6, AC7",
+    "deps": [
+      "E16:W02"
+    ],
+    "joins": [],
+    "done": false,
+    "component": null
+  },
+  "E17:W01": {
+    "description": "Agent review gates epic handoff",
+    "coverage": "AC1, AC2, AC3",
+    "deps": [],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner/protocols/review-pull-request.md"
+  },
+  "E17:W02": {
+    "description": "Audit the delivery review corpus",
+    "coverage": "AC4",
+    "deps": [
+      "E17:W01"
+    ],
+    "joins": [],
+    "done": false,
+    "component": "skills/work-planner"
+  }
+}

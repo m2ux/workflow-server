@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [Joins reconciliation](joins-reconciliation.md) | Current open-epic joined units and separate-review decisions |
 | [E14 evidence order](e14-evidence-order.md) | Final manifests and measurements follow every input edit |
 | [Branch contract](branch-contract.md) | Epic integration routes and dependency ordering |
 | [API contract](api-contract.md) | REST capability selection, current GraphQL and classic Projects exclusion |

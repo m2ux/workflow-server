@@ -180,17 +180,6 @@ Final manifests and final efficacy/retrieval walks identify the settled corpus r
 
 ## Joins
 
-W02 and W03 share one pull request: one rule applied across two skills, where the second skill's citations are the evidence that the rule reads the same in a file the first skill never had. No other eligible pair shares a pull request.
+E14:W03 and E14:W04 share one pull request: the same section-citation rule applied across Work Planner and Workflow Canon, with both skills supplying its evidence.
 
-- **The three rule tasks: W05 and W06, W05 and W07, W06 and W07.**
-  Each lands one rule in the shared guide and applies it across both skills. A reviewer reading one diff should not have to separate two rules in it, and a rule that proves wrong is reverted without taking the others with it.
-- **The script tasks against the rule tasks: W06 and W08, W07 and W08.**
-  W08 is the check and its specimen suite, in the shared script. It merges after the prose it grades, so pairing it with a prose task would put a rule and the check of that rule in one review.
-- **The script tasks against each other: W08 and W10.**
-  W08 decides a citation's scope and case; W10 derives a read set and compares it with the prose. Separate outputs, separate specimen suites, and a manifest generator that fails should not hold back a scope check that works.
-- **E14:W06 and E14:W09 remain separate.**
-  Prerequisite placement and check-definition edits have separate review scopes.
-- **E14:W07 and E14:W09 remain separate.**
-  Non-loading references and check-definition edits have separate review scopes.
-
-W10 follows W09, and W11 follows W10. These dependent tasks have separate pull requests; they are not independent parallel work.
+Every eligible separate pair is recorded in [current E14 pair decisions](../2026-10-31-project17-plan-review/joins/E14-pairs.md). Dependency edges order the check definitions, final manifests and final walks; these are not independent pairs.
