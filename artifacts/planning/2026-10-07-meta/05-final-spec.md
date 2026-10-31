@@ -1,5 +1,7 @@
 # Work Planner Skill Requirements Specification
 
+> **Applicability:** For current I11 planning and alignment, use the [current requirements and supersession map](../2026-10-31-project17-plan-review/current-requirements.md). This specification preserves historical requirements and their meeting provenance; its statements apply only as the map retains them.
+
 ## 1. Executive Summary
 
 The Work Planner skill plans and maintains agent-engineering work on GitHub. It turns a body of work into initiatives, epics and tasks that follow one house format; keeps those issues in conformance as the format evolves; reconciles them with the pull requests that deliver them; places work raised outside the structure into it; reports progress to people who do not read the tracker; and starts agent sessions on the work a board makes available.

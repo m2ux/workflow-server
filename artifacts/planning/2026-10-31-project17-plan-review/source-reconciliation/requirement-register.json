@@ -1,0 +1,314 @@
+[
+  {
+    "id": "REQ-F001",
+    "disposition": "Reconciled",
+    "current": "Plan mode settles goal clauses with the user, maintains the planning record and creates initiatives and epics from their templates. New tasks are epic rows with linked work-item files; existing task issues retain their history.",
+    "basis": "Current epic-body task representation; I11 AC1, AC8 and AC17."
+  },
+  {
+    "id": "REQ-F002",
+    "disposition": "Reconciled",
+    "current": "Align mode checks issue format and source consistency. Plan mode reviews goal coverage, dependencies and content changes. Mechanical corrections preserve meaning; unresolved content decisions follow the interview allowance. Completed issue bodies remain historical records except explicitly authorized evidence normalization.",
+    "basis": "Current mode responsibilities; I11 AC2, AC7 and AC11."
+  },
+  {
+    "id": "REQ-F003",
+    "disposition": "Reconciled",
+    "current": "Sync mode matches delivery evidence to task rows, records verified matches and ticks only criteria whose named checks pass. Closure requires the issue's criteria and applicable delivery/Development-link gates; a PR merge alone does not close an epic or initiative.",
+    "basis": "I11 AC6 and AC25\u2013AC28; branch-contract.md; E11 test-plan evidence contract."
+  },
+  {
+    "id": "REQ-F004",
+    "disposition": "Reconciled",
+    "current": "Hoist mode finds orphan and cited standalone issues, proposes a placement and takes the user's decision. An issue labelled throwaway:* is a declared fixture and is excluded from both candidate groups.",
+    "basis": "E10 W25 / AC36\u2013AC37; I11 AC8."
+  },
+  {
+    "id": "REQ-F005",
+    "disposition": "Reconciled",
+    "current": "Standup mode reports completed, active and next work in the destination's Slack markdown format.",
+    "basis": "Current mode name; I11 AC5; retained reporting requirements F033\u2013F035."
+  },
+  {
+    "id": "REQ-F006",
+    "disposition": "Reconciled",
+    "current": "Deliver mode refreshes board availability and dispatches one session per available delivery unit. Mutually joined rows form one unit and share their planning folder and pull request.",
+    "basis": "I11 AC9 and AC13; E10 W10; joins-reconciliation.md."
+  },
+  {
+    "id": "REQ-F007",
+    "disposition": "Reconciled",
+    "current": "Each mode has its own file. A selected mode loads according to its prerequisites and applicable citation timing; references that merely name a mode do not execute or load it.",
+    "basis": "I11 AC1 and AC32\u2013AC33; E14 citation contract."
+  },
+  {
+    "id": "REQ-F008",
+    "disposition": "Reconciled",
+    "current": "Initiative, epic and existing task issue titles use colon-separated house prefixes. Table references use the parser's qualified colon form; prose may name a task with spaces. Same-epic task edges may use bare task IDs.",
+    "basis": "Current table reference form; I11 AC28; active-dependency-contract.md."
+  },
+  {
+    "id": "REQ-F009",
+    "disposition": "Retained",
+    "current": "An issue title SHALL read as a name of two or three words, a colon, and a subtitle of at most ten words, in title case; a standalone issue SHALL carry no prefix and no `type:*` label",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F010",
+    "disposition": "Retained",
+    "current": "An epic's title SHALL agree with the Description its initiative's Work Breakdown table carries for that epic",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F011",
+    "disposition": "Reconciled",
+    "current": "Bodies use the template for their issue kind. Initiatives and epics carry Overview, Problem, Proposal and Acceptance Criteria; their templates govern Work Breakdown, Non-Goals and References. Open Questions exists only while questions remain. A proposal uses Goal and its proposal template rather than an implementation issue's criterion/table shape.",
+    "basis": "Current body templates; I11 AC2 and AC10."
+  },
+  {
+    "id": "REQ-F012",
+    "disposition": "Reconciled",
+    "current": "Initiative tables use Epic, Description, Coverage, Depends on, Done. Epic tables use Task, Description, Coverage, Depends on, Joins, Done. Standalone and existing task issues have no child-task table. A work-item file is a distinct planning artifact with a Component declaration, Overview, Problem, Proposal and a Part/Description Work Breakdown covering analysis, plan, implementation, review and tests.",
+    "basis": "Current initiative, epic and work-item templates; E10 W09; work-items/README.md. The historical E01 AC8 no-table statement does not govern current work-item files."
+  },
+  {
+    "id": "REQ-F013",
+    "disposition": "Reconciled",
+    "current": "A Description cell is a short phrase of at most eight words. Criterion IDs belong in Coverage, including completed criteria whose task delivers them; Done records completion. Coverage contains no embedded prose and Description contains no criterion suffix.",
+    "basis": "User-approved coverage contract; E10 W09 / AC15. The current skill sentence clearing completed Coverage is a remaining implementation inconsistency owned by that task."
+  },
+  {
+    "id": "REQ-F014",
+    "disposition": "Reconciled",
+    "current": "An epic identifier links its issue. An unreserved task links its lowercase work-item file; a held task links its planning folder; an opened delivery PR replaces the planning link. Joined rows link the shared PR, and a unit spanning long-lived targets records the delivery for each target. Existing task issues are linked through the PR's actual Development relation. Open PRs are not delivered evidence.",
+    "basis": "Current Task Delivery representation; I11 AC6, AC13 and AC28; E10 W03/W10."
+  },
+  {
+    "id": "REQ-F015",
+    "disposition": "Reconciled",
+    "current": "Task dependencies name the producer rows whose outputs they consume, using qualified links across epics and no prose, duplicate or transitively redundant entries. Initiative whole-epic dependencies are derived only when every consumer row requires every producer row. Joins is mutual and means one PR for independent rows; each eligible separate pair has its own qualified pair decision. File contention controls scheduling, not semantic consumption.",
+    "basis": "active-dependency-contract.md; joins-reconciliation.md; approved-priorities.json. Cross-epic delivery availability versus epic-closure gating remains the explicit decision below."
+  },
+  {
+    "id": "REQ-F016",
+    "disposition": "Reconciled",
+    "current": "Initiative and proposal templates may carry succinct Non-Goals describing boundaries without assigning work or owners. Epic, task and standalone bodies express any necessary boundary in Proposal.",
+    "basis": "Current initiative and proposal templates; I11 AC2 and AC10."
+  },
+  {
+    "id": "REQ-F017",
+    "disposition": "Retained",
+    "current": "An initiative and an epic SHALL each carry Acceptance Criteria in which every criterion states one invariant, is specific, measurable, achievable, relevant and time-bound, is local to its own issue, carries no count unless the count is itself the target, and names no initiative, epic, task or issue",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F018",
+    "disposition": "Retained",
+    "current": "An initiative criterion SHALL name in its own sentence the instrument that verifies it \u2014 an end-to-end walk, a smoke run, a live check, or the user's confirmation \u2014 and where no such instrument exists the skill SHALL recommend building it as a task or as a test-infrastructure epic whose row cites the criteria it verifies",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F019",
+    "disposition": "Reconciled",
+    "current": "Sync runs an initiative criterion's named instrument once its covering delivery is available and ticks only a pass. A failed, missing or unreadable instrument leaves the criterion unverified and reports the gap. Human-only criteria await user verification. Initiative closure also requires its epics complete; epic closure requires all delivery bases merged and its criteria verified.",
+    "basis": "I11 AC6, AC25\u2013AC26; branch-contract.md. F16 evidence verification remains outstanding."
+  },
+  {
+    "id": "REQ-F020",
+    "disposition": "Reconciled",
+    "current": "A task is one PR's worth of work for each long-lived target its unit changes, with a named implementation component and accompanying tests. More than three criteria requires a split. Joined independent rows share a unit. Validation failures keep the affected task open; a later audit does not take ownership of an implementation task's tests.",
+    "basis": "Current task grain; E16 task-boundary decision; work-items/README.md."
+  },
+  {
+    "id": "REQ-F021",
+    "disposition": "Retained",
+    "current": "An epic's open questions SHALL be resolved before the epic starts",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F022",
+    "disposition": "Reconciled",
+    "current": "Issue bodies state the current plan. Planning records hold decision history and delivery evidence; dependencies and completion cells carry ordering and state. Delivery mechanics are defined by their owning artifacts and protocols.",
+    "basis": "Current modes/protocols/artifacts structure; I11 AC2 and AC29."
+  },
+  {
+    "id": "REQ-F023",
+    "disposition": "Reconciled",
+    "current": "Renumbering preserves every identifier already named by a pull request, including delivered work. Proposed maps are checked against current PR records before publication.",
+    "basis": "E10 W02 / AC8; final-skill-verification.md numbering evidence."
+  },
+  {
+    "id": "REQ-F024",
+    "disposition": "Retained",
+    "current": "A pull request delivering initiative work SHALL open its title with the epic reference, as `[Ixx:Eyy] Purpose`, and SHALL leave task identifiers out",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F025",
+    "disposition": "Reconciled",
+    "current": "Task PRs target the corresponding epic base iNN/eNN/<long-lived-branch>. Each completed epic base integrates independently into its configured long-lived target after validation, current-head-and-base agent review and required human approval. Every base must merge before epic closure; initiative closure has its own completion gate.",
+    "basis": "branch-contract.md; I11 AC12, AC34 and AC36; E10 W02; E17."
+  },
+  {
+    "id": "REQ-F026",
+    "disposition": "Reconciled",
+    "current": "Within an epic, dependent tasks start from the epic base after prerequisite delivery into that base. Task PRs target the epic base and do not form a stack on preceding task branches. For cross-epic consumption, follow the explicit unresolved-gate decision below; the approved serial schedule remains in force pending its resolution.",
+    "basis": "branch-contract.md versus active-dependency-contract.md; approved-priorities.json. This map does not silently choose between their conflicting cross-epic gates."
+  },
+  {
+    "id": "REQ-F027",
+    "disposition": "Retained",
+    "current": "Work SHALL be organised by theme, each initiative belonging to exactly one theme, each epic carrying its initiative's theme label, and each theme having one board that holds its initiatives and epics",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F028",
+    "disposition": "Retained",
+    "current": "A board SHALL be titled `<Theme>: <short description>` and SHALL be linked to the repository",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F029",
+    "disposition": "Reconciled",
+    "current": "Theme delivery boards contain planned initiatives and epics and any managed task issues. Proposals use the separate proposal board. Unplaced standalone issues have no theme-delivery position.",
+    "basis": "I11 AC4 and AC10; current proposal/board artifacts."
+  },
+  {
+    "id": "REQ-F030",
+    "disposition": "Reconciled",
+    "current": "Status derives from current initiative membership, reservations, delivery PRs, completion and review evidence. An active task reservation or open delivery PR supports In Progress; an inactive integration draft alone does not. In Review requires completion plus passing current-head-and-base agent review without blocking findings. Ready requires a Ready or In Progress parent and met planning/delivery prerequisites. Backlog cascades only to unstarted descendants; Done is retained and active/review descendants require reconciliation. There is no single-active-initiative limit.",
+    "basis": "status-contract.md; E09 AC2\u2013AC5; I11 AC34/AC36; E17."
+  },
+  {
+    "id": "REQ-F031",
+    "disposition": "Reconciled",
+    "current": "Ready and active work is assigned as the board contract requires; unstarted Backlog work is unassigned. A parent Backlog action preserves completed descendants and reports active/review descendants for reconciliation rather than automatically clearing their assignments.",
+    "basis": "status-contract.md; E09 W04 / AC5."
+  },
+  {
+    "id": "REQ-F032",
+    "disposition": "Reconciled",
+    "current": "Sync finds the theme board, reports a missing board for user resolution, adds missing managed initiatives, epics and existing task issues, and reports board and assignee changes. Creating a task row does not create a separate task issue.",
+    "basis": "Current Sync/board and epic-body contracts; I11 AC4."
+  },
+  {
+    "id": "REQ-F033",
+    "disposition": "Reconciled",
+    "current": "A standup covers the named theme board or each requested board, includes initiatives containing reported work and identifies their epics/tasks. Next work is limited to the five highest-priority ready items. Numeric priority is a queue rank with larger values first; priority never bypasses dependencies or reservations. Out-of-order delivery is reported under its owning work.",
+    "basis": "I11 AC5; approved-priorities.json; current board queue."
+  },
+  {
+    "id": "REQ-F034",
+    "disposition": "Retained",
+    "current": "A progress summary SHALL carry a single plain-language paragraph stating what was accomplished, placed below the line naming the period and above the board line",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F035",
+    "disposition": "Retained",
+    "current": "A progress summary SHALL mark each item's status with a distinct symbol in place of the status word, SHALL carry a legend for those symbols, and SHALL close with a key expanding the house initials",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F036",
+    "disposition": "Retained",
+    "current": "Deliver mode SHALL bring the board to its correct positions and statuses before it dispatches anything",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F037",
+    "disposition": "Retained",
+    "current": "Work a dispatch starts SHALL be moved to In Progress, task issues included",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F038",
+    "disposition": "Retained",
+    "current": "On dispatch a work item SHALL be given a hyperlink to its planning folder, that link reserving the work against a further dispatch, the folder named `<date>[-<ref>]-<slug>` with the reference falling back to the epic issue where the task has no issue of its own",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F039",
+    "disposition": "Retained",
+    "current": "A dispatched session's prompt SHALL instruct it to invoke the skill and then implement, following the brief the skill holds for a dispatched session",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F040",
+    "disposition": "Reconciled",
+    "current": "A reservation retains the planning-folder link while the session holds the unit, including after planning completes. The folder README links its work-item file. Explicit release restores the file link; opening a delivery PR replaces the planning link with that PR. Planning completion alone does not release a hold.",
+    "basis": "I11 AC13; E15 reservation evidence; E10 W10; current Task Delivery contract."
+  },
+  {
+    "id": "REQ-F041",
+    "disposition": "Reconciled",
+    "current": "Align reads initiative References entries explicitly marked Source as normative. Current requirements and their supersession map govern alignment; historical sources establish provenance. Any source URL is allowed, and unreadable sources are reported as findings. Review compares criteria and source requirements in both directions and does not infer delivery from a source statement.",
+    "basis": "I11 AC11; current source selection and this map."
+  },
+  {
+    "id": "REQ-F042",
+    "disposition": "Retained",
+    "current": "A hoisted candidate SHALL be kept as its own issue, subsumed, or left standalone; a candidate whose detail already lives in a planning folder SHALL be closed after migration with the receiving epic's References citing that detail and the close carrying a comment naming where the work now lives; no body SHALL record the migration",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F043",
+    "disposition": "Retained",
+    "current": "Where hoist rewrites an issue's body, the existing body SHALL first be posted as a comment opening with a lead line saying what it is",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F044",
+    "disposition": "Retained",
+    "current": "The skill SHALL declare name and description only in its frontmatter, and the description SHALL be succinct and carry at least one trigger phrase for each mode",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F045",
+    "disposition": "Reconciled",
+    "current": "Commands have one specification under the skill's declared structure. Execution callers are procedure steps that run the command; required citation reach is measured separately. Subject-owned artifact commands remain with their artifact where the structure declares keeps_commands. Modes/protocols/artifacts preserve their call boundaries; a shared catalog is not imposed. Calling prose names the owning operation.",
+    "basis": "caller-retrieval-contract.md; E12 historical layout; E10 W21/W23; I11 AC19 and AC29."
+  },
+  {
+    "id": "REQ-F046",
+    "disposition": "Retained",
+    "current": "The skill's markdown SHALL place each paragraph and list item on one line, SHALL use markdown links rather than bare URLs, and SHALL write a bold lead as a label followed by a full sentence",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F047",
+    "disposition": "Retained",
+    "current": "The skill's mode summary SHALL name on its own line what each mode does, with that mode's capabilities as a bulleted list, and the skill SHALL carry a Rules section holding the statements that bind every mode",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F048",
+    "disposition": "Retained",
+    "current": "The skill SHALL carry scripts that check and apply the house rules \u2014 title shape, description width, one invariant per criterion, counts, references, change-narrative wording, dependency and join consistency, and board and assignee calls \u2014 each reached through a named operation",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F049",
+    "disposition": "Retained",
+    "current": "The skill SHALL be named Work Planner, SHALL consolidate the repeated planning operations into one place, SHALL trigger on requests to plan the work and similar phrasings, and SHALL use one vocabulary across its instructions, references and scripts",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-F050",
+    "disposition": "Reconciled",
+    "current": "The skill holds and checks body templates for proposals, initiatives, epics, existing task issues and standalone issues. New tasks use epic rows and separate work-item records rather than newly created task issues.",
+    "basis": "Current body/work-item templates; I11 AC2 and AC10."
+  },
+  {
+    "id": "REQ-NF001",
+    "disposition": "Retained",
+    "current": "The conventions binding every skill in the repository SHALL live in one shared guide, and a skill's own reference guide SHALL hold only what is specific to that skill",
+    "basis": "Retained from the historical specification and its linked meeting provenance."
+  },
+  {
+    "id": "REQ-NF002",
+    "disposition": "Reconciled",
+    "current": "Use REST for supported operations and current GraphQL for capabilities REST cannot provide, including reads and writes, without a one-off exception. Specifications identify the REST capability gap. Project operations use Projects V2; deprecated Projects classic fields, types and mutations are excluded.",
+    "basis": "Explicit user instruction; api-contract.md; I11 AC24; E10 W05; E16."
+  }
+]

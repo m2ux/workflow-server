@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [Current requirements](current-requirements.md) | Stable source register, later scope and explicit supersession |
 | [Complete work items](work-items/README.md) | All 53 unfinished rows, file-change declarations and validation |
 | [Parallel delivery assessment](parallel-delivery.md) | Full write contention, scoped candidate and approved epic priorities |
 | [Active producer dependencies](active-dependency-contract.md) | Current whole-epic edge narrowed to its delivered producer |
