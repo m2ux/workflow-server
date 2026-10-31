@@ -7,7 +7,6 @@ What the task, epic, board and initiative records become after one confirmed tas
 Read these files first.
 
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
-- [Board Delivery](../artifacts/board-delivery.md)
 - [Issue Delivery](issue-delivery.md)
 - [Issue Closure](issue-closure.md)
 - [Review Pull Request](review-pull-request.md)
@@ -25,9 +24,7 @@ Read these files first.
    Follow [Review Pull Request](review-pull-request.md) for the affected epic base, with the epic's issue and the repository setting confirmed for the session.
 3. **Complete when ready.**
    When every task and criterion is complete:
-   - Run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) with the epic identity and the supplied board identity. The board shows the completed epic at In Review.
-   - Report an absent board item. Integration is not gated on the board.
-   - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot and criterion verification evidence. An unmet delivery or merge condition stays pending.
+   - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and supplied board identity. An unmet delivery or merge condition stays pending.
 4. **Close the epic.**
    After every epic base has merged:
    - Refresh the evidence.

@@ -9,6 +9,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from test_agent_review import reviewed_pr
 from fixtures import SCRIPTS, epic_body, initiative_body, issue, item, links, pr, run, url
 
 sys.path.insert(0, str(SCRIPTS))
@@ -166,7 +167,7 @@ def board_fields(*names: str) -> list[dict]:
 
 
 class InitiativeStatus(unittest.TestCase):
-    def planned(self, initiative: dict, epic: dict, *statuses: str, held: str = 'In Progress') -> str:
+    def planned(self, initiative: dict, epic: dict, *statuses: str, held: str = 'In Progress', reviews=()) -> str:
         initiative['id'], epic['id'] = 11, 12
         initiative['assignees'] = epic['assignees'] = [{'login': 'me'}]
         on_board = [item(initiative, held), item(epic, 'Done')]
@@ -175,6 +176,8 @@ class InitiativeStatus(unittest.TestCase):
             root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
             fields, items, pulls = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
             held_links = Path(tmp, 'links.json')
+            reviews_path = Path(tmp, 'reviews.json')
+            reviews_path.write_text(json.dumps(list(reviews)))
             root.write_text(json.dumps(initiative))
             epic_path.write_text(json.dumps(epic))
             fields.write_text(json.dumps(board_fields(*statuses)))
@@ -184,7 +187,8 @@ class InitiativeStatus(unittest.TestCase):
             done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(pulls),
                        '--links', str(held_links),
                        '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
-                       '--out', str(Path(tmp, 'out')), '--assignee', 'me')
+                       '--out', str(Path(tmp, 'out')), '--assignee', 'me',
+                       '--agent-reviews', str(reviews_path))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
 
@@ -219,7 +223,7 @@ class InitiativeStatus(unittest.TestCase):
     def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
                   pulls: str = '', held: tuple[dict, ...] = (), tasks: tuple[dict, ...] = (),
                   statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done'),
-                  code: int = 0) -> str:
+                  code: int = 0, reviews=()) -> str:
         epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         initiative = issue(1, '[I01] First: Initiative',
                            body=initiative_body((f"[E00]({url('issues', 2)})", '')))
@@ -238,6 +242,8 @@ class InitiativeStatus(unittest.TestCase):
             root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
             fields, items, prs = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
             held_links = Path(tmp, 'links.json')
+            reviews_path = Path(tmp, 'reviews.json')
+            reviews_path.write_text(json.dumps(list(reviews)))
             root.write_text(json.dumps(initiative))
             epic_path.write_text(json.dumps(epic))
             fields.write_text(json.dumps(board_fields(*statuses)))
@@ -252,7 +258,8 @@ class InitiativeStatus(unittest.TestCase):
             done = run('board.py', str(root), '--epics', str(epic_path), '--prs', str(prs),
                        '--links', str(held_links), *(['--tasks', *task_paths] if task_paths else []),
                        '--board', 'users/o/projectsV2/9', '--fields', str(fields), '--items', str(items),
-                       '--out', str(Path(tmp, 'out')), '--assignee', 'me')
+                       '--out', str(Path(tmp, 'out')), '--assignee', 'me',
+                       '--agent-reviews', str(reviews_path))
             self.assertEqual(done.returncode, code, done.stderr)
             return done.stdout
 
@@ -288,14 +295,34 @@ class InitiativeStatus(unittest.TestCase):
         self.assertIn('set #2 [I01:E00] First: Epic: Backlog → In Progress', out)
         self.assertNotIn('→ In Review', out)
 
-    def test_ticked_criteria_move_an_open_epic_to_in_review(self):
+    def test_current_review_moves_epic_to_review_and_changed_target_retracts_it(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', ''))
+                     .replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+        pull, record = reviewed_pr('01:E00')
+        merged = pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')
+        out = self.open_pair('In Progress', 'In Progress', epic,
+                             json.dumps(merged) + '\n' + json.dumps(pull),
+                             held=(links(10, 2),), reviews=(record,),
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('In Progress → In Review', out)
+        pull['base']['sha'] = 'c' * 40
+        out = self.open_pair('In Progress', 'In Review', epic,
+                             json.dumps(merged) + '\n' + json.dumps(pull),
+                             held=(links(10, 2),), reviews=(record,), code=1,
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('In Review → In Progress', out)
+        self.assertIn('stale agent review', out)
+
+    def test_ticked_criteria_without_agent_review_hold_epic_in_progress(self):
         epic = issue(2, '[I01:E00] First: Epic',
                      body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', ''))
                      .replace('- [ ] **AC1.**', '- [x] **AC1.**'))
         merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
         out = self.open_pair('In Progress', 'In Progress', epic, merged,
-                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
-        self.assertIn('set #2 [I01:E00] First: Epic: In Progress → In Review', out)
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'), code=1)
+        self.assertNotIn('→ In Review', out)
+        self.assertIn('missing open epic integration pull request', out)
 
     def test_a_task_is_ready_though_a_sibling_row_waits_on_another_epic(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
