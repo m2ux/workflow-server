@@ -1,0 +1,187 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/board.py:main",
+    "name": "main",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/board.py",
+    "startLine": 272,
+    "endLine": 427
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "File:skills/work-planner/scripts/board.py",
+        "name": "board.py",
+        "filePath": "skills/work-planner/scripts/board.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:epic_check",
+        "name": "epic_check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:load_records",
+        "name": "load_records",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:completed",
+        "name": "completed",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:criteria_met",
+        "name": "criteria_met",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:linked_issue",
+        "name": "linked_issue",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:load",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:main.pr_status@312:4",
+        "name": "pr_status",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:open_questions",
+        "name": "open_questions",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:rows",
+        "name": "rows",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:weakest",
+        "name": "weakest",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/format.py:cell",
+        "name": "cell",
+        "filePath": "skills/work-planner/scripts/format.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/format.py:id_cell",
+        "name": "id_cell",
+        "filePath": "skills/work-planner/scripts/format.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/format.py:reservation",
+        "name": "reservation",
+        "filePath": "skills/work-planner/scripts/format.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/format.py:row_id",
+        "name": "row_id",
+        "filePath": "skills/work-planner/scripts/format.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/statuses.py:board_items",
+        "name": "board_items",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/statuses.py:key_of",
+        "name": "key_of",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/statuses.py:label",
+        "name": "label",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/sync.py:attach_links",
+        "name": "attach_links",
+        "filePath": "skills/work-planner/scripts/sync.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/sync.py:pull_requests",
+        "name": "pull_requests",
+        "filePath": "skills/work-planner/scripts/sync.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/board.py:Board.epic_prerequisites_met#3",
+        "name": "epic_prerequisites_met",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/board.py:Board.met#4",
+        "name": "met",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/board.py:Board.row_delivered#3",
+        "name": "row_delivered",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/board.py:Board.table#1",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:Changes.place#7",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:Changes.report#3",
+        "name": "report",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:StatusField.settle#1",
+        "name": "settle",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "id": "proc_148_main",
+      "name": "Main → Completed",
+      "step_index": 1,
+      "step_count": 4
+    },
+    {
+      "id": "proc_168_main",
+      "name": "Main → Label",
+      "step_index": 1,
+      "step_count": 4
+    },
+    {
+      "id": "proc_170_main",
+      "name": "Main → Row_id",
+      "step_index": 1,
+      "step_count": 4
+    },
+    {
+      "id": "proc_171_main",
+      "name": "Main → Split_sections",
+      "step_index": 1,
+      "step_count": 5
+    },
+    {
+      "id": "proc_177_main",
+      "name": "Main → Cell",
+      "step_index": 1,
+      "step_count": 5
+    }
+  ]
+}

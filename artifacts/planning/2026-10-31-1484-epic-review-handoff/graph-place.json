@@ -1,0 +1,109 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/deliver.py:place",
+    "name": "place",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/deliver.py",
+    "startLine": 312,
+    "endLine": 336
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:epic_check",
+        "name": "epic_check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:load_records",
+        "name": "load_records",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/statuses.py:board_items",
+        "name": "board_items",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/statuses.py:label",
+        "name": "label",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/sync.py:pull_requests",
+        "name": "pull_requests",
+        "filePath": "skills/work-planner/scripts/sync.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:Changes.place#7",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:Changes.report#3",
+        "name": "report",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/statuses.py:StatusField.settle#1",
+        "name": "settle",
+        "filePath": "skills/work-planner/scripts/statuses.py"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "id": "proc_140_main",
+      "name": "Main → Label",
+      "step_index": 2,
+      "step_count": 5
+    },
+    {
+      "id": "proc_49_main",
+      "name": "Main → Pages",
+      "step_index": 2,
+      "step_count": 4
+    },
+    {
+      "id": "proc_50_main",
+      "name": "Main → Assignee_calls",
+      "step_index": 2,
+      "step_count": 4
+    },
+    {
+      "id": "proc_51_place",
+      "name": "Place → Option_name",
+      "step_index": 1,
+      "step_count": 4
+    },
+    {
+      "id": "proc_72_main",
+      "name": "Main → Report",
+      "step_index": 2,
+      "step_count": 3
+    },
+    {
+      "id": "proc_73_main",
+      "name": "Main → Settle",
+      "step_index": 2,
+      "step_count": 3
+    },
+    {
+      "id": "proc_74_place",
+      "name": "Place → Key_of",
+      "step_index": 1,
+      "step_count": 3
+    }
+  ]
+}

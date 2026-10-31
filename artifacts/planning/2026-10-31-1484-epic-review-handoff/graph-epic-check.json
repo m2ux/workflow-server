@@ -1,0 +1,46 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/agent_review.py:epic_check",
+    "name": "epic_check",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 84,
+    "endLine": 100
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_every_open_epic_integration_needs_review#0",
+        "name": "test_every_open_epic_integration_needs_review",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_wrong_repository_or_task_pr_cannot_supply_review#0",
+        "name": "test_wrong_repository_or_task_pr_cannot_supply_review",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:check",
+        "name": "check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ]
+  },
+  "processes": []
+}

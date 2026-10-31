@@ -1,0 +1,33 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/agent_review.py:load_records",
+    "name": "load_records",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 9,
+    "endLine": 16
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/board.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

@@ -1,0 +1,104 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/agent_review.py:check",
+    "name": "check",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 44,
+    "endLine": 81
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:epic_check",
+        "name": "epic_check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_changed_head_or_target_blocks#0",
+        "name": "test_changed_head_or_target_blocks",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_current_published_review_passes#0",
+        "name": "test_current_published_review_passes",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_deferred_nonblocker_requires_ticket#0",
+        "name": "test_deferred_nonblocker_requires_ticket",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_example_record_links_do_not_establish_publication#0",
+        "name": "test_example_record_links_do_not_establish_publication",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_fixed_blocker_requires_evidence_and_current_review#0",
+        "name": "test_fixed_blocker_requires_evidence_and_current_review",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_latest_same_revision_record_is_authoritative#0",
+        "name": "test_latest_same_revision_record_is_authoritative",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_missing_review_blocks#0",
+        "name": "test_missing_review_blocks",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_missing_scope_criteria_validation_or_link_blocks#0",
+        "name": "test_missing_scope_criteria_validation_or_link_blocks",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_open_or_deferred_blocker_blocks#0",
+        "name": "test_open_or_deferred_blocker_blocks",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_agent_review.py:AgentReview.test_reduced_snapshot_is_reported_without_crashing#0",
+        "name": "test_reduced_snapshot_is_reported_without_crashing",
+        "filePath": "skills/work-planner/test/test_agent_review.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:linked_record",
+        "name": "linked_record",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:web_url",
+        "name": "web_url",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "id": "proc_68_main",
+      "name": "Main → Linked_record",
+      "step_index": 2,
+      "step_count": 3
+    },
+    {
+      "id": "proc_69_main",
+      "name": "Main → Web_url",
+      "step_index": 2,
+      "step_count": 3
+    }
+  ]
+}

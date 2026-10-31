@@ -1,0 +1,34 @@
+Changes: 13 files, 76 symbols
+Affected processes: 20
+Risk level: critical
+
+Changed symbols:
+  Section Agent Review → skills/work-planner/artifacts/agent-review.md
+  Section Operations → skills/work-planner/artifacts/agent-review.md
+  Section *Produce* Agent Review → skills/work-planner/artifacts/agent-review.md
+  Section *Check* Agent Review → skills/work-planner/artifacts/agent-review.md
+  Section Fields → skills/work-planner/artifacts/agent-review.md
+  Section Review Record → skills/work-planner/artifacts/agent-review.md
+  Section Commands → skills/work-planner/artifacts/agent-review.md
+  Section Validate Agent Review → skills/work-planner/artifacts/agent-review.md
+  Section Board Delivery → skills/work-planner/artifacts/board-delivery.md
+  Section Prerequisites → skills/work-planner/artifacts/board-delivery.md
+  Section Operations → skills/work-planner/artifacts/board-delivery.md
+  Section *Plan* Board Changes → skills/work-planner/artifacts/board-delivery.md
+  Section *Record* Epic Review → skills/work-planner/artifacts/board-delivery.md
+  Section *Record* Board Delivery → skills/work-planner/artifacts/board-delivery.md
+  Section *Record* Dispatch Status → skills/work-planner/artifacts/board-delivery.md
+... and 61 more
+
+Affected execution flows:
+  • Main → Hrefs (4 steps) — changed: main
+  • Main → Pages (4 steps) — changed: main, place
+  • Main → Assignee_calls (4 steps) — changed: main, place
+  • Place → Option_name (4 steps) — changed: place
+  • Main → Linked_record (3 steps) — changed: main, check, linked_record
+  • Main → Web_url (3 steps) — changed: main, check, web_url
+  • Main → Tags (3 steps) — changed: main
+  • Main → Report (3 steps) — changed: main, place
+  • Main → Settle (3 steps) — changed: main, place
+  • Place → Key_of (3 steps) — changed: place
+... and 10 more

@@ -1,0 +1,41 @@
+{
+  "status": "ok",
+  "from": {
+    "name": "main",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 102
+  },
+  "to": {
+    "name": "linked_record",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 22
+  },
+  "hopCount": 2,
+  "hops": [
+    {
+      "name": "main",
+      "filePath": "skills/work-planner/scripts/agent_review.py",
+      "startLine": 102
+    },
+    {
+      "name": "check",
+      "filePath": "skills/work-planner/scripts/agent_review.py",
+      "startLine": 43
+    },
+    {
+      "name": "linked_record",
+      "filePath": "skills/work-planner/scripts/agent_review.py",
+      "startLine": 22
+    }
+  ],
+  "edges": [
+    {
+      "relType": "CALLS",
+      "confidence": 0.85
+    },
+    {
+      "relType": "CALLS",
+      "confidence": 0.85
+    }
+  ]
+}

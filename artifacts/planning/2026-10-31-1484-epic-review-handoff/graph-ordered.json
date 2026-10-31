@@ -1,0 +1,4 @@
+{
+  "markdown": "| s.name | s.filePath | s.startLine | r.step |\n| --- | --- | --- | --- |\n| main | skills/work-planner/scripts/agent_review.py | 102 | 1 |\n| check | skills/work-planner/scripts/agent_review.py | 43 | 2 |\n| linked_record | skills/work-planner/scripts/agent_review.py | 22 | 3 |",
+  "row_count": 3
+}

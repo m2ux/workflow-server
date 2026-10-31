@@ -1,0 +1,49 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/agent_review.py:main",
+    "name": "main",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 103,
+    "endLine": 110
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "File:skills/work-planner/scripts/agent_review.py",
+        "name": "agent_review.py",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ]
+  },
+  "outgoing": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:check",
+        "name": "check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:load_records",
+        "name": "load_records",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ]
+  },
+  "processes": [
+    {
+      "id": "proc_68_main",
+      "name": "Main → Linked_record",
+      "step_index": 1,
+      "step_count": 3
+    },
+    {
+      "id": "proc_69_main",
+      "name": "Main → Web_url",
+      "step_index": 1,
+      "step_count": 3
+    }
+  ]
+}

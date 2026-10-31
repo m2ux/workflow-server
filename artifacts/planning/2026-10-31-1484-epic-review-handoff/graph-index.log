@@ -1,0 +1,11 @@
+
+  GitNexus Analyzer (1.6.12)
+
+  GitNexus Analyzer (1.6.12)
+{"level":40,"time":1793442012103,"name":"gitnexus","truncation":{"truncated":true,"entryPointCandidatesDropped":52,"entryPointsUnexplored":67,"walksCutByBudget":16,"tracesDepthCapped":0,"calleesDropped":394,"processesDropped":0},"msg":"[processes] 205 flows reported, but whole flows are MISSING: 52 of 252 candidate entry point(s) never ranked in, 67 ranked entry point(s) never traced, 0 deduplicated flow(s) dropped at maxProcesses, 0 trace(s) cut at maxTraceDepth, 394 callee(s) skipped at maxBranching, 16 walk(s) cut by the per-entry trace budget. An absent flow does NOT mean the code path does not exist."}
+
+  Repository indexed successfully (9.1s)
+
+  3,061 nodes | 8,379 edges | 106 clusters | 205 flows
+  /home/mike1/projects/dev/workflow-server/.worktrees/i11/e17/workspace
+

@@ -1,0 +1,30 @@
+{
+  "status": "found",
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/agent_review.py:web_url",
+    "name": "web_url",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/agent_review.py",
+    "startLine": 19,
+    "endLine": 20
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/agent_review.py:check",
+        "name": "check",
+        "filePath": "skills/work-planner/scripts/agent_review.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": [
+    {
+      "id": "proc_69_main",
+      "name": "Main → Web_url",
+      "step_index": 3,
+      "step_count": 3
+    }
+  ]
+}
