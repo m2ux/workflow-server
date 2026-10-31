@@ -1,0 +1,868 @@
+[
+  {
+    "epic": "E09",
+    "task": "W01",
+    "issue": 1176,
+    "description": "Sync reads every epic and names its prefix",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e09/w01.md",
+    "component": "skills/work-planner/scripts/sync.py",
+    "writes": [
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/test_sync.py",
+      "skills/work-planner/artifacts/delivery-evidence.md",
+      "skills/work-planner/artifacts/epic.md"
+    ],
+    "depends_on": "",
+    "joins": "W02",
+    "validation": "Exercise historical tables and merged PRs with missing prefixes; prove already-correct rows and titles are stable."
+  },
+  {
+    "epic": "E09",
+    "task": "W02",
+    "issue": 1176,
+    "description": "Name the planning theme and its board",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e09/w02.md",
+    "component": "skills/work-planner/artifacts/board.md",
+    "writes": [
+      "skills/work-planner/artifacts/board.md",
+      "skills/work-planner/test/test_documents.py"
+    ],
+    "depends_on": "",
+    "joins": "W01",
+    "validation": "Read the theme row against live Project 17 identity and run document checks."
+  },
+  {
+    "epic": "E09",
+    "task": "W03",
+    "issue": 1176,
+    "description": "Initiative membership and epic activity determine status",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e09/w03.md",
+    "component": "skills/work-planner/scripts/board.py",
+    "writes": [
+      "skills/work-planner/scripts/board.py",
+      "skills/work-planner/test/test_board.py",
+      "skills/work-planner/artifacts/board.md",
+      "skills/work-planner/artifacts/board-delivery.md"
+    ],
+    "depends_on": "[E08:W02](https://github.com/m2ux/workflow-server/issues/1175)",
+    "joins": "",
+    "validation": "Cover removed members, reservation-only and PR-only activity, inactive drafts, completion and current/stale review evidence."
+  },
+  {
+    "epic": "E09",
+    "task": "W04",
+    "issue": 1176,
+    "description": "Ready and Backlog follow the initiative",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e09/w04.md",
+    "component": "skills/work-planner/scripts/board.py",
+    "writes": [
+      "skills/work-planner/scripts/board.py",
+      "skills/work-planner/test/test_board.py",
+      "skills/work-planner/artifacts/board.md"
+    ],
+    "depends_on": "W03",
+    "joins": "",
+    "validation": "Cross parent statuses with unmet prerequisites, reservations, open PRs, review and Done descendants; check assignments."
+  },
+  {
+    "epic": "E09",
+    "task": "W06",
+    "issue": 1176,
+    "description": "Configuration from the evaluated revision",
+    "file": "artifacts/planning/2026-10-09-1268-i11-e09-w06-delivery-reading-the-set-a/w06.md",
+    "component": "skills/work-planner/scripts/sync.py",
+    "writes": [
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/test_sync.py",
+      "skills/work-planner/artifacts/delivery-evidence.md",
+      "skills/work-planner/artifacts/delivery-branches.md"
+    ],
+    "depends_on": "W05",
+    "joins": "",
+    "validation": "Run divergent-revision and dirty-worktree fixtures with explicit source commit assertions."
+  },
+  {
+    "epic": "E09",
+    "task": "W07",
+    "issue": 1176,
+    "description": "Report unavailable project configuration",
+    "file": "artifacts/planning/2026-10-09-1268-i11-e09-w06-delivery-reading-the-set-a/w07.md",
+    "component": "skills/work-planner/scripts/sync.py",
+    "writes": [
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/test_sync.py",
+      "skills/work-planner/artifacts/delivery-evidence.md",
+      "skills/work-planner/artifacts/delivery-branches.md"
+    ],
+    "depends_on": "W06",
+    "joins": "",
+    "validation": "Cover missing, empty and unreadable configuration with affected-check reporting and no fallback."
+  },
+  {
+    "epic": "E10",
+    "task": "W01",
+    "issue": 1181,
+    "description": "Skill frontmatter and prose layout checks",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w01.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Exercise missing trigger phrases and each layout fault with a conforming control."
+  },
+  {
+    "epic": "E10",
+    "task": "W02",
+    "issue": 1181,
+    "description": "Renumber and pull request delivery checks",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w02.md",
+    "component": "skills/work-planner",
+    "writes": [
+      "skills/work-planner",
+      "skills/work-planner/scripts/renumber.py",
+      "skills/work-planner/scripts/deliver.py",
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/**",
+      "skills/work-planner/artifacts/delivery-branches.md",
+      "skills/work-planner/artifacts/dependency-graph.md",
+      "skills/work-planner/artifacts/pull-request.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Reject moved delivered IDs, absent epic prefixes, wrong bases and unmet producer rows; accept valid independent epic integration."
+  },
+  {
+    "epic": "E10",
+    "task": "W03",
+    "issue": 1181,
+    "description": "One name for a record work item",
+    "file": "artifacts/planning/2026-10-09-1269-i11-e10-w03-work-item-name-one-name/w03.md",
+    "component": "skills/work-planner/scripts/deliver.py",
+    "writes": [
+      "skills/work-planner/scripts/deliver.py",
+      "skills/work-planner/test/test_deliver.py",
+      "skills/work-planner/artifacts/work-item.md",
+      "skills/work-planner/artifacts/delivery-plan.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Exercise lowercase task filenames and refuse a row link to a missing record file."
+  },
+  {
+    "epic": "E10",
+    "task": "W04",
+    "issue": 1181,
+    "description": "Command specification and vocabulary checks",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w04.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md",
+      "skills/work-planner/guidelines.md"
+    ],
+    "depends_on": "W01",
+    "joins": "W05",
+    "validation": "Use mode-command and vocabulary specimens with valid named-operation calls and terminology controls."
+  },
+  {
+    "epic": "E10",
+    "task": "W05",
+    "issue": 1181,
+    "description": "Guide split and API capability checks",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w05.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md",
+      "skills/work-planner/guidelines.md"
+    ],
+    "depends_on": "W01",
+    "joins": "W04",
+    "validation": "Cover duplicate conventions, REST support, GraphQL-only reads and writes, unjustified GraphQL and deprecated classic operations."
+  },
+  {
+    "epic": "E10",
+    "task": "W06",
+    "issue": 1181,
+    "description": "Each house rule reaches a named operation",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w06.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md",
+      "skills/work-planner/guidelines.md"
+    ],
+    "depends_on": "W04",
+    "joins": "",
+    "validation": "Check reachable, missing and ambiguous operation references using controlled specimen skills."
+  },
+  {
+    "epic": "E10",
+    "task": "W07",
+    "issue": 1181,
+    "description": "Every repeated heading reported",
+    "file": "artifacts/planning/2026-10-12-1326-i11-e10-w07-duplicate-anchors-every-repeated-heading/w07.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Cover repeated headings with and without incoming links and distinct-heading controls."
+  },
+  {
+    "epic": "E10",
+    "task": "W08",
+    "issue": 1181,
+    "description": "A blank line above every heading",
+    "file": "artifacts/planning/2026-10-12-1327-i11-e10-w08-heading-spacing-a-blank-line/w08.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Cover missing blank lines above headings, file-start headings and fenced content."
+  },
+  {
+    "epic": "E10",
+    "task": "W09",
+    "issue": 1181,
+    "description": "Coverage names what a row delivers",
+    "file": "artifacts/planning/2026-10-12-1323-i11-e10-w09-coverage-cell-one-rule-for/w09.md",
+    "component": "skills/work-planner/scripts/format.py",
+    "writes": [
+      "skills/work-planner/scripts/format.py",
+      "skills/work-planner/test/test_format.py",
+      "skills/work-planner/artifacts/epic-issue-body.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Check Coverage against delivered and open criteria with missing and invalid coverage specimens."
+  },
+  {
+    "epic": "E10",
+    "task": "W10",
+    "issue": 1181,
+    "description": "One record folder holds a unit",
+    "file": "artifacts/planning/2026-10-12-1332-i11-e10-w10-unit-record-one-folder-holds/w10.md",
+    "component": "skills/work-planner/scripts/deliver.py",
+    "writes": [
+      "skills/work-planner/scripts/deliver.py",
+      "skills/work-planner/test/test_deliver.py",
+      "skills/work-planner/artifacts/delivery-plan.md",
+      "skills/work-planner/artifacts/board-delivery.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Reserve joined rows into the same reported folder and reject divergent reservation folders."
+  },
+  {
+    "epic": "E10",
+    "task": "W11",
+    "issue": 1181,
+    "description": "Bold leads within the width limit",
+    "file": "artifacts/planning/2026-10-12-1322-i11-e10-w11-bold-leads-every-lead-within/w11.md",
+    "component": "skills/gitnexus/gitnexus-cli/SKILL.md",
+    "writes": [
+      "skills/gitnexus/gitnexus-cli/SKILL.md",
+      "skills/gitnexus/**/*.md"
+    ],
+    "depends_on": "",
+    "joins": "W13",
+    "validation": "Run the shared file checker over every GitNexus skill after the joined edit."
+  },
+  {
+    "epic": "E10",
+    "task": "W12",
+    "issue": 1181,
+    "description": "The canon suite states its prerequisite",
+    "file": "artifacts/planning/2026-10-12-1325-i11-e10-w12-canon-suite-the-prerequisite-stated/w12.md",
+    "component": "skills/workflow-canon/test/audit_fixtures.py",
+    "writes": [
+      "skills/workflow-canon/test/audit_fixtures.py",
+      "skills/workflow-canon/test/**"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Run the Canon fixture suite with the engine variable unset and verify the documented prerequisite or fixture setup supplies it."
+  },
+  {
+    "epic": "E10",
+    "task": "W13",
+    "issue": 1181,
+    "description": "The entry point holds no specification",
+    "file": "artifacts/planning/2026-10-12-1342-i11-e10-w13-entry-point-no-specification-in/w13.md",
+    "component": "skills/gitnexus/gitnexus-cli/SKILL.md",
+    "writes": [
+      "skills/gitnexus/gitnexus-cli/SKILL.md",
+      "skills/gitnexus/**/*.md",
+      "skills/**/SKILL.md"
+    ],
+    "depends_on": "",
+    "joins": "W11",
+    "validation": "Check every skill entrypoint for command specifications and run GitNexus checks after the joined edit."
+  },
+  {
+    "epic": "E10",
+    "task": "W14",
+    "issue": 1181,
+    "description": "Closure rests on observable evidence",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e10/w14.md",
+    "component": "skills/work-planner/scripts/closure.py",
+    "writes": [
+      "skills/work-planner/scripts/closure.py",
+      "skills/work-planner/test/test_closure.py",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/delivery-evidence.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Run a delivered-task specimen and missing/unread evidence cases; capture a read-only live delivered issue comparison."
+  },
+  {
+    "epic": "E10",
+    "task": "W15",
+    "issue": 1181,
+    "description": "One mood for parallel selections",
+    "file": "artifacts/planning/2026-10-12-1350-i11-e10-w15-coverage-voice-one-mood-for/w15.md",
+    "component": "skills/workflow-canon/references/coverage.md",
+    "writes": [
+      "skills/workflow-canon/references/coverage.md",
+      "skills/workflow-canon/**/*.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Read equivalent selections for one grammatical mood and run the shared skill-file check."
+  },
+  {
+    "epic": "E10",
+    "task": "W16",
+    "issue": 1181,
+    "description": "A heading left without content",
+    "file": "artifacts/planning/2026-10-12-1352-i11-e10-w16-empty-sections-a-heading-left/w16.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Cover empty sections, nested child content and fenced examples."
+  },
+  {
+    "epic": "E10",
+    "task": "W17",
+    "issue": 1181,
+    "description": "A section body carried whole",
+    "file": "artifacts/planning/2026-10-12-1353-i11-e10-w17-body-comparison-a-section-carried/w17.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Compare moved section bodies across revisions, accepting target-only link changes and reporting substantive differences."
+  },
+  {
+    "epic": "E10",
+    "task": "W18",
+    "issue": 1181,
+    "description": "The skill check reaches a gate",
+    "file": "artifacts/planning/2026-10-13-1362-i11-e10-w18-skill-check-the-layout-check/w18.md",
+    "component": ".github/workflows/verify.yml",
+    "writes": [
+      ".github/workflows/verify.yml",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Run the branch gate on a clean revision and a controlled layout-fault revision; verify the required job actually invokes the checker."
+  },
+  {
+    "epic": "E10",
+    "task": "W19",
+    "issue": 1181,
+    "description": "A specification no procedure runs",
+    "file": "artifacts/planning/2026-10-13-1372-i11-e10-w19-zero-callers-a-specification-no/w19.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Test zero execution callers, permitted subject-owned commands and required citations separately."
+  },
+  {
+    "epic": "E10",
+    "task": "W20",
+    "issue": 1181,
+    "description": "An entry point's sections measured",
+    "file": "artifacts/planning/2026-10-13-1393-i11-e10-w20-entry-point-the-sections-a/w20.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Test missing, extra and reordered entrypoint sections against the declared structure."
+  },
+  {
+    "epic": "E10",
+    "task": "W21",
+    "issue": 1181,
+    "description": "Canon conventions reached without a further file",
+    "file": "artifacts/planning/2026-10-13-1400-i11-e10-w22-canon-conventions-the-file-every/w21.md",
+    "component": "skills/workflow-canon/SKILL.md",
+    "writes": [
+      "skills/workflow-canon/SKILL.md",
+      "skills/workflow-canon/**/*.md",
+      "skills/workflow-canon/structure.json",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Trace Canon mode retrieval and verify Run Project Check is recognized once in its declared structure."
+  },
+  {
+    "epic": "E10",
+    "task": "W22",
+    "issue": 1181,
+    "description": "A review body's prose measured against its branch",
+    "file": "artifacts/planning/2026-10-13-1402-i11-e10-w23-review-changes-prose-measured-against/w22.md",
+    "component": "skills/work-planner/scripts/sync.py",
+    "writes": [
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/test_sync.py",
+      "skills/work-planner/artifacts/pull-request.md",
+      "skills/work-planner/protocols/review-pull-request.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Test Changes paths against the reviewed branch head and read the bullet-restatement/no-count rules."
+  },
+  {
+    "epic": "E10",
+    "task": "W23",
+    "issue": 1181,
+    "description": "Caller placement and retrieval reach distinguished",
+    "file": "artifacts/planning/2026-10-13-1406-i11-e10-w24-specification-reach-placement-measured-by/w23.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Separate execution callers, specification citations and subject ownership; record pinned retrieval inputs and full read traces."
+  },
+  {
+    "epic": "E10",
+    "task": "W24",
+    "issue": 1181,
+    "description": "A base named draft only where it leads",
+    "file": "artifacts/planning/2026-10-13-1407-i11-e10-w25-draft-report-a-base-named/w24.md",
+    "component": "skills/work-planner/scripts/sync.py",
+    "writes": [
+      "skills/work-planner/scripts/sync.py",
+      "skills/work-planner/test/test_sync.py",
+      "skills/work-planner/artifacts/delivery-evidence.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Compare epic bases equal to and ahead of their long-lived branch."
+  },
+  {
+    "epic": "E10",
+    "task": "W25",
+    "issue": 1181,
+    "description": "A declared throwaway is no candidate",
+    "file": "artifacts/planning/2026-10-13-1408-i11-e10-w26-throwaway-targets-a-fixture-is/w25.md",
+    "component": "skills/work-planner/scripts/orphans.py",
+    "writes": [
+      "skills/work-planner/scripts/orphans.py",
+      "skills/work-planner/test/test_orphans.py",
+      "skills/work-planner/modes/hoist-mode.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Exclude throwaway-labelled orphan and cited standalone specimens while retaining ordinary candidates."
+  },
+  {
+    "epic": "E10",
+    "task": "W26",
+    "issue": 1181,
+    "description": "Final verification over every skill",
+    "file": "artifacts/planning/2026-10-13-1392-i11-e10-w21-check-scope-one-run-over/w26.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/**"
+    ],
+    "depends_on": "W02, W03, W05, W06, W07, W08, W09, W10, W11, W12, W13, W14, W15, W16, W17, W18, W19, W20, W21, W22, W23, W24, W25",
+    "joins": "",
+    "validation": "Pin the final revision and inventory every skill; record the complete checker command, output and exit status with no excluded or baseline failures."
+  },
+  {
+    "epic": "E13",
+    "task": "W01",
+    "issue": 1373,
+    "description": "A project declares the criteria its epics carry",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e13/w01.md",
+    "component": "skills/work-planner/artifacts/epic-issue-body.md",
+    "writes": [
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/test/test_format.py",
+      "config/**"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Fixture projects declare a criterion or omit the declaration; omission is explicitly unevaluable."
+  },
+  {
+    "epic": "E13",
+    "task": "W02",
+    "issue": 1373,
+    "description": "The format check reads the declaration",
+    "file": "artifacts/planning/2026-10-13-i11-e13-project-variance/w02.md",
+    "component": "skills/work-planner/scripts/format.py",
+    "writes": [
+      "skills/work-planner/scripts/format.py",
+      "skills/work-planner/test/test_format.py",
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/artifacts/issue-body.md"
+    ],
+    "depends_on": "W01",
+    "joins": "",
+    "validation": "Check pinned-commit configuration across divergent and dirty worktrees and missing/empty/unreadable declarations."
+  },
+  {
+    "epic": "E13",
+    "task": "W03",
+    "issue": 1373,
+    "description": "The corpus audit moves to this project's declaration",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e13/w03.md",
+    "component": "config/",
+    "writes": [
+      "config/",
+      "skills/work-planner/artifacts/epic-issue-body.md",
+      "skills/work-planner/test/test_format.py"
+    ],
+    "depends_on": "W02",
+    "joins": "",
+    "validation": "Compare this repository's required audit before and after declaration; another project's absent declaration is unevaluable without inheriting the audit."
+  },
+  {
+    "epic": "E14",
+    "task": "W01",
+    "issue": 1427,
+    "description": "The targets a reading rule serves stated",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w01.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Read each target and its stated tradeoff against representative reading rules."
+  },
+  {
+    "epic": "E14",
+    "task": "W02",
+    "issue": 1427,
+    "description": "Citation timing and its defaults stated",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w02.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md"
+    ],
+    "depends_on": "W01",
+    "joins": "",
+    "validation": "Walk examples with explicit timing, a step citation and conditional/unconditional rule citations."
+  },
+  {
+    "epic": "E14",
+    "task": "W03",
+    "issue": 1427,
+    "description": "Work Planner citations named by section",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w03.md",
+    "component": "skills/work-planner",
+    "writes": [
+      "skills/work-planner",
+      "skills/work-planner/**/*.md"
+    ],
+    "depends_on": "W02",
+    "joins": "W04",
+    "validation": "Inventory all internal citations and check targets/anchors with the shared checker; inspect retrieval boundaries."
+  },
+  {
+    "epic": "E14",
+    "task": "W04",
+    "issue": 1427,
+    "description": "Workflow Canon citations named by section",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w04.md",
+    "component": "skills/workflow-canon",
+    "writes": [
+      "skills/workflow-canon",
+      "skills/workflow-canon/**/*.md"
+    ],
+    "depends_on": "W02",
+    "joins": "W03",
+    "validation": "Inventory Canon citations and check every target/anchor and command call after the joined conversion."
+  },
+  {
+    "epic": "E14",
+    "task": "W05",
+    "issue": 1427,
+    "description": "Whole-file citations opening with their case",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w05.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md",
+      "skills/work-planner/**/*.md",
+      "skills/workflow-canon/**/*.md"
+    ],
+    "depends_on": "W03, W04",
+    "joins": "",
+    "validation": "Audit conditional and unconditional whole-file citations against their preceding sentence."
+  },
+  {
+    "epic": "E14",
+    "task": "W06",
+    "issue": 1427,
+    "description": "Prerequisites stated where their step uses them",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w06.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md",
+      "skills/work-planner/**/*.md",
+      "skills/workflow-canon/**/*.md"
+    ],
+    "depends_on": "W03, W04",
+    "joins": "",
+    "validation": "Record a per-file prerequisite audit and representative before/after retrieval walks."
+  },
+  {
+    "epic": "E14",
+    "task": "W07",
+    "issue": 1427,
+    "description": "A mode named rather than opened unlinked",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w07.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md",
+      "skills/work-planner/**/*.md",
+      "skills/workflow-canon/**/*.md"
+    ],
+    "depends_on": "W03, W04",
+    "joins": "",
+    "validation": "Audit each mode link's surrounding instruction and verify executable calls retain reachable targets."
+  },
+  {
+    "epic": "E14",
+    "task": "W08",
+    "issue": 1427,
+    "description": "The shared check reads scope and case",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w08.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "W05",
+    "joins": "",
+    "validation": "Test headingless targets, omitted anchors, title anchors and conditional/unconditional sentences."
+  },
+  {
+    "epic": "E14",
+    "task": "W09",
+    "issue": 1427,
+    "description": "Every check defined where prose names it",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w09.md",
+    "component": "skills/guidelines.md",
+    "writes": [
+      "skills/guidelines.md",
+      "skills/**/*.md",
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py"
+    ],
+    "depends_on": "W08",
+    "joins": "",
+    "validation": "Test bare script spans and valid check-definition links; audit the check inventory against scripts."
+  },
+  {
+    "epic": "E14",
+    "task": "W10",
+    "issue": 1427,
+    "description": "Each skill's read set generated and checked",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w10.md",
+    "component": "skills/scripts/check_skill_files.py",
+    "writes": [
+      "skills/scripts/check_skill_files.py",
+      "skills/test/test_check_skill_files.py",
+      "skills/**/manifest*",
+      "skills/guidelines.md"
+    ],
+    "depends_on": "W06, W07, W09",
+    "joins": "",
+    "validation": "Test prose-edited drift, conditional sections and complete skill coverage; regenerate and compare committed manifests."
+  },
+  {
+    "epic": "E14",
+    "task": "W11",
+    "issue": 1427,
+    "description": "Efficacy and retrieval walked over both skills",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e14/w11.md",
+    "component": "artifacts/planning/2026-10-13-i11-e14-binding-citations",
+    "writes": [
+      "artifacts/planning/2026-10-13-i11-e14-binding-citations"
+    ],
+    "depends_on": "W10, [E10:W26](https://github.com/m2ux/workflow-server/issues/1181)",
+    "joins": "",
+    "validation": "Compare identical scenario inputs on both revisions; require every per-case file delta to be nonpositive and report missing/incomparable cases as blockers."
+  },
+  {
+    "epic": "E16",
+    "task": "W01",
+    "issue": 1474,
+    "description": "The link relation read from each end",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e16/w01.md",
+    "component": "skills/work-planner/scripts",
+    "writes": [
+      "skills/work-planner/scripts",
+      "skills/work-planner/scripts/links-by-issue.py",
+      "skills/work-planner/scripts/links-by-pull-request.py",
+      "skills/work-planner/test/test_link_capture.py",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/pull-request.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Compare capture keys to complete inputs, test multi-page relations and feed PR-end output to sync fixtures; verify relation agreement in both directions."
+  },
+  {
+    "epic": "E16",
+    "task": "W02",
+    "issue": 1474,
+    "description": "An unread relation named as missing evidence",
+    "file": "artifacts/planning/2026-10-31-project17-plan-review/work-items/e16/w02.md",
+    "component": "skills/work-planner/scripts",
+    "writes": [
+      "skills/work-planner/scripts",
+      "skills/work-planner/scripts/links-by-issue.py",
+      "skills/work-planner/scripts/links-by-pull-request.py",
+      "skills/work-planner/test/test_link_capture.py",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/artifacts/pull-request.md"
+    ],
+    "depends_on": "W01",
+    "joins": "",
+    "validation": "Inject inaccessible nodes, per-alias errors and failed later pages; check nonzero exit and subject diagnostics; accept genuine empty relations."
+  },
+  {
+    "epic": "E16",
+    "task": "W03",
+    "issue": 1474,
+    "description": "Audit closure evidence across issues",
+    "file": "artifacts/planning/2026-10-31-1474-e16-task-boundaries/w03.md",
+    "component": "skills/work-planner/scripts/closure-sweep.py",
+    "writes": [
+      "skills/work-planner/scripts/closure-sweep.py",
+      "skills/work-planner/test/test_closure_sweep.py",
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "W02",
+    "joins": "",
+    "validation": "Cover transferred closures, unticked criteria, unmerged linked PRs and unread captures with state-reason reporting."
+  },
+  {
+    "epic": "E16",
+    "task": "W04",
+    "issue": 1474,
+    "description": "Run verification at a supplied revision",
+    "file": "artifacts/planning/2026-10-31-1474-e16-task-boundaries/w04.md",
+    "component": "skills/work-planner/scripts/revision-check.py",
+    "writes": [
+      "skills/work-planner/scripts/revision-check.py",
+      "skills/work-planner/test/test_revision_check.py",
+      "skills/work-planner/artifacts/delivery-evidence.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Resolve branch/tag to a commit, run successful and failing instruments, and verify cleanup using git worktree list."
+  },
+  {
+    "epic": "E16",
+    "task": "W05",
+    "issue": 1474,
+    "description": "Audit script reachability from artifact operations",
+    "file": "artifacts/planning/2026-10-31-1474-e16-task-boundaries/w05.md",
+    "component": "skills/work-planner/artifacts/issue.md",
+    "writes": [
+      "skills/work-planner/artifacts/issue.md",
+      "skills/work-planner/**/*.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "W03, W04",
+    "joins": "",
+    "validation": "Trace every new script through its command and executing operation, then run skill-file checks and representative retrieval walks."
+  },
+  {
+    "epic": "E17",
+    "task": "W01",
+    "issue": 1482,
+    "description": "Agent review gates epic handoff",
+    "file": "artifacts/planning/2026-10-31-1482-i11-e17-w01-agent-review-gates-epic/w01.md",
+    "component": "skills/work-planner/protocols/review-pull-request.md",
+    "writes": [
+      "skills/work-planner/protocols/review-pull-request.md",
+      "skills/work-planner/scripts/board.py",
+      "skills/work-planner/scripts/deliver.py",
+      "skills/work-planner/scripts/agent_review.py",
+      "skills/work-planner/test/**",
+      "skills/work-planner/protocols/epic-integration.md",
+      "skills/work-planner/protocols/task-merge.md",
+      "skills/work-planner/artifacts/board-delivery.md",
+      "skills/work-planner/artifacts/pull-request.md",
+      "skills/work-planner/artifacts/agent-review.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "",
+    "joins": "",
+    "validation": "Cover missing/stale head and base, unresolved blockers and current evidence; run representative epic handoff with linked review evidence."
+  },
+  {
+    "epic": "E17",
+    "task": "W02",
+    "issue": 1482,
+    "description": "Audit the delivery review corpus",
+    "file": "artifacts/planning/2026-10-31-1482-epic-review-hoist/w02.md",
+    "component": "skills/work-planner",
+    "writes": [
+      "skills/work-planner",
+      "skills/work-planner/**/*.md",
+      "skills/work-planner/structure.json"
+    ],
+    "depends_on": "W01",
+    "joins": "",
+    "validation": "Audit all review handoff definitions and callers, run the skill checker and representative disclosure traces."
+  }
+]

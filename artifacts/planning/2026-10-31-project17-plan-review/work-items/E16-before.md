@@ -1,0 +1,76 @@
+## Overview
+
+Three reads the skill names have no command behind them: the Development relation read from each end, a closure condition no single-issue gate can see, and a checkout at the revision a criterion is verified against. This epic supplies them as commands the artifact operations name, so a sync run spends one call per subject rather than assembling evidence by hand.
+
+## Problem
+
+Each required read costs one call per subject or none at all, so a run either spends them or approximates the result.
+
+- **The link snapshot is specified and unreadable at scale.**
+  Fetching pull-request issue links runs the Development read once for every pull request in the collection. One initiative held 113, so the snapshot cost 113 calls and nothing checked that it was complete.
+
+- **The same field, read from the issue end, is named but never run.**
+  The issue read says to sweep every page and state without naming a command, so the skill has no command block for either end of the relation.
+
+- **A literal dollar sign cannot reach the tracker through this shell.**
+  A GraphQL variable is a `$`, which the workspace denies, so the relation is only readable through a query file passed with `-F query=@file`. Composing that file for 113 aliases by hand is where a repository or a page is quietly lost.
+
+- **Nothing reports a closure its own evidence does not support.**
+  The closure gate decides one issue against fresh evidence. No command answers the repository-wide question, so an issue closed as completed with criteria unticked is found by reading, or not at all.
+
+- **A criterion is verified in a checkout a run must build and then remembers to remove.**
+  The instrument checkout requires the merged revision and states that an edited checkout is not it. A sync run created three detached worktrees by hand, and the project now carries six it never removed.
+
+## Proposal
+
+- **Two scripts read the relation, one from each end.**
+  The issue-end read sweeps every issue's Development field in batches, and the pull-request-end read writes the link array the epic sync consumes. Each takes the paginated REST collection the skill already tells a caller to fetch.
+
+- **The query is generated into a file, never inlined.**
+  The script writes the aliased GraphQL document and passes it with `-F query=@file`, so no command carries the character the shell denies and no alias is composed by hand.
+
+- **An unread field is missing evidence, not an empty link set.**
+  A relation the tracker could not read is printed and the run exits nonzero, matching the skill's rule that incomplete evidence is a blocker rather than a partial result.
+
+- **A sweep reports the closure condition the single-issue gate cannot see.**
+  Closed issues whose criteria are unticked or whose Development-linked pull request has not merged are listed with the issue's state reason.
+
+- **A revision is materialized, used, and removed in one call.**
+  The helper resolves the supplied reference to a commit, creates a detached checkout at it, runs the named instrument there, and removes the checkout whatever the instrument returns.
+
+- **The skill keeps the specification and the scripts stay beside it.**
+  Each script is a command block in the artifact operation that names it, with a test under the skill's test directory and a structure declaration.
+
+- **Capture uses the supported interface for each capability.**
+  Use REST where it exposes the required data and current GraphQL for capabilities REST cannot provide, without a one-off exception. Development relation reads use the current issue and pull-request schema; any project operation uses Projects V2 and never deprecated Projects (classic) fields, types or mutations.
+
+- **Dependencies follow consumed evidence.**
+  The closure sweep consumes complete Development captures and their missing-evidence behavior. The revision helper consumes a repository revision and command, independently of capture. A final reachability audit checks all delivered scripts; each implementation supplies its own command specification, caller wiring and tests.
+
+## Work Breakdown
+
+| Task | Description | Coverage | Depends on | Joins | Done |
+| --- | --- | --- | --- | --- | --- |
+| W01 | The link relation read from each end | AC1, AC2, AC3 | | | |
+| W02 | An unread relation named as missing evidence | AC4 | W01 | | |
+| [W03](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-1474-e16-task-boundaries/w03.md) | Audit closure evidence across issues | AC5 | W02 | | |
+| [W04](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-1474-e16-task-boundaries/w04.md) | Run verification at a supplied revision | AC6 | | | |
+| [W05](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-1474-e16-task-boundaries/w05.md) | Audit script reachability from artifact operations | AC7 | W03, W04 | | |
+
+## Acceptance Criteria
+
+- [ ] **AC1.** The pull-request capture writes the link array the epic sync consumes for a supplied pull-request collection, as a test running the sync on its output shows.
+- [ ] **AC2.** Every pull request in the supplied collection appears in the snapshot with its linked issues or an empty array, as the snapshot's key set compared against the collection shows.
+- [ ] **AC3.** The issue-end capture reports each issue's Development pull requests keyed by issue number, as its output read against the same repository's pull-request-end snapshot shows.
+- [ ] **AC4.** A Development relation the tracker could not read is reported and the run exits nonzero rather than yielding an empty link set, as a test over an unreadable relation shows.
+- [ ] **AC5.** The closure sweep lists each closed issue whose criteria are unticked or whose linked pull request has not merged, and states that issue's closure reason, as its run over a repository holding a transferred and an unproven closure shows.
+- [ ] **AC6.** The revision helper runs a supplied command at the commit a supplied branch or tag resolves to, as a run that succeeds and one that fails then checked against `git worktree list` show.
+- [ ] **AC7.** Every script is reachable from the artifact operation that names it, as the skill's own file check over the changed files shows.
+
+## References
+
+- **R1.** [Preserved scripts and their evidence](https://github.com/m2ux/prosiform/tree/engineering/artifacts/planning/2026-10-24-237-work-planner-link-capture) — the four scripts as the session wrote them, each run against the live repository with its result recorded.
+- **R2.** [Link Capture: The Evidence the Skill Asks For and Cannot Run](https://github.com/m2ux/prosiform/issues/237) — the requirement this epic plans.
+- **R3.** [Work Planner Skill](https://github.com/m2ux/workflow-server/tree/workspace/skills/work-planner) — the operations that name these reads without a command behind them.
+
+- **R4.** [Task boundaries and pair decisions](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-1474-e16-task-boundaries/README.md) — Ownership, prerequisites and script-reachability verification.

@@ -12,6 +12,8 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [Complete work items](work-items/README.md) | All 53 unfinished rows, file-change declarations and validation |
+| [Parallel delivery assessment](parallel-delivery.md) | Full write contention, scoped candidate and proposed epic priorities |
 | [Active producer dependencies](active-dependency-contract.md) | Current whole-epic edge narrowed to its delivered producer |
 | [Configuration authority](configuration-authority.md) | Evaluated commit owns configuration and missing evidence is explicit |
 | [E16 task split](../2026-10-31-1474-e16-task-boundaries/README.md) | Closure sweep, independent revision helper and final reachability audit |

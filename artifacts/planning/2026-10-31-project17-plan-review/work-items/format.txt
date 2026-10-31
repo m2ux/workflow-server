@@ -1,0 +1,18 @@
+E17 exit 0
+#1482 epic (open): 0 fixed, 0 to apply, 0 to decide
+
+E16 exit 0
+#1474 epic (open): 0 fixed, 0 to apply, 0 to decide
+
+E14 exit 0
+#1427 epic (open): 0 fixed, 0 to apply, 0 to decide
+
+E13 exit 0
+#1373 epic (open): 0 fixed, 0 to apply, 0 to decide
+
+E10 exit 0
+#1181 epic (open): 0 fixed, 0 to apply, 0 to decide
+
+E09 exit 1
+#1176 epic (open): 0 fixed, 0 to apply, 1 to decide
+  decide: AC labels partly missing or out of sequence
