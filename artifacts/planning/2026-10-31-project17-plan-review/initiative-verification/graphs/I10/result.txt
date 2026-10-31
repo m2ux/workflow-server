@@ -1,0 +1,116 @@
+--- problems
+E05:W01: names epic E00; a task row names the rows it consumes
+E05:W01: names epic E01; a task row names the rows it consumes
+E05:W01: names epic E02; a task row names the rows it consumes
+E05:W01: names epic E03; a task row names the rows it consumes
+E05:W01: names epic E04; a task row names the rows it consumes
+E06:W01: names epic E05; a task row names the rows it consumes
+E06:W12: E06:W01 is already implied by E06:W02
+E06:W12: E06:W02 is already implied by E06:W03
+E06:W12: E06:W03 is already implied by E06:W05
+E06:W12: E06:W04 is already implied by E06:W07
+E06:W12: E06:W05 is already implied by E06:W08
+E06:W12: E06:W06 is already implied by E06:W09
+E06:W12: E06:W07 is already implied by E06:W09
+E06:W12: E06:W08 is already implied by E06:W09
+E06:W12: E06:W09 is already implied by E06:W11
+
+--- joins: eligible pairs named in neither Joins nor a record
+E00:W01 and E00:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W01 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W02 and E02:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W02 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W03 and E02:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W03 and E02:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W03 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W04 and E02:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W04 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W05 and E02:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W05 and E02:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W05 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W06 and E02:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W06 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W07 and E02:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W01 and E03:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W07 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W10 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+E02:W08 (level 0) is numbered after E02:W07 (level 3)
+
+--- levels (0 = can start now)
+0 E00:W01 - One terse report per review
+0 E00:W02 - An assessed prism decision
+0 E01:W01 - Engine CI checks out the paired corpus branch
+0 E01:W02 - Corpus CI checks out the paired engine branch
+0 E01:W03 - Server tests follow the assumptions-review definition
+0 E02:W01 - Routine names bound across shared routines
+0 E02:W08 - Own-activity reads count as reads (#1053)
+0 E04:W01 - A contract per task in the plan
+1 E00:W03 - The pre-existing canon findings fixed
+1 E01:W04 - Assumptions converge where settled
+1 E01:W05 - One routine settles the open assumptions
+1 E01:W06 - One routine publishes planning artifacts
+1 E01:W07 - Requirements refinement reconciles in bounded rounds
+1 E03:W01 - Automated reviews fanned from post-implementation review
+2 E02:W02 - Do-while tests read after the body
+2 E02:W03 - One variable for an id read and written
+2 E02:W04 - Local unbound outputs and whole-path arguments
+2 E02:W05 - The routines guard holds the splice's reach
+2 E03:W02 - Research fanned beside implementation analysis
+2 E04:W02 - Contract tests fanned beside implement
+3 E02:W06 - Activities drop reads their do-while settles
+3 E02:W07 - The activity loop walked on the sidecar
+3 E04:W03 - The join runs the contract tests
+4 E05:W01 - Re-run the instruments into the ledger
+5 E06:W01 - Place and walk the legacy workflow
+6 E06:W02 - Add the library and its guard
+7 E06:W03 - Refactor resource grain
+7 E06:W04 - Add workspace, commit, and push
+8 E06:W05 - Add the document fill
+8 E06:W06 - Add the review judgments
+8 E06:W07 - Add the delivery routines
+9 E06:W08 - Add design and discovery
+10 E06:W09 - Add and walk the implement workflow
+10 E06:W10 - Add and walk the review workflow
+11 E06:W11 - Add and walk the remediate workflow
+12 E06:W12 - Canon audit of the changed definitions
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E02:W01, E02:W02, E02:W03, E02:W04, E02:W05, E02:W06, E02:W07, E02:W08, E03:W01, E03:W02, E04:W01, E04:W02, E04:W03, E05:W01, E06:W01, E06:W02, E06:W03, E06:W04, E06:W05, E06:W06, E06:W07, E06:W08, E06:W09, E06:W10, E06:W11, E06:W12
+
+--- epic priority (epics sharing a number start together)
+3 E00
+3 E01
+3 E02
+3 E03
+3 E04
+2 E05
+1 E06
+
+--- longest chains: 6, each of 13 steps
+on every chain: E05:W01, E06:W01, E06:W02, E06:W03, E06:W05, E06:W08, E06:W09, E06:W11, E06:W12
+E01:W02 -> E01:W04 -> E02:W02 -> E02:W06 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12
+E01:W03 -> E01:W04 -> E02:W02 -> E02:W06 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12
+E01:W02 -> E01:W04 -> E02:W04 -> E02:W07 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12
+E01:W03 -> E01:W04 -> E02:W04 -> E02:W07 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12
+E01:W02 -> E01:W05 -> E04:W02 -> E04:W03 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12
+E01:W03 -> E01:W05 -> E04:W02 -> E04:W03 -> E05:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E06:W05 -> E06:W08 -> E06:W09 -> E06:W11 -> E06:W12

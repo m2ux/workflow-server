@@ -1,0 +1,40 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+E00:W01 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W05 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W05 and E00:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+E00:W06 (level 0) is numbered after E00:W05 (level 2)
+
+--- levels (0 = can start now)
+0 E00:W01 - The three decisions recorded
+0 E00:W06 - Smoke harness gains a two-run mode
+1 E00:W02 - Wiki operations made bindable and bound
+1 E00:W03 - Comprehension consumers moved onto wiki pages
+2 E00:W04 - Two-run walk and regression checks
+2 E00:W05 - Guard reports cross-bound operations' undeclared reads
+2 E00:W07 - Two-run comprehension smoke run
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E00:W05, E00:W06, E00:W07
+
+--- epic priority (epics sharing a number start together)
+1 E00
+
+--- longest chains: 5, each of 3 steps
+on every chain: E00:W01
+E00:W01 -> E00:W02 -> E00:W04
+E00:W01 -> E00:W03 -> E00:W04
+E00:W01 -> E00:W02 -> E00:W05
+E00:W01 -> E00:W02 -> E00:W07
+E00:W01 -> E00:W03 -> E00:W07

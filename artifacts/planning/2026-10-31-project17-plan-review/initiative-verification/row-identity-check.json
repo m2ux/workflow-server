@@ -1,0 +1,380 @@
+[
+  {
+    "issue": 940,
+    "initiative": "I07",
+    "epic": "E02",
+    "rows": 7,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 941,
+    "initiative": "I07",
+    "epic": "E04",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 943,
+    "initiative": "I07",
+    "epic": "E00",
+    "rows": 8,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 938,
+    "initiative": "I07",
+    "epic": "E05",
+    "rows": 8,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 939,
+    "initiative": "I07",
+    "epic": "E03",
+    "rows": 4,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 937,
+    "initiative": "I07",
+    "epic": "E01",
+    "rows": 17,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 942,
+    "initiative": "I07",
+    "epic": "E06",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1377,
+    "initiative": "I12",
+    "epic": "E02",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1375,
+    "initiative": "I12",
+    "epic": "E00",
+    "rows": 4,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1376,
+    "initiative": "I12",
+    "epic": "E01",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 634,
+    "initiative": "I01",
+    "epic": "E05",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 952,
+    "initiative": "I01",
+    "epic": "E06",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 955,
+    "initiative": "I08",
+    "epic": "E05",
+    "rows": 7,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 535,
+    "initiative": "I03",
+    "epic": "E00",
+    "rows": 16,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 953,
+    "initiative": "I03",
+    "epic": "E01",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1126,
+    "initiative": "I10",
+    "epic": "E06",
+    "rows": 12,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1116,
+    "initiative": "I13",
+    "epic": "E02",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1394,
+    "initiative": "I13",
+    "epic": "E04",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 948,
+    "initiative": "I13",
+    "epic": "E00",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1410,
+    "initiative": "I13",
+    "epic": "E05",
+    "rows": 5,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1248,
+    "initiative": "I13",
+    "epic": "E03",
+    "rows": 11,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1138,
+    "initiative": "I13",
+    "epic": "E01",
+    "rows": 10,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1242,
+    "initiative": "I14",
+    "epic": "E02",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 708,
+    "initiative": "I14",
+    "epic": "E04",
+    "rows": 12,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1443,
+    "initiative": "I14",
+    "epic": "E10",
+    "rows": 1,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1417,
+    "initiative": "I14",
+    "epic": "E09",
+    "rows": 5,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1396,
+    "initiative": "I14",
+    "epic": "E08",
+    "rows": 4,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1159,
+    "initiative": "I14",
+    "epic": "E05",
+    "rows": 2,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 707,
+    "initiative": "I14",
+    "epic": "E03",
+    "rows": 5,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1301,
+    "initiative": "I14",
+    "epic": "E06",
+    "rows": 5,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 750,
+    "initiative": "I15",
+    "epic": "E02",
+    "rows": 7,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1435,
+    "initiative": "I15",
+    "epic": "E04",
+    "rows": 2,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1199,
+    "initiative": "I15",
+    "epic": "E03",
+    "rows": 4,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 710,
+    "initiative": "I15",
+    "epic": "E01",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 699,
+    "initiative": "I00",
+    "epic": "E02",
+    "rows": 4,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 698,
+    "initiative": "I00",
+    "epic": "E04",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 533,
+    "initiative": "I00",
+    "epic": "E10",
+    "rows": 10,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 534,
+    "initiative": "I00",
+    "epic": "E09",
+    "rows": 8,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 532,
+    "initiative": "I00",
+    "epic": "E08",
+    "rows": 12,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1101,
+    "initiative": "I00",
+    "epic": "E12",
+    "rows": 1,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 531,
+    "initiative": "I00",
+    "epic": "E07",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 530,
+    "initiative": "I00",
+    "epic": "E03",
+    "rows": 8,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 951,
+    "initiative": "I00",
+    "epic": "E11",
+    "rows": 6,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 529,
+    "initiative": "I00",
+    "epic": "E01",
+    "rows": 8,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 700,
+    "initiative": "I00",
+    "epic": "E06",
+    "rows": 15,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1181,
+    "initiative": "I11",
+    "epic": "E10",
+    "rows": 26,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1176,
+    "initiative": "I11",
+    "epic": "E09",
+    "rows": 7,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1482,
+    "initiative": "I11",
+    "epic": "E17",
+    "rows": 2,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1373,
+    "initiative": "I11",
+    "epic": "E13",
+    "rows": 3,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1427,
+    "initiative": "I11",
+    "epic": "E14",
+    "rows": 11,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 1474,
+    "initiative": "I11",
+    "epic": "E16",
+    "rows": 5,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 945,
+    "initiative": "I02",
+    "epic": "E00",
+    "rows": 7,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 868,
+    "initiative": "I06",
+    "epic": "E00",
+    "rows": 11,
+    "all_rows_parsed": true
+  },
+  {
+    "issue": 954,
+    "initiative": "I06",
+    "epic": "E01",
+    "rows": 4,
+    "all_rows_parsed": true
+  }
+]

@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [Initiative verification](initiative-verification/README.md) | AC25–AC28 pass; AC17 remains unverified with a concrete record gap |
 | [Producer availability](producer-availability/README.md) | Approved cross-epic start gate and existing implementation owner |
 | [Current requirements](current-requirements.md) | Stable source register, later scope and explicit supersession |
 | [Complete work items](work-items/README.md) | All 53 unfinished rows, file-change declarations and validation |

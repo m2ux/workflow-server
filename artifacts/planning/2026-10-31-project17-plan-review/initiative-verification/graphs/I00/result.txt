@@ -1,0 +1,343 @@
+--- problems
+E08:W01: names epic E01; a task row names the rows it consumes
+E08:W01: names epic E03; a task row names the rows it consumes
+E08:W01: names epic E07; a task row names the rows it consumes
+E08:W01: names epic E04; a task row names the rows it consumes
+E08:W01: names epic E06; a task row names the rows it consumes
+E10:W01: names epic E06; a task row names the rows it consumes
+E10:W01: names epic E08; a task row names the rows it consumes
+E12:W01: names epic E09; a task row names the rows it consumes
+E12:W01: names epic E10; a task row names the rows it consumes
+E12:W01: names epic E11; a task row names the rows it consumes
+E01:W08: E01:W01 is already implied by E01:W02
+E01:W08: E01:W02 is already implied by E01:W04
+E01:W08: E01:W03 is already implied by E01:W05
+E03:W08: E03:W01 is already implied by E03:W05
+E03:W08: E03:W02 is already implied by E03:W04
+E03:W08: E03:W04 is already implied by E03:W06
+E04:W06: E04:W01 is already implied by E04:W02
+E04:W06: E04:W02 is already implied by E04:W04
+E04:W06: E04:W03 is already implied by E04:W04
+E06:W14: E06:W01 is already implied by E06:W02
+E06:W14: E06:W02 is already implied by E06:W06
+E06:W14: E06:W03 is already implied by E06:W06
+E06:W14: E06:W07 is already implied by E06:W13
+E08:W11: E08:W00 is already implied by E08:W01
+E08:W11: E08:W01 is already implied by E08:W02
+E08:W11: E08:W02 is already implied by E08:W09
+E08:W11: E08:W03 is already implied by E08:W09
+E08:W11: E08:W04 is already implied by E08:W09
+E08:W11: E08:W06 is already implied by E08:W08
+E08:W11: E08:W07 is already implied by E08:W08
+E08:W11: E08:W08 is already implied by E08:W09
+E09:W08: E09:W02 is already implied by E09:W03
+E09:W08: E09:W03 is already implied by E09:W04
+E09:W08: E09:W06 is already implied by E09:W07
+
+--- joins: eligible pairs named in neither Joins nor a record
+E01:W01 and E01:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W03 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W03 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W03 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W04 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W04 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W04 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W05 and E01:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W05 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W06 and E01:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W07 and E01:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W01 and E02:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W02 and E02:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W02 and E02:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W01 and E03:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W01 and E03:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W01 and E03:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W02 and E03:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W02 and E03:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W02 and E03:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W03 and E03:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W03 and E03:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W03 and E03:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W03 and E03:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W04 and E03:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W04 and E03:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W05 and E03:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W05 and E03:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W06 and E03:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E04:W02 and E04:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E04:W02 and E04:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E04:W04 and E04:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W03 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W04 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W05 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W06 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W07 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W08 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W08 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W09 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W09 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W10 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W10 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W11 and E06:W12 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W11 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W12 and E06:W13 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W12 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W13 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W14 and E06:W15 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W00 and E08:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W00 and E08:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W01 and E08:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W01 and E08:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W02 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W03 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W04 and E08:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W04 and E08:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W04 and E08:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W04 and E08:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W04 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W05 and E08:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W05 and E08:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W05 and E08:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W05 and E08:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W05 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W06 and E08:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W07 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W08 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E08:W09 and E08:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W01 and E09:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W01 and E09:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W01 and E09:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W01 and E09:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W01 and E09:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W02 and E09:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W03 and E09:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W04 and E09:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W04 and E09:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W04 and E09:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W05 and E09:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E09:W05 and E09:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W02 and E10:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W02 and E10:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W02 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W03 and E10:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W03 and E10:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W03 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W04 and E10:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W04 and E10:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W04 and E10:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W04 and E10:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W04 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W05 and E10:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W05 and E10:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W05 and E10:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W05 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W06 and E10:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W06 and E10:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W06 and E10:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W06 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W07 and E10:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W07 and E10:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W07 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W08 and E10:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W08 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E10:W09 and E10:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W02 and E11:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W03 and E11:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W03 and E11:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W03 and E11:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W04 and E11:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E11:W05 and E11:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+E01:W03 (level 0) is numbered after E01:W02 (level 1)
+E01:W05 (level 1) is numbered after E01:W04 (level 2)
+E01:W06 (level 0) is numbered after E01:W05 (level 1)
+E03:W07 (level 1) is numbered after E03:W06 (level 2)
+E06:W07 (level 0) is numbered after E06:W06 (level 4)
+E06:W15 (level 1) is numbered after E06:W14 (level 5)
+E08:W03 (level 0) is numbered after E08:W02 (level 7)
+E08:W05 (level 0) is numbered after E08:W04 (level 7)
+E08:W10 (level 8) is numbered after E08:W09 (level 9)
+E09:W05 (level 0) is numbered after E09:W04 (level 4)
+E10:W04 (level 12) is numbered after E10:W03 (level 13)
+E10:W10 (level 12) is numbered after E10:W09 (level 14)
+E11:W04 (level 8) is numbered after E11:W03 (level 9)
+
+--- levels (0 = can start now)
+0 E01:W01 - Settle the form
+0 E01:W03 - Dismissal under either form, verified against session values
+0 E01:W06 - A declaration constrains the values it admits
+0 E02:W01 - Session store indexed or cached
+0 E02:W02 - A step identifier is unique within its activity
+0 E03:W01 - One computation resolves a section reference
+0 E03:W02 - Every inline reference resolves through the loader
+0 E03:W03 - A borrowed operation is checked where it runs
+0 E04:W01 - Measure reference sites and silent resolutions
+0 E06:W07 - Open a walk with nothing retired
+0 E06:W08 - Declare trace and drop unread input
+0 E06:W09 - Option and output prose states behaviour
+0 E06:W10 - Capability, specimens, and routing
+0 E06:W11 - Last retirement and completed state
+0 E06:W12 - Refuse a fan on an unbound exit
+0 E07:W01 - Two decisions recorded, resolved tree named
+0 E08:W00 - Re-measure exchange and context-establishment cost
+0 E08:W03 - Graders and instructions withheld from new path first
+0 E08:W05 - Orchestrator-only rules leave the worker bundle
+0 E09:W01 - Compose each instruction set once per delivery
+0 E09:W05 - The ceremony commits once
+1 E01:W02 - Parse when the definition loads
+1 E01:W05 - Sweep remaining nested gates
+1 E01:W07 - An unresolved path refused by a comparison
+1 E02:W03 - Declared outputs land at step finish
+1 E03:W04 - Disposition the admitted call sites
+1 E03:W05 - A section reference names a path of headings
+1 E03:W07 - Slug parity pinned and both failure classes closed
+1 E04:W02 - Bare literals and braced references
+1 E04:W03 - Both placeholder grammars are the dotted form
+1 E06:W13 - Resume re-enters an open fan
+1 E06:W15 - Observing tests for the prose criteria
+1 E07:W02 - Loader emits the named tree
+2 E01:W04 - Remove the second dialect
+2 E02:W04 - The missing-value rule
+2 E03:W06 - Inline call arguments checked against the callee
+2 E04:W04 - A guard holds the binding rule
+2 E04:W05 - Worker text stops restating the lookup
+2 E06:W01 - The live session carries a cursor
+2 E07:W03 - Every reader takes the named tree
+2 E09:W02 - Corpus composed ahead of any session
+3 E01:W08 - Canon audit of the changed definitions
+3 E03:W08 - Canon audit of the changed definitions
+3 E04:W06 - Canon audit of the changed definitions
+3 E06:W02 - Iteration is driven and bounded
+3 E06:W03 - Resume without repeating
+3 E06:W04 - Position stable across load-time step lists
+3 E06:W05 - Session without position record refused
+3 E09:W03 - Delivery by address, each block once
+4 E06:W06 - End-to-end resume from inside a loop body
+4 E09:W04 - Called bodies arrive with the caller
+4 E09:W06 - A repeated request is answered with an address
+5 E06:W14 - Canon audit of the changed definitions
+5 E09:W07 - Resumed delivery by address
+6 E08:W01 - Runner walks the resolved tree and calls out
+6 E09:W08 - Canon audit of the changed definitions
+7 E08:W02 - The server derives, warns, then refuses
+7 E08:W04 - The surviving rules move to where they belong
+7 E08:W06 - Program keeps its place
+7 E08:W07 - Call-out contract enforced
+7 E11:W01 - Walker drives the runner with stubbed call-outs
+8 E08:W08 - Runner published
+8 E08:W10 - Fixture walk of a cycle across activities
+8 E11:W02 - All-workflows walk runs on the program path
+8 E11:W04 - Walk logs each call-out with its step kind
+9 E08:W09 - Agent-driven path retired
+9 E11:W03 - Walk fails on an unanswered gate
+9 E11:W05 - Walk fails on a call-out of another kind
+9 E11:W06 - Walk scans recorded dispatches for withheld blocks
+10 E08:W11 - Canon audit of the changed definitions
+11 E10:W01 - The session becomes an appended record
+12 E10:W02 - Durable position held in the record
+12 E10:W04 - A failed key write says what happened
+12 E10:W05 - Rotated or lost key fails only authorship
+12 E10:W10 - A hard gate records who answered
+13 E10:W03 - Continuation replaces refusal
+14 E10:W06 - Finished children stay finished, continuations visible
+14 E10:W07 - Continuation survives changed workflows and unanswered gates
+14 E10:W08 - A continuation's identifier and arguments hold
+14 E10:W09 - End-to-end record replay after dispatch and key change
+15 E12:W01 - Re-run the instruments into the ledger
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E01:W08, E02:W01, E02:W02, E02:W03, E02:W04, E03:W01, E03:W02, E03:W03, E03:W04, E03:W05, E03:W06, E03:W07, E03:W08, E04:W01, E04:W02, E04:W03, E04:W04, E04:W05, E04:W06, E06:W01, E06:W02, E06:W03, E06:W04, E06:W05, E06:W06, E06:W07, E06:W08, E06:W09, E06:W10, E06:W11, E06:W12, E06:W13, E06:W14, E06:W15, E07:W01, E07:W02, E07:W03, E08:W00, E08:W01, E08:W02, E08:W03, E08:W04, E08:W05, E08:W06, E08:W07, E08:W08, E08:W09, E08:W10, E08:W11, E09:W01, E09:W02, E09:W03, E09:W04, E09:W05, E09:W06, E09:W07, E09:W08, E10:W01, E10:W02, E10:W03, E10:W04, E10:W05, E10:W06, E10:W07, E10:W08, E10:W09, E10:W10, E11:W01, E11:W02, E11:W03, E11:W04, E11:W05, E11:W06, E12:W01
+
+--- epic priority (epics sharing a number start together)
+3 E01
+3 E02
+3 E03
+3 E04
+3 E06
+3 E07
+3 E08
+3 E09
+2 E10
+2 E11
+1 E12
+
+--- longest chains: 16, each of 16 steps
+on every chain: E02:W01, E02:W03, E06:W01, E06:W06, E06:W14, E08:W01, E08:W08, E08:W09, E08:W11, E10:W01, E10:W02, E10:W03, E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W02 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W06 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W03 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W06 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W02 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W07 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W06 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W03 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W07 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W06 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W02 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W07 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W03 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W07 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W02 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W07 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W07 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W03 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W07 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W07 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W02 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W08 -> E12:W01
+E02:W01 -> E02:W03 -> E06:W01 -> E06:W03 -> E06:W06 -> E06:W14 -> E08:W01 -> E08:W06 -> E08:W08 -> E08:W09 -> E08:W11 -> E10:W01 -> E10:W02 -> E10:W03 -> E10:W08 -> E12:W01
+... 6 more

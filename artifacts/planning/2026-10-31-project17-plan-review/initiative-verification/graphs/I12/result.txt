@@ -1,0 +1,33 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+none
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E00:W01 - Claims collected from every root
+1 E00:W02 - Namespace paths qualified by root label
+2 E00:W03 - Ambiguity and shadows over the union
+2 E01:W01 - Configuration takes labelled corpus roots
+3 E00:W04 - Equivalence with a nested arrangement
+3 E01:W02 - Lookups resolve through every configured root
+3 E02:W01 - Guard root resolution takes a list
+4 E01:W03 - Readiness names each root and its commit
+4 E02:W02 - Each corpus guard measures every root
+5 E02:W03 - A name claimed across roots is reported
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E01:W01, E01:W02, E01:W03, E02:W01, E02:W02, E02:W03
+
+--- epic priority (epics sharing a number start together)
+1 E00
+1 E01
+1 E02
+
+--- longest chains: 1, each of 6 steps
+on every chain: E00:W01, E00:W02, E00:W03, E02:W01, E02:W02, E02:W03
+E00:W01 -> E00:W02 -> E00:W03 -> E02:W01 -> E02:W02 -> E02:W03

@@ -1,0 +1,65 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+E00:W02 and E00:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W05 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W05 and E00:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W05 and E00:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W06 and E00:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W06 and E00:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W07 and E00:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W07 and E00:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W07 and E00:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W08 and E00:W09 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W08 and E00:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W08 and E00:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W09 and E00:W10 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W09 and E00:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W10 and E00:W11 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W02 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W03 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+E00:W06 (level 2) is numbered after E00:W05 (level 3)
+E00:W08 (level 2) is numbered after E00:W07 (level 4)
+E01:W04 (level 4) is numbered after E01:W03 (level 5)
+
+--- levels (0 = can start now)
+0 E00:W01 - Definition and role-contract cut, stated once
+1 E00:W02 - Corpus-root library of shared operations
+1 E00:W03 - Orchestrator and worker role skills
+2 E00:W04 - Role skills installed per host format
+2 E00:W06 - Guards extended to the skill directories
+2 E00:W08 - Binding-census guard
+3 E00:W05 - Role-skill version handshake
+3 E00:W09 - Seeded role-skill fixtures for role-content guards
+3 E01:W01 - Smoke sandbox installs skills via workspace deploy
+4 E00:W07 - Server-side role delivery retired
+4 E00:W10 - Bootstrap walk against a lagging skill
+4 E01:W02 - Worker briefed by the installed role skill
+4 E01:W04 - Refresh brings a lagging skill through bootstrap
+5 E00:W11 - Budget-test adapter-text and result-bound assertions
+5 E01:W03 - Driver launches each listed host's headless agent
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E00:W05, E00:W06, E00:W07, E00:W08, E00:W09, E00:W10, E00:W11, E01:W01, E01:W02, E01:W03, E01:W04
+
+--- epic priority (epics sharing a number start together)
+1 E00
+1 E01
+
+--- longest chains: 2, each of 6 steps
+on every chain: E00:W01, E00:W03, E00:W04
+E00:W01 -> E00:W03 -> E00:W04 -> E00:W05 -> E00:W07 -> E00:W11
+E00:W01 -> E00:W03 -> E00:W04 -> E01:W01 -> E01:W02 -> E01:W03

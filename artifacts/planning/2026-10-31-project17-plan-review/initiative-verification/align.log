@@ -1,0 +1,23 @@
+test_ambiguous_or_incomplete_plans_are_unchanged (test_align.PlanRepair.test_ambiguous_or_incomplete_plans_are_unchanged) ... ok
+test_checked_entry_without_evidence_remains_pending (test_align.PlanRepair.test_checked_entry_without_evidence_remains_pending) ... ok
+test_command_names_converted_pull_request (test_align.PlanRepair.test_command_names_converted_pull_request) ... ok
+test_conversion_is_idempotent (test_align.PlanRepair.test_conversion_is_idempotent) ... ok
+test_conversion_preserves_descriptions_coverage_result_and_surroundings (test_align.PlanRepair.test_conversion_preserves_descriptions_coverage_result_and_surroundings) ... ok
+test_current_plan_is_byte_preserved (test_align.PlanRepair.test_current_plan_is_byte_preserved) ... ok
+test_fenced_current_table_is_unreadable (test_align.PlanRepair.test_fenced_current_table_is_unreadable) ... ok
+test_unchecked_link_does_not_become_passed (test_align.PlanRepair.test_unchecked_link_does_not_become_passed) ... ok
+test_malformed_plans_are_not_reported_as_missing_observations (test_align.UnreadablePlan.test_malformed_plans_are_not_reported_as_missing_observations) ... ok
+test_unobserved_criterion_is_a_distinct_finding (test_align.UnreadablePlan.test_unobserved_criterion_is_a_distinct_finding) ... ok
+test_api_issue_identity_is_supported (test_align.Visibility.test_api_issue_identity_is_supported) ... ok
+test_command_reports_visibility_finding (test_align.Visibility.test_command_reports_visibility_finding) ... ok
+test_missing_destination_visibility_is_unresolved (test_align.Visibility.test_missing_destination_visibility_is_unresolved) ... ok
+test_missing_reference_visibility_is_unresolved (test_align.Visibility.test_missing_reference_visibility_is_unresolved) ... ok
+test_non_reference_sections_are_excluded_and_names_deduplicated (test_align.Visibility.test_non_reference_sections_are_excluded_and_names_deduplicated) ... ok
+test_private_destination_is_clear (test_align.Visibility.test_private_destination_is_clear) ... ok
+test_private_reference_on_public_issue_is_reported (test_align.Visibility.test_private_reference_on_public_issue_is_reported) ... ok
+test_public_reference_is_clear (test_align.Visibility.test_public_reference_is_clear) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.078s
+
+OK

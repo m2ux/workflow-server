@@ -1,0 +1,206 @@
+[
+  {
+    "initiative": "I00",
+    "open_epics": {
+      "E12": 1101,
+      "E11": 951,
+      "E06": 700,
+      "E02": 699,
+      "E04": 698,
+      "E09": 534,
+      "E10": 533,
+      "E08": 532,
+      "E07": 531,
+      "E03": 530,
+      "E01": 529
+    },
+    "exit": 1,
+    "active_problems": [
+      "E08:W01: names epic E01; a task row names the rows it consumes",
+      "E08:W01: names epic E03; a task row names the rows it consumes",
+      "E08:W01: names epic E07; a task row names the rows it consumes",
+      "E08:W01: names epic E04; a task row names the rows it consumes",
+      "E08:W01: names epic E06; a task row names the rows it consumes",
+      "E10:W01: names epic E06; a task row names the rows it consumes",
+      "E10:W01: names epic E08; a task row names the rows it consumes",
+      "E12:W01: names epic E09; a task row names the rows it consumes",
+      "E12:W01: names epic E10; a task row names the rows it consumes",
+      "E12:W01: names epic E11; a task row names the rows it consumes",
+      "E01:W08: E01:W01 is already implied by E01:W02",
+      "E01:W08: E01:W02 is already implied by E01:W04",
+      "E01:W08: E01:W03 is already implied by E01:W05",
+      "E03:W08: E03:W01 is already implied by E03:W05",
+      "E03:W08: E03:W02 is already implied by E03:W04",
+      "E03:W08: E03:W04 is already implied by E03:W06",
+      "E04:W06: E04:W01 is already implied by E04:W02",
+      "E04:W06: E04:W02 is already implied by E04:W04",
+      "E04:W06: E04:W03 is already implied by E04:W04",
+      "E06:W14: E06:W01 is already implied by E06:W02",
+      "E06:W14: E06:W02 is already implied by E06:W06",
+      "E06:W14: E06:W03 is already implied by E06:W06",
+      "E06:W14: E06:W07 is already implied by E06:W13",
+      "E08:W11: E08:W00 is already implied by E08:W01",
+      "E08:W11: E08:W01 is already implied by E08:W02",
+      "E08:W11: E08:W02 is already implied by E08:W09",
+      "E08:W11: E08:W03 is already implied by E08:W09",
+      "E08:W11: E08:W04 is already implied by E08:W09",
+      "E08:W11: E08:W06 is already implied by E08:W08",
+      "E08:W11: E08:W07 is already implied by E08:W08",
+      "E08:W11: E08:W08 is already implied by E08:W09",
+      "E09:W08: E09:W02 is already implied by E09:W03",
+      "E09:W08: E09:W03 is already implied by E09:W04",
+      "E09:W08: E09:W06 is already implied by E09:W07"
+    ],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I01",
+    "open_epics": {
+      "E06": 952,
+      "E05": 634
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I02",
+    "open_epics": {
+      "E00": 945
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I03",
+    "open_epics": {
+      "E01": 953,
+      "E00": 535
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I06",
+    "open_epics": {
+      "E01": 954,
+      "E00": 868
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I07",
+    "open_epics": {
+      "E00": 943,
+      "E06": 942,
+      "E04": 941,
+      "E02": 940,
+      "E03": 939,
+      "E05": 938,
+      "E01": 937
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I08",
+    "open_epics": {
+      "E05": 955
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I10",
+    "open_epics": {
+      "E06": 1126
+    },
+    "exit": 1,
+    "active_problems": [
+      "E06:W01: names epic E05; a task row names the rows it consumes",
+      "E06:W12: E06:W01 is already implied by E06:W02",
+      "E06:W12: E06:W02 is already implied by E06:W03",
+      "E06:W12: E06:W03 is already implied by E06:W05",
+      "E06:W12: E06:W04 is already implied by E06:W07",
+      "E06:W12: E06:W05 is already implied by E06:W08",
+      "E06:W12: E06:W06 is already implied by E06:W09",
+      "E06:W12: E06:W07 is already implied by E06:W09",
+      "E06:W12: E06:W08 is already implied by E06:W09",
+      "E06:W12: E06:W09 is already implied by E06:W11"
+    ],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I11",
+    "open_epics": {
+      "E17": 1482,
+      "E16": 1474,
+      "E14": 1427,
+      "E13": 1373,
+      "E10": 1181,
+      "E09": 1176
+    },
+    "exit": 1,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I12",
+    "open_epics": {
+      "E02": 1377,
+      "E01": 1376,
+      "E00": 1375
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I13",
+    "open_epics": {
+      "E05": 1410,
+      "E04": 1394,
+      "E03": 1248,
+      "E01": 1138,
+      "E02": 1116,
+      "E00": 948
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I14",
+    "open_epics": {
+      "E10": 1443,
+      "E09": 1417,
+      "E08": 1396,
+      "E06": 1301,
+      "E02": 1242,
+      "E05": 1159,
+      "E04": 708,
+      "E03": 707
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  },
+  {
+    "initiative": "I15",
+    "open_epics": {
+      "E04": 1435,
+      "E03": 1199,
+      "E02": 750,
+      "E01": 710
+    },
+    "exit": 0,
+    "active_problems": [],
+    "identity_or_resolution_findings": []
+  }
+]

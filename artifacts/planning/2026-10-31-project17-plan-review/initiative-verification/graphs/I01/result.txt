@@ -1,0 +1,52 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+E05:W01 and E05:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W01 and E05:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W02 and E05:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W02 and E05:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W02 and E05:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W02 and E05:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W03 and E05:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W03 and E05:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W03 and E05:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W04 and E05:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W04 and E05:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E05:W05 and E05:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W01 and E06:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E06:W02 and E06:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E05:W01 - Fan-out ownership, depth claim and sequential senses
+0 E05:W02 - Shell concurrency named or kept as prose
+0 E05:W03 - Concurrency plan and findings-file defects fixed
+0 E06:W01 - Lockfile guard runs in server CI
+0 E06:W02 - Citation-grain guard reads a triage ledger
+0 E06:W03 - Graph-reach guard fails an unbound workflow
+1 E05:W04 - Ready list migrated, dispatch bindings aligned
+1 E05:W05 - Blocked pair settled
+1 E05:W06 - Fan-out ownership guard fails claims elsewhere
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E05:W01, E05:W02, E05:W03, E05:W04, E05:W05, E05:W06, E06:W01, E06:W02, E06:W03
+
+--- epic priority (epics sharing a number start together)
+1 E00
+1 E01
+1 E02
+1 E03
+1 E04
+1 E05
+1 E06
+
+--- longest chains: 3, each of 2 steps
+on every chain: E05:W01
+E05:W01 -> E05:W04
+E05:W01 -> E05:W05
+E05:W01 -> E05:W06

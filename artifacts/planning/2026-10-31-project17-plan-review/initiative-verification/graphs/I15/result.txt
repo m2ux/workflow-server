@@ -1,0 +1,72 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+E00:W01 and E00:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W01 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W01 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W02 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W03 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E00:W04 and E00:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W02 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W01 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W03 and E01:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E01:W04 and E01:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W03 and E02:W04 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W03 and E02:W05 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W05 and E02:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E02:W05 and E02:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E03:W02 and E03:W03 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E00:W01 - Occupied folder is refused
+0 E00:W02 - Setup facts derived on the server
+0 E00:W03 - Session records which path drove it
+0 E00:W04 - Measure number-conversion disagreement
+0 E00:W05 - Cost line and fan-out ratios
+0 E00:W06 - Bootstrap drops unread schema
+0 E01:W01 - Second advance is refused
+0 E01:W02 - Answer continue at the boundary
+0 E02:W01 - Survey every structured-condition site
+0 E03:W01 - The server names and resolves the folder
+0 E03:W02 - Transient session path retired
+0 E04:W01 - An absent variable answered rather than failed
+1 E01:W03 - Continue-batch only continues
+1 E01:W04 - Walk of a budget spent after open
+1 E02:W02 - Structured conditions converted or removed
+1 E03:W03 - The bootstrap composes the slug
+1 E04:W02 - Every projection returning a validating item
+2 E01:W05 - Walk of each continue-batch path
+2 E02:W03 - Checkpoint dismissal retired from response tool
+2 E02:W04 - Differential test of each converted gate
+2 E03:W04 - Canon audit of the changed definitions
+3 E01:W06 - Canon audit of the changed definitions
+3 E02:W05 - Remaining structured conditions converted
+3 E02:W06 - Structured condition removed from step schemas
+4 E02:W07 - Canon audit of the changed definitions
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E00:W01, E00:W02, E00:W03, E00:W04, E00:W05, E00:W06, E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E02:W01, E02:W02, E02:W03, E02:W04, E02:W05, E02:W06, E02:W07, E03:W01, E03:W02, E03:W03, E03:W04, E04:W01, E04:W02
+
+--- epic priority (epics sharing a number start together)
+1 E00
+1 E01
+1 E02
+1 E03
+1 E04
+
+--- longest chains: 2, each of 5 steps
+on every chain: E02:W01, E02:W02, E02:W06, E02:W07
+E02:W01 -> E02:W02 -> E02:W03 -> E02:W06 -> E02:W07
+E02:W01 -> E02:W02 -> E02:W04 -> E02:W06 -> E02:W07

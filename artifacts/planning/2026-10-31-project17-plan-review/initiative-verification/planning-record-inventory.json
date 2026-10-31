@@ -1,0 +1,659 @@
+[
+  {
+    "number": 1380,
+    "title": "[I14] Instrument Debt: Cost the Guards, Tests and Walks Carry",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-10-03-706-i04-replan/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-08-board-11-align-sync/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-13-706-i04-split/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13",
+      "AC14",
+      "AC15",
+      "AC16",
+      "AC17",
+      "AC18"
+    ]
+  },
+  {
+    "number": 1379,
+    "title": "[I13] Corpus Debt: Cost the Definitions Still Carry",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-10-05-706-unspent-inputs/sites.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-05-706-unspent-inputs/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-03-706-i04-replan/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-13-706-i04-split/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7"
+    ]
+  },
+  {
+    "number": 1378,
+    "title": "[I15] Server Debt: Cost the Engine Still Carries",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-10-03-706-i04-replan/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-13-706-i04-split/README.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10"
+    ]
+  },
+  {
+    "number": 1374,
+    "title": "[I12] Multi-Root Corpus: Several Trees Served as One Namespace",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-10-13-multi-root-corpus-serving",
+        "exists": true,
+        "files": [
+          "README.md",
+          "evidence.md",
+          "path-keys.md"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5"
+    ]
+  },
+  {
+    "number": 1166,
+    "title": "[I11] Work Planner: The Scheme That Plans Every Other Piece of Work",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-10-31-project17-plan-review/current-requirements.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-10-06-work-planner-retrospective",
+        "exists": true,
+        "files": [
+          "README.md",
+          "joins.md",
+          "review-2026-10-07.md",
+          "sources.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-10-31-project17-plan-review/source-reconciliation/requirements-before.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13",
+      "AC14",
+      "AC15",
+      "AC16",
+      "AC17",
+      "AC18",
+      "AC19",
+      "AC20",
+      "AC21",
+      "AC22",
+      "AC23",
+      "AC24",
+      "AC25",
+      "AC26",
+      "AC27",
+      "AC28",
+      "AC29",
+      "AC30",
+      "AC31",
+      "AC32",
+      "AC33",
+      "AC34",
+      "AC35",
+      "AC36"
+    ]
+  },
+  {
+    "number": 1040,
+    "title": "[I10] Work Package Streamline: Each Run Spends Only What Its Change Needs",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-09-29-work-package-streamline",
+        "exists": true,
+        "files": [
+          "README.md",
+          "e02-audit-rounds.md",
+          "e02-w07-claims.md",
+          "e03-audit-rounds.md",
+          "e03-w01-claims.md",
+          "e03-w02-claims.md",
+          "e04-w01-audit-rounds.md",
+          "e04-w01-claims.md",
+          "e04-w02-claims.md",
+          "e04-w03-audit-rounds.md",
+          "e04-w03-claims.md",
+          "e05-ac13-audits.md",
+          "e05-ac2-guides.md",
+          "e05-audit-rounds.md",
+          "e05-validation-ledger.md",
+          "pr1-claims.md",
+          "pr2-claims.md",
+          "pr3-claims.md",
+          "progress-2026-10-01.md",
+          "scan.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-10-04-1125-work-package-modes",
+        "exists": true,
+        "files": [
+          "README.md",
+          "grain-rubric.md",
+          "plan.md",
+          "trace.md",
+          "w01.md",
+          "w02.md",
+          "w03.md",
+          "w04.md",
+          "w05.md",
+          "w06.md",
+          "w07.md",
+          "w08.md",
+          "w09.md",
+          "w10.md",
+          "w11.md"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13",
+      "AC14",
+      "AC15",
+      "AC16",
+      "AC17",
+      "AC18",
+      "AC19",
+      "AC20",
+      "AC21",
+      "AC22"
+    ]
+  },
+  {
+    "number": 946,
+    "title": "[I08] Shared Libraries: One Home for Every Reusable Operation",
+    "planning_references": [],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13",
+      "AC14"
+    ]
+  },
+  {
+    "number": 936,
+    "title": "[I07] Workflow Design: Everything an Author Needs, Stated Once and Checked",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-09-27-schema-grammar-constraints",
+        "exists": true,
+        "files": [
+          "README.md",
+          "inventory.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
+        "exists": true,
+        "files": [
+          ".session-token",
+          "01-evaluation-plan.md",
+          "02-analysis-trigger-manifest.json",
+          "04-session-trace.md",
+          "04-token-usage.md",
+          "04-workflow-definition-defects.md",
+          "EVALUATION-REPORT.md",
+          "MITIGATION-PLAN.md",
+          "session.json"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13",
+      "AC14"
+    ]
+  },
+  {
+    "number": 908,
+    "title": "[I06] Agent Roles: The Host Holds Standing Contract, the Corpus Holds Definitions",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-09-21-roles-as-skills/survey.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-09-21-vocabularies-as-techniques/survey.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9"
+    ]
+  },
+  {
+    "number": 705,
+    "title": "[I03] Typed Language: Definitions That State Their Own Rules",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11"
+    ]
+  },
+  {
+    "number": 587,
+    "title": "[I02] Work Package Refinement: Compounding Knowledge Across Runs",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows",
+        "exists": true,
+        "files": [
+          ".session-token",
+          "01-evaluation-plan.md",
+          "04-session-trace.md",
+          "04-token-usage.md",
+          "05-resolution-dialogue-dispositions.md",
+          "EVALUATION-REPORT.md",
+          "MITIGATION-PLAN.md",
+          "session.json"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5"
+    ]
+  },
+  {
+    "number": 540,
+    "title": "[I01] Standing Work: What the Definitions Owe",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign/delivery-reconciliation.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign/absorbed",
+        "exists": true,
+        "files": [
+          "README.md",
+          "issue-338-corpus-backlog.md",
+          "issue-397-protocol-structure.md",
+          "issue-398-section-delivery.md",
+          "issue-399-shared-homes.md",
+          "issue-400-decision-integrity.md",
+          "issue-401-session-creation.md",
+          "issue-402-server-unblocks.md",
+          "issue-404-delivery-cost.md",
+          "issue-436-engine-surfaces.md",
+          "issue-437-deployment-hardening.md",
+          "issue-491-found-by-running.md",
+          "issue-492-wrapper-prose.md",
+          "issue-497-corpus-tests.md",
+          "issue-511-issue-creation.md",
+          "issue-513-expression-grammar.md",
+          "issue-518-rule-homes.md",
+          "issue-519-fragment-homes.md",
+          "issue-520-routine.md",
+          "issue-523-runner.md",
+          "issue-526-typed-execution.md",
+          "issue-536-content-defects.md"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13"
+    ]
+  },
+  {
+    "number": 527,
+    "title": "[I00] Workflow Runner: A Program Walks the Definition, the Agent Judges",
+    "planning_references": [
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign",
+        "exists": true,
+        "files": [
+          "README.md",
+          "delivery-reconciliation.md",
+          "evidence.md",
+          "issue-disposition.md",
+          "migration-disposition.md",
+          "polymorphism-survey.md",
+          "rejected-alternatives.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-08-31-typed-execution-redesign/migration-disposition.md",
+        "exists": true,
+        "files": [],
+        "file": true
+      },
+      {
+        "reference": "artifacts/planning/2026-09-12-i0-programme-rebase",
+        "exists": true,
+        "files": [
+          "README.md",
+          "epic-p4-binding-resolution.md",
+          "epic-p5-write-authority.md",
+          "epic-p6-position-and-repetition.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-09-03-routines",
+        "exists": true,
+        "files": [
+          "README.md",
+          "agent-interpretation.md",
+          "continuation-condition.md",
+          "conversion-rerun.md",
+          "conversion-trial.md",
+          "decisions.md",
+          "drift-census.md",
+          "findings-register.md",
+          "gap-review.md",
+          "higher-order-routines.md",
+          "investigation.md",
+          "placement.md",
+          "re-derivation-assumption-run.md",
+          "re-derivation.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-09-10-routines-sweeps",
+        "exists": true,
+        "files": [
+          "README.md",
+          "index.md"
+        ],
+        "file": false
+      },
+      {
+        "reference": "artifacts/planning/2026-09-07-requirements-spec-for-the-routines-protocol",
+        "exists": true,
+        "files": [
+          ".session-token",
+          "01-intake.md",
+          "01-requirements-analysis.md",
+          "03-working-spec-0.md",
+          "03-working-spec-1.md",
+          "03-working-spec-2.md",
+          "03-working-spec-3.md",
+          "04-validation-report-0.md",
+          "04-validation-report-1.md",
+          "04-validation-report-2.md",
+          "04-validation-report-3.md",
+          "05-change-summary.md",
+          "05-final-spec.md",
+          "05-session-trace.md",
+          "05-token-usage.md",
+          "session.json"
+        ],
+        "file": false
+      }
+    ],
+    "criterion_ids": [
+      "AC1",
+      "AC2",
+      "AC3",
+      "AC4",
+      "AC5",
+      "AC6",
+      "AC7",
+      "AC8",
+      "AC9",
+      "AC10",
+      "AC11",
+      "AC12",
+      "AC13"
+    ]
+  }
+]
