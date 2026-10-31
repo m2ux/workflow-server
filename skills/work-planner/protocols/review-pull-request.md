@@ -21,8 +21,8 @@ Read these files first.
 2. **Populate.**
    Pass the existing body when present and the actual task merges into the base to [Populate Review Body](../artifacts/pull-request-body.md#populate-review-body).
 3. **Publish.**
-   When the first task merges, a draft is reported or an unmerged base has no review:
-   - Pass the returned file to [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), supplying its number for an existing review, and for a new one the epic's issue with the repository setting the caller confirmed. The epic stays open; the user marks the draft ready when the epic is complete.
+   When an existing review needs its body updated, the first task merges, a draft is reported or an unmerged base has no review:
+   - Pass the returned file to [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), supplying its number for an existing review, and for a new one the epic's issue with the repository setting the caller confirmed. The epic stays open until integration and closure checks pass.
 4. **Confirm.**
    Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the published review.
    - Compare its complete body with the published file.

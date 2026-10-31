@@ -262,6 +262,17 @@ def row_id(text: str) -> str:
     return found[1] if found else text.strip()
 
 
+def hrefs(ident: str) -> list[str]:
+    """The targets an id cell links."""
+    return [found[2] for found in LINK.finditer(ident)]
+
+
+def reservation(ident: str) -> str | None:
+    """The planning folder the id links, which holds the work. A file in a record is not one."""
+    return next((href for href in hrefs(ident)
+                 if '/artifacts/planning/' in href and not href.endswith('.md')), None)
+
+
 def id_form(text: str) -> str:
     """The id a cell names once its links are read, where every link names that same id."""
     bare = re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', text)

@@ -101,16 +101,6 @@ The board identity matching a supplied purpose or theme.
 1. Run [Find Proposals Board](#find-proposals-board) for proposals, or [Find Theme Board](#find-theme-board) for a theme.
 2. Return the identity or an absent-board finding for the caller's selection or creation path.
 
-### *Update* Item Status
-
-One board item with a confirmed status selection applied.
-
-**Inputs:** Board and item identities, current Status field and option ids, selected status and request body file.
-
-1. Run [Set Item Status](#set-item-status) with the supplied selection and ids.
-2. Read the item through [Fetch Board Item](#fetch-board-item).
-3. Return its confirmed state or a discrepancy for the caller to resolve.
-
 ## Fields
 
 ### Themes

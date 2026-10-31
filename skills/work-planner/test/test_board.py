@@ -322,6 +322,20 @@ class InitiativeStatus(unittest.TestCase):
         self.assertNotIn('→ In Review', out)
         self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → Ready', out)
 
+    def held_row(self, link: str) -> str:
+        """An epic whose W01 id carries the given link, with the task issue its title names."""
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({link})', 'Go', '')))
+        return self.open_pair('In Progress', 'In Progress', epic, tasks=(issue(3, '[I01:E00:W01] Go: Task'),),
+                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+
+    def test_a_row_a_session_holds_puts_its_task_issue_in_progress(self):
+        record = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-10-06-2-i01-e00-w01-go/'
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Progress', self.held_row(record))
+
+    def test_a_row_linking_its_work_item_leaves_the_task_issue_out_of_progress(self):
+        item_file = 'https://github.com/o/r/blob/engineering/artifacts/planning/2026-10-06-2-i01-e00-w01-go/w01.md'
+        self.assertNotIn('→ In Progress', self.held_row(item_file))
+
     def test_a_ready_epic_with_a_delivered_row_stays_ready(self):
         epic = issue(2, '[I01:E00] First: Epic',
                      body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', '')))

@@ -12,7 +12,6 @@ Read these files first.
 - [Pull Request](../artifacts/pull-request.md)
 - [Delivery Branches](../artifacts/delivery-branches.md)
 - [Epic](../artifacts/epic.md)
-- [Guidelines](../guidelines.md)
 
 ## Procedure
 
@@ -22,8 +21,6 @@ Read these files first.
    - Follow [Change Overview](change-overview.md) with the review pull request identity.
    - Resume with its published overview so the complete review body cites the task merges and carries that overview.
    - Read the pull request through [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-   - Put a draft still awaiting its ready mark to the user as an [Interview](../guidelines.md#modes), naming the epic standing in review on its board.
-   - Continue only on a pull request the user has marked ready, and leave a draft waiting for that decision.
    - Confirm its head is the epic base and its target is the corresponding long-lived branch.
 2. **Refresh and validate.**
    Run [Update Epic Base](../artifacts/delivery-branches.md#update-epic-base) with the project checkout and the epic base.
@@ -33,6 +30,7 @@ Read these files first.
    - When the branch content changes, before checking merge readiness:
      - Repeat Review Pull Request with the current task merges.
      - Repeat Change Overview with the same pull request identity and updated head.
+   - Run [Ready Epic Review](../artifacts/pull-request.md#ready-epic-review) with the confirmed epic readiness and review identity.
    - Follow [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness) for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence leaves integration blocked.
 3. **Merge or hand off.**
    Pass the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence to [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request) with delivery kind epic, without asking for further confirmation.

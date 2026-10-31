@@ -1,6 +1,6 @@
 # Align Mode
 
-Brings one or more existing proposal, initiative, epic, task, and standalone issues and/or PRs into line with the plan they belong to and structurally aligns them with the guidelines they are held to. 
+Brings one or more existing proposal, initiative, epic, task, and standalone issues and/or PRs into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
@@ -140,7 +140,7 @@ The main path meets [Outcomes](#outcomes).
 12. **Review pull requests.**
     Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for each open epic.
     - Open a reported base as a draft review pull request.
-    - Leave the epic open. The user marks the draft ready when the epic is complete.
+    - Leave the epic open. A subsequent delivery or sync run establishes readiness from the completed delivery evidence.
 13. **Re-run.**
     After a published correction:
     - Fetch the changed bodies.

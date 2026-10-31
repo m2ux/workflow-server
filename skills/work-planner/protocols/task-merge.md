@@ -25,9 +25,9 @@ Read these files first.
    Follow [Review Pull Request](review-pull-request.md) for the affected epic base, with the epic's issue and the repository setting confirmed for the session.
 3. **Complete when ready.**
    When every task and criterion is complete:
-   - Run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) with the epic identity and the supplied board identity. The board shows the epic at In Review before the user is asked to mark its review ready.
+   - Run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) with the epic identity and the supplied board identity. The board shows the completed epic at In Review.
    - Report an absent board item. Integration is not gated on the board.
-   - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot and criterion verification evidence. A draft or unmet merge condition stays pending.
+   - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot and criterion verification evidence. An unmet delivery or merge condition stays pending.
 4. **Close the epic.**
    After every epic base has merged:
    - Refresh the evidence.
