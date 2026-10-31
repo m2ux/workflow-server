@@ -5,4 +5,4 @@
 - [x] Implement, verify and independently review the gate.
 - [x] Publish and merge W01 as #1483.
 - [x] Record task delivery and draft integration #1484.
-- [ ] Publish W02 reservation and dispatch the separate final audit (in progress).
+- [x] Publish W02 reservation and dispatch the separate final audit.
