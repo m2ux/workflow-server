@@ -47,6 +47,15 @@ class PlanRepair(unittest.TestCase):
     def test_current_plan_is_byte_preserved(self):
         self.assertEqual(repair_plan(CURRENT), (CURRENT, False, []))
 
+    def test_fenced_current_table_is_unreadable(self):
+        for fence in ('```markdown', '~~~markdown'):
+            body = CURRENT.replace('## Test Plan', '## Test Plan\n\n' + fence) + '\n' + fence[:3]
+            repaired, changed, findings = repair_plan(body)
+            self.assertEqual(repaired, body)
+            self.assertFalse(changed)
+            self.assertTrue(findings)
+            self.assertIsNone(plan_rows(body))
+
     def test_conversion_is_idempotent(self):
         body, _, _ = repair_plan(LEGACY)
         self.assertEqual(repair_plan(body), (body, False, []))

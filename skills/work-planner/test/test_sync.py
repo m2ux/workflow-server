@@ -116,7 +116,7 @@ class PassedEvidence(unittest.TestCase):
                           *(f'| {test} | Check | {coverage} | {mark} |'
                             for test, coverage, mark in checks)])
 
-    def pull(self, number=950, checks=(('T1', 'AC1', '✓'),), merged=True):
+    def pull(self, number=950, checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'),), merged=True):
         return pr(number, '[I01:E00] Work', body=self.plan(*checks),
                   merged='2026-09-01T00:00:00Z' if merged else None)
 
@@ -131,7 +131,7 @@ class PassedEvidence(unittest.TestCase):
         self.assertIn('| AC1 | | | ✓ |', fixed)
 
     def test_all_supported_pass_marks_tick(self):
-        for mark in ('✓', '[x]', '[X]', '[✓](https://example.com/evidence#test)'):
+        for mark in ('[✓](https://example.com/evidence#test)', '[✓](http://example.com/result)'):
             with self.subTest(mark=mark):
                 fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', mark),))])
                 self.assertIn('- [x] **AC1.**', fixed)
@@ -144,19 +144,19 @@ class PassedEvidence(unittest.TestCase):
                 self.assertNotIn('| ✓ |', fixed)
 
     def test_every_observing_check_must_pass(self):
-        for mark in ('', 'Fail', '✓'):
+        for mark in ('', 'Fail', '[✓](https://example.com/evidence#test)'):
             with self.subTest(mark=mark):
-                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '✓'),
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'),
                                                               ('T2', 'AC1', mark)))])
-                self.assertEqual('- [x] **AC1.**' in fixed, mark == '✓')
+                self.assertEqual('- [x] **AC1.**' in fixed, mark == '[✓](https://example.com/evidence#test)')
 
     def test_nonobserving_rows_supply_no_evidence(self):
-        for checks in ((('', 'AC1', '✓'),), (('T1', '', '✓'),), ()):
+        for checks in ((('', 'AC1', '[✓](https://example.com/evidence#test)'),), (('T1', '', '[✓](https://example.com/evidence#test)'),), ()):
             with self.subTest(checks=checks):
                 self.assertIn('- [ ] **AC1.**', synced(self.epic(), [self.pull(checks=checks)]))
 
     def test_unrelated_incomplete_check_does_not_block_observed_criterion(self):
-        fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '✓'), ('T2', '', 'Fail')))])
+        fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'), ('T2', '', 'Fail')))])
         self.assertIn('- [x] **AC1.**', fixed)
 
     def test_open_or_unlinked_pull_supplies_no_tick(self):
@@ -164,10 +164,10 @@ class PassedEvidence(unittest.TestCase):
         self.assertIn('- [ ] **AC1.**', synced(self.epic(), [self.pull(951)]))
 
     def test_every_covering_task_needs_passed_observation(self):
-        for checks in ((('T1', 'AC1', ''),), (('T1', '', '✓'),), (('T1', 'AC1', '✓'),)):
+        for checks in ((('T1', 'AC1', ''),), (('T1', '', '[✓](https://example.com/evidence#test)'),), (('T1', 'AC1', '[✓](https://example.com/evidence#test)'),)):
             with self.subTest(checks=checks):
                 fixed = synced(self.epic(950, 951), [self.pull(), self.pull(951, checks)])
-                self.assertEqual('- [x] **AC1.**' in fixed, checks == (('T1', 'AC1', '✓'),))
+                self.assertEqual('- [x] **AC1.**' in fixed, checks == (('T1', 'AC1', '[✓](https://example.com/evidence#test)'),))
 
     def test_pending_covering_task_prevents_automatic_and_explicit_ticks(self):
         epic, pulls = self.epic(950, 951), [self.pull(), self.pull(951, merged=False)]
@@ -179,7 +179,7 @@ class PassedEvidence(unittest.TestCase):
         epic = self.epic()
         epic['body'] = epic['body'].replace(f"[W01]({url('pull', 950)})",
             f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})")
-        for mark, merged, expected in (('✓', True, True), ('', True, False), ('✓', False, False)):
+        for mark, merged, expected in (('[✓](https://example.com/evidence#test)', True, True), ('', True, False), ('[✓](https://example.com/evidence#test)', False, False)):
             with self.subTest(mark=mark, merged=merged):
                 fixed = synced(epic, [self.pull(), self.pull(951, (('T1', 'AC1', mark),), merged)])
                 self.assertEqual('- [x] **AC1.**' in fixed, expected)
@@ -189,7 +189,7 @@ class PassedEvidence(unittest.TestCase):
         epic = self.epic(950, 951)
         epic['body'] = epic['body'].replace('| Work | AC1 |', '| Work | AC2 |', 1)
         epic['body'] += '\n- [ ] **AC2.** Other.\n'
-        fixed = synced(epic, [self.pull(), self.pull(951, (('T1', '', '✓'),))])
+        fixed = synced(epic, [self.pull(), self.pull(951, (('T1', '', '[✓](https://example.com/evidence#test)'),))])
         self.assertIn('- [ ] **AC1.**', fixed)
         self.assertIn('- [ ] **AC2.**', fixed)
 
@@ -222,6 +222,22 @@ class PassedEvidence(unittest.TestCase):
         fixed = synced(epic, pulls)
         epic['body'] = fixed
         self.assertEqual(synced(epic, pulls), fixed)
+
+
+    def test_result_without_valid_evidence_link_withholds_tick(self):
+        for mark in ('✓', '[x]', '[X]', '[✓]()', '[✓](#result)',
+                     '[✓](file:///tmp/result)', '[✓](https://)',
+                     '[✓](https://example.com/bad target)'):
+            with self.subTest(mark=mark):
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', mark),))])
+                self.assertIn('- [ ] **AC1.**', fixed)
+
+    def test_fenced_example_withholds_automatic_tick(self):
+        for fence in ('```markdown', '~~~markdown'):
+            with self.subTest(fence=fence):
+                pull = self.pull()
+                pull['body'] = pull['body'].replace('## Test Plan', '## Test Plan\n\n' + fence) + '\n' + fence[:3]
+                self.assertIn('- [ ] **AC1.**', synced(self.epic(), [pull]))
 
 
 class TaskLinks(unittest.TestCase):

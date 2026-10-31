@@ -412,6 +412,8 @@ def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
     if len(plans) != 1:
         return None
     lines = plans[0]
+    if any(re.match(r' {0,3}(`{3,}|~{3,})', line) for line in lines):
+        return None
     table = [line for line in lines if line.startswith('|')]
     if len(table) < 2:
         return None
@@ -439,7 +441,8 @@ def plan_claims(body: str) -> tuple[set[int], set[int], set[int]]:
         if test.strip():
             observed |= acs
             link = LINK.fullmatch(mark)
-            if done_mark(link[1] if link else mark) != TICK:
+            if not (link and done_mark(link[1]) == TICK
+                    and re.fullmatch(r'https?://[^/\s?#]+(?:[/?#][^\s]*)?', link[2])):
                 incomplete |= acs
     return named, observed, observed - incomplete
 
