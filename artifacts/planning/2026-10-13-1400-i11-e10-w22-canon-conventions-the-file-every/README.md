@@ -4,9 +4,7 @@
 
 ## Executive Summary
 
-The Workflow Canon skill keeps its execution conventions in `references/command-conventions.md`, a file every mode is told to open before its first command specification. The sibling skill moved the same content into its entry point, on the measured grounds that a mode reaching conventions should open no file it would not otherwise open. The same file also holds a command specification the placement rule cannot see. This task brings the conventions to where a mode already is, and places the specification by the rule.
-
-Epic row E10 W21 carries this work, and its Coverage cell names AC28, AC29. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
+Canon conventions and recognized command placement. Current scope and validation are stated in [w21.md](w21.md); original issue captures retain historical provenance.
 
 ## Artifacts
 

@@ -4,9 +4,7 @@
 
 ## Executive Summary
 
-The placement rule asks which procedure runs a command and sends the specification to that procedure's file. Retrieval asks which files a mode must open to work. The two agree where a mode's own steps run the operation, and part company where one mode's command specification cites an operation held in another mode's file. This task closes that gap and re-measures what the layout now costs.
-
-Epic row E10 W23 carries this work, and its Coverage cell names AC33, AC34. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
+Execution callers and required retrieval reach. Current scope and validation are stated in [w23.md](w23.md); original issue captures retain historical provenance.
 
 ## Artifacts
 
