@@ -1,7 +1,7 @@
 # Delivery Progress
 
 - [x] Select eligible W01 and refresh its epic base.
-- [ ] Reserve W01 and prepare its isolated worktree (in progress).
-- [ ] Implement and validate criterion evidence.
+- [x] Reserve W01 and prepare its isolated worktree.
+- [ ] Implement and validate criterion evidence (in progress).
 - [ ] Publish and merge the task pull request.
 - [ ] Record epic delivery and review handoff.
