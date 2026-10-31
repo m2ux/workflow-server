@@ -1075,3 +1075,85 @@ class TaskCriteria(unittest.TestCase):
         done, _ = self.run_sync(self.task(), [pr(950, '[I01:E01] Work')], '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('no pull request naming I01:E00', done.stderr)
+
+
+class HistoricalDelivery(unittest.TestCase):
+    def inspect(self, record, pulls):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source, records, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            source.write_text(json.dumps(record))
+            records.write_text('\n'.join(json.dumps(p) for p in pulls))
+            result = run('sync.py', str(source), '--prs', str(records),
+                         '--links', links_file(root, []), '--fix', str(fixed),
+                         '--project', project(root, 'main', 'workflows'))
+            return result, fixed.read_text() if fixed.exists() else None
+
+    def test_closed_table_normalizes_embedded_coverage_before_delivery(self):
+        body = ('## Work Breakdown\n\n| Done | Task | Description |\n| --- | --- | --- |\n'
+                f'| ✓ | [W01]({url("pull", 950)}) | Work → AC2 |\n\n'
+                '## Acceptance Criteria\n\n- [x] **AC2.** Holds.\n')
+        record = issue(2, '[I01:E00] First: Epic', 'closed', body=body)
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')]
+        result, fixed = self.inspect(record, pulls)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Done |', fixed)
+        self.assertIn(f'| [W01]({url("pull", 950)}) | Work | AC2 | | | ✓ |', fixed)
+        self.assertIn('normalized:', result.stdout)
+        self.assertNotIn('AC1', fixed)
+        record['body'] = fixed
+        again, stable = self.inspect(record, pulls)
+        self.assertEqual(stable, fixed)
+        self.assertNotIn('normalized:', again.stdout)
+
+    def test_closed_table_preserves_existing_coverage_and_dependencies(self):
+        body = epic_body((f'[W01]({url("pull", 950)})', 'Work', 'E01:W01'))
+        body = body.replace('| Joins | Done |', '| Done |').replace('| --- | --- | --- | --- | --- | --- |', '| --- | --- | --- | --- | --- |')
+        body = body.replace('| E01:W01 | | |', '| E01:W01 | |')
+        result, fixed = self.inspect(issue(2, '[I01:E00] First: Epic', 'closed', body=body),
+                                     [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('| Work | AC1 | E01:W01 | | |', fixed)
+        self.assertIn('unmet: W01 (#950): AC1 unticked', result.stdout)
+
+    def test_unknown_historical_column_blocks_without_losing_content(self):
+        body = epic_body(('W01', 'Work', '')).replace('Coverage', 'Evidence')
+        result, fixed = self.inspect(issue(2, '[I01:E00] First: Epic', 'closed', body=body), [])
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('column not in the template: Evidence', result.stderr)
+        self.assertIsNone(fixed)
+
+    def test_linked_merged_title_is_repaired_then_reread_without_repeat(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        pulls = [pr(950, 'Work: Preserve the purpose', merged='2026-09-01T00:00:00Z')]
+        result, fixed = self.inspect(record, pulls)
+        expected = '[I01:E00] Work: Preserve the purpose'
+        self.assertIn(f'retitle: #950 → {expected}', result.stdout)
+        self.assertIn('conflict:', result.stdout)
+        pulls[0]['title'] = expected
+        reread, stable = self.inspect(record, pulls)
+        self.assertNotIn('retitle:', reread.stdout)
+        self.assertNotIn('conflict:', reread.stdout)
+        self.assertEqual(stable, fixed)
+
+    def test_title_repairs_exclude_open_unlinked_and_other_epic_titles(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        for linked in [pr(950, 'Open work'), pr(950, '[I01:E01] Other work', merged='2026-09-01T00:00:00Z')]:
+            with self.subTest(title=linked['title']):
+                result, _ = self.inspect(record, [linked, pr(951, 'Unlinked', merged='2026-09-01T00:00:00Z')])
+                self.assertNotIn('retitle:', result.stdout)
+                self.assertIn('conflict:', result.stdout)
+
+
+    def test_matching_historical_initiative_and_task_prefixes_receive_epic_prefix(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        for prefix in ('[I01]', '[I01:E00:W01]'):
+            with self.subTest(prefix=prefix):
+                result, _ = self.inspect(record, [pr(950, prefix + ' Work', merged='2026-09-01T00:00:00Z')])
+                self.assertIn('retitle: #950 → [I01:E00] Work', result.stdout)
+
+    def test_another_initiatives_prefix_is_a_conflict(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertNotIn('retitle:', result.stdout)
+        self.assertIn('conflict:', result.stdout)

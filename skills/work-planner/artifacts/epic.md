@@ -7,6 +7,7 @@ An epic's prerequisite evidence, task delivery findings, integration readiness a
 Read these files first.
 
 - [Initiative Issue Body](initiative-issue-body.md)
+- [Issue](issue.md)
 
 ## Operations
 
@@ -25,9 +26,11 @@ The evidence required before starting an epic's work.
 
 The delivery findings for one epic from supplied evidence.
 
-**Inputs:** Epic JSON, current pull request records and complete issue-link snapshot.
+**Inputs:** Epic JSON, current pull request records, complete issue-link snapshot and output body file.
 
-1. Run [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`.
+1. Run [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying an output body as `--fix`.
+   - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
+   - Publish reported table normalization through [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
 2. Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply.
 
 ### *Check* Epic Readiness
@@ -65,6 +68,8 @@ The epic is identified by its repository and issue number. Its state contains ta
 
 | Line | What it names |
 | --- | --- |
+| Normalized | Closed-epic table corrections present in the output body. |
+| Retitle | A merged pull request linked by a task row whose title has no prefix or only a matching initiative or task prefix, with the required title for publication and readback. |
 | Conflict | Tasks that share a pull request and do not name each other in Joins. A row linked to a pull request whose title names another epic. |
 | Unmatched | A merged pull request that names the epic and that no row links. |
 | In flight | An open pull request that names the epic and that no row links. A pull request whose head is an epic base is not a task match. |
@@ -89,16 +94,16 @@ A coverage disagreement identifies the pull request and row, a criterion absent 
 
 Reports an epic's delivery state against the pull requests that name it.
 
-**Inputs:** Epic JSON, pull request records and complete issue-link snapshot.
+**Inputs:** Epic JSON, pull request records, complete issue-link snapshot and output body file.
 
 - Results follow [Delivery Findings](#delivery-findings).
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<epic-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<epic-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --fix '<epic-body-file>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --fix epic-body.md
 ```
