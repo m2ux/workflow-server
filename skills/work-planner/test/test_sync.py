@@ -208,6 +208,15 @@ class PassedEvidence(unittest.TestCase):
                 pull['body'] = body
                 self.assertIn('- [ ] **AC1.**', synced(self.epic(), [pull]))
 
+    def test_automatic_ticks_report_completion_without_manual_verification(self):
+        done, fixed = TaskLinks().run_sync(self.epic(), [self.pull()])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('ticked: AC1', done.stdout)
+        self.assertIn('done: W01', done.stdout)
+        self.assertNotIn('ready to verify:', done.stdout)
+        self.assertNotIn('unmet:', done.stdout)
+        self.assertIn('- [x] **AC1.**', fixed)
+
     def test_automatic_ticks_are_idempotent(self):
         epic, pulls = self.epic(), [self.pull()]
         fixed = synced(epic, pulls)

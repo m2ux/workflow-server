@@ -734,12 +734,14 @@ def main() -> int:
     # A task's evidence is its pull request, which is readable while that pull request is open; an
     # epic's and an initiative's is what their rows have delivered.
     observable = verifiable if kind == 'task' else delivered
+    evidenced = passed_criteria(rows, header, {p['number']: p for p in prs}) if kind == 'epic' else set()
     for n, is_ticked in ticked.items():
         rows_for = [task] if kind == 'task' else citing.get(n, [])
         done = bool(rows_for) and all(observable.get(t) for t in rows_for)
         if not is_ticked and done:
             ready.add(n)
-            report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
+            if n not in evidenced:
+                report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
         if is_ticked and not done:
             pending = [t for t in rows_for if not observable.get(t)] or ['no row cites it']
             why = 'has no pull request' if kind == 'task' else 'undelivered'
@@ -750,8 +752,7 @@ def main() -> int:
     if refused:
         sys.exit(f'{ready_key.replace("ready to", "not ready to")}, so not ticked: '
                  + ', '.join(f'{tag}{n}' for n in refused))
-    if kind == 'epic':
-        to_tick |= ready & passed_criteria(rows, header, {p['number']: p for p in prs})
+    to_tick |= ready & evidenced
     for i, line in enumerate(ac_lines):
         a = label.match(line)
         if a and int(a[1]) in to_tick:
