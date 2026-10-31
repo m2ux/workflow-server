@@ -1,0 +1,50 @@
+{
+  "planning_commit": "e27e0bb63",
+  "issues": [
+    {
+      "epic": "E09",
+      "issue": 1176,
+      "updated_at": "2026-10-31T09:41:59Z",
+      "exact_readback": true,
+      "body_updated": true
+    },
+    {
+      "epic": "E10",
+      "issue": 1181,
+      "updated_at": "2026-10-31T09:42:03Z",
+      "exact_readback": true,
+      "body_updated": true
+    },
+    {
+      "epic": "E13",
+      "issue": 1373,
+      "updated_at": "2026-10-31T09:42:06Z",
+      "exact_readback": true,
+      "body_updated": true
+    },
+    {
+      "epic": "E14",
+      "issue": 1427,
+      "updated_at": "2026-10-31T09:42:09Z",
+      "exact_readback": true,
+      "body_updated": true
+    },
+    {
+      "epic": "E16",
+      "issue": 1474,
+      "updated_at": "2026-10-31T09:42:12Z",
+      "exact_readback": true,
+      "body_updated": true
+    },
+    {
+      "epic": "E17",
+      "issue": 1482,
+      "updated_at": "2026-10-31T08:05:58Z",
+      "exact_readback": true,
+      "body_updated": false
+    }
+  ],
+  "priority_map": "Proposed; not published",
+  "reservations": "Preserved",
+  "new_delivery_sessions": 0
+}
