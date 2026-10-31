@@ -14,6 +14,8 @@ The evaluated starting base is i11/e17/workspace at 7e5850eb2eea3bf863edb97e6599
 | --- | --- |
 | [Work item](w02.md) | Audit scope, component, file boundaries and tests |
 | [Progress](progress.md) | Delivery checklist |
+| [Corpus coverage](coverage.md) | Definitions, callers, findings and validation |
+| [Disclosure](disclosure.md) | Independent observed trials, findings and limits |
 
 ## Links
 
