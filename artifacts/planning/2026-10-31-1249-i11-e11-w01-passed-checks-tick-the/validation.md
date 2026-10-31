@@ -1,6 +1,6 @@
 # Validation
 
-Tested revision: `89523cd11e3e63ab51638703564037d80831f426` on `i11/e11/w01-passed-checks-tick-the`. The committed checkout was clean throughout verification. Commands ran under the required absolute sandbox launcher.
+Tested revision: `8c2e98027bbe83331a3d5a2e53ac35800230eca5` on `i11/e11/w01-passed-checks-tick-the`. The committed checkout was clean throughout verification. Commands ran under the required absolute sandbox launcher.
 
 ## Criterion Evidence
 
@@ -18,7 +18,7 @@ The initial fixture run incorrectly assumed the emoji check mark was supported. 
 
 ## Disclosure Review
 
-The Sync Epic command states the new evidence contract through Test Evidence in the same already-required epic body artifact. Acceptance Criteria already requires that artifact and links the contract from Tick State. Mode prerequisites and commands retain their locations. No new document read or implicit tool dependency is introduced. Independent review is recorded in the delivery result when complete.
+The Sync Epic command states the new evidence contract through Test Evidence in the same already-required epic body artifact. Acceptance Criteria already requires that artifact and links the contract from Tick State. Mode prerequisites and commands retain their locations. No new document read or implicit tool dependency is introduced. An independent reviewer traced Sync through Delivery Evidence and Sync Epic, and Deliver through Task Merge and Issue Delivery. Review found a duplicate explicit-tick path and stale readiness wording; both were corrected in this pull request. A targeted reread at the final tested head confirmed both resolved with no remaining blocking findings. The reviewer performed source inspection; its optional runtime reproduction was unavailable because of a bubblewrap namespace error. The delivery session ran all required suites successfully under the approved launcher.
 
 ## Limits
 
