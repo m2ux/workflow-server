@@ -33,10 +33,13 @@ and every epic row is delivered. Initiatives group and track their epics; delive
 to epics and tasks.
 
 Reported for each acceptance criterion of a task, epic or initiative:
-  - ready to verify: unticked, and every row citing it is delivered (for a task issue, its pull
+  - ready to verify: unticked after automatic evidence, and every row citing it is delivered (for a task issue, its pull
     request is open or merged);
   - ticked early: ticked while a row citing it is undelivered (for a task issue, while it has no
     pull request).
+Epic criteria also tick automatically when their covering rows are delivered and every observing
+check in their linked pull requests has passed. Each covering row needs an observation, and only
+its Coverage can receive evidence. Existing criterion ticks are preserved.
 --tick ticks the named criteria in the body written to --fix, and refuses one not ready to verify.
 Tick a criterion only once it is confirmed to hold. A task is closable when every criterion is ticked
 and every row is delivered. An epic is closable when those hold and every epic base its pull requests
@@ -53,7 +56,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import AC, LINK, TICK, cell, cells, id_cell, join_sections, row, row_id, split_sections
+from format import AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -405,31 +408,70 @@ def cited(text: str) -> list[int]:
 def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
     """Rows of the Test Plan table as (Test, Coverage, Pass). None when that table is absent."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
-    lines = next((item for heading, item in sections if heading == 'Test Plan'), None)
-    if lines is None:
+    plans = [item for heading, item in sections if heading == 'Test Plan']
+    if len(plans) != 1:
+        return None
+    lines = plans[0]
+    if any(re.match(r' {0,3}(`{3,}|~{3,})', line) for line in lines):
         return None
     table = [line for line in lines if line.startswith('|')]
     if len(table) < 2:
         return None
     header = cells(table[0])
-    if 'Test' not in header or 'Coverage' not in header or 'Pass' not in header:
+    if header != ['Test', 'Description', 'Coverage', 'Pass']:
+        return None
+    if len(cells(table[1])) != len(header) or not all(
+            re.fullmatch(r':?-{3,}:?', c) for c in cells(table[1])):
         return None
     found = []
     for line in table[2:]:
         parsed = cells(line)
+        if len(parsed) != len(header):
+            return None
         found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage'), cell(header, parsed, 'Pass')))
     return found
 
 
-def plan_claims(body: str) -> tuple[set[int], set[int]]:
-    """Criteria a test plan's Coverage column names, and those a row with a Test cell names. An empty Test cell names its criteria and observes none."""
-    named, observed = set(), set()
-    for test, coverage, _mark in plan_rows(body) or []:
+def plan_claims(body: str) -> tuple[set[int], set[int], set[int]]:
+    """Named, observed and passed criteria; every observing check must pass."""
+    named, observed, incomplete = set(), set(), set()
+    for test, coverage, mark in plan_rows(body) or []:
         acs = set(cited(coverage))
         named |= acs
         if test.strip():
             observed |= acs
-    return named, observed
+            link = LINK.fullmatch(mark)
+            if not (link and done_mark(link[1]) == TICK
+                    and re.fullmatch(r'https?://[^/\s?#]+(?:[/?#][^\s]*)?', link[2])):
+                incomplete |= acs
+    return named, observed, observed - incomplete
+
+
+def passed_criteria(rows, header, by_number) -> set[int]:
+    """Criteria supported by every covering task's linked delivery observations.
+
+    A linked check contributes only to its task's Coverage. Every observing check
+    must pass in a merged pull request, and each covering task needs an observation.
+    Missing pull requests and unreadable plans supply no verifiable evidence.
+    """
+    supported, incomplete = set(), set()
+    for r in rows:
+        scope = set(cited(cell(header, r, 'Coverage')))
+        observed = set()
+        for _, href in LINK.findall(id_cell(header, r)):
+            pull = PULL_URL.search(href)
+            if not pull:
+                continue
+            pr = by_number.get(int(pull[1]))
+            if not pr or plan_rows(pr.get('body') or '') is None:
+                incomplete |= scope
+                continue
+            _named, checks, passed = plan_claims(pr.get('body') or '')
+            observed |= checks & scope
+            incomplete |= scope & (checks - passed if pr.get('merged_at') else checks)
+        supported |= observed
+        incomplete |= scope - observed
+    return supported - incomplete
 
 
 def prose_lines(body: str) -> str:
@@ -486,7 +528,10 @@ def test_plan_agreement(rows, header, by_number, report):
         pr = by_number.get(number)
         if not pr:
             continue
-        named, observed = plan_claims(pr.get('body') or '')
+        if plan_rows(pr.get('body') or '') is None:
+            report['disagreement'].append(f'#{number}: unreadable test plan')
+            continue
+        named, observed, _passed = plan_claims(pr.get('body') or '')
         union = set().union(*(coverage[task] for task in tasks))
         label = ', '.join(tasks)
         verb = 'does' if len(tasks) == 1 else 'do'
@@ -701,12 +746,14 @@ def main() -> int:
     # A task's evidence is its pull request, which is readable while that pull request is open; an
     # epic's and an initiative's is what their rows have delivered.
     observable = verifiable if kind == 'task' else delivered
+    evidenced = passed_criteria(rows, header, {p['number']: p for p in prs}) if kind == 'epic' else set()
     for n, is_ticked in ticked.items():
         rows_for = [task] if kind == 'task' else citing.get(n, [])
         done = bool(rows_for) and all(observable.get(t) for t in rows_for)
         if not is_ticked and done:
             ready.add(n)
-            report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
+            if n not in evidenced:
+                report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
         if is_ticked and not done:
             pending = [t for t in rows_for if not observable.get(t)] or ['no row cites it']
             why = 'has no pull request' if kind == 'task' else 'undelivered'
@@ -717,6 +764,7 @@ def main() -> int:
     if refused:
         sys.exit(f'{ready_key.replace("ready to", "not ready to")}, so not ticked: '
                  + ', '.join(f'{tag}{n}' for n in refused))
+    to_tick |= ready & evidenced
     for i, line in enumerate(ac_lines):
         a = label.match(line)
         if a and int(a[1]) in to_tick:

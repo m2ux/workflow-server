@@ -108,6 +108,138 @@ class Done(unittest.TestCase):
             self.assertNotIn('| ✓ |', text)
 
 
+class PassedEvidence(unittest.TestCase):
+    @staticmethod
+    def plan(*checks):
+        return '\n'.join(['## Test Plan', '', '| Test | Description | Coverage | Pass |',
+                          '| --- | --- | --- | --- |',
+                          *(f'| {test} | Check | {coverage} | {mark} |'
+                            for test, coverage, mark in checks)])
+
+    def pull(self, number=950, checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'),), merged=True):
+        return pr(number, '[I01:E00] Work', body=self.plan(*checks),
+                  merged='2026-09-01T00:00:00Z' if merged else None)
+
+    def epic(self, *numbers):
+        return issue(2, '[I01:E00] First: Epic', body=epic_body(
+            *((f"[W{i:02}]({url('pull', n)})", 'Work', '')
+              for i, n in enumerate(numbers or (950,), 1))))
+
+    def test_passed_check_ticks_criterion_and_done(self):
+        fixed = synced(self.epic(), [self.pull()])
+        self.assertIn('- [x] **AC1.**', fixed)
+        self.assertIn('| AC1 | | | ✓ |', fixed)
+
+    def test_all_supported_pass_marks_tick(self):
+        for mark in ('[✓](https://example.com/evidence#test)', '[✓](http://example.com/result)'):
+            with self.subTest(mark=mark):
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', mark),))])
+                self.assertIn('- [x] **AC1.**', fixed)
+
+    def test_incomplete_marks_withhold_ticks(self):
+        for mark in ('', '[ ]', 'Fail', 'Partial', 'Not run', '[Fail](https://example.com/test)'):
+            with self.subTest(mark=mark):
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', mark),))])
+                self.assertIn('- [ ] **AC1.**', fixed)
+                self.assertNotIn('| ✓ |', fixed)
+
+    def test_every_observing_check_must_pass(self):
+        for mark in ('', 'Fail', '[✓](https://example.com/evidence#test)'):
+            with self.subTest(mark=mark):
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'),
+                                                              ('T2', 'AC1', mark)))])
+                self.assertEqual('- [x] **AC1.**' in fixed, mark == '[✓](https://example.com/evidence#test)')
+
+    def test_nonobserving_rows_supply_no_evidence(self):
+        for checks in ((('', 'AC1', '[✓](https://example.com/evidence#test)'),), (('T1', '', '[✓](https://example.com/evidence#test)'),), ()):
+            with self.subTest(checks=checks):
+                self.assertIn('- [ ] **AC1.**', synced(self.epic(), [self.pull(checks=checks)]))
+
+    def test_unrelated_incomplete_check_does_not_block_observed_criterion(self):
+        fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', '[✓](https://example.com/evidence#test)'), ('T2', '', 'Fail')))])
+        self.assertIn('- [x] **AC1.**', fixed)
+
+    def test_open_or_unlinked_pull_supplies_no_tick(self):
+        self.assertIn('- [ ] **AC1.**', synced(self.epic(), [self.pull(merged=False)]))
+        self.assertIn('- [ ] **AC1.**', synced(self.epic(), [self.pull(951)]))
+
+    def test_every_covering_task_needs_passed_observation(self):
+        for checks in ((('T1', 'AC1', ''),), (('T1', '', '[✓](https://example.com/evidence#test)'),), (('T1', 'AC1', '[✓](https://example.com/evidence#test)'),)):
+            with self.subTest(checks=checks):
+                fixed = synced(self.epic(950, 951), [self.pull(), self.pull(951, checks)])
+                self.assertEqual('- [x] **AC1.**' in fixed, checks == (('T1', 'AC1', '[✓](https://example.com/evidence#test)'),))
+
+    def test_pending_covering_task_prevents_automatic_and_explicit_ticks(self):
+        epic, pulls = self.epic(950, 951), [self.pull(), self.pull(951, merged=False)]
+        self.assertIn('- [ ] **AC1.**', synced(epic, pulls))
+        with self.assertRaisesRegex(AssertionError, 'not ready to verify'):
+            synced(epic, pulls, '--tick', 'AC1')
+
+    def test_multiple_links_require_every_observing_check_to_pass_and_merge(self):
+        epic = self.epic()
+        epic['body'] = epic['body'].replace(f"[W01]({url('pull', 950)})",
+            f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})")
+        for mark, merged, expected in (('[✓](https://example.com/evidence#test)', True, True), ('', True, False), ('[✓](https://example.com/evidence#test)', False, False)):
+            with self.subTest(mark=mark, merged=merged):
+                fixed = synced(epic, [self.pull(), self.pull(951, (('T1', 'AC1', mark),), merged)])
+                self.assertEqual('- [x] **AC1.**' in fixed, expected)
+        self.assertIn('- [ ] **AC1.**', synced(epic, [self.pull()]))
+
+    def test_out_of_scope_claim_cannot_verify_another_tasks_criterion(self):
+        epic = self.epic(950, 951)
+        epic['body'] = epic['body'].replace('| Work | AC1 |', '| Work | AC2 |', 1)
+        epic['body'] += '\n- [ ] **AC2.** Other.\n'
+        fixed = synced(epic, [self.pull(), self.pull(951, (('T1', '', '[✓](https://example.com/evidence#test)'),))])
+        self.assertIn('- [ ] **AC1.**', fixed)
+        self.assertIn('- [ ] **AC2.**', fixed)
+
+    def test_existing_tick_and_explicit_verified_tick_are_preserved(self):
+        epic = self.epic()
+        epic['body'] = epic['body'].replace('- [ ]', '- [x]')
+        pulls = [self.pull(checks=(('T1', 'AC1', ''),))]
+        self.assertIn('- [x] **AC1.**', synced(epic, pulls))
+        self.assertIn('- [x] **AC1.**', synced(self.epic(), pulls, '--tick', 'AC1'))
+        self.assertIn('- [x] **AC1.**', synced(self.epic(), [self.pull()], '--tick', 'AC1'))
+
+    def test_missing_or_unreadable_plan_leaves_criterion_unticked(self):
+        for body in ('', '## Test Plan\n\n| Test | Coverage |\n| --- | --- |\n| T1 | AC1 |'):
+            with self.subTest(body=body):
+                pull = self.pull()
+                pull['body'] = body
+                self.assertIn('- [ ] **AC1.**', synced(self.epic(), [pull]))
+
+    def test_automatic_ticks_report_completion_without_manual_verification(self):
+        done, fixed = TaskLinks().run_sync(self.epic(), [self.pull()])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('ticked: AC1', done.stdout)
+        self.assertIn('done: W01', done.stdout)
+        self.assertNotIn('ready to verify:', done.stdout)
+        self.assertNotIn('unmet:', done.stdout)
+        self.assertIn('- [x] **AC1.**', fixed)
+
+    def test_automatic_ticks_are_idempotent(self):
+        epic, pulls = self.epic(), [self.pull()]
+        fixed = synced(epic, pulls)
+        epic['body'] = fixed
+        self.assertEqual(synced(epic, pulls), fixed)
+
+
+    def test_result_without_valid_evidence_link_withholds_tick(self):
+        for mark in ('✓', '[x]', '[X]', '[✓]()', '[✓](#result)',
+                     '[✓](file:///tmp/result)', '[✓](https://)',
+                     '[✓](https://example.com/bad target)'):
+            with self.subTest(mark=mark):
+                fixed = synced(self.epic(), [self.pull(checks=(('T1', 'AC1', mark),))])
+                self.assertIn('- [ ] **AC1.**', fixed)
+
+    def test_fenced_example_withholds_automatic_tick(self):
+        for fence in ('```markdown', '~~~markdown'):
+            with self.subTest(fence=fence):
+                pull = self.pull()
+                pull['body'] = pull['body'].replace('## Test Plan', '## Test Plan\n\n' + fence) + '\n' + fence[:3]
+                self.assertIn('- [ ] **AC1.**', synced(self.epic(), [pull]))
+
+
 class TaskLinks(unittest.TestCase):
     def run_sync(self, epic: dict, pulls: list[dict], *args: str, tasks: list[dict] = (),
                  held: list[dict] = ()):
@@ -697,12 +829,12 @@ class TestPlanAgreement(unittest.TestCase):
         self.assertIn('disagreement: #950 W01: AC2 covered and named by no test', done.stdout)
         self.assertNotIn('no test observes it', done.stdout)
 
-    def test_a_pull_request_with_no_test_plan_names_nothing(self):
+    def test_a_pull_request_with_no_test_plan_reports_unreadable(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
         done, _fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn('disagreement: #950 W01: AC1 covered and named by no test', done.stdout)
+        self.assertIn('disagreement: #950: unreadable test plan', done.stdout)
 
     def test_an_empty_test_cell_is_unobserved(self):
         task = f"[W01]({url('pull', 950)})"

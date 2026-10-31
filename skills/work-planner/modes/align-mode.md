@@ -21,6 +21,7 @@ Read these files first.
 - [Dependency Graph](../artifacts/dependency-graph.md)
 - [Requirement Characteristics](../references/requirement-characteristics.md)
 - [Pull Request](../artifacts/pull-request.md)
+- [Pull Request Body](../artifacts/pull-request-body.md)
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
 - [Initiative](../artifacts/initiative.md)
 - [Epic](../artifacts/epic.md)
@@ -45,6 +46,7 @@ The main path meets [Outcomes](#outcomes).
    - Call [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body), [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body) or [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body) for that kind.
    - Run [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) with [task field conditions](../artifacts/task-body.md#fields) or [standalone field conditions](../artifacts/standalone-body.md#fields) for those bodies.
    - Supply the fetched context and output files.
+   - Run [Check Reference Visibility](../artifacts/issue-body.md#check-reference-visibility) for each issue being aligned; carry its findings to the content-decisions step.
    - Route the returned [Format Findings](../artifacts/issue-body.md#format-findings) through the following steps.
 4. **Publish mechanical fixes.**
    Confirm the returned diff changes structure only.
@@ -87,9 +89,12 @@ The main path meets [Outcomes](#outcomes).
    - Resume this alignment with its checked bodies or unresolved findings.
    - Put each problem it reports to the user. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
 9. **Coverage.**
+   For a pull request explicitly selected for alignment, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), publish a converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), and report its URL.
    When no initiative or epic is selected, continue at step 13, Re-run.
    - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) for the selected initiative and epics.
    - Continue with its returned records.
+   - For each task pull request in those records, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), then publish each converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request). Report each converted pull request by URL and refresh its record before recording coverage.
+   - An epic review carries no task test plan.
    - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout and output body file:
      - **Unmet.**
        - Each task [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports unmet is a gap.
