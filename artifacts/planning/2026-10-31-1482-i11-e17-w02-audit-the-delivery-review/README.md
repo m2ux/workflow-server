@@ -19,6 +19,7 @@ The evaluated starting base is i11/e17/workspace at 7e5850eb2eea3bf863edb97e6599
 | [Agent review](agent-review.json) | Published final head/base review and finding dispositions |
 | [Delivery](delivery.md) | Task merge, exact revisions and handoff readback |
 | [Changes](changes.md) | Applied plan/delivery changes and remaining human boundary |
+| [Closure](closure.md) | Merged evidence, named initiative fixtures and Done readback |
 
 ## Links
 
