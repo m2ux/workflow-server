@@ -23,3 +23,9 @@ The complete diff is five declared files: sync.py, test_sync.py, delivery-eviden
 ## Plan changes
 
 Applied: none. Held: none. Component dispatch was attempted as the session procedure requires, but the agent thread limit was reached, so this session implemented both groups under the brief's no-slot path. Each group's files have a separate commit. No deferred debt or arising issue was identified by this unit's validation.
+
+## Delivery
+
+Task PR #1486 merged to `i11/e09/workspace` as `f03df4884afef499fa9d6fe8c0172f19bc05d152`. Its exact head matched the passing evidence. The target was unprotected with no active rules, no required checks and no emitted check runs/statuses; the aggregate empty status was pending and supplied no failing or outstanding named check. GitHub reported clean and mergeable. Sync consumed the merged record and published Test Plan, ticked AC6/AC7/AC8 and W01/W02 Done. Exact saved-body readback passed, with retained Coverage and the AC1 numbering gap. Later E09 tasks remain unfinished.
+
+The pre-existing PR #1265 Test Plan claims AC10/AC11 while current W05 Coverage is AC9. This historical discrepancy is reported to the epic owner for reconciliation; it does not supply evidence to this unit or tick AC10/AC11.

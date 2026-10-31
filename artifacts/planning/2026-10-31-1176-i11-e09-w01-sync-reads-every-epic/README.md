@@ -18,6 +18,7 @@ The unit starts from workspace b0294e20074f715286d7c13451d3df30764d3273, contain
 | [Tests](tests.log) | Full Work Planner test output. |
 | [Documents](documents.log) | Skill document checker output. |
 | [Board](board17.json) | Live Project 17 identity. |
+| [Delivery](delivery.json) | Confirmed merge, exact issue readback and target evidence. |
 
 ## Links
 
@@ -25,3 +26,5 @@ The unit starts from workspace b0294e20074f715286d7c13451d3df30764d3273, contain
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1176 |
 | Board | https://github.com/users/m2ux/projects/17/views/4 |
+
+Task pull request: https://github.com/m2ux/workflow-server/pull/1486

@@ -1,0 +1,27 @@
+{
+  "pull_request": 1486,
+  "head": "5b49bbc306c3dff32601c17291619f42f0dfd120",
+  "base": "i11/e09/workspace",
+  "merge_commit": "f03df4884afef499fa9d6fe8c0172f19bc05d152",
+  "exact_body_readback": true,
+  "done": [
+    "W01",
+    "W02"
+  ],
+  "verified_criteria": [
+    "AC6",
+    "AC7",
+    "AC8"
+  ],
+  "existing_disagreements": [
+    "PR1265 W05 names AC10 and AC11 outside current Coverage AC9"
+  ],
+  "checks": {
+    "required": [],
+    "check_runs": [],
+    "commit_statuses": [],
+    "mergeable_state_before": "clean",
+    "protection": "404 Branch not protected",
+    "active_rules": []
+  }
+}
