@@ -33,7 +33,7 @@ and every epic row is delivered. Initiatives group and track their epics; delive
 to epics and tasks.
 
 Reported for each acceptance criterion of a task, epic or initiative:
-  - ready to verify: unticked, and every row citing it is delivered (for a task issue, its pull
+  - ready to verify: unticked after automatic evidence, and every row citing it is delivered (for a task issue, its pull
     request is open or merged);
   - ticked early: ticked while a row citing it is undelivered (for a task issue, while it has no
     pull request).

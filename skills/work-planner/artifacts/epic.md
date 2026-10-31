@@ -75,7 +75,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Note | A row that links its task issue. |
 | Unplaced | A task issue of this epic whose id is not a row. |
 | Open questions | The epic's Open Questions section remains. |
-| Ready to verify | A criterion whose delivering rows are all delivered. |
+| Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
 | Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
 
