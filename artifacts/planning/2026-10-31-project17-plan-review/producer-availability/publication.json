@@ -1,0 +1,19 @@
+{
+  "contract_commit": "a53b66f4d",
+  "readbacks": [
+    {
+      "issue": 1166,
+      "updated_at": "2026-10-31T09:55:20Z",
+      "exact_body_readback": true,
+      "rows_labels_and_state_preserved": true
+    },
+    {
+      "issue": 1181,
+      "updated_at": "2026-10-31T09:55:25Z",
+      "exact_body_readback": true,
+      "rows_labels_and_state_preserved": true
+    }
+  ],
+  "implementation_owner": "E10 W02",
+  "runtime_validation": "Pending delivery; no implementation pass claimed"
+}
