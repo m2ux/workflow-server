@@ -14,6 +14,7 @@ Delivery Signals is complete and Evidence Capture owns tracker snapshots, so thi
 | --- | --- |
 | [Gate work item](w01.md) | Review gate implementation and validation |
 | [Audit work item](w02.md) | Final delivery-instruction audit |
+| [Dependency report](dependency-report.txt) | Full initiative graph and existing unrelated findings |
 | [Decisions](decisions.md) | Placement, priority and dependency decisions |
 
 ## Links
