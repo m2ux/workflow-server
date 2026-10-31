@@ -1,5 +1,7 @@
 # Open-epic Joins reconciliation
 
+Current E10 numbering and final-verification dependencies are in [Final skill verification](final-skill-verification.md). The source snapshots and counts below describe the preceding Joins review; the E10 pair register carries the current identities.
+
 User approved reconciliation of open-epic pairings and explicit separate-review decisions.
 
 ## Decisions

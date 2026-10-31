@@ -4,15 +4,15 @@
 
 ## Executive Summary
 
-The shared skill-file check reports six findings over `skills/gitnexus`, and has done so since the rules that catch them landed. The gitnexus skills are not written to the shared skill guidelines, so a run of the check over every skill cannot be read as a pass or a fail: a reader has to know which findings are expected before the exit status means anything.
+The final shared skill-file check includes every repository skill after E10's checker, instruction and cleanup changes land. Completion requires no findings at the recorded revision, with the full skill inventory, command, exit status and output retained.
 
-Epic row E10 W21 carries this work, and its Coverage cell names AC27. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
+Epic row E10 W26 carries this work, and its Coverage cell names AC27. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [Check Scope: One Run Over Every Skill That Reports Nothing](w21.md) | The friction, the design, the references and the parts of the work |
+| [Check Scope: One Run Over Every Skill That Reports Nothing](w26.md) | The friction, the design, the references and the parts of the work |
 | [Original issue](original-issue.md) | The issue this record carries, its body and its comments unchanged |
 
 ## Links

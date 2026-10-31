@@ -6,13 +6,13 @@
 
 The placement rule asks which procedure runs a command and sends the specification to that procedure's file. Retrieval asks which files a mode must open to work. The two agree where a mode's own steps run the operation, and part company where one mode's command specification cites an operation held in another mode's file. This task closes that gap and re-measures what the layout now costs.
 
-Epic row E10 W24 carries this work, and its Coverage cell names AC33, AC34. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
+Epic row E10 W23 carries this work, and its Coverage cell names AC33, AC34. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [Specification Reach: Placement Measured by What a File Must Open](w24.md) | The friction, the design, the references and the parts of the work |
+| [Specification Reach: Placement Measured by What a File Must Open](w23.md) | The friction, the design, the references and the parts of the work |
 | [Original issue](original-issue.md) | The issue this record carries, its body and its comments unchanged |
 
 ## Links

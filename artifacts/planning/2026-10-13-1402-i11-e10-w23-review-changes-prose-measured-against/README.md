@@ -6,13 +6,13 @@
 
 A review pull request's body is written across many sessions: each unit that merges into the epic base adds its own bullet under Changes and its own pull request under References. Sync Epic measures the References against the merges and reports a difference naming both sets. Nothing measures Changes, and a bullet written by one unit stands unrevised when a later unit makes it false.
 
-Epic row E10 W23 carries this work, and its Coverage cell names AC30, AC31, AC32. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
+Epic row E10 W22 carries this work, and its Coverage cell names AC30, AC31, AC32. This record holds the work item, so the friction, the design and the parts of the work stand where the epic row links them, and the issue that recorded the work is kept whole beside them.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [Review Changes: Prose Measured Against the Branch It Fronts](w23.md) | The friction, the design, the references and the parts of the work |
+| [Review Changes: Prose Measured Against the Branch It Fronts](w22.md) | The friction, the design, the references and the parts of the work |
 | [Original issue](original-issue.md) | The issue this record carries, its body and its comments unchanged |
 
 ## Links
