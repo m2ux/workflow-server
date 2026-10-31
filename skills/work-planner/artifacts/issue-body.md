@@ -86,6 +86,17 @@ The saved format corrections for one issue and any unresolved content findings.
    - Repeat Validate Issue Body with the saved JSON and the same kind conditions, context and output path.
    - Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
 
+### *Check* Reference Visibility
+
+Repository visibility for the destination issue and its References entries.
+
+**Inputs:** Current issue JSON and a repository-snapshot output path.
+
+1. Run [List Reference Repositories](#list-reference-repositories) to identify the destination and cited repositories.
+2. Run [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.
+3. Run [Validate Reference Visibility](#validate-reference-visibility) with that snapshot and the issue record.
+4. Return each private reference on a public issue and each unavailable visibility as a finding. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the caller.
+
 ## Fields
 
 ### Titles
@@ -181,7 +192,7 @@ Task and epic numbers, issue links and wording must agree with the current decis
 
 ### References
 
-An issue's References section does not link issues or pull requests on the same board.
+An issue's References section does not link issues or pull requests on the same board. A public issue's References cite public repositories; unavailable visibility is unresolved.
 
 ### Coverage Reports
 
@@ -219,4 +230,32 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json --fix fixed.md
+```
+
+### List Reference Repositories
+
+List repository names from the issue destination and References section.
+
+```bash
+<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py repositories issue-943.json
+```
+
+### Fetch Reference Repository
+
+Read one listed repository's visibility with the authenticated repository API.
+
+- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
+
+```bash
+gh api repos/{owner}/{repo} > repository.json
+```
+
+### Validate Reference Visibility
+
+Report private repository references on a public issue and unresolved repository visibility.
+
+- The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
+
+```bash
+<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
 ```

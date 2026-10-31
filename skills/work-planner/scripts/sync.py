@@ -408,18 +408,24 @@ def cited(text: str) -> list[int]:
 def plan_rows(body: str) -> list[tuple[str, str, str]] | None:
     """Rows of the Test Plan table as (Test, Coverage, Pass). None when that table is absent."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
-    lines = next((item for heading, item in sections if heading == 'Test Plan'), None)
-    if lines is None:
+    plans = [item for heading, item in sections if heading == 'Test Plan']
+    if len(plans) != 1:
         return None
+    lines = plans[0]
     table = [line for line in lines if line.startswith('|')]
     if len(table) < 2:
         return None
     header = cells(table[0])
-    if 'Test' not in header or 'Coverage' not in header or 'Pass' not in header:
+    if header != ['Test', 'Description', 'Coverage', 'Pass']:
+        return None
+    if len(cells(table[1])) != len(header) or not all(
+            re.fullmatch(r':?-{3,}:?', c) for c in cells(table[1])):
         return None
     found = []
     for line in table[2:]:
         parsed = cells(line)
+        if len(parsed) != len(header):
+            return None
         found.append((cell(header, parsed, 'Test'), cell(header, parsed, 'Coverage'), cell(header, parsed, 'Pass')))
     return found
 
@@ -518,6 +524,9 @@ def test_plan_agreement(rows, header, by_number, report):
     for number, tasks in sorted(by_pr.items()):
         pr = by_number.get(number)
         if not pr:
+            continue
+        if plan_rows(pr.get('body') or '') is None:
+            report['disagreement'].append(f'#{number}: unreadable test plan')
             continue
         named, observed, _passed = plan_claims(pr.get('body') or '')
         union = set().union(*(coverage[task] for task in tasks))
