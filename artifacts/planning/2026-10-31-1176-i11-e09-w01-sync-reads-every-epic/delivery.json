@@ -23,5 +23,11 @@
     "mergeable_state_before": "clean",
     "protection": "404 Branch not protected",
     "active_rules": []
+  },
+  "integration_draft": {
+    "number": 1487,
+    "body_exact_readback": true,
+    "bidirectional_development_link_verified": true,
+    "linked_issue": 1176
   }
 }
