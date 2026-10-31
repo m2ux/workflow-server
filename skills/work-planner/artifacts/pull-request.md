@@ -8,6 +8,7 @@ Read these files first.
 
 - [Issue](issue.md)
 - [Delivery Branches](delivery-branches.md)
+- [Agent Review](agent-review.md)
 
 ## Operations
 
@@ -107,7 +108,7 @@ One current pull request and its requested supporting records.
 
 **Inputs:** Repository, pull request number, output paths and requested records: metadata, changed paths or reviews.
 
-1. Run [Fetch Pull Request](#fetch-pull-request) or [Save Pull Request Snapshot](#save-pull-request-snapshot) for current identity, state, head and base.
+1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) for full REST metadata, including URL, body and both revision SHAs, replacing the supplied destination with one JSON object on every refresh.
 2. Run [Fetch Pull Request Files](#fetch-pull-request-files) or [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when the caller requests those records.
 3. Return the snapshots or missing evidence.
 
@@ -177,21 +178,30 @@ The current pull request's readiness against its target requirements and head ch
    - Compare its head with the retained SHA; a changed head requires fresh evidence.
    - Return the verified head, target requirements and readiness result, including unresolved conditions.
 
+### *Hold* Epic Review
+
+An open epic review returned to draft while its handoff evidence is unresolved.
+
+**Inputs:** Review pull request identity.
+
+1. Read full metadata through [Read Pull Request State](#read-pull-request-state). For an open ready pull request, run [Mark Review Draft](#mark-review-draft).
+2. Read the state again and return the confirmed draft state or discrepancy.
+
 ### *Ready* Epic Review
 
 The complete epic's pull request made ready for review.
 
-**Inputs:** Review pull request identity and confirmed readiness showing every task delivered, every criterion verified and ticked, and no unresolved question or delivery discrepancy.
+**Inputs:** Review pull request identity, published agent review records and confirmed readiness showing every task delivered, every criterion verified and ticked, and no unresolved question or delivery discrepancy.
 
 1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state).
-2. For a draft, run [Mark Review Ready](#mark-review-ready) with its identity.
-3. Read the pull request again and return its confirmed ready state or the discrepancy. Target review requirements still govern the merge.
+2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with its identity.
+3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge.
 
 ## Fields
 
 ### State
 
-A pull request is open, draft, ready for review, merged or closed without merge. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until every task is delivered and every epic criterion is verified and ticked.
+A pull request is open, draft, ready for review, merged or closed without merge. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until every task is delivered, every epic criterion is verified and ticked, and current agent review evidence passes.
 
 ### Scope
 
@@ -243,22 +253,6 @@ gh api --method PATCH 'repos/<owner>/<repo>/pulls/<pull-request-number>' -f base
 
 ```bash
 gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -f base='i07/e00/main' --jq .base.ref
-```
-
-### Fetch Pull Request
-
-Appends one pull request, as one JSON line, to the supplied file.
-
-**Inputs:** Repository, pull request number and destination JSON-lines file.
-
-```bash
-gh api 'repos/<owner>/<repo>/pulls/<pull-request-number>' --jq . >> '<pull-request-records-file>'
-```
-
-**Example:**
-
-```bash
-gh api 'repos/<owner>/<repo>/pulls/439' --jq . >> prs.json
 ```
 
 ### Retitle Pull Request
@@ -593,4 +587,14 @@ Marks the supplied epic review pull request ready for review.
 
 ```bash
 gh pr ready '<pull-request-number>' --repo '<owner>/<repository>'
+```
+
+### Mark Review Draft
+
+Returns an open integration pull request with blocked handoff evidence to draft.
+
+**Inputs:** Repository and pull request number.
+
+```bash
+gh pr ready '<pull-request-number>' --undo --repo '<owner>/<repository>'
 ```

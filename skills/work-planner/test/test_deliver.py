@@ -8,6 +8,7 @@ import unittest
 from pathlib import Path
 
 from fixtures import initiative_body, issue, item, links, pr, run, url
+from test_agent_review import reviewed_pr
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
@@ -379,15 +380,21 @@ class DispatchStatus(unittest.TestCase):
                  'options': [{'name': name, 'id': n} for n, name in enumerate(names, start=1)]}]
 
     def place(self, entries: list[dict], *args: str,
-              statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')):
+              statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'),
+              review=True):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             items_path, fields_path = root / 'items.json', root / 'fields.json'
             items_path.write_text(json.dumps(entries))
             fields_path.write_text(json.dumps(self.fields(*statuses)))
+            pull, record = reviewed_pr()
+            prs_path, records_path = root / 'prs.json', root / 'reviews.json'
+            prs_path.write_text(json.dumps(pull))
+            records_path.write_text(json.dumps([record] if review else []))
             return run('deliver.py', '--items', str(items_path), '--board', 'users/o/projectsV2/9',
                        '--fields', str(fields_path), '--out', str(root / 'out'),
-                       '--assignee', 'me', *args)
+                       '--assignee', 'me', '--prs', str(prs_path),
+                       '--agent-reviews', str(records_path), *args)
 
     def board(self, *entries: tuple[dict, str]) -> list[dict]:
         rows = []
@@ -403,6 +410,12 @@ class DispatchStatus(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('set #637 [I07:E00:W01] Queue Plan: Work: Ready → In Progress', done.stdout)
         self.assertIn('set #943 [I07:E00] Queue Plan: Work: Ready → In Progress', done.stdout)
+
+    def test_missing_review_prevents_dispatch_handoff(self):
+        done = self.place(self.board((epic(943), 'In Progress')), '--review', '943', review=False)
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('missing agent review', done.stderr)
+        self.assertNotIn('gh api', done.stdout)
 
     def test_a_complete_epic_goes_to_in_review(self):
         done = self.place(self.board((epic(943), 'In Progress')), '--review', '943')

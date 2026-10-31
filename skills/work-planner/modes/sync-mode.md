@@ -123,8 +123,7 @@ The main path meets [Outcomes](#outcomes).
     - Run [Select Project Board](../artifacts/board.md#select-project-board) for the initiative theme when the caller supplied no board identity. Report an absent board; integration still follows its own evidence gates.
     - When [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports an epic base unmerged and names no open pull request, open it as a draft review pull request and leave the epic open. Epic Integration establishes readiness from the completed delivery evidence.
     - For each open epic pull request:
-      - When a board exists, every task is delivered and every criterion verified and ticked, run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) with the epic and selected board identity.
-      - Follow [Epic Integration](../protocols/epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot and criterion verification evidence.
+      - Follow [Epic Integration](../protocols/epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and selected board identity or its confirmed absence.
       - Report incomplete delivery or unmet merge requirements.
     - Fetch the pull requests again after merging.
     - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records and the same project checkout.

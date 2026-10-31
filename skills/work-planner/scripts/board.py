@@ -24,7 +24,7 @@ Status, first match wins:
   (removed)    closed any other way
   In Review    a task issue an open pull request ready for review delivers: its title names the
                epic by the initiative's row id, and its Development field links the issue; an open
-               epic or initiative whose criteria are all ticked
+               initiative whose criteria are all ticked; an epic with ticked criteria and current agent review
   In Progress  an open draft pull request links a task issue; a task whose row links the planning
                record a session holds it with; an epic with an open pull request and a criterion
                unticked
@@ -40,7 +40,7 @@ In Progress when a row has been delivered or an epic is Done, and Backlog when w
 started. Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
 
 An open task issue is In Review when an open pull request ready for review links it. An open
-epic or initiative is In Review when every acceptance criterion is ticked. An initiative is In
+initiative is In Review when every acceptance criterion is ticked. An epic also requires current published agent review evidence from --agent-reviews; a missing or failing review holds it In Progress. An initiative is In
 Progress when any epic is In Review or In Progress.
 
 The board's Status field offers Backlog, Ready, In Progress and Done, and In Review optionally;
@@ -61,6 +61,8 @@ Printed: the gh call for each issue to add, item to remove, Status to set and as
 remove, which statuses.py renders within the DELIVERY jurisdiction. Run the calls, fetch the issues
 and items again and re-run: the board is current when nothing is left to do.
 """
+from agent_review import epic_check, load_records
+
 import argparse
 import json
 import re
@@ -274,6 +276,7 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[])
     parser.add_argument('--others', nargs='*', default=[], help='issues outside the initiative its rows depend on')
     parser.add_argument('--prs', help='pull requests as JSON lines')
+    parser.add_argument('--agent-reviews', help='published agent review records as a JSON list')
     parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--board', help='the board path, e.g. users/m2ux/projectsV2/9')
     parser.add_argument('--fields', help="the board's fields")
@@ -295,9 +298,11 @@ def main() -> int:
     epics, tasks = load(args.epics), load(args.tasks)
     issues = {**load(args.others), **tasks, **epics, root: initiative}
     prs = pull_requests(args.prs)
+    reviews = load_records(args.agent_reviews)
     attach_links(prs, args.links)
     unresolved: list[str] = []
     unplaceable: list[str] = []
+    review_blocked = False
     board = Board(issues, unresolved, home, prs)
 
     header, epic_rows = rows(initiative)
@@ -363,7 +368,11 @@ def main() -> int:
         if epic['state'] == 'closed':
             status[number] = 'Done' if completed(epic) else None
         elif criteria_met(epic):
-            status[number] = 'In Review'
+            problem = epic_check(epic, prs, reviews)
+            status[number] = 'In Progress' if problem else 'In Review'
+            if problem:
+                review_blocked = True
+                unresolved.append(f'{label(number, home)}: {problem}; handoff blocked')
         elif pr_status(epic_key):
             status[number] = 'In Progress'
         elif delivered_any:
@@ -415,7 +424,7 @@ def main() -> int:
         changes.place(key, f"{label(key, home)} {issues[key]['title']}", issues[key],
                       held, wanted, item_id, home)
     printed = changes.report(unresolved=unresolved, asking=bool(unplaceable))
-    return 1 if unplaceable else printed
+    return 1 if unplaceable or review_blocked else printed
 
 
 if __name__ == '__main__':
