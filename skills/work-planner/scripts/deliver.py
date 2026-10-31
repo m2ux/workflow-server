@@ -29,7 +29,7 @@ request that targets the epic base when its test plan has passed; and an unresol
 issue not given. A run that met an unresolvable entry exits 1.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
-take, and the In Review a completed epic takes. The calls are rendered by statuses.py within the
+take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
 DISPATCH jurisdiction, which refuses any other Status, a task set In Review, and a removal.
 
 --reserve sets the record folder as each row's single link. The record README links its work item.
@@ -37,6 +37,8 @@ DISPATCH jurisdiction, which refuses any other Status, a task set In Review, and
 body to --fix and refuse a row linking a pull request or commit. The planning URL comes from
 --records or an existing planning link in the epic.
 """
+from agent_review import epic_check, load_records
+
 import argparse
 import json
 import re
@@ -319,6 +321,12 @@ def place(args: argparse.Namespace) -> int:
     absent = sorted(set(wanted) - set(on_board))
     if absent:
         sys.exit('not on the board: ' + ', '.join(f'#{n}' for n in absent))
+    records = load_records(args.agent_reviews)
+    prs = pull_requests(args.prs) if args.prs else []
+    for number, status in wanted.items():
+        if status == 'In Review':
+            if problem := epic_check(on_board[number][3], prs, records):
+                sys.exit(f'#{number}: {problem}; handoff blocked')
     home = Counter(key[0] for key, _, _, _ in on_board.values()).most_common(1)[0][0]
     changes = Changes(DISPATCH, args.board, field, args.assignee, ' (the board matches the dispatch)')
     for number in sorted(wanted):
@@ -404,6 +412,7 @@ def main() -> int:
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')
+    parser.add_argument('--agent-reviews', help='published agent review records as a JSON list')
     parser.add_argument('--board', help='the board, e.g. users/{owner}/projectsV2/9')
     parser.add_argument('--fields', help="the board's fields")
     parser.add_argument('--out', help='directory for the Status body files')
