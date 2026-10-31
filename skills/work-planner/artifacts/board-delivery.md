@@ -25,15 +25,16 @@ The board changes implied by supplied delivery state.
 
 ### *Record* Epic Review
 
-One epic's board item at In Review, recording that its delivery is complete and its review draft awaits the user's mark.
+One completed epic's board item at In Review.
 
 **Inputs:** Epic issue identity, board identity and output paths.
 
 1. Run [Read Board State](board.md#read-board-state) for the supplied board to obtain its items and Status field.
 2. Run [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
+   - Run [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.
 3. Match the epic's issue to its board item.
    - Return an absent item as a finding and stop. The status write below needs it.
-4. Run [Update Item Status](board.md#update-item-status) with the board and item identities, the Status field and In Review option ids, and that status in its request body file, meeting [Status Changes](#status-changes).
+4. Run [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity and the fetched board evidence, meeting [Status Changes](#status-changes).
    - Repeat the write and read the item again when it still shows the preceding status. The item list can lag a write.
 5. Return the confirmed status or the discrepancy left for the caller.
 
@@ -63,6 +64,16 @@ The board's status and assignees after its issues record delivery.
    - Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, pull request records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
    - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
+### *Record* Dispatch Status
+
+The task and epic statuses owned by a delivery dispatch.
+
+**Inputs:** Board items, board identity, field definitions, output directory, assignee login, held task and epic issue numbers for In Progress, and complete epic numbers for In Review.
+
+1. Run [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities and board evidence.
+2. Apply each returned call and confirm each affected item through [Read Board Configuration](board.md#read-board-configuration).
+3. Return the saved statuses or unresolved discrepancies.
+
 ## Fields
 
 ### Status Changes
@@ -70,6 +81,8 @@ The board's status and assignees after its issues record delivery.
 An open initiative or epic whose criteria are all ticked is In Review. An epic with an open pull request and a criterion unticked is In Progress.
 
 An initiative or epic with no open pull request and unticked criteria keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. Delivery does not move an initiative or epic between Ready and Backlog.
+
+A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses, task In Review and removals.
 
 Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
 
@@ -106,4 +119,14 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board 'users/<owner>/projectsV2/9' --fields fields.json --items items.json --out board/ --assignee m2ux
+```
+
+### Compute Dispatch Status
+
+Renders board calls within the dispatch jurisdiction.
+
+**Inputs:** Board items, board identity, fields, output directory, assignee, comma-separated held task and epic numbers, and comma-separated complete epic numbers.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --board '<board-identity>' --fields '<board-fields-file>' --out '<output-directory>' --assignee '<assignee-login>' --progress '<held-issue-numbers>' --review '<complete-epic-numbers>'
 ```

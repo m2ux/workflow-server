@@ -153,7 +153,7 @@ GitHub's **Auto-close issues with merged linked pull requests** repository setti
 
 - The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
 - No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
-- An enabled setting closes issues on merge whatever their criteria. Where it cannot be disabled, each affected issue's state is read after every merge and reopened where its criteria are unmet.
+- An enabled setting blocks delivery links and merges until the setting is confirmed disabled.
 
 ## Commands
 

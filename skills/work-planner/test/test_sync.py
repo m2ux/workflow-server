@@ -456,6 +456,24 @@ class EpicClose(unittest.TestCase):
         self.assertNotIn('in flight:', out)
         self.assertNotIn('unmatched:', out)
 
+    def test_a_complete_epic_names_the_draft_to_ready(self):
+        """The signal Ready Epic Pull Request runs on: every row delivered, every criterion
+        ticked, and the pull request merging the base still a draft."""
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertIn('unmerged: i01/e00/main (#980 draft)', out)
+
+    def test_an_unticked_criterion_withholds_the_draft_from_readying(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                    base='i01/e00/main', head='i01/e00/w01-work'),
+                 pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')]
+        out = self.run_sync(body, pulls)
+        self.assertNotIn('unmerged:', out)
+
     def test_a_review_pull_request_that_links_no_issue_is_uncited(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
@@ -876,3 +894,52 @@ class ReviewReferences(unittest.TestCase):
                  pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
                     base='main', head='i01/e00/main')]
         self.assertNotIn('references:', self.run_sync(pulls, body=body))
+
+
+class TaskCriteria(unittest.TestCase):
+    """A task issue's criteria against the pull request that delivers it, open or merged."""
+
+    def run_sync(self, record: dict, pulls: list[dict], *args: str):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            body.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed), *args)
+            return done, fixed.read_text() if fixed.exists() else ''
+
+    def task(self, ticked: bool = False) -> dict:
+        return issue(3, '[I01:E00:W01] First: Work',
+                     body=f"## Acceptance Criteria\n\n- [{'x' if ticked else ' '}] **AC1.** Holds.\n")
+
+    def test_an_open_pull_request_makes_the_criteria_ready_to_verify(self):
+        done, _ = self.run_sync(self.task(), [pr(950, '[I01:E00] Work')], '--pr', '950')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('linked: W01 in flight on #950', done.stdout)
+        self.assertIn('ready to verify: AC1 (W01)', done.stdout)
+
+    def test_a_criterion_ticks_while_the_pull_request_is_open(self):
+        done, fixed = self.run_sync(self.task(), [pr(950, '[I01:E00] Work')],
+                                    '--pr', '950', '--tick', 'AC1')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('- [x] **AC1.**', fixed)
+
+    def test_an_open_pull_request_leaves_the_task_unclosable(self):
+        done, _ = self.run_sync(self.task(True), [pr(950, '[I01:E00] Work')], '--pr', '950')
+        self.assertIn('closable: no (undelivered W01)', done.stdout)
+
+    def test_a_merged_pull_request_delivers_and_closes_the_task(self):
+        done, _ = self.run_sync(self.task(True),
+                                [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')],
+                                '--pr', '950')
+        self.assertIn('linked: W01 delivered by #950', done.stdout)
+        self.assertIn('closable: yes', done.stdout)
+
+    def test_a_task_with_no_pull_request_reports_a_tick_as_early(self):
+        done, _ = self.run_sync(self.task(True), [pr(950, '[I01:E00] Work')])
+        self.assertIn('ticked early: AC1 (W01 has no pull request)', done.stdout)
+
+    def test_a_pull_request_naming_another_epic_is_refused(self):
+        done, _ = self.run_sync(self.task(), [pr(950, '[I01:E01] Work')], '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('no pull request naming I01:E00', done.stderr)

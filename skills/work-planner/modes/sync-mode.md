@@ -63,10 +63,10 @@ The main path meets [Outcomes](#outcomes).
    - Name the tasks it works on: one task, or tasks that name each other in Joins.
    - Put any match that is not clear to the user.
 5. **Sync each task issue.**
-   For a task delivered by a merged pull request, run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) with its current body, selected criteria, delivery evidence, revisions, named instruments and the project checkout.
+   For a task with a delivering pull request, open or merged, run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) with its current body, selected criteria, delivery evidence, revisions, named instruments and the project checkout.
    - Run [Record Task Delivery](../artifacts/task-body.md#record-task-delivery) with the task JSON, pull request records, complete issue-link snapshot, delivering pull request number, returned verified criterion ids and output body path.
    - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) before closure.
-   - Record the pull request on it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
+   - Once the pull request has merged, record it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
    - [Issue Closure](../protocols/issue-closure.md) when it reports closable.
 6. **Sync each epic.**
    Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues and the project checkout its long-lived branch names come from:
@@ -80,7 +80,7 @@ The main path meets [Outcomes](#outcomes).
        - Match them as in the match step.
      - **Draft.**
        - Open it as a draft review pull request.
-       - Leave the epic open until the user marks the draft ready.
+       - Leave the epic open while its delivery is incomplete.
      - **Unmerged.**
        - The close step opens or merges that pull request.
      - **References.**
@@ -120,10 +120,12 @@ The main path meets [Outcomes](#outcomes).
 9. **Patch.**
    Patch each changed body from its output body file with [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
 10. **Close.**
-    - When [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports an epic base unmerged and names no open pull request, open it as a draft review pull request and leave the epic open. The user marks the draft ready when the epic is complete.
+    - Run [Select Project Board](../artifacts/board.md#select-project-board) for the initiative theme when the caller supplied no board identity. Report an absent board; integration still follows its own evidence gates.
+    - When [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports an epic base unmerged and names no open pull request, open it as a draft review pull request and leave the epic open. Epic Integration establishes readiness from the completed delivery evidence.
     - For each open epic pull request:
+      - When a board exists, every task is delivered and every criterion verified and ticked, run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) with the epic and selected board identity.
       - Follow [Epic Integration](../protocols/epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot and criterion verification evidence.
-      - Report a draft waiting for the user.
+      - Report incomplete delivery or unmet merge requirements.
     - Fetch the pull requests again after merging.
     - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records and the same project checkout.
     - [Issue Closure](../protocols/issue-closure.md) each epic the re-run reports closable.

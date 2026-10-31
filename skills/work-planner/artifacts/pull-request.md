@@ -177,11 +177,21 @@ The current pull request's readiness against its target requirements and head ch
    - Compare its head with the retained SHA; a changed head requires fresh evidence.
    - Return the verified head, target requirements and readiness result, including unresolved conditions.
 
+### *Ready* Epic Review
+
+The complete epic's pull request made ready for review.
+
+**Inputs:** Review pull request identity and confirmed readiness showing every task delivered, every criterion verified and ticked, and no unresolved question or delivery discrepancy.
+
+1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state).
+2. For a draft, run [Mark Review Ready](#mark-review-ready) with its identity.
+3. Read the pull request again and return its confirmed ready state or the discrepancy. Target review requirements still govern the merge.
+
 ## Fields
 
 ### State
 
-A pull request is open, draft, ready for review, merged or closed without merge. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until the user marks it ready.
+A pull request is open, draft, ready for review, merged or closed without merge. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until every task is delivered and every epic criterion is verified and ticked.
 
 ### Scope
 
@@ -573,4 +583,14 @@ gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/status?per_page=100' 
 
 ```bash
 gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/status?per_page=100' > status.json
+```
+
+### Mark Review Ready
+
+Marks the supplied epic review pull request ready for review.
+
+**Inputs:** Repository, pull request number and confirmed epic readiness.
+
+```bash
+gh pr ready '<pull-request-number>' --repo '<owner>/<repository>'
 ```

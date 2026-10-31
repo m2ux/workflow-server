@@ -11,7 +11,7 @@ from pathlib import Path
 from fixtures import SCRIPTS, issue
 
 sys.path.insert(0, str(SCRIPTS))
-from statuses import DELIVERY, PLACED, QUEUE, Changes, Jurisdiction, StatusField  # noqa: E402
+from statuses import DELIVERY, DISPATCH, PLACED, QUEUE, Changes, Jurisdiction, StatusField  # noqa: E402
 
 HOME = 'o/r'
 BOARD = 'users/o/projectsV2/9'
@@ -95,6 +95,45 @@ class QueueJurisdiction(unittest.TestCase):
             plan = changes(tmp, QUEUE)
             place(plan, INITIATIVE, 'Ready', 'Backlog')
         self.assertIn('Ready → Backlog', plan.lines[0])
+
+
+class DispatchJurisdiction(unittest.TestCase):
+    def test_a_held_row_moving_into_in_progress_is_allowed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = changes(tmp, DISPATCH)
+            place(plan, TASK, 'Ready', 'In Progress')
+        self.assertIn('Ready → In Progress', plan.lines[0])
+
+    def test_a_complete_epic_moving_into_in_review_is_allowed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = changes(tmp, DISPATCH)
+            place(plan, EPIC, 'In Progress', 'In Review')
+        self.assertIn('In Progress → In Review', plan.lines[0])
+
+    def test_setting_a_task_in_review_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Jurisdiction) as refused:
+                place(changes(tmp, DISPATCH), TASK, 'In Progress', 'In Review')
+        self.assertIn('does not set a task In Review', str(refused.exception))
+
+    def test_setting_the_queue_is_refused(self):
+        for wanted in ('Backlog', 'Ready'):
+            with self.subTest(wanted=wanted):
+                with tempfile.TemporaryDirectory() as tmp:
+                    with self.assertRaises(Jurisdiction) as refused:
+                        place(changes(tmp, DISPATCH), EPIC, 'In Progress', wanted)
+                self.assertIn('a dispatch sets In Progress and In Review', str(refused.exception))
+
+    def test_setting_done_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Jurisdiction):
+                place(changes(tmp, DISPATCH), EPIC, 'In Review', 'Done')
+
+    def test_removing_an_item_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Jurisdiction) as refused:
+                place(changes(tmp, DISPATCH), EPIC, 'In Progress', None)
+        self.assertIn('not a removal', str(refused.exception))
 
 
 class Rendering(unittest.TestCase):

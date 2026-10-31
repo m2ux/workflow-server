@@ -7,6 +7,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
 Read these files first.
 
 - [Board](../artifacts/board.md)
+- [Board Delivery](../artifacts/board-delivery.md)
 - [Advance Mode](advance-mode.md)
 - [Pull Request](../artifacts/pull-request.md)
 - [Delivery Evidence](../artifacts/delivery-evidence.md)
@@ -49,7 +50,7 @@ The main path meets [Outcomes](#outcomes).
    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each candidate epic with its current initiative and epic bodies and all prerequisite issue and base-merge records.
    - Pass its confirmed result to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
    - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches).
-   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, project checkout, epic bases and selected record date.
+   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, epic bases and selected record date.
    - Resolve any missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
    - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs.
    - For delivery discrepancies:
@@ -71,7 +72,7 @@ The main path meets [Outcomes](#outcomes).
    - For each released row:
      - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows).
      - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, project checkout, epic-base names, every resolved off-board issue file, and the record date when supplied.
+     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, epic-base names, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
    - No plan change after this step is put to the user. Each follows [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy).
 7. **Hold.**
@@ -81,7 +82,7 @@ The main path meets [Outcomes](#outcomes).
    - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
    - Run [Reserve Task Rows](../artifacts/epic-issue-body.md#reserve-task-rows) for the unit's tasks.
    - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the body it writes.
-   - Set each task issue of the unit, where one exists, to In Progress with [Update Item Status](../artifacts/board.md#update-item-status), and its epic with it.
+   - Set each task issue of the unit, where one exists, to In Progress and its epic with [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status).
    - Retain the queue decisions returned by the completed advance step.
    - A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
    - A held row stays held while its session plans and implements. The pull request's link replaces the record's link, which frees the row.
@@ -175,7 +176,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 - **Passed work merged.**
   Each open pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
 - **Review visible on the board.**
-  The user sees each completed epic in review on its theme board before being asked to mark its review ready.
+  The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes.
 - **Holds left to the user.**
   A row a session holds is released only when the user says so, and a blocked row is named with what blocks it.
 - **One session for each unit.**

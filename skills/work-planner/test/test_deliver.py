@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import initiative_body, issue, item, pr, run, url
+from fixtures import initiative_body, issue, item, links, pr, run, url
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
 TODAY = '2026-10-06'
@@ -29,6 +29,14 @@ def epic(number: int, *rows: tuple[str, str, str, str], which: str = '07:E00') -
     return issue(number, f'[I{which}] Queue Plan: Work', body=epic_body(*rows))
 
 
+def task(number: int, *criteria: bool, which: str = '07:E00:W01') -> dict:
+    """A task issue whose acceptance criteria are ticked as given, AC1 ticked by default."""
+    marks = criteria or (True,)
+    lines = [f"- [{'x' if held else ' '}] **AC{n}.** Holds." for n, held in enumerate(marks, 1)]
+    return issue(number, f'[I{which}] Queue Plan: Work',
+                 body='\n'.join(['## Acceptance Criteria', '', *lines, '']))
+
+
 def staged(*entries: tuple[dict, str]) -> list[dict]:
     items = []
     for n, (content, status) in enumerate(entries):
@@ -39,14 +47,17 @@ def staged(*entries: tuple[dict, str]) -> list[dict]:
     return items
 
 
-def survey(items: list[dict], prs: list[dict] | None = None, *args: str) -> str:
+def survey(items: list[dict], prs: list[dict] | None = None, *args: str,
+           held: tuple[dict, ...] = ()) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         items_path, prs_path = root / 'items.json', root / 'prs.json'
+        links_path = root / 'links.json'
         items_path.write_text(json.dumps(items))
         prs_path.write_text('\n'.join(json.dumps(p) for p in prs or []))
+        links_path.write_text(json.dumps(list(held)))
         done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
-                   '--date', TODAY, *args)
+                   '--links', str(links_path), '--date', TODAY, *args)
         assert done.returncode == 0, done.stderr
         return done.stdout
 
@@ -161,8 +172,10 @@ class Survey(unittest.TestCase):
                 (epic(943, ('W01', 'Queue plan', '', ''),
                       ('W02', 'Dispatch', 'E05 (W04)', '')), 'In Progress'))))
             prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
             done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
-                       '--date', TODAY)
+                       '--links', str(links_path), '--date', TODAY)
         self.assertIn('unit I07:E00:W01', done.stdout)
         self.assertIn('unresolvable I07:E00:W02: E05 (W04) cannot resolve', done.stdout)
         self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 1', done.stdout)
@@ -178,8 +191,10 @@ class Survey(unittest.TestCase):
                 (initiative, 'In Progress'),
                 (epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'))))
             prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
             done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
-                       '--date', TODAY)
+                       '--links', str(links_path), '--date', TODAY)
         self.assertIn("unresolvable I07:E00:W01: its epic's prerequisite cannot resolve", done.stdout)
         self.assertEqual(done.returncode, 1)
 
@@ -192,8 +207,10 @@ class Survey(unittest.TestCase):
                 (epic(943, (f'[W01]({folder})', 'Queue plan', '', 'W02'),
                       ('W02', 'Dispatch', 'E05 (W04)', 'W01')), 'In Progress'))))
             prs_path.write_text('')
+            links_path = root / 'links.json'
+            links_path.write_text('[]')
             done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
-                       '--date', TODAY)
+                       '--links', str(links_path), '--date', TODAY)
         self.assertIn('unresolvable I07:E00:W02: E05 (W04) cannot resolve', done.stdout)
         self.assertNotIn('hold I07:E00:W01', done.stdout)
         self.assertEqual(done.returncode, 1)
@@ -209,11 +226,38 @@ class Survey(unittest.TestCase):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
-        output = survey(staged((record, 'In Progress')),
+        output = survey(staged((record, 'In Progress'), (task(637), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main',
-                            head='i07/e00/w01-queue-plan')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+                            head='i07/e00/w01-queue-plan')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
+
+    def test_an_unticked_task_criterion_allows_a_passed_plan_to_merge(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (task(637, True, False), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
+
+    def test_a_passed_plan_without_a_task_issue_can_merge(self):
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
+
+    def test_a_task_issue_without_criteria_allows_a_passed_plan_to_merge(self):
+        bare = issue(637, '[I07:E00:W01] Queue Plan: Work', body='## Overview\n\nWork.\n')
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (bare, 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
+        self.assertIn('merge: 1', output)
+        self.assertNotIn('blocked merge', output)
 
     def test_an_open_pass_cell_is_not_merged(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
@@ -226,10 +270,12 @@ class Survey(unittest.TestCase):
 
     def test_a_linked_pass_result_allows_the_merge(self):
         evidence = f'{RECORDS}/2026-10-06-943-checks/results.md#t1'
-        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
+        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress'),
+                               (task(637), 'In Progress')),
                         [pr(950, '[I07:E00] Queue plan', body=PLAN.replace('✓', f'[✓]({evidence})'),
-                            base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
+                            base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
         self.assertIn('merge: 1', output)
 
     def test_an_incomplete_linked_result_withholds_the_merge(self):
@@ -242,20 +288,15 @@ class Survey(unittest.TestCase):
                 self.assertNotIn('merge #', output)
                 self.assertIn('merge: 0', output)
 
-    def test_an_unticked_coverage_criterion_does_not_withhold_the_merge(self):
+    def test_an_unticked_epic_criterion_does_not_withhold_the_merge(self):
         linked = f"[W01]({url('pull', 950)})"
         record = epic(943, (linked, 'Queue plan', '', ''))
         record['body'] = record['body'].replace('| AC1 |', '| AC1, AC2 |', 1)
         record['body'] = record['body'].replace('- [ ] **AC1.**', '- [x] **AC1.** Holds.\n- [ ] **AC2.** Holds.')
-        output = survey(staged((record, 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
-
-    def test_a_passed_plan_merges_while_no_criterion_is_ticked(self):
-        output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')])
-        self.assertIn('merge #950 I07:E00: base i07/e00/main', output)
-        self.assertIn('merge: 1', output)
+        output = survey(staged((record, 'In Progress'), (task(637), 'In Progress')),
+                        [pr(950, '[I07:E00] Queue plan', body=PLAN, base='i07/e00/main')],
+                        held=(links(950, 637),))
+        self.assertIn('  merge #950 I07:E00: base i07/e00/main', output)
 
     def test_a_merged_pull_request_is_not_merged_again(self):
         record = epic(943, ('W01', 'Queue plan', '', ''))
@@ -328,3 +369,66 @@ class Reserve(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class DispatchStatus(unittest.TestCase):
+    """The Status a dispatch settles, within the DISPATCH jurisdiction."""
+
+    def fields(self, *names: str) -> list[dict]:
+        return [{'id': 7, 'name': 'Status',
+                 'options': [{'name': name, 'id': n} for n, name in enumerate(names, start=1)]}]
+
+    def place(self, entries: list[dict], *args: str,
+              statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            items_path, fields_path = root / 'items.json', root / 'fields.json'
+            items_path.write_text(json.dumps(entries))
+            fields_path.write_text(json.dumps(self.fields(*statuses)))
+            return run('deliver.py', '--items', str(items_path), '--board', 'users/o/projectsV2/9',
+                       '--fields', str(fields_path), '--out', str(root / 'out'),
+                       '--assignee', 'me', *args)
+
+    def board(self, *entries: tuple[dict, str]) -> list[dict]:
+        rows = []
+        for n, (content, status) in enumerate(entries):
+            content['id'] = 1000 + content['number']
+            content['assignees'] = [{'login': 'me'}]
+            rows.append({**item(content, status), 'id': 100 + n})
+        return rows
+
+    def test_a_held_row_and_its_epic_go_to_in_progress(self):
+        done = self.place(self.board((task(637), 'Ready'), (epic(943), 'Ready')),
+                          '--progress', '637,943')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('set #637 [I07:E00:W01] Queue Plan: Work: Ready → In Progress', done.stdout)
+        self.assertIn('set #943 [I07:E00] Queue Plan: Work: Ready → In Progress', done.stdout)
+
+    def test_a_complete_epic_goes_to_in_review(self):
+        done = self.place(self.board((epic(943), 'In Progress')), '--review', '943')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('set #943 [I07:E00] Queue Plan: Work: In Progress → In Review', done.stdout)
+
+    def test_a_board_without_in_review_falls_back_to_in_progress(self):
+        done = self.place(self.board((epic(943), 'Ready')), '--review', '943',
+                          statuses=('Backlog', 'Ready', 'In Progress', 'Done'))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('Ready → In Progress', done.stdout)
+
+    def test_a_task_is_not_set_in_review(self):
+        done = self.place(self.board((task(637), 'In Progress')), '--review', '637')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('a dispatch does not set a task In Review', done.stderr)
+
+    def test_an_issue_off_the_board_is_refused(self):
+        done = self.place(self.board((epic(943), 'Ready')), '--progress', '944')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('not on the board: #944', done.stderr)
+
+    def test_the_board_arguments_go_together(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            items_path = Path(tmp, 'items.json')
+            items_path.write_text(json.dumps(self.board((epic(943), 'Ready'))))
+            done = run('deliver.py', '--items', str(items_path), '--progress', '943')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--board is required with --progress or --review', done.stderr)

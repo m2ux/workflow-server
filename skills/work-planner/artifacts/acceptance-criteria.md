@@ -19,8 +19,8 @@ The verification evidence for a supplied set of criteria whose delivery is ready
 **Inputs:** Criterion ids, current issue body, delivery findings, delivery revisions, named instruments and the project checkout to run them in.
 
 1. Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
-   - Return an undelivered or unreadable dependency as a blocker for that criterion.
-2. Check out each branch the delivering pull requests merged into, in the supplied project checkout, meeting [Instrument Checkout](#instrument-checkout).
+   - Return evidence that fails Readiness as a blocker for that criterion.
+2. Check out the delivering pull request head for an open task, or its merged revision for delivered work, in an isolated project checkout, meeting [Instrument Checkout](#instrument-checkout).
    - Run each criterion's named instrument there.
    - Record the result against the tested revisions, meeting [Instrument Result](#instrument-result).
 3. Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
@@ -42,15 +42,15 @@ The confirmed criteria and completed rows recorded in an epic or initiative body
 - **Criterion.** The id of one acceptance criterion in the issue body that states it.
 - **Instrument.** The command, test or check the criterion names as the thing that observes it.
 - **Revision.**
-  The branch and commit the instrument ran against, which is the branch the delivering pull requests merged into.
+  The exact commit the instrument ran against: the open task pull request head or the delivered revision in its target branch.
 
 ### Readiness
 
-A criterion is ready to verify when the supplied delivery findings show the work its evidence depends on delivered and readable. An undelivered or unreadable dependency leaves it unready.
+A task criterion is ready to verify when its delivering pull request, open or merged, supplies readable evidence at the revision being checked. Epic criteria require their delivering rows to be delivered. An unreadable dependency leaves a criterion unready; tracker closure requires merged delivery.
 
 ### Instrument Checkout
 
-An instrument runs in a checkout of the project at the merged revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified.
+An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified.
 
 ### Instrument Result
 
