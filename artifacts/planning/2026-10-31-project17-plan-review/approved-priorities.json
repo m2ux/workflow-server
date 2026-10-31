@@ -1,0 +1,88 @@
+{
+  "decision": "User selected A: adopt the conservative epic order",
+  "order": "larger numeric priority first",
+  "epics": [
+    {
+      "epic": "E17",
+      "issue": 1482,
+      "priority": 6,
+      "labels": [
+        "priority: 6",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:03Z"
+    },
+    {
+      "epic": "E09",
+      "issue": 1176,
+      "priority": 5,
+      "labels": [
+        "enhancement",
+        "priority: 5",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:06Z"
+    },
+    {
+      "epic": "E13",
+      "issue": 1373,
+      "priority": 4,
+      "labels": [
+        "priority: 4",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:13Z"
+    },
+    {
+      "epic": "E16",
+      "issue": 1474,
+      "priority": 3,
+      "labels": [
+        "priority: 3",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:16Z"
+    },
+    {
+      "epic": "E10",
+      "issue": 1181,
+      "priority": 2,
+      "labels": [
+        "enhancement",
+        "priority: 2",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:21Z"
+    },
+    {
+      "epic": "E14",
+      "issue": 1427,
+      "priority": 1,
+      "labels": [
+        "enhancement",
+        "priority: 1",
+        "theme:planning",
+        "type:epic"
+      ],
+      "body_preserved": true,
+      "state_preserved": true,
+      "updated_at": "2026-10-31T09:51:24Z"
+    }
+  ],
+  "dispatch": "No additional session started"
+}
