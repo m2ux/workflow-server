@@ -1,0 +1,37 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+E14:W05 and E14:W06 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E14:W05 and E14:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E14:W06 and E14:W07 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E14:W06 and E14:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+E14:W07 and E14:W08 can share a pull request: name each other in Joins, or account for the pair in the planning record
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E14:W01 - The targets a reading rule serves stated
+1 E14:W02 - Citation timing and its defaults stated
+2 E14:W03 - Work Planner citations named by section
+2 E14:W04 - Workflow Canon citations named by section
+3 E14:W05 - Whole-file citations opening with their case
+3 E14:W06 - Prerequisites stated where their step uses them
+3 E14:W07 - A mode named rather than opened unlinked
+4 E14:W08 - The shared check reads scope and case
+5 E14:W09 - Every check defined where prose names it
+6 E14:W10 - Each skill's read set generated and checked
+7 E14:W11 - Efficacy and retrieval walked over both skills
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E14:W01, E14:W02, E14:W03, E14:W04, E14:W05, E14:W06, E14:W07, E14:W08, E14:W09, E14:W10, E14:W11
+
+--- epic priority (epics sharing a number start together)
+1 E14
+
+--- longest chains: 2, each of 8 steps
+on every chain: E14:W01, E14:W02, E14:W05, E14:W08, E14:W09, E14:W10, E14:W11
+E14:W01 -> E14:W02 -> E14:W03 -> E14:W05 -> E14:W08 -> E14:W09 -> E14:W10 -> E14:W11
+E14:W01 -> E14:W02 -> E14:W04 -> E14:W05 -> E14:W08 -> E14:W09 -> E14:W10 -> E14:W11

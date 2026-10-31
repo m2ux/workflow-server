@@ -174,7 +174,9 @@ The shared guide defines each check the workspace runs — what it decides, whic
 
 ## Chains
 
-Fourteen longest chains, each of five steps, with W01 and W02 on every one: the targets, then the timing rules, then a skill's citations, then one of the three rule tasks, then the check or the walks. No whole-epic edge binds the epic.
+Final evidence follows citation changes: W10 depends on W06, W07 and W09; W09 depends on W08, which depends on W05. W11 follows W10. W05 is therefore a transitive prerequisite of both final evidence tasks. Task identities remain stable; their numbers do not imply dispatch order.
+
+Final manifests and final efficacy/retrieval walks identify the settled corpus revision. Later input changes require regeneration of affected evidence. Generator implementation and its documentation are included before the final walks.
 
 ## Joins
 
@@ -184,9 +186,11 @@ W02 and W03 share one pull request: one rule applied across two skills, where th
   Each lands one rule in the shared guide and applies it across both skills. A reviewer reading one diff should not have to separate two rules in it, and a rule that proves wrong is reverted without taking the others with it.
 - **The script tasks against the rule tasks: W06 and W08, W07 and W08.**
   W08 is the check and its specimen suite, in the shared script. It merges after the prose it grades, so pairing it with a prose task would put a rule and the check of that rule in one review.
-- **The script tasks against each other: W08 and W09.**
-  W08 decides a citation's scope and case; W09 derives a read set and compares it with the prose. Separate outputs, separate specimen suites, and a manifest generator that fails should not hold back a scope check that works.
-- **The measurement tasks: W08 and W10, W09 and W10.**
-  W10 records live walks over the finished instructions. It measures what W05, W06 and W07 produce rather than what either script reports, so it reads neither one's output.
-- **The checks task against the rest: W06 and W11, W07 and W11, W09 and W11, W10 and W11.**
-  W11 defines every check the workspace runs and retires the bare paths naming them. It is a subject of its own, and pairing it with a prose rule, the manifest generator or the walks would put two unrelated reviews in one diff.
+- **The script tasks against each other: W08 and W10.**
+  W08 decides a citation's scope and case; W10 derives a read set and compares it with the prose. Separate outputs, separate specimen suites, and a manifest generator that fails should not hold back a scope check that works.
+- **E14:W06 and E14:W09 remain separate.**
+  Prerequisite placement and check-definition edits have separate review scopes.
+- **E14:W07 and E14:W09 remain separate.**
+  Non-loading references and check-definition edits have separate review scopes.
+
+W10 follows W09, and W11 follows W10. These dependent tasks have separate pull requests; they are not independent parallel work.
