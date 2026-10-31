@@ -195,6 +195,10 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
 - **Reference form.**
   A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03](…/issues/937)`. Prose uses a space (`E01 W03`).
 
+### Test Evidence
+
+A criterion receives an automatic tick when every task covering it is delivered and supplies an observing check in its linked pull requests. Every observing check must pass in a merged pull request; absent records, unreadable plans and incomplete checks supply no verification. Evidence applies only to the linked task's Coverage. Existing ticks are preserved, and explicitly verified criteria remain subject to delivery readiness.
+
 ### Acceptance Criteria
 
 An epic criterion meets the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria). Contradictions between criteria in one epic are findings.
@@ -254,6 +258,7 @@ Links each named task's id to a pull request naming the epic, open or merged, an
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - `--project` is a checkout of the project. Without the long-lived branch names, an epic that would otherwise be closable is not.
+- Passed checks settle criteria under [Test Evidence](#test-evidence).
 - `--link` names each task id and the pull request number it links. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
 
 `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs. Pass each task JSON file as a separate argument after `--tasks`.
