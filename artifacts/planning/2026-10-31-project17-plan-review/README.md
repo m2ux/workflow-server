@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. No plan
 
 | Artifact | What it holds |
 | --- | --- |
+| [Applied corrections](applied-corrections.md) | Approved AC36 placement and AC1 cancellation corrections |
 | [Findings](findings.md) | Seventeen evidenced findings and proposed corrections |
 | [Epic assessment](epic-assessment.md) | All board epics and their review outcome |
 | [Dependency report](dependencies.txt) | Full graph, Joins advisories, components and historical chains |
