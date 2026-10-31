@@ -12,6 +12,7 @@ It matters because the skill already has the seam this rule should have used. A 
 
 | Artifact | What it holds |
 | --- | --- |
+| [W02 declaration reader](w02.md) | Read required criteria at the evaluated commit |
 | [Decisions](decisions.md) | The shape chosen for the declaration, the options weighed, and what each costs |
 
 ## Links

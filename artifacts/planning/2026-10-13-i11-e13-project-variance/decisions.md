@@ -16,14 +16,14 @@ The first was taken. The second is not excluded by it: once the hook exists, whe
 
 ## D2. The precedent is `config/branches`
 
-The skill already has this seam and states it well:
+The declaration uses the same evaluated-revision contract as branch configuration:
 
 - A project states its long-lived branches in `config/branches` at its root, one name per line.
-- A run from a linked worktree reads the statement its main working tree holds.
+- A run resolves the evaluated subject to a commit and reads the statement at that commit, regardless of invocation worktree or dirty files.
 - A missing or empty file leaves the names **unevaluable** — reported, not defaulted.
 - workflow-server's own values appear under a labelled **Example**, never as the rule.
 
-The declaration follows all four. "Unevaluable rather than defaulted" matters most: a project that declares nothing must not silently acquire this project's corpus audit, and must not silently lose a requirement it meant to state.
+The declaration follows these rules. Repository, commit and declaration path are recorded; missing configuration never falls back to another revision. "Unevaluable rather than defaulted" matters most: a project that declares nothing must not silently acquire this project's corpus audit, and must not silently lose a requirement it meant to state.
 
 ## D3. What a declared criterion has to carry
 
