@@ -12,6 +12,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 
 | Artifact | What it holds |
 | --- | --- |
+| [API contract](api-contract.md) | REST capability selection, current GraphQL and classic Projects exclusion |
 | [Status contract](status-contract.md) | Approved reservation, readiness, Backlog and reviewed-handoff rules |
 | [Applied corrections](applied-corrections.md) | Approved AC36 placement and AC1 cancellation corrections |
 | [Findings](findings.md) | Seventeen evidenced findings and proposed corrections |

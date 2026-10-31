@@ -279,9 +279,9 @@ The name says what the skill is for and is what a request will match. A term the
 
 A convention copied into each skill is corrected in one of them and drifts in the rest. Separating the shared guide from the skill's own is what lets a second skill adopt the layout without adopting the first skill's subject matter. [[1](../../meetings/2026-09-30-6f5a01ac.md#135247), [2](../../meetings/2026-09-30-6f5a01ac.md#140148--skillcanon-modes), [3](../../meetings/2026-09-30-6f5a01ac.md#140542--skillcanon-modes), [4](../../meetings/2026-09-30-6f5a01ac.md#140648--skillcanon-modes), [5](../../meetings/2026-09-30-6f5a01ac.md#140743--skillcanon-modes), [6](../../meetings/2026-09-30-6f5a01ac.md#140827--skillcanon-modes), [7](../../meetings/2026-09-30-6f5a01ac.md#140932), [8](../../meetings/2026-09-30-6f5a01ac.md#142036), [9](../../meetings/2026-09-30-6f5a01ac.md#142325), [10](../../meetings/2026-09-30-6f5a01ac.md#142334), [11](../../meetings/2026-09-30-6f5a01ac.md#155429)] (MC)
 
-🕒 **REQ-NF002: The skill SHALL reach GitHub over REST, using GraphQL only where the user grants an explicit one-off exception for an operation REST cannot perform**
+🕒 **REQ-NF002: The skill SHALL use REST for operations REST supports and current GraphQL for capabilities REST cannot provide, without a one-off exception; deprecated Projects (classic) APIs SHALL NOT be used**
 
-REST is the interface the house holds to. The exception exists because a few project-board operations have no REST equivalent at all, and it is granted per operation rather than standing. [[1](../../meetings/2026-09-30-6f5a01ac.md#151506)] (MC)
+The policy covers reads and writes, including relations and mutations unavailable through REST. Command specifications identify the REST capability gap. Project operations use Projects V2 APIs; deprecated classic project fields, types and mutations are excluded. [Current decision](../2026-10-31-project17-plan-review/api-contract.md); [original source](../../meetings/2026-09-30-6f5a01ac.md#151506).
 
 ## 6. Performance Requirements
 
