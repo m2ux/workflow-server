@@ -108,7 +108,7 @@ One current pull request and its requested supporting records.
 
 **Inputs:** Repository, pull request number, output paths and requested records: metadata, changed paths or reviews.
 
-1. Run [Fetch Pull Request](#fetch-pull-request) for full REST metadata, including URL, body and both revision SHAs. Use [Save Pull Request Snapshot](#save-pull-request-snapshot) only when the caller requests a reduced merge snapshot; agent review and readiness require full metadata.
+1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) for full REST metadata, including URL, body and both revision SHAs, replacing the supplied destination with one JSON object on every refresh.
 2. Run [Fetch Pull Request Files](#fetch-pull-request-files) or [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when the caller requests those records.
 3. Return the snapshots or missing evidence.
 
@@ -253,22 +253,6 @@ gh api --method PATCH 'repos/<owner>/<repo>/pulls/<pull-request-number>' -f base
 
 ```bash
 gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -f base='i07/e00/main' --jq .base.ref
-```
-
-### Fetch Pull Request
-
-Appends one pull request, as one JSON line, to the supplied file.
-
-**Inputs:** Repository, pull request number and destination JSON-lines file.
-
-```bash
-gh api 'repos/<owner>/<repo>/pulls/<pull-request-number>' --jq . >> '<pull-request-records-file>'
-```
-
-**Example:**
-
-```bash
-gh api 'repos/<owner>/<repo>/pulls/439' --jq . >> prs.json
 ```
 
 ### Retitle Pull Request

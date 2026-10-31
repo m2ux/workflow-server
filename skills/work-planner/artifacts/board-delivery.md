@@ -18,7 +18,7 @@ Read these files first.
 
 The board changes implied by supplied delivery state.
 
-**Inputs:** Initiative JSON, epic and task records, pull request records, complete issue-link snapshot, board identity, fields and items, output directory, assignee login and resolved off-board issue files.
+**Inputs:** Initiative JSON, epic and task records, fresh REST pull request records, published agent review records fetched from their linked planning records, complete issue-link snapshot, board identity, fields and items, output directory, assignee login and resolved off-board issue files.
 
 1. Require the complete pull-request issue-link snapshot; refuse the computation without it.
 2. Supply the published agent review records linked from each open epic integration pull request; retain missing records as handoff blockers. Run [Compute Board Changes](#compute-board-changes), mapping the supplied records and board context to its parameters.
@@ -50,10 +50,11 @@ The board's status and assignees after its issues record delivery.
    - Run [Read Board State](board.md#read-board-state) for the selected board.
    - Run [Fetch All Initiative Pull Requests](pull-request.md#fetch-all-initiative-pull-requests) for its repositories.
    - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
+   - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
    - Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.
    - Run [Read Board Assignee](board.md#read-board-assignee) for the assignment login.
    - Pass these returned snapshots to Plan Board Changes.
-2. Run [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, pull request records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
+2. Run [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
    - Fetch each unresolved issue.
    - Pass the fetched files to Plan Board Changes as resolved off-board issue files.
 3. Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
@@ -62,7 +63,8 @@ The board's status and assignees after its issues record delivery.
      - Repeat its write.
      - Repeat the same item read. The item list can lag a write.
 4. Fetch the issues and items again.
-   - Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, pull request records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
+   - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
+   - Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
    - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
 
 ### *Record* Dispatch Status
