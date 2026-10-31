@@ -26,9 +26,9 @@ The evidence required before starting an epic's work.
 
 The delivery findings for one epic from supplied evidence.
 
-**Inputs:** Epic JSON, current pull request records, complete issue-link snapshot and output body file.
+**Inputs:** Epic JSON, current pull request records, complete issue-link snapshot.
 
-1. Run [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying an output body as `--fix`.
+1. Run [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying a local scratch output body as `--fix`.
    - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
    - Publish reported table normalization through [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
 2. Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply.
@@ -94,7 +94,7 @@ A coverage disagreement identifies the pull request and row, a criterion absent 
 
 Reports an epic's delivery state against the pull requests that name it.
 
-**Inputs:** Epic JSON, pull request records, complete issue-link snapshot and output body file.
+**Inputs:** Epic JSON, pull request records, complete issue-link snapshot.
 
 - Results follow [Delivery Findings](#delivery-findings).
 
