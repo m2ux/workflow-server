@@ -1,0 +1,1241 @@
+[
+  {
+    "issue": 527,
+    "criterion": "AC1",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC2",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC3",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC4",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC5",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC6",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.1\u20133.3: typed expressions, resolved signatures, runtime control flow and bounded model calls.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC7",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.5\u20133.6: fidelity and the session event log; the programme rebase and routines decisions carry the later runner boundaries.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC8",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.5\u20133.6: fidelity and the session event log; the programme rebase and routines decisions carry the later runner boundaries.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC9",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.5\u20133.6: fidelity and the session event log; the programme rebase and routines decisions carry the later runner boundaries.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC10",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.5\u20133.6: fidelity and the session event log; the programme rebase and routines decisions carry the later runner boundaries.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC11",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Design 3.5\u20133.6: fidelity and the session event log; the programme rebase and routines decisions carry the later runner boundaries.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC12",
+    "source": "2026-09-12-i0-programme-rebase/README.md",
+    "basis": "Programme migration and validation boundary; the September 27 decision adds the observing Program Walk.",
+    "status": "traced"
+  },
+  {
+    "issue": 527,
+    "criterion": "AC13",
+    "source": "2026-09-12-i0-programme-rebase/README.md",
+    "basis": "Programme migration and validation boundary; the September 27 decision adds the observing Program Walk.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC1",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC2",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC3",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC4",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC5",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC6",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC7",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC8",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC9",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC10",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC11",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC12",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 540,
+    "criterion": "AC13",
+    "source": "2026-08-31-typed-execution-redesign/issue-disposition.md",
+    "basis": "Standing work is retained through individual absorbed issue records and delivery-reconciliation.md; issue 338, 397\u2013404, 436\u2013437, 491\u2013492, 497, 511, 518\u2013520 and 536 retain the respective faults. A classification of partial or open is not delivery.",
+    "status": "traced"
+  },
+  {
+    "issue": 587,
+    "criterion": "AC1",
+    "source": "2026-08-02-shared-capability-homes-consolidation/issue-148-comprehension-migration.md",
+    "basis": "Wiki operations and equivalent downstream inputs are required; #587 explicitly requires three binding decisions before implementation. The outcome decision is recorded; the concrete implementation choices remain open.",
+    "status": "traced"
+  },
+  {
+    "issue": 587,
+    "criterion": "AC2",
+    "source": "2026-08-02-shared-capability-homes-consolidation/issue-148-comprehension-migration.md",
+    "basis": "Wiki operations and equivalent downstream inputs are required; #587 explicitly requires three binding decisions before implementation. The outcome decision is recorded; the concrete implementation choices remain open.",
+    "status": "traced"
+  },
+  {
+    "issue": 587,
+    "criterion": "AC3",
+    "source": "2026-08-02-shared-capability-homes-consolidation/issue-148-comprehension-migration.md",
+    "basis": "Durable knowledge goes to wiki, task metadata stays in planning; preserve cumulative reuse, deep-dive loop, checkpoint, lens passes and declared outcomes.",
+    "status": "traced"
+  },
+  {
+    "issue": 587,
+    "criterion": "AC4",
+    "source": "2026-08-02-shared-capability-homes-consolidation/issue-148-comprehension-migration.md",
+    "basis": "Durable knowledge goes to wiki, task metadata stays in planning; preserve cumulative reuse, deep-dive loop, checkpoint, lens passes and declared outcomes.",
+    "status": "traced"
+  },
+  {
+    "issue": 587,
+    "criterion": "AC5",
+    "source": "2026-08-02-shared-capability-homes-consolidation/issue-148-comprehension-migration.md",
+    "basis": "Durable knowledge goes to wiki, task metadata stays in planning; preserve cumulative reuse, deep-dive loop, checkpoint, lens passes and declared outcomes.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC1",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC2",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC3",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC4",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC5",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC6",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC7",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC8",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC9",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC10",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 705,
+    "criterion": "AC11",
+    "source": "2026-08-31-typed-execution-redesign/README.md",
+    "basis": "Typed intermediate form, generated checks, effect/disclosure bounds and compiled corpus are the design basis. Rejected alternatives and absorbed corpus-test/shared-home records retain the disposition and CI scope. September 27 adds observing checker tests.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC1",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC2",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC3",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC4",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC5",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC6",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC7",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC8",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 908,
+    "criterion": "AC9",
+    "source": "2026-09-21-roles-as-skills/survey.md",
+    "basis": "Host owns standing role contract at the server version, deployment selects host adapters, corpus holds definitions, and client operations need separate homes. Companion vocabularies-as-techniques survey distinguishes obligation from consulted facts; September 27 adds host smoke and guards.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC1",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC2",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC3",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC4",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC5",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC6",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC7",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC8",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC9",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC10",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC11",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC12",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC13",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 936,
+    "criterion": "AC14",
+    "source": "2026-09-27-schema-grammar-constraints/README.md",
+    "basis": "Design, Reliability review, Second review and Outcomes mapping record tag-pinned language homes, formal-rule registry/enforcers, complete draft verification, single prose homes and held-out conformance/quality/fitness evaluation.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC1",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC2",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC3",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC4",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC5",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC6",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC7",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC8",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC9",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC10",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC11",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC12",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC13",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 946,
+    "criterion": "AC14",
+    "source": "2026-10-05-946-shared-libraries/decision-trace.md",
+    "basis": "Criterion-specific reconstruction from merged library design records, support-library scope and the explicit later smoke-run decision.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC1",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC2",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC3",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC4",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC5",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC6",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC7",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC8",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC9",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC10",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC11",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC12",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC13",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC14",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC15",
+    "source": "2026-09-29-work-package-streamline/README.md",
+    "basis": "Eight goals and placement decisions cover lean reviews, prism choice, assumption settling, bindings, independent fan branches, contract-first tests, audits/walks and tip validation.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC16",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC17",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC18",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC19",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC20",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC21",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1040,
+    "criterion": "AC22",
+    "source": "2026-10-04-1125-work-package-modes/trace.md",
+    "basis": "Explicit proposal-to-criterion table records independent modes, private confirmed remediate push, retained combined workflow, shared library home and mode-local variables.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC1",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC2",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC3",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC4",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC5",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC6",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC7",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC8",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC9",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC10",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC11",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC12",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC13",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC14",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC15",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC16",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC17",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC18",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC19",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC20",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC21",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC22",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC23",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC24",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC25",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC26",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC27",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC28",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC29",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC30",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC31",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC32",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC33",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC34",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC35",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1166,
+    "criterion": "AC36",
+    "source": "2026-10-31-project17-plan-review/current-requirements.md",
+    "basis": "Marked source with historical IDs and current CUR decisions; source reconciliation, producer availability, review-gate and verification records retain the subsequent approved scope. AC17 is the present review, with its unresolved findings retained.",
+    "status": "traced"
+  },
+  {
+    "issue": 1374,
+    "criterion": "AC1",
+    "source": "2026-10-13-multi-root-corpus-serving/README.md",
+    "basis": "One union index from configured roots; path-keys.md records Decision A and evidence.md records guard-root/readiness seams and equivalent joined-tree keys.",
+    "status": "traced"
+  },
+  {
+    "issue": 1374,
+    "criterion": "AC2",
+    "source": "2026-10-13-multi-root-corpus-serving/README.md",
+    "basis": "One union index from configured roots; path-keys.md records Decision A and evidence.md records guard-root/readiness seams and equivalent joined-tree keys.",
+    "status": "traced"
+  },
+  {
+    "issue": 1374,
+    "criterion": "AC3",
+    "source": "2026-10-13-multi-root-corpus-serving/README.md",
+    "basis": "One union index from configured roots; path-keys.md records Decision A and evidence.md records guard-root/readiness seams and equivalent joined-tree keys.",
+    "status": "traced"
+  },
+  {
+    "issue": 1374,
+    "criterion": "AC4",
+    "source": "2026-10-13-multi-root-corpus-serving/README.md",
+    "basis": "One union index from configured roots; path-keys.md records Decision A and evidence.md records guard-root/readiness seams and equivalent joined-tree keys.",
+    "status": "traced"
+  },
+  {
+    "issue": 1374,
+    "criterion": "AC5",
+    "source": "2026-10-13-multi-root-corpus-serving/README.md",
+    "basis": "One union index from configured roots; path-keys.md records Decision A and evidence.md records guard-root/readiness seams and equivalent joined-tree keys.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC1",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC2",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC3",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC4",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC5",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC6",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1379,
+    "criterion": "AC7",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace, split mapping and hoist/review dispositions retain declared shape, producer/input, guard and described-input decisions. Current IDs must be read by outcome because the historical map uses the pre-consolidation numbering.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC1",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC2",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC3",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC4",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC5",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC6",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC7",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC8",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC9",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC10",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC11",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC12",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC13",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC14",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC15",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC16",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC17",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1380,
+    "criterion": "AC18",
+    "source": "2026-10-13-706-i04-split/review.md",
+    "basis": "Replan trace and split mapping retain coverage, honest checks, contention and missing checks; hoist and review record CI scope, explicit unmeasured verdict, whole catalogue coverage, reason separation and independently running checks.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC1",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC2",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC3",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC4",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC5",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC6",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC7",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC8",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC9",
+    "source": "2026-10-13-706-i04-split/mapping.md",
+    "basis": "Replan trace retains occupied-folder, delivery-cost, continuation and inline-gate decisions; current #1199 preserves naming-at-open and no-promotion design. Split mapping carries the old IDs to I15.",
+    "status": "traced"
+  },
+  {
+    "issue": 1378,
+    "criterion": "AC10",
+    "source": "2026-10-31-project17-plan-review/decision-trace/1435.json",
+    "basis": "Current epic #1435 records observed protocol failure at bf3be7b8, explicit absence versus empty-value semantics and validating results for every projection. This reconstruction preserves that issue-level design as a planning record dated today; it asserts no earlier approval date.",
+    "status": "traced"
+  }
+]

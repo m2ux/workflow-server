@@ -1,0 +1,11 @@
+{
+  "initiatives": 13,
+  "criteria": 177,
+  "exact_id_coverage": true,
+  "all_source_paths_exist": true,
+  "ac17": "pass",
+  "live_body_comparison": true,
+  "sync_tick_gate": true,
+  "issue_formats_pass": true,
+  "other_criteria_preserved": true
+}

@@ -39,3 +39,7 @@ Full graph exit codes are nonzero for I00, I10 and I11 because of whole-epic edg
 ## Publication boundary
 
 The merged sync instrument accepts AC25–AC28 as ready against all 18 linked epic records; [tick output](tick-command.txt). Publication applies only those four ticks plus an evidence reference. AC17 remains unticked. Existing criteria, work-breakdown rows, priority labels, reservations, issue states and board placement are preserved. AC2/AC3's historical ticks are not a fresh claim that today's whole repository conforms; their earlier evidence is not re-certified by this targeted run.
+
+## Subsequent decision-trace review
+
+The [repository-wide review](../decision-trace/README.md) reconstructs I08 and completes the criterion decision trace for all 13 open initiatives. AC17 passes for that snapshot. Open implementation choices and reconstruction dates are explicit. This supersedes the earlier AC17 evidence-gap disposition above.

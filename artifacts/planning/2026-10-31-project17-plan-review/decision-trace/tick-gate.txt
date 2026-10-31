@@ -1,0 +1,4 @@
+#1166 initiative (open)
+  ready to verify: AC17 (E00)
+  ticked: AC17
+  closable: no (undelivered E09, E10, E13, E14, E16, E17, unticked AC4, AC12, AC14, AC15, AC16, AC18, AC20, AC21, AC22, AC23, AC24, AC30, AC31, AC32, AC33, AC34, AC35, AC36)

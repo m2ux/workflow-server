@@ -12,6 +12,7 @@ The delivery state of the initiative is the Delivery board.
 
 | Artifact | What it holds |
 | --- | --- |
+| [Criterion decision trace](decision-trace.md) | Recorded design basis for all fourteen criteria, including later smoke-run requirements |
 | [Joins](joins.md) | Task pairs that do not share a pull request, and why |
 | [Advisory scratch check](advisory-scratch-check.md) | The draft advisory the scratch check reads |
 
