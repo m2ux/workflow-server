@@ -1,10 +1,10 @@
 # Validation
 
-Tested revision: `68e7451f7543333de21b23a16b7a3ef1c3ec5ae1` on `i11/e11/w01-passed-checks-tick-the`. The committed checkout was clean throughout verification. Commands ran under the required absolute sandbox launcher.
+Tested revision: `89523cd11e3e63ab51638703564037d80831f426` on `i11/e11/w01-passed-checks-tick-the`. The committed checkout was clean throughout verification. Commands ran under the required absolute sandbox launcher.
 
 ## Criterion Evidence
 
-`python3 -m unittest discover -s skills/work-planner/test` passed 435 tests. The 14 PassedEvidence fixtures observe AC1 through real sync command execution and written epic bodies. They cover automatic criterion and Done ticks; plain and linked supported pass marks; empty, failed and partial results; multiple observing checks; rows without a Test id; unrelated failed checks; open and absent pull requests; multiple covering tasks; pending deliveries; multiple delivery links; out-of-scope claims; existing ticks; explicit verification; unreadable plans; and repeat synchronization.
+`python3 -m unittest discover -s skills/work-planner/test` passed 436 tests. The 15 PassedEvidence fixtures observe AC1 through real sync command execution and written epic bodies. They cover automatic criterion and Done ticks; plain and linked supported pass marks; empty, failed and partial results; multiple observing checks; rows without a Test id; unrelated failed checks; open and absent pull requests; multiple covering tasks; pending deliveries; multiple delivery links; out-of-scope claims; existing ticks; explicit verification; unreadable plans; repeat synchronization; and completion reporting without redundant manual verification.
 
 The initial fixture run incorrectly assumed the emoji check mark was supported. The fixture now follows the existing supported marks: ✓, [x], [X], and a linked ✓. The parser accepts no new spelling.
 
