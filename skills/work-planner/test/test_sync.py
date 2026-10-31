@@ -813,12 +813,12 @@ class TestPlanAgreement(unittest.TestCase):
         self.assertIn('disagreement: #950 W01: AC2 covered and named by no test', done.stdout)
         self.assertNotIn('no test observes it', done.stdout)
 
-    def test_a_pull_request_with_no_test_plan_names_nothing(self):
+    def test_a_pull_request_with_no_test_plan_reports_unreadable(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
         done, _fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn('disagreement: #950 W01: AC1 covered and named by no test', done.stdout)
+        self.assertIn('disagreement: #950: unreadable test plan', done.stdout)
 
     def test_an_empty_test_cell_is_unobserved(self):
         task = f"[W01]({url('pull', 950)})"

@@ -49,6 +49,17 @@ One pull request body referencing its published overview.
 
 3. Return the complete updated body file for publication.
 
+### *Repair* Test Plan
+
+One task pull request's test plan aligned to its current table.
+
+**Inputs:** Current pull request JSON and output body path.
+
+1. Run [Convert Test Plan](#convert-test-plan) with the supplied record and output path.
+2. Inspect the diff. A checked list and Test/Criteria table convert only when their ids agree and every line is accounted for; descriptions and coverage are preserved.
+3. Verify retained result links against [Test Plan](#test-plan). A checked entry without linked result evidence remains pending; restore its Pass result only from verified published evidence.
+4. Return the body, the converted pull request identity and unresolved findings. The caller publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+
 ## Fields
 
 ### Template
@@ -121,3 +132,16 @@ A task pull request carries a Test Plan.
 - The criterion selects the test kind: a unit test for one component, an integration test for a seam between components, and an end-to-end or system test for running-system behaviour. That evidence meets [Coverage Reports](issue-body.md#coverage-reports).
 - An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
 - One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
+
+## Commands
+
+### Convert Test Plan
+
+Convert an unambiguous checked list and Test/Criteria table to the current plan table.
+
+- Input is a current REST pull request record; output is the complete body. Existing current tables are unchanged.
+- A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
+
+```bash
+<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
+```
