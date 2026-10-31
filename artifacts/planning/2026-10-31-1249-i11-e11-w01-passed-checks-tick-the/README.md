@@ -15,9 +15,13 @@ The unit continues the in-progress Plan Reading epic. It keeps incomplete eviden
 | [Work Item](w01.md) | Component, implementation scope and validation obligations |
 | [Progress](progress.md) | Delivery checklist |
 | [Validation](validation.md) | Exact revision, criterion fixtures and structural checks |
+| [Delivery](delivery.md) | Merge, epic, draft review and final board evidence |
+| [Changes](changes.md) | Applied and held plan changes, debt and arising-issue classification |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1249 |
+| Task Pull Request | https://github.com/m2ux/workflow-server/pull/1478 |
+| Draft Review | https://github.com/m2ux/workflow-server/pull/1479 |
