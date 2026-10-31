@@ -14,6 +14,7 @@ The unit continues the in-progress Plan Reading epic. It keeps incomplete eviden
 | --- | --- |
 | [Work Item](w01.md) | Component, implementation scope and validation obligations |
 | [Progress](progress.md) | Delivery checklist |
+| [Validation](validation.md) | Exact revision, criterion fixtures and structural checks |
 
 ## Links
 
