@@ -1,0 +1,60 @@
+--- problems
+none
+
+--- joins: eligible pairs named in neither Joins nor a record
+none
+
+--- advisory: numbering against start order
+E10:W07 (level 0) is numbered after E10:W06 (level 2)
+
+--- levels (0 = can start now)
+0 E10:W01 - Skill frontmatter and prose layout checks
+0 E10:W02 - Renumber and pull request delivery checks
+0 E10:W03 - One name for a record work item
+0 E10:W07 - Every repeated heading reported
+0 E10:W08 - A blank line above every heading
+0 E10:W09 - Coverage names what a row delivers
+0 E10:W10 - One record folder holds a unit
+0 E10:W11 - Bold leads within the width limit
+0 E10:W12 - The canon suite states its prerequisite
+0 E10:W13 - The entry point holds no specification
+0 E10:W14 - Closure rests on observable evidence
+0 E10:W15 - One mood for parallel selections
+0 E10:W16 - A heading left without content
+0 E10:W17 - A section body carried whole
+0 E10:W18 - The skill check reaches a gate
+0 E10:W19 - A specification no procedure runs
+0 E10:W20 - An entry point's sections measured
+0 E10:W21 - Canon conventions reached without a further file
+0 E10:W22 - A review body's prose measured against its branch
+0 E10:W23 - Caller placement and retrieval reach distinguished
+0 E10:W24 - A base named draft only where it leads
+0 E10:W25 - A declared throwaway is no candidate
+0 E14:W01 - The targets a reading rule serves stated
+1 E10:W04 - Command specification and vocabulary checks
+1 E10:W05 - Guide split and API capability checks
+1 E14:W02 - Citation timing and its defaults stated
+2 E10:W06 - Each house rule reaches a named operation
+2 E14:W03 - Work Planner citations named by section
+2 E14:W04 - Workflow Canon citations named by section
+3 E10:W26 - Final verification over every skill
+3 E14:W05 - Whole-file citations opening with their case
+3 E14:W06 - Prerequisites stated where their step uses them
+3 E14:W07 - A mode named rather than opened unlinked
+4 E14:W08 - The shared check reads scope and case
+5 E14:W09 - Every check defined where prose names it
+6 E14:W10 - Each skill's read set generated and checked
+7 E14:W11 - Efficacy and retrieval walked over both skills
+
+--- component contention: rows of different epics extending one component
+none
+not checked, no component read: E10:W01, E10:W02, E10:W03, E10:W04, E10:W05, E10:W06, E10:W07, E10:W08, E10:W09, E10:W10, E10:W11, E10:W12, E10:W13, E10:W14, E10:W15, E10:W16, E10:W17, E10:W18, E10:W19, E10:W20, E10:W21, E10:W22, E10:W23, E10:W24, E10:W25, E10:W26, E14:W01, E14:W02, E14:W03, E14:W04, E14:W05, E14:W06, E14:W07, E14:W08, E14:W09, E14:W10, E14:W11
+
+--- epic priority (epics sharing a number start together)
+1 E10
+1 E14
+
+--- longest chains: 2, each of 8 steps
+on every chain: E14:W01, E14:W02, E14:W05, E14:W08, E14:W09, E14:W10, E14:W11
+E14:W01 -> E14:W02 -> E14:W03 -> E14:W05 -> E14:W08 -> E14:W09 -> E14:W10 -> E14:W11
+E14:W01 -> E14:W02 -> E14:W04 -> E14:W05 -> E14:W08 -> E14:W09 -> E14:W10 -> E14:W11

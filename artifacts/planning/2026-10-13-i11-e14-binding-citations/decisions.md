@@ -129,7 +129,7 @@ Each efficacy scenario puts the content that decides its outcome outside the fil
 - **Scenario design.**
   A scenario names a task whose correct outcome follows from a rule held in a section no step of the selected mode file loads by itself, and whose incorrect outcome is what an agent produces from the mode file alone. The record names each scenario, its target, the outcome that distinguishes them, and the result.
 - **Weighed: the retrieval record alone.**
-  It satisfies the initiative's retrieval criterion and measures cost rather than obedience, leaving the epic with no behavioural evidence.
+  A retrieval record measures cost; only a passing comparison under the pinned baseline contract satisfies the initiative retrieval criterion. Neither proves citation obedience, which requires the efficacy scenarios.
 - **Weighed: a scored eval suite.**
   The strongest ongoing signal and an epic's worth of work on its own.
 
@@ -183,3 +183,7 @@ Final manifests and final efficacy/retrieval walks identify the settled corpus r
 E14:W03 and E14:W04 share one pull request: the same section-citation rule applied across Work Planner and Workflow Canon, with both skills supplying its evidence.
 
 Every eligible separate pair is recorded in [current E14 pair decisions](../2026-10-31-project17-plan-review/joins/E14-pairs.md). Dependency edges order the check definitions, final manifests and final walks; these are not independent pairs.
+
+## Final retrieval verdict
+
+E14 W11 owns I11 AC30 through E14 AC23. E10 W23 supplies measurements; E10 W26 completes verification of its contributing changes. The [pinned comparison contract](../2026-10-31-project17-plan-review/retrieval-baseline.md) defines baseline, scenarios, metric and pass conditions. E12 records remain historical measurements, not proof of this final verdict.
