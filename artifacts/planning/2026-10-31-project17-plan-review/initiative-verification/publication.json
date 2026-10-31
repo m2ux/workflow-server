@@ -1,0 +1,17 @@
+{
+  "issue": 1166,
+  "verified_criteria": [
+    "AC25",
+    "AC26",
+    "AC27",
+    "AC28"
+  ],
+  "unverified": [
+    "AC17"
+  ],
+  "evidence_commit": "52313246b",
+  "tested_revision": "04de875a8517dcf229462e3b939099e16ffe3e63",
+  "updated_at": "2026-10-31T10:00:03Z",
+  "exact_readback": true,
+  "other_criteria_rows_labels_and_state_preserved": true
+}
