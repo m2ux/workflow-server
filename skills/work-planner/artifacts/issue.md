@@ -306,7 +306,7 @@ Checks the issue's criteria and the state of every pull request its Development 
 **Inputs:** The issue, as [Fetch Tracker Issue](#fetch-tracker-issue) saves it, and the snapshot [Capture Issue Links](#capture-issue-links) wrote from it.
 
 - The gate reads only those two files, each a field GitHub exposes.
-- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, or a missing or unreadable snapshot, blocks as missing evidence.
+- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
 - Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.
 
 ```bash
@@ -326,7 +326,7 @@ Lists each closed issue whose acceptance criteria are missing or unticked, or wh
 **Inputs:** One repository's closed issues, as [Fetch Closed Issues](#fetch-closed-issues) or [Fetch Selected Closed Issues](#fetch-selected-closed-issues) saves them, and the issue-links file [Capture Issue Links](#capture-issue-links) wrote from them.
 
 - The sweep audits every closed issue in the collection, so the collection sets its scope. Each issue is judged as [Check Issue Closure](#check-issue-closure) judges it. Open issues and pull requests in the collection are skipped.
-- `--issue-links` takes the issue-links file alone; any other shape is refused as unreadable evidence.
+- `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
 - Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:
   - `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
   - `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
@@ -424,7 +424,7 @@ Writes each issue's Development pull requests, read from the issue end of the re
 
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
 
-- Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
+- The snapshot names the repository its issues belong to. Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
 - Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
 - Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.

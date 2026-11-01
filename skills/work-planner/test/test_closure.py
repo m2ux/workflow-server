@@ -15,12 +15,12 @@ def link(number: int, state: str = 'MERGED', repo: str = 'o/r') -> dict:
 
 
 class Closure(unittest.TestCase):
-    def check(self, development, body=BODY):
+    def check(self, development, body=BODY, repository: str = 'o/r'):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'issue.json').write_text(json.dumps(issue(2, 'Standalone: Work', body=body)))
-            (root / 'development.json').write_text(
-                development if isinstance(development, str) else json.dumps(development))
+            (root / 'development.json').write_text(development if isinstance(development, str) else
+                                                   json.dumps({'repository': repository, 'issues': development}))
             return run('closure.py', '--issue', str(root / 'issue.json'),
                        '--development', str(root / 'development.json'))
 
@@ -54,6 +54,12 @@ class Closure(unittest.TestCase):
                 self.assertEqual(result.returncode, 1)
                 self.assertIn('closure blocked: Development links not captured', result.stdout)
 
+    def test_a_snapshot_of_another_repository_blocks(self):
+        result = self.check({'2': []}, repository='o/other')
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('closure blocked: unreadable evidence (the Development snapshot holds o/other issues, '
+                      'not o/r)', result.stdout)
+
     def test_unticked_or_absent_criteria_block(self):
         for body in (BODY.replace('[x]', '[ ]'), ''):
             with self.subTest(body=body):
@@ -62,7 +68,8 @@ class Closure(unittest.TestCase):
                 self.assertIn('acceptance criteria are missing or unticked', result.stdout)
 
     def test_unreadable_evidence_blocks(self):
-        for development in ('not json', '[]', '{"2": [{"state": "MERGED"}]}'):
+        for development in ('not json', '[]', '{"2": []}',
+                            '{"repository": "o/r", "issues": {"2": [{"state": "MERGED"}]}}'):
             with self.subTest(development=development):
                 result = self.check(development)
                 self.assertEqual(result.returncode, 1)

@@ -23,11 +23,12 @@ def link(number: int, state: str = 'MERGED', repo: str = 'o/r') -> dict:
 
 
 class Sweep(unittest.TestCase):
-    def sweep(self, issues, links):
+    def sweep(self, issues, links, repository: str = 'o/r'):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'issues.json').write_text(json.dumps(issues))
-            (root / 'issue-links.json').write_text(links if isinstance(links, str) else json.dumps(links))
+            (root / 'issue-links.json').write_text(links if isinstance(links, str) else
+                                                   json.dumps({'repository': repository, 'issues': links}))
             return run('closure-sweep.py', '--issues', str(root / 'issues.json'),
                        '--issue-links', str(root / 'issue-links.json'))
 
@@ -100,6 +101,12 @@ class Sweep(unittest.TestCase):
                 self.assertEqual(result.returncode, 1)
                 self.assertIn('sweep blocked: unreadable evidence', result.stdout)
                 self.assertIn('not an issue-links file', result.stdout)
+
+    def test_a_snapshot_of_another_repository_blocks_the_sweep(self):
+        result = self.sweep([closed(2)], {'2': []}, repository='o/other')
+        self.assertEqual(result.returncode, 1)
+        self.assertIn('sweep blocked: unreadable evidence (the Development snapshot holds o/other issues, '
+                      'not o/r)', result.stdout)
 
     def test_issues_from_two_repositories_block_the_sweep(self):
         result = self.sweep([closed(2), closed(3, repo='o/s')], {'2': [], '3': []})

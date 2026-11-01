@@ -5,9 +5,10 @@ Usage:
 
 issues.json is one repository's issues as the REST API returns them, the collection
 links-by-issue.py reads; the sweep audits every closed issue it holds, so the collection sets the
-audit's scope. issue-links.json is the file links-by-issue.py writes from that collection: each issue
-number mapped to its Development pull requests as {repo, number, state}. Any other shape is
-refused. Pull requests among the issues and open issues are skipped.
+audit's scope. issue-links.json is the file links-by-issue.py writes from that collection: the
+repository its issues belong to, and each issue number mapped to its Development pull requests as
+{repo, number, state}. Any other shape, and a file of another repository's issues, is refused. Pull
+requests among the issues and open issues are skipped.
 
 A closed issue is listed when the closure.py gate would block it: its acceptance criteria are
 missing or unticked, or a pull request its Development field holds has not merged. Each listed
@@ -28,7 +29,7 @@ import json
 import sys
 from pathlib import Path
 
-from closure import UNCAPTURED, blockers
+from closure import UNCAPTURED, blockers, snapshot
 from development import records
 from sync import issue_key
 
@@ -50,17 +51,6 @@ def sweep(issues: list[dict], links: dict[str, list[dict]]) -> list[tuple[str, d
     return sorted(found, key=lambda entry: entry[0] == 'not planned')
 
 
-def issue_links(path: str) -> dict[str, list[dict]]:
-    """The file links-by-issue.py writes, or ValueError for any other shape."""
-    links = json.loads(Path(path).read_text())
-    entries = links.values() if isinstance(links, dict) else ()
-    if not isinstance(links, dict) or not all(isinstance(k, str) and k.isdigit() for k in links) or not all(
-            isinstance(link, dict) and {'repo', 'number', 'state'} <= link.keys()
-            for held in entries if isinstance(held, list) for link in held):
-        raise ValueError(f'{path} is not an issue-links file: issue numbers mapped to {{repo, number, state}} lists')
-    return links
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--issues', required=True, help='the closed issues to audit, as REST pages')
@@ -68,12 +58,11 @@ def main() -> int:
     args = parser.parse_args()
     try:
         issues = records(args.issues)
-        links = issue_links(args.issue_links)
         repos = sorted({issue_key(i)[0] for i in issues if 'pull_request' not in i})
         if len(repos) > 1:
             print(f'sweep blocked: the issues span {", ".join(repos)}; supply one repository\'s issues')
             return 1
-        listed = sweep(issues, links)
+        listed = sweep(issues, snapshot(args.issue_links, repos[0]) if repos else {})
     except (OSError, ValueError, KeyError, TypeError) as exc:
         print(f'sweep blocked: unreadable evidence ({exc})')
         return 1
