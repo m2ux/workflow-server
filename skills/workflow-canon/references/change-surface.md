@@ -185,6 +185,7 @@ python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id
 Run inventory, evidence-gate and assignment regressions with the paired parser.
 
 - Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
+- Each engine-bound test skips while `CANON_TEST_ENGINE` is unset.
 
 ```bash
 CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
