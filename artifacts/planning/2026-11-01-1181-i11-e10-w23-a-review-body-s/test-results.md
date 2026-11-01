@@ -1,6 +1,6 @@
 # W23 Test Results
 
-Evaluated at commit `09e8b25fa` on `i11/e10/w23-a-review-body-s`, which merges `i11/e10/workspace` at `96295fffa`.
+Evaluated at commit `ad35f26ff` on `i11/e10/w23-a-review-body-s`, which merges `i11/e10/workspace` at `d930a90a3`.
 
 Changed paths:
 
@@ -51,4 +51,4 @@ A read of `skills/work-planner/artifacts/pull-request-body.md`, Populate Review 
 
 `cd <worktree> && sbx python3 skills/scripts/check_skill_files.py skills/work-planner` — 50 files checked, 0 findings.
 
-Over all of `skills`, six findings stand in `skills/gitnexus/gitnexus-cli/SKILL.md`, identical at the base `ba441c2b8`; W29's whole-repository verification owns them.
+`cd <worktree> && sbx python3 skills/scripts/check_skill_files.py skills` — 77 files checked, 0 findings.
