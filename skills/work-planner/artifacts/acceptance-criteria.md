@@ -73,13 +73,14 @@ Runs one instrument at the commit a branch, tag or commit resolves to, in a deta
 - The exit status is the instrument's. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
 - Exit 2 with a message, before any instrument runs, means the revision did not resolve, the checkout could not be created or the command could not start.
 - Worktrees the run did not create are left as they are.
+- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/revision-check.py --project '<checkout>' --revision '<revision>' -- <instrument-command>
+cd "<workspace>" && python3 skills/work-planner/scripts/revision-check.py --project '<checkout>' --revision '<revision>' -- <instrument-command>
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- python3 -m pytest skills/work-planner/test -q
+cd "<workspace>" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- "<workspace>/scripts/sbx" python3 -m pytest skills/work-planner/test -q
 ```
