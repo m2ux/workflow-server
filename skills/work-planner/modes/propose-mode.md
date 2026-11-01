@@ -2,6 +2,8 @@
 
 Scopes one problem: the friction, the evidence, and the boundary, and states the goal as clauses the user confirms. It raises one proposal on the board titled `Proposals`.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

@@ -1,0 +1,75 @@
+name: Verify skills
+
+# The shared skill-file check, `skills/scripts/check_skill_files.py`, over every skill this branch
+# holds. The skills, the guidelines they are measured against and the check itself all live on
+# `workspace`, and GitHub reads a push's workflows from the branch pushed to, so the job that grades
+# them lives here too, as `verify.yml` does on `main` for the engine.
+#
+# Two questions, two jobs, because a job is the unit GitHub reports a verdict for: whether every
+# skill in scope meets the guidelines, and whether every skill held out of scope still has the
+# reason it is held out.
+
+on:
+  push:
+    # A pull request reaches every promotion step, so these cover what reaches a branch without
+    # one. A glob does not cross `/`, so each depth is its own pattern.
+    branches: [workspace, 'i[0-9]+/workspace', 'i[0-9]+/e[0-9]+/workspace']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-skills-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Skill folders under `skills/` left out of the check, space-separated. Each is listed while the
+  # check reports findings over it, with those findings stated here as a list of
+  # `- <skill>: <findings>` lines. Empty while every skill is in scope.
+  #
+  # - gitnexus: entry-point sections outside the set in the debugging, exploring, guide,
+  #   impact-analysis and refactoring SKILL.md files
+  # - server-in-the-loop: entry-point sections outside the set in its SKILL.md
+  EXCLUDED: 'gitnexus server-in-the-loop'
+
+jobs:
+  skill-files:
+    name: Every skill in scope meets the shared skill guidelines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # One run over every skill, so a citation crossing from one skill into another resolves
+      # against the tree it lands in. A skill is a folder under `skills/` holding a `SKILL.md` at
+      # any depth; the shared scripts and tests beside them are not skills.
+      - name: Check every skill outside the exclusions
+        run: |
+          roots=()
+          for dir in skills/*/; do
+            name=$(basename "$dir")
+            [ -n "$(find "$dir" -name SKILL.md -print -quit)" ] || continue
+            case " $EXCLUDED " in *" $name "*) echo "Excluded: $name"; continue ;; esac
+            roots+=("$dir")
+          done
+          python3 skills/scripts/check_skill_files.py "${roots[@]}"
+
+  exclusions:
+    name: Every excluded skill still carries the findings that exclude it
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # An exclusion lapses with its reason: the change that clears a skill's last finding fails
+      # here until it also removes that skill from `EXCLUDED`, so the skill enters scope with it.
+      - name: Check each excluded skill reports a finding
+        run: |
+          status=0
+          for name in $EXCLUDED; do
+            if python3 skills/scripts/check_skill_files.py --quiet "skills/$name"; then
+              echo "::error::skills/$name reports no finding; remove it from EXCLUDED in .github/workflows/verify-skills.yml"
+              status=1
+            fi
+          done
+          exit $status

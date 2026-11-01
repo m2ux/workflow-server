@@ -55,7 +55,7 @@ One task's local implementation plan.
 
 ### Identity
 
-One file per task, named for its id in lowercase, such as `w01.md`. The record's README links each file. The file names no other task and carries no acceptance criteria, Coverage, dependency or Joins; those belong to the epic table.
+One file per task, named for its id in lowercase, such as `w01.md`: the name the epic row's link carries once its reservation is released. The record's README links each file by that name, and releasing the row refuses a record that does not hold it. The file names no other task and carries no acceptance criteria, Coverage, dependency or Joins; those belong to the epic table.
 
 ### Component
 
