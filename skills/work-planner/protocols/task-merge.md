@@ -2,6 +2,8 @@
 
 What the task, epic, board and initiative records become after one confirmed task merge.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

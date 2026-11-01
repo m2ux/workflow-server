@@ -2,6 +2,8 @@
 
 Explains the named pull request's changes through a measured architecture overview and publishes that overview for its reviewer.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

@@ -2,6 +2,8 @@
 
 Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
