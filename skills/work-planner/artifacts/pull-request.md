@@ -16,7 +16,7 @@ Read these files first.
 
 One task or epic pull request's merge result, or its handoff for human approval.
 
-**Inputs:** Pull request identity, delivery kind, verified head, target requirements, current passing readiness evidence and the caller's confirmed repository prerequisite documented in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, delivery kind, verified head, target requirements, current passing readiness evidence and the caller's confirmed repository prerequisite documented in [Auto-Close Setting](issue.md#auto-close-setting).
 
 1. Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
    - Report the pull request as ready for approval, naming what was verified.
@@ -32,7 +32,7 @@ One task or epic pull request's merge result, or its handoff for human approval.
 
 The observed or updated Development relation for a pull request.
 
-**Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting the applicable preconditions in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting [Auto-Close Setting](issue.md#auto-close-setting) and the removal precondition in [Close Tracker Issue](issue.md#close-tracker-issue).
 
 1. For a read-only request:
    - Run [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by.
@@ -60,7 +60,7 @@ The complete issue-link snapshot for a supplied set of pull requests.
 
 The verified delivery-issue relation for a pull request.
 
-**Inputs:** Pull request identity, delivery issue identity, current pull request records, link-snapshot destination, authenticated access and the caller's confirmed repository prerequisite documented in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, delivery issue identity, current pull request records, link-snapshot destination, authenticated access and the caller's confirmed repository prerequisite documented in [Auto-Close Setting](issue.md#auto-close-setting).
 
 1. Run [Access Development Links](#access-development-links) with the supplied identities, requested link addition and confirmed repository prerequisite.
 2. Stop on a blocker or an unverified edit.
