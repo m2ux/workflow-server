@@ -12,6 +12,7 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 
 | Artifact | What it holds |
 | --- | --- |
+| [W12 work item](w12.md) | Component, scope, design and test rows for W12 |
 
 ## Links
 
