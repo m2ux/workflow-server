@@ -1,6 +1,6 @@
 # W06 Delivery Evidence
 
-Delivery head: `7fd013a339b55bf07e4ffbae5304e8a168cc137e` on `i11/e09/w06-configuration-from-the-evaluated`. Base: `f03df4884afef499fa9d6fe8c0172f19bc05d152` (`i11/e09/workspace`).
+Delivery head: `e4b04f8efbb63c294571a1bb4d8338623be41769` on `i11/e09/w06-configuration-from-the-evaluated`, which merges the epic base `i11/e09/workspace` at `804a7d5b8c297250b033483882c1c53b81cc6b14` (after W03's #1489) into the unit's commits `c208eb2c7`..`7fd013a33`. The unit was cut from `f03df4884`.
 
 ## Same Commit Across Worktrees
 
@@ -24,7 +24,7 @@ This observes AC12. [Full output](tests.log).
 
 ## Full Suite
 
-`python3 -m pytest skills/work-planner/test` passes 485 tests and 1026 subtests on the delivery head. Survey tests in `test_deliver.py` read the names through `--project` and `--revision` against a git fixture. Before this unit, pytest reported a collection error because `sync.test_plan_agreement` and the `test_plan` body builder carried pytest's test prefix; they are renamed and the suite collects cleanly. [Full output](tests.log).
+`python3 -m pytest skills/work-planner/test` passes 499 tests and 1027 subtests on the delivery head (485 on the unit's own head before the epic base merge). Survey tests in `test_deliver.py` read the names through `--project` and `--revision` against a git fixture. Before this unit, pytest reported a collection error because `sync.test_plan_agreement` and the `test_plan` body builder carried pytest's test prefix; they are renamed and the suite collects cleanly. [Full output](tests.log).
 
 ## Documents
 
