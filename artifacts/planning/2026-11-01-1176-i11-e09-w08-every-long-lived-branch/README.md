@@ -13,7 +13,8 @@ Since W06, a sync reads the declaration only at the commit it evaluates, so an e
 | Artifact | What it holds |
 | --- | --- |
 | [W08 work item](w08.md) | Component, scope, design and test rows for W08 |
-| [Evidence](evidence.md) | Declaration reads before and after, per long-lived branch |
+| [Evidence](evidence.md) | Declaration reads before and after, per long-lived branch; checks and epic sync |
+| [Change list](changes.md) | Plan changes applied and held, and held steps |
 
 ## Links
 
@@ -21,3 +22,6 @@ Since W06, a sync reads the declaration only at the commit it evaluates, so an e
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
 | Source issue | [#1492](https://github.com/m2ux/workflow-server/issues/1492) |
+| Pull requests | [#1494](https://github.com/m2ux/workflow-server/pull/1494), [#1495](https://github.com/m2ux/workflow-server/pull/1495), [#1496](https://github.com/m2ux/workflow-server/pull/1496) |
+| Review pull requests | [#1506](https://github.com/m2ux/workflow-server/pull/1506), [#1497](https://github.com/m2ux/workflow-server/pull/1497), [#1498](https://github.com/m2ux/workflow-server/pull/1498) |
+| Arising issues | [#1499](https://github.com/m2ux/workflow-server/issues/1499), [#1500](https://github.com/m2ux/workflow-server/issues/1500) |
