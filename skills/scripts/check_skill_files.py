@@ -72,7 +72,13 @@ A move is judged between two revisions rather than in one tree, so
 compares every third-level section's body with its counterpart, reporting
 each one that differs other than by a link target.
 
+A skill held out of scope with `--exclude` is still read with every root,
+so a citation reaching it from another skill counts. Its findings are held
+aside rather than reported, and an excluded skill holding none is reported
+in their place, since the reason it is held out has lapsed.
+
     python3 skills/scripts/check_skill_files.py skills/workflow-canon
+    python3 skills/scripts/check_skill_files.py skills/*/ --exclude skills/workflow-canon
     python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/work-planner
 """
 
@@ -135,7 +141,7 @@ KINDS = (
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
-    'mode without a trigger phrase', 'hard-wrapped line',
+    'mode without a trigger phrase', 'hard-wrapped line', 'excluded skill without a finding',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -1004,12 +1010,36 @@ def duplicate_anchors(headings):
         seen.setdefault(slug, index)
 
 
+def held_aside(findings, excluded):
+    """The findings to report, and each excluded skill's count of those held
+    aside. A finding names its file relative to the folder holding its root,
+    which for an excluded skill is the folder holding that skill. An excluded
+    skill holding no finding is reported, so its exclusion lapses with its
+    last finding."""
+    skills = [Path(name).resolve() for name in excluded]
+    held = {skill: 0 for skill in skills}
+    reported = []
+    for item in findings:
+        skill = next((skill for skill in skills if (skill.parent / item[0]).is_relative_to(skill)), None)
+        if skill:
+            held[skill] += 1
+        else:
+            reported.append(item)
+    for skill, count in held.items():
+        if not count:
+            reported.append((skill.name, 0, 'excluded skill without a finding',
+                             'remove it from the exclusions'))
+    return reported, {skill.name: count for skill, count in held.items() if count}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     parser.add_argument('--compare', nargs=2, metavar=('BASE', 'HEAD'),
                         help='compare section bodies between two revisions')
+    parser.add_argument('--exclude', action='append', default=[], metavar='SKILL',
+                        help='a skill folder read with the roots whose findings are held aside')
     options = parser.parse_args(argv)
     if options.compare:
         return compare_revisions(*options.compare, options.roots, options.quiet)
@@ -1056,9 +1086,12 @@ def main(argv=None):
         print(f'unreadable declaration — {error}')
         return 1
 
+    findings, held = held_aside(findings, options.exclude)
     if not options.quiet:
         for where, line, kind, detail in findings:
             print(f'{where}:{line}: {kind}' + (f' — {detail}' if detail else ''))
+    for skill, count in held.items():
+        print(f'{skill} excluded, {count} findings held aside')
     print(f'{len(files)} files checked, {len(findings)} findings')
     return 1 if findings else 0
 
