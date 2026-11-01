@@ -141,7 +141,25 @@ A project states its long-lived branches in `config/branches` at its root, one n
 - **Example.**
   `i07/e00/main` merges `main`, and is checked out at `.worktrees/i07/e00/main`.
 - Every pull request delivering the epic's tasks targets that epic base.
-- A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged.
+- A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.
+- An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.
+
+### Producer Outputs
+
+A task row naming another epic's row starts once that row is delivered and each output it delivered is available at the consumer's base commit.
+
+- **The output.**
+  Each merged pull request the producer row links carries its merge commit, on the long-lived branch its base names. Each commit the row links is an output of its own.
+- **Available.**
+  The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
+- **Not available.**
+  A merge into the producer's own base alone, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
+- **Not gates.**
+  The producer epic's other rows and its closure.
+- **Record.**
+  Each reading names the producer row, the delivery, the output commit, the consumer revision and commit, and the answer. The integration, review and human-approval gates on each epic stand apart from it.
+- **Example.**
+  `#944 W02: E00:W01 #9 3f2a1c0d9b1e available at origin/i07/e01/main 8c4d2e7a1f30`.
 
 ### Review Worktrees
 

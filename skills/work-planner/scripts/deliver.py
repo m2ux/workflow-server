@@ -20,7 +20,10 @@ delivered, a link to a planning folder is work a session holds, and anything els
 available when its epic is Ready or In Progress and the prerequisite epics its initiative row names
 are completed, its Done cell carries no tick, its id is free, and every entry in its own Depends on
 cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
-one epic start in the order that epic's own graph sets, whatever its siblings wait on. Tasks that
+one epic start in the order that epic's own graph sets, whatever its siblings wait on. An entry
+naming another epic's row is delivered when that row is and each output it delivered is available
+at this epic's base in the repository --project locates, as board.Outputs reads it; that epic's
+other rows and its closure gate nothing. Tasks that
 name each other in Joins are one unit, and a unit is one session's work.
 
 Printed: a unit line for each available unit, with the record folder its ids and Description give
@@ -28,7 +31,9 @@ it and a branch and worktree for each epic base it changes, suffixed with the ba
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
 linked work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
-dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
+dependencies are not delivered or whose joined task is unavailable; an output line for each
+producer output a row naming another epic's row was read for, naming the output, the consumer
+commit and whether it is available there; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
 issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
@@ -58,7 +63,7 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, Resolution, rows
+from board import Board, Outputs, Resolution, rows
 from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
@@ -308,7 +313,7 @@ def survey(args: argparse.Namespace) -> int:
     if declared:
         print(f'source: {declared.source}')
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
-    board = Board(issues, [], home, prs)
+    board = Board(issues, [], home, prs, Outputs(args.project))
     epics: dict[str, dict[str, tuple[str, int]]] = {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
@@ -372,6 +377,8 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
+    for line in dict.fromkeys(board.outputs.lines):
+        print(f'  output {line}')
     merging = ready_merges(issues, prs, lived)
     for line in merging:
         print(line)
