@@ -2,7 +2,7 @@
 
 > Test evidence · Created 2026-11-01
 
-Evaluated at `6f79cf0dd3aa7f04fb16011c1dd562fbbbbbba12` on `i11/e10/w15-one-mood-for-parallel`: the unit cut from `i11/e10/workspace` at `ba441c2b8`, with that base merged in at `f0d01fd3f`.
+Evaluated at `d22369fb6e00ec4c2a0b88b70ac3b5a3d5021e61` on `i11/e10/w15-one-mood-for-parallel`: the unit cut from `i11/e10/workspace` at `ba441c2b8`, with that base merged in at `212bedd48`.
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `skills/workflow-canon/references/coverage.md`.
 
@@ -15,7 +15,7 @@ Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_sk
 
 ## T2
 
-`python3 -m pytest skills/test skills/work-planner/test -q` under `sbx`: 716 passed, 1 skipped, 1140 subtests passed.
+`python3 -m pytest skills/test skills/work-planner/test -q` under `sbx`: 734 passed, 1 skipped, 1140 subtests passed.
 
 `skills/workflow-canon/test` fails 38 tests identically with and without this change: they need `CANON_TEST_ENGINE` to name an engine with its installed yaml package, which this host does not supply.
 
