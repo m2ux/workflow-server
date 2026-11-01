@@ -8,7 +8,7 @@ completed epic takes. Each plans its own statuses and hands them here, which rea
 items, writes the option body files, renders the gh call for every change, and refuses a change the
 calling mode does not own.
 
-Every mode refuses a task set In Review, since only an initiative or an epic stands there.
+Every jurisdiction refuses a task set In Review: only an initiative or an epic stands there.
 DELIVERY refuses moving an initiative or an epic between Ready and Backlog.
 QUEUE refuses In Review, Done and any task.
 DISPATCH refuses every Status but In Progress and In Review, and a removal.
