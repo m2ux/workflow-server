@@ -21,7 +21,7 @@ Read these files first.
    - Before any preparation, run [Hold Epic Review](../artifacts/pull-request.md#hold-epic-review) for the supplied review identity and [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) requesting In Progress with the epic, board identity, fresh pull request records, an empty review-record list and output paths. An absent board item is reported; it does not prevent validation.
    - For any failed gate or called operation through handoff, repeat those withdrawal operations before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal.
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository, which gates the merge this protocol makes.
-   - Follow [Review Pull Request](review-pull-request.md) with the actual task merges, the epic's issue and that confirmed setting.
+   - Follow [Review Pull Request](review-pull-request.md) with the actual task merges, the epic's issue, the project checkout, the fetched epic bases and that confirmed setting.
    - Follow [Change Overview](change-overview.md) with the review pull request identity.
    - Resume with its published overview so the complete review body cites the task merges and carries that overview.
    - Read the pull request through [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).

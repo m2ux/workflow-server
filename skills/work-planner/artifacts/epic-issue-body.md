@@ -95,7 +95,7 @@ One epic body with confirmed task-grain and coverage corrections.
 
 The agreed disposition of criteria a delivered row left unmet.
 
-**Inputs:** Current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot and output body path.
+**Inputs:** Current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.
 
 1. Present each unmet criterion and its missing evidence to the user.
    - Return the criteria the user confirms already hold to the caller for verification and ticking. The delivered task retains them.
@@ -106,7 +106,7 @@ The agreed disposition of criteria a delivered row left unmet.
    - Confirm the draft with the user.
    - On acceptance, call [Revise Epic Rows](#revise-epic-rows) with the further row and the criteria it adopts from the delivered task's Coverage.
    - Return an unanswered draft as pending without continuing to the reconcile step.
-3. Run [Record Epic Delivery](#record-epic-delivery) with the revised epic and the supplied delivery evidence.
+3. Run [Record Epic Delivery](#record-epic-delivery) with the revised epic, the supplied delivery evidence, the project checkout and the fetched epic bases.
    - Publish the returned body through [Save Tracker Issue](issue.md#save-tracker-issue).
    - Return the saved row and criterion disposition to the caller. Done follows [Tables](issue-body.md#tables).
 
