@@ -2,10 +2,6 @@
 
 Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
 
-## Prerequisites
-
-Before the first command spec, read the [command conventions](command-conventions.md#common).
-
 ## Procedure
 
 1. **Read the guidelines.**
@@ -51,7 +47,7 @@ git worktree add <skill-worktree> -b <revision-branch> <remote>/<target-branch>
 
 Validate the skill's structure and run the checks its repository and changed resources require.
 
-- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](command-conventions.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
+- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](review-mode.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
 - Run [Check Skill Files](#check-skill-files) over every skill the revision touches, and inspect frontmatter and unfinished scaffold text. If an installed skill validator is available, run it too.
 - A behavioral walkthrough follows [Revise](revise-mode.md#procedure); mechanical checks alone do not establish instruction quality.
 
@@ -64,7 +60,7 @@ git diff --check
 Resolves every local link and heading anchor in a skill, and reports the link and layout rules the shared guidelines state.
 
 - Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution.
-- A repeated heading is reported only where a link cites it, since an uncited repeat resolves nothing ambiguously.
+- A heading whose anchor an earlier heading of its file holds is reported whether or not a link cites it, since a fragment reaches the first of them.
 - A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
 - Fenced blocks, code spans and `{{...}}` placeholders hold specimen text and are excluded.
 - Exit 0 means no finding; exit 1 lists each one as `file:line: kind`.

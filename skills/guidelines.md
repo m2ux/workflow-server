@@ -50,7 +50,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md links the shared command conventions on a required path and holds no command of its own, so it takes no Commands section.
+  SKILL.md holds no command of its own, so it takes no Commands section.
 
 ## Procedure files
 
@@ -114,7 +114,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   A citation asserting the reader must already hold a section earns its place only where that section is in another file, opened for its own reason. Name it: `Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.`
   - Within one file, position carries the requirement and the citation is dropped: conventions sit ahead of the procedures and commands they govern.
   - A prerequisite citation pointing further down its own file is a defect, whatever its wording. A sequential reader meets it after the point it was meant to serve.
-- **Resolution.**  Every link resolves to a file that exists, and every anchor to a heading in it.
+- **Resolution.**  Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
 
 ## Commands
 

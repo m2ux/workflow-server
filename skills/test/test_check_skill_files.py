@@ -107,15 +107,6 @@ class SkillFileChecks(unittest.TestCase):
         self.write('references/guide.md', f'# Guide\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
         self.assertEqual(self.findings(), [])
 
-    def test_a_repeated_anchor_is_reported_when_it_is_cited(self):
-        self.write('SKILL.md', '# Specimen\n\nSee [terms](references/guide.md#terms).\n')
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
-        self.assertIn('duplicate anchor is cited', self.kinds())
-
-    def test_a_repeated_anchor_nobody_cites_is_left_alone(self):
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
-        self.assertEqual(self.findings(), [])
-
     def test_a_skipped_heading_level_is_reported(self):
         self.write('SKILL.md', '# Specimen\n\n### Deep\n\nA sentence.\n')
         self.assertIn('heading jump', self.kinds())
@@ -844,9 +835,8 @@ class SkillWideChecks(unittest.TestCase):
     def artifact(self, specification, script=None):
         if script is not None:
             self.write('scripts/link.py', script)
-        self.write('protocols/link.md', '# Link\n\n## Procedure\n\n'
-                   '1. Run [Link Issue](../artifacts/issue.md#link-issue).\n')
-        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n## Commands\n\n'
+        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
+                          'Number, linked through [Link Issue](#link-issue).\n\n## Commands\n\n'
                           + specification)
 
     def specification(self, command, gap=False):
@@ -1271,6 +1261,235 @@ class UncitedSpecifications(unittest.TestCase):
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n' + self.COMMANDS)
         self.assertEqual(self.uncited(), [])
 
+
+class RepeatedHeadings(unittest.TestCase):
+    """A heading whose anchor an earlier heading of its file holds is reported,
+    whether or not a link cites it."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def repeats(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files, {})
+        found = []
+        for path in files:
+            found += checker.check(path, self.root, {}, cited, called, {})
+        return [(Path(where).name, line, detail)
+                for where, line, kind, detail in found if kind == 'duplicate anchor']
+
+    def test_a_repeat_nothing_cites_is_reported(self):
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_a_cited_repeat_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nSee [terms](guide.md#terms).\n')
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_titles_differing_only_in_what_the_anchor_drops_are_one_anchor(self):
+        self.write('guide.md', '# Guide\n\n## Open Questions\n\nOne.\n\n### open questions?\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'open-questions, also at line 3')])
+
+    def test_each_further_repeat_names_the_first(self):
+        self.write('guide.md', '# Guide\n\n## Problem\n\nA.\n\n## Problem\n\nB.\n\n## Problem\n\nC.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'problem, also at line 3'),
+                                          ('guide.md', 11, 'problem, also at line 3')])
+
+    def test_distinct_headings_are_not_repeats(self):
+        self.write('guide.md', '# Guide\n\n## Epic Problem\n\nA.\n\n## Task Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_one_title_in_two_files_is_not_a_repeat(self):
+        self.write('epic.md', '# Epic\n\n## Problem\n\nA.\n')
+        self.write('task.md', '# Task\n\n## Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_a_repeat_inside_a_fence_is_a_specimen(self):
+        self.write('guide.md', f'# Guide\n\n## Terms\n\n{FENCE}markdown\n## Terms\n{FENCE}\n')
+        self.assertEqual(self.repeats(), [])
+
+
+CANON = Path(__file__).resolve().parents[1] / 'workflow-canon'
+
+
+def modes(skill):
+    """Each mode file the entry point's Modes section links, which is where a
+    reader holding a request selects one."""
+    lines, fenced, headings = checker.scan(skill / 'SKILL.md')
+    start = next(index for index, level, title in headings if level == 2 and title == 'Modes')
+    end = next((index for index, level, _ in headings if index > start and level <= 2), len(lines))
+    return [(skill / target).resolve() for index, target in checker.targets(skill / 'SKILL.md', lines, fenced)
+            if start < index < end]
+
+
+def span(path, anchor):
+    """The line indices a citation retrieves: a heading-linked section and its
+    sub-sections, stopping before the next heading of its level or above, or
+    the whole file where the citation names no heading."""
+    lines, _, headings = checker.scan(path)
+    if not anchor:
+        return range(len(lines))
+    for position, (start, level, title) in enumerate(headings):
+        if checker.anchor_of(title) == anchor:
+            end = next((index for index, depth, _ in headings[position + 1:] if depth <= level),
+                       len(lines))
+            return range(start, end)
+    return range(0)
+
+
+def walk(skill, mode, passing=lambda anchor: False):
+    """The files a reader of one mode opens: the entry point that selects it
+    and the mode file, each read whole, and every section a required citation
+    in a retrieved part reaches, followed to closure. A citation whose anchor
+    `passing` names is not followed, so a walk without it shows what that
+    citation alone opens."""
+    declared = {}
+    retrieved = {((skill / 'SKILL.md').resolve(), ''), (mode, '')}
+    frontier = list(retrieved)
+    while frontier:
+        path, anchor = frontier.pop()
+        lines = span(path, anchor)
+        for index, target, kind in checker.citation_kinds(path, checker.contract(path, declared)):
+            name, _, fragment = target.partition('#')
+            destination = (path.parent / name).resolve() if name else path
+            part = (destination, checker.anchor_of(fragment) if fragment else '')
+            if (index not in lines or kind not in checker.REQUIRED or passing(part[1])
+                    or destination.suffix != '.md' or part in retrieved):
+                continue
+            retrieved.add(part)
+            frontier.append(part)
+    return {path for path, _ in retrieved}
+
+
+def conventions(anchor):
+    """The skill-wide conventions, by the section names that hold them: the
+    entry point's Conventions section, or the Common section of a file of
+    their own. A procedure's own conventions, such as Canon Check
+    Conventions, travel with the commands they govern and are not these."""
+    return anchor in ('conventions', 'common')
+
+
+class CanonConventionsReach(unittest.TestCase):
+    """Workflow Canon's skill-wide conventions stand where every mode reaching
+    them opens no file it would not otherwise open: a retrieval walk over each
+    mode with the conventions' citations followed opens the same files as one
+    without them."""
+
+    def test_the_entry_point_holds_the_conventions(self):
+        headings = checker.scan(CANON / 'SKILL.md')[2]
+        self.assertIn((2, 'Conventions'), [(level, title) for _, level, title in headings])
+        self.assertEqual([path.name for path in CANON.rglob('*conventions*.md')], [])
+
+    def test_each_mode_reaches_the_conventions_without_a_further_file(self):
+        found = modes(CANON)
+        self.assertEqual({path.name for path in found},
+                         {'author-mode.md', 'audit-mode.md', 'review-mode.md', 'revise-mode.md'})
+        for mode in found:
+            with self.subTest(mode=mode.name):
+                opened = walk(CANON, mode)
+                self.assertIn((CANON / 'SKILL.md').resolve(), opened)
+                self.assertEqual(walk(CANON, mode, passing=conventions), opened)
+
+    def test_a_conventions_file_costs_each_mode_a_file(self):
+        """The walk's own fixture: conventions in a file of their own, cited
+        as each mode's prerequisite, open that file for nothing else."""
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, root)
+        skill = root / 'specimen'
+        (skill / 'references').mkdir(parents=True)
+        (skill / 'SKILL.md').write_text('# Specimen\n\n## Modes\n\n- **[Plan](references/plan-mode.md)**\n')
+        (skill / 'references/plan-mode.md').write_text(
+            '# Plan\n\n## Prerequisites\n\nRead [Common](conventions.md#common) first.\n\n'
+            '## Procedure\n\n1. **Plan.**  Plan it.\n')
+        (skill / 'references/conventions.md').write_text('# Conventions\n\n## Common\n\nA sentence.\n')
+        mode = (skill / 'references/plan-mode.md').resolve()
+        self.assertEqual(walk(skill, mode) - walk(skill, mode, passing=conventions),
+                         {(skill / 'references/conventions.md').resolve()})
+
+
+class CanonRunProjectCheck(unittest.TestCase):
+    """Run Project Check is one command specification in the mode file whose
+    procedure runs it, under the structure Workflow Canon declares."""
+
+    MODE = '*-mode.md'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        (self.skill / 'references').mkdir(parents=True)
+        (self.skill / 'structure.json').write_text((CANON / 'structure.json').read_text())
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Run [Run Skill Checks](#run-skill-checks).\n\n'
+                   '## Rules\n\n- **Scope.**  One skill.\n\n## Commands\n\n### Run Skill Checks\n\n'
+                   'Checks it.\n\n- Use [Run Project Check](review-mode.md#run-project-check).\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.write_text(text)
+        return path
+
+    def placed(self, root):
+        files = sorted(path for path in root.rglob('*.md') if 'fixtures' not in path.relative_to(root).parts)
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        findings = []
+        for path in files:
+            findings += checker.check(path, root.parent, {}, cited, called, declared)
+        held = [(path.name, title) for path in files
+                for _, title in checker.specifications(
+                    checker.scan(path)[2], checker.held_section(checker.contract(path, declared)))
+                if title == 'Run Project Check']
+        return held, called, findings
+
+    def test_a_specification_in_its_callers_commands_is_recognized_and_placed(self):
+        review = self.write('references/review-mode.md',
+                            '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](#run-project-check).\n\n'
+                            '## Rules\n\n- **Scope.**  One integration.\n\n## Commands\n\n'
+                            '### Run Project Check\n\nRuns the selected check.\n')
+        held, called, findings = self.placed(self.skill)
+        self.assertEqual(held, [('review-mode.md', 'Run Project Check')])
+        self.assertEqual(called[review.resolve()]['run-project-check'], {review.resolve()})
+        self.assertEqual(findings, [])
+
+    def test_a_specification_away_from_its_one_caller_is_reported(self):
+        self.write('references/review-mode.md',
+                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
+                   '## Rules\n\n- **Scope.**  One integration.\n')
+        self.write('references/checks.md', '# Checks\n\n## Commands\n\n### Run Project Check\n\nRuns it.\n')
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
+        held, _, findings = self.placed(self.skill)
+        self.assertEqual(held, [('checks.md', 'Run Project Check')])
+        self.assertEqual([(Path(where).name, kind) for where, _, kind, _ in findings],
+                         [('checks.md', 'command specification with one caller')])
+
+    def test_a_section_outside_a_commands_section_is_no_specification(self):
+        self.write('references/review-mode.md',
+                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
+                   '## Rules\n\n- **Scope.**  One integration.\n')
+        self.write('references/checks.md', '# Checks\n\n## Run Project Check\n\nRuns it.\n')
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
+        held, _, findings = self.placed(self.skill)
+        self.assertEqual(held, [])
+        self.assertEqual(findings, [])
+
+    def test_workflow_canon_holds_it_once_with_its_one_caller(self):
+        held, called, findings = self.placed(CANON)
+        review = (CANON / 'references/review-mode.md').resolve()
+        self.assertEqual(held, [('review-mode.md', 'Run Project Check')])
+        self.assertEqual(called[review]['run-project-check'], {review})
+        self.assertEqual(findings, [])
 
 if __name__ == '__main__':
     unittest.main()

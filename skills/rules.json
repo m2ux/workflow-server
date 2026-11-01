@@ -31,7 +31,7 @@
   "links/link-text": ["review"],
   "links/selection-links": ["review"],
   "links/prerequisite-citation": ["prerequisite citation inside one file"],
-  "links/resolution": ["unresolved link", "unresolved anchor", "duplicate anchor is cited"],
+  "links/resolution": ["unresolved link", "unresolved anchor", "duplicate anchor"],
   "commands/one-spec-per-operation": ["review"],
   "commands/local-to-the-procedure": ["command specification with one caller", "command specification in the entry point", "command specification nothing cites", "review"],
   "commands/spec-layout": ["review"],
