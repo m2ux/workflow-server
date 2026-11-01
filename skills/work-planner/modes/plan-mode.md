@@ -2,6 +2,8 @@
 
 Scopes the solution: the design, the criteria, and the breakdown of an initiative and its epics, and keeps them current as work lands.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -99,7 +101,7 @@ The main path meets [Outcomes](#outcomes).
    - Split multi-condition criteria at the end of the list.
    - Update Coverage for the split criteria.
    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) with current initiative and prerequisite evidence; stop on a failed or incomplete result.
-   - After prerequisites pass, call [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
+   - After prerequisites pass, call [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases) with the project checkout.
    - Run [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) to retarget each affected open task pull request to its epic base.
    - Repeat goal and ordering review on changed bodies before returning readiness.
 9. **Record delivered work.**

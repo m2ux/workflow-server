@@ -106,7 +106,7 @@ Prints the checkout holding the engineering branch, which is where every plannin
 - The engineering branch has one long-lived worktree and takes no further one.
 
 ```bash
-git worktree list | grep '\[engineering\]'
+git -C '<checkout>' worktree list | grep '\[engineering\]'
 ```
 
 ### Commit Planning Record
