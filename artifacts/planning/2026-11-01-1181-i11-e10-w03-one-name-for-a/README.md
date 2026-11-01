@@ -1,6 +1,6 @@
 # One name for a record work item — November 2026
 
-> Delivery record · Created 2026-11-01
+> Delivery record · Created 2026-11-01 · Revised 2026-11-01
 
 ## Executive Summary
 
@@ -15,9 +15,11 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
 | [W10 work item](w10.md) | Component, scope, design, criteria and test rows for W10 |
 | [Test results](test-results.md) | The evaluated commit, changed paths and each Test Plan check's evidence |
+| [Change list](change-list.md) | The plan changes this delivery session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1558](https://github.com/m2ux/workflow-server/pull/1558) |
