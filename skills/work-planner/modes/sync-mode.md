@@ -108,6 +108,7 @@ The main path meets [Outcomes](#outcomes).
        - Continue recording links, verified criteria and Done despite the reported coverage disagreement.
      - **Unevaluable.**
        - Report each source and why to the user, with each check the run names not checked.
+       - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
        - The epic stays open until every epic base states the same readable declaration.
    - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
