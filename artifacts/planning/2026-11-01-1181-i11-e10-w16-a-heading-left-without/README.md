@@ -20,3 +20,4 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1554](https://github.com/m2ux/workflow-server/pull/1554) |

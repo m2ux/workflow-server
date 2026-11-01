@@ -1,6 +1,6 @@
 # W16 Test Results
 
-> Tested revision: `eb3522f7409aa931f7cac453fe17f60d2c686a42` on `i11/e10/w16-a-heading-left-without`, base `i11/e10/workspace` at `ba441c2b`.
+> Tested revision: `3b72fb9f2d47cbed15592b23e96c61c54f06d6b6` on `i11/e10/w16-a-heading-left-without`, which merges `i11/e10/workspace` at `41537ea98` over the W16 change `eb3522f7`.
 
 ## T1 Empty Section Unit Tests
 
@@ -33,7 +33,7 @@ cd <worktree> && <workspace>/scripts/sbx python3 -m pytest skills/work-planner/t
 ```
 
 - **Result.**
-  619 passed, 1 skipped, 1136 subtests passed.
+  620 passed, 1 skipped, 1136 subtests passed.
 
 ## T4 Check Over Every Skill
 
