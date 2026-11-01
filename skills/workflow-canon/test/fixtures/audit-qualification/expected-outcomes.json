@@ -19,8 +19,8 @@
       "category": "standalone-item",
       "criterion": "ap:emission-without-validation",
       "source": "corpus/qualification/techniques/produce.md",
-      "lines": [9, 9],
-      "address": "/protocol/line-9",
+      "lines": [8, 8],
+      "address": "/protocol/line-8",
       "seeded_construct": "Emit the report without validation.",
       "clean_construct": "Validate the report, then emit it.",
       "basis": "The protocol explicitly permits unvalidated emission; this independently fails AP-01."
@@ -30,8 +30,8 @@
       "category": "later-compound-clause",
       "criterion": "ap:emission-without-validation",
       "source": "corpus/qualification/techniques/produce.md",
-      "lines": [12, 12],
-      "address": "/rules/line-12/clause-2",
+      "lines": [11, 11],
+      "address": "/rules/line-11/clause-2",
       "seeded_construct": "Retain the report ID; emit the report without validation.",
       "clean_construct": "Retain the report ID; validate the report before each emission.",
       "basis": "The first retention clause is valid. The independent second clause permits unvalidated emission; evaluating only the first clause misses AP-01."
@@ -76,8 +76,8 @@
       "category": "inherited-contract",
       "criterion": "dp:1",
       "source": "corpus/qualification/techniques/produce.md",
-      "lines": [13, 13],
-      "address": "/rules/line-13",
+      "lines": [12, 12],
+      "address": "/rules/line-12",
       "context": [
         "corpus/qualification/techniques/TECHNIQUE.md",
         "corpus/qualification/routines/deliver.yaml",

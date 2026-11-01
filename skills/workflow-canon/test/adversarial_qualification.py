@@ -36,7 +36,7 @@ def main():
     leaf = 'corpus/qualification/techniques/produce.md'
     routine = 'corpus/qualification/routines/deliver.yaml'
     clause = next(key for key, row in candidate['rows'].items()
-                  if row['source'] == leaf and row['start'] == 12
+                  if row['source'] == leaf and row['start'] == 11
                   and row['address'].endswith('/clause-2'))
     removed_rows = [key for key, row in candidate['rows'].items()
                     if key == clause or row['source'] == routine]
@@ -58,7 +58,7 @@ def main():
     save(exclusion, exclusion_run)
     cell = next(key for key, (row, criterion_id) in cell_index(exclusion).items()
                 if exclusion['rows'][row]['source'] == leaf
-                and exclusion['rows'][row]['start'] == 9
+                and exclusion['rows'][row]['start'] == 8
                 and exclusion['rows'][row]['kind'] == 'item'
                 and criterion_id == 'ap:emission-without-validation')
     reset(exclusion, [cell], 'Controlled negative test of an incorrect exclusion')
