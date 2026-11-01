@@ -72,7 +72,13 @@ A move is judged between two revisions rather than in one tree, so
 compares every third-level section's body with its counterpart, reporting
 each one that differs other than by a link target.
 
+A skill held out of scope with `--exclude` is still read with every root,
+so a citation reaching it from another skill counts. Its findings are held
+aside rather than reported, and an excluded skill holding none is reported
+in their place, since the reason it is held out has lapsed.
+
     python3 skills/scripts/check_skill_files.py skills/workflow-canon
+    python3 skills/scripts/check_skill_files.py skills/*/ --exclude skills/workflow-canon
     python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/work-planner
 """
 
@@ -98,7 +104,7 @@ BARE_LEAD = re.compile(r'^\s*-\s+\*\*[^*]+\*\*\s*$')
 INDENTED = re.compile(r'^\s+\S')
 DESCRIPTION = re.compile(r'^description:\s*(.*?)\s*$')
 BLOCK_SCALARS = ('>', '>-', '>+', '|', '|-', '|+')
-MODE = re.compile(r'^[-*]\s+\*\*\[([^\]]+)\]\([^)]+\)\*\*')
+MODE = re.compile(r'^[-*]\s+(\*\*)?\[([^\]]+)\]\([^)]+\)(?(1)\*\*)')
 BLOCK_START = re.compile(r'^\s*([-*+]\s|\d+[.)]\s|#|\||>|<|`{3,}|~{3,})')
 BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*[^*]+\*\*\s*$')
 PROSE_LIMIT = 8
@@ -114,11 +120,18 @@ RULE_LABEL = re.compile(r'^- \*\*(.+?)\*\*')
 SCRIPT = re.compile(r'(?<![\w./-])((?:[\w.-]+/)*scripts/[\w.-]+\.(?:py|sh|js|mjs|ts))')
 SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
 GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
-REST_GAP = '**REST gap:**'
+REST_GAP = re.compile(r'^\s*(?:[-*+]\s+)?\*\*REST gap:\*\*')
+# Projects (classic) in every form: its types, mutations and connection fields,
+# its REST routes rooted at projects/ or under a repository, organization, user
+# or the authenticated user, and its GraphQL project and projects fields called
+# with arguments. A path segment beneath another, such as a board's web link or
+# a local folder, names no route, and the V2 names carry their suffix.
 CLASSIC = re.compile(r'\b(?:add|move|delete|update|create|clone|convert)?Project(?:Card|Column)s?\b'
-                     r'|\bproject(?:Card|Column)s\b|\bprojects/(?:columns|cards)\b'
+                     r'|\bproject(?:Card|Column)s\b'
+                     r'|(?<![\w./}>-])/?projects/(?:\d|columns\b|cards\b|[{<:])'
+                     r'|(?<![\w./}>-])/?user/(?:projects)\b'
                      r'|(?<!github\.com/)\b(?:repos/[^/\s]+/[^/\s]+|orgs/[^/\s]+|users/[^/\s]+)/projects\b'
-                     r'|\bprojects\s*\(')
+                     r'|\bprojects?\s*\(\s*(?:first|last|after|before|number|orderBy|search|states)\s*:')
 # Every kind of finding the check reports. A rule's `rules.json` entry names
 # the kinds that decide it, or `review` where the read against the guidelines
 # does, so a kind outside this set names no operation.
@@ -135,7 +148,7 @@ KINDS = (
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
-    'mode without a trigger phrase', 'hard-wrapped line',
+    'mode without a trigger phrase', 'hard-wrapped line', 'excluded skill without a finding',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -609,7 +622,7 @@ def interfaces(path, root, structures):
         graphql = any(fenced[index] and (GRAPHQL.search(lines[index]) or any(
             GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index])))
             for index in span)
-        if graphql and not any(lines[index].startswith(REST_GAP) for index in span):
+        if graphql and not any(REST_GAP.match(lines[index]) for index in span):
             found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
     return found
 
@@ -702,8 +715,9 @@ def description(lines, skip):
 
 
 def modes(lines, headings):
-    """Each mode an entry point lists: a bullet under its Modes section whose
-    bold name links the mode's file, with the line it stands on."""
+    """Each mode an entry point lists: a top-level bullet under its Modes
+    section whose name, bold or plain, links the mode's file, with the line it
+    stands on."""
     start = next((index for index, level, title in headings
                   if level == 2 and anchor_of(title) == 'modes'), None)
     if start is None:
@@ -711,7 +725,7 @@ def modes(lines, headings):
     end = next((index for index, level, _ in headings if index > start and level <= 2), len(lines))
     for index in range(start, end):
         if match := MODE.match(lines[index]):
-            yield index, match[1]
+            yield index, match[2]
 
 
 def untriggered_modes(lines, headings, skip):
@@ -1004,12 +1018,36 @@ def duplicate_anchors(headings):
         seen.setdefault(slug, index)
 
 
+def held_aside(findings, excluded):
+    """The findings to report, and each excluded skill's count of those held
+    aside. A finding names its file relative to the folder holding its root,
+    which for an excluded skill is the folder holding that skill. An excluded
+    skill holding no finding is reported, so its exclusion lapses with its
+    last finding."""
+    skills = [Path(name).resolve() for name in excluded]
+    held = {skill: 0 for skill in skills}
+    reported = []
+    for item in findings:
+        skill = next((skill for skill in skills if (skill.parent / item[0]).is_relative_to(skill)), None)
+        if skill:
+            held[skill] += 1
+        else:
+            reported.append(item)
+    for skill, count in held.items():
+        if not count:
+            reported.append((skill.name, 0, 'excluded skill without a finding',
+                             'remove it from the exclusions'))
+    return reported, {skill.name: count for skill, count in held.items() if count}
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     parser.add_argument('--compare', nargs=2, metavar=('BASE', 'HEAD'),
                         help='compare section bodies between two revisions')
+    parser.add_argument('--exclude', action='append', default=[], metavar='SKILL',
+                        help='a skill folder read with the roots whose findings are held aside')
     options = parser.parse_args(argv)
     if options.compare:
         return compare_revisions(*options.compare, options.roots, options.quiet)
@@ -1056,9 +1094,12 @@ def main(argv=None):
         print(f'unreadable declaration — {error}')
         return 1
 
+    findings, held = held_aside(findings, options.exclude)
     if not options.quiet:
         for where, line, kind, detail in findings:
             print(f'{where}:{line}: {kind}' + (f' — {detail}' if detail else ''))
+    for skill, count in held.items():
+        print(f'{skill} excluded, {count} findings held aside')
     print(f'{len(files)} files checked, {len(findings)} findings')
     return 1 if findings else 0
 

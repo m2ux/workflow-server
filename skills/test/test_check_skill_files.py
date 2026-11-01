@@ -695,7 +695,7 @@ class ParallelSectionMood(unittest.TestCase):
     def test_specifications_directing_together_report_nothing(self):
         self.assertEqual(self.findings('# Coverage\n\n' + self.COMMANDS), [])
 
-    def test_sections_of_different_kinds_or_parents_are_not_compared(self):
+    def test_sections_of_different_kinds_or_levels_are_not_compared(self):
         self.assertEqual(self.findings(
             '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
             '## Docker Images\n\nUse the reviewed files.\n\n'
@@ -1594,6 +1594,184 @@ class FrontmatterAndLayoutChecks(unittest.TestCase):
     def test_a_folded_frontmatter_value_is_not_prose(self):
         self.write('SKILL.md', '---\nname: specimen\ndescription: >-\n  Use for\n  anything.\n---\n\n# Specimen\n\nOne.\n')
         self.assertEqual(self.wraps_found(), [])
+
+
+class ReviewedCheckCases(unittest.TestCase):
+    """Each case the agent review of #1555 raised against the check: every
+    Projects (classic) form, prose that only mentions projects, a bulleted
+    REST gap, an unbolded mode bullet, and the branches the earlier tests left
+    unobserved."""
+
+    setUp = SkillWideChecks.setUp
+    write = SkillWideChecks.write
+    run_check = SkillWideChecks.run_check
+    found = SkillWideChecks.found
+    artifact = SkillWideChecks.artifact
+    specification = SkillWideChecks.specification
+    mode = SkillWideChecks.mode
+
+    def classic(self, line):
+        self.write('scripts/board.py', line + '\n')
+        return self.found('Projects classic interface')
+
+    # Projects (classic), every form.
+
+    def test_a_classic_project_route_is_reported(self):
+        self.assertEqual(self.classic("run(['gh', 'api', 'projects/123/columns'])"), [('board.py', 1)])
+
+    def test_a_classic_route_under_a_placeholder_is_reported(self):
+        self.assertEqual(self.classic("ROUTE = '/projects/{project_id}/collaborators'"), [('board.py', 1)])
+
+    def test_a_classic_column_route_is_reported(self):
+        self.assertEqual(self.classic("ROUTE = 'projects/columns/cards/7'"), [('board.py', 1)])
+
+    def test_a_classic_project_the_user_creates_is_reported(self):
+        self.assertEqual(self.classic("run(['gh', 'api', '--method', 'POST', 'user/projects', '-f', 'name=x'])"),
+                         [('board.py', 1)])
+
+    def test_a_classic_project_field_by_number_is_reported(self):
+        self.assertEqual(self.classic('QUERY = "{ repository { project(number: 1) { columns { nodes { id } } } } }"'),
+                         [('board.py', 1)])
+
+    # Prose and code that only mention projects.
+
+    def test_prose_naming_projects_is_no_interface(self):
+        self.write('references/guide.md', '# Guide\n\nThe board spans several projects (repositories and docs).\n')
+        self.assertEqual(self.found('Projects classic interface'), [])
+
+    def test_a_function_named_projects_is_no_interface(self):
+        self.assertEqual(self.classic('def projects(self):'), [])
+
+    def test_projects_v2_routes_fields_and_board_links_are_no_interface(self):
+        self.assertEqual(self.classic(
+            "LINKS = ['orgs/o/projectsV2/3', '{ user { projectV2(number: 17) { id } } }', "
+            "f'https://github.com/{owner}/projects/{number}', '/home/mike1/projects/dev']"), [])
+
+    # The REST gap.
+
+    def test_a_bulleted_rest_gap_is_accepted(self):
+        self.artifact('### Link Issue\n\nLinks one issue.\n\n- **REST gap:** REST exposes no write to the relation.\n\n'
+                      f'{FENCE}bash\ngh api graphql -F query=@link.graphql\n{FENCE}\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [])
+
+    def test_a_gap_stated_by_another_specification_does_not_cover_it(self):
+        self.artifact(self.specification('gh api graphql -F query=@link.graphql')
+                      + '\n### Unlink Issue\n\nUnlinks one issue.\n\n**REST gap:** None.\n\n'
+                      f'{FENCE}bash\ngh api graphql -F query=@unlink.graphql\n{FENCE}\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+
+    def test_graphql_named_in_prose_needs_no_gap(self):
+        self.artifact('### Link Issue\n\nLinks one issue, never through gh api graphql.\n\n'
+                      f'{FENCE}bash\ngh api repos/o/r/issues/1\n{FENCE}\n')
+        self.assertEqual(self.found('GraphQL without a REST gap'), [])
+
+    # The entry point.
+
+    def test_an_unbolded_mode_bullet_is_checked_for_its_trigger(self):
+        self.write('SKILL.md', '---\nname: specimen\ndescription: Use to audit workflow X.\n---\n\n'
+                               '# Specimen\n\nOne sentence.\n\n## Modes\n\n'
+                               '- **[Audit](modes/audit-mode.md)**\n- [Revise](modes/revise-mode.md)\n')
+        self.assertEqual(self.found('mode without a trigger phrase'), [('SKILL.md', 13)])
+
+    def test_a_multi_word_mode_is_carried_by_its_words_in_order(self):
+        for description, expected in (('Use when planning changes.', []),
+                                      ('Use to plan the work, then change it.', [('SKILL.md', 12)])):
+            with self.subTest(description=description):
+                self.write('SKILL.md', f'---\nname: specimen\ndescription: {description}\n---\n\n'
+                                       '# Specimen\n\nOne sentence.\n\n## Modes\n\n'
+                                       '- **[Plan Change](modes/plan-mode.md)**\n')
+                self.assertEqual(self.found('mode without a trigger phrase'), expected)
+
+    def test_an_entry_point_commands_section_is_outside_the_set(self):
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n\n## Commands\n\n### Run It\n\nRuns it.\n')
+        self.assertEqual(self.found('section outside the set'), [('SKILL.md', 5)])
+
+    # Layout, commands and mood.
+
+    def test_a_heading_followed_by_its_paragraph_is_not_wrapped(self):
+        self.write('references/guide.md', '# Guide\nOne sentence directly beneath.\n')
+        self.assertEqual(self.found('hard-wrapped line'), [])
+
+    def test_a_fence_language_is_read_whatever_its_case(self):
+        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n{FENCE}Bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 8)])
+
+    def test_siblings_under_different_parents_are_not_compared(self):
+        self.write('references/coverage.md',
+                   '# Coverage\n\n## Engine\n\n### Main Coverage\n\nThe suite establishes the baseline.\n\n'
+                   '## Images\n\n### Docker Coverage\n\nUse the reviewed files.\n')
+        self.assertEqual(self.found('parallel section in another mood'), [])
+
+
+WORKFLOW = Path(__file__).resolve().parents[2] / '.github' / 'workflows' / 'verify-skills.yml'
+
+
+class SkillCheckWorkflow(unittest.TestCase):
+    """The skill-check workflow's job steps, run over a seeded `skills/`
+    tree: alpha holds a command specification beta's prose cites, so alpha
+    judged alone reports it as cited by nothing."""
+
+    CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
+    JUMP = '\n#### Too deep\n\nA sentence.\n'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        scripts = self.root / 'skills' / 'scripts'
+        scripts.mkdir(parents=True)
+        shutil.copy(Path(checker.__file__), scripts)
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n')
+        self.write('alpha/references/catalog.md', self.CATALOG)
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n')
+
+    def write(self, name, text):
+        path = self.root / 'skills' / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def run_jobs(self, excluded):
+        """Every run step of every job, in order, with `EXCLUDED` set; the
+        workflow passes when each step exits zero."""
+        import yaml
+        workflow = yaml.safe_load(WORKFLOW.read_text())
+        env = {**os.environ, **workflow.get('env', {}), 'EXCLUDED': excluded}
+        output, passed = '', True
+        for job in workflow['jobs'].values():
+            for step in job['steps']:
+                if 'run' not in step:
+                    continue
+                run = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', step['run']],
+                                     cwd=self.root, env=env, capture_output=True, text=True)
+                output += run.stdout + run.stderr
+                passed = passed and run.returncode == 0
+        return passed, output
+
+    def test_the_seeded_tree_reports_nothing_judged_whole(self):
+        self.assertEqual(self.run_jobs(''), (True, '3 files checked, 0 findings\n'))
+
+    def test_an_exclusion_only_isolation_supports_fails(self):
+        passed, output = self.run_jobs('alpha')
+        self.assertFalse(passed)
+        self.assertIn('alpha', output)
+
+    def test_an_excluded_skill_with_a_finding_in_the_whole_tree_passes(self):
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
+        self.assertTrue(self.run_jobs('alpha')[0])
+
+    def test_every_skill_excluded_passes(self):
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
+        self.assertTrue(self.run_jobs('alpha beta')[0])
+
+    def test_a_finding_in_scope_fails(self):
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
+        self.assertFalse(self.run_jobs('')[0])
+
+    def test_an_exclusion_naming_no_skill_fails(self):
+        self.assertFalse(self.run_jobs('gamma')[0])
 
 
 if __name__ == '__main__':
