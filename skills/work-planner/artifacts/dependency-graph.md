@@ -153,7 +153,7 @@ Renumbers an initiative's epics across supplied body files.
 **Inputs:** Initiative number, current pull request records, confirmed epic-number map, body files and explicitly authorized outside-initiative files when present.
 
 - The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
-- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A collision or a number already named by a pull request is refused.
+- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '<initiative-number>' --prs '<pull-request-records-file>' --map '<epic-number-map>' '<body-file>'
