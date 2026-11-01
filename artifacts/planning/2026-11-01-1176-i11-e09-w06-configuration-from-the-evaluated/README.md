@@ -13,7 +13,7 @@ Reading the declaration from the invoking worktree lets a dirty or divergent che
 | Artifact | What it holds |
 | --- | --- |
 | [W06 work item](w06.md) | Component, scope, design, criteria and test rows for W06 |
-| [Evidence](evidence.md) | Evaluated revisions, tests, review, plan changes and delivery |
+| [Evidence](evidence.md) | Evaluated revisions, tests, review, plan-change list, debt and delivery |
 | [Tests](tests.log) | Full Work Planner test output |
 | [Documents](documents.log) | Skill document checker output |
 
@@ -22,4 +22,5 @@ Reading the declaration from the invoking worktree lets a dirty or divergent che
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1490](https://github.com/m2ux/workflow-server/pull/1490) |
 | Earlier record | [2026-10-09 W06 and W07 record](../2026-10-09-1268-i11-e09-w06-delivery-reading-the-set-a/) |

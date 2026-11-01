@@ -39,8 +39,16 @@ This observes AC12. [Full output](tests.log).
 
 ## Plan Changes
 
-Recorded after delivery; see [Delivery](#delivery).
+- **Applied — folded work.** [#1493](https://github.com/m2ux/workflow-server/issues/1493) (disagreeing declarations across an epic's bases) folded into I11:E09 W07: AC14 added to #1176 and to W07's Coverage, design added to W07's work item, #1493 closed as tracked there.
+- **Held — placement.** [#1492](https://github.com/m2ux/workflow-server/issues/1492) (long-lived branches `main`, `workflows` and `docker` carry no `config/branches`) left standalone. Recommended: a new I11:E09 task committing the declaration to every long-lived branch. Held because its Open Question — whether product branches carry workspace configuration, or the contract names another source — is the plan owner's.
+
+## Debt
+
+- **Trivial, fixed.** pytest collected `sync.test_plan_agreement` (imported into `test_align`) and the `test_plan` body builder as tests, reporting a collection error. Both are renamed.
+- **Deferred.** None.
 
 ## Delivery
 
-Pending merge.
+Task PR [#1490](https://github.com/m2ux/workflow-server/pull/1490) merged into `i11/e09/workspace` as `3f7915377194f0685841ca272253cb0aed458383`, at the verified head `e4b04f8ef`. The base was unprotected with no active rules and no check runs or statuses; GitHub reported it clean and mergeable. `origin/workspace` was already contained in the epic base, so Update Epic Base merged nothing. The PR links no issue: W06 has no task issue.
+
+Epic #1176 links W06 to #1490, ticks AC10 and AC12, and ticks W06 Done; the saved body read back exactly and no other row changed. The sync reports a pre-existing coverage disagreement: #1265's Test Plan names AC10 and AC11 while its W05 row covers AC9. Review PR #1487 gains a Branch Configuration area and cites #1490 as R4; its Overview is unchanged and the re-run sync reports its References matching the merges. The epic stays open with W04 and W07 undelivered.
