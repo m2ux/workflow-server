@@ -1,6 +1,6 @@
 # Test Evidence — W09
 
-Tested at `2cabf5611` on `i11/e10/w09-coverage-names-what-a`, based on `i11/e10/workspace` at `ba441c2b8`.
+Tested at `715e2b47c` on `i11/e10/w09-coverage-names-what-a`, which merges `i11/e10/workspace` at `41537ea98`.
 
 ## T1
 
@@ -8,7 +8,7 @@ Tested at `2cabf5611` on `i11/e10/w09-coverage-names-what-a`, based on `i11/e10/
 
 ## T2
 
-**Work-planner suite.** `python3 -m pytest skills/work-planner/test -q` under `sbx`: 624 passed, 1 skipped.
+**Work-planner suite.** `python3 -m pytest skills/work-planner/test -q` under `sbx`: 625 passed, 1 skipped.
 
 ## T3
 
