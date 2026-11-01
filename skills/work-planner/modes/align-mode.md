@@ -128,7 +128,7 @@ The main path meets [Outcomes](#outcomes).
 
     After preparing the bases, align the selected initiative's pull requests:
     - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests).
-    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches). Unevaluable branch names stop this step with a finding.
+    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches), at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
     - Point an open task pull request at its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
     - When that pull request is not mergeable, [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.

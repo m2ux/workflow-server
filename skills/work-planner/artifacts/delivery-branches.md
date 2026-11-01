@@ -10,10 +10,10 @@ The branches a task pull request targets.
 
 **Inputs:** Project checkout, epic identifier, changed long-lived branches and confirmed prerequisite evidence.
 
-1. Run [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the project checkout.
+1. For each changed long-lived branch, run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout, then [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.
 2. Run [List Epic Bases](#list-epic-bases) for the epic.
-3. If `config/branches` is missing or empty:
-   - Report the names as unevaluable.
+3. If `config/branches` is missing or empty at that revision, or does not name the changed branch:
+   - Report the names as unevaluable at that revision.
    - Obtain the project's branch names before creating delivery branches.
 4. Require the caller's confirmed prerequisite evidence before creating a base. The board status alone supplies no such evidence.
 5. Run [Create Epic Base](#create-epic-base) for each missing base, passing the project checkout, corresponding long-lived branch, epic base name and confirmed prerequisite evidence.
@@ -103,9 +103,9 @@ The protection and active rules governing one target branch.
 
 The configured long-lived branches and existing epic bases.
 
-**Inputs:** Project checkout and epic identity.
+**Inputs:** Project checkout, epic identity and evaluated revision.
 
-1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout. Missing or empty configuration leaves branch names unevaluable.
+1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Missing or empty configuration at that revision leaves branch names unevaluable.
 2. Run [List Epic Bases](#list-epic-bases) for the supplied epic.
 3. Return both collections and any missing configuration.
 
@@ -113,7 +113,12 @@ The configured long-lived branches and existing epic bases.
 
 ### Branches
 
-A project states its long-lived branches in `config/branches` at its root, one name per line. A run from a linked worktree reads the statement its main working tree holds.
+A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+
+- An epic sync, and a read of one epic's branches, evaluates its epic base, such as `origin/i07/e00/main`.
+- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.
+- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
+- Verification of merged delivery evaluates the merged commit.
 
 - **Example.**
   workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`.
@@ -172,11 +177,18 @@ Prints the long-lived branch names, one per line.
 **Inputs:** Project checkout.
 
 - The names meet [Branches](#branches).
-- `--project` is any checkout of the project. The names are the ones `config/branches` states in its main working tree, which a linked worktree resolves for itself.
-- A missing or empty statement prints `unevaluable:`, names what is missing, and exits 1.
+- `--project` is any checkout of the project. `--revision` is the evaluated revision [Branches](#branches) names for the run.
+- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
+- A revision resolving to no commit, or a missing or empty statement at its commit, prints `unevaluable:`, names what is missing, and exits 1.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision '<revision>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision origin/i07/e00/main
 ```
 
 ### Fetch Remote Branch
