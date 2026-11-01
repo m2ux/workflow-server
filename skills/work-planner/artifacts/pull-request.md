@@ -34,7 +34,7 @@ The observed or updated Development relation for a pull request.
 
 **Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting the applicable preconditions in [Close Tracker Issue](issue.md#close-tracker-issue).
 
-1. For a read-only request, run [Read Development Links](#read-development-links) for the actual field, including every page and state, and return the complete relation. A missing tool or inaccessible field is a blocker, not an empty link set.
+1. For a read-only request, run [Capture Pull Request Links](#capture-pull-request-links) with the pull request's record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 2. For a link edit:
    - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit.
    - For an addition, run [Set Development Link](#set-development-link) with the pull request and issue identities.
@@ -390,14 +390,6 @@ gh api 'repos/<owner>/<repo>/pulls/<pull-request-number>' --jq '{merged, merge_c
 ```bash
 gh api 'repos/<owner>/<repo>/pulls/980' --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'
 ```
-
-### Read Development Links
-
-Returns the complete Development relation through authenticated GitHub or an available supported tool.
-
-**Inputs:** Pull request identity and authenticated access.
-
-Read the actual field across every page and state, recording repository and number for each linked issue. Return the links and whether the field was fully readable.
 
 ### Set Development Link
 
