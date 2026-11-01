@@ -12,6 +12,7 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 
 | Artifact | What it holds |
 | --- | --- |
+| [w13.md](w13.md) | W13 work item: the callers' design, the file-change declaration and the test obligation |
 
 ## Links
 
