@@ -1,6 +1,6 @@
 # Test Evidence — W08
 
-> Delivery evidence · Branch `i11/e10/w08-a-blank-line-above` · Tested revision `a52d1cabe`, which merges `i11/e10/workspace` at `41537ea98`
+> Delivery evidence · Branch `i11/e10/w08-a-blank-line-above` · Tested revision `e47136976`, which merges `i11/e10/workspace` at `212bedd48`
 
 Every command ran from the unit worktree under the workspace sandbox.
 
@@ -12,7 +12,7 @@ Every command ran from the unit worktree under the workspace sandbox.
 python3 -m pytest skills/test/test_check_skill_files.py -q -k HeadingSpacing
 ```
 
-- At `a52d1cabe`: 4 passed.
+- At `e47136976`: 4 passed.
 - With the rule removed from `check_skill_files.py` and the new tests kept: 2 failed, the two that expect a report, so the suite observes the rule.
 
 ## T2
@@ -29,22 +29,19 @@ The same run as T1 covers it: `test_a_heading_opening_the_file_or_its_body_is_le
 python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon skills/gitnexus skills/server-in-the-loop
 ```
 
-- At the base `ba441c2b8` with the rule applied: three findings, at `work-planner/artifacts/planning-record.md:38` and at line 5 of each audit-qualification `produce.md`.
-- At `a52d1cabe`: 86 files checked, 6 findings, none of them heading spacing. All six stand in `gitnexus/gitnexus-cli/SKILL.md` and belong to W11 and W13.
+- At the base `ba441c2b8` with the rule applied: one skill-file finding, `work-planner/artifacts/planning-record.md:38`, `## Fields` flush beneath a list item. The check then also read fixture trees, and reported line 5 of each Workflow Canon audit-qualification `produce.md`; the base now leaves fixture trees unread, so the fixture stays as its expected outcomes name it.
+- At `e47136976`: 76 files checked, 0 findings.
 
 ## T4
 
-**Check.** The shared, Work Planner and Workflow Canon suites pass, and the audit-qualification guard accepts both cases.
+**Check.** The shared, Work Planner and Workflow Canon suites pass.
 
 ```bash
 python3 -m pytest skills/test -q
 python3 -m pytest skills/work-planner/test -q
 CANON_TEST_ENGINE=<engine-root> python3 -m pytest skills/workflow-canon/test -q
-python3 skills/workflow-canon/test/fixtures/audit-qualification/check.py skills/workflow-canon/test/fixtures/audit-qualification/<case> <engine-root>
 ```
 
-- Shared: 80 passed.
-- Work Planner: 620 passed, 1 skipped.
+- Shared: 88 passed.
+- Work Planner: 645 passed, 1 skipped.
 - Workflow Canon, with the engine at `.worktrees/engine-pin` (`e889276ae`): 77 passed.
-- Guard: `errors: []` and 4 criteria for `clean` and for `seeded`.
-- The expected outcomes Q01, Q02 and Q06 resolve through the inventory's `markdown_nodes` to the lines they name: `/protocol/line-9`, `/rules/line-12/clause-2` and `/rules/line-13`.
