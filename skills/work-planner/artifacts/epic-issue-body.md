@@ -10,6 +10,7 @@ Read these files first.
 - [Pull Request](pull-request.md)
 - [Epic](epic.md)
 - [Issue](issue.md)
+- [Dependency Graph](dependency-graph.md)
 
 ## Operations
 
@@ -187,11 +188,12 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
 - **Joins.**
-  The tasks that share one pull request. Each names the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
-  - Joins are complete before any issue of the epic is created. Every pair of tasks in the epic where neither depends on the other, directly or through another task, is accounted for.
-  - A pair that shares a pull request names each other.
-  - A pair that does not is named in the planning record, with why.
-  - An empty cell is a task that shares no pull request, and only once that record names every such pair.
+  The tasks that share one pull request. Two tasks sharing one name each other, and tasks linked by such pairs are one joined unit.
+  - A joined unit holds no Depends on between its members: the pull request orders their commits.
+  - Only a path between two members through a task outside the unit bars a join.
+  - A joined unit covers at most six criteria, two full rows' worth, so it stays one pull request's worth.
+  - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
+  - An empty cell is a task that shares no pull request.
 - **Numbering.**
   Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**

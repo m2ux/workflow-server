@@ -787,7 +787,9 @@ class PinnedEpicBase(unittest.TestCase):
     def test_the_long_lived_revision_does_not_know_the_base(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         out, base = self.run_sync(body, self.pulls(), 'main')
-        self.assertNotIn('i01/e00/workflows', out)
+        self.assertNotIn('draft:', out)
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('target: #950 targets i01/e00/workflows', out)
         self.assertNotIn(base, out)
         self.assertIn('closable: yes', out)
 
@@ -1471,6 +1473,117 @@ class HistoricalDelivery(unittest.TestCase):
         result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
         self.assertNotIn('retitle:', result.stdout)
         self.assertIn('conflict:', result.stdout)
+
+
+class BranchContract(unittest.TestCase):
+    """Task pull requests target their epic's base, and an integration pull request merges that
+    base into the long-lived branch it names."""
+
+    def run_sync(self, pulls: list[dict], body: str = '', number: int = 2, which: str = '01:E00',
+                 project: bool = True) -> str:
+        epic = issue(number, f'[I{which}] First: Epic',
+                     body=body or epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            names = declared(root, 'main', 'workspace') if project else []
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []), *names)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_the_valid_routes_report_no_target(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(951, '[I01:E00] Work: workspace', base='i01/e00/workspace',
+                                head='i01/e00/w01-work-workspace'),
+                             pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                                base='main', head='i01/e00/main')])
+        self.assertNotIn('target:', out)
+
+    def test_a_task_pull_request_targeting_a_long_lived_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='main', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets main; a task pull request targets '
+                      'i01/e00/<long-lived branch>', out)
+
+    def test_a_task_pull_request_targeting_another_epics_base_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e01/main', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e01/main', out)
+
+    def test_a_task_pull_request_targeting_an_undeclared_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/docs', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e00/docs', out)
+
+    def test_an_integration_pull_request_into_another_long_lived_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(980, '[I01:E00] First', base='workspace', head='i01/e00/main')])
+        self.assertIn('target: #980 merges i01/e00/main into workspace; it targets main', out)
+
+    def test_an_integration_into_the_wrong_branch_leaves_the_base_unmerged(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                                base='workspace', head='i01/e00/main')], body)
+        self.assertIn('target: #980 merges i01/e00/main into workspace', out)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+
+    def test_a_pull_request_closed_without_merging_is_not_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', state='closed', base='main', head='i01/e00/w01-work')])
+        self.assertNotIn('target:', out)
+
+    def test_an_epic_integrates_while_another_epic_is_incomplete(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 960)})", 'Work', '')))
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(960, '[I01:E01] Other', merged='2026-09-01T00:00:00Z',
+                                base='i01/e01/main', head='i01/e01/w01-other'),
+                             pr(981, '[I01:E01] Second', merged='2026-09-02T00:00:00Z',
+                                base='main', head='i01/e01/main')], body, number=3, which='01:E01')
+        self.assertNotIn('target:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_the_contract_is_not_checked_without_the_long_lived_branches(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work')], project=False)
+        self.assertNotIn('target:', out)
+        self.assertIn('not checked: pull request targets', out)
+
+
+class EpiclessTitles(unittest.TestCase):
+    """An initiative pull request whose title names no epic is reported."""
+
+    PULLS = [pr(950, '[I01] Shared work'), pr(951, '[I01:E00:W01] Task-titled work', merged='2026-09-01T00:00:00Z'),
+             pr(952, '[I01:E00] Named work'), pr(953, '[I02] Another initiative')]
+
+    def run_sync(self, record: dict, *args: str) -> str:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.PULLS))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def assert_epicless(self, out: str) -> None:
+        self.assertIn('no epic: #950 [I01] Shared work', out)
+        self.assertIn('no epic: #951 [I01:E00:W01] Task-titled work', out)
+        self.assertNotIn('no epic: #952', out)
+        self.assertNotIn('no epic: #953', out)
+
+    def test_the_epic_sync_reports_them(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = self.run_sync(issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', ''))),
+                                '--links', links_file(Path(tmp), []))
+        self.assert_epicless(out)
+
+    def test_the_initiative_sync_reports_them(self):
+        initiative = issue(1, '[I01] First: Initiative', body=initiative_body((f"[E00]({url('issues', 2)})", '')))
+        out = self.run_sync(initiative)
+        self.assert_epicless(out)
 
 
 class DraftBase(unittest.TestCase):

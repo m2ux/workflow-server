@@ -2,6 +2,8 @@
 
 Brings one or more existing proposal, initiative, epic, task, and standalone issues and/or PRs into line with the plan they belong to and structurally aligns them with the guidelines they are held to.
 
+**Runs in:** the project checkout.
+
 Alignment checks conformity to work-planning rules; judgement of content fitness belongs to goal review.
 
 ## Prerequisites
@@ -123,15 +125,15 @@ The main path meets [Outcomes](#outcomes).
 10. **Branches.**
     For each open epic of the selected initiative:
     - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) with the current initiative and epic bodies and prerequisite issue and base-merge records.
-    - Pass only a confirmed result, project checkout, epic identity and changed long-lived branches to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
+    - Pass only a confirmed result, the project checkout, epic identity and changed long-lived branches to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
     - Return missing prerequisite evidence before creating a base.
 
     After preparing the bases, align the selected initiative's pull requests:
     - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests).
-    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches), at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
+    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
     - Point an open task pull request at its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
-    - When that pull request is not mergeable, [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.
+    - When that pull request is not mergeable, [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) merges the epic base into the task branch, with the unit checkout holding it. A conflict is reported and the pull request stays open.
     - An open pull request whose head is an epic base targets its corresponding long-lived branch.
     - A merged pull request is left as merged.
     - A base that is none of these is put to the user.
