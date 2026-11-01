@@ -32,3 +32,11 @@ Every check runs on task branch `i11/e09/w09-one-task-branch-per` at `8a89ea4ac`
 ## Review
 
 A grep of the skill for a unit's single branch beside several bases (`bases i07`, `selected branch`, `branch, base and worktree`, `one pull request's work`) finds none on the delivery head.
+
+## Merge
+
+[#1515](https://github.com/m2ux/workflow-server/pull/1515) merged into `i11/e09/workspace` at head `8a89ea4ac`, merge commit `d78de4468`. The base carries no active rule and the head no check run. `origin/workspace` held nothing the base lacked, so the base update merged nothing.
+
+## Epic Sync
+
+`sync.py --tick AC16` on #1176 reports W09 done and AC16 ticked; every row and criterion of the epic is complete. The epic stays open: `i11/e09/main` (#1506) and `i11/e09/workspace` (#1487) are unmerged drafts, and `i11/e09/workflows` (#1497) and `i11/e09/docker` (#1498) are in flight.
