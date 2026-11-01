@@ -12,9 +12,11 @@ W08 had to invent suffixed branches with no rule to follow. The work item carrie
 
 | Artifact | What it holds |
 | --- | --- |
+| [W09 work item](w09.md) | Component, scope, design and test rows for W09 |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Source issue | [#1499](https://github.com/m2ux/workflow-server/issues/1499) |
