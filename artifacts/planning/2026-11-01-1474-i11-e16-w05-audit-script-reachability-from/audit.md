@@ -30,5 +30,8 @@ The shared skill-file check reads markdown only and reports no unreachable scrip
 
 ## Validation
 
-- `python3 -m pytest skills/work-planner/test -q`: 508 passed, 1061 subtests passed.
+Run on the task branch at `40e80afaf`, which merges `i11/e16/workspace` at `ff2e49829` after that base took `workspace` (E13).
+
+- `python3 -m pytest skills/work-planner/test -q`: 541 passed, 1078 subtests passed.
 - `python3 skills/scripts/check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.
+- A probe script under `scripts/` with no command fails `test_every_script_is_run_by_a_cited_command`, naming it; removing the probe restores the pass.
