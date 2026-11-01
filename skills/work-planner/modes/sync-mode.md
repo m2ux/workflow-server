@@ -69,7 +69,7 @@ The main path meets [Outcomes](#outcomes).
    - Once the pull request has merged, record it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
    - [Issue Closure](../protocols/issue-closure.md) when it reports closable.
 6. **Sync each epic.**
-   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic base its long-lived branch names are read at:
+   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at:
    Linking a pull request replaces the planning-record link on that task.
    - Handle the returned delivery findings:
      - **Conflict.**
@@ -106,6 +106,9 @@ The main path meets [Outcomes](#outcomes).
        - Untick them, or link the missing delivery.
      - **Disagreement.**
        - Continue recording links, verified criteria and Done despite the reported coverage disagreement.
+     - **Unevaluable.**
+       - Report each source and why to the user, with each check the run names not checked.
+       - The epic stays open until every epic base states the same readable declaration.
    - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.
