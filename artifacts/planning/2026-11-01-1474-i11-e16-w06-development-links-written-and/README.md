@@ -20,3 +20,5 @@ Sessions without a browser reported the field as unavailable even though the API
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E16](https://github.com/m2ux/workflow-server/issues/1474) |
+| Pull request | [#1516](https://github.com/m2ux/workflow-server/pull/1516) |
+| Follow-up pull request | [#1517](https://github.com/m2ux/workflow-server/pull/1517) |

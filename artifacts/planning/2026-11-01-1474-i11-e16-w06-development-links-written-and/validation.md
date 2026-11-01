@@ -70,3 +70,15 @@ A separate readback through W01's captures, with #1513 linked: `links-by-pull-re
 ## Sync Test Collection
 
 Under pytest, `test_sync.py`'s helper `test_plan` was collected as a test and raised `PytestReturnNotNoneWarning`; it is present on the epic base. Classified trivial debt and fixed in this unit at `e8e8997` by renaming it `plan_section`. The warning is gone.
+
+## W08
+
+**Read Development Links had no command.** Auditing the operations W06 changed found Access Development Links' read-only path running Read Development Links, which described the read without a command, while Capture Pull Request Links performs it. Classified trivial debt and delivered as row W08 on `i11/e16/w08-development-links-read-by-capture` at `8c848bc`: Read Development Links is removed and the read-only path runs Capture Pull Request Links with the one pull request's record.
+
+### T1
+
+**Single pull request read.** `links-by-pull-request.py` over review pull request #1505 alone: `1 pull request(s), 1 link(s)`, entry `#1505: [#1474]`, exit 0. Result: pass.
+
+### T2
+
+**Skill suites and file check.** `python3 -m pytest skills/work-planner/test -q`: 496 passed. `python3 -m pytest skills/test -q`: 76 passed. `check_skill_files.py skills/work-planner`: 50 files, 0 findings. No remaining reference to Read Development Links. Result: pass.
