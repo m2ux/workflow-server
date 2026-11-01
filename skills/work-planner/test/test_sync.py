@@ -695,12 +695,14 @@ class EpicClose(unittest.TestCase):
         self.assertNotIn('unmerged', out)
         self.assertIn('closable: no (unticked AC1)', out)
 
-    def test_the_first_merged_task_opens_the_epic_base_as_a_draft(self):
+    def test_a_base_no_revision_names_is_unevaluable_rather_than_draft(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work')]
         out = self.run_sync(body, pulls)
-        self.assertIn('draft: i01/e00/main', out)
+        self.assertIn('unevaluable: draft i01/e00/main: no --revision names it, '
+                      'so what it carries against main is unread', out)
+        self.assertNotIn('draft: ', out)
         self.assertNotIn('unmerged', out)
         self.assertIn('closable: no (undelivered W02)', out)
 
@@ -755,6 +757,7 @@ class PinnedEpicBase(unittest.TestCase):
             root = Path(tmp)
             checkout, linked = root / 'checkout', root / 'linked'
             repository(checkout, 'docker', 'main')
+            git(checkout, 'branch', 'workflows')
             git(checkout, 'worktree', 'add', str(linked), '-b', 'i01/e00/workflows')
             base = commit_branches(linked, 'docker', 'main', 'workflows')
             (checkout / 'config' / 'branches').write_text('docs\n')
@@ -1468,3 +1471,77 @@ class HistoricalDelivery(unittest.TestCase):
         result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
         self.assertNotIn('retitle:', result.stdout)
         self.assertIn('conflict:', result.stdout)
+
+
+class DraftBase(unittest.TestCase):
+    """An epic base is draft only where it carries a commit its long-lived branch lacks.
+
+    The remote-tracking refs origin/main and origin/i01/e00/main stand where a fetch leaves them, and
+    the base is named to the run as origin/i01/e00/main. fork/i01/e00/main stands beside the base on a
+    remote that holds no long-lived branch. W02 is undelivered, so the epic is incomplete."""
+
+    BODY = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
+    TASK = pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main', head='i01/e00/w01-work')
+
+    def run_sync(self, base_ahead: int, main_ahead: int, pulls: list[dict] = (),
+                 revisions: tuple[str, ...] = ('origin/i01/e00/main',)) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=self.BODY)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            checkout = root / 'checkout'
+            start = repository(checkout, 'docker', 'main')
+            for ref, ahead in (('i01/e00/main', base_ahead), ('main', main_ahead)):
+                git(checkout, 'checkout', '-q', '-B', f'local/{ref}', start)
+                for n in range(ahead):
+                    git(checkout, 'commit', '--allow-empty', '-m', f'{ref} {n}')
+                git(checkout, 'update-ref', f'refs/remotes/origin/{ref}', 'HEAD')
+            git(checkout, 'update-ref', 'refs/remotes/fork/i01/e00/main', 'origin/i01/e00/main')
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in [self.TASK, *pulls]))
+            args = ['--project', str(checkout)]
+            for revision in revisions:
+                args += ['--revision', revision]
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_a_base_level_with_its_branch_is_not_draft(self):
+        out = self.run_sync(base_ahead=0, main_ahead=0)
+        self.assertNotIn('draft', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_a_base_behind_its_branch_is_not_draft(self):
+        out = self.run_sync(base_ahead=0, main_ahead=3)
+        self.assertNotIn('draft', out)
+
+    def test_a_base_ahead_of_its_branch_is_draft(self):
+        out = self.run_sync(base_ahead=1, main_ahead=0)
+        self.assertIn('draft: i01/e00/main', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_a_base_ahead_of_and_behind_its_branch_is_draft(self):
+        self.assertIn('draft: i01/e00/main', self.run_sync(base_ahead=1, main_ahead=3))
+
+    def test_a_merged_review_leaves_a_level_base_without_a_draft(self):
+        review = pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/e00/main')
+        self.assertNotIn('draft', self.run_sync(base_ahead=0, main_ahead=0, pulls=[review]))
+
+    def test_a_base_that_gains_a_commit_after_its_review_merged_is_draft_again(self):
+        review = pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/e00/main')
+        self.assertIn('draft: i01/e00/main', self.run_sync(base_ahead=1, main_ahead=0, pulls=[review]))
+
+    def test_an_open_review_withholds_the_draft(self):
+        review = pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')
+        self.assertNotIn('draft:', self.run_sync(base_ahead=1, main_ahead=0, pulls=[review]))
+
+    def test_a_long_lived_branch_absent_beside_the_base_is_unevaluable(self):
+        out = self.run_sync(base_ahead=1, main_ahead=0, revisions=('fork/i01/e00/main',))
+        self.assertIn('unevaluable: draft i01/e00/main: fork/main resolves to no commit', out)
+        self.assertNotIn('draft: ', out)
+
+    def test_a_base_in_another_repository_is_unevaluable(self):
+        task = pr(951, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main',
+                  head='i01/e00/w01-work', repo='o/other')
+        out = self.run_sync(base_ahead=0, main_ahead=0, pulls=[task])
+        self.assertIn('unevaluable: draft o/other:i01/e00/main: is in o/other, not the --project repository', out)

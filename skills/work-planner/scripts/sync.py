@@ -60,8 +60,12 @@ Tick a criterion only once it is confirmed to hold. A task is closable when ever
 and every row is delivered. An epic is closable when those hold and every epic base its pull requests
 target has merged into its long-lived branch. A pull request whose head is an epic base
 merges that base and is not a task delivery. Each such base still unmerged is reported unmerged, naming
-an open pull request that merges it when one is open. A draft is named draft. When a task has merged
-into an epic base and the epic is not yet complete, that base is reported draft.
+an open pull request that merges it when one is open. A draft is named draft. While the epic is not yet
+complete, an epic base a merged task targets is reported draft when it holds a commit its long-lived
+branch lacks and no open pull request merges it. The base is read at the --revision naming it and the
+long-lived branch beside it on the same remote, so origin/i07/e00/main is compared with origin/main. A
+base level with or behind its branch draws no draft line. A base no --revision names, one in another
+repository, and one whose long-lived branch resolves to no commit are reported unevaluable instead.
 
 The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link and repository-setting gate in closure.py.
 """
@@ -350,12 +354,34 @@ def unmerged_epic_bases(prs: list[dict], initiative: str, epic: str, home: str) 
     return pending_refs(associated, merged, opened, home)
 
 
-def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[str]:
-    """Epic bases a merged task targets while no pull request merges that base.
+def base_lead(project: str, revisions: list[str], ref: str, long_lived: str) -> tuple[int, str]:
+    """The commits an epic base holds that its long-lived branch lacks, or why they cannot be read.
 
-    The first task merged into a base is what opens the draft. A base that already has an open
-    pull request, draft or ready, or that has merged into its long-lived branch, is not listed."""
-    landed: set[tuple[str, str]] = set()
+    The base is read at the --revision that names it, such as origin/i07/e00/main, and the long-lived
+    branch beside it on the same remote, as origin/main. The second value is empty when the count is
+    read; otherwise it says why, and the count is 0."""
+    named = next((r for r in revisions if r == ref or r.endswith('/' + ref)), None)
+    if named is None:
+        return 0, 'no --revision names it'
+    branch = named[:len(named) - len(ref)] + long_lived
+    for revision in (named, branch):
+        if git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}').returncode:
+            return 0, f'{revision} resolves to no commit'
+    counted = git(project, 'rev-list', '--count', f'{branch}..{named}', '--')
+    if counted.returncode:
+        return 0, f'{branch}..{named} is unreadable'
+    return int(counted.stdout.strip()), ''
+
+
+def draft_bases(prs: list[dict], initiative: str, epic: str, home: str,
+                project: str, revisions: list[str]) -> tuple[list[str], list[str]]:
+    """Epic bases holding a commit their long-lived branch lacks, a merged task targeting each, while no
+    open pull request merges it; and the bases whose commits cannot be compared, each with the reason.
+
+    What the base carries decides the line, read against the long-lived branch as base_lead reads it.
+    A base level with or behind its branch has nothing to review and is not listed, whether or not an
+    earlier pull request merged it. A base in another repository than the checkout cannot be compared."""
+    landed: dict[tuple[str, str], str] = {}
     covered: set[tuple[str, str]] = set()
     for pr in prs:
         repo = pr_repo(pr)
@@ -364,14 +390,26 @@ def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[
         title = PR_REF.match(pr.get('title') or '')
         if not title or title.groups() != (initiative, epic):
             continue
-        if pr.get('merged_at') and epic_base(base, initiative, epic):
-            landed.add((repo, base))
-        if epic_base(head, initiative, epic) == base and (pr.get('merged_at') or pr.get('state') == 'open'):
+        long_lived = epic_base(base, initiative, epic)
+        if pr.get('merged_at') and long_lived:
+            landed[(repo, base)] = long_lived
+        if epic_base(head, initiative, epic) == base and pr.get('state') == 'open':
             covered.add((repo, head))
-    pending = []
-    for repo, ref in sorted(landed - covered):
-        pending.append(ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}')
-    return pending
+    drafts, unread = [], []
+    for (repo, ref), long_lived in sorted(landed.items()):
+        if (repo, ref) in covered:
+            continue
+        foreign = repo and repo.lower() != home.lower()
+        name = f'{repo}:{ref}' if foreign else ref
+        if foreign:
+            ahead, problem = 0, f'is in {repo}, not the --project repository'
+        else:
+            ahead, problem = base_lead(project, revisions, ref, long_lived)
+        if problem:
+            unread.append(f'draft {name}: {problem}, so what it carries against {long_lived} is unread')
+        elif ahead:
+            drafts.append(name)
+    return drafts, unread
 
 
 def pull_numbers(found: set[int]) -> str:
@@ -922,7 +960,9 @@ def main() -> int:
     if kind == 'epic' and args.prs and LONG_LIVED:
         home = issue['repository_url'].split('/repos/', 1)[1]
         if not epic_ready:
-            report['draft'].extend(draft_bases(prs, initiative, epic, home))
+            drafts, unread = draft_bases(prs, initiative, epic, home, args.project, args.revision)
+            report['draft'].extend(drafts)
+            report['unevaluable'].extend(unread)
         report['references'].extend(review_references(prs, initiative, epic, home))
         report['uncited'].extend(unlinked_reviews(prs, initiative, epic, issue_key(issue)))
     print(f"#{issue['number']} {kind} ({issue['state']})")
