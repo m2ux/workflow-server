@@ -2,9 +2,13 @@
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
+import json
 import re
 import sys
+import tempfile
+import textwrap
 import unittest
+from pathlib import Path
 
 from fixtures import SCRIPTS, issue, pr
 
@@ -381,3 +385,73 @@ class CorpusAudit(unittest.TestCase):
         r = corpus_review('Holds.', 'i01/e00/workflows', corpus=None)
         self.assertFalse(any(WANTED in item for item in r.decide))
 
+
+
+GUIDE = SCRIPTS.parent / 'artifacts' / 'epic-issue-body.md'
+DECLARATION = 'config/required-criteria.json'
+FIELDS = ('branch', 'criterion', 'phrase', 'row')
+
+
+def guide_section(heading: str) -> str:
+    """One Fields subsection of the epic guide, up to the next heading of its level."""
+    text = GUIDE.read_text()
+    return text.split(f'\n### {heading}\n', 1)[1].split('\n### ', 1)[0]
+
+
+def declared(project: Path) -> list[dict] | str:
+    """A project's required criteria as the guide states them, or why they are unevaluable."""
+    path = project / DECLARATION
+    if not path.is_file():
+        return f'unevaluable: no {DECLARATION}'
+    try:
+        entries = json.loads(path.read_text() or 'null')
+    except json.JSONDecodeError:
+        return f'unevaluable: {DECLARATION} is not JSON'
+    if not isinstance(entries, list) or not entries:
+        return f'unevaluable: {DECLARATION} declares no criterion'
+    for entry in entries:
+        missing = [f for f in FIELDS if not isinstance(entry, dict) or not isinstance(entry.get(f), str)
+                   or not entry[f].strip()]
+        if missing:
+            return f'unevaluable: an entry in {DECLARATION} lacks {", ".join(missing)}'
+    return entries
+
+
+def guide_example() -> str:
+    return re.search(r'```json\n(.*?)\n\s*```', guide_section('Required Criteria'), re.DOTALL)[1]
+
+
+class RequiredCriteria(unittest.TestCase):
+    def project(self, declaration: str | None) -> Path:
+        root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        if declaration is not None:
+            (root / 'config').mkdir()
+            (root / DECLARATION).write_text(declaration)
+        return root
+
+    def test_the_guide_names_the_declaration_and_its_fields(self):
+        section = guide_section('Required Criteria')
+        self.assertIn(f'`{DECLARATION}` at its root', section)
+        self.assertEqual(tuple(re.findall(r'^\| `(\w+)` \|', section, re.MULTILINE)), FIELDS)
+
+    def test_a_project_declaring_one_criterion_carries_it(self):
+        entries = declared(self.project(textwrap.dedent(guide_example())))
+        self.assertIsInstance(entries, list)
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(tuple(entries[0]), FIELDS)
+        self.assertEqual(entries[0]['branch'], 'workflows')
+
+    def test_a_project_declaring_none_is_unevaluable(self):
+        self.assertTrue(declared(self.project(None)).startswith('unevaluable:'))
+
+    def test_an_empty_declaration_is_unevaluable(self):
+        for text in ('', '[]', '{}'):
+            with self.subTest(text=text):
+                self.assertTrue(declared(self.project(text)).startswith('unevaluable:'))
+
+    def test_an_unreadable_declaration_is_unevaluable(self):
+        self.assertIn('not JSON', declared(self.project('branch: workflows')))
+
+    def test_an_entry_lacking_a_field_is_unevaluable(self):
+        entry = {'branch': 'workflows', 'criterion': 'Holds.', 'phrase': ''}
+        self.assertIn('lacks phrase, row', declared(self.project(json.dumps([entry]))))
