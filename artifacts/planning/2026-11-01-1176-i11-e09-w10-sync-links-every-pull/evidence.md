@@ -1,8 +1,10 @@
 # W10 Delivery Evidence
 
-Delivery head: `4dbf94844c188ddd00b9ec4fd9aadffa6835bd55` on `i11/e09/w10-sync-links-every-pull`. Base: `21ea6ead8c064ca7ec95a08f84b086a319b05c07` (`i11/e09/workspace`), unchanged since the branch was cut.
+Delivery head: `4dbf94844c188ddd00b9ec4fd9aadffa6835bd55` on `i11/e09/w10-sync-links-every-pull`. Base: `21ea6ead8c064ca7ec95a08f84b086a319b05c07` (`i11/e09/workspace`), unchanged since the branch was cut. Pull request: [#1511](https://github.com/m2ux/workflow-server/pull/1511).
 
 Changed paths: `skills/work-planner/scripts/sync.py`, `skills/work-planner/test/test_sync.py`, `skills/work-planner/artifacts/epic-issue-body.md`.
+
+Merged into `i11/e09/workspace` as `cb2add68480df0bcf8b2e24f47befdf0d45eaab1` on 2026-11-01; #1176 records W10 done with AC17 ticked, and #1487 cites #1511.
 
 Every command ran from the unit worktree under the workspace sandbox: `python3 -m pytest skills/work-planner/test ...`.
 
@@ -35,3 +37,7 @@ T3. `python3 -m pytest skills/work-planner/test -q` on the delivery head: `527 p
 ## Documents
 
 T4. `python3 skills/scripts/check_skill_files.py skills/work-planner`: `50 files checked, 0 findings`.
+
+## Plan Changes
+
+None applied and none held. The unit created no task, epic or issue, folded no work and moved no row; validation found no debt to defer and no arising issue.

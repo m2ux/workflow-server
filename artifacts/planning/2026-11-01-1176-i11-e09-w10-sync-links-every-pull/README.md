@@ -21,3 +21,4 @@ W08's row had to be written by hand because sync kept only the last pull request
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
 | Source issue | [#1500](https://github.com/m2ux/workflow-server/issues/1500) |
+| Pull request | [#1511](https://github.com/m2ux/workflow-server/pull/1511) |
