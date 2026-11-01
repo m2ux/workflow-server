@@ -22,12 +22,13 @@ bodies cite, closed other than as completed (an issue a task subsumed), is remov
 Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
-  In Review    a task issue an open pull request ready for review delivers: its title names the
-               epic by the initiative's row id, and its Development field links the issue; an open
-               initiative whose criteria are all ticked; an epic with ticked criteria and current agent review
-  In Progress  an open draft pull request links a task issue; a task whose row links the planning
-               record a session holds it with; an active epic with a criterion unticked; an
-               initiative an epic its table lists holds In Review or In Progress
+  In Review    an open initiative whose criteria are all ticked; an epic with ticked criteria and
+               current agent review
+  In Progress  a task issue an open pull request, draft or ready, delivers: its title names the
+               epic by the initiative's row id, and its Development field links the issue; a task
+               whose row links the planning record a session holds it with; an active epic with a
+               criterion unticked; an initiative an epic its table lists holds In Review or In
+               Progress
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
   (unchanged)  a task gated on a dependency entry that cannot resolve
@@ -40,10 +41,11 @@ epic holds In Progress or In Review keeps the Status it holds, In Review becomin
 and one not yet on the board is added at Backlog: Advance mode places and lowers initiatives.
 An epic that has left the initiative's table is not read.
 
-An open task issue is In Review when an open pull request ready for review links it. An open
-initiative is In Review when every acceptance criterion is ticked. An epic also requires current
-published agent review evidence from --agent-reviews; a missing or failing review holds it In
-Progress.
+Only an initiative or an epic stands In Review. A task issue is In Progress while its pull request
+is open, and Done once that pull request merges into the epic base and the issue closes as
+completed. An open initiative is In Review when every acceptance criterion is ticked. An epic also
+requires current published agent review evidence from --agent-reviews; a missing or failing review
+holds it In Progress.
 
 The board's Status field offers Backlog, Ready, In Progress and Done, and In Review optionally;
 statuses.py holds the field, the option body files and the fallback for an option the board lacks.
@@ -343,12 +345,9 @@ def main() -> int:
     status: dict[Key, str | None] = {}
     task_epic: dict[Key, Key] = {}
 
-    def pr_status(epic_key: str, cite: Key) -> str | None:
-        """In Review for an open pull request ready for review linking the issue, In Progress for
-        an open draft, None for neither."""
-        found = {'In Progress' if p.get('draft') else 'In Review'
-                 for p in prs if delivers(p, tag, epic_key) and links_issue(p, cite)}
-        return 'In Review' if 'In Review' in found else 'In Progress' if found else None
+    def pr_open(epic_key: str, cite: Key) -> bool:
+        """Whether an open pull request, draft or ready, delivering to the epic links the issue."""
+        return any(delivers(p, tag, epic_key) and links_issue(p, cite) for p in prs)
 
     for r in epic_rows:
         ident = id_cell(header, r)
@@ -376,9 +375,7 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif found := pr_status(epic_key, task_issue):
-                status[task_issue] = found
-            elif reservation(ident):
+            elif pr_open(epic_key, task_issue) or reservation(ident):
                 status[task_issue] = 'In Progress'
             elif open_questions(t):
                 status[task_issue] = 'Backlog'

@@ -26,6 +26,6 @@ The main path meets [Outcomes](#outcomes).
 - **The change explained.**
   The engineer reviewing the pull request has its structure and its flows, read at the head commit under review.
 - **The pull request named.**
-  The account is of the pull request the request names, of the open pull request a task in review names, or of each base an epic in review delivers. An initiative has none of its own.
+  The account is of the pull request the request names, or of each base an epic in review delivers. An initiative has none of its own.
 - **One account.**
   The same pull request yields one account, and a later run replaces it with the current change.

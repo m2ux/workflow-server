@@ -111,10 +111,12 @@ class DispatchJurisdiction(unittest.TestCase):
         self.assertIn('In Progress → In Review', plan.lines[0])
 
     def test_setting_a_task_in_review_is_refused(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            with self.assertRaises(Jurisdiction) as refused:
-                place(changes(tmp, DISPATCH), TASK, 'In Progress', 'In Review')
-        self.assertIn('does not set a task In Review', str(refused.exception))
+        for scope in (DELIVERY, DISPATCH):
+            with self.subTest(scope=scope):
+                with tempfile.TemporaryDirectory() as tmp:
+                    with self.assertRaises(Jurisdiction) as refused:
+                        place(changes(tmp, scope), TASK, 'In Progress', 'In Review')
+                self.assertIn('a task does not stand In Review', str(refused.exception))
 
     def test_setting_the_queue_is_refused(self):
         for wanted in ('Backlog', 'Ready'):

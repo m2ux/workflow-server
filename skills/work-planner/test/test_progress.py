@@ -118,11 +118,11 @@ class InProgress(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 41, 'o/s')})", 'Task', '')),
                      repo='o/s')
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
-        out = summary([item(epic, 'In Progress'), item(task, 'In Review')],
+        out = summary([item(epic, 'In Progress'), item(task, 'In Progress')],
                       [pr(41, '[I01:E00] Elsewhere', repo='o/s')],
                       held=(links(41, 3, repo='o/s', issue_repo='o/r'),))
         text = section(out, 'In progress')
-        self.assertIn(f"    👀 W01 Task Issue — {url('issues', 3)}", text)
+        self.assertIn(f"    🔄 W01 Task Issue — {url('issues', 3)}", text)
         self.assertNotIn(url('pull', 41, 'o/s'), '\n'.join(text))
 
     def test_epic_lists_its_open_pull_requests_ready_and_draft(self):
@@ -141,19 +141,19 @@ class InProgress(unittest.TestCase):
 
     def test_ready_epic_with_an_active_task_issue_heads_it_as_in_progress(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
-        out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Task Issue: Open'), 'In Review')])
+        out = summary([item(epic, 'Ready'), item(issue(3, '[I01:E00:W01] Task Issue: Open'), 'In Progress')])
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *I01:E00 First* — {url('issues', 2)}",
-            f"    👀 W01 Task Issue — {url('issues', 3)}"])
+            f"    🔄 W01 Task Issue — {url('issues', 3)}"])
 
     def test_active_task_issue_stands_for_the_pull_requests_linking_it(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Task', '')))
         task = issue(3, '[I01:E00:W01] Task Issue: Open')
-        out = summary([item(epic, 'In Progress'), item(task, 'In Review')],
+        out = summary([item(epic, 'In Progress'), item(task, 'In Progress')],
                       [pr(56, '[I01:E00] For the task')], held=(links(56, 3),))
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *I01:E00 First* — {url('issues', 2)}",
-            f"    👀 W01 Task Issue — {url('issues', 3)}"])
+            f"    🔄 W01 Task Issue — {url('issues', 3)}"])
 
     def test_a_link_to_another_repositorys_issue_of_that_number_stands_apart(self):
         # The epic in o/s links a task issue in o/r; the o/s pull request links o/s#3.

@@ -22,8 +22,9 @@ one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
-also carries type:proposal. No prefix and no type:proposal is a standalone issue, which belongs to no
-initiative and takes artifacts/standalone-body.md. The format is read
+also carries type:proposal. A type:task issue is a task whatever its prefix depth, so one whose
+prefix has no task id is checked as a task and reported as missing it. No prefix and no type:proposal
+is a standalone issue, which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
 from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -46,9 +47,10 @@ Fixed in the body written to --fix, keeping the issue's wording:
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
-  - a type:* label that does not match the title's level, a theme:* label on a proposal, or any type:* label on a standalone issue
+  - a type:* label that does not match the issue's kind, a theme:* label on a proposal, or any type:* label on a standalone issue
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
+  - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -414,6 +416,10 @@ class Review:
         if self.kind is None:
             self.decide.append(f'title prefix has too many levels: {m[0]}')
             return None
+        if self.kind != 'task' and 'type:task' in self.labels():
+            self.kind = 'task'
+            self.decide.append(f'title prefix {m[0]} has no task id; a task is titled '
+                               '[I07:E00:W01] Name: Subtitle, from its row in its epic')
         self.check_title(m, parts)
         self.check_labels()
         return self.check_body()

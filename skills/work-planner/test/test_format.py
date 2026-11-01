@@ -211,6 +211,34 @@ class Proposal(unittest.TestCase):
         self.assertTrue(any('initiative template' in item for item in r.decide))
 
 
+def task_body() -> str:
+    return (f'{body("Friction.", "Design.")}\n## References\n\n- **R1.** [Guide](https://example.com) — What it says.\n')
+
+
+class TaskPrefix(unittest.TestCase):
+    """A type:task issue is a task whatever its prefix depth."""
+
+    def test_a_task_without_its_task_id_is_reported_missing_it(self):
+        r = Review(issue(1, '[I07:E01] Key Validation: Reject Bad Keys', body=task_body(),
+                         labels=('type:task',)))
+        r.run()
+        self.assertEqual(r.kind, 'task')
+        self.assertTrue(any('has no task id' in item for item in r.decide))
+
+    def test_a_task_without_its_task_id_is_not_made_an_epic(self):
+        r = Review(issue(1, '[I07:E01] Key Validation: Reject Bad Keys', body=task_body(),
+                         labels=('type:task',)))
+        r.run()
+        self.assertFalse(any('type:epic' in item for item in r.apply))
+        self.assertFalse(any('Work Breakdown' in item or 'epic template' in item for item in r.decide))
+
+    def test_a_task_with_its_task_id_is_left(self):
+        r = Review(issue(1, '[I07:E01:W02] Key Validation: Reject Bad Keys', body=task_body(),
+                         labels=('type:task',)))
+        r.run()
+        self.assertFalse(any('task id' in item for item in r.decide))
+
+
 class TaskRowDependencies(unittest.TestCase):
     """A task row names rows; the initiative row is the one that names epics."""
 
