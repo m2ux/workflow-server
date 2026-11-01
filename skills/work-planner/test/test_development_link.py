@@ -1,7 +1,7 @@
 """Development links added and removed by development-link.py, and read back from both ends.
 
 Each run goes against a stand-in `gh` that holds the relation as issue to pull requests, answers
-REST node-id lookups, applies the add and remove mutations from the query file, and answers the
+REST node-id lookups, resolves repository names in any case to their lower-case canonical form, applies the add and remove mutations from the query file, and answers the
 batched relation read from either end. A failure the stand-in is told to raise replaces the answer
 to the one call it names.
 
@@ -39,7 +39,7 @@ for failure in state['fail']:
 links = state['links']
 if call.startswith('node:'):
     repo, kind, number = re.fullmatch(r'repos/([^/]+/[^/]+)/(issues|pulls)/(\d+)', args[1]).groups()
-    print(('I:' if kind == 'issues' else 'P:') + repo + '#' + number)
+    print(('I:' if kind == 'issues' else 'P:') + repo.lower() + '#' + number)
 elif call != 'read':
     issue, pull = re.search(r'issueId: "I:([^"]+)", pullRequestIds: \["P:([^"]+)"\]', text).groups()
     held = links.setdefault(issue, [])
@@ -56,7 +56,7 @@ else:
         block = {}
         for line in body.splitlines():
             sub, field, number, connection = re.search(r'(\w+): (\w+)\(number: (\d+)\) \{ number (\w+)\(', line).groups()
-            key = owner + '/' + name + '#' + number
+            key = (owner + '/' + name).lower() + '#' + number
             if field == 'issue':
                 nodes = [{'number': int(p.split('#')[1]), 'state': 'OPEN', 'repository': {'nameWithOwner': p.split('#')[0]}}
                          for p in links.get(key, [])]
@@ -104,6 +104,16 @@ class Add(unittest.TestCase):
                 self.assertIn(f'verified: add {PULL} -> {ISSUE}', done.stdout)
             self.assertEqual(held(state), {ISSUE: [KEPT, PULL]})
 
+    def test_a_differently_cased_repository_is_the_same_repository(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env, state = tracker(Path(tmp), {ISSUE: [KEPT]})
+            for _ in range(2):
+                done = write(env, 'add', issue='O/r#924', pull='o/R#950')
+                self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+                self.assertIn(f'issue O/r#924: {KEPT}, {PULL}', done.stdout)
+                self.assertIn('verified: add o/R#950 -> O/r#924', done.stdout)
+            self.assertEqual(held(state), {ISSUE: [KEPT, PULL]})
+
     def test_a_duplicated_relation_is_a_discrepancy(self):
         with tempfile.TemporaryDirectory() as tmp:
             env, _ = tracker(Path(tmp), {ISSUE: [PULL]}, duplicates=True)
@@ -121,6 +131,14 @@ class Remove(unittest.TestCase):
             self.assertIn(f'issue {ISSUE}: {KEPT}', done.stdout)
             self.assertIn(f'pull request {PULL}: o/r#925', done.stdout)
             self.assertEqual(held(state), {ISSUE: [KEPT], 'o/r#925': [PULL]})
+
+
+    def test_removal_with_a_differently_cased_repository(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            env, state = tracker(Path(tmp), {ISSUE: [KEPT, PULL]})
+            done = write(env, 'remove', issue='O/R#924', pull='O/R#950')
+            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+            self.assertEqual(held(state), {ISSUE: [KEPT]})
 
 
 class Failure(unittest.TestCase):
