@@ -105,7 +105,7 @@ The configured long-lived branches and existing epic bases.
 
 **Inputs:** Project checkout, epic identity and evaluated revision.
 
-1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Missing or empty configuration at that revision leaves branch names unevaluable.
+1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
 2. Run [List Epic Bases](#list-epic-bases) for the supplied epic.
 3. Return both collections and any missing configuration.
 
@@ -115,7 +115,8 @@ The configured long-lived branches and existing epic bases.
 
 A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
 
-- An epic sync, and a read of one epic's branches, evaluates its epic base, such as `origin/i07/e00/main`.
+- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.
+- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
 - Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.
 - A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
 - Verification of merged delivery evaluates the merged commit.
@@ -179,7 +180,8 @@ Prints the long-lived branch names, one per line.
 - The names meet [Branches](#branches).
 - `--project` is any checkout of the project. `--revision` is the evaluated revision [Branches](#branches) names for the run.
 - The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
-- A revision resolving to no commit, or a missing or empty statement at its commit, prints `unevaluable:`, names what is missing, and exits 1.
+- `--names` reads one `--revision`.
+- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision '<revision>'

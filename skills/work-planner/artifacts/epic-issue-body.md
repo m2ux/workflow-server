@@ -34,9 +34,9 @@ One epic body and its local validation findings.
 
 One epic body with supplied delivery matches and completed rows recorded.
 
-**Inputs:** Epic JSON, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic base and output body file.
+**Inputs:** Epic JSON, pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases and output body file.
 
-1. Run [Sync Epic](#sync-epic), mapping pull requests to `--prs`, links to `--links`, task issues to `--tasks`, each confirmed match to `--link`, the checkout to `--project`, the epic base to `--revision` and the output file to `--fix`.
+1. Run [Sync Epic](#sync-epic), mapping pull requests to `--prs`, links to `--links`, task issues to `--tasks`, each confirmed match to `--link`, the checkout to `--project`, each fetched epic base to a `--revision` and the output file to `--fix`.
    - Row changes must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
 2. Return the updated body and [Delivery Findings](epic.md#delivery-findings) for the caller to resolve and publish. An unmerged epic base prevents a closable result.
 
@@ -252,12 +252,13 @@ Work Breakdown contains its table. Explanatory prose belongs in Proposal. The bo
 
 Links each named task's id to a pull request naming the epic, open or merged, and ticks Done on a row once it is complete.
 
-**Inputs:** Epic JSON, pull request records, complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic base and output body file.
+**Inputs:** Epic JSON, pull request records, complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic bases and output body file.
 
 - A row whose id links its task issue links the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
-- `--project` is a checkout of the project and `--revision` the epic base, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at that commit, and the `source` line names its path, commit and repository. Without the long-lived branch names, an epic that would otherwise be closable is not.
+- `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository.
+- An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
 - `--link` names each task id and the pull request number it links. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
 
@@ -270,7 +271,7 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project '<checkout>' --revision origin/i07/e00/main --fix fixed-943.md
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --tasks issue-637.json --link W01=950,W02=950 --project '<checkout>' --revision origin/i07/e00/main --revision origin/i07/e00/workflows --fix fixed-943.md
 ```
 
 ### Tick Epic Criteria

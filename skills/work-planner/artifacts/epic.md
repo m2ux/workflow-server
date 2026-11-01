@@ -83,6 +83,9 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
 | Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
+| Source | The configuration path, commit and repository of each `config/branches` statement the long-lived branch names were read from. |
+| Unevaluable | A `config/branches` statement that is absent, empty or unreadable at its epic base, or a revision resolving to no commit, with its source; statements that disagree across the epic bases, each with its source and names; or no long-lived branches given. |
+| Not checked | Each epic check that reads the long-lived branches, while their names are unevaluable. |
 
 An unmet row links a merged pull request while a covered criterion remains unticked. A linked pull request naming another epic is a conflict and delivers its linked task once merged. A missing linked pull request leaves the supplied evidence incomplete.
 
