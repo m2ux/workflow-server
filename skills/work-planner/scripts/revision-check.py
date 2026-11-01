@@ -10,10 +10,14 @@ passes or fails. Detaching lets the commit be checked out while a branch at it i
 elsewhere.
 
 The first line of standard output is {"revision": <commit>, "checkout": <path>}; the instrument's
-own output follows. Exit status is the instrument's. A checkout that cannot be removed is reported
-on standard error with its path, and the instrument's status stands. A revision that does not
-resolve, a checkout that cannot be created and a command that cannot start each exit 2 naming the
-cause. Worktrees the run did not create are left as they are.
+own output follows. Exit status is the instrument's, whatever it is. A checkout that cannot be
+removed is reported on standard error with its path, and the instrument's status stands.
+
+The helper's own failures exit 125, as `git bisect run` reserves it, each with one line on standard
+error naming the cause: a usage error, `revision not found:`, `checkout not created:`, or
+`command not started:`. The first three come before any output; a command that cannot start is
+reported after the first line, once its checkout exists. Worktrees the run did not create are left
+as they are.
 """
 import argparse
 import json
@@ -23,7 +27,15 @@ import sys
 import tempfile
 from pathlib import Path
 
-HELPER_FAILURE = 2
+HELPER_FAILURE = 125
+
+
+class Parser(argparse.ArgumentParser):
+    """Arguments whose usage errors exit with the helper's own status."""
+
+    def error(self, message: str):
+        self.print_usage(sys.stderr)
+        self.exit(HELPER_FAILURE, f'{self.prog}: error: {message}\n')
 
 
 def git(project: str, *args: str) -> subprocess.CompletedProcess:
@@ -46,7 +58,7 @@ def remove(project: str, root: Path, tree: Path) -> str | None:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = Parser(description=__doc__.splitlines()[0])
     parser.add_argument('--project', required=True, help='any checkout of the repository')
     parser.add_argument('--revision', required=True, help='branch, tag or commit to verify')
     parser.add_argument('command', nargs=argparse.REMAINDER, help='the instrument, after --')

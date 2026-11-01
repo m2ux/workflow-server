@@ -76,6 +76,18 @@ class RevisionCheck(unittest.TestCase):
         self.assertEqual(result.returncode, 3, result.stderr)
         self.assert_ran_at(result, 'tagged')
 
+    def test_an_instrument_exiting_2_keeps_its_status(self):
+        result = self.check('v1', status=2)
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assert_ran_at(result, 'tagged')
+        self.assertEqual(result.stderr, '')
+
+    def test_a_usage_error_is_a_helper_failure(self):
+        result = run('revision-check.py', '--project', str(self.repo), '--revision', 'v1')
+        self.assertEqual(result.returncode, 125)
+        self.assertIn('no command supplied', result.stderr)
+        self.assertEqual(result.stdout, '')
+
     def test_a_branch_checked_out_elsewhere_is_still_checked_out(self):
         result = self.check('main')
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -83,7 +95,7 @@ class RevisionCheck(unittest.TestCase):
 
     def test_an_unknown_revision_creates_no_checkout(self):
         result = self.check('missing')
-        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.returncode, 125)
         self.assertIn('revision not found: missing', result.stderr)
         self.assertEqual(result.stdout, '')
 
@@ -91,7 +103,7 @@ class RevisionCheck(unittest.TestCase):
         before = self.worktrees()
         result = run('revision-check.py', '--project', str(self.repo), '--revision', 'v1',
                      '--', str(Path(self.tmp.name, 'absent')))
-        self.assertEqual(result.returncode, 2)
+        self.assertEqual(result.returncode, 125)
         self.assertIn('command not started', result.stderr)
         self.assertEqual(self.worktrees(), before)
 
