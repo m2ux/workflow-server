@@ -12,3 +12,7 @@
 ## Held
 
 - None.
+
+## Delivered In This Session
+
+- W31 through [#1572](https://github.com/m2ux/workflow-server/pull/1572) and W30 through [#1573](https://github.com/m2ux/workflow-server/pull/1573), each recorded in its own folder; AC48 ticked, and the skill-check gate excludes no skill.
