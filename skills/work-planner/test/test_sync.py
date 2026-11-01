@@ -71,6 +71,40 @@ class Done(unittest.TestCase):
         fixed = synced(epic, pulls, '--link', 'W01=951')
         self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", fixed)
 
+    @staticmethod
+    def per_base():
+        return [pr(950, '[I01:E00] Work: main', base='i01/e00/main'),
+                pr(951, '[I01:E00] Work: workflows', base='i01/e00/workflows'),
+                pr(952, '[I01:E00] Work: docker', base='i01/e00/docker')]
+
+    def test_an_id_named_for_each_pull_request_links_them_all(self):
+        plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
+        fixed = synced(epic, self.per_base(), '--link', 'W01=950,W01=951,W01=952')
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
+                      "| Work | AC1 | | | |", fixed)
+        self.assertNotIn('w01.md', fixed)
+
+    def test_a_repeated_run_leaves_the_row_unchanged(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        once = synced(epic, self.per_base(), '--link', 'W01=950,W01=951')
+        again = synced(issue(2, '[I01:E00] First: Epic', body=once), self.per_base(), '--link', 'W01=950,W01=951')
+        self.assertEqual(once, again)
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", again)
+
+    def test_a_run_naming_a_linked_pull_request_keeps_the_row_order(self):
+        ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((ident, 'Work', '')))
+        fixed = synced(epic, self.per_base(), '--link', 'W01=951,W01=952,W01=951')
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
+                      "| Work | AC1 | | | |", fixed)
+
+    def test_two_named_pull_requests_on_one_branch_are_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', base='i01/e00/main'), pr(951, '[I01:E00] Rest', base='i01/e00/main')]
+        with self.assertRaisesRegex(AssertionError, 'names two deliveries on main'):
+            synced(epic, pulls, '--link', 'W01=950,W01=951')
+
     def test_a_repeated_row_link_is_rejected_before_delivery(self):
         ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((ident, 'Work', '')))
