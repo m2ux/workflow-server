@@ -1,6 +1,6 @@
 # Test Evidence — W30
 
-> Delivery evidence · Branch `i11/e10/w30-the-gitnexus-entry-points` · Tested at `4c4827156e72a4952fca633b2a66420118b9ce71`
+> Delivery evidence · Branch `i11/e10/w30-the-gitnexus-entry-points` · Tested at `ee4bb661be8c409eca06648da32152e11d4b6c4c`, which carries `i11/e10/workspace` with W31 merged
 
 T1 to T3 run locally, from the unit's worktree, under `sbx`; T4 is the gate job on GitHub.
 
@@ -12,7 +12,7 @@ The shared check over the skill.
 python3 skills/scripts/check_skill_files.py skills/gitnexus
 ```
 
-- 12 files checked, 0 findings. At the base, `i11/e10/workspace` at `04bfa7a8c`, the same run reports the entry-point findings the [W21 evidence](../2026-11-01-1181-i11-e10-w21-an-entry-point-s/test-evidence.md#findings-beyond-this-unit) lists.
+- 12 files checked, 0 findings. Over every skill (gitnexus, server-in-the-loop, work-planner, workflow-canon): 82 files checked, 0 findings. At the base, `i11/e10/workspace` at `04bfa7a8c`, the same run reports the entry-point findings the [W21 evidence](../2026-11-01-1181-i11-e10-w21-an-entry-point-s/test-evidence.md#findings-beyond-this-unit) lists.
 
 ## T2
 
@@ -23,15 +23,15 @@ python3 -m pytest skills/test -q
 python3 -m pytest skills/work-planner/test -q
 ```
 
-- `skills/test`: 108 passed.
-- `skills/work-planner/test`: 645 passed, 1 skipped.
+- `skills/test`: 114 passed.
+- `skills/work-planner/test`: 690 passed, 1 skipped.
 
 ## T3
 
-The skill leaves the gate's exclusions: `EXCLUDED` in `.github/workflows/verify-skills.yml` no longer names `gitnexus`, and names `server-in-the-loop` only while that skill's own row is undelivered.
+The skill leaves the gate's exclusions: `EXCLUDED` in `.github/workflows/verify-skills.yml` no longer names `gitnexus`, and, with W31 merged, the exclusions are empty.
 
 ## T4
 
 The skill-check gate on the pull request's head.
 
-- [Run 41294956915](https://github.com/m2ux/workflow-server/actions/runs/41294956915) at `4c4827156`: both jobs succeed.
+- [Run 41295068445](https://github.com/m2ux/workflow-server/actions/runs/41295068445) at `ee4bb661b`: both jobs succeed, with no skill excluded.
