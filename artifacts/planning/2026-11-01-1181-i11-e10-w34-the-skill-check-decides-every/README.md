@@ -10,7 +10,8 @@ This record holds the delivery of I11:E10 W34, which fixes findings 1-5 of the a
 
 | Artifact | What it holds |
 | --- | --- |
-| [W34 work item](w34.md) | Component, scope and criterion for W34 |
+| [W34 work item](w34.md) | Component, design and test obligations for W34 |
+| [Test evidence](test-evidence.md) | Failing-before runs, mutant kills and the suites at the head |
 
 ## Links
 
