@@ -2,6 +2,8 @@
 
 Task branch `i11/e13/w02-the-format-check-reads` at `5f5e4bff7`, based on `i11/e13/workspace` at `ecee8631c`.
 
+Merged into `i11/e13/workspace` by [#1514](https://github.com/m2ux/workflow-server/pull/1514) as `13b2ce67b`.
+
 ## Changed Paths
 
 - `skills/work-planner/scripts/format.py`
