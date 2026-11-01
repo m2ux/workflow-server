@@ -2,7 +2,7 @@
 
 > Delivery evidence · Created 2026-11-01
 
-Evaluated commit `563618c00e8f17703feb02fd91c4d15fbedfce1c` on `i11/e10/w24-a-base-named-draft`, which holds `origin/i11/e10/workspace` at `41537ea98`. Tests run from the unit worktree under `sbx`.
+Evaluated commit `65c95ebcdc65a83b6f0f2f0ae449fda5c1d477ca` on `i11/e10/w24-a-base-named-draft`, which holds `origin/i11/e10/workspace` at `8e747419a`. Tests run from the unit worktree under `sbx`.
 
 Changed paths:
 
@@ -49,10 +49,10 @@ The comparison against the live repository, after `git fetch origin`, through `s
 
 ```text
 i11/e09/workspace (0, '')
-i11/e10/workspace (2, '')
+i11/e10/workspace (21, '')
 ```
 
-`i11/e09/workspace`, whose content landed through its review pull request, is level with `workspace` and would draw no draft line; `i11/e10/workspace` leads by two merges and would.
+`i11/e09/workspace`, whose content landed through its review pull request, is level with `workspace` and would draw no draft line; `i11/e10/workspace` leads by 21 commits and would.
 
 ## T5
 
@@ -62,7 +62,7 @@ The full work-planner suite.
 python3 -m pytest skills/work-planner/test -q
 ```
 
-629 passed, 1 skipped, 1136 subtests passed.
+634 passed, 1 skipped, 1136 subtests passed.
 
 ## T6
 
@@ -72,4 +72,4 @@ The shared skill-file check over the work-planner skill.
 python3 skills/scripts/check_skill_files.py skills/work-planner
 ```
 
-50 files checked, 0 findings. Over all of `skills/`, the 6 findings sit in `skills/gitnexus/gitnexus-cli/SKILL.md` and stand identically on the base without this change.
+50 files checked, 0 findings. Over all of `skills/`, 77 files checked, 0 findings.
