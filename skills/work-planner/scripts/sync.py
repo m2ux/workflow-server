@@ -40,7 +40,7 @@ Closed epics have their Work Breakdown normalized to the current columns before 
 requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
 and fetch again. A title naming another initiative or epic remains a conflict.
 
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a file in a code span that is absent from its head commit, naming that path. A file named with a directory stands at that path, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -60,8 +60,12 @@ Tick a criterion only once it is confirmed to hold. A task is closable when ever
 and every row is delivered. An epic is closable when those hold and every epic base its pull requests
 target has merged into its long-lived branch. A pull request whose head is an epic base
 merges that base and is not a task delivery. Each such base still unmerged is reported unmerged, naming
-an open pull request that merges it when one is open. A draft is named draft. When a task has merged
-into an epic base and the epic is not yet complete, that base is reported draft.
+an open pull request that merges it when one is open. A draft is named draft. While the epic is not yet
+complete, an epic base a merged task targets is reported draft when it holds a commit its long-lived
+branch lacks and no open pull request merges it. The base is read at the --revision naming it and the
+long-lived branch beside it on the same remote, so origin/i07/e00/main is compared with origin/main. A
+base level with or behind its branch draws no draft line. A base no --revision names, one in another
+repository, and one whose long-lived branch resolves to no commit are reported unevaluable instead.
 
 The branch contract: a task pull request naming the epic targets one of its epic bases, and an
 integration pull request, whose head is an epic base, targets the long-lived branch that base names.
@@ -69,7 +73,7 @@ An open or merged pull request off that route is reported target, naming where i
 belongs. An epic or initiative sync reports each pull request carrying the initiative's prefix whose
 title names no epic as [I07:E00] as no epic, since nothing reads it as delivery.
 
-The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link and repository-setting gate in closure.py.
+The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link gate in closure.py.
 """
 import argparse
 import json
@@ -356,12 +360,34 @@ def unmerged_epic_bases(prs: list[dict], initiative: str, epic: str, home: str) 
     return pending_refs(associated, merged, opened, home)
 
 
-def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[str]:
-    """Epic bases a merged task targets while no pull request merges that base.
+def base_lead(project: str, revisions: list[str], ref: str, long_lived: str) -> tuple[int, str]:
+    """The commits an epic base holds that its long-lived branch lacks, or why they cannot be read.
 
-    The first task merged into a base is what opens the draft. A base that already has an open
-    pull request, draft or ready, or that has merged into its long-lived branch, is not listed."""
-    landed: set[tuple[str, str]] = set()
+    The base is read at the --revision that names it, such as origin/i07/e00/main, and the long-lived
+    branch beside it on the same remote, as origin/main. The second value is empty when the count is
+    read; otherwise it says why, and the count is 0."""
+    named = next((r for r in revisions if r == ref or r.endswith('/' + ref)), None)
+    if named is None:
+        return 0, 'no --revision names it'
+    branch = named[:len(named) - len(ref)] + long_lived
+    for revision in (named, branch):
+        if git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}').returncode:
+            return 0, f'{revision} resolves to no commit'
+    counted = git(project, 'rev-list', '--count', f'{branch}..{named}', '--')
+    if counted.returncode:
+        return 0, f'{branch}..{named} is unreadable'
+    return int(counted.stdout.strip()), ''
+
+
+def draft_bases(prs: list[dict], initiative: str, epic: str, home: str,
+                project: str, revisions: list[str]) -> tuple[list[str], list[str]]:
+    """Epic bases holding a commit their long-lived branch lacks, a merged task targeting each, while no
+    open pull request merges it; and the bases whose commits cannot be compared, each with the reason.
+
+    What the base carries decides the line, read against the long-lived branch as base_lead reads it.
+    A base level with or behind its branch has nothing to review and is not listed, whether or not an
+    earlier pull request merged it. A base in another repository than the checkout cannot be compared."""
+    landed: dict[tuple[str, str], str] = {}
     covered: set[tuple[str, str]] = set()
     for pr in prs:
         repo = pr_repo(pr)
@@ -370,14 +396,26 @@ def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[
         title = PR_REF.match(pr.get('title') or '')
         if not title or title.groups() != (initiative, epic):
             continue
-        if pr.get('merged_at') and epic_base(base, initiative, epic):
-            landed.add((repo, base))
-        if epic_base(head, initiative, epic) == base and (pr.get('merged_at') or pr.get('state') == 'open'):
+        long_lived = epic_base(base, initiative, epic)
+        if pr.get('merged_at') and long_lived:
+            landed[(repo, base)] = long_lived
+        if epic_base(head, initiative, epic) == base and pr.get('state') == 'open':
             covered.add((repo, head))
-    pending = []
-    for repo, ref in sorted(landed - covered):
-        pending.append(ref if not repo or repo.lower() == home.lower() else f'{repo}:{ref}')
-    return pending
+    drafts, unread = [], []
+    for (repo, ref), long_lived in sorted(landed.items()):
+        if (repo, ref) in covered:
+            continue
+        foreign = repo and repo.lower() != home.lower()
+        name = f'{repo}:{ref}' if foreign else ref
+        if foreign:
+            ahead, problem = 0, f'is in {repo}, not the --project repository'
+        else:
+            ahead, problem = base_lead(project, revisions, ref, long_lived)
+        if problem:
+            unread.append(f'draft {name}: {problem}, so what it carries against {long_lived} is unread')
+        elif ahead:
+            drafts.append(name)
+    return drafts, unread
 
 
 def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
@@ -449,6 +487,49 @@ def review_references(prs: list[dict], initiative: str, epic: str, home: str) ->
         name = key[1] if not repo or repo.lower() == home.lower() else f'{repo}:{key[1]}'
         lines.append(f"{name} (#{pr['number']}) cites {pull_numbers(cites)}; merged {pull_numbers(merged)}")
     return lines
+
+
+# A code span naming a file: no whitespace or pattern characters, and a last segment with an extension.
+NAMED_FILE = re.compile(r'`([^`\s*?{}<>]*[^`\s*?{}<>/]\.[A-Za-z][A-Za-z0-9]*)(?:#[^`\s]*)?`')
+
+
+def named_files(body: str) -> list[str]:
+    """The files a body's Changes section names in code spans, in order, each once."""
+    _, sections = split_sections((body or '').replace('\r\n', '\n'))
+    text = '\n'.join(next((l for h, l in sections if h == 'Changes'), []))
+    return list(dict.fromkeys(m.removeprefix('./').lstrip('/') for m in NAMED_FILE.findall(text)))
+
+
+def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
+                   project: str) -> tuple[list[str], list[str]]:
+    """Open review pull requests whose Changes name a file absent from the head of the base they front.
+
+    A review pull request's head is an epic base, and its head commit is read in the repository
+    project locates. A named path with a directory stands at that path; a bare file name stands
+    anywhere in the tree. Returns a line per absent path, and an unevaluable line per review whose
+    head commit is not given or not held."""
+    absent, unevaluable = [], []
+    for pr in sorted(prs, key=lambda p: p['number']):
+        head = pr.get('head') or {}
+        if not (epic_base(head.get('ref') or '', initiative, epic) and pr.get('state') == 'open'):
+            continue
+        paths = named_files(pr.get('body') or '')
+        if not paths:
+            continue
+        repo = pr_repo(pr)
+        name = head['ref'] if not repo or repo.lower() == home.lower() else f"{repo}:{head['ref']}"
+        sha = head.get('sha') or ''
+        tree = git(project, 'ls-tree', '-r', '--name-only', '--end-of-options', sha) if sha else None
+        if tree is None or tree.returncode != 0:
+            why = f'head {sha} is not held in {project}' if sha else 'has no head commit'
+            unevaluable.append(f"{name} (#{pr['number']}) Changes paths: {why}")
+            continue
+        files = set(tree.stdout.splitlines())
+        names = {f.rsplit('/', 1)[-1] for f in files}
+        for path in paths:
+            if path not in (files if '/' in path else names):
+                absent.append(f"{name} (#{pr['number']}) names {path}, absent at {sha[:9]}")
+    return absent, unevaluable
 
 
 def unlinked_reviews(prs: list[dict], initiative: str, epic: str, key: tuple[str, int]) -> list[str]:
@@ -659,8 +740,8 @@ class Branches(NamedTuple):
 
 # The epic checks that read the long-lived branch names, named when a run cannot read them.
 LONG_LIVED_CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases',
-                     'draft epic bases', 'review pull request References', 'review pull request issue links',
-                     'pull request targets')
+                     'draft epic bases', 'review pull request References', 'review pull request Changes paths',
+                     'review pull request issue links', 'pull request targets')
 
 
 def git(project: str, *args: str) -> subprocess.CompletedProcess:
@@ -854,7 +935,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'target', 'no epic', 'source', 'unevaluable', 'not checked')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'changes', 'target', 'no epic', 'source', 'unevaluable', 'not checked')}
     report['source'].extend(sources)
     if kind == 'epic' or args.project:
         report['unevaluable'].extend(unevaluable)
@@ -958,8 +1039,13 @@ def main() -> int:
     if kind == 'epic' and args.prs and LONG_LIVED:
         home = issue['repository_url'].split('/repos/', 1)[1]
         if not epic_ready:
-            report['draft'].extend(draft_bases(prs, initiative, epic, home))
+            drafts, unread = draft_bases(prs, initiative, epic, home, args.project, args.revision)
+            report['draft'].extend(drafts)
+            report['unevaluable'].extend(unread)
         report['references'].extend(review_references(prs, initiative, epic, home))
+        absent, unread = review_changes(prs, initiative, epic, home, args.project)
+        report['changes'].extend(absent)
+        report['unevaluable'].extend(unread)
         report['uncited'].extend(unlinked_reviews(prs, initiative, epic, issue_key(issue)))
         report['target'].extend(misrouted(prs, initiative, epic))
     if kind != 'task':

@@ -72,7 +72,7 @@ The main path meets [Outcomes](#outcomes).
    - Confirm the units to dispatch and the rows to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a row the user leaves stays held.
    - For each released row:
-     - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows).
+     - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree.
      - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.

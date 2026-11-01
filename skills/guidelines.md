@@ -29,6 +29,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 ## SKILL.md structure
 
+- **Top-level sections.**
+  - Modes, Rules, Conventions and Dependencies, in that order, each optional.
+  - The Opening stands under the title, ahead of them. Anything else the entry point needs is a sub-section under one of them.
 - **Opening.**
   One sentence on what the skill does, then a bulleted list with one item for each thing it acts on.
 - **Modes.**
@@ -42,10 +45,12 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
     - It has no trailing full stop, no purpose clause, and no board status outside that phrase.
 - **Rules.**
   A statement that binds every mode goes in Rules, never as loose prose in another section.
+- **Conventions.**
+  The skill-wide prerequisites that [Conventions](#commands) places in the entry point.
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md links the shared command conventions on a required path and holds no command of its own.
+  SKILL.md links the shared command conventions on a required path and holds no command of its own, so it takes no Commands section.
 
 ## Procedure files
 
@@ -86,6 +91,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **The design as it is.**
   Present tense, with no account of what the text replaced: no "previously", "no longer" or "instead of".
 - **Terms.**  After a rename, every use of the old term goes, in prose, docstrings and identifiers.
+- **One mood for parallel sections.**
+  Sibling sections whose titles end in one word, such as Main Coverage and Docker Coverage, state one kind of thing, so each opens in the same mood: each says what holds, or each directs the reader. A dependency between the commands a section names is stated as one, and a section that directs an order of work is a procedure.
 
 ## Links
 

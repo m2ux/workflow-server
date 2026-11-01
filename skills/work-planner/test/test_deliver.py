@@ -79,13 +79,30 @@ def planned(root: Path, *components: tuple[str, str]) -> tuple[list[str], dict[s
 THREE_BASES = ('--bases', 'i07/e00/main,i07/e00/workflows,i07/e00/workspace')
 
 
-def edit(body_issue: dict, *args: str) -> tuple[str, str, int]:
+def edit(body_issue: dict, *args: str, records: dict[str, dict[str, str]] | None = None) -> tuple[str, str, int]:
+    """Run an edit; records gives each planning folder's files, written to an engineering checkout
+    passed as --engineering."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         path, fixed = root / 'issue.json', root / 'fixed.md'
         path.write_text(json.dumps(body_issue))
-        done = run('deliver.py', '--epic', str(path), '--fix', str(fixed), '--date', TODAY, *args)
+        extra = []
+        if records is not None:
+            checkout = root / 'engineering'
+            for folder, files in records.items():
+                (checkout / 'artifacts' / 'planning' / folder).mkdir(parents=True)
+                for name, text in files.items():
+                    (checkout / 'artifacts' / 'planning' / folder / name).write_text(text)
+            extra = ['--engineering', str(checkout)]
+        done = run('deliver.py', '--epic', str(path), '--fix', str(fixed), '--date', TODAY, *args, *extra)
         return done.stdout + done.stderr, fixed.read_text() if fixed.exists() else '', done.returncode
+
+
+def record(*tasks: str) -> dict[str, str]:
+    """A planning folder's files: each task's work item, and a README linking each by its lower-case name."""
+    files = {f'{task.lower()}.md': '**Component:** workspace:a.py\n' for task in tasks}
+    files['README.md'] = '\n'.join(f'| [{task} work item]({task.lower()}.md) | Plan |' for task in tasks)
+    return files
 
 
 class Survey(unittest.TestCase):
@@ -437,16 +454,91 @@ class Reserve(unittest.TestCase):
         self.assertIn('available: 0, held: 1', output)
 
     def test_release_points_to_the_work_item(self):
-        record = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
-        report, body, code = edit(epic(943, (f'[W01]({record})', 'Queue plan', '', '')), '--release', 'W01')
+        folder = f'{TODAY}-943-i07-e00-w01-queue-plan'
+        held = f'{RECORDS}/{folder}/'
+        report, body, code = edit(epic(943, (f'[W01]({held})', 'Queue plan', '', '')), '--release', 'W01',
+                                  records={folder: record('W01')})
         self.assertEqual(code, 0, report)
-        self.assertIn(f'| [W01]({record}w01.md) |', body)
-        self.assertNotIn(f']({record})', body)
+        self.assertIn(f'| [W01]({held}w01.md) |', body)
+        self.assertNotIn(f']({held})', body)
 
     def test_release_refuses_a_free_row(self):
-        report, _, code = edit(epic(943, ('W01', 'Queue plan', '', '')), '--release', 'W01')
+        report, _, code = edit(epic(943, ('W01', 'Queue plan', '', '')), '--release', 'W01', records={})
         self.assertEqual(code, 1)
         self.assertIn('links no planning folder', report)
+
+    def test_release_needs_the_records_checkout(self):
+        held = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
+        report, _, code = edit(epic(943, (f'[W01]({held})', 'Queue plan', '', '')), '--release', 'W01')
+        self.assertEqual(code, 1)
+        self.assertIn('--release needs --engineering', report)
+
+    def test_release_refuses_a_work_item_the_record_does_not_hold(self):
+        folder = f'{TODAY}-943-i07-e00-w01-queue-plan'
+        files = {'work-item.md': 'plan', 'README.md': '| [Work item](work-item.md) | Plan |'}
+        report, body, code = edit(epic(943, (f'[W01]({RECORDS}/{folder}/)', 'Queue plan', '', '')),
+                                  '--release', 'W01', records={folder: files})
+        self.assertEqual(code, 1)
+        self.assertIn(f'the record artifacts/planning/{folder} holds no w01.md', report)
+        self.assertEqual(body, '')
+
+    def test_release_refuses_a_record_whose_readme_names_another_file(self):
+        folder = f'{TODAY}-943-i07-e00-w01-queue-plan'
+        files = {'w01.md': 'plan', 'README.md': '| [Work item](work-item.md) | Plan |'}
+        report, _, code = edit(epic(943, (f'[W01]({RECORDS}/{folder}/)', 'Queue plan', '', '')),
+                               '--release', 'W01', records={folder: files})
+        self.assertEqual(code, 1)
+        self.assertIn(f'the README of artifacts/planning/{folder} does not link w01.md', report)
+
+
+class JoinedReservation(unittest.TestCase):
+    FOLDER = f'{TODAY}-943-i07-e00-w01-queue-plan'
+
+    def pair(self, first: str = 'W01', second: str = 'W02') -> dict:
+        return epic(943, (first, 'Queue plan', '', 'W02'), (second, 'Dispatch', '', 'W01'),
+                    ('W03', 'Survey', '', ''))
+
+    def test_joined_rows_are_held_with_the_folder_the_survey_names(self):
+        output = survey(staged((self.pair(), 'In Progress')))
+        self.assertIn(f'unit I07:E00:W01+W02: coverage AC1, record {self.FOLDER},', output)
+        report, body, code = edit(self.pair(), '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assertIn(f'| [W01]({RECORDS}/{self.FOLDER}/) |', body)
+        self.assertIn(f'| [W02]({RECORDS}/{self.FOLDER}/) |', body)
+        self.assertNotIn('w02-dispatch', body)
+
+    def test_each_unit_of_one_call_takes_its_own_folder(self):
+        report, body, code = edit(self.pair(), '--reserve', 'W02,W01,W03', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assertIn(f'| [W02]({RECORDS}/{self.FOLDER}/) |', body)
+        self.assertIn(f'| [W03]({RECORDS}/{TODAY}-943-i07-e00-w03-survey/) |', body)
+
+    def test_reserving_one_row_of_a_joined_pair_is_refused(self):
+        report, body, code = edit(self.pair(), '--reserve', 'W02', '--records', RECORDS)
+        self.assertEqual(code, 1)
+        self.assertIn('W02: joined with W01, which the call leaves out', report)
+        self.assertEqual(body, '')
+
+    def test_a_joined_row_whose_partner_is_held_is_refused(self):
+        held = f'[W01]({RECORDS}/{TODAY}-943-i07-e00-w01-elsewhere/)'
+        report, _, code = edit(self.pair(first=held), '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 1)
+        self.assertIn('W01: already held by', report)
+
+    def test_release_links_each_work_item_inside_the_shared_record(self):
+        held = f'{RECORDS}/{self.FOLDER}/'
+        report, body, code = edit(self.pair(f'[W01]({held})', f'[W02]({held})'), '--release', 'W01,W02',
+                                  records={self.FOLDER: record('W01', 'W02')})
+        self.assertEqual(code, 0, report)
+        self.assertIn(f'| [W01]({held}w01.md) |', body)
+        self.assertIn(f'| [W02]({held}w02.md) |', body)
+
+    def test_releasing_one_row_of_a_joined_pair_is_refused(self):
+        held = f'{RECORDS}/{self.FOLDER}/'
+        report, _, code = edit(self.pair(f'[W01]({held})', f'[W02]({held})'), '--release', 'W02',
+                               records={self.FOLDER: record('W01', 'W02')})
+        self.assertEqual(code, 1)
+        self.assertIn('W02: joined with W01, which the call leaves out', report)
 
 
 if __name__ == '__main__':

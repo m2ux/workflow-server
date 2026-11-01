@@ -102,18 +102,6 @@ class PlanIds(unittest.TestCase):
         r.run()
         self.assertFalse(any(item.startswith('Problem:') or item.startswith('Proposal:') for item in r.decide))
 
-    def test_a_complete_row_may_omit_coverage(self):
-        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
-                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
-                '| --- | --- | --- | --- | --- | --- |\n'
-                '| W01 | Record the ledger | | | | ✓ |\n'
-                '| W02 | Read the ledger | AC1 | W01 | | |\n\n'
-                '## Acceptance Criteria\n\n- [ ] **AC1.** The ledger names its source.\n')
-        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
-                         labels=('type:epic', 'theme:mechanical')))
-        r.run()
-        self.assertFalse(any('Coverage does not name' in item for item in r.decide))
-
     def test_an_open_row_names_its_coverage(self):
         text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
                 '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
@@ -678,3 +666,48 @@ class CheckFormat(unittest.TestCase):
         done = self.check('--project', str(self.checkout))
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--project and --revision go together', done.stderr)
+
+
+class CoverageNamesDelivery(unittest.TestCase):
+    """A row's Coverage names the criteria it delivers, complete or open."""
+
+    def findings(self, rows: str) -> list[str]:
+        text = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nDesign.\n\n'
+                '## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                '| --- | --- | --- | --- | --- | --- |\n' + rows + '\n'
+                '## Acceptance Criteria\n\n- [x] **AC1.** The ledger names its source.\n'
+                '- [ ] **AC2.** A reader sees that source.\n')
+        r = Review(issue(1, '[I00:E01] Ledger Record: The Source Named', body=text,
+                         labels=('type:epic', 'theme:mechanical')))
+        r.run()
+        return r.decide
+
+    def test_a_complete_row_with_an_empty_cell_is_reported(self):
+        decide = self.findings('| W01 | Record the ledger | | | | ✓ |\n'
+                               '| W02 | Read the ledger | AC1, AC2 | | | |\n')
+        self.assertIn('W01: Coverage does not name the criteria it delivers', decide)
+
+    def test_a_complete_row_naming_its_criteria_is_left(self):
+        decide = self.findings('| W01 | Record the ledger | AC1 | | | ✓ |\n'
+                               '| W02 | Read the ledger | AC2 | W01 | | |\n')
+        self.assertFalse(any('Coverage' in item for item in decide))
+
+    def test_a_complete_row_whose_criteria_a_further_task_adopts_is_left(self):
+        decide = self.findings('| W01 | Record the ledger | | | | ✓ |\n'
+                               '| W02 | Read the ledger | AC1, AC2 | W01 | | |\n')
+        self.assertFalse(any('Coverage' in item for item in decide))
+
+    def test_a_further_task_naming_a_range_adopts_each_row_in_it(self):
+        decide = self.findings('| [W01](https://example.com/w01) | Record the ledger | | | | ✓ |\n'
+                               '| W02 | Read the ledger | AC1, AC2 | [W01–W01](https://example.com) | | |\n')
+        self.assertFalse(any('Coverage' in item for item in decide))
+
+    def test_an_open_row_with_an_empty_cell_is_reported(self):
+        decide = self.findings('| W01 | Record the ledger | | | | |\n'
+                               '| W02 | Read the ledger | AC1, AC2 | W01 | | |\n')
+        self.assertIn('W01: Coverage does not name the criteria it delivers', decide)
+
+    def test_a_complete_row_citing_a_missing_criterion_is_reported(self):
+        decide = self.findings('| W01 | Record the ledger | AC1, AC7 | | | ✓ |\n'
+                               '| W02 | Read the ledger | AC2 | W01 | | |\n')
+        self.assertIn('W01: Coverage cites AC7, which is not a criterion', decide)

@@ -4,6 +4,7 @@ import io
 import json
 import os
 import shutil
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -102,7 +103,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_heading_inside_a_fence_is_not_an_anchor(self):
-        self.write('SKILL.md', f'# Specimen\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
+        self.write('references/guide.md', f'# Guide\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_repeated_anchor_is_reported_when_it_is_cited(self):
@@ -178,13 +179,13 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_selection_link_may_point_anywhere_in_its_file(self):
-        self.write('SKILL.md', '# Specimen\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
-                               '## Spec\n\nA sentence.\n')
+        self.write('references/guide.md', '# Guide\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
+                                          '## Spec\n\nA sentence.\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_prerequisite_example_in_a_code_span_is_a_specimen(self):
-        self.write('SKILL.md', '# Specimen\n\n## Common\n\nOne.\n\n'
-                               '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
+        self.write('references/guide.md', '# Guide\n\n## Common\n\nOne.\n\n'
+                                          '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
         self.assertEqual(self.findings(), [])
 
     CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
@@ -317,7 +318,7 @@ class SkillFileChecks(unittest.TestCase):
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\n'
                                '## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
         self.write('references/plan.md', calling('Plan', '../SKILL.md#fetch-issue'))
-        self.assertEqual(self.kinds(), {'command specification in the entry point'})
+        self.assertIn('command specification in the entry point', self.kinds())
 
     def test_a_heading_of_a_catalogs_conventions_is_not_a_specification(self):
         self.write('references/commands.md', self.LISTING)
@@ -421,7 +422,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_modes_directory_requires_procedure_and_outcomes(self):
-        self.write('modes/plan.md', '# Plan\n')
+        self.write('modes/plan.md', '# Plan\n\nA plan.\n')
         self.assertEqual([kind for _, _, kind in self.findings()],
                          ['section missing', 'section missing'])
 
@@ -521,6 +522,305 @@ class SkillFileChecks(unittest.TestCase):
     def test_the_command_exits_zero_when_clean(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         self.assertEqual(self.run_command(), 0)
+
+
+class EntryPointSections(unittest.TestCase):
+    """A skill's entry point measured against the set the shared guidelines
+    name for it, whatever it carries."""
+
+    setUp = SkillFileChecks.setUp
+    write = SkillFileChecks.write
+    findings = SkillFileChecks.findings
+
+    ENTRY = ('---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n'
+             '- **Plans**  The plans it acts on.\n')
+    MODES = '\n## Modes\n\n- **[Plan](references/plan-mode.md)**\n  - Forward-looking, scoped to one plan\n'
+    RULES = '\n## Rules\n\n- **One home.**  Each rule is stated once.\n'
+    CONVENTIONS = '\n## Conventions\n\n- **Session.**  Unset the token first.\n'
+    DEPENDENCIES = '\n## Dependencies\n\n- **git.**\n'
+
+    def entry(self, *sections):
+        self.write('SKILL.md', self.ENTRY + ''.join(sections))
+        self.write('references/plan-mode.md', '# Plan\n\n## Procedure\n\n1. **Plan.**  Plan it.\n'
+                                              '\n## Rules\n\n- **Scope.**  One plan.\n')
+        return [(line, kind) for name, line, kind in self.findings() if name == 'SKILL.md']
+
+    def test_an_entry_point_carrying_the_named_set_in_order_reports_nothing(self):
+        self.assertEqual(self.entry(self.MODES, self.RULES, self.CONVENTIONS, self.DEPENDENCIES), [])
+
+    def test_each_named_section_is_optional(self):
+        self.assertEqual(self.entry(), [])
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES), [])
+
+    def test_a_section_outside_the_set_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, '\n## Troubleshooting\n\nOne sentence.\n'),
+                         [(16, 'section outside the set')])
+
+    def test_a_section_out_of_order_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES, self.RULES),
+                         [(20, 'sections out of order')])
+
+    def test_each_departure_is_reported(self):
+        found = self.entry(self.CONVENTIONS, self.RULES, '\n## After Indexing\n\nOne sentence.\n')
+        self.assertEqual([kind for _, kind in found], ['sections out of order', 'section outside the set'])
+
+    def test_an_entry_point_carrying_steps_takes_its_own_set(self):
+        found = self.entry(self.MODES, '\n## Procedure\n\n1. **Run.**  Run it.\n')
+        self.assertEqual(found, [(16, 'section outside the set')])
+
+    def test_a_contract_covering_every_file_does_not_reach_the_entry_point(self):
+        structure = dict(STRUCTURE, **{'*.md': {'sections': ['Procedure'], 'required': ['Procedure']}})
+        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        self.assertEqual(self.entry(self.MODES, self.RULES), [])
+
+
+class EmptySectionChecks(unittest.TestCase):
+    """A heading whose section holds nothing, measured over seeded files."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def empty(self, text):
+        path = self.skill / 'guide.md'
+        path.write_text(text)
+        lines, _, headings = checker.scan(path)
+        return [title for _, title in checker.empty_sections(lines, headings)]
+
+    def test_a_heading_followed_by_a_heading_of_its_level_is_reported(self):
+        self.assertEqual(self.empty('# Guide\n\nA sentence.\n\n## Sources\n\n## Sessions\n\nA sentence.\n'),
+                         ['Sources'])
+
+    def test_a_heading_at_the_end_of_the_file_is_reported(self):
+        self.assertEqual(self.empty('# Guide\n\nA sentence.\n\n## Sources\n'), ['Sources'])
+
+    def test_a_heading_whose_body_is_its_sub_sections_is_clean(self):
+        self.assertEqual(self.empty('# Guide\n\n## Terms\n\n### Branch\n\nA sentence.\n'), [])
+
+    def test_an_empty_sub_section_is_reported_beneath_a_clean_parent(self):
+        self.assertEqual(self.empty('# Guide\n\n## Terms\n\n### Branch\n\n### Base\n\nA sentence.\n'),
+                         ['Branch'])
+
+    def test_a_fenced_example_is_content(self):
+        self.assertEqual(self.empty('# Guide\n\n## Example\n\n```bash\nrun\n```\n'), [])
+
+    def test_a_heading_inside_a_fence_is_neither_reported_nor_a_boundary(self):
+        self.assertEqual(self.empty('# Guide\n\n## Template\n\n```markdown\n## Empty\n```\n'), [])
+
+    def test_the_command_reports_the_heading_and_its_file(self):
+        (self.skill / 'SKILL.md').write_text('# Specimen\n\nA sentence.\n\n## Sources\n\n## Sessions\n\nA sentence.\n')
+        output = io.StringIO()
+        with redirect_stdout(output):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn('specimen/SKILL.md:5: heading without content — Sources', output.getvalue())
+
+    def test_a_fixture_tree_is_not_a_skill_file(self):
+        fixture = self.skill / 'test' / 'fixtures' / 'corpus.md'
+        fixture.parent.mkdir(parents=True)
+        fixture.write_text('## Outputs\n### report\n')
+        (self.skill / 'SKILL.md').write_text('# Specimen\n\nA sentence.\n')
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(checker.main([str(self.skill)]), 0)
+
+
+class ParallelSectionMood(unittest.TestCase):
+    """Sibling sections whose titles end in one word open in one mood."""
+
+    COMMANDS = ('## Commands\n\n### Check Shell Syntax\n\nParse a script.\n\n'
+                '### Validate Compose\n\nResolve the file.\n')
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def findings(self, text):
+        path = self.skill / 'coverage.md'
+        path.write_text(text)
+        cited, called = checker.citations([path], {})
+        return [(line, detail) for _, line, kind, detail
+                in checker.check(path, self.root, {}, cited, called, {})
+                if kind == 'parallel section in another mood']
+
+    def test_a_section_directing_among_stating_siblings_is_reported(self):
+        found = self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            'For engine work, [Check Shell Syntax](#check-shell-syntax) and '
+            '[Validate Compose](#validate-compose) establish the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) for changed helpers.\n\n'
+            '## Workflows Coverage\n\nUse [Validate Compose](#validate-compose) for the corpus.\n\n'
+            + self.COMMANDS)
+        self.assertEqual(found, [(7, 'Docker Coverage directs, Main Coverage states'),
+                                 (11, 'Workflows Coverage directs, Main Coverage states')])
+
+    def test_siblings_in_one_mood_report_nothing(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) establishes the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) covers changed helpers, and '
+            '[Validate Compose](#validate-compose) resolves the file.\n\n'
+            '## Workspace Coverage\n\nThe check exercises the scripts.\n\n' + self.COMMANDS), [])
+
+    def test_specifications_directing_together_report_nothing(self):
+        self.assertEqual(self.findings('# Coverage\n\n' + self.COMMANDS), [])
+
+    def test_sections_of_different_kinds_or_parents_are_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Images\n\nUse the reviewed files.\n\n'
+            '### Build Coverage\n\nUse a disposable tree.\n'), [])
+
+    def test_an_opening_neither_mood_decides_is_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Coverage\n\nEngine tests alone do not cover this.\n\n'
+            '## Shell Coverage\n\n- **Helpers.**  Use disposable directories.\n'), [])
+
+
+# A specimen move: Fetch Issue leaves the issue artifact for the sync mode,
+# its link retargeted, and the other sections stay where they stand.
+BEFORE = {
+    'skill/artifacts/issue.md': (
+        '# Issue\n\n## Commands\n\n### Fetch Issue\n\nRead the issue.\n\n'
+        '- See [Fields](issue.md#fields).\n\n### Save Issue\n\nWrite the issue.\n\n'
+        '## Fields\n\n### Template\n\nThe issue template.\n'),
+    'skill/modes/sync-mode.md': (
+        '# Sync\n\n## Operations\n\n### Close Issue\n\nClose the issue.\n\n'
+        + chr(96) * 3 + '\n### Fenced Heading\n' + chr(96) * 3 + '\n'),
+}
+AFTER = {
+    'skill/artifacts/issue.md': (
+        '# Issue\n\n## Commands\n\n### Save Issue\n\nWrite the issue.\n\n'
+        '## Fields\n\n### Template\n\nThe issue template.\n'),
+    'skill/modes/sync-mode.md': (
+        '# Sync\n\n## Operations\n\n### Close Issue\n\nClose the issue.\n\n'
+        + chr(96) * 3 + '\n### Fenced Heading\n' + chr(96) * 3 + '\n\n'
+        '### Fetch Issue\n\nRead the issue.\n\n'
+        '- See [Fields](../artifacts/issue.md#fields).\n'),
+}
+
+
+class SectionBodyComparison(unittest.TestCase):
+    def judged(self, before, after):
+        results, _, _ = checker.compare(before, after)
+        return {(kind, title) for kind, _, _, title, _ in results}
+
+    def test_a_moved_section_with_a_retargeted_link_reads_as_moved(self):
+        results, _, _ = checker.compare(BEFORE, AFTER)
+        moved = [result for result in results if result[3] == 'Fetch Issue']
+        self.assertEqual(moved, [('moved', 'skill/artifacts/issue.md',
+                                  'skill/modes/sync-mode.md', 'Fetch Issue', [])])
+
+    def test_sections_left_in_place_read_as_identical(self):
+        self.assertTrue({('identical', 'Save Issue'), ('identical', 'Template'),
+                         ('identical', 'Close Issue')} <= self.judged(BEFORE, AFTER))
+
+    def test_a_heading_inside_a_fence_is_no_section(self):
+        _, counted_base, counted_head = checker.compare(BEFORE, AFTER)
+        self.assertEqual((counted_base, counted_head), (4, 4))
+
+    def test_a_reworded_body_is_differing_with_its_diff(self):
+        after = dict(AFTER)
+        after['skill/modes/sync-mode.md'] = after['skill/modes/sync-mode.md'].replace(
+            'Read the issue.', 'Read the issue and its comments.')
+        results, _, _ = checker.compare(BEFORE, after)
+        differing = [result for result in results if result[0] == 'differing']
+        self.assertEqual([result[3] for result in differing], ['Fetch Issue'])
+        self.assertIn('-Read the issue.', differing[0][4])
+        self.assertIn('+Read the issue and its comments.', differing[0][4])
+
+    def test_a_changed_fragment_is_a_difference(self):
+        after = dict(AFTER)
+        after['skill/modes/sync-mode.md'] = after['skill/modes/sync-mode.md'].replace(
+            '#fields', '#template')
+        self.assertIn(('differing', 'Fetch Issue'), self.judged(BEFORE, after))
+
+    def test_a_changed_absolute_url_is_a_difference(self):
+        before = {'a.md': '### Link\n\n[Docs](https://example.com/one#x)\n'}
+        after = {'a.md': '### Link\n\n[Docs](https://example.com/two#x)\n'}
+        self.assertEqual(self.judged(before, after), {('differing', 'Link')})
+
+    def test_a_removed_and_an_added_section_are_reported(self):
+        after = dict(AFTER)
+        after['skill/artifacts/issue.md'] = after['skill/artifacts/issue.md'].replace(
+            '### Save Issue', '### Store Issue')
+        judged = self.judged(BEFORE, after)
+        self.assertIn(('removed', 'Save Issue'), judged)
+        self.assertIn(('added', 'Store Issue'), judged)
+
+    def test_an_emptied_body_is_differing(self):
+        after = dict(AFTER)
+        after['skill/artifacts/issue.md'] = after['skill/artifacts/issue.md'].replace(
+            'Write the issue.\n\n', '')
+        self.assertIn(('differing', 'Save Issue'), self.judged(BEFORE, after))
+
+    def test_a_heading_its_own_file_still_holds_is_not_paired_elsewhere(self):
+        before = {'a.md': '### Template\n\nOne.\n', 'b.md': '### Template\n\nTwo.\n'}
+        after = {'a.md': '### Template\n\nOne.\n', 'b.md': '### Template\n\nTwo.\n'}
+        self.assertEqual(self.judged(before, after), {('identical', 'Template')})
+
+    def git(self, *arguments):
+        subprocess.run(['git', '-c', 'user.name=Specimen', '-c', 'user.email=specimen@example.com',
+                        *arguments], cwd=self.root, check=True, capture_output=True)
+
+    def commit(self, files):
+        for name, text in files.items():
+            path = self.root / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text(text)
+        self.git('add', '-A')
+        self.git('commit', '-q', '-m', 'specimen')
+        return subprocess.run(['git', 'rev-parse', 'HEAD'], cwd=self.root, check=True,
+                              capture_output=True, text=True).stdout.strip()
+
+    def run_comparison(self, base, head):
+        here = os.getcwd()
+        os.chdir(self.root)
+        self.addCleanup(os.chdir, here)
+        output = io.StringIO()
+        with redirect_stdout(output):
+            code = checker.main(['--compare', base, head, 'skill'])
+        return code, output.getvalue()
+
+    def specimen_repository(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.git('init', '-q')
+        return self.commit(BEFORE)
+
+    def test_the_command_passes_a_clean_move_between_revisions(self):
+        base = self.specimen_repository()
+        head = self.commit(AFTER)
+        code, output = self.run_comparison(base, head)
+        self.assertEqual(code, 0)
+        self.assertIn('moved: skill/artifacts/issue.md -> skill/modes/sync-mode.md ### Fetch Issue',
+                      output)
+        self.assertIn(f'4 sections at {base}, 4 sections at {head}, 0 added, removed or differing',
+                      output)
+
+    def test_the_command_fails_a_move_that_damaged_a_body(self):
+        base = self.specimen_repository()
+        after = dict(AFTER)
+        after['skill/modes/sync-mode.md'] = after['skill/modes/sync-mode.md'].replace(
+            'Read the issue.', 'Read it.')
+        head = self.commit(after)
+        code, output = self.run_comparison(base, head)
+        self.assertEqual(code, 1)
+        self.assertIn('differing: skill/artifacts/issue.md -> skill/modes/sync-mode.md ### Fetch Issue',
+                      output)
+        self.assertIn('  +Read it.', output)
+
+    def test_an_unknown_revision_is_refused(self):
+        self.specimen_repository()
+        code, output = self.run_comparison('absent', 'HEAD')
+        self.assertEqual(code, 1)
+        self.assertIn('unreadable revision', output)
 
 
 if __name__ == '__main__':

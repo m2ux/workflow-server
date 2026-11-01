@@ -39,6 +39,7 @@ The main path meets [Outcomes](#outcomes).
    - Run [Run Tests](#run-tests) when an executable script, its consumed template or a test changed.
    - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
    - Run [Check Skill Files](#check-skill-files) for every affected skill.
+   - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
    - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
    - Resolve every required file, command and heading without an implicit external dependency.
 7. **Deliver.**
@@ -79,4 +80,18 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
+```
+
+### Compare Section Bodies
+
+Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
+
+**Inputs:** Workspace checkout, the base and head revisions, and each skill directory the move touches.
+
+- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
+- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
+- Exit 1 means a section was added, removed or differs.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill_files.py --compare "<base>" "<head>" "<skill-directory>"
 ```
