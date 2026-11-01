@@ -441,10 +441,23 @@ def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
     return lines
 
 
+def initiative_titles(prs: list[dict], initiative: str):
+    """Each pull request whose title carries this initiative's prefix, with that prefix, in number order."""
+    for pr in sorted(prs, key=lambda p: p['number']):
+        prefix = PREFIX.match(pr.get('title') or '')
+        if prefix and prefix[1] == initiative:
+            yield pr, prefix
+
+
 def epicless(prs: list[dict], initiative: str) -> list[str]:
-    """Pull requests carrying the initiative's prefix whose title names no epic as [Ixx:Eyy]."""
-    return [f"#{pr['number']} {pr['title']}" for pr in sorted(prs, key=lambda p: p['number'])
-            if (pr.get('title') or '').startswith(f'[I{initiative}') and not PR_REF.match(pr['title'])]
+    """Pull requests carrying the initiative's prefix whose title names no epic."""
+    return [f"#{pr['number']} {pr['title']}" for pr, prefix in initiative_titles(prs, initiative) if not prefix[2]]
+
+
+def task_titled(prs: list[dict], initiative: str) -> list[str]:
+    """Pull requests whose title names an epic by a task id, each with the title it takes."""
+    return [f"#{pr['number']} → [I{initiative}:E{prefix[2]}] {pr['title'][prefix.end():].lstrip()}"
+            for pr, prefix in initiative_titles(prs, initiative) if prefix[2] and prefix[3]]
 
 
 def pull_numbers(found: set[int]) -> str:
@@ -489,15 +502,29 @@ def review_references(prs: list[dict], initiative: str, epic: str, home: str) ->
     return lines
 
 
-# A code span naming a file: no whitespace or pattern characters, and a last segment with an extension.
+# A code span that may name a file: no whitespace or pattern characters, and a last segment with an extension.
 NAMED_FILE = re.compile(r'`([^`\s*?{}<>]*[^`\s*?{}<>/]\.[A-Za-z][A-Za-z0-9]*)(?:#[^`\s]*)?`')
 
 
 def named_files(body: str) -> list[str]:
-    """The files a body's Changes section names in code spans, in order, each once."""
+    """The code spans a body's Changes section holds that may name files, in order, each once."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
     text = '\n'.join(next((l for h, l in sections if h == 'Changes'), []))
     return list(dict.fromkeys(m.removeprefix('./').lstrip('/') for m in NAMED_FILE.findall(text)))
+
+
+def head_path(span: str, long_lived: str, extensions: set[str]) -> str | None:
+    """The path a Changes span names at the head of the base for long_lived, or None for a span naming none there.
+
+    A component <branch>:<path> names its path on that branch. A path with a directory is a path. A bare
+    name is a file name only when its extension is one a file at the head carries, so a dotted code name
+    such as board.Outputs names nothing."""
+    branch, colon, path = span.partition(':')
+    if colon and '/' not in branch:
+        return path.lstrip('/') if branch == long_lived else None
+    if '/' in span:
+        return span
+    return span if span.rsplit('.', 1)[-1] in extensions else None
 
 
 def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
@@ -505,9 +532,9 @@ def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
     """Open review pull requests whose Changes name a file absent from the head of the base they front.
 
     A review pull request's head is an epic base, and its head commit is read in the repository
-    project locates. A named path with a directory stands at that path; a bare file name stands
-    anywhere in the tree. Returns a line per absent path, and an unevaluable line per review whose
-    head commit is not given or not held."""
+    project locates. A span names a path as head_path decides; a path with a directory stands at that
+    path, and a bare file name stands anywhere in the tree. Returns a line per absent path, and an
+    unevaluable line per review whose head commit is not given or not held."""
     absent, unevaluable = [], []
     for pr in sorted(prs, key=lambda p: p['number']):
         head = pr.get('head') or {}
@@ -526,9 +553,12 @@ def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
             continue
         files = set(tree.stdout.splitlines())
         names = {f.rsplit('/', 1)[-1] for f in files}
-        for path in paths:
-            if path not in (files if '/' in path else names):
-                absent.append(f"{name} (#{pr['number']}) names {path}, absent at {sha[:9]}")
+        extensions = {n.rsplit('.', 1)[-1] for n in names if '.' in n}
+        long_lived = epic_base(head['ref'], initiative, epic)
+        for span in paths:
+            path = head_path(span, long_lived, extensions)
+            if path is not None and path not in (files if '/' in path else names):
+                absent.append(f"{name} (#{pr['number']}) names {span}, absent at {sha[:9]}")
     return absent, unevaluable
 
 
@@ -1050,6 +1080,7 @@ def main() -> int:
         report['target'].extend(misrouted(prs, initiative, epic))
     if kind != 'task':
         report['no epic'].extend(epicless(prs, initiative))
+        report['retitle'].extend(line for line in task_titled(prs, initiative) if line not in report['retitle'])
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:

@@ -73,6 +73,10 @@ The main path meets [Outcomes](#outcomes).
 6. **Sync each epic.**
    Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
    - Handle the returned delivery findings:
+     - **Normalized.**
+       - The patch step publishes the corrected table.
+     - **Retitle.**
+       - Retitle the pull request to the title it names with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
      - **Conflict.**
        - Put it to the user.
      - **Unmatched.**
@@ -84,8 +88,15 @@ The main path meets [Outcomes](#outcomes).
        - Leave the epic open while its delivery is incomplete.
      - **Unmerged.**
        - The close step opens or merges that pull request.
+     - **Target.**
+       - Retarget an open pull request to the base it names with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
+       - Put a merged one to the user, since its merge cannot be moved.
      - **References.**
        - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.
+     - **Changes.**
+       - Restate the bullet naming the absent path with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.
+     - **No epic.**
+       - Give it the epic it works on as the unnamed-deliveries step does, once the user confirms which.
      - **Uncited.**
        - Set the link with [Link Pull Request to Issue](../artifacts/pull-request.md#link-pull-request-to-issue).
        - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
@@ -103,6 +114,10 @@ The main path meets [Outcomes](#outcomes).
        - Return to the select step for this epic.
        - Resolve the questions there.
        - Fetch the saved body before repeating Record Epic Delivery with the same epic bases.
+     - **Ready to verify.**
+       - The verify step settles them.
+     - **Unmet.**
+       - The verify step settles the unticked criteria, planning a gap task for any that need further work.
      - **Ticked early.**
        - Untick them, or link the missing delivery.
      - **Disagreement.**
@@ -110,7 +125,12 @@ The main path meets [Outcomes](#outcomes).
      - **Unevaluable.**
        - Report each source and why to the user, with each check the run names not checked.
        - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
+       - Fetch each draft base, long-lived branch or review head named unread, and repeat Record Epic Delivery with the same epic bases.
        - The epic stays open until every epic base states the same readable declaration.
+     - **Source.**
+       - Report it with the results.
+     - **Not checked.**
+       - Report each check with the unevaluable sources that left it unread.
    - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.

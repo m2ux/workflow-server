@@ -1556,7 +1556,8 @@ class EpiclessTitles(unittest.TestCase):
     """An initiative pull request whose title names no epic is reported."""
 
     PULLS = [pr(950, '[I01] Shared work'), pr(951, '[I01:E00:W01] Task-titled work', merged='2026-09-01T00:00:00Z'),
-             pr(952, '[I01:E00] Named work'), pr(953, '[I02] Another initiative')]
+             pr(952, '[I01:E00] Named work'), pr(953, '[I02] Another initiative'),
+             pr(954, '[I010] Near-miss prefix')]
 
     def run_sync(self, record: dict, *args: str) -> str:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1570,9 +1571,11 @@ class EpiclessTitles(unittest.TestCase):
 
     def assert_epicless(self, out: str) -> None:
         self.assertIn('no epic: #950 [I01] Shared work', out)
-        self.assertIn('no epic: #951 [I01:E00:W01] Task-titled work', out)
+        self.assertNotIn('no epic: #951', out)
+        self.assertIn('retitle: #951 → [I01:E00] Task-titled work', out)
         self.assertNotIn('no epic: #952', out)
         self.assertNotIn('no epic: #953', out)
+        self.assertNotIn('#954', out)
 
     def test_the_epic_sync_reports_them(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1718,6 +1721,15 @@ class ReviewChanges(unittest.TestCase):
         body = '\n'.join(['## Overview', '', 'See `missing/file.md`.', '', '## References', '',
                           f"- **R1.** [Work]({url('pull', 950)}) — a task delivery.", ''])
         self.assertNotIn('changes:', self.run_sync(body))
+
+    def test_a_dotted_name_no_file_at_the_head_carries_is_not_measured(self):
+        out = self.run_sync(changes_body('board.Outputs', 'args.project', 'Outputs.consumer'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_component_names_its_path_on_the_branch_the_review_fronts(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('main:docs/guide.md', 'workflows:missing/flow.yaml')))
+        out = self.run_sync(changes_body('main:docs/missing.md'))
+        self.assertIn('changes: i01/e00/main (#980) names main:docs/missing.md, absent at <head>', out)
 
     def test_a_head_commit_the_checkout_does_not_hold_is_unevaluable(self):
         out = self.run_sync(changes_body('docs/guide.md'), sha='0' * 40)
