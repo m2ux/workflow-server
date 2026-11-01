@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1528",
+    "head": "b2981789e8198fddfc97f76f142b4d8e8330b0f9",
+    "base": "67eb02353d05dbcdcd71e695fbd9233f0e931123",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1520-i11-e13-w04-a-declared-criterion-states/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (I11:E13 W04 delivery session)",
+    "reviewed_at": "2026-11-01T09:40:00Z",
+    "scope": "Full integration diff workspace (67eb023)...i11/e13/workspace (b298178): config/required-criteria.json, skills/work-planner/scripts/format.py (filled, names, refs, required_criteria, Review.__init__, Review.check_required, main --files), skills/work-planner/test/test_format.py, artifacts/epic-issue-body.md (Validate Epic Body, Required Criteria), artifacts/initiative-issue-body.md (deferred-debt epic), modes/deliver-mode.md (Dispatch). Callers inspected: every Review(...) construction and format.py invocation in skills/ (only main and the tests construct Review; Validate Epic Body is the one procedure passing --prs, reached from Populate Epic Issue Body, Align and Plan modes), and every prose statement of what brings a required criterion. Failure paths inspected: an entry lacking paths or stating it as a string, empty list or non-string member; a pull request reaching the branch without supplied files, alone and beside a known one; malformed --files.",
+    "criteria": "AC1-AC3 delivered by #1504, #1514 and #1519 and reviewed in the earlier integration record; their fixtures still pass at this head. AC4 via #1525 RequiredPaths fixtures (a change touching no declared path is held to nothing, one touching corpus is held to the criterion), DeclarationAtRevision paths cases, CheckFormat --files runs, and format.py on #1176 at b298178 with the changed files of #1495 and #1497 (config/branches only) reporting no required-criteria finding. AC5 via a read of config/required-criteria.json at b298178, whose criterion states a finding is outstanding while neither fixed on the epic's branch nor taken by an issue.",
+    "validation": "At b298178: python3 -m unittest discover -s skills/work-planner/test: 499 tests OK; pytest: 500 passed with the pre-existing test_plan_agreement collection error carried by #1491; check_skill_files.py skills/work-planner: 0 findings.",
+    "findings": []
+  }
+]

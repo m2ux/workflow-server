@@ -82,3 +82,12 @@ The criterion states that a finding is outstanding while it is neither fixed on 
 - `python3 -m unittest discover -s skills/work-planner/test`: 499 tests, OK.
 - `python3 -m pytest skills/work-planner/test -q`: 500 passed, 1 error. The error is `test_align.py::test_plan_agreement`, a helper whose name pytest collects as a test and whose arguments it reads as missing fixtures. It errors identically on the epic base.
 - `skills/scripts/check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.
+
+## Merged Revision
+
+#1525 merged into `i11/e13/workspace` as `b2981789e`. At that revision, in the unit worktree detached at it:
+
+- `python3 -m unittest discover -s skills/work-planner/test`: OK.
+- `RequiredReach`, `RequiredPaths`, `DeclarationAtRevision` and `CheckFormat`: 34 passed.
+- `format.py` on #1176 with `--files` for #1495 and #1497 and `--revision origin/i11/e13/workspace` reads the declaration at `b2981789e` and reports no required-criteria finding.
+- `config/required-criteria.json` at `b2981789e` carries the criterion quoted under Outstanding Defined.
