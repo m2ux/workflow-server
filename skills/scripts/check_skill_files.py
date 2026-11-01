@@ -253,16 +253,10 @@ def check(path, root, cache, cited, called, structures=None):
             cache[target] = {anchor_of(title) for _, _, title in scan(target)[2]}
         return cache[target]
 
-    citing_files = cited.get(path, {})
     callers = called.get(path, {})
 
-    seen = {}
     previous = 0
     for index, level, title in headings:
-        slug = anchor_of(title)
-        if slug in seen and slug in citing_files:
-            report(index, 'duplicate anchor is cited', f'{slug}, also at line {seen[slug] + 1}')
-        seen.setdefault(slug, index)
         if previous and level > previous + 1:
             report(index, 'heading jump', f'h{previous} to h{level}')
         previous = level
@@ -365,7 +359,22 @@ def check(path, root, cache, cited, called, structures=None):
 
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
+
+    for index, slug, first in duplicate_anchors(headings):
+        report(index, 'duplicate anchor', f'{slug}, also at line {first + 1}')
     return found
+
+
+def duplicate_anchors(headings):
+    """Each heading whose anchor an earlier heading of the file holds, with
+    that anchor and the earlier heading's index. A fragment reaches the first
+    heading of its anchor, so a repeat is ambiguous before any link cites it."""
+    seen = {}
+    for index, _, title in headings:
+        slug = anchor_of(title)
+        if slug in seen:
+            yield index, slug, seen[slug]
+        seen.setdefault(slug, index)
 
 
 def main(argv=None):
