@@ -13,6 +13,9 @@ Reading the declaration from the invoking worktree lets a dirty or divergent che
 | Artifact | What it holds |
 | --- | --- |
 | [W06 work item](w06.md) | Component, scope, design, criteria and test rows for W06 |
+| [Evidence](evidence.md) | Evaluated revisions, tests, review, plan changes and delivery |
+| [Tests](tests.log) | Full Work Planner test output |
+| [Documents](documents.log) | Skill document checker output |
 
 ## Links
 
