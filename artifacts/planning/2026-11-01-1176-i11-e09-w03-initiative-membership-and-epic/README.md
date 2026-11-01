@@ -13,6 +13,7 @@ The board check reads these statuses, so an epic dropped from its initiative's t
 | Artifact | What it holds |
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
+| [Delivery evidence](evidence.md) | Revisions, fixtures and results behind each Test Plan row |
 
 ## Links
 
