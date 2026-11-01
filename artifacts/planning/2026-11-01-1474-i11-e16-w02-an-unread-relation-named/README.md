@@ -13,6 +13,7 @@ W01 (#1508) already reports an unreadable relation at the pull-request end. This
 | Artifact | What it holds |
 | --- | --- |
 | [W02 work item](w02.md) | Component, scope, design, criteria and test rows for W02 |
+| [Validation](validation.md) | Each check's procedure, revision and result |
 
 ## Links
 
