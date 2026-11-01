@@ -835,7 +835,8 @@ class SkillWideChecks(unittest.TestCase):
     def artifact(self, specification, script=None):
         if script is not None:
             self.write('scripts/link.py', script)
-        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber, set by [Link Issue](#link-issue).\n\n## Commands\n\n'
+        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
+                          'Number, linked through [Link Issue](#link-issue).\n\n## Commands\n\n'
                           + specification)
 
     def specification(self, command, gap=False):
