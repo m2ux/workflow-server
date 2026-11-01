@@ -12,6 +12,7 @@ This record holds the delivery of I11:E10 W34, which fixes findings 1-5 of the a
 | --- | --- |
 | [W34 work item](w34.md) | Component, design and test obligations for W34 |
 | [Test evidence](test-evidence.md) | Failing-before runs, mutant kills and the suites at the head |
+| [Change list](change-list.md) | Plan changes this session applied or held |
 
 ## Links
 
