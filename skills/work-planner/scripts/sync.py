@@ -2,17 +2,21 @@
 
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
-  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--project <checkout> --revision origin/i07/e00/main] [--tick AC1 --fix fixed-943.md]
+  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--project <checkout> --revision origin/i07/e00/main [--revision origin/i07/e00/workflows ...]] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
   python3 sync.py --names --project <checkout> --revision <revision>
 
 The long-lived branch names are the ones config/branches states at the commit --revision resolves to, in the
 repository --project locates. Which worktree --project is, and what its working files hold, choose nothing.
-An epic sync names its epic base as --revision. The run reports the configuration path, the resolved commit
-and the repository as its source. A revision resolving to no commit, and a missing or empty statement at that
-commit, report the names unevaluable.
+An epic sync names each of its epic bases as a --revision. The run reports the configuration path, the
+resolved commit and the repository as the source of each statement it reads. An absent, empty or unreadable
+statement, and a revision resolving to no commit, are reported unevaluable with that source. Statements that
+disagree across the epic bases are each reported unevaluable with their source and names, and none is
+selected. An epic sync with unevaluable names, or given no --project, reports each epic check that reads the
+long-lived branches as not checked, and the epic is not closable.
 
-With --names it prints the long-lived branch names one per line, and the source on standard error.
+With --names it reads one --revision and prints the long-lived branch names one per line, and the source on
+standard error. Unevaluable names print unevaluable: with the source and why, and exit 1.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -595,43 +599,97 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
 
 
 class Branches(NamedTuple):
-    """The long-lived branch names and the source they were read from."""
+    """The long-lived branch names one config/branches statement declares, and its source.
+
+    problem is empty when the statement is readable and names a branch; otherwise it says why the
+    names are unevaluable, and names is empty."""
     names: tuple[str, ...]
     source: str
+    problem: str = ''
+
+
+# The epic checks that read the long-lived branch names, named when a run cannot read them.
+LONG_LIVED_CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases',
+                     'draft epic bases', 'review pull request References', 'review pull request issue links')
 
 
 def git(project: str, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
 
 
-def long_lived_names(project: str, revision: str) -> Branches:
+def read_branches(project: str, revision: str) -> Branches:
     """The long-lived branches config/branches states at the commit revision resolves to.
 
     The checkout locates the repository and nothing more: its working files, and which of the
     repository's worktrees it is, do not choose the names. The source names the configuration path,
     the resolved commit and the repository's shared git directory, which every worktree of it
-    resolves to. A revision that resolves to no commit, and a missing or empty statement at that
-    commit, leave the names unevaluable."""
+    resolves to; for a revision that resolves to no commit it names the revision. An absent, empty
+    or unreadable statement, and a revision resolving to no commit, leave the names unevaluable."""
+    common = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir')
+    repository = common.stdout.strip() if common.returncode == 0 else project
     resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
     if resolved.returncode != 0:
-        sys.exit(f'unevaluable: {revision} resolves to no commit in {project}')
+        return Branches((), f'config/branches at {revision} in {repository}',
+                        'is unreadable: the revision resolves to no commit')
     commit = resolved.stdout.strip()
-    repository = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.strip()
     source = f'config/branches at {commit} in {repository}'
-    stated = git(project, 'cat-file', 'blob', f'{commit}:config/branches')
-    if stated.returncode != 0:
-        sys.exit(f'unevaluable: no {source}')
-    names = tuple(sorted({line.strip() for line in stated.stdout.splitlines() if line.strip()}))
+    kind = git(project, 'cat-file', '-t', f'{commit}:config/branches')
+    if kind.returncode != 0:
+        return Branches((), source, 'is absent')
+    if kind.stdout.strip() != 'blob':
+        return Branches((), source, f'is unreadable: a {kind.stdout.strip()}, not a file')
+    stated = subprocess.run(['git', '-C', project, 'cat-file', 'blob', f'{commit}:config/branches'],
+                            capture_output=True)
+    try:
+        text = stated.stdout.decode('utf-8') if stated.returncode == 0 else None
+    except UnicodeDecodeError:
+        return Branches((), source, 'is unreadable: not UTF-8 text')
+    if text is None:
+        return Branches((), source, 'is unreadable')
+    names = tuple(sorted({line.strip() for line in text.splitlines() if line.strip()}))
     if not names:
-        sys.exit(f'unevaluable: {source} names no branch')
+        return Branches((), source, 'names no branch')
     return Branches(names, source)
 
 
-def list_long_lived(project: str, revision: str) -> int:
+def long_lived_names(project: str, revision: str) -> Branches:
+    """The long-lived branches config/branches states at revision, exiting on unevaluable names.
+
+    The exit message is prefixed unevaluable: and names the source and why."""
+    branches = read_branches(project, revision)
+    if branches.problem:
+        sys.exit(f'unevaluable: {branches.source} {branches.problem}')
+    return branches
+
+
+def epic_base_declarations(project: str, revisions: list[str]) -> tuple[tuple[str, ...], list[str], list[str]]:
+    """The long-lived names an epic's base commits declare, the sources they agree from, and what is unevaluable.
+
+    Each revision is read at its own commit, and revisions resolving to one commit are one source.
+    The names are evaluable when every statement is readable and every one states the same names.
+    Statements that disagree are each reported with their source and names, and none is selected.
+    Evaluable names come with one source line each; otherwise the names are empty."""
+    read: dict[str, Branches] = {}
+    for revision in revisions:
+        branches = read_branches(project, revision)
+        read.setdefault(branches.source, branches)
+    unevaluable = [f'{b.source} {b.problem}' for b in read.values() if b.problem]
+    readable = [b for b in read.values() if not b.problem]
+    if len({b.names for b in readable}) > 1:
+        unevaluable += [f"{b.source} states {', '.join(b.names)}" for b in readable]
+        return (), [], unevaluable
+    if unevaluable:
+        return (), [b.source for b in readable], unevaluable
+    return readable[0].names, [b.source for b in readable], []
+
+
+def list_long_lived(project: str, revisions: list[str]) -> int:
     """Print the long-lived branch names, one per line, and their source on standard error."""
-    if not (project and revision):
+    if not (project and revisions):
         sys.exit('--names needs --project and --revision')
-    branches = long_lived_names(project, revision)
+    if len(revisions) > 1:
+        sys.exit('--names reads one --revision')
+    branches = long_lived_names(project, revisions[0])
     for name in branches.names:
         print(name)
     print(f'source: {branches.source}', file=sys.stderr)
@@ -709,7 +767,7 @@ def main() -> int:
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
     parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branch names')
-    parser.add_argument('--revision', default='', help='the commit config/branches is read at: for an epic, its epic base, e.g. origin/i07/e00/main')
+    parser.add_argument('--revision', action='append', default=[], help='a commit config/branches is read at: for an epic, each of its epic bases, e.g. origin/i07/e00/main; repeat for several')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
@@ -720,9 +778,9 @@ def main() -> int:
     if bool(args.project) != bool(args.revision):
         sys.exit('--project and --revision go together')
     global LONG_LIVED
-    declared = long_lived_names(args.project, args.revision) if args.project else None
-    if declared:
-        LONG_LIVED = declared.names
+    sources, unevaluable = [], ['long-lived branches not given']
+    if args.project:
+        LONG_LIVED, sources, unevaluable = epic_base_declarations(args.project, args.revision)
     if (args.tick or args.link) and not args.fix:
         sys.exit('--tick and --link need --fix, which holds the body')
 
@@ -744,9 +802,12 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'source')}
-    if declared:
-        report['source'].append(declared.source)
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'source', 'unevaluable', 'not checked')}
+    report['source'].extend(sources)
+    if kind == 'epic' or args.project:
+        report['unevaluable'].extend(unevaluable)
+    if kind == 'epic' and not LONG_LIVED:
+        report['not checked'].extend(LONG_LIVED_CHECKS)
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     if kind == 'epic' and issue['state'] == 'closed':
@@ -836,7 +897,7 @@ def main() -> int:
     epic_ready = kind == 'epic' and not open_criteria and not open_rows
     if epic_ready:
         if not LONG_LIVED:
-            branches = 'long-lived branches not given'
+            branches = 'long-lived branches unevaluable'
         else:
             home = issue['repository_url'].split('/repos/', 1)[1]
             report['unmerged'].extend(unmerged_epic_bases(prs, initiative, epic, home))
