@@ -70,7 +70,7 @@ cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m uni
 
 ### Check Skill Files
 
-Checks the affected skill's Markdown structure and links.
+Checks the affected skill's files against the rules the shared skill guidelines state.
 
 **Inputs:** Workspace checkout and affected skill directory; repeat the skill argument for additional affected skills.
 
