@@ -486,8 +486,9 @@ class BacklogTakesTheTree(unittest.TestCase):
         out = self.shelved((done, 'Done'), (assigned(epic(3, '01:E01', ('W01', 'Go', ''))), 'Ready'))
         self.assertIn('[I01] Bare: Parked: Ready → Backlog', out)
         self.assertIn('[I01:E01] Epic 3: Work: Ready → Backlog', out)
-        self.assertIn("repos/o/r/issues/3/assignees -f 'assignees[]=me'", out)
-        self.assertIn('--method DELETE repos/o/r/issues/1/assignees', out)
+        self.assertIn("gh api --method DELETE repos/o/r/issues/3/assignees -f 'assignees[]=me'", out)
+        self.assertIn("gh api --method DELETE repos/o/r/issues/1/assignees -f 'assignees[]=me'", out)
+        self.assertNotIn('--method POST repos/o/r/issues/', out)
         self.assertNotIn('Epic 2', out)
         self.assertNotIn('reconcile', out)
 
