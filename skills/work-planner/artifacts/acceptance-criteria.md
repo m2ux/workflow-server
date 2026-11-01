@@ -20,9 +20,9 @@ The verification evidence for a supplied set of criteria whose delivery is ready
 
 1. Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
    - Return evidence that fails Readiness as a blocker for that criterion.
-2. Check out the delivering pull request head for an open task, or its merged revision for delivered work, in an isolated project checkout, meeting [Instrument Checkout](#instrument-checkout).
-   - Run each criterion's named instrument there.
-   - Record the result against the tested revisions, meeting [Instrument Result](#instrument-result).
+2. Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+   - Run [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
+   - Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
 3. Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
    - Leave body publication and further planning to the caller.
 
@@ -50,7 +50,7 @@ A task criterion is ready to verify when its delivering pull request, open or me
 
 ### Instrument Checkout
 
-An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified.
+An instrument runs in a checkout of the project at the exact revision it is verifying, which the caller supplies. A checkout the caller is editing is not that revision, so a criterion verified against uncommitted work is unverified. A branch or tag is resolved to one commit before the run, and the checkout made for the run is removed after it whatever the instrument returns.
 
 ### Instrument Result
 
@@ -59,3 +59,27 @@ A criterion is verified only on a passing run of its named instrument, recorded 
 ### Tick State
 
 A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it follows [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is returned unticked with what it is missing.
+
+## Commands
+
+### Run at Revision
+
+Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.
+
+**Inputs:** Project checkout, revision and instrument command.
+
+- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The instrument follows `--` and runs at the checkout's top level.
+- The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
+- The exit status is the instrument's. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
+- Exit 2 with a message, before any instrument runs, means the revision did not resolve, the checkout could not be created or the command could not start.
+- Worktrees the run did not create are left as they are.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/revision-check.py --project '<checkout>' --revision '<revision>' -- <instrument-command>
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- python3 -m pytest skills/work-planner/test -q
+```
