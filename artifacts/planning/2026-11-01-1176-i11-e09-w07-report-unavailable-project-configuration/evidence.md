@@ -4,6 +4,8 @@ Delivery head: `603cfb9604de84291521dd1e37c4321eff382c24` on `i11/e09/w07-report
 
 Changed paths: `skills/work-planner/scripts/sync.py`, `skills/work-planner/test/test_sync.py`, `skills/work-planner/artifacts/delivery-branches.md`, `skills/work-planner/artifacts/epic-issue-body.md`, `skills/work-planner/artifacts/epic.md`, `skills/work-planner/modes/sync-mode.md`, `skills/work-planner/modes/align-mode.md`, `skills/work-planner/protocols/issue-delivery.md`, `skills/work-planner/protocols/task-merge.md`.
 
+Merged into `i11/e09/workspace` as `cd8e9cd9fdf3288a60a4cc7e549aa12c9b4e31b6` on 2026-11-01; #1176 records W07 done with AC11, AC13 and AC14 ticked, and #1487 cites #1501.
+
 Every command ran from the unit worktree under the workspace sandbox: `python3 -m pytest skills/work-planner/test ...`.
 
 ## Unevaluable Statements
