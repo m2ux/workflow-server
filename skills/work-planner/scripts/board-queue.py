@@ -21,8 +21,9 @@ returning to Backlog while an epic has work under way or is In Review, and a nex
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
 open pull requests have completed, and its unstarted epics return with it; a Done epic stays Done.
 An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
-are met. Initiatives with the same priority number run together, as do the epics of one
-initiative, whose highest number counts the epics already In Progress. An epic with no priority
+are met; an initiative kept In Progress only while its open pull requests finish readies none.
+Initiatives with the same priority number run together, as do the epics of one initiative, whose
+highest number counts the epics already In Progress. An epic with no priority
 label ranks below every number, so it waits while a labelled sibling can start or is running. A
 priority is a positive integer with no maximum.
 """
@@ -105,6 +106,7 @@ class Queue:
         self.home = home
         self.unplanned = unplanned
         self.shelved: set = set()
+        self.waiting: set = set()
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
         self.unresolvable: list[str] = []
@@ -144,7 +146,8 @@ class Queue:
     def activate(self, key: tuple[str, int]) -> None:
         """Active epics of a Ready or In Progress initiative are In Progress, and the epics of the
         highest priority set that can start are Ready. The set counts the epics already under way,
-        so a lower one waits. A next line names the Ready epics."""
+        so a lower one waits. A next line names the Ready epics. An initiative waiting on its open
+        pull requests readies none of its epics."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
@@ -162,6 +165,8 @@ class Queue:
                 continue
             elif held in ('Ready', 'In Progress'):
                 self.place(epic_key, 'Backlog')
+        if key in self.waiting:
+            return
         ranked = {epic_key: rank(self.issues[epic_key]) for epic_key in (*candidates, *running)}
         top = max((found for found in ranked.values() if found is not None), default=None)
         for epic_key in candidates:
@@ -170,9 +175,10 @@ class Queue:
             self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
 
     def park(self) -> None:
-        """A Ready epic whose initiative ends neither Ready nor In Progress goes Backlog."""
+        """A Ready epic whose initiative ends neither Ready nor In Progress, or waits on its open pull
+        requests, goes Backlog."""
         for epic_key, parent in self.parents.items():
-            if self.wanted.get(parent, self.status.get(parent)) in READY_UNDER:
+            if parent not in self.waiting and self.wanted.get(parent, self.status.get(parent)) in READY_UNDER:
                 continue
             if self.wanted.get(epic_key, self.status.get(epic_key)) == 'Ready':
                 self.place(epic_key, 'Backlog')
@@ -236,12 +242,14 @@ class Queue:
             self.activate(key)
         for key in nxt:
             if waiting(key):
+                self.waiting.add(key)
                 self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(self.pulls(key))}")
             else:
                 self.place(key, 'Ready')
             self.activate(key)
         for key in rest:
             if waiting(key):
+                self.waiting.add(key)
                 self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(self.pulls(key))}")
                 continue
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
@@ -269,6 +277,7 @@ class Queue:
             if key not in self.unplanned or rank(self.issues[key]) is not None:
                 continue
             if urls := self.pulls(key):
+                self.waiting.add(key)
                 self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
             else:
                 self.shelve(key)
