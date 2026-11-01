@@ -414,6 +414,8 @@ Writes each issue's Development pull requests, read from the issue end of the re
 
 **Inputs:** One issue's JSON or one repository's issue collection, as [Fetch Tracker Issue](#fetch-tracker-issue) or [Fetch All Issues](#fetch-all-issues) saves it, and destination file.
 
+**REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
+
 - Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
 - Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.

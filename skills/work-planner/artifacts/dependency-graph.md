@@ -10,6 +10,7 @@ Read these files first.
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Work Item](work-item.md)
 - [Plan Change](plan-change.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -25,7 +26,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.
    - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
    - Read tasks for implied consumption edges.
-   - Account for every independent pair as [Joins](#joins) states.
+   - Answer every open candidate unit as [Joins](#joins) states.
    - Account for every contending pair as [Component Contention](#component-contention) states: the proposed map separates the two epics by a number, or the contending rows move into one epic.
    - Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.
 3. Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
@@ -51,6 +52,8 @@ A task edge names the producing row for each output the depending row consumes. 
   A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.
 - **A task consuming from every row of an epic names the producing row for each output.**
   An edge another in the cell already implies is dropped, so a prerequisite chain is named by its last row, and the whole-epic reach is what the rows establish either way.
+- **An edge to another epic's row waits for that row's outputs.**
+  The dependent row starts once the producing row is delivered and its outputs are available at the dependent epic's base, as [Producer Outputs](delivery-branches.md#producer-outputs) states; the producing epic's other rows and its closure gate nothing.
 - **An entry that cannot resolve is a permanent condition, not a prerequisite to come.**
   An entry naming no row and linking no issue, naming an issue the run was not given, or naming a row the epic it points to does not carry, cannot resolve. Every tool reading the cell names the entry as written, leaves the row where it stands rather than placing it as work still to come, and exits nonzero.
 
@@ -76,17 +79,21 @@ The map proposes one positive integer for each epic supplied, derived from the w
 
 Two task rows in different epics whose work items declare one [component](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one component written from both is a merge conflict.
 
-- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them.
+- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.
 - A contending pair is answered by the number that separates its epics, or by moving the rows into one epic.
 
 ### Joins
 
-Every pair of tasks in an epic where neither depends on the other is named in the epic's Joins, or accounted for in the planning record.
+The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
-- **Both resolutions are stated where the pair is reported.**
-  Naming the pair in Joins asserts one pull request; the record entry says why there are two. A report naming only the first makes the assertion the cheaper answer.
-- **The record is read, so the second resolution closes the line.**
-  A record file gives each pair a line of its own naming its two ids, which is the form a joins artifact takes, and the pair leaves the report. A line naming more rows than that is prose about them and accounts for none, so no enumeration empties the report. What remains is the set named in neither.
+- **A candidate is answered once.**
+  Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
+- **Both resolutions are stated where the candidate is reported.**
+  Naming the rows in Joins asserts one pull request; the record line says why there are several. A report naming only the first makes the assertion the cheaper answer.
+- **A direct edge inside a candidate is the edge a join drops.**
+  The report names it, since the joined pull request orders the commits.
+- **Some candidates are split by rule.**
+  A candidate whose rows cover more than six criteria, or with a path between two of them through a row outside it, cannot join. The report names the reason, and no record line is asked for.
 
 ### Numbering Map
 
@@ -98,18 +105,19 @@ A comma-separated list of `<old-number>:<new-number>` pairs assigning each old n
 
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
-**Inputs:** Initiative body file, each epic id with its body file, each task id with its work-item file, and each planning-record file accounting for independent pairs.
+**Inputs:** Initiative body file, each epic id with its body file, each task id with its work-item file, and each planning-record file accounting for split candidate units.
 
 - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
 - The command runs in `<workspace>` while body files are kept outside the repository, so pass each one as an absolute path.
 
 - Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
-- It also reports dependencies listed twice or already implied, and Joins pairs.
-- It prints each pair of tasks in an epic where neither depends on the other, the two do not name each other in Joins, and no `R=` record accounts for the pair. Each line names both resolutions, as [Joins](#joins) states. A record accounts for a pair by naming both ids on one of its lines, and an `R=` file it cannot read is a problem.
+- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
 - An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.
 - It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
 - A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
 - It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
+- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
 - It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
 - It reads bodies from [Read Tracker Issue](issue.md#read-tracker-issue), or local drafts.
 

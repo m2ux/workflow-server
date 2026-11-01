@@ -2,10 +2,6 @@
 
 Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
 
-## Prerequisites
-
-Before the first command spec, read the [command conventions](command-conventions.md#common).
-
 ## Procedure
 
 1. **Read the guidelines.**
@@ -20,7 +16,7 @@ Before the first command spec, read the [command conventions](command-convention
    Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
-   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). Changes to shared rules or templates also run their affected consumer suites.
+   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). A change to the audit scripts also runs [their tests](#run-audit-script-tests). Changes to shared rules or templates also run their affected consumer suites.
    - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
    - Walk a representative request through each changed decision.
    - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
@@ -51,7 +47,7 @@ git worktree add <skill-worktree> -b <revision-branch> <remote>/<target-branch>
 
 Validate the skill's structure and run the checks its repository and changed resources require.
 
-- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](command-conventions.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
+- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](review-mode.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
 - Run [Check Skill Files](#check-skill-files) over every skill the revision touches, and inspect frontmatter and unfinished scaffold text. If an installed skill validator is available, run it too.
 - A behavioral walkthrough follows [Revise](revise-mode.md#procedure); mechanical checks alone do not establish instruction quality.
 
@@ -64,7 +60,7 @@ git diff --check
 Resolves every local link and heading anchor in a skill, and reports the link and layout rules the shared guidelines state.
 
 - Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution.
-- A repeated heading is reported only where a link cites it, since an uncited repeat resolves nothing ambiguously.
+- A heading whose anchor an earlier heading of its file holds is reported whether or not a link cites it, since a fragment reaches the first of them.
 - A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
 - Fenced blocks, code spans and `{{...}}` placeholders hold specimen text and are excluded.
 - Exit 0 means no finding; exit 1 lists each one as `file:line: kind`.
@@ -148,4 +144,15 @@ Drives the edit guard over seeded edits in temporary git repositories, with a st
 
 ```bash
 python3 -m unittest discover -s skills/workflow-canon/test -p test_edit_guard.py
+```
+
+### Run Audit Script Tests
+
+Run inventory, evidence-gate and assignment regressions with the paired parser.
+
+- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
+- Each engine-bound test skips while `CANON_TEST_ENGINE` is unset.
+
+```bash
+CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
 ```

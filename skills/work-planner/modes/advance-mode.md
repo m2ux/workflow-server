@@ -2,6 +2,8 @@
 
 Decides which initiatives and epics on a theme board are underway and which are next, from current recorded delivery.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

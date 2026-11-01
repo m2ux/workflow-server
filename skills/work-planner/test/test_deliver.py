@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import declared, initiative_body, issue, item, links, pr, run, url, work_item
+from fixtures import declared, git, initiative_body, issue, item, links, pr, run, url, work_item
 from test_agent_review import reviewed_pr
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
@@ -218,9 +218,15 @@ class Survey(unittest.TestCase):
         self.assertIn('unit I07:E01:W01', output)
         self.assertIn('blocked I07:E01:W02', output)
         self.assertIn('available: 1, held: 0, blocked: 1', output)
-        prerequisite['state'], prerequisite['state_reason'] = 'closed', 'completed'
+
+    def test_the_producer_epics_closure_alone_starts_no_row(self):
+        prerequisite = issue(943, '[I07:E00] Queue Plan: Work', 'closed',
+                             body=epic_body((f"[W01]({url('pull', 9)})", 'Produce', '', '')))
+        dependent = epic(944, ('W01', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
+        pulls = [pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base='i07/e00/main')]
         output = survey(staged((prerequisite, 'Done'), (dependent, 'Ready')), pulls)
-        self.assertIn('available: 2, held: 0, blocked: 0', output)
+        self.assertIn('blocked I07:E01:W01', output)
+        self.assertIn('output #944 W01: E00:W01 #9 unverified', output)
 
     def test_initiative_prerequisite_blocks_dispatch_despite_ready_status(self):
         from fixtures import initiative_body
@@ -612,3 +618,95 @@ class DispatchStatus(unittest.TestCase):
             done = run('deliver.py', '--items', str(items_path), '--progress', '943')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--board is required with --progress or --review', done.stderr)
+
+
+class ProducerOutputs(unittest.TestCase):
+    """A row naming another epic's row starts once that row is delivered and each output it
+    delivered is available at the consumer's base commit, whatever the producer's other rows and
+    its closure.
+
+    The checkout holds the producer's merge commit on its own base, origin/i07/e00/main, and the
+    consumer's base, origin/i07/e01/main, starts without it."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        root = Path(self.tmp.name)
+        self.names = declared(root, 'main', 'workspace')
+        self.checkout = Path(self.names[1])
+        self.start = git(self.checkout, 'rev-parse', 'HEAD')
+        (self.checkout / 'produced.txt').write_text('output\n')
+        git(self.checkout, 'add', 'produced.txt')
+        git(self.checkout, 'commit', '-m', 'produce')
+        self.produced = git(self.checkout, 'rev-parse', 'HEAD')
+        self.point('i07/e00/main', self.produced)
+        self.point('i07/e01/main', self.start)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def point(self, branch: str, commit: str) -> None:
+        git(self.checkout, 'update-ref', f'refs/remotes/origin/{branch}', commit)
+
+    def drop(self, branch: str) -> None:
+        git(self.checkout, 'update-ref', '-d', f'refs/remotes/origin/{branch}')
+
+    def survey(self, merge: str | None = 'produced', *args: str) -> str:
+        producer = epic(943, (f"[W01]({url('pull', 9)})", 'Produce', '', ''),
+                        ('W02', 'Unrelated', '', ''))
+        consumer = epic(944, ('W01', 'Independent work', '', ''),
+                        ('W02', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
+        delivery = pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base='i07/e00/main')
+        if merge:
+            delivery['merge_commit_sha'] = self.produced if merge == 'produced' else merge
+        return survey(staged((producer, 'In Progress'), (consumer, 'Ready')), [delivery],
+                      *(args or self.names))
+
+    def test_an_output_merged_only_into_the_producer_base_is_rejected(self):
+        output = self.survey()
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn(f'output #944 W02: E00:W01 #9 {self.produced[:12]} absent at '
+                      f'origin/i07/e01/main {self.start[:12]}', output)
+        self.assertIn('available: 2, held: 0, blocked: 1', output)
+
+    def test_an_available_output_starts_the_row_while_unrelated_producer_rows_stay_open(self):
+        self.point('i07/e01/main', self.produced)
+        output = self.survey()
+        self.assertIn('unit I07:E01:W02', output)
+        self.assertIn(f'output #944 W02: E00:W01 #9 {self.produced[:12]} available at '
+                      f'origin/i07/e01/main {self.produced[:12]}', output)
+        self.assertIn('unit I07:E00:W02', output)
+
+    def test_a_consumer_base_change_that_drops_the_output_blocks_the_row_again(self):
+        self.point('i07/e01/main', self.produced)
+        self.assertIn('unit I07:E01:W02', self.survey())
+        self.point('i07/e01/main', self.start)
+        self.assertIn('blocked I07:E01:W02', self.survey())
+
+    def test_a_consumer_without_a_base_reads_the_long_lived_branch_it_is_cut_from(self):
+        self.drop('i07/e01/main')
+        self.point('main', self.produced)
+        output = self.survey()
+        self.assertIn('unit I07:E01:W02', output)
+        self.assertIn('available at origin/main', output)
+
+    def test_missing_evidence_is_rejected(self):
+        output = self.survey(None)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('output #944 W02: E00:W01 #9 unverified: it records no merge commit', output)
+
+    def test_stale_evidence_is_rejected(self):
+        output = self.survey('0123456789abcdef0123456789abcdef01234567')
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('unverified: 0123456789ab is not in the checkout', output)
+
+    def test_no_checkout_leaves_the_output_unverified(self):
+        output = self.survey('produced', '--date', TODAY)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn('unverified: no checkout to read it in', output)
+
+    def test_an_undelivered_producer_row_blocks_without_reading_outputs(self):
+        producer = epic(943, ('W01', 'Produce', '', ''))
+        consumer = epic(944, ('W01', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
+        output = survey(staged((producer, 'In Progress'), (consumer, 'Ready')), [], *self.names)
+        self.assertIn('blocked I07:E01:W01', output)
+        self.assertNotIn('output ', output)

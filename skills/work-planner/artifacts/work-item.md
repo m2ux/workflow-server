@@ -64,6 +64,7 @@ One declaration line ahead of the first heading, naming the single component the
 - A task that creates the component names the path it creates.
 - The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.
 - A task whose implementation extends more than one component is split into a task for each.
+- A component is one file, never a directory, since the dependency check groups an epic's rows into candidate units by it.
 
 ### Sections
 

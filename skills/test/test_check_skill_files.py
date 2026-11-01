@@ -3,6 +3,7 @@
 import io
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -103,16 +104,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_heading_inside_a_fence_is_not_an_anchor(self):
-        self.write('SKILL.md', f'# Specimen\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
-        self.assertEqual(self.findings(), [])
-
-    def test_a_repeated_anchor_is_reported_when_it_is_cited(self):
-        self.write('SKILL.md', '# Specimen\n\nSee [terms](references/guide.md#terms).\n')
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
-        self.assertIn('duplicate anchor is cited', self.kinds())
-
-    def test_a_repeated_anchor_nobody_cites_is_left_alone(self):
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.write('references/guide.md', f'# Guide\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_skipped_heading_level_is_reported(self):
@@ -179,13 +171,13 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_selection_link_may_point_anywhere_in_its_file(self):
-        self.write('SKILL.md', '# Specimen\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
-                               '## Spec\n\nA sentence.\n')
+        self.write('references/guide.md', '# Guide\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
+                                          '## Spec\n\nA sentence.\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_prerequisite_example_in_a_code_span_is_a_specimen(self):
-        self.write('SKILL.md', '# Specimen\n\n## Common\n\nOne.\n\n'
-                               '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
+        self.write('references/guide.md', '# Guide\n\n## Common\n\nOne.\n\n'
+                                          '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
         self.assertEqual(self.findings(), [])
 
     CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
@@ -206,9 +198,9 @@ class SkillFileChecks(unittest.TestCase):
         self.write('references/sync.md', calling('Sync', 'catalog.md#fetch-issue'))
         self.assertEqual(self.findings(), [])
 
-    def test_a_specification_nobody_cites_stands(self):
+    def test_a_specification_nobody_cites_is_reported(self):
         self.write('references/catalog.md', self.CATALOG)
-        self.assertEqual(self.findings(), [])
+        self.assertEqual(self.findings(), [('catalog.md', 5, 'command specification nothing cites')])
 
     def test_a_specification_only_its_own_file_cites_stands(self):
         self.write('references/catalog.md',
@@ -284,7 +276,8 @@ class SkillFileChecks(unittest.TestCase):
     def test_a_sibling_specification_in_another_file_is_not_a_caller(self):
         self.write('references/catalog.md', self.CATALOG)
         self.write('references/plan.md',
-                   '# Plan\n\n## Commands\n\n### Close issue\n\nCloses one issue.\n'
+                   '# Plan\n\nIssues close through [Close issue](#close-issue).\n'
+                   '\n## Commands\n\n### Close issue\n\nCloses one issue.\n'
                    '\n- Run [Fetch issue](catalog.md#fetch-issue) first.\n')
         self.assertEqual(self.findings(), [])
 
@@ -318,11 +311,12 @@ class SkillFileChecks(unittest.TestCase):
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\n'
                                '## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
         self.write('references/plan.md', calling('Plan', '../SKILL.md#fetch-issue'))
-        self.assertEqual(self.kinds(), {'command specification in the entry point'})
+        self.assertIn('command specification in the entry point', self.kinds())
 
     def test_a_heading_of_a_catalogs_conventions_is_not_a_specification(self):
         self.write('references/commands.md', self.LISTING)
-        self.write('references/plan.md', '# Plan\n\nSee [Execution](commands.md#execution) for it.\n')
+        self.write('references/plan.md', '# Plan\n\nSee [Execution](commands.md#execution) '
+                                          'for [Fetch issue](commands.md#fetch-issue).\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_heading_of_a_catalogs_listing_is_a_specification(self):
@@ -435,7 +429,8 @@ class SkillFileChecks(unittest.TestCase):
         self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n### Read Tracker Issue\n\n'
                    '- Run [Fetch issue](#fetch-issue).\n\n## Fields\n\nNumber.\n\n'
                    '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
-        self.write('artifacts/source.md', '# Source\n\n## Fields\n\nText.\n\n'
+        self.write('artifacts/source.md', '# Source\n\n## Fields\n\n'
+                   'Text, read through [Fetch Source](#fetch-source).\n\n'
                    '## Commands\n\n### Fetch Source\n\nFetches it.\n')
         self.assertEqual(self.findings(), [])
 
@@ -522,6 +517,86 @@ class SkillFileChecks(unittest.TestCase):
     def test_the_command_exits_zero_when_clean(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         self.assertEqual(self.run_command(), 0)
+
+
+class HeadingSpacingChecks(unittest.TestCase):
+    """A heading carries a blank line above it, so no list item or paragraph
+    can read it in as its own text."""
+
+    KIND = 'heading without a blank line above'
+    setUp = SkillFileChecks.setUp
+    write = SkillFileChecks.write
+    findings = SkillFileChecks.findings
+    kinds = SkillFileChecks.kinds
+
+    def test_a_heading_flush_beneath_a_list_item_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Terms\n\n- **One.**\n  A sentence.\n'
+                                          '## Whole\n\nA sentence.\n')
+        self.assertIn(('guide.md', 7, self.KIND), self.findings())
+
+    def test_a_heading_flush_beneath_a_heading_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Outputs\n### Report\n\nA sentence.\n')
+        self.assertIn(('guide.md', 4, self.KIND), self.findings())
+
+    def test_a_heading_opening_the_file_or_its_body_is_left_alone(self):
+        self.write('SKILL.md', '---\nname: specimen\n---\n# Specimen\n\nOne sentence.\n')
+        self.write('references/guide.md', '# Guide\n\n## Terms\n\nA sentence.\n')
+        self.assertNotIn(self.KIND, self.kinds())
+
+    def test_a_heading_inside_a_fence_is_left_alone(self):
+        self.write('references/guide.md', f'# Guide\n\n## Terms\n\n{FENCE}markdown\n'
+                                          f'A sentence.\n## Template\n{FENCE}\n')
+        self.assertNotIn(self.KIND, self.kinds())
+
+
+class EntryPointSections(unittest.TestCase):
+    """A skill's entry point measured against the set the shared guidelines
+    name for it, whatever it carries."""
+
+    setUp = SkillFileChecks.setUp
+    write = SkillFileChecks.write
+    findings = SkillFileChecks.findings
+
+    ENTRY = ('---\nname: specimen\ndescription: Use to plan the work.\n---\n\n# Specimen\n\nOne sentence.\n\n'
+             '- **Plans**  The plans it acts on.\n')
+    MODES = '\n## Modes\n\n- **[Plan](references/plan-mode.md)**\n  - Forward-looking, scoped to one plan\n'
+    RULES = '\n## Rules\n\n- **One home.**  Each rule is stated once.\n'
+    CONVENTIONS = '\n## Conventions\n\n- **Session.**  Unset the token first.\n'
+    DEPENDENCIES = '\n## Dependencies\n\n- **git.**\n'
+
+    def entry(self, *sections):
+        self.write('SKILL.md', self.ENTRY + ''.join(sections))
+        self.write('references/plan-mode.md', '# Plan\n\n## Procedure\n\n1. **Plan.**  Plan it.\n'
+                                              '\n## Rules\n\n- **Scope.**  One plan.\n')
+        return [(line, kind) for name, line, kind in self.findings() if name == 'SKILL.md']
+
+    def test_an_entry_point_carrying_the_named_set_in_order_reports_nothing(self):
+        self.assertEqual(self.entry(self.MODES, self.RULES, self.CONVENTIONS, self.DEPENDENCIES), [])
+
+    def test_each_named_section_is_optional(self):
+        self.assertEqual(self.entry(), [])
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES), [])
+
+    def test_a_section_outside_the_set_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, '\n## Troubleshooting\n\nOne sentence.\n'),
+                         [(17, 'section outside the set')])
+
+    def test_a_section_out_of_order_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES, self.RULES),
+                         [(21, 'sections out of order')])
+
+    def test_each_departure_is_reported(self):
+        found = self.entry(self.CONVENTIONS, self.RULES, '\n## After Indexing\n\nOne sentence.\n')
+        self.assertEqual([kind for _, kind in found], ['sections out of order', 'section outside the set'])
+
+    def test_an_entry_point_carrying_steps_takes_its_own_set(self):
+        found = self.entry(self.MODES, '\n## Procedure\n\n1. **Run.**  Run it.\n')
+        self.assertEqual(found, [(17, 'section outside the set')])
+
+    def test_a_contract_covering_every_file_does_not_reach_the_entry_point(self):
+        structure = dict(STRUCTURE, **{'*.md': {'sections': ['Procedure'], 'required': ['Procedure']}})
+        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        self.assertEqual(self.entry(self.MODES, self.RULES), [])
 
 
 class EmptySectionChecks(unittest.TestCase):
@@ -631,6 +706,242 @@ class ParallelSectionMood(unittest.TestCase):
             '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
             '## Docker Coverage\n\nEngine tests alone do not cover this.\n\n'
             '## Shell Coverage\n\n- **Helpers.**  Use disposable directories.\n'), [])
+
+
+SHARED_GUIDE = ('# Skill Guidelines\n\n## Prose\n\nHow prose is written.\n\n'
+                '- **Succinct.**  Plain words.\n- **Terms.**\n  - One concept, one term.\n'
+                '  - **Nested.**  A sub-bullet states no rule of its own.\n')
+SHARED_RULES = {'prose/succinct': ['review'], 'prose/terms': ['retired term']}
+
+
+class SkillWideChecks(unittest.TestCase):
+    """The checks over a whole skill: commands, vocabulary, guides, interface
+    and rules, each run through the command over a specimen tree holding a
+    shared guide beside one skill."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        (self.skill / 'structure.json').parent.mkdir(parents=True)
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
+        (self.root / 'guidelines.md').write_text(SHARED_GUIDE)
+        (self.root / 'rules.json').write_text(json.dumps(SHARED_RULES))
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def run_check(self):
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.skill)])
+        return status, printed.getvalue()
+
+    def found(self, kind):
+        """Each finding of one kind, as its file name and line."""
+        _, printed = self.run_check()
+        return [(Path(line.split(':')[0]).name, int(line.split(':')[1]))
+                for line in printed.splitlines() if f': {kind}' in line]
+
+    def mode(self, procedure, operations=''):
+        return self.write('modes/plan-mode.md', '# Plan Mode\n\n## Procedure\n\n' + procedure +
+                          '\n## Outcomes\n\n- **Done.**  The goal.\n' +
+                          (f'\n## Operations\n\n{operations}' if operations else ''))
+
+    # Commands check.
+
+    def test_a_shell_block_in_a_mode_procedure_is_reported(self):
+        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n   {FENCE}bash\n   gh api repos/o/r\n   {FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [('plan-mode.md', 8)])
+
+    def test_an_unlabelled_block_in_a_mode_procedure_is_reported(self):
+        self.mode(f'1. **Fetch.**\n   Fetch it.\n\n{FENCE}\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(len(self.found('command spelled out in a mode')), 1)
+
+    def test_a_command_inside_the_modes_specification_stands(self):
+        self.mode('1. **Fetch.**\n   Run [Fetch Issue](#fetch-issue).\n',
+                  f'### Fetch Issue\n\nFetches one issue.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
+        status, printed = self.run_check()
+        self.assertEqual((status, printed.splitlines()[-1]), (0, '2 files checked, 0 findings'))
+
+    def test_a_template_block_in_a_mode_is_no_command(self):
+        self.mode(f'1. **Write.**\n   Write it.\n\n{FENCE}markdown\n## Heading\n{FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [])
+
+    def test_a_shell_block_outside_a_mode_file_is_not_this_checks(self):
+        self.write('references/guide.md', f'# Guide\n\nA sentence.\n\n{FENCE}bash\ngh api repos/o/r\n{FENCE}\n')
+        self.assertEqual(self.found('command spelled out in a mode'), [])
+
+    # Vocabulary check.
+
+    def declare(self, terms):
+        (self.skill / 'vocabulary.json').write_text(json.dumps(terms))
+
+    def test_a_retired_term_in_prose_is_reported(self):
+        self.declare({'pull request': ['PR', 'PRs']})
+        self.write('references/guide.md', '# Guide\n\nOpen the PRs here.\n')
+        self.assertEqual(self.found('retired term'), [('guide.md', 3)])
+
+    def test_a_retired_term_in_a_script_is_reported(self):
+        self.declare({'pull request': ['PR']})
+        self.write('scripts/sync.py', '"""Sync one PR."""\n')
+        self.assertEqual(self.found('retired term'), [('sync.py', 1)])
+
+    def test_a_retired_term_in_code_is_a_specimen(self):
+        self.declare({'pull request': ['PR']})
+        self.write('references/guide.md', f'# Guide\n\nPass `PR` as given.\n\n{FENCE}text\nPR\n{FENCE}\n')
+        self.assertEqual(self.found('retired term'), [])
+
+    def test_a_retired_term_matches_whole_and_by_case(self):
+        self.declare({'pull request': ['PR']})
+        self.write('scripts/sync.py', 'prs = parse("--prs")\nPRINT = 1\n')
+        self.assertEqual(self.found('retired term'), [])
+
+    def test_a_skill_declaring_no_vocabulary_reports_no_term(self):
+        self.write('references/guide.md', '# Guide\n\nOpen the PRs here.\n')
+        self.assertEqual(self.found('retired term'), [])
+
+    def test_an_unreadable_vocabulary_is_refused(self):
+        self.declare({'pull request': 'PR'})
+        status, printed = self.run_check()
+        self.assertEqual(status, 1)
+        self.assertIn('unreadable declaration', printed)
+
+    # Guides check.
+
+    def guide(self, text, rules=None):
+        self.write('guidelines.md', '# Guidelines\n\n' + text)
+        (self.skill / 'rules.json').write_text(json.dumps(rules or {}))
+
+    def test_a_shared_convention_restated_in_a_skill_guide_is_reported(self):
+        self.guide('## Prose\n\n- **Terms.**  The scheme is one word.\n', {'prose/terms': ['review']})
+        self.assertEqual(self.found('convention in both guides'), [('guidelines.md', 5)])
+
+    def test_a_shared_label_under_another_section_stands(self):
+        self.guide('## Modes\n\n- **Terms.**  A mode names its terms.\n', {'modes/terms': ['review']})
+        self.assertEqual(self.found('convention in both guides'), [])
+
+    def test_a_skill_specific_label_stands(self):
+        self.guide('## Prose\n\n- **Scheme.**  The scheme is one word.\n', {'prose/scheme': ['review']})
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    # Interface check.
+
+    def artifact(self, specification, script=None):
+        if script is not None:
+            self.write('scripts/link.py', script)
+        return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
+                          'Number, linked through [Link Issue](#link-issue).\n\n## Commands\n\n'
+                          + specification)
+
+    def specification(self, command, gap=False):
+        return ('### Link Issue\n\nLinks one issue.\n\n**Inputs:** Issue identity.\n\n'
+                + ('**REST gap:** REST exposes no write to the relation.\n\n' if gap else '')
+                + f'{FENCE}bash\n{command}\n{FENCE}\n')
+
+    def test_a_rest_operation_is_accepted(self):
+        self.artifact(self.specification("gh api --method POST 'repos/<owner>/<repo>/issues/<n>/labels'"))
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    def test_a_graphql_read_with_its_rest_gap_is_accepted(self):
+        self.artifact(self.specification('gh api graphql -F query=@read.graphql', gap=True))
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    def test_a_graphql_write_through_a_script_with_its_rest_gap_is_accepted(self):
+        self.artifact(self.specification('python3 scripts/link.py add', gap=True),
+                      script="run(['gh', 'api', 'graphql', '-F', 'query=@mutation'])\n")
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    def test_graphql_without_a_rest_gap_is_reported(self):
+        self.artifact(self.specification('gh api graphql -F query=@read.graphql'))
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+
+    def test_graphql_through_a_script_without_a_rest_gap_is_reported(self):
+        self.artifact(self.specification('python3 scripts/link.py add'),
+                      script="run(['gh', 'api', 'graphql', '-F', 'query=@mutation'])\n")
+        self.assertEqual(self.found('GraphQL without a REST gap'), [('issue.md', 9)])
+
+    def test_a_script_sending_no_graphql_needs_no_gap(self):
+        self.artifact(self.specification('python3 scripts/link.py add'),
+                      script="run(['gh', 'api', 'repos/o/r/issues'])\n")
+        self.assertEqual(self.found('GraphQL without a REST gap'), [])
+
+    def test_a_classic_projects_mutation_is_reported_whatever_its_gap(self):
+        self.artifact(self.specification('gh api graphql -f query=addProjectCard', gap=True))
+        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 18)])
+
+    def test_a_classic_projects_endpoint_is_reported(self):
+        self.artifact(self.specification("gh api 'repos/<owner>/<repo>/projects'"))
+        self.assertEqual(self.found('Projects classic interface'), [('issue.md', 16)])
+
+    def test_a_classic_projects_field_in_prose_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\nRead each projectCards entry.\n')
+        self.assertEqual(self.found('Projects classic interface'), [('guide.md', 3)])
+
+    def test_a_classic_projects_field_in_a_script_is_reported(self):
+        self.write('scripts/board.py', 'QUERY = "{ repository { projects(first: 5) { nodes { id } } } }"\n')
+        self.assertEqual(self.found('Projects classic interface'), [('board.py', 1)])
+
+    def test_projects_v2_and_its_board_link_are_accepted(self):
+        self.artifact(self.specification("gh project item-list 17 --owner m2ux"))
+        self.write('references/guide.md', '# Guide\n\nThe [board](https://github.com/users/m2ux/projects/17) '
+                                          'is `users/m2ux/projectsV2/17`, read through `projectsV2(first: 1)`.\n')
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    # Rules check.
+
+    def test_a_rule_reaching_a_check_or_review_stands(self):
+        self.guide('## Modes\n\n- **Outcomes.**  Each names a goal.\n- **Size.**  Short.\n',
+                   {'modes/outcomes': ['review'], 'modes/size': ['prose over eight lines']})
+        status, _ = self.run_check()
+        self.assertEqual(status, 0)
+
+    def test_a_rule_no_operation_decides_is_reported(self):
+        self.guide('## Modes\n\nWhat a mode holds.\n\n- **Outcomes.**  Each names a goal.\n')
+        self.assertEqual(self.found('house rule no operation decides'), [('guidelines.md', 7)])
+
+    def test_a_rule_naming_an_unknown_operation_is_reported(self):
+        self.guide('## Modes\n\n- **Outcomes.**  Each names a goal.\n', {'modes/outcomes': ['outcome check']})
+        self.assertEqual(self.found('house rule no operation decides'), [('guidelines.md', 5)])
+
+    def test_a_declaration_for_no_rule_is_reported(self):
+        self.guide('## Modes\n\n- **Outcomes.**  Each names a goal.\n',
+                   {'modes/outcomes': ['review'], 'modes/goals': ['review']})
+        self.assertEqual(self.found('declared rule absent'), [('rules.json', 1)])
+
+    def test_two_rules_under_one_key_are_ambiguous(self):
+        self.guide('## Modes\n\n- **Outcomes.**  Each names a goal.\n- **Outcomes.**  Each is met.\n',
+                   {'modes/outcomes': ['review']})
+        self.assertEqual(self.found('ambiguous house rule'), [('guidelines.md', 6)])
+
+    def test_the_shared_guide_is_read_from_a_run_over_its_skill(self):
+        (self.root / 'rules.json').write_text(json.dumps({'prose/succinct': ['review']}))
+        self.assertEqual(self.found('house rule no operation decides'), [('guidelines.md', 8)])
+
+    def test_an_unreadable_rules_declaration_is_refused(self):
+        self.guide('## Modes\n\n- **Outcomes.**  Each names a goal.\n', {'modes/outcomes': []})
+        status, printed = self.run_check()
+        self.assertEqual(status, 1)
+        self.assertIn('unreadable declaration', printed)
+
+    def test_every_kind_the_source_reports_is_registered(self):
+        source = (Path(checker.__file__)).read_text()
+        reported = set(re.findall(r"(?:report|finding)\([^'\n]*'([^']+)'", source))
+        self.assertTrue(reported)
+        self.assertEqual(reported - set(checker.KINDS), set())
+
+    def test_an_unregistered_kind_is_refused(self):
+        with self.assertRaises(KeyError):
+            checker.finding(self.skill / 'SKILL.md', self.root, 0, 'no such kind')
 
 
 # A specimen move: Fetch Issue leaves the issue artifact for the sync mode,
@@ -772,6 +1083,413 @@ class SectionBodyComparison(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('unreadable revision', output)
 
+
+class CallersAndReach(unittest.TestCase):
+    """Callers decide placement and reach decides what a reader loads, over
+    one specimen holding an execution step, a command specification citing a
+    sibling, and an artifact keeping its subject's command."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        self.issue = self.write('artifacts/issue.md',
+                                '# Issue\n\n## Prerequisites\n\nRead these files first.\n\n'
+                                '- [Body](body.md)\n\n## Operations\n\n### Read Tracker Issue\n\n'
+                                '- Run [Fetch Issue](#fetch-issue).\n\n## Fields\n\n'
+                                'Number, as [Body](body.md#fields) describes.\n\n'
+                                '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+        self.body = self.write('artifacts/body.md', '# Body\n\n## Fields\n\nText.\n\n'
+                               '## Commands\n\n### Check Body\n\nChecks it.\n')
+        self.plan = self.write('modes/plan.md',
+                               '# Plan\n\n## Procedure\n\n'
+                               '1. **Read.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'
+                               '2. **Check.**  Run [Check Plan](#check-plan).\n\n'
+                               '## Outcomes\n\nThe plan is read.\n\n## Operations\n\n'
+                               '### Check Plan\n\nChecks it.\n\n'
+                               '- Run [Check Body](../artifacts/body.md#check-body) first.\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def files(self):
+        return sorted(self.skill.rglob('*.md'))
+
+    def kinds(self, path):
+        declared = {}
+        return {target: kind for _, target, kind in
+                checker.citation_kinds(path, checker.contract(path, declared))}
+
+    def test_an_execution_step_is_a_caller_and_reach(self):
+        _, called = checker.citations(self.files(), {})
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(self.kinds(self.plan)['../artifacts/issue.md#read-tracker-issue'], checker.STEP)
+        self.assertEqual(called[self.issue]['read-tracker-issue'], {self.plan})
+        self.assertEqual(reached[self.issue]['read-tracker-issue'], {(self.plan, checker.STEP)})
+
+    def test_a_command_specification_link_is_reach_and_no_caller(self):
+        cited, called = checker.citations(self.files(), {})
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(self.kinds(self.plan)['../artifacts/body.md#check-body'], checker.SPECIFICATION)
+        self.assertEqual(cited[self.body]['check-body'], {self.plan})
+        self.assertNotIn('check-body', called.get(self.body, {}))
+        self.assertEqual(reached[self.body]['check-body'], {(self.plan, checker.SPECIFICATION)})
+
+    def test_a_specification_link_moves_no_specification(self):
+        """Without the artifact keeping its subject's commands, the body's
+        command has one file reaching it. A specification's reach asks for no
+        move, and the same citation stated as a step does."""
+        (self.skill / 'structure.json').write_text(json.dumps(
+            {key: {k: v for k, v in entry.items() if k != 'keeps_commands'}
+             for key, entry in STRUCTURE.items()}))
+
+        def placed():
+            files = self.files()
+            declared = {}
+            cited, called = checker.citations(files, declared)
+            findings = []
+            for path in files:
+                findings += checker.check(path, self.root, {}, cited, called, declared)
+            return [(Path(where).name, detail) for where, _, kind, detail in findings
+                    if kind == 'command specification with one caller']
+
+        self.assertEqual(placed(), [])
+        self.write('modes/plan.md', calling('Plan', '../artifacts/body.md#check-body') +
+                   '\n## Outcomes\n\nChecked.\n')
+        self.assertEqual(placed(), [('body.md', 'Check Body, cited from specimen/modes/plan.md')])
+
+    def test_a_subject_owned_artifact_command_stays_with_its_subject(self):
+        _, called = checker.citations(self.files(), {})
+        self.assertEqual(called[self.issue]['fetch-issue'], {self.issue})
+        self.write('modes/sync.md', calling('Sync', '../artifacts/issue.md#fetch-issue') +
+                   '\n## Outcomes\n\nRead.\n')
+        files = self.files()
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        findings = []
+        for path in files:
+            findings += checker.check(path, self.root, {}, cited, called, declared)
+        self.assertEqual(findings, [])
+        reached = checker.reach(files, declared)
+        self.assertEqual({source.name for source, _ in reached[self.issue]['fetch-issue']},
+                         {'issue.md', 'sync.md'})
+
+    def test_prerequisites_are_reach_and_descriptive_links_are_neither(self):
+        kinds = self.kinds(self.issue)
+        self.assertEqual(kinds['body.md'], checker.PREREQUISITE_READ)
+        self.assertEqual(kinds['body.md#fields'], checker.DESCRIPTIVE)
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(reached[self.body][''], {(self.issue, checker.PREREQUISITE_READ)})
+        self.assertNotIn('fields', reached[self.body])
+
+    def test_a_canonical_prerequisite_sentence_is_reach(self):
+        guide = self.write('references/guide.md',
+                           '# Guide\n\nRead [Fields](../artifacts/body.md#fields) first.\n')
+        self.assertEqual(self.kinds(guide)['../artifacts/body.md#fields'], checker.PREREQUISITE_READ)
+
+
+class UncitedSpecifications(unittest.TestCase):
+    """A specification no procedure runs stays with the subject whose text
+    names it, and one nothing names is reported."""
+
+    COMMANDS = '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def uncited(self):
+        files = sorted(self.skill.rglob('*.md'))
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        found = []
+        for path in files:
+            found += checker.check(path, self.root, {}, cited, called, declared)
+        return [(Path(where).name, detail) for where, _, kind, detail in found
+                if kind == 'command specification nothing cites']
+
+    def test_a_specification_no_procedure_runs_and_nothing_cites_is_reported(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [('catalog.md', 'Fetch issue')])
+
+    def test_a_step_citing_it_clears_the_report(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
+        self.assertEqual(self.uncited(), [])
+
+    def test_a_subject_owned_command_nothing_cites_is_reported(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [('issue.md', 'Fetch issue')])
+
+    def test_a_subject_owned_command_its_prose_names_stays(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
+                   'Number, read through [Fetch issue](#fetch-issue).\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [])
+
+    def test_a_sibling_specification_citing_it_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS +
+                   '\n### Close issue\n\nCloses one issue.\n'
+                   '\n- Run [Fetch issue](#fetch-issue) first.\n')
+        self.assertEqual(self.uncited(), [('catalog.md', 'Close issue')])
+
+    def test_a_prerequisite_citing_it_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/guide.md',
+                   '# Guide\n\nRead [Fetch issue](catalog.md#fetch-issue) first.\n')
+        self.assertEqual(self.uncited(), [])
+
+    def test_reference_prose_in_another_file_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/guide.md',
+                   '# Guide\n\nEvery check opens with [Fetch issue](catalog.md#fetch-issue).\n')
+        self.assertEqual(self.uncited(), [])
+
+    def test_the_entry_point_reports_its_specification_as_misplaced_alone(self):
+        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [])
+
+
+class RepeatedHeadings(unittest.TestCase):
+    """A heading whose anchor an earlier heading of its file holds is reported,
+    whether or not a link cites it."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def repeats(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files, {})
+        found = []
+        for path in files:
+            found += checker.check(path, self.root, {}, cited, called, {})
+        return [(Path(where).name, line, detail)
+                for where, line, kind, detail in found if kind == 'duplicate anchor']
+
+    def test_a_repeat_nothing_cites_is_reported(self):
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_a_cited_repeat_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nSee [terms](guide.md#terms).\n')
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_titles_differing_only_in_what_the_anchor_drops_are_one_anchor(self):
+        self.write('guide.md', '# Guide\n\n## Open Questions\n\nOne.\n\n### open questions?\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'open-questions, also at line 3')])
+
+    def test_each_further_repeat_names_the_first(self):
+        self.write('guide.md', '# Guide\n\n## Problem\n\nA.\n\n## Problem\n\nB.\n\n## Problem\n\nC.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'problem, also at line 3'),
+                                          ('guide.md', 11, 'problem, also at line 3')])
+
+    def test_distinct_headings_are_not_repeats(self):
+        self.write('guide.md', '# Guide\n\n## Epic Problem\n\nA.\n\n## Task Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_one_title_in_two_files_is_not_a_repeat(self):
+        self.write('epic.md', '# Epic\n\n## Problem\n\nA.\n')
+        self.write('task.md', '# Task\n\n## Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_a_repeat_inside_a_fence_is_a_specimen(self):
+        self.write('guide.md', f'# Guide\n\n## Terms\n\n{FENCE}markdown\n## Terms\n{FENCE}\n')
+        self.assertEqual(self.repeats(), [])
+
+
+CANON = Path(__file__).resolve().parents[1] / 'workflow-canon'
+
+
+def modes(skill):
+    """Each mode file the entry point's Modes section links, which is where a
+    reader holding a request selects one."""
+    lines, fenced, headings = checker.scan(skill / 'SKILL.md')
+    start = next(index for index, level, title in headings if level == 2 and title == 'Modes')
+    end = next((index for index, level, _ in headings if index > start and level <= 2), len(lines))
+    return [(skill / target).resolve() for index, target in checker.targets(skill / 'SKILL.md', lines, fenced)
+            if start < index < end]
+
+
+def span(path, anchor):
+    """The line indices a citation retrieves: a heading-linked section and its
+    sub-sections, stopping before the next heading of its level or above, or
+    the whole file where the citation names no heading."""
+    lines, _, headings = checker.scan(path)
+    if not anchor:
+        return range(len(lines))
+    for position, (start, level, title) in enumerate(headings):
+        if checker.anchor_of(title) == anchor:
+            end = next((index for index, depth, _ in headings[position + 1:] if depth <= level),
+                       len(lines))
+            return range(start, end)
+    return range(0)
+
+
+def walk(skill, mode, passing=lambda anchor: False):
+    """The files a reader of one mode opens: the entry point that selects it
+    and the mode file, each read whole, and every section a required citation
+    in a retrieved part reaches, followed to closure. A citation whose anchor
+    `passing` names is not followed, so a walk without it shows what that
+    citation alone opens."""
+    declared = {}
+    retrieved = {((skill / 'SKILL.md').resolve(), ''), (mode, '')}
+    frontier = list(retrieved)
+    while frontier:
+        path, anchor = frontier.pop()
+        lines = span(path, anchor)
+        for index, target, kind in checker.citation_kinds(path, checker.contract(path, declared)):
+            name, _, fragment = target.partition('#')
+            destination = (path.parent / name).resolve() if name else path
+            part = (destination, checker.anchor_of(fragment) if fragment else '')
+            if (index not in lines or kind not in checker.REQUIRED or passing(part[1])
+                    or destination.suffix != '.md' or part in retrieved):
+                continue
+            retrieved.add(part)
+            frontier.append(part)
+    return {path for path, _ in retrieved}
+
+
+def conventions(anchor):
+    """The skill-wide conventions, by the section names that hold them: the
+    entry point's Conventions section, or the Common section of a file of
+    their own. A procedure's own conventions, such as Canon Check
+    Conventions, travel with the commands they govern and are not these."""
+    return anchor in ('conventions', 'common')
+
+
+class CanonConventionsReach(unittest.TestCase):
+    """Workflow Canon's skill-wide conventions stand where every mode reaching
+    them opens no file it would not otherwise open: a retrieval walk over each
+    mode with the conventions' citations followed opens the same files as one
+    without them."""
+
+    def test_the_entry_point_holds_the_conventions(self):
+        headings = checker.scan(CANON / 'SKILL.md')[2]
+        self.assertIn((2, 'Conventions'), [(level, title) for _, level, title in headings])
+        self.assertEqual([path.name for path in CANON.rglob('*conventions*.md')], [])
+
+    def test_each_mode_reaches_the_conventions_without_a_further_file(self):
+        found = modes(CANON)
+        self.assertEqual({path.name for path in found},
+                         {'author-mode.md', 'audit-mode.md', 'review-mode.md', 'revise-mode.md'})
+        for mode in found:
+            with self.subTest(mode=mode.name):
+                opened = walk(CANON, mode)
+                self.assertIn((CANON / 'SKILL.md').resolve(), opened)
+                self.assertEqual(walk(CANON, mode, passing=conventions), opened)
+
+    def test_a_conventions_file_costs_each_mode_a_file(self):
+        """The walk's own fixture: conventions in a file of their own, cited
+        as each mode's prerequisite, open that file for nothing else."""
+        root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, root)
+        skill = root / 'specimen'
+        (skill / 'references').mkdir(parents=True)
+        (skill / 'SKILL.md').write_text('# Specimen\n\n## Modes\n\n- **[Plan](references/plan-mode.md)**\n')
+        (skill / 'references/plan-mode.md').write_text(
+            '# Plan\n\n## Prerequisites\n\nRead [Common](conventions.md#common) first.\n\n'
+            '## Procedure\n\n1. **Plan.**  Plan it.\n')
+        (skill / 'references/conventions.md').write_text('# Conventions\n\n## Common\n\nA sentence.\n')
+        mode = (skill / 'references/plan-mode.md').resolve()
+        self.assertEqual(walk(skill, mode) - walk(skill, mode, passing=conventions),
+                         {(skill / 'references/conventions.md').resolve()})
+
+
+class CanonRunProjectCheck(unittest.TestCase):
+    """Run Project Check is one command specification in the mode file whose
+    procedure runs it, under the structure Workflow Canon declares."""
+
+    MODE = '*-mode.md'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        (self.skill / 'references').mkdir(parents=True)
+        (self.skill / 'structure.json').write_text((CANON / 'structure.json').read_text())
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Run [Run Skill Checks](#run-skill-checks).\n\n'
+                   '## Rules\n\n- **Scope.**  One skill.\n\n## Commands\n\n### Run Skill Checks\n\n'
+                   'Checks it.\n\n- Use [Run Project Check](review-mode.md#run-project-check).\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.write_text(text)
+        return path
+
+    def placed(self, root):
+        files = sorted(path for path in root.rglob('*.md') if 'fixtures' not in path.relative_to(root).parts)
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        findings = []
+        for path in files:
+            findings += checker.check(path, root.parent, {}, cited, called, declared)
+        held = [(path.name, title) for path in files
+                for _, title in checker.specifications(
+                    checker.scan(path)[2], checker.held_section(checker.contract(path, declared)))
+                if title == 'Run Project Check']
+        return held, called, findings
+
+    def test_a_specification_in_its_callers_commands_is_recognized_and_placed(self):
+        review = self.write('references/review-mode.md',
+                            '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](#run-project-check).\n\n'
+                            '## Rules\n\n- **Scope.**  One integration.\n\n## Commands\n\n'
+                            '### Run Project Check\n\nRuns the selected check.\n')
+        held, called, findings = self.placed(self.skill)
+        self.assertEqual(held, [('review-mode.md', 'Run Project Check')])
+        self.assertEqual(called[review.resolve()]['run-project-check'], {review.resolve()})
+        self.assertEqual(findings, [])
+
+    def test_a_specification_away_from_its_one_caller_is_reported(self):
+        self.write('references/review-mode.md',
+                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
+                   '## Rules\n\n- **Scope.**  One integration.\n')
+        self.write('references/checks.md', '# Checks\n\n## Commands\n\n### Run Project Check\n\nRuns it.\n')
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
+        held, _, findings = self.placed(self.skill)
+        self.assertEqual(held, [('checks.md', 'Run Project Check')])
+        self.assertEqual([(Path(where).name, kind) for where, _, kind, _ in findings],
+                         [('checks.md', 'command specification with one caller')])
+
+    def test_a_section_outside_a_commands_section_is_no_specification(self):
+        self.write('references/review-mode.md',
+                   '# Review\n\n## Procedure\n\n1. **Exercise.**  [Run Project Check](checks.md#run-project-check).\n\n'
+                   '## Rules\n\n- **Scope.**  One integration.\n')
+        self.write('references/checks.md', '# Checks\n\n## Run Project Check\n\nRuns it.\n')
+        self.write('references/revise-mode.md',
+                   '# Revise\n\n## Procedure\n\n1. **Check.**  Check it.\n\n## Rules\n\n- **Scope.**  One skill.\n')
+        held, _, findings = self.placed(self.skill)
+        self.assertEqual(held, [])
+        self.assertEqual(findings, [])
+
+    def test_workflow_canon_holds_it_once_with_its_one_caller(self):
+        held, called, findings = self.placed(CANON)
+        review = (CANON / 'references/review-mode.md').resolve()
+        self.assertEqual(held, [('review-mode.md', 'Run Project Check')])
+        self.assertEqual(called[review]['run-project-check'], {review})
+        self.assertEqual(findings, [])
 
 def entry_point(description, modes=('Audit', 'Revise')):
     """A specimen entry point whose Modes section lists each named mode."""
