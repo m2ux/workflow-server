@@ -818,7 +818,8 @@ class LongLivedNames(unittest.TestCase):
             repository(checkout, 'main')
             done = self.names(checkout, 'origin/i07/e00/main')
             self.assertEqual(done.returncode, 1)
-            self.assertIn('unevaluable: origin/i07/e00/main resolves to no commit', done.stderr)
+            self.assertIn(f'unevaluable: config/branches at origin/i07/e00/main in {(checkout / ".git").resolve()} '
+                          'is unreadable: the revision resolves to no commit', done.stderr)
 
     def test_a_statement_only_at_another_revision_is_unevaluable(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -829,22 +830,210 @@ class LongLivedNames(unittest.TestCase):
             commit_branches(checkout, 'main')
             done = self.names(checkout, bare)
             self.assertEqual(done.returncode, 1)
-            self.assertIn(f'unevaluable: no config/branches at {bare}', done.stderr)
+            self.assertIn(f'unevaluable: config/branches at {bare} in {(checkout / ".git").resolve()} is absent',
+                          done.stderr)
 
     def test_an_empty_statement_is_unevaluable(self):
         with tempfile.TemporaryDirectory() as tmp:
             checkout = Path(tmp)
-            repository(checkout)
+            commit = repository(checkout)
             done = self.names(checkout)
             self.assertEqual(done.returncode, 1)
-            self.assertIn('unevaluable:', done.stderr)
-            self.assertIn('names no branch', done.stderr)
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'names no branch', done.stderr)
+
+    def test_a_directory_in_place_of_the_statement_is_unreadable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init')
+            (checkout / 'config' / 'branches').mkdir(parents=True)
+            (checkout / 'config' / 'branches' / 'main').write_text('main\n')
+            git(checkout, 'add', 'config')
+            git(checkout, 'commit', '-m', 'a directory')
+            commit = git(checkout, 'rev-parse', 'HEAD')
+            done = self.names(checkout)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'is unreadable: a tree, not a file', done.stderr)
+
+    def test_a_statement_that_is_not_text_is_unreadable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init')
+            (checkout / 'config').mkdir()
+            (checkout / 'config' / 'branches').write_bytes(b'main\n\xff\xfe\n')
+            git(checkout, 'add', 'config')
+            git(checkout, 'commit', '-m', 'binary')
+            commit = git(checkout, 'rev-parse', 'HEAD')
+            done = self.names(checkout)
+            self.assertEqual(done.returncode, 1)
+            self.assertEqual(done.stdout, '')
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'is unreadable: not UTF-8 text', done.stderr)
+
+    def test_names_read_one_revision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            repository(checkout, 'main')
+            done = run('sync.py', '--names', '--project', str(checkout), '--revision', 'HEAD', '--revision', 'main')
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('--names reads one --revision', done.stderr)
 
     def test_names_need_a_revision(self):
         with tempfile.TemporaryDirectory() as tmp:
             done = run('sync.py', '--names', '--project', tmp)
             self.assertEqual(done.returncode, 1)
             self.assertIn('--names needs --project and --revision', done.stderr)
+
+
+CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases', 'draft epic bases',
+          'review pull request References', 'review pull request issue links')
+
+
+class UnavailableDeclaration(unittest.TestCase):
+    """An epic sync that cannot read the long-lived branches reports why, and the checks it did not make.
+
+    main states docker and main. The epic base i01/e00/workflows is cut from a commit before any
+    statement, so config/branches is present only at another revision."""
+
+    def pulls(self) -> list[dict]:
+        return [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                   base='i01/e00/workflows', head='i01/e00/w01-work'),
+                pr(951, '[I01:E00] Review', state='open', draft=True,
+                   base='workflows', head='i01/e00/workflows')]
+
+    def run_sync(self, body: str, *args: str) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.pulls()))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       *[a.replace('<root>', str(root)) for a in args])
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def checkout(self, root: Path) -> str:
+        checkout = root / 'checkout'
+        checkout.mkdir()
+        git(checkout, 'init')
+        git(checkout, 'commit', '--allow-empty', '-m', 'no statement')
+        bare = git(checkout, 'rev-parse', 'HEAD')
+        git(checkout, 'branch', 'i01/e00/workflows', bare)
+        commit_branches(checkout, 'docker', 'main')
+        return bare
+
+    def test_a_base_without_the_statement_is_unevaluable_with_its_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bare = self.checkout(root)
+            out = self.run_sync_in(root, body, 'i01/e00/workflows')
+        repository_dir = (root / 'checkout' / '.git').resolve()
+        self.assertIn(f'unevaluable: config/branches at {bare} in {repository_dir} is absent', out)
+        self.assertNotIn('source:', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
+        self.assertNotIn('unmerged:', out)
+
+    def test_the_checks_left_unmade_are_named(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.checkout(root)
+            out = self.run_sync_in(root, body, 'i01/e00/workflows')
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+        self.assertNotIn('draft:', out)
+
+    def test_a_run_given_no_branches_names_the_checks_it_did_not_make(self):
+        out = self.run_sync(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        self.assertIn('unevaluable: long-lived branches not given', out)
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+
+    def test_a_readable_statement_leaves_no_check_unmade(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.checkout(root)
+            out = self.run_sync_in(root, body, 'main')
+        self.assertNotIn('unevaluable:', out)
+        self.assertNotIn('not checked:', out)
+        self.assertIn('source: config/branches at ', out)
+
+    def run_sync_in(self, root: Path, body: str, *revisions: str) -> str:
+        args = ['--project', str(root / 'checkout')]
+        for revision in revisions:
+            args += ['--revision', revision]
+        return self.run_sync(body, *args)
+
+
+class SeveralEpicBases(unittest.TestCase):
+    """An epic sync reads the declaration at each epic-base commit it is given.
+
+    The epic base i01/e00/main sits on main, which states docker and main; i01/e00/workflows adds
+    workflows on its own commit."""
+
+    def run_sync(self, body: str, *revisions: str, absent: bool = False) -> tuple[str, dict[str, str], Path]:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            checkout, linked = root / 'checkout', root / 'linked'
+            commits = {'main': repository(checkout, 'docker', 'main')}
+            git(checkout, 'branch', 'i01/e00/main')
+            git(checkout, 'worktree', 'add', str(linked), '-b', 'i01/e00/workflows')
+            if absent:
+                git(linked, 'rm', '-q', 'config/branches')
+                git(linked, 'commit', '-m', 'drop the statement')
+                commits['workflows'] = git(linked, 'rev-parse', 'HEAD')
+            else:
+                commits['workflows'] = commit_branches(linked, 'docker', 'main', 'workflows')
+            git(checkout, 'worktree', 'add', str(root / 'docker'), '-b', 'i01/e00/docker', commits['main'])
+            git(root / 'docker', 'commit', '--allow-empty', '-m', 'docker work')
+            commits['docker'] = git(root / 'docker', 'rev-parse', 'HEAD')
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.pulls()))
+            args = ['--project', str(checkout)]
+            for revision in revisions:
+                args += ['--revision', revision]
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout, commits, (checkout / '.git').resolve()
+
+    def pulls(self) -> list[dict]:
+        return [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                   base='i01/e00/main', head='i01/e00/w01-work')]
+
+    def test_disagreeing_declarations_are_each_reported_with_their_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/workflows')
+        self.assertIn(f"unevaluable: config/branches at {commits['main']} in {repo} states docker, main", out)
+        self.assertIn(f"unevaluable: config/branches at {commits['workflows']} in {repo} states docker, main, workflows",
+                      out)
+        self.assertNotIn('source:', out)
+        self.assertNotIn('unmerged:', out)
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
+
+    def test_agreeing_declarations_are_read_from_each_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/docker', 'main')
+        self.assertIn(f"source: config/branches at {commits['main']} in {repo}", out)
+        self.assertIn(f"source: config/branches at {commits['docker']} in {repo}", out)
+        self.assertEqual(out.count('source:'), 2)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_one_absent_declaration_leaves_the_names_unevaluable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/workflows', absent=True)
+        self.assertIn(f"unevaluable: config/branches at {commits['workflows']} in {repo} is absent", out)
+        self.assertIn(f"source: config/branches at {commits['main']} in {repo}", out)
+        self.assertIn('not checked: unmerged epic bases', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
 
 
 def epic_rows(*rows: tuple[str, str, str]) -> str:
