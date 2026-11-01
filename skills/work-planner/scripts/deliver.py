@@ -27,7 +27,7 @@ Printed: a unit line for each available unit, with the record folder its ids and
 it and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
-work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
+linked work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
 issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
@@ -36,7 +36,8 @@ The epic bases a unit changes are those whose long-lived branch its rows' work i
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
 to read; the file's declaration line names the long-lived branch and the path of its component:
   **Component:** workspace:skills/work-planner/scripts/deliver.py
-A unit of an epic with one base works on that base.
+A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
+its session writes the work item after dispatch, so its unit works on every epic base.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
@@ -128,22 +129,23 @@ def long_lived(base: str) -> str:
 
 def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str) -> tuple[list[str], list[str]]:
     """The epic bases a unit changes, as its rows' work items name their long-lived branches, and
-    each row naming none of the bases with why. A unit of an epic with one base, or none, changes those."""
+    each row naming none of the bases with why. A unit of an epic with one base, or none, changes those.
+    A row linking no work item is unplanned: its session writes the work item, so it changes every base."""
     if len(bases) <= 1:
         return bases, []
     items, missing = {}, []
+    named = {long_lived(base) for base in bases}
+    changed = set()
     for task in unit:
         path = detail[task]['item']
         if not path:
-            missing.append(f'{task}: links no work item')
+            changed |= named
         elif not checkout:
             missing.append(f'{task}: {path} needs --engineering to be read')
         else:
             items[task] = Path(checkout) / path
     components, problems = read_components(items)
     missing += problems
-    named = {long_lived(base) for base in bases}
-    changed = set()
     for task, component in sorted(components.items()):
         branch = ON_BRANCH.match(component)
         if not branch:
