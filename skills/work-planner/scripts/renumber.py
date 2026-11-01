@@ -19,7 +19,8 @@ absent from the map keep theirs. Files of other initiatives go after --outside: 
 reference carrying this initiative's prefix (I07 E01 W03, I07:E01:W03) is rewritten, since an
 unprefixed one means their own initiative. A bare task number right after a link ([I00 E01](…) W05)
 belongs to the linked epic and is left as it is. Files are rewritten in place. A map that sends two numbers to one,
-or onto a number it leaves out, is refused and nothing is written. So is a map that renumbers
+onto a number it leaves out, or from a number absent from the files (for tasks, a row --own lacks)
+is refused and nothing is written. So is a map that renumbers
 work a pull request names: a task whose id in --own links a pull request or commit, open or merged,
 or an epic a pull request
 in --prs names ([I07:E00] Purpose), since that is how its delivery is found. prs.json holds pull
@@ -54,6 +55,9 @@ def parse_map(text: str) -> dict[int, int]:
 
 
 def refuse_clashes(mapping: dict[int, int], present: set[int], what: str) -> None:
+    absent = sorted(set(mapping) - present)
+    if absent:
+        sys.exit(f'map renumbers {what} absent from the supplied files: {absent}. Nothing was written.')
     targets = list(mapping.values())
     clashes = {t for t in targets if targets.count(t) > 1}
     clashes |= {t for t in targets if t in present and t not in mapping}

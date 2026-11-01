@@ -23,19 +23,18 @@ def link(number: int, state: str = 'MERGED', repo: str = 'o/r') -> dict:
 
 
 class Sweep(unittest.TestCase):
-    def sweep(self, issues, development):
+    def sweep(self, issues, links):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / 'issues.json').write_text(json.dumps(issues))
-            (root / 'development.json').write_text(
-                development if isinstance(development, str) else json.dumps(development))
+            (root / 'issue-links.json').write_text(links if isinstance(links, str) else json.dumps(links))
             return run('closure-sweep.py', '--issues', str(root / 'issues.json'),
-                       '--development', str(root / 'development.json'))
+                       '--issue-links', str(root / 'issue-links.json'))
 
     def test_supported_closures_list_nothing(self):
         result = self.sweep([closed(2), closed(3)], {'2': [link(9)], '3': []})
         self.assertEqual(result.returncode, 0, result.stdout)
-        self.assertIn('0 closed issue(s) listed', result.stdout)
+        self.assertIn('0 unsupported, 0 unevaluable, 0 not planned', result.stdout)
 
     def test_a_completed_issue_with_unticked_criteria_is_listed_with_its_reason(self):
         result = self.sweep([closed(2, UNTICKED)], {'2': []})
@@ -47,10 +46,19 @@ class Sweep(unittest.TestCase):
         result = self.sweep([closed(2, '## Overview\n\nWork.\n')], {'2': []})
         self.assertIn('o/r#2 closed as completed: acceptance criteria are missing or unticked', result.stdout)
 
-    def test_a_transferred_issue_is_listed_as_not_planned(self):
+    def test_a_transferred_issue_is_listed_apart_and_is_no_finding(self):
         result = self.sweep([closed(2, UNTICKED, 'not_planned')], {'2': []})
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('not planned: o/r#2 closed as not_planned: acceptance criteria are missing or unticked',
+                      result.stdout)
+        self.assertNotIn('unsupported: o/r#2', result.stdout)
+
+    def test_not_planned_closures_follow_the_findings(self):
+        result = self.sweep([closed(2, UNTICKED, 'not_planned'), closed(3, UNTICKED)], {'2': [], '3': []})
         self.assertEqual(result.returncode, 1)
-        self.assertIn('o/r#2 closed as not_planned: acceptance criteria are missing or unticked', result.stdout)
+        self.assertEqual([line.split(':')[0] for line in result.stdout.splitlines()[:2]],
+                         ['unsupported', 'not planned'])
+        self.assertIn('1 unsupported, 0 unevaluable, 1 not planned', result.stdout)
 
     def test_an_unmerged_linked_pull_request_is_listed(self):
         development = {'2': [link(9), link(10, 'CLOSED'), link(11, 'OPEN', 'o/s')]}
@@ -79,11 +87,19 @@ class Sweep(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_unreadable_evidence_blocks_the_sweep(self):
-        for development in ('not json', '[]', '{"2": [{"state": "MERGED"}]}'):
-            with self.subTest(development=development):
-                result = self.sweep([closed(2)], development)
+        for links in ('not json', '[]'):
+            with self.subTest(links=links):
+                result = self.sweep([closed(2)], links)
                 self.assertEqual(result.returncode, 1)
                 self.assertIn('sweep blocked: unreadable evidence', result.stdout)
+
+    def test_a_file_of_another_shape_is_refused_as_issue_links(self):
+        for links in ({'o/r#2': []}, {'2': ['https://github.com/o/r/pull/9']}, {'2': [{'state': 'MERGED'}]}):
+            with self.subTest(links=links):
+                result = self.sweep([closed(2)], links)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn('sweep blocked: unreadable evidence', result.stdout)
+                self.assertIn('not an issue-links file', result.stdout)
 
     def test_issues_from_two_repositories_block_the_sweep(self):
         result = self.sweep([closed(2), closed(3, repo='o/s')], {'2': [], '3': []})
@@ -98,13 +114,13 @@ class Sweep(unittest.TestCase):
             root = Path(tmp)
             done, out = issue_end(root, tracker(root, relation, states={951: 'OPEN'}), issues)
             self.assertEqual(done.returncode, 0, done.stderr)
-            result = run('closure-sweep.py', '--issues', str(root / 'issues.json'), '--development', str(out))
+            result = run('closure-sweep.py', '--issues', str(root / 'issues.json'), '--issue-links', str(out))
         self.assertEqual(result.returncode, 1)
         lines = result.stdout.splitlines()
         self.assertEqual(lines, [
-            'unsupported: o/r#3 closed as not_planned: acceptance criteria are missing or unticked - Work 3',
             'unsupported: o/r#4 closed as completed: o/r#951 not merged (open) - Work 4',
-            '2 closed issue(s) listed'])
+            'not planned: o/r#3 closed as not_planned: acceptance criteria are missing or unticked - Work 3',
+            '1 unsupported, 0 unevaluable, 1 not planned'])
 
 
 if __name__ == '__main__':
