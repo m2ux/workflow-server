@@ -92,6 +92,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Terms.**
   - One concept carries one term. After a rename, every use of the old term goes, in prose, docstrings and identifiers.
   - `vocabulary.json` beside SKILL.md maps each concept's term to the terms it retires. A retired term stands nowhere in the skill's markdown outside code, nor anywhere in its scripts.
+- **One mood for parallel sections.**
+  Sibling sections whose titles end in one word, such as Main Coverage and Docker Coverage, state one kind of thing, so each opens in the same mood: each says what holds, or each directs the reader. A dependency between the commands a section names is stated as one, and a section that directs an order of work is a procedure.
 
 ## Links
 

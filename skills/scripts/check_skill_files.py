@@ -51,6 +51,9 @@ gap, and Projects (classic) is reported wherever it stands. Each labelled
 rule of a guide names, in the `rules.json` beside it, the finding kinds or
 the review that decide it, and the kinds are those this check registers.
 
+Sibling sections whose titles end in one word state one kind of thing, so
+they open in one mood, judged from the first words of each opening sentence.
+
     python3 skills/scripts/check_skill_files.py skills/workflow-canon
 """
 
@@ -100,6 +103,7 @@ KINDS = (
     'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
     'inline bold lead too wide', 'prerequisite citation inside one file',
     'prose over eight lines', 'trailing blank line',
+    'parallel section in another mood', 'heading without content',
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
@@ -401,8 +405,14 @@ def check(path, root, cache, cited, called, structures=None):
         if run == PROSE_LIMIT + 1:
             report(start, 'prose over eight lines', 'split into named sub-sections')
 
+    for index, detail in mixed_moods(lines, fenced, headings):
+        report(index, 'parallel section in another mood', detail)
+
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
+
+    for index, title in empty_sections(lines, headings):
+        report(index, 'heading without content', title)
     return found
 
 
@@ -598,17 +608,101 @@ def undecided_rules(guide, root):
     return found
 
 
+def empty_sections(lines, headings):
+    """Each heading whose section holds nothing but blank lines. A section runs
+    to the next heading of its own level or above, so one whose body is its
+    sub-sections has content, and a fenced example under a heading is content
+    like any other line."""
+    for position, (start, level, title) in enumerate(headings):
+        end = next((index for index, depth, _ in headings[position + 1:]
+                    if depth <= level), len(lines))
+        if not any(line.strip() for line in lines[start + 1:end]):
+            yield start, title
+
+
+INSTRUCTIONS = {'Use', 'Select', 'Apply', 'Follow', 'Read', 'Run', 'Check', 'Include',
+                'Inspect', 'Trace', 'Call', 'Record', 'Keep', 'Add', 'Write', 'See'}
+SUBJECTS = {'The', 'A', 'An', 'Each', 'Every', 'This', 'These', 'That', 'Those', 'Its',
+            'Their', 'No', 'Any', 'All', 'One', 'It', 'They', 'Both', 'Neither', 'Either'}
+ADVERBIALS = {'For', 'When', 'Where', 'If', 'Once', 'After', 'Before', 'In', 'On', 'With',
+              'Unless', 'While', 'Within', 'Under', 'Without', 'At'}
+PREPOSITIONS = {'for', 'with', 'from', 'to', 'on', 'in', 'over', 'against', 'under', 'at',
+                'by', 'across', 'into', 'through', 'then'}
+LINK_RUN = re.compile(r'^\x00(?:\s*(?:,\s*(?:and\s+|or\s+)?|and\s+|or\s+)\x00)*\s*(\w*)')
+
+
+def mood(sentence, verbs):
+    """The mood a section's opening sentence is stated in: 'directs' where it
+    tells the reader what to do, 'states' where it says what holds, and None
+    where its first words decide neither. A leading adverbial phrase sets a
+    condition rather than the mood, so the clause after it is read. A run of
+    links opening the sentence is its subject where a verb follows, and is a
+    command used as the verb where a preposition follows."""
+    text = LINK.sub('\x00', CODE_SPAN.sub('\x01', sentence)).strip()
+    words = text.split()
+    if words and words[0] in ADVERBIALS and ',' in text:
+        text = text.split(',', 1)[1].strip()
+    if text.startswith('\x00'):
+        follower = LINK_RUN.match(text).group(1)
+        if not follower:
+            return None
+        return 'directs' if follower in PREPOSITIONS else 'states'
+    first = text.split(' ', 1)[0].strip('*_')
+    if first in verbs:
+        return 'directs'
+    if first in SUBJECTS:
+        return 'states'
+    return None
+
+
+def mixed_moods(lines, fenced, headings):
+    """Each section stated in another mood than its parallel siblings. Sibling
+    headings whose titles end in the same word, such as Main Coverage and
+    Docker Coverage, state the same kind of thing, so they open in one mood:
+    each says what holds, or each directs the reader. The first sibling whose
+    mood its opening sentence decides sets the mood the others follow. A
+    command specification's title opens with the verb it performs, so those
+    verbs read as instructions alongside the common ones."""
+    verbs = INSTRUCTIONS | {title.split()[0].strip('*_') for _, title in specifications(headings)}
+    groups = {}
+    parent = {}
+    for position, (index, level, title) in enumerate(headings):
+        parent[level] = index
+        for deeper in [key for key in parent if key > level]:
+            del parent[deeper]
+        words = re.sub(r'[*_`]', '', title).split()
+        if len(words) < 2:
+            continue
+        end = next((later for later, _, _ in headings[position + 1:]), len(lines))
+        opening = next((lines[line] for line in range(index + 1, end)
+                        if not fenced[line] and lines[line].strip()), '')
+        if opening.lstrip().startswith(('-', '|', '>', '#', '*')) or ORDERED.match(opening):
+            continue
+        found = mood(opening, verbs)
+        if found:
+            key = (parent.get(level - 1), level, words[-1].lower())
+            groups.setdefault(key, []).append((index, title.strip(), found))
+    for members in groups.values():
+        _, first_title, first_mood = members[0]
+        for index, title, found in members[1:]:
+            if found != first_mood:
+                yield index, f'{title} {found}, {first_title} {first_mood}'
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     options = parser.parse_args(argv)
 
+    # A fixture tree holds test inputs in the format its suite reads, which is
+    # specimen text rather than a skill file, so the guidelines do not reach it.
     files = []
     scripts = []
     for name in options.roots:
         root = Path(name).resolve()
-        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))]
+        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
+                  if 'fixtures' not in path.relative_to(root).parts]
         scripts += [(path, root.parent) for path in sorted(root.rglob('*'))
                     if path.suffix in SCRIPT_SUFFIXES and 'scripts' in path.relative_to(root.parent).parts]
 

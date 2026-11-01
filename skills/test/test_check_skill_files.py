@@ -422,7 +422,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_modes_directory_requires_procedure_and_outcomes(self):
-        self.write('modes/plan.md', '# Plan\n')
+        self.write('modes/plan.md', '# Plan\n\nA plan.\n')
         self.assertEqual([kind for _, _, kind in self.findings()],
                          ['section missing', 'section missing'])
 
@@ -522,6 +522,115 @@ class SkillFileChecks(unittest.TestCase):
     def test_the_command_exits_zero_when_clean(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         self.assertEqual(self.run_command(), 0)
+
+
+class EmptySectionChecks(unittest.TestCase):
+    """A heading whose section holds nothing, measured over seeded files."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def empty(self, text):
+        path = self.skill / 'guide.md'
+        path.write_text(text)
+        lines, _, headings = checker.scan(path)
+        return [title for _, title in checker.empty_sections(lines, headings)]
+
+    def test_a_heading_followed_by_a_heading_of_its_level_is_reported(self):
+        self.assertEqual(self.empty('# Guide\n\nA sentence.\n\n## Sources\n\n## Sessions\n\nA sentence.\n'),
+                         ['Sources'])
+
+    def test_a_heading_at_the_end_of_the_file_is_reported(self):
+        self.assertEqual(self.empty('# Guide\n\nA sentence.\n\n## Sources\n'), ['Sources'])
+
+    def test_a_heading_whose_body_is_its_sub_sections_is_clean(self):
+        self.assertEqual(self.empty('# Guide\n\n## Terms\n\n### Branch\n\nA sentence.\n'), [])
+
+    def test_an_empty_sub_section_is_reported_beneath_a_clean_parent(self):
+        self.assertEqual(self.empty('# Guide\n\n## Terms\n\n### Branch\n\n### Base\n\nA sentence.\n'),
+                         ['Branch'])
+
+    def test_a_fenced_example_is_content(self):
+        self.assertEqual(self.empty('# Guide\n\n## Example\n\n```bash\nrun\n```\n'), [])
+
+    def test_a_heading_inside_a_fence_is_neither_reported_nor_a_boundary(self):
+        self.assertEqual(self.empty('# Guide\n\n## Template\n\n```markdown\n## Empty\n```\n'), [])
+
+    def test_the_command_reports_the_heading_and_its_file(self):
+        (self.skill / 'SKILL.md').write_text('# Specimen\n\nA sentence.\n\n## Sources\n\n## Sessions\n\nA sentence.\n')
+        output = io.StringIO()
+        with redirect_stdout(output):
+            status = checker.main([str(self.skill)])
+        self.assertEqual(status, 1)
+        self.assertIn('specimen/SKILL.md:5: heading without content — Sources', output.getvalue())
+
+    def test_a_fixture_tree_is_not_a_skill_file(self):
+        fixture = self.skill / 'test' / 'fixtures' / 'corpus.md'
+        fixture.parent.mkdir(parents=True)
+        fixture.write_text('## Outputs\n### report\n')
+        (self.skill / 'SKILL.md').write_text('# Specimen\n\nA sentence.\n')
+        with redirect_stdout(io.StringIO()):
+            self.assertEqual(checker.main([str(self.skill)]), 0)
+
+
+class ParallelSectionMood(unittest.TestCase):
+    """Sibling sections whose titles end in one word open in one mood."""
+
+    COMMANDS = ('## Commands\n\n### Check Shell Syntax\n\nParse a script.\n\n'
+                '### Validate Compose\n\nResolve the file.\n')
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def findings(self, text):
+        path = self.skill / 'coverage.md'
+        path.write_text(text)
+        cited, called = checker.citations([path], {})
+        return [(line, detail) for _, line, kind, detail
+                in checker.check(path, self.root, {}, cited, called, {})
+                if kind == 'parallel section in another mood']
+
+    def test_a_section_directing_among_stating_siblings_is_reported(self):
+        found = self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            'For engine work, [Check Shell Syntax](#check-shell-syntax) and '
+            '[Validate Compose](#validate-compose) establish the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) for changed helpers.\n\n'
+            '## Workflows Coverage\n\nUse [Validate Compose](#validate-compose) for the corpus.\n\n'
+            + self.COMMANDS)
+        self.assertEqual(found, [(7, 'Docker Coverage directs, Main Coverage states'),
+                                 (11, 'Workflows Coverage directs, Main Coverage states')])
+
+    def test_siblings_in_one_mood_report_nothing(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) establishes the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) covers changed helpers, and '
+            '[Validate Compose](#validate-compose) resolves the file.\n\n'
+            '## Workspace Coverage\n\nThe check exercises the scripts.\n\n' + self.COMMANDS), [])
+
+    def test_specifications_directing_together_report_nothing(self):
+        self.assertEqual(self.findings('# Coverage\n\n' + self.COMMANDS), [])
+
+    def test_sections_of_different_kinds_or_parents_are_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Images\n\nUse the reviewed files.\n\n'
+            '### Build Coverage\n\nUse a disposable tree.\n'), [])
+
+    def test_an_opening_neither_mood_decides_is_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Coverage\n\nEngine tests alone do not cover this.\n\n'
+            '## Shell Coverage\n\n- **Helpers.**  Use disposable directories.\n'), [])
 
 
 SHARED_GUIDE = ('# Skill Guidelines\n\n## Prose\n\nHow prose is written.\n\n'
