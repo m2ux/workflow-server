@@ -1,6 +1,6 @@
 # W26 Test Results
 
-Evaluated at commit `93b26f7c4` on `i11/e10/w26-each-command-names-the`, which merges `i11/e10/workspace` at `a924c02f4`.
+Evaluated at commit `3345e7a45` on `i11/e10/w26-each-command-names-the`, which merges `i11/e10/workspace` at `04bfa7a8c`.
 
 Changed paths: `skills/work-planner/SKILL.md`, `skills/work-planner/test/test_checkouts.py`, and files under `skills/work-planner/artifacts/` (delivery-branches, delivery-brief, planning-record, pull-request, repository-graph), `skills/work-planner/modes/` (all ten) and `skills/work-planner/protocols/` (all six). All lie within the work item's file-change declaration.
 
@@ -40,4 +40,4 @@ Also failing: the vocabulary (SKILL.md states no Checkouts), each mode and proto
 
 **The skill suite and skill check hold**.
 
-`sbx python3 -m pytest skills/work-planner/test -q` — 652 passed, 1 skipped, 1818 subtests passed. `sbx python3 skills/scripts/check_skill_files.py skills` — 77 files checked, 0 findings.
+`sbx python3 -m pytest skills/work-planner/test -q` — 652 passed, 1 skipped, 1819 subtests passed. `sbx python3 skills/scripts/check_skill_files.py skills/work-planner` — 50 files checked, 0 findings. Over all of `skills`, the 38 findings stand in gitnexus and server-in-the-loop, identical on the epic base at `04bfa7a8c`; this change adds none.
