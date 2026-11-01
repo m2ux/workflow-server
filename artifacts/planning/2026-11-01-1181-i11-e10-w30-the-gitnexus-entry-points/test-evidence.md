@@ -34,4 +34,4 @@ The skill leaves the gate's exclusions: `EXCLUDED` in `.github/workflows/verify-
 
 The skill-check gate on the pull request's head.
 
-- RESULT_T4
+- [Run 41294956915](https://github.com/m2ux/workflow-server/actions/runs/41294956915) at `4c4827156`: both jobs succeed.
