@@ -153,7 +153,7 @@ A task row naming another epic's row starts once that row is delivered and each 
 - **Available.**
   The output is an ancestor of the consumer epic's base on that branch, as the remote holds it at the evaluated commit, or of the long-lived branch itself while the consumer has no base there. An output another repository holds is available once it has reached its long-lived branch: delivered there, or carried by an integration pull request merged after it.
 - **Not available.**
-  A merge into the producer's own base alone, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
+  A merge into the producer's own base alone, a merge into a ref that is neither an epic base nor a long-lived branch, such as a task branch, an output recording no merge commit, a commit the checkout does not hold, and a consumer base moved to a commit without the output each leave the row waiting.
 - **Not gates.**
   The producer epic's other rows and its closure.
 - **Record.**

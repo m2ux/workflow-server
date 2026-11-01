@@ -7,9 +7,10 @@ issues.json is one repository's issues as the REST API returns them: the concate
 `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100"` writes, or one issue as
 `gh api repos/{owner}/{repo}/issues/943` writes it. Pull requests among them are skipped.
 
-The output written to --out maps each issue number to the pull requests its Development field
-holds, open, closed and merged, each as {repo, number, state}; an issue with none maps to an empty
-array.
+The output written to --out names the repository the issues belong to, and maps each issue number
+to the pull requests its Development field holds, open, closed and merged, each as
+{repo, number, state}; an issue with none maps to an empty array:
+{"repository": "o/r", "issues": {"943": [...]}}.
 
 Each batch of issues costs one `gh api graphql` call, so the script runs where `gh` reaches the
 tracker. A relation the tracker could not read is named, nothing is written, and the run exits 1.
@@ -41,7 +42,7 @@ def main() -> int:
     development = {str(number): [{'repo': p['repository']['nameWithOwner'], 'number': p['number'],
                                   'state': p['state']} for p in held[repo, number]]
                    for repo, number in keys}
-    Path(args.out).write_text(json.dumps(development, indent=2) + '\n')
+    Path(args.out).write_text(json.dumps({'repository': repos[0], 'issues': development}, indent=2) + '\n')
     print(f'{len(development)} issue(s), {sum(len(v) for v in development.values())} link(s)')
     return 0
 

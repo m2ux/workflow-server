@@ -139,7 +139,10 @@ class IssueEnd(unittest.TestCase):
             root = Path(tmp)
             done, out = issue_end(root, tracker(root, RELATION, states={952: 'OPEN'}), self.ISSUES)
             self.assertEqual(done.returncode, 0, done.stderr)
-            development = json.loads(out.read_text())
+            snapshot = json.loads(out.read_text())
+        self.assertEqual(sorted(snapshot), ['issues', 'repository'])
+        self.assertEqual(snapshot['repository'], 'o/r')
+        development = snapshot['issues']
         self.assertEqual(sorted(development), ['3', '4', '6', '7', '8'])
         self.assertEqual(development['3'], [{'repo': 'o/r', 'number': 950, 'state': 'MERGED'},
                                             {'repo': 'o/s', 'number': 952, 'state': 'OPEN'}])
@@ -156,7 +159,7 @@ class IssueEnd(unittest.TestCase):
             self.assertEqual((by_pull.returncode, by_issue.returncode), (0, 0), by_pull.stderr + by_issue.stderr)
             from_pulls = {(e['number'], r['number']) for e in json.loads(links.read_text())
                           for r in e['closingIssuesReferences']}
-            from_issues = {(p['number'], int(n)) for n, held in json.loads(development.read_text()).items()
+            from_issues = {(p['number'], int(n)) for n, held in json.loads(development.read_text())['issues'].items()
                            for p in held}
         self.assertEqual(from_issues, from_pulls)
         self.assertGreater(max(sum(1 for pair in from_pulls if pair[1] == n) for n in range(1, 8)), 2)

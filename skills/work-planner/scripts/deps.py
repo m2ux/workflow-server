@@ -469,7 +469,7 @@ def main(argv: list[str]) -> int:
                 via = next((x for x in sorted(ancestors(key) - units[key]) if a in ancestors(x)), None)
                 if via:
                     problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')
-        for unit in sorted(set(units.values()), key=sorted):
+        for unit in sorted({u for u in units.values() if len(u) > 1}, key=sorted):
             count = len(covered(unit, criteria))
             if count > UNIT_BOUND:
                 problems.append(f'{", ".join(sorted(unit))}: joined unit covers {count} criteria, '
