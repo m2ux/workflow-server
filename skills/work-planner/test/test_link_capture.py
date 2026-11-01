@@ -245,6 +245,42 @@ class Reader(unittest.TestCase):
                 self.assertEqual(unreadable, dict.fromkeys([('o/r', 1), ('o/r', 2)], 'API rate limit exceeded'))
 
 
+class FailedCall(unittest.TestCase):
+    """development.gh over a gh call that fails before any subject is read."""
+
+    def call(self, code: int, stdout: str, stderr: str = '') -> str:
+        sys.path.insert(0, str(SCRIPTS))
+        import development
+        done = subprocess.CompletedProcess([], code, stdout, stderr)
+        original = development.subprocess.run
+        development.subprocess.run = lambda *a, **k: done
+        try:
+            with self.assertRaises(SystemExit) as raised:
+                development.gh(Path('query.graphql'))
+        finally:
+            development.subprocess.run = original
+        return str(raised.exception.code)
+
+    def test_a_rejected_call_names_what_gh_reported(self):
+        self.assertIn('Bad credentials',
+                      self.call(1, '{"message": "Bad credentials", "status": "401"}', 'gh: Bad credentials (HTTP 401)'))
+
+    def test_output_that_is_not_json_names_gh_stderr(self):
+        self.assertIn('connection reset', self.call(1, '', 'connection reset by peer'))
+
+    def test_graphql_errors_return_for_each_subject(self):
+        sys.path.insert(0, str(SCRIPTS))
+        import development
+        body = {'data': {'r0': {'p1': None}}, 'errors': [{'path': ['r0', 'p1'], 'message': 'Could not resolve'}]}
+        done = subprocess.CompletedProcess([], 1, json.dumps(body), '')
+        original = development.subprocess.run
+        development.subprocess.run = lambda *a, **k: done
+        try:
+            self.assertEqual(development.gh(Path('query.graphql')), body)
+        finally:
+            development.subprocess.run = original
+
+
 class Query(unittest.TestCase):
     def test_the_query_carries_no_variable(self):
         sys.path.insert(0, str(SCRIPTS))

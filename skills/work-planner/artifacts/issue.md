@@ -451,6 +451,7 @@ Writes each issue's Development pull requests, read from the issue end of the re
 - Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
 - Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.
+- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 ```bash
 cd "<workspace>" && python3 skills/work-planner/scripts/links-by-issue.py --issues '<issues-json-file>' --out '<issue-development-file>'
