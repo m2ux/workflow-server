@@ -1,6 +1,6 @@
 # W04 Delivery Evidence
 
-Branch `i11/e09/w04-ready-and-backlog-follow`, cut from `i11/e09/workspace` at `3f7915377`. Evaluated at `eede7395e`.
+Branch `i11/e09/w04-ready-and-backlog-follow`, cut from `i11/e09/workspace` at `3f7915377`. Evaluated at `eede7395e`, and again at `9abfb5912` after merging the epic base at `cd8e9cd9f` (W07, #1501).
 
 Changed paths: `skills/work-planner/scripts/board.py`, `scripts/board-queue.py`, `test/test_board.py`, `test/test_board_queue.py`, `artifacts/board-queue.md`, `modes/advance-mode.md`. Each is in the work item's file-change declaration.
 
@@ -29,8 +29,8 @@ Queue fixtures in `test_board_queue.py` `BacklogTakesTheTree`, and `test_a_backl
 
 ## Suite
 
-- `python3 -m unittest discover -s test` from `skills/work-planner`: 513 tests, OK.
-- `python3 -m pytest skills/work-planner/test -q`: 513 passed, 1029 subtests passed.
+- `python3 -m unittest discover -s test` from `skills/work-planner`: 513 tests, OK at `eede7395e`; 523 tests, OK at `9abfb5912`.
+- `python3 -m pytest skills/work-planner/test -q`: 513 passed at `eede7395e`; 523 passed, 1029 subtests passed at `9abfb5912`.
 
 ## Documents
 
