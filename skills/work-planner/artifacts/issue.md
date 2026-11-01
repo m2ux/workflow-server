@@ -86,7 +86,7 @@ The issue's current content and complete Development snapshot.
 **Inputs:** Issue identity, authenticated access, observed repository auto-closing setting and issue and Development output paths.
 
 1. Run [Fetch Tracker Issue](#fetch-tracker-issue) into `issue-943.json` or the supplied path.
-2. Run [Read Issue Development](#read-issue-development) with that file for the entire field across repositories and states. An unreadable relation returns incomplete evidence; an empty array means the field was checked and empty.
+2. Run [Read Issue Development](#read-issue-development) with that file for the entire field across repositories and states. An unreadable relation is incomplete evidence, which blocks the caller; an empty array means the field was checked and empty.
 3. Run [Write Development Snapshot](#write-development-snapshot) with the issue identity, the URL of each pull request the read returned, completeness result and repository setting, saving `development-943.json` or the supplied path.
    - Set `complete` true only after the full read, and `auto_close_issues` false only after the repository setting is confirmed disabled.
 4. Return both files and any incomplete evidence. The caller supplies fresh linked pull request records in `development-prs-943.json`.
@@ -98,7 +98,7 @@ The Development pull requests of one issue, or of every issue in one repository,
 **Inputs:** One issue's JSON or one repository's issue collection, authenticated access and destination file.
 
 1. Run [Capture Issue Links](#capture-issue-links) with the supplied issues and destination.
-2. Return each issue's observed pull requests, or each unreadable relation the capture names as incomplete evidence.
+2. Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
 
 ### *Confirm* Repository Auto-Close
 
@@ -410,7 +410,8 @@ Writes each issue's Development pull requests, read from the issue end of the re
 
 - Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
 - Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
-- Exit 0 means every relation was read. Exit 1 names each unreadable relation and writes nothing.
+- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
+- Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.
 
 ```bash
 cd "<workspace>" && python3 skills/work-planner/scripts/links-by-issue.py --issues '<issues-json-file>' --out '<issue-development-file>'

@@ -2,6 +2,8 @@
 
 Each capture runs against a stand-in `gh` that answers the query file from a held relation, two
 linked nodes to a page, so a relation longer than a page is read across pages.
+The shared reader is also run over
+hand-written tracker responses, one for each way a relation fails to arrive whole.
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
@@ -19,7 +21,7 @@ from fixtures import SCRIPTS, epic_body, issue, pr, run, url
 TRACKER = r'''import json, re, sys
 relation = json.load(open(sys.argv[0] + '.json'))
 text = open(sys.argv[sys.argv.index('-F') + 1].split('@', 1)[1]).read()
-data = {}
+data, errors = {}, []
 for alias, owner, name, body in re.findall(r'(r\d+): repository\(owner: "([^"]+)", name: "([^"]+)"\) \{\n(.*?)\n  \}', text, re.S):
     repo, block = owner + '/' + name, {}
     for line in body.splitlines():
@@ -28,20 +30,22 @@ for alias, owner, name, body in re.findall(r'(r\d+): repository\(owner: "([^"]+)
         held = relation.get(field, {}).get(repo + '#' + number, [] if field == 'issue' else None)
         if held is None:
             block[sub] = None
+            errors.append({'path': [alias, sub], 'message': 'Could not resolve ' + field + ' ' + number + '.'})
             continue
         start = int(after or 0)
         block[sub] = {'number': int(number), connection: {
             'nodes': held[start:start + 2],
             'pageInfo': {'hasNextPage': start + 2 < len(held), 'endCursor': str(start + 2)}}}
     data[alias] = block
-print(json.dumps({'data': data}))
+print(json.dumps({'data': data, **({'errors': errors} if errors else {})}))
 '''
 
 
 def tracker(root: Path, links: dict[tuple[str, int], list[tuple[str, int]]], states: dict[int, str] = {},
-            missing: tuple[int, ...] = ()) -> dict[str, str]:
+            missing: tuple[int, ...] = (), unread: tuple[int, ...] = ()) -> dict[str, str]:
     """The environment a capture runs in: a stand-in gh holding each pull request's linked issues,
-    and the same relation read from each issue, short of each pull request named missing."""
+    and the same relation read from each issue, short of each pull request named missing and each
+    issue named unread, which the tracker answers with a null node and an error naming it."""
     pulls, issues = {}, {}
     for (repo, number), linked in links.items():
         if number not in missing:
@@ -49,6 +53,8 @@ def tracker(root: Path, links: dict[tuple[str, int], list[tuple[str, int]]], sta
         for issue_repo, n in linked:
             issues.setdefault(f'{issue_repo}#{n}', []).append(
                 {'number': number, 'state': states.get(number, 'MERGED'), 'repository': {'nameWithOwner': repo}})
+    for n in unread:
+        issues[f'o/r#{n}'] = None
     gh = root / 'bin' / 'gh'
     gh.parent.mkdir()
     gh.write_text(f'#!{sys.executable}\n' + TRACKER)
@@ -103,7 +109,7 @@ class PullRequestEnd(unittest.TestCase):
             root = Path(tmp)
             done, out = pull_end(root, tracker(root, RELATION, missing=(951,)), PULLS)
             self.assertEqual(done.returncode, 1)
-            self.assertIn('unreadable: pull request o/r#951', done.stdout)
+            self.assertIn('unreadable: pull request o/r#951: Could not resolve pullRequest 951.', done.stdout)
             self.assertFalse(out.exists())
 
     def test_the_sync_reads_the_snapshot(self):
@@ -155,12 +161,88 @@ class IssueEnd(unittest.TestCase):
         self.assertEqual(from_issues, from_pulls)
         self.assertGreater(max(sum(1 for pair in from_pulls if pair[1] == n) for n in range(1, 8)), 2)
 
+    def test_an_unread_relation_writes_nothing(self):
+        for unread in ((4,), (8,)):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                done, out = issue_end(root, tracker(root, RELATION, unread=unread), self.ISSUES)
+                self.assertEqual(done.returncode, 1, done.stdout + done.stderr)
+                self.assertEqual(done.stdout.strip(), f'unreadable: issue o/r#{unread[0]}: '
+                                 f'Could not resolve issue {unread[0]}.')
+                self.assertFalse(out.exists())
+
     def test_issues_from_two_repositories_are_refused(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             done, _ = issue_end(root, tracker(root, RELATION), [issue(3, 'One'), issue(5, 'Two', repo='o/s')])
             self.assertNotEqual(done.returncode, 0)
             self.assertIn('supply one repository', done.stderr)
+
+
+def page(nodes: list | None, more: bool = False, cursor: str | None = 'c') -> dict:
+    """One page of a pull request's closing-issue relation."""
+    return {'closingIssuesReferences': {'nodes': nodes, 'pageInfo': {'hasNextPage': more, 'endCursor': cursor}}}
+
+
+LINKED = {'number': 3, 'repository': {'nameWithOwner': 'o/r'}}
+
+
+class Reader(unittest.TestCase):
+    """development.read over tracker responses, one per page, for pull requests o/r#1 and o/r#2."""
+
+    def read(self, *responses: dict) -> tuple[dict, dict]:
+        sys.path.insert(0, str(SCRIPTS))
+        from development import PULL_REQUEST, read
+        answers = iter(responses)
+        return read(PULL_REQUEST, [('o/r', 1), ('o/r', 2)], lambda _: next(answers))
+
+    def answer(self, first, second, errors=()) -> dict:
+        return {'data': {'r0': {'p1': first, 'p2': second}}, **({'errors': list(errors)} if errors else {})}
+
+    def test_an_empty_relation_read_whole_is_an_empty_link_set(self):
+        held, unreadable = self.read(self.answer(page([]), page([LINKED])))
+        self.assertEqual((held, unreadable), ({('o/r', 1): [], ('o/r', 2): [LINKED]}, {}))
+
+    def test_each_relation_not_read_whole_is_named_and_holds_no_links(self):
+        cases = {
+            'a null node': (self.answer(None, page([LINKED])), 'not returned'),
+            'an error naming the node': (
+                self.answer(None, page([LINKED]), [{'path': ['r0', 'p1'], 'message': 'Could not resolve'}]),
+                'Could not resolve'),
+            'an error beneath a returned node': (
+                self.answer(page([LINKED]), page([LINKED]),
+                            [{'path': ['r0', 'p1', 'closingIssuesReferences', 'nodes', 0], 'message': 'Forbidden'}]),
+                'Forbidden'),
+            'a null relation': (self.answer({'closingIssuesReferences': None}, page([LINKED])),
+                                'closingIssuesReferences not returned'),
+            'null nodes': (self.answer(page(None), page([LINKED])), 'closingIssuesReferences nodes not returned'),
+            'a null linked node': (self.answer(page([LINKED, None]), page([LINKED])),
+                                   'a linked node in closingIssuesReferences not returned'),
+            'no page information': (self.answer({'closingIssuesReferences': {'nodes': []}}, page([LINKED])),
+                                    'closingIssuesReferences page information not returned'),
+            'a further page with no cursor': (self.answer(page([LINKED], more=True, cursor=None), page([LINKED])),
+                                              'closingIssuesReferences reports a further page with no cursor'),
+        }
+        for case, (response, reason) in cases.items():
+            with self.subTest(case):
+                held, unreadable = self.read(response)
+                self.assertEqual(unreadable, {('o/r', 1): reason})
+                self.assertEqual(held, {('o/r', 2): [LINKED]})
+
+    def test_a_later_page_that_fails_drops_the_pages_read(self):
+        held, unreadable = self.read(
+            self.answer(page([LINKED], more=True), page([LINKED])),
+            {'data': {'r0': {'p1': None}},
+             'errors': [{'path': ['r0', 'p1'], 'message': 'Something went wrong'}]})
+        self.assertEqual((held, unreadable), ({('o/r', 2): [LINKED]}, {('o/r', 1): 'Something went wrong'}))
+
+    def test_an_error_reaching_every_subject_names_each(self):
+        for path in (None, ['r0']):
+            with self.subTest(path=path):
+                held, unreadable = self.read(self.answer(page([]), page([LINKED]),
+                                                         [{'path': path, 'message': 'API rate limit exceeded'}]))
+                self.assertEqual(held, {})
+                self.assertEqual(unreadable, dict.fromkeys([('o/r', 1), ('o/r', 2)], 'API rate limit exceeded'))
 
 
 class Query(unittest.TestCase):

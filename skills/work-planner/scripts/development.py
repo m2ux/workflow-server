@@ -6,8 +6,12 @@ a GraphQL variable is a literal dollar sign, which the workspace shell denies, s
 by file and carries every value inline. A relation longer than one page is read again from its end
 cursor until the tracker reports no further page, so each subject's links are the whole field.
 
-A subject the tracker returns no node for, or names in an error, is unreadable. Its relation is
-missing evidence, never an empty link set.
+A subject's relation is read only when every page of it arrives whole. A subject is unreadable when,
+on any page, the tracker returns no node for it, names it or anything beneath it in an error, sends
+an error with no path or one naming only its repository, returns its relation, nodes, page
+information or a linked node as null, or reports a further page with no cursor to read it. An
+unreadable relation is missing evidence, never an empty link set: its pages already read are dropped
+and its reason is reported.
 """
 import json
 import subprocess
@@ -77,6 +81,31 @@ def gh(path: Path) -> dict:
         sys.exit(f'GraphQL read failed: {(out.stderr or out.stdout).strip()[:400]}')
 
 
+def fault(end: End, node: dict | None, errors: list[tuple[tuple, str]], at: tuple[str, str]) -> str | None:
+    """What keeps one page of a subject's relation from being whole, or None for a whole page.
+
+    An error reaches the subject when its path is empty, names only the subject's repository, or
+    runs through the subject's alias."""
+    for path, message in errors:
+        if path[:2] == at[:len(path[:2])]:
+            return message or 'error without a message'
+    if node is None:
+        return 'not returned'
+    relation = node.get(end.connection)
+    if relation is None:
+        return f'{end.connection} not returned'
+    if relation.get('nodes') is None:
+        return f'{end.connection} nodes not returned'
+    if any(linked is None for linked in relation['nodes']):
+        return f'a linked node in {end.connection} not returned'
+    page = relation.get('pageInfo')
+    if page is None or not isinstance(page.get('hasNextPage'), bool):
+        return f'{end.connection} page information not returned'
+    if page['hasNextPage'] and not page.get('endCursor'):
+        return f'{end.connection} reports a further page with no cursor'
+    return None
+
+
 def read(end: End, keys: list[Key], send: Callable[[Path], dict] = gh) -> tuple[dict[Key, list[dict]], dict[Key, str]]:
     """Each subject's complete relation, and each unreadable subject with what the tracker said."""
     pending: dict[Key, str | None] = dict.fromkeys(keys)
@@ -89,15 +118,15 @@ def read(end: End, keys: list[Key], send: Callable[[Path], dict] = gh) -> tuple[
             path.write_text(query(end, batch))
             response = send(path)
             repos = {repo: f'r{n}' for n, repo in enumerate(dict.fromkeys(repo for repo, _ in batch))}
-            errors = {tuple(error.get('path') or ())[:2]: error.get('message', '')
-                      for error in response.get('errors') or []}
+            errors = [(tuple(error.get('path') or ()), error.get('message', ''))
+                      for error in response.get('errors') or []]
             data = response.get('data') or {}
-            for key, cursor in batch.items():
+            for key in batch:
                 repo_alias, alias = repos[key[0]], f'{end.alias}{key[1]}'
                 node = (data.get(repo_alias) or {}).get(alias)
-                if node is None:
-                    unreadable[key] = (errors.get((repo_alias, alias)) or errors.get((repo_alias,))
-                                       or next(iter(errors.values()), 'not returned'))
+                reason = fault(end, node, errors, (repo_alias, alias))
+                if reason:
+                    unreadable[key] = reason
                     del pending[key]
                     continue
                 relation = node[end.connection]
