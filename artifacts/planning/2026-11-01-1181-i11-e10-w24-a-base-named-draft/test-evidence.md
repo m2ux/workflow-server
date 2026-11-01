@@ -2,7 +2,7 @@
 
 > Delivery evidence · Created 2026-11-01
 
-Evaluated commit `65c95ebcdc65a83b6f0f2f0ae449fda5c1d477ca` on `i11/e10/w24-a-base-named-draft`, which holds `origin/i11/e10/workspace` at `8e747419a`. Tests run from the unit worktree under `sbx`.
+Evaluated commit `27dd83c20844115ea4b7f22b6dea924d8f03cd9d` on `i11/e10/w24-a-base-named-draft`, which holds `origin/i11/e10/workspace` at `f0d01fd3f`. Tests run from the unit worktree under `sbx`.
 
 Changed paths:
 
@@ -49,10 +49,10 @@ The comparison against the live repository, after `git fetch origin`, through `s
 
 ```text
 i11/e09/workspace (0, '')
-i11/e10/workspace (21, '')
+i11/e10/workspace (25, '')
 ```
 
-`i11/e09/workspace`, whose content landed through its review pull request, is level with `workspace` and would draw no draft line; `i11/e10/workspace` leads by 21 commits and would.
+`i11/e09/workspace`, whose content landed through its review pull request, is level with `workspace` and would draw no draft line; `i11/e10/workspace` leads by 25 commits and would.
 
 ## T5
 
@@ -62,7 +62,7 @@ The full work-planner suite.
 python3 -m pytest skills/work-planner/test -q
 ```
 
-634 passed, 1 skipped, 1136 subtests passed.
+636 passed, 1 skipped, 1137 subtests passed.
 
 ## T6
 
