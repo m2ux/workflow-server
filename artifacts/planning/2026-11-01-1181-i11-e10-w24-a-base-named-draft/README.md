@@ -14,9 +14,11 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | [W24 work item](w24.md) | Component, scope, design, criteria and test rows for W24 |
 | [Test evidence](test-evidence.md) | The evaluated commit, changed paths and the result of each Test Plan check |
+| [Change list](change-list.md) | Every plan change the delivery session applied or held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1559](https://github.com/m2ux/workflow-server/pull/1559) |
