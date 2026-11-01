@@ -15,6 +15,7 @@ Evaluated at `48279d5` on `i11/e16/w01-the-link-relation-read`, cut from `i11/e1
 | `skills/work-planner/artifacts/pull-request.md` | Fetch Pull Request Issue Links runs Capture Pull Request Links |
 | `skills/work-planner/artifacts/issue.md` | Read Issue Development runs Capture Issue Links |
 | `skills/work-planner/SKILL.md` | Scripts convention: a tracker-reading script runs outside `sbx` |
+| `skills/work-planner/test/test_align.py` | Calls `sync.test_plan_agreement` through its module, out of pytest collection |
 
 All paths sit inside the work item's file-change declaration.
 
@@ -49,4 +50,6 @@ Read against each other for pull requests in the collection, the 66 pull-request
 | `python3 -m pytest skills/test -q` (shared) | 76 passed |
 | `python3 skills/scripts/check_skill_files.py skills/work-planner` | 50 files, 0 findings |
 
-Under pytest the work-planner suite also collects `align.py`'s `test_plan_agreement` helper as a test and errors on its missing fixtures; that error is present on the base revision and is outside this change.
+## Align Test Collection
+
+Under pytest the work-planner suite collected `sync.py`'s `test_plan_agreement`, imported by name into `test_align.py`, as a test, and errored on its missing fixtures; the error is present on the epic base and outside the capture change. Classified trivial debt and fixed in this unit at `816eb80`: `test_align.py` calls it as `sync.test_plan_agreement`. `python3 -m pytest skills/work-planner/test -q`: 480 passed, no errors.
