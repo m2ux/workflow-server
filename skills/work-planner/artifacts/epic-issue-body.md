@@ -207,6 +207,33 @@ An epic criterion meets the [shared acceptance criteria](issue-body.md#shared-ac
 
 Each question holds only what is undecided and has a recommendation in the planning record. A settled point belongs in that record. No question remains when the epic starts.
 
+### Required Criteria
+
+A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string:
+
+| Field | What it states |
+| --- | --- |
+| `branch` | The long-lived branch that brings the criterion. An epic carries it when a task row's work reaches this branch. |
+| `criterion` | The criterion's text, which the epic carries after its `**ACn.**` label. |
+| `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. |
+| `row` | The Description of the task row that delivers the criterion. |
+
+- **An absent statement is unevaluable.**
+  A missing or empty file, an empty array, unreadable JSON, or an entry lacking a field leaves the project's required criteria unevaluable. The check reports that and names what is missing, and reports no epic as lacking a criterion. A project declaring nothing acquires no other project's criteria.
+- **Example.**
+  workflow-server requires its corpus audit:
+
+  ```json
+  [
+    {
+      "branch": "workflows",
+      "criterion": "The definitions this epic changes carry no outstanding confirmed finding, as the canon audit's coverage report shows.",
+      "phrase": "canon audit",
+      "row": "Canon audit of the changed definitions"
+    }
+  ]
+  ```
+
 ### Corpus Audit
 
 An epic whose tasks change workflow definitions carries this criterion, and a final task row delivers it:
