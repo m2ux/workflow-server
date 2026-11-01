@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-This record holds the fixes for the agent review of the I11:E16 integration pull request. Each finding is fixed on the epic base by its own pull request and row, W09 to W12.
+This record holds the fixes for the agent review of the I11:E16 integration pull request. Each finding is fixed on the epic base by its own pull request and row, W09 to W13.
 
 The review found the revision helper unrunnable as specified, a capture with no record supplied, a refused read misreported, and AC8's draft case unexercised. Each fix is validated on its own branch before merge.
 

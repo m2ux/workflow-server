@@ -29,3 +29,10 @@ Each fix answers one finding of the agent review of [#1505](https://github.com/m
 
 - `Live` in `test_development_link.py`, run outside `sbx` with `WORK_PLANNER_LIVE_LINK='m2ux/workflow-server#1474 m2ux/workflow-server#1505'`: #1505 is a draft targeting `workspace` (default `main`); two adds each verified, the issue holding #1505 once and #1505 holding the issue. 1 passed.
 - Full suite without the variable: 541 passed, 1 skipped, 1078 subtests passed. `check_skill_files.py skills/work-planner`: 0 findings.
+
+## W13
+
+**Finding.** The re-review at `cea293b1a56b225359d9b40ede2bc2fc84492e6f` found SKILL.md's Scripts convention naming only tracker reads as running outside `sbx`, which Run at Revision now contradicts.
+
+- The convention names a script that adds a worktree alongside one that reaches the tracker.
+- Full suite: 544 passed, 1 skipped, 1078 subtests passed. `check_skill_files.py skills/work-planner`: 0 findings.
