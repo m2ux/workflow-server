@@ -1533,6 +1533,12 @@ class BranchContract(unittest.TestCase):
         self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
                       'i01/e00/workspace', out)
 
+    def test_a_head_without_a_slug_names_no_branch_by_its_name(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w03-other', head='main'),
+                             pr(951, '[I01:E00] Other', base='i01/e00/main', head='workspace')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
     def test_a_single_branch_slug_ending_in_a_branch_name_yields_to_its_target(self):
         out = self.run_sync([pr(950, '[I01:E00] Tidy', base='main', head='i01/e00/w04-tidy-workspace')])
         self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
