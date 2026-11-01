@@ -82,6 +82,20 @@ class RowPrerequisites(unittest.TestCase):
         self.assertIn('consumer: I02:E00:W01 o/other#9 available on o/other main by o/other#12',
                       board.outputs.lines)
 
+    def test_a_cross_repository_output_merged_into_a_task_branch_is_unverified(self):
+        upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
+                         body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
+        key = ('o/r', 3)
+        dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other',
+                    base='i02/e00/w02-stack', head='i02/e00/w01-produce')]
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
+        self.assertEqual(board.outputs.lines, ['consumer: I02:E00:W01 o/other#9 unverified: it merged into '
+                                               'i02/e00/w02-stack, which is neither an epic base nor a '
+                                               'long-lived branch'])
+
     def test_an_integration_merged_before_the_delivery_does_not_carry_it(self):
         upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
                          body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))

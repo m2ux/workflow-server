@@ -18,6 +18,7 @@ Read these files first.
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Board](../artifacts/board.md)
+- [Work Item](../artifacts/work-item.md)
 - [Understand Mode](understand-mode.md)
 - [Board Delivery](../artifacts/board-delivery.md)
 - [Issue Closure](../protocols/issue-closure.md)
@@ -90,6 +91,7 @@ The main path meets [Outcomes](#outcomes).
        - The close step opens or merges that pull request.
      - **Target.**
        - Retarget an open pull request to the base it names with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
+         - Where it names one of several, retarget to the base of the long-lived branch its work item's [Component](../artifacts/work-item.md#component) names.
        - Put a merged one to the user, since its merge cannot be moved.
      - **References.**
        - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.

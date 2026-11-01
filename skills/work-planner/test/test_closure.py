@@ -60,6 +60,11 @@ class Closure(unittest.TestCase):
         self.assertIn('closure blocked: unreadable evidence (the Development snapshot holds o/other issues, '
                       'not o/r)', result.stdout)
 
+    def test_a_snapshot_naming_the_repository_in_another_case_passes(self):
+        result = self.check({'2': []}, repository='O/R')
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertIn('closure gate: passed', result.stdout)
+
     def test_unticked_or_absent_criteria_block(self):
         for body in (BODY.replace('[x]', '[ ]'), ''):
             with self.subTest(body=body):
