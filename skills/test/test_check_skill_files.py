@@ -1703,5 +1703,76 @@ class ReviewedCheckCases(unittest.TestCase):
         self.assertEqual(self.found('parallel section in another mood'), [])
 
 
+WORKFLOW = Path(__file__).resolve().parents[2] / '.github' / 'workflows' / 'verify-skills.yml'
+
+
+class SkillCheckWorkflow(unittest.TestCase):
+    """The skill-check workflow's job steps, run over a seeded `skills/`
+    tree: alpha holds a command specification beta's prose cites, so alpha
+    judged alone reports it as cited by nothing."""
+
+    CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
+    JUMP = '\n#### Too deep\n\nA sentence.\n'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        scripts = self.root / 'skills' / 'scripts'
+        scripts.mkdir(parents=True)
+        shutil.copy(Path(checker.__file__), scripts)
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n')
+        self.write('alpha/references/catalog.md', self.CATALOG)
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n')
+
+    def write(self, name, text):
+        path = self.root / 'skills' / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def run_jobs(self, excluded):
+        """Every run step of every job, in order, with `EXCLUDED` set; the
+        workflow passes when each step exits zero."""
+        import yaml
+        workflow = yaml.safe_load(WORKFLOW.read_text())
+        env = {**os.environ, **workflow.get('env', {}), 'EXCLUDED': excluded}
+        output, passed = '', True
+        for job in workflow['jobs'].values():
+            for step in job['steps']:
+                if 'run' not in step:
+                    continue
+                run = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', step['run']],
+                                     cwd=self.root, env=env, capture_output=True, text=True)
+                output += run.stdout + run.stderr
+                passed = passed and run.returncode == 0
+        return passed, output
+
+    def test_the_seeded_tree_reports_nothing_judged_whole(self):
+        self.assertEqual(self.run_jobs(''), (True, '3 files checked, 0 findings\n'))
+
+    def test_an_exclusion_only_isolation_supports_fails(self):
+        passed, output = self.run_jobs('alpha')
+        self.assertFalse(passed)
+        self.assertIn('alpha', output)
+
+    def test_an_excluded_skill_with_a_finding_in_the_whole_tree_passes(self):
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
+        self.assertTrue(self.run_jobs('alpha')[0])
+
+    def test_every_skill_excluded_passes(self):
+        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
+        self.assertTrue(self.run_jobs('alpha beta')[0])
+
+    def test_a_finding_in_scope_fails(self):
+        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
+                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
+        self.assertFalse(self.run_jobs('')[0])
+
+    def test_an_exclusion_naming_no_skill_fails(self):
+        self.assertFalse(self.run_jobs('gamma')[0])
+
+
 if __name__ == '__main__':
     unittest.main()
