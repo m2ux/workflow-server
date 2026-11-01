@@ -16,7 +16,7 @@ Changes the skill itself: its entry point, mode files, shared guides, commands a
    Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
-   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). Changes to shared rules or templates also run their affected consumer suites.
+   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). A change to the audit scripts also runs [their tests](#run-audit-script-tests). Changes to shared rules or templates also run their affected consumer suites.
    - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
    - Walk a representative request through each changed decision.
    - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
@@ -144,4 +144,15 @@ Drives the edit guard over seeded edits in temporary git repositories, with a st
 
 ```bash
 python3 -m unittest discover -s skills/workflow-canon/test -p test_edit_guard.py
+```
+
+### Run Audit Script Tests
+
+Run inventory, evidence-gate and assignment regressions with the paired parser.
+
+- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
+- Each engine-bound test skips while `CANON_TEST_ENGINE` is unset.
+
+```bash
+CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
 ```

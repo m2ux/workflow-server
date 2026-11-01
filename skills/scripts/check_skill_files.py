@@ -22,7 +22,10 @@ whatever its mood, order or count, so a sibling specification, a statement
 of what a command does, and a sentence routing three commands in sequence
 all name a command without running it. A skill's entry point holds no
 command of its own, so a
-specification standing there is reported wherever it is cited from.
+specification standing there is reported wherever it is cited from. A
+specification no procedure runs has no caller to place it, so it stays with
+the subject of the file whose prose or sibling specification names it; one
+nothing cites has no reader, and is reported whatever structure holds it.
 
 Reach is a second relation over the same citations. A citation is required
 where the reader must load its target to carry on: a procedure's step, a
@@ -436,6 +439,9 @@ def check(path, root, cache, cited, called, structures=None):
 
     for index, title in empty_sections(lines, headings):
         report(index, 'heading without content', title)
+
+    for index, title in uncited_specifications(path, headings, entry, cited):
+        report(index, 'command specification nothing cites', title)
     return found
 
 
@@ -893,6 +899,20 @@ def reach(paths, structures=None):
             anchor = anchor_of(fragment) if fragment else ''
             reached.setdefault(destination, {}).setdefault(anchor, set()).add((path, kind))
     return reached
+
+
+def uncited_specifications(path, headings, entry, cited):
+    """Each command specification no file cites. One no procedure runs has no
+    caller to place it, so it stays with the subject of the file whose prose or
+    sibling specification names it. One nothing names at all has no reader,
+    whatever structure holds it. The entry point's specifications are reported
+    as misplaced already."""
+    if path.name == 'SKILL.md':
+        return
+    citing = cited.get(path, {})
+    for index, title in specifications(headings, held_section(entry)):
+        if not citing.get(anchor_of(title)):
+            yield index, title
 
 
 def main(argv=None):
