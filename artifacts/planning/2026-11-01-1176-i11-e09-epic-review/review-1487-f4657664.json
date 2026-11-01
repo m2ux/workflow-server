@@ -1,0 +1,56 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1487",
+    "head": "f465766477159c13dcbc389d9eaa1b0ea6dc2609",
+    "base": "67eb02353d05dbcdcd71e695fbd9233f0e931123",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1176-i11-e09-epic-review/review-1487-f4657664.json",
+    "reviewer": "Claude Opus 5.5 agent review (independent reviewer sub-agent, second review)",
+    "reviewed_at": "2026-11-01T08:28:57Z",
+    "scope": "Full integration diff 67eb0235...f4657664 (32 files under skills/work-planner): scripts board-queue.py (Queue.activate, park, shelve, pulls, place_sets, decide; pending, active), board.py (delivers, Board.active, Board.startable, main status resolution with RETAINED/UNPLACED), deliver.py (changed_bases, task_branches, names, survey, epic_state work-item read), sync.py (compose_id, epic_delivery, read_branches, epic_base_declarations, long_lived_names, list_long_lived, normalize_closed_table, title_repairs, main), agent_review.py (integration, epic_check), deps.py (read_components caller from deliver.py); tests fixtures.py, test_board.py, test_board_queue.py, test_deliver.py, test_sync.py, test_documents.py, test_align.py; artifact, mode and protocol prose including every Record Epic Delivery caller. Composition of the workspace merge f4657664 (E13 config/required-criteria.json, format.py Review/required_criteria, epic-issue-body.md Required Criteria, deliver-mode.md Dispatch) with E09's normalize_closed_table use of Review and the deliver-mode Create Task Worktree change: no conflict markers, Review(issue) with required=None is unaffected, and E13's branch reach reads pull request bases, independent of E09's Component branch prefix. Behaviour probed with scratch fixtures against the head and the base revision for board-queue.py waiting initiatives.",
+    "criteria": "Epic #1176 AC2-AC23 checked against their observing tests: AC2/AC3 test_board.py membership and reservation-only, PR-only and inactive fixtures; AC4/AC5/AC23 test_board_queue.py waiting and BacklogTakesTheTree classes; AC6/AC7/AC17/AC20 test_sync.py closed-epic normalization, title repairs, two links per task id and test_pull_request_linked_in_the_run_is_checked_for_its_prefix_in_that_run; AC8 test_documents.py themes; AC9-AC14 test_sync.py read_branches/epic_base_declarations fixtures with divergent, dirty and disagreeing revisions; AC15 by declaration on each long-lived branch (not re-run against remotes here); AC16/AC18 test_deliver.py test_a_unit_takes_a_branch_and_worktree_per_epic_base and test_a_unit_takes_only_the_epic_bases_its_rows_change; AC19 test_documents.py EpicDeliveryCallers; AC21 test_unstarted_epics_return_without_an_assignee_and_done_stays asserting the DELETE call and no POST; AC22 test_an_inactive_epic_in_progress_under_a_waiting_initiative_returns_to_backlog and the board-queue.py module docstring.",
+    "validation": "sbx python3 -m pytest skills/work-planner/test -q: 557 passed, 1064 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills/work-planner: 50 files checked, 0 findings. Scratch probes of board-queue.py at head and at base 67eb0235 confirmed the new finding below.",
+    "findings": [
+      {
+        "description": "AC4: an initiative kept In Progress only by open pull requests readied its epics (board-queue.py place_sets, activate, park). Verified fixed at head: place_sets adds a waiting next-set or lower initiative to Queue.waiting, Queue.activate returns before placing candidates for a waiting initiative, and Queue.park returns a waiting initiative's open epics to In Progress when active and Backlog otherwise; decide adds a waiting unplanned initiative too. Observed by test_an_initiative_waiting_in_the_next_set_readies_no_epic and its siblings.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1521"
+      },
+      {
+        "description": "deliver.py survey gave every unit a task branch and worktree per epic base whether or not it changes that long-lived branch. Verified fixed at head: survey calls changed_bases, which keeps only the bases whose long-lived branch a row's work-item Component declaration (branch:path) names, and reports undeclared rows (exit 1) instead of offering the unit; task_branches then names one branch per changed base. Observed by test_a_unit_takes_only_the_epic_bases_its_rows_change and test_a_unit_of_several_bases_declaring_none_is_undeclared.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1526"
+      },
+      {
+        "description": "Record Epic Delivery callers in deliver-mode.md, review-pull-request.md, epic-issue-body.md, align-mode.md and sync-mode.md omitted the fetched epic bases. Verified fixed at head: every Run/Re-run/Repeat of Record Epic Delivery in those files, task-merge.md and issue-delivery.md passes the fetched epic bases, and Record Epic Delivery maps each to --revision. Observed by test_documents.py EpicDeliveryCallers.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1524"
+      },
+      {
+        "description": "sync.py title_repairs ran before epic_delivery applied --link, so a pull request linked in the same run was prefix-checked only next run. Verified fixed at head: main calls title_repairs after epic_delivery, over rows epic_delivery has rewritten in place. Observed by test_pull_request_linked_in_the_run_is_checked_for_its_prefix_in_that_run.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1522"
+      },
+      {
+        "description": "test_board_queue.py test_unstarted_epics_return_without_an_assignee_and_done_stays asserted an assignee string a POST also matched. Verified fixed at head: the test asserts the full gh api --method DELETE calls for issues 1 and 3 and asserts no --method POST repos/o/r/issues/ call.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1523"
+      },
+      {
+        "description": "board-queue.py activate left an inactive epic In Progress under a waiting initiative. Verified fixed at head: Queue.park, for every initiative in Queue.waiting, places each open epic not In Review or Done at In Progress when active and Backlog otherwise, covering next-set, lower and unplanned waiting initiatives; activate also returns an inactive In Progress epic whose prerequisites are unmet to Backlog. Observed by test_an_inactive_epic_in_progress_under_a_waiting_initiative_returns_to_backlog (three subtests) and test_an_active_epic_under_a_waiting_initiative_is_in_progress.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1527"
+      },
+      {
+        "description": "board-queue.py Queue.place_sets demotes an initiative that board.py holds In Progress, so the queue and board delivery undo each other on every run. Queue.pulls/pending now count only pull requests board.delivers accepts, which excludes an epic's integration pull request (agent_review.integration), and the waiting() check reads only those pull requests, never a reserved row. Failing input: initiative I01 (priority 3) In Progress, its listed epic E00 In Review with only its integration pull request open (head i01/e00/main, base main), and I02 (priority 5) in Backlog. At head the queue prints 'I01: In Progress -> Ready' (and readies any unstarted sibling epic with met prerequisites, e.g. E01 Backlog -> Ready); at base 67eb0235 the same input printed 'wait #1 [I01]' and left I01 In Progress. board.py main sets an initiative In Progress whenever a listed epic is In Review or In Progress, and the DELIVERY jurisdiction permits Ready -> In Progress, so the next board delivery returns I01 to In Progress and the next queue run sets it Ready again. The same oscillation occurs when E00 is In Progress only through a reserved row with no pull request, although the module docstring says an initiative waits 'as board.py reads activity: a task row a session holds, or an open pull request'. Consequence: the board never settles for a next-set initiative awaiting an epic review merge or holding a reservation, and its unstarted epics are offered as Ready while it is not free.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]

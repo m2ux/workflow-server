@@ -13,7 +13,10 @@ The records gate the epic's handoff. An epic moves to In Review, and its review 
 | Artifact | What it holds |
 | --- | --- |
 | [W04 Waiting Initiative Fix](w04-waiting-initiative-fix.md) | The blocking AC4 finding on the `workspace` base, its fix and the tests that show it |
-| [Review #1487](review-1487.json) | Agent review record of the `workspace` integration at `400703b0`: the fixed AC4 finding and five nonblocking findings awaiting a ticket |
+| [Review #1487](review-1487.json) | Agent review record of the `workspace` integration at `400703b0`: the fixed AC4 finding and five nonblocking findings, later fixed by W12–W16 |
+| [Review #1487 at f4657664](review-1487-f4657664.json) | Second review, after `workspace` merged in: the six earlier findings fixed and a nonblocking queue finding open |
+| [Review #1487 at d46bc872](review-1487-d46bc872.json) | Third review: the queue finding (W18) and the unplanned-row finding (W17) fixed, and a blocking handed-off-epic finding open |
+| [Review #1487 at 318850f2](review-1487-318850f2.json) | Current review: all nine findings fixed (W19 the last), none open |
 | [Review #1506](review-1506.json) | Agent review record of the `main` integration at `1cd4a87d`, with no finding |
 | [Review #1497](review-1497.json) | Agent review record of the `workflows` integration at `7f76f53b`, with no finding and the pre-existing `corpus-links` failure |
 | [Review #1498](review-1498.json) | Agent review record of the `docker` integration at `8e276e55`, with no finding |
