@@ -365,13 +365,14 @@ class InitiativeStatus(unittest.TestCase):
                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
         self.assertIn('[I01:E00:W01] Go: Task: Backlog → Ready', out)
 
-    def task_pair(self, held: tuple[dict, ...], draft: bool = False) -> str:
+    def task_pair(self, held: tuple[dict, ...], draft: bool = False, base: str | None = None,
+                  head: str | None = None) -> str:
         """An epic whose W01 links a task issue, and an open pull request naming the epic."""
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Go', '')))
         task = issue(3, '[I01:E00:W01] Go: Task')
-        return self.open_pair('In Progress', 'In Progress', epic,
-                              json.dumps(pr(9, '[I01:E00] Go', draft=draft)) + '\n', held=held, tasks=(task,),
-                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        open_pr = pr(9, '[I01:E00] Go', draft=draft, base=base, head=head)
+        return self.open_pair('In Progress', 'In Progress', epic, json.dumps(open_pr) + '\n', held=held,
+                              tasks=(task,), statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
 
     def test_a_ready_pull_request_linking_the_task_issue_puts_it_in_progress(self):
         out = self.task_pair((links(9, 3),))
@@ -382,6 +383,13 @@ class InitiativeStatus(unittest.TestCase):
         out = self.task_pair((links(9, 3),), draft=True)
         self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Progress', out)
         self.assertNotIn('→ In Review', out)
+
+    def test_an_integration_pull_request_linking_the_task_issue_leaves_it_waiting(self):
+        for draft in (False, True):
+            with self.subTest(draft=draft):
+                out = self.task_pair((links(9, 3),), draft=draft, base='workspace', head='i01/e00/workspace')
+                self.assertNotIn('[I01:E00:W01] Go: Task: Backlog →', out)
+                self.assertIn('set #2 [I01:E00] First: Epic: In Progress → Backlog', out)
 
     def test_a_merged_pull_request_and_a_completed_task_issue_put_it_done(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Go', '')))
