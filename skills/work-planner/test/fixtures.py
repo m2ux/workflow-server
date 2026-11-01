@@ -102,3 +102,38 @@ def section(output: str, name: str) -> list[str]:
     start = lines.index(f'*{name}*') + 1
     end = next((i for i in range(start, len(lines)) if not lines[i]), len(lines))
     return lines[start:end]
+
+
+GIT = ('git', '-c', 'user.email=t@t', '-c', 'user.name=T', '-c', 'init.defaultBranch=main',
+       '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null')
+
+
+def git(cwd: Path, *args: str) -> str:
+    """Run git in cwd and return its output, failing the test on a git error."""
+    done = subprocess.run([*GIT, *args], cwd=cwd, capture_output=True, text=True)
+    assert done.returncode == 0, done.stderr
+    return done.stdout.strip()
+
+
+def commit_branches(checkout: Path, *names: str, message: str = 'state branches') -> str:
+    """Commit config/branches stating names in checkout, returning the commit."""
+    stated = checkout / 'config' / 'branches'
+    stated.parent.mkdir(parents=True, exist_ok=True)
+    stated.write_text(''.join(f'{name}\n' for name in names))
+    git(checkout, 'add', 'config/branches')
+    git(checkout, 'commit', '--allow-empty', '-m', message)
+    return git(checkout, 'rev-parse', 'HEAD')
+
+
+def repository(checkout: Path, *names: str) -> str:
+    """A repository on main whose one commit states the long-lived branches in config/branches."""
+    checkout.mkdir(parents=True, exist_ok=True)
+    git(checkout, 'init')
+    return commit_branches(checkout, *names)
+
+
+def declared(root: Path, *names: str) -> list[str]:
+    """The --project and --revision arguments of a repository whose HEAD states names."""
+    checkout = root / 'checkout'
+    repository(checkout, *names)
+    return ['--project', str(checkout), '--revision', 'HEAD']

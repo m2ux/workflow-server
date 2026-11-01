@@ -8,17 +8,28 @@ items.json is the board's items with the Status field, as board.py reads them. p
 sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
 the board is given with --others.
 
+An epic is active as board.py reads activity: a task row a session holds, or an open pull request
+naming the epic that is not its integration pull request. An open epic whose criteria are all ticked
+is handed off: board.py places it In Review, or In Progress while its agent review is missing, and
+the queue leaves it where it stands. An initiative In Progress waits while an epic its table lists
+is active, handed off or In Review, as board.py holds it In Progress. Only an epic the initiative's
+table lists counts.
+
 The moves follow the Board Queue field conditions, rendered by statuses.py within the QUEUE jurisdiction, which
 refuses In Review, Done and any task. Printed: the gh call for each Status and assignee change,
 an order line for each kind when nothing is In Progress and no initiative has a priority, an ask
 line for an initiative In Progress with no priority, a tie line when labelled initiatives share
-the highest rank, a wait line for an open pull request, and a next line for epics.
+the highest rank, a wait line for an initiative held In Progress, a reconcile line for an initiative
+returning to Backlog while an epic has work under way or is In Review, and a next line for epics.
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
-open pull requests have completed, and its epics return with it. Initiatives with the same
-priority number run together, as do the epics of one initiative, whose highest number counts the
-epics already In Progress. An epic with no priority label ranks below every number, so it waits
-while a labelled sibling can start or is running. A priority is a positive integer with no
-maximum.
+epics' work has completed, and its unstarted epics return with it; a Done epic stays Done.
+An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
+are met; an initiative kept In Progress only while its epics' work completes readies none:
+its active epics are In Progress and its inactive ones Backlog.
+Initiatives with the same priority number run together, as do the epics of one initiative, whose
+highest number counts the epics already In Progress. An epic with no priority
+label ranks below every number, so it waits while a labelled sibling can start or is running. A
+priority is a positive integer with no maximum.
 """
 import argparse
 import json
@@ -27,10 +38,10 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import Board, Resolution, linked_issue, open_questions, rows, weakest
+from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
 from format import cell, id_cell, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import PR_REF, Unreadable, pull_requests
+from sync import Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
@@ -57,12 +68,12 @@ def is_initiative(issue: dict) -> bool:
     return bool(parsed) and not parsed[1]
 
 
-def pending(prs: list[dict], tag: str, repos: set[str]) -> list[str]:
-    """Open pull requests of an initiative, in its repository or an epic's."""
+def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:
+    """Open delivery pull requests naming an epic the initiative lists, by its Eyy number, in its
+    repository or an epic's."""
     found = []
     for pr in prs:
-        matched = PR_REF.match(pr.get('title') or '')
-        if pr.get('state') != 'open' or not matched or matched[1] != tag:
+        if not any(delivers(pr, tag, epic) for epic in epics):
             continue
         home = PULL_HOME.search(pr.get('html_url') or '')
         if home and home[1].lower() not in repos:
@@ -82,28 +93,19 @@ def epic_rows(board: Board, key: tuple[str, int], why: str) -> list[tuple[str, t
             for row in body if (ident := id_cell(header, row))]
 
 
-def partial(board: Board, key: tuple[str, int], why: str) -> bool:
-    """Whether an open epic has a delivered task row."""
-    issue = board.issues.get(key)
-    if issue is None or issue['state'] != 'open':
-        return False
+def handed_off(issue: dict, held: str | None) -> bool:
+    """Whether an epic is past the queue: In Review, Done, closed, or open with every criterion
+    ticked, which board.py places In Review or holds In Progress until its agent review passes."""
+    return held in ('In Review', 'Done') or issue['state'] != 'open' or criteria_met(issue)
+
+
+def active(board: Board, key: tuple[str, int], why: str) -> bool:
+    """Whether an open epic has work under way, as Board.active reads it."""
     try:
-        _, tasks = board.table(key)
+        return board.active(key)
     except Unreadable as exc:
         board.unresolved.append(f'{why}: {exc}')
         return False
-    return any(board.row_delivered(key, task, why) is Resolution.MET for task in tasks)
-
-
-def is_next(board: Board, initiative: tuple[str, int], epic: tuple[str, int] | None, depends: str,
-            epics: dict[str, tuple[str, int]], why: str) -> Resolution:
-    """How far the gates on one epic row resolve. An unresolvable gate is the row's own answer, so
-    the caller leaves the epic where it stands rather than reading it as a prerequisite to come."""
-    issue = board.issues.get(epic) if epic else None
-    if issue is None or issue['state'] != 'open' or open_questions(issue):
-        return Resolution.UNMET
-    return weakest([board.met(depends, initiative, epics, why),
-                    board.epic_prerequisites_met(epic, epics, why)])
 
 
 class Queue:
@@ -114,6 +116,7 @@ class Queue:
         self.home = home
         self.unplanned = unplanned
         self.shelved: set = set()
+        self.waiting: set = set()
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
         self.unresolvable: list[str] = []
@@ -151,53 +154,113 @@ class Queue:
         return {key[0].lower(), *(epic[0].lower() for _, epic, _ in rows_of)}
 
     def activate(self, key: tuple[str, int]) -> None:
-        """Partly completed epics are In Progress, and the unstarted epics of the highest priority
-        set are Ready. The set counts the epics already under way, so a lower one waits."""
+        """Active epics of a Ready or In Progress initiative are In Progress, and the epics of the
+        highest priority set that can start are Ready. The set counts the epics already under way,
+        so a lower one waits. A next line names the Ready epics. An initiative waiting on its
+        epics' work readies none of its epics."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
-            held = self.status.get(epic_key)
-            if held in ('In Review', 'Done') or self.issues[epic_key]['state'] != 'open':
+            if handed_off(self.issues[epic_key], held := self.status.get(epic_key)):
                 continue
             why = f'{self.line(key)} {row_name}'
-            if partial(self.board, epic_key, why):
+            if active(self.board, epic_key, why):
                 self.place(epic_key, 'In Progress')
                 running.append(epic_key)
-            elif held == 'In Progress':
-                running.append(epic_key)
-            elif (answer := is_next(self.board, key, epic_key, depends, epics, why)) is Resolution.MET:
+            elif (answer := self.board.startable(key, epic_key, depends, epics, why)) is Resolution.MET:
                 candidates.append(epic_key)
             elif answer is Resolution.UNRESOLVABLE:
                 self.unresolvable.append(why)
                 continue
-            elif held == 'Ready':
+            elif held in ('Ready', 'In Progress'):
                 self.place(epic_key, 'Backlog')
+        if key in self.waiting:
+            return
         ranked = {epic_key: rank(self.issues[epic_key]) for epic_key in (*candidates, *running)}
         top = max((found for found in ranked.values() if found is not None), default=None)
         for epic_key in candidates:
             self.place(epic_key, 'Ready' if top is None or ranked[epic_key] == top else 'Backlog')
+        if names := self.ready_names(key):
+            self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
 
     def park(self) -> None:
-        """A Ready epic whose initiative is not In Progress, and was not just returned there, goes Backlog."""
-        for epic_key, parent in self.parents.items():
-            final = self.wanted.get(parent, self.status.get(parent))
-            if final == 'In Progress':
+        """A Ready epic whose initiative ends neither Ready nor In Progress goes Backlog. Of an
+        initiative waiting on its epics' work, an epic not handed off is In Progress while active and
+        Backlog otherwise."""
+        for key, (rows_of, _epics) in self.children.items():
+            waiting = key in self.waiting
+            if not waiting and self.wanted.get(key, self.status.get(key)) in READY_UNDER:
                 continue
-            if self.wanted.get(epic_key, self.status.get(epic_key)) == 'Ready':
-                self.place(epic_key, 'Backlog')
+            for row_name, epic_key, _depends in rows_of:
+                held = self.wanted.get(epic_key, self.status.get(epic_key))
+                if handed_off(self.issues[epic_key], held):
+                    continue
+                if waiting:
+                    busy = active(self.board, epic_key, f'{self.line(key)} {row_name}')
+                    self.place(epic_key, 'In Progress' if busy else 'Backlog')
+                elif held == 'Ready':
+                    self.place(epic_key, 'Backlog')
 
     def shelve(self, key: tuple[str, int]) -> None:
-        """The initiative and its open epics return to Backlog."""
-        self.place(key, 'Backlog')
+        """The initiative and its unstarted epics return to Backlog, and a completed epic stays
+        Done. An epic with work under way or In Review is named on a reconcile line, and the
+        initiative and its epics stay where they stand until the user reconciles it."""
         self.shelved.add(key)
         rows_of, _ = self.load(key)
-        for _row_name, epic_key, _depends in rows_of:
-            issue = self.issues.get(epic_key)
-            if issue and issue['state'] == 'open' and self.status.get(epic_key) != 'Done':
-                self.place(epic_key, 'Backlog')
+        unstarted, engaged = [], []
+        for row_name, epic_key, _depends in rows_of:
+            held = self.status.get(epic_key)
+            if self.issues[epic_key]['state'] != 'open' or held == 'Done':
+                continue
+            if held == 'In Review':
+                engaged.append(f'{row_name} (In Review)')
+            elif criteria_met(self.issues[epic_key]):
+                engaged.append(f'{row_name} (awaiting review)')
+            elif active(self.board, epic_key, f'{self.line(key)} {row_name}'):
+                engaged.append(f'{row_name} (work under way)')
+            else:
+                unstarted.append(epic_key)
+        if engaged:
+            self.notes.append(f"  reconcile {self.line(key)}: {', '.join(engaged)}")
+            return
+        self.place(key, 'Backlog')
+        for epic_key in unstarted:
+            self.place(epic_key, 'Backlog')
 
     def pulls(self, key: tuple[str, int]) -> list[str]:
-        return pending(self.prs, tags(self.issues[key]['title'])[0], self.repos(key))
+        listed = {row_name.split(':')[0][1:] for row_name, _epic, _depends
+                  in epic_rows(self.board, key, self.line(key))}
+        return pending(self.prs, tags(self.issues[key]['title'])[0], listed, self.repos(key))
+
+    def holding(self, key: tuple[str, int]) -> list[str]:
+        """What holds an initiative In Progress, as board.py raises it: the open delivery pull requests
+        naming an epic it lists, and each open listed epic In Review, awaiting its agent review, or
+        holding a session's row with no such pull request."""
+        found = []
+        if urls := self.pulls(key):
+            found.append(f"open pull request {', '.join(urls)}")
+        tag = tags(self.issues[key]['title'])[0]
+        rows_of, _ = self.load(key)
+        for row_name, epic_key, _depends in rows_of:
+            if self.issues[epic_key]['state'] != 'open':
+                continue
+            epic = row_name.split(':')[0][1:]
+            if self.status.get(epic_key) == 'In Review':
+                found.append(f'{row_name} In Review')
+            elif criteria_met(self.issues[epic_key]):
+                found.append(f'{row_name} awaiting review')
+            elif (not pending(self.prs, tag, {epic}, self.repos(key))
+                  and active(self.board, epic_key, f'{self.line(key)} {row_name}')):
+                found.append(f'{row_name} held by a session')
+        return found
+
+    def wait(self, key: tuple[str, int]) -> bool:
+        """Whether an initiative In Progress waits on what holds it, with a wait line naming it."""
+        if self.wanted.get(key, self.status.get(key)) != 'In Progress' or not (found := self.holding(key)):
+            return False
+        self.waiting.add(key)
+        self.notes.append(f"  wait {self.line(key)}: {'; '.join(found)}")
+        return True
 
     def ready_names(self, key: tuple[str, int]) -> list[str]:
         rows_of, _epics = self.load(key)
@@ -221,22 +284,15 @@ class Queue:
         nxt = [key for key in labelled if len(levels) > 1 and rank(self.issues[key]) == levels[1]]
         rest = [key for key in labelled if key not in active and key not in nxt]
 
-        def waiting(key: tuple[str, int]) -> bool:
-            return (self.wanted.get(key, self.status.get(key)) == 'In Progress' and bool(self.pulls(key)))
-
         for key in active:
             self.place(key, 'In Progress')
             self.activate(key)
-            if names := self.ready_names(key):
-                self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
         for key in nxt:
-            if waiting(key):
-                self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(self.pulls(key))}")
-                continue
-            self.place(key, 'Ready')
+            if not self.wait(key):
+                self.place(key, 'Ready')
+            self.activate(key)
         for key in rest:
-            if waiting(key):
-                self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(self.pulls(key))}")
+            if self.wait(key):
                 continue
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
                 self.shelve(key)
@@ -262,9 +318,7 @@ class Queue:
         for key in in_progress:
             if key not in self.unplanned or rank(self.issues[key]) is not None:
                 continue
-            if urls := self.pulls(key):
-                self.notes.append(f"  wait {self.line(key)}: open pull request {', '.join(urls)}")
-            else:
+            if not self.wait(key):
                 self.shelve(key)
         self.place_sets(open_initiatives)
         self.park()

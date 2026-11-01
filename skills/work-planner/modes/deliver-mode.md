@@ -49,8 +49,8 @@ The main path meets [Outcomes](#outcomes).
 4. **Survey.**
    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each candidate epic with its current initiative and epic bodies and all prerequisite issue and base-merge records.
    - Pass its confirmed result to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
-   - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches).
-   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, epic bases and selected record date.
+   - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches), at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
+   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree and selected record date.
    - Resolve any missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
    - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs.
    - For delivery discrepancies:
@@ -61,18 +61,20 @@ The main path meets [Outcomes](#outcomes).
        - Carry each `hold` line to the confirm step, with the record it links and whether a session is still running.
      - **Blocked work.**
        - Report a `blocked` line without asking. Its dependencies decide when it becomes available.
+     - **Undeclared work.**
+       - Report an `undeclared` line without asking. Its unit is offered once the row's work item names the long-lived branch of its component.
    - Use the returned [Work Units](../artifacts/delivery-plan.md#work-units) as the units of confirmation and dispatch.
 5. **Merge.**
    Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for each `merge` line, with the project checkout.
    - Run [Task Merge](../protocols/task-merge.md) for each confirmed merge result, with the selected board identity.
 6. **Confirm.**
-   Show each `unit` line, with its tasks, coverage, record folder, branch, base and worktree, and each `hold` line with the record it links and whether a session is still running.
+   Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
    - Confirm the units to dispatch and the rows to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a row the user leaves stays held.
    - For each released row:
      - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows).
      - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, epic-base names, every resolved off-board issue file, and the record date when supplied.
+     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
    - No plan change after this step is put to the user. Each follows [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy).
 7. **Hold.**
@@ -91,14 +93,14 @@ The main path meets [Outcomes](#outcomes).
    - Keep each such row a unit of its own, joined to no other row, so it is confirmed and held like any other before a session starts for it.
 
    For each held unit:
-   - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree).
+   - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) for each branch the `unit` line names, with its base and worktree.
    - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the confirmed unit, the component each of its rows declares, reserved folder, worktrees, test obligations, selected board identity, this run's allowance and [Run Delivery Session](#run-delivery-session) as the supplied execution procedure.
    - Resolve any returned gap before dispatch.
    - The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
    - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
    - Leave the dispatched session running its Run Delivery Session procedure. The calling mode continues to the report step without waiting for unit completion; the dispatched session owns the implementation, debt and arising-issue work its brief carries.
-   - A unit works on the branch [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) names, cut from the epic base, as [Task Branches](../artifacts/delivery-branches.md#task-branches) defines.
+   - A unit works on each branch [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) names, cut from its epic base, as [Task Branches](../artifacts/delivery-branches.md#task-branches) defines.
 9. **Report.**
    Each pull request merged, and each left open by a conflict; each epic moved to In Review; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
    - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, so each plan change this run applied, and each it held for the user, is read in one place.
@@ -109,7 +111,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 
 1. **Read the brief.**
    Read the supplied [Delivery Brief](../artifacts/delivery-brief.md).
-   - Use its confirmed unit, criteria, tests, selected branch and bases, worktree, planning-folder identity and change allowance.
+   - Use its confirmed unit, criteria, tests, each task branch with its base and worktree, planning-folder identity and change allowance.
    - Return missing context before starting.
 2. **Confirm the reservation.**
    Confirm the supplied reserved folder exists and its rows remain held for this session before changing its worktree.
@@ -132,10 +134,10 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Stage and commit each returning group's own files, then run the unit's tests once every group has returned.
    - A unit of one group, and a session with no sub-agent dispatch, is delivered by this session.
 7. **Open the pull request.**
-   Open the unit's pull request with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
+   Open the unit's pull request from each task branch its work changes into its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository, where the session holds no confirmed setting.
    - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
-   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's tasks.
+   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's tasks, with the project checkout and the fetched epic bases.
    - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
 8. **Merge.**
    Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).

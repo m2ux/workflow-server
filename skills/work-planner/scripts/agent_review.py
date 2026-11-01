@@ -81,17 +81,21 @@ def check(pr, records):
     return None
 
 
+def integration(pr, initiative, epic):
+    """Whether the pull request merges epic Ixx:Eyy's base, i{xx}/e{yy}/<branch>, into <branch>."""
+    head, base = (pr.get('head') or {}).get('ref', ''), (pr.get('base') or {}).get('ref', '')
+    return head == f'i{initiative}/e{epic}/{base}'
+
+
 def epic_check(epic, prs, records):
     """Require current evidence for every open integration PR belonging to the epic."""
     match = re.match(r'^\[I(\d\d):E(\d\d)\]', epic.get('title', ''))
     if not match or re.match(r'^\[I\d\d:E\d\d:W', epic.get('title', '')):
         return 'a task does not stand In Review'
     home = epic.get('html_url', '').split('/issues/')[0]
-    prefix = f'i{match[1]}/e{match[2]}/'
     reviews = [p for p in prs if p.get('state') == 'open'
                and p.get('html_url', '').startswith(home + '/pull/')
-               and (p.get('head') or {}).get('ref', '').startswith(prefix)
-               and (p.get('head') or {}).get('ref') == prefix + (p.get('base') or {}).get('ref', '')]
+               and integration(p, match[1], match[2])]
     if not reviews:
         return 'missing open epic integration pull request'
     for pr in reviews:

@@ -69,7 +69,7 @@ The main path meets [Outcomes](#outcomes).
    - Once the pull request has merged, record it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
    - [Issue Closure](../protocols/issue-closure.md) when it reports closable.
 6. **Sync each epic.**
-   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues and the project checkout its long-lived branch names come from:
+   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at:
    Linking a pull request replaces the planning-record link on that task.
    - Handle the returned delivery findings:
      - **Conflict.**
@@ -84,7 +84,7 @@ The main path meets [Outcomes](#outcomes).
      - **Unmerged.**
        - The close step opens or merges that pull request.
      - **References.**
-       - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md).
+       - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.
      - **Uncited.**
        - Set the link with [Link Pull Request to Issue](../artifacts/pull-request.md#link-pull-request-to-issue).
        - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
@@ -97,21 +97,25 @@ The main path meets [Outcomes](#outcomes).
          - A held row is settled as [Held Change](../artifacts/plan-change.md#held-change) states; an unanswered placement stays pending.
        - Apply the confirmed row through [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows).
        - Publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-       - Repeat Record Epic Delivery with the saved epic and refreshed task records. An unanswered placement stays pending.
+       - Repeat Record Epic Delivery with the saved epic, refreshed task records and the same epic bases. An unanswered placement stays pending.
      - **Open questions.**
        - Return to the select step for this epic.
        - Resolve the questions there.
-       - Fetch the saved body before repeating Record Epic Delivery.
+       - Fetch the saved body before repeating Record Epic Delivery with the same epic bases.
      - **Ticked early.**
        - Untick them, or link the missing delivery.
      - **Disagreement.**
        - Continue recording links, verified criteria and Done despite the reported coverage disagreement.
-   - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
+     - **Unevaluable.**
+       - Report each source and why to the user, with each check the run names not checked.
+       - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
+       - The epic stays open until every epic base states the same readable declaration.
+   - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.
    - Retain the returned verified criterion ids and evidence for the tick step.
    - For an unresolved epic criterion requiring further work:
-     - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot and output body path.
+     - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.
      - For each criterion it returns as already holding, repeat [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) with that criterion id, the current epic body, delivery findings, delivery revisions, named instruments and the project checkout.
      - Pass the returned verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria) with the current epic JSON, pull request records, complete issue-link snapshot and output body path, and publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - Resume with its recorded disposition; a criterion that cannot be confirmed stays unticked.
@@ -126,7 +130,7 @@ The main path meets [Outcomes](#outcomes).
       - Follow [Epic Integration](../protocols/epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and selected board identity or its confirmed absence.
       - Report incomplete delivery or unmet merge requirements.
     - Fetch the pull requests again after merging.
-    - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records and the same project checkout.
+    - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records, the same project checkout and the same epic bases.
     - [Issue Closure](../protocols/issue-closure.md) each epic the re-run reports closable.
 11. **Sync the initiative.**
     Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.

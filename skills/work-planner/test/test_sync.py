@@ -8,7 +8,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import epic_body, initiative_body, issue, links, pr, run, url
+from fixtures import (commit_branches, declared, epic_body, git, initiative_body, issue, links, pr,
+                      repository, run, url)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from format import Review  # noqa: E402
@@ -29,7 +30,7 @@ def synced(record: dict, pulls: list[dict], *args: str, held: list[dict] = ()) -
         pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
         done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
                    '--links', links_file(root, list(held)),
-                   '--project', project(root, 'docker', 'main', 'workflows'), *args)
+                   *declared(root, 'docker', 'main', 'workflows'), *args)
         if done.returncode != 0:
             raise AssertionError(done.stderr.strip() or done.stdout)
         return fixed.read_text()
@@ -69,6 +70,40 @@ class Done(unittest.TestCase):
                  pr(951, '[I01:E00] Corpus', merged='2026-09-02T00:00:00Z', base='i01/e00/workflows')]
         fixed = synced(epic, pulls, '--link', 'W01=951')
         self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", fixed)
+
+    @staticmethod
+    def per_base():
+        return [pr(950, '[I01:E00] Work: main', base='i01/e00/main'),
+                pr(951, '[I01:E00] Work: workflows', base='i01/e00/workflows'),
+                pr(952, '[I01:E00] Work: docker', base='i01/e00/docker')]
+
+    def test_an_id_named_for_each_pull_request_links_them_all(self):
+        plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
+        fixed = synced(epic, self.per_base(), '--link', 'W01=950,W01=951,W01=952')
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
+                      "| Work | AC1 | | | |", fixed)
+        self.assertNotIn('w01.md', fixed)
+
+    def test_a_repeated_run_leaves_the_row_unchanged(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        once = synced(epic, self.per_base(), '--link', 'W01=950,W01=951')
+        again = synced(issue(2, '[I01:E00] First: Epic', body=once), self.per_base(), '--link', 'W01=950,W01=951')
+        self.assertEqual(once, again)
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", again)
+
+    def test_a_run_naming_a_linked_pull_request_keeps_the_row_order(self):
+        ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})"
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((ident, 'Work', '')))
+        fixed = synced(epic, self.per_base(), '--link', 'W01=951,W01=952,W01=951')
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
+                      "| Work | AC1 | | | |", fixed)
+
+    def test_two_named_pull_requests_on_one_branch_are_refused(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        pulls = [pr(950, '[I01:E00] Work', base='i01/e00/main'), pr(951, '[I01:E00] Rest', base='i01/e00/main')]
+        with self.assertRaisesRegex(AssertionError, 'names two deliveries on main'):
+            synced(epic, pulls, '--link', 'W01=950,W01=951')
 
     def test_a_repeated_row_link_is_rejected_before_delivery(self):
         ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 950)})"
@@ -256,7 +291,7 @@ class TaskLinks(unittest.TestCase):
             extra = ['--tasks', *task_paths] if task_paths else []
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
                        '--links', links_file(root, list(held)),
-                       '--project', project(root, 'docker', 'main', 'workflows'), *extra, *args)
+                       *declared(root, 'docker', 'main', 'workflows'), *extra, *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_task_issue_with_no_row_is_unplaced(self):
@@ -480,24 +515,6 @@ class DoneColumn(unittest.TestCase):
         self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)
 
 
-def project(root: Path, *names: str) -> str:
-    """A checkout stating the long-lived branches in config/branches."""
-    stated = root / 'config' / 'branches'
-    stated.parent.mkdir(parents=True, exist_ok=True)
-    stated.write_text(''.join(f'{name}\n' for name in names))
-    return str(root)
-
-
-def worktree(root: Path, main: Path, name: str = 'unit') -> str:
-    """A linked worktree of main, as git lays one out."""
-    gitdir = main / '.git' / 'worktrees' / name
-    gitdir.mkdir(parents=True)
-    (gitdir / 'commondir').write_text('../..\n')
-    root.mkdir(parents=True, exist_ok=True)
-    (root / '.git').write_text(f'gitdir: {gitdir}\n')
-    return str(root)
-
-
 class InitiativeClose(unittest.TestCase):
     def run_sync(self, epics: list[dict], ticked: bool = True, missing: bool = False) -> str:
         body = initiative_body(*[(f"[E{n:02d}]({url('issues', e['number'])})", '')
@@ -564,7 +581,7 @@ class EpicClose(unittest.TestCase):
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
                        '--links', links_file(root, list(held)),
-                       '--project', project(root, 'docker', 'main', 'workflows'))
+                       *declared(root, 'docker', 'main', 'workflows'))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
 
@@ -726,53 +743,331 @@ class EpicClose(unittest.TestCase):
         self.assertIn('closable: no (unmerged o/other:i01/e00/main)', out)
 
 
+class PinnedEpicBase(unittest.TestCase):
+    """An epic sync reads the long-lived branches its epic-base commit states.
+
+    The long-lived branch main states docker and main; the epic base i01/e00/workflows adds
+    workflows. The main working tree sits on main with an uncommitted statement of its own."""
+
+    def run_sync(self, body: str, pulls: list[dict], revision: str) -> tuple[str, str]:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            checkout, linked = root / 'checkout', root / 'linked'
+            repository(checkout, 'docker', 'main')
+            git(checkout, 'worktree', 'add', str(linked), '-b', 'i01/e00/workflows')
+            base = commit_branches(linked, 'docker', 'main', 'workflows')
+            (checkout / 'config' / 'branches').write_text('docs\n')
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []), '--project', str(checkout), '--revision', revision)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout, base
+
+    def pulls(self) -> list[dict]:
+        return [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                   base='i01/e00/workflows', head='i01/e00/w01-work')]
+
+    def test_the_epic_base_states_its_own_long_lived_branch(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
+        out, base = self.run_sync(body, self.pulls(), 'i01/e00/workflows')
+        self.assertIn('draft: i01/e00/workflows', out)
+        self.assertIn(f'source: config/branches at {base} in ', out)
+
+    def test_a_complete_epic_waits_on_the_base_its_commit_declares(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, _ = self.run_sync(body, self.pulls(), 'i01/e00/workflows')
+        self.assertIn('closable: no (unmerged i01/e00/workflows)', out)
+
+    def test_the_long_lived_revision_does_not_know_the_base(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, base = self.run_sync(body, self.pulls(), 'main')
+        self.assertNotIn('i01/e00/workflows', out)
+        self.assertNotIn(base, out)
+        self.assertIn('closable: yes', out)
+
+
 class LongLivedNames(unittest.TestCase):
-    def names(self, root: Path):
-        return run('sync.py', '--names', '--project', str(root))
+    """The names are the ones config/branches states at the evaluated commit."""
+
+    def names(self, checkout: Path, revision: str = 'HEAD'):
+        return run('sync.py', '--names', '--project', str(checkout), '--revision', revision)
 
     def test_the_statement_names_the_branches(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            project(root, 'main', 'workflows', 'main')
-            done = self.names(root)
+            checkout = Path(tmp)
+            commit = repository(checkout, 'main', 'workflows', 'main')
+            done = self.names(checkout)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertEqual(done.stdout.split(), ['main', 'workflows'])
+            self.assertIn(f'source: config/branches at {commit} in {(checkout / ".git").resolve()}', done.stderr)
 
     def test_a_directory_beside_the_statement_names_nothing(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            project(root, 'main')
-            (root / '.project' / 'docker').mkdir(parents=True)
-            (root / 'config' / 'components').mkdir()
-            done = self.names(root)
+            checkout = Path(tmp)
+            repository(checkout, 'main')
+            (checkout / '.project' / 'docker').mkdir(parents=True)
+            (checkout / 'config' / 'components').mkdir()
+            done = self.names(checkout)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertEqual(done.stdout.split(), ['main'])
 
-    def test_a_linked_worktree_reads_its_main_working_tree(self):
+    def test_one_commit_reads_alike_from_divergent_and_dirty_worktrees(self):
         with tempfile.TemporaryDirectory() as tmp:
-            main, linked = Path(tmp) / 'checkout', Path(tmp) / 'worktrees' / 'unit'
-            main.mkdir()
-            project(main, 'docker', 'main')
-            worktree(linked, main)
-            done = self.names(linked)
-            self.assertEqual(done.returncode, 0, done.stderr)
-            self.assertEqual(done.stdout.split(), ['docker', 'main'])
+            main, divergent, dirty = Path(tmp) / 'main', Path(tmp) / 'divergent', Path(tmp) / 'dirty'
+            evaluated = repository(main, 'docker', 'main')
+            git(main, 'worktree', 'add', str(divergent), '-b', 'divergent')
+            commit_branches(divergent, 'workflows')
+            git(main, 'worktree', 'add', str(dirty), '-b', 'dirty', evaluated)
+            (dirty / 'config' / 'branches').write_text('workspace\n')
+            (main / 'config' / 'branches').write_text('docs\n')
+            results = [self.names(checkout, evaluated) for checkout in (main, divergent, dirty)]
+            for done in results:
+                self.assertEqual(done.returncode, 0, done.stderr)
+                self.assertEqual(done.stdout.split(), ['docker', 'main'])
+            self.assertEqual(len({done.stderr for done in results}), 1, [done.stderr for done in results])
 
-    def test_a_missing_statement_is_unevaluable(self):
+    def test_each_worktree_head_reads_its_own_commit(self):
         with tempfile.TemporaryDirectory() as tmp:
-            done = self.names(Path(tmp))
+            main, divergent = Path(tmp) / 'main', Path(tmp) / 'divergent'
+            repository(main, 'docker', 'main')
+            git(main, 'worktree', 'add', str(divergent), '-b', 'divergent')
+            commit_branches(divergent, 'workflows')
+            self.assertEqual(self.names(main).stdout.split(), ['docker', 'main'])
+            self.assertEqual(self.names(divergent).stdout.split(), ['workflows'])
+
+    def test_an_uncommitted_statement_is_not_read(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            repository(checkout, 'main')
+            (checkout / 'config' / 'branches').write_text('main\nworkflows\n')
+            done = self.names(checkout)
+            self.assertEqual(done.stdout.split(), ['main'])
+
+    def test_a_revision_resolving_to_no_commit_is_unevaluable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            repository(checkout, 'main')
+            done = self.names(checkout, 'origin/i07/e00/main')
             self.assertEqual(done.returncode, 1)
-            self.assertIn('unevaluable:', done.stderr)
-            self.assertIn('config/branches', done.stderr)
+            self.assertIn(f'unevaluable: config/branches at origin/i07/e00/main in {(checkout / ".git").resolve()} '
+                          'is unreadable: the revision resolves to no commit', done.stderr)
+
+    def test_a_statement_only_at_another_revision_is_unevaluable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init')
+            git(checkout, 'commit', '--allow-empty', '-m', 'no statement')
+            bare = git(checkout, 'rev-parse', 'HEAD')
+            commit_branches(checkout, 'main')
+            done = self.names(checkout, bare)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn(f'unevaluable: config/branches at {bare} in {(checkout / ".git").resolve()} is absent',
+                          done.stderr)
 
     def test_an_empty_statement_is_unevaluable(self):
         with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            project(root)
-            done = self.names(root)
+            checkout = Path(tmp)
+            commit = repository(checkout)
+            done = self.names(checkout)
             self.assertEqual(done.returncode, 1)
-            self.assertIn('unevaluable:', done.stderr)
-            self.assertIn('names no branch', done.stderr)
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'names no branch', done.stderr)
+
+    def test_a_directory_in_place_of_the_statement_is_unreadable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init')
+            (checkout / 'config' / 'branches').mkdir(parents=True)
+            (checkout / 'config' / 'branches' / 'main').write_text('main\n')
+            git(checkout, 'add', 'config')
+            git(checkout, 'commit', '-m', 'a directory')
+            commit = git(checkout, 'rev-parse', 'HEAD')
+            done = self.names(checkout)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'is unreadable: a tree, not a file', done.stderr)
+
+    def test_a_statement_that_is_not_text_is_unreadable(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init')
+            (checkout / 'config').mkdir()
+            (checkout / 'config' / 'branches').write_bytes(b'main\n\xff\xfe\n')
+            git(checkout, 'add', 'config')
+            git(checkout, 'commit', '-m', 'binary')
+            commit = git(checkout, 'rev-parse', 'HEAD')
+            done = self.names(checkout)
+            self.assertEqual(done.returncode, 1)
+            self.assertEqual(done.stdout, '')
+            self.assertIn(f'unevaluable: config/branches at {commit} in {(checkout / ".git").resolve()} '
+                          'is unreadable: not UTF-8 text', done.stderr)
+
+    def test_names_read_one_revision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            repository(checkout, 'main')
+            done = run('sync.py', '--names', '--project', str(checkout), '--revision', 'HEAD', '--revision', 'main')
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('--names reads one --revision', done.stderr)
+
+    def test_names_need_a_revision(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            done = run('sync.py', '--names', '--project', tmp)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('--names needs --project and --revision', done.stderr)
+
+
+CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases', 'draft epic bases',
+          'review pull request References', 'review pull request issue links')
+
+
+class UnavailableDeclaration(unittest.TestCase):
+    """An epic sync that cannot read the long-lived branches reports why, and the checks it did not make.
+
+    main states docker and main. The epic base i01/e00/workflows is cut from a commit before any
+    statement, so config/branches is present only at another revision."""
+
+    def pulls(self) -> list[dict]:
+        return [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                   base='i01/e00/workflows', head='i01/e00/w01-work'),
+                pr(951, '[I01:E00] Review', state='open', draft=True,
+                   base='workflows', head='i01/e00/workflows')]
+
+    def run_sync(self, body: str, *args: str) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.pulls()))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []),
+                       *[a.replace('<root>', str(root)) for a in args])
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def checkout(self, root: Path) -> str:
+        checkout = root / 'checkout'
+        checkout.mkdir()
+        git(checkout, 'init')
+        git(checkout, 'commit', '--allow-empty', '-m', 'no statement')
+        bare = git(checkout, 'rev-parse', 'HEAD')
+        git(checkout, 'branch', 'i01/e00/workflows', bare)
+        commit_branches(checkout, 'docker', 'main')
+        return bare
+
+    def test_a_base_without_the_statement_is_unevaluable_with_its_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            bare = self.checkout(root)
+            out = self.run_sync_in(root, body, 'i01/e00/workflows')
+        repository_dir = (root / 'checkout' / '.git').resolve()
+        self.assertIn(f'unevaluable: config/branches at {bare} in {repository_dir} is absent', out)
+        self.assertNotIn('source:', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
+        self.assertNotIn('unmerged:', out)
+
+    def test_the_checks_left_unmade_are_named(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.checkout(root)
+            out = self.run_sync_in(root, body, 'i01/e00/workflows')
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+        self.assertNotIn('draft:', out)
+
+    def test_a_run_given_no_branches_names_the_checks_it_did_not_make(self):
+        out = self.run_sync(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        self.assertIn('unevaluable: long-lived branches not given', out)
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+
+    def test_a_readable_statement_leaves_no_check_unmade(self):
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', ''))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.checkout(root)
+            out = self.run_sync_in(root, body, 'main')
+        self.assertNotIn('unevaluable:', out)
+        self.assertNotIn('not checked:', out)
+        self.assertIn('source: config/branches at ', out)
+
+    def run_sync_in(self, root: Path, body: str, *revisions: str) -> str:
+        args = ['--project', str(root / 'checkout')]
+        for revision in revisions:
+            args += ['--revision', revision]
+        return self.run_sync(body, *args)
+
+
+class SeveralEpicBases(unittest.TestCase):
+    """An epic sync reads the declaration at each epic-base commit it is given.
+
+    The epic base i01/e00/main sits on main, which states docker and main; i01/e00/workflows adds
+    workflows on its own commit."""
+
+    def run_sync(self, body: str, *revisions: str, absent: bool = False) -> tuple[str, dict[str, str], Path]:
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            checkout, linked = root / 'checkout', root / 'linked'
+            commits = {'main': repository(checkout, 'docker', 'main')}
+            git(checkout, 'branch', 'i01/e00/main')
+            git(checkout, 'worktree', 'add', str(linked), '-b', 'i01/e00/workflows')
+            if absent:
+                git(linked, 'rm', '-q', 'config/branches')
+                git(linked, 'commit', '-m', 'drop the statement')
+                commits['workflows'] = git(linked, 'rev-parse', 'HEAD')
+            else:
+                commits['workflows'] = commit_branches(linked, 'docker', 'main', 'workflows')
+            git(checkout, 'worktree', 'add', str(root / 'docker'), '-b', 'i01/e00/docker', commits['main'])
+            git(root / 'docker', 'commit', '--allow-empty', '-m', 'docker work')
+            commits['docker'] = git(root / 'docker', 'rev-parse', 'HEAD')
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.pulls()))
+            args = ['--project', str(checkout)]
+            for revision in revisions:
+                args += ['--revision', revision]
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout, commits, (checkout / '.git').resolve()
+
+    def pulls(self) -> list[dict]:
+        return [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                   base='i01/e00/main', head='i01/e00/w01-work')]
+
+    def test_disagreeing_declarations_are_each_reported_with_their_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/workflows')
+        self.assertIn(f"unevaluable: config/branches at {commits['main']} in {repo} states docker, main", out)
+        self.assertIn(f"unevaluable: config/branches at {commits['workflows']} in {repo} states docker, main, workflows",
+                      out)
+        self.assertNotIn('source:', out)
+        self.assertNotIn('unmerged:', out)
+        for check in CHECKS:
+            self.assertIn(f'not checked: {check}', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
+
+    def test_agreeing_declarations_are_read_from_each_source(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/docker', 'main')
+        self.assertIn(f"source: config/branches at {commits['main']} in {repo}", out)
+        self.assertIn(f"source: config/branches at {commits['docker']} in {repo}", out)
+        self.assertEqual(out.count('source:'), 2)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_one_absent_declaration_leaves_the_names_unevaluable(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out, commits, repo = self.run_sync(body, 'i01/e00/main', 'i01/e00/workflows', absent=True)
+        self.assertIn(f"unevaluable: config/branches at {commits['workflows']} in {repo} is absent", out)
+        self.assertIn(f"source: config/branches at {commits['main']} in {repo}", out)
+        self.assertIn('not checked: unmerged epic bases', out)
+        self.assertIn('closable: no (long-lived branches unevaluable)', out)
 
 
 def epic_rows(*rows: tuple[str, str, str]) -> str:
@@ -790,7 +1085,7 @@ def epic_rows(*rows: tuple[str, str, str]) -> str:
     return '\n'.join(lines + ['', '## Acceptance Criteria', ''] + criteria + [''])
 
 
-def test_plan(*rows: tuple[str, str], prose: str = '') -> str:
+def plan_body(*rows: tuple[str, str], prose: str = '') -> str:
     """A pull request body whose Test Plan table holds rows of (test, coverage)."""
     lines = ['## Test Plan', '', '| Test | Description | Coverage | Pass |', '| --- | --- | --- | --- |']
     lines += [f'| {test} | The check holds. | {coverage} | |' for test, coverage in rows]
@@ -808,14 +1103,14 @@ class TestPlanAgreement(unittest.TestCase):
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--fix', str(fixed),
                        '--links', links_file(root, []),
-                       '--project', project(root, 'docker', 'main', 'workflows'), *args)
+                       *declared(root, 'docker', 'main', 'workflows'), *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_plan_that_names_an_uncovered_criterion_is_reported(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+                    body=plan_body(('T1', 'AC1'), ('T2', 'AC3')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
@@ -823,7 +1118,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_a_covered_criterion_no_plan_row_names_is_reported(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1, AC2', '')))
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC2 covered and named by no test', done.stdout)
@@ -839,7 +1134,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_an_empty_test_cell_is_unobserved(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC1 covered and no test observes it', done.stdout)
@@ -848,7 +1143,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_an_exact_plan_reports_nothing(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -857,7 +1152,7 @@ class TestPlanAgreement(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
             (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
             (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), ('T2', 'AC2')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), ('T2', 'AC2')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -866,7 +1161,7 @@ class TestPlanAgreement(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
             (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
             (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W02: AC2 covered and named by no test', done.stdout)
@@ -875,7 +1170,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_a_disagreement_leaves_linking_and_ticks_unchanged(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(('W01', 'AC1', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+                    body=plan_body(('T1', 'AC1'), ('T2', 'AC3')))]
         done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', '--tick', 'AC1')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
@@ -887,7 +1182,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here; it belongs to W03.'
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
@@ -899,7 +1194,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         for prose in ('AC2 is left to W03.', 'AC2 is owned by W03.'):
-            pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+            pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
             done, _fixed = self.run_sync(epic, pulls)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
@@ -909,7 +1204,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC1 and AC2 belong to W03.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W03: AC1 assigned to W03, which the table gives to W01', done.stdout)
@@ -920,7 +1215,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here; it belongs to W02.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -930,7 +1225,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here. It belongs to W03.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -954,7 +1249,7 @@ class ReviewReferences(unittest.TestCase):
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
                        '--links', links_file(root, []),
-                       '--project', project(root, 'docker', 'main', 'workflows'))
+                       *declared(root, 'docker', 'main', 'workflows'))
             self.assertEqual(done.returncode, 0, done.stderr)
             return done.stdout
 
@@ -1075,3 +1370,101 @@ class TaskCriteria(unittest.TestCase):
         done, _ = self.run_sync(self.task(), [pr(950, '[I01:E01] Work')], '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('no pull request naming I01:E00', done.stderr)
+
+
+class HistoricalDelivery(unittest.TestCase):
+    def inspect(self, record, pulls, *args):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source, records, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            source.write_text(json.dumps(record))
+            records.write_text('\n'.join(json.dumps(p) for p in pulls))
+            result = run('sync.py', str(source), '--prs', str(records),
+                         '--links', links_file(root, []), '--fix', str(fixed),
+                         *declared(root, 'main', 'workflows'), *args)
+            return result, fixed.read_text() if fixed.exists() else None
+
+    def test_closed_table_normalizes_embedded_coverage_before_delivery(self):
+        body = ('## Work Breakdown\n\n| Done | Task | Description |\n| --- | --- | --- |\n'
+                f'| ✓ | [W01]({url("pull", 950)}) | Work → AC2 |\n\n'
+                '## Acceptance Criteria\n\n- [x] **AC2.** Holds.\n')
+        record = issue(2, '[I01:E00] First: Epic', 'closed', body=body)
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')]
+        result, fixed = self.inspect(record, pulls)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Done |', fixed)
+        self.assertIn(f'| [W01]({url("pull", 950)}) | Work | AC2 | | | ✓ |', fixed)
+        self.assertIn('normalized:', result.stdout)
+        self.assertNotIn('AC1', fixed)
+        record['body'] = fixed
+        again, stable = self.inspect(record, pulls)
+        self.assertEqual(stable, fixed)
+        self.assertNotIn('normalized:', again.stdout)
+
+    def test_closed_table_preserves_existing_coverage_and_dependencies(self):
+        body = epic_body((f'[W01]({url("pull", 950)})', 'Work', 'E01:W01'))
+        body = body.replace('| Joins | Done |', '| Done |').replace('| --- | --- | --- | --- | --- | --- |', '| --- | --- | --- | --- | --- |')
+        body = body.replace('| E01:W01 | | |', '| E01:W01 | |')
+        result, fixed = self.inspect(issue(2, '[I01:E00] First: Epic', 'closed', body=body),
+                                     [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('| Work | AC1 | E01:W01 | | |', fixed)
+        self.assertIn('unmet: W01 (#950): AC1 unticked', result.stdout)
+
+    def test_unknown_historical_column_blocks_without_losing_content(self):
+        body = epic_body(('W01', 'Work', '')).replace('Coverage', 'Evidence')
+        result, fixed = self.inspect(issue(2, '[I01:E00] First: Epic', 'closed', body=body), [])
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('column not in the template: Evidence', result.stderr)
+        self.assertIsNone(fixed)
+
+    def test_linked_merged_title_is_repaired_then_reread_without_repeat(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        pulls = [pr(950, 'Work: Preserve the purpose', merged='2026-09-01T00:00:00Z')]
+        result, fixed = self.inspect(record, pulls)
+        expected = '[I01:E00] Work: Preserve the purpose'
+        self.assertIn(f'retitle: #950 → {expected}', result.stdout)
+        self.assertIn('conflict:', result.stdout)
+        pulls[0]['title'] = expected
+        reread, stable = self.inspect(record, pulls)
+        self.assertNotIn('retitle:', reread.stdout)
+        self.assertNotIn('conflict:', reread.stdout)
+        self.assertEqual(stable, fixed)
+
+    def test_pull_request_linked_in_the_run_is_checked_for_its_prefix_in_that_run(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        named = pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')
+        result, fixed = self.inspect(record, [named], '--link', 'W01=950')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f'[W01]({url("pull", 950)})', fixed)
+        self.assertIn('linked: W01 → #950', result.stdout)
+        self.assertNotIn('retitle:', result.stdout)
+        for title in ('Work', '[I01] Work', '[I01:E00:W01] Work'):
+            with self.subTest(title=title):
+                result, fixed = self.inspect(record, [pr(950, title, merged='2026-09-01T00:00:00Z')],
+                                             '--link', 'W01=950')
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('--link W01=950: no pull request naming this epic', result.stderr)
+                self.assertIsNone(fixed)
+
+    def test_title_repairs_exclude_open_unlinked_and_other_epic_titles(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        for linked in [pr(950, 'Open work'), pr(950, '[I01:E01] Other work', merged='2026-09-01T00:00:00Z')]:
+            with self.subTest(title=linked['title']):
+                result, _ = self.inspect(record, [linked, pr(951, 'Unlinked', merged='2026-09-01T00:00:00Z')])
+                self.assertNotIn('retitle:', result.stdout)
+                self.assertIn('conflict:', result.stdout)
+
+
+    def test_matching_historical_initiative_and_task_prefixes_receive_epic_prefix(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        for prefix in ('[I01]', '[I01:E00:W01]'):
+            with self.subTest(prefix=prefix):
+                result, _ = self.inspect(record, [pr(950, prefix + ' Work', merged='2026-09-01T00:00:00Z')])
+                self.assertIn('retitle: #950 → [I01:E00] Work', result.stdout)
+
+    def test_another_initiatives_prefix_is_a_conflict(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertNotIn('retitle:', result.stdout)
+        self.assertIn('conflict:', result.stdout)

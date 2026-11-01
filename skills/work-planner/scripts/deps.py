@@ -6,7 +6,7 @@ Usage:
 
 An argument naming a row is that row's work item, a file whose declaration line names the one
 component its implementation extends:
-  **Component:** src/bundle/assembly.ts
+  **Component:** main:src/bundle/assembly.ts
 A declared component is read without its link, a wrapping code span, a trailing full stop or a
 leading ./, so two spellings of one path are one component. A value still carrying the template's
 {{…}} placeholder declares none.

@@ -115,6 +115,7 @@ Every initiative belongs to one theme, and each theme has one project board. Eac
 | Language | `theme:language` | The Definition Language and Its Rules |
 | Mechanical | `theme:mechanical` | The Engine That Runs Definitions |
 | Delivery | `theme:delivery` | What Reaches Agents and Hosts |
+| Planning | `theme:planning` | [Project 17 — Process: How Work Is Planned and Delivered](https://github.com/users/m2ux/projects/17) |
 
 ### One Theme
 

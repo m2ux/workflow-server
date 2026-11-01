@@ -2,6 +2,12 @@
 
 The long-lived branches, epic bases and task branches used for delivery.
 
+## Prerequisites
+
+Read these files first.
+
+- [Work Item](work-item.md)
+
 ## Operations
 
 ### *Prepare* Delivery Bases
@@ -10,10 +16,10 @@ The branches a task pull request targets.
 
 **Inputs:** Project checkout, epic identifier, changed long-lived branches and confirmed prerequisite evidence.
 
-1. Run [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the project checkout.
+1. For each changed long-lived branch, run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout, then [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.
 2. Run [List Epic Bases](#list-epic-bases) for the epic.
-3. If `config/branches` is missing or empty:
-   - Report the names as unevaluable.
+3. If `config/branches` is missing or empty at that revision, or does not name the changed branch:
+   - Report the names as unevaluable at that revision.
    - Obtain the project's branch names before creating delivery branches.
 4. Require the caller's confirmed prerequisite evidence before creating a base. The board status alone supplies no such evidence.
 5. Run [Create Epic Base](#create-epic-base) for each missing base, passing the project checkout, corresponding long-lived branch, epic base name and confirmed prerequisite evidence.
@@ -62,13 +68,14 @@ The current epic base merged into a unit's task branch.
 
 The worktree and branch one unit's session works in.
 
-**Inputs:** Project checkout, worktree path, task branch, epic base and confirmed prerequisite evidence.
+**Inputs:** Project checkout, worktree path, task branch, its epic base and confirmed prerequisite evidence.
 
 1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).
-2. When the unit changes several long-lived branches, select the corresponding epic base for this worktree.
-3. Run [Fetch Remote Branch](#fetch-remote-branch) from the checkout of the repository the work changes, passing that epic base; stop on failure.
-4. Run [Add Task Worktree](#add-task-worktree) with the supplied path and task branch, rooted in the fetched epic base.
-5. Return the worktree path and branch or the failure.
+2. Run [Fetch Remote Branch](#fetch-remote-branch) from the checkout of the repository the work changes, passing the supplied epic base; stop on failure.
+3. Run [Add Task Worktree](#add-task-worktree) with the supplied path and task branch, rooted in the fetched epic base.
+4. Return the worktree path and branch or the failure.
+
+A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
 
 ### *Create* Pull Request Worktree
 
@@ -103,9 +110,9 @@ The protection and active rules governing one target branch.
 
 The configured long-lived branches and existing epic bases.
 
-**Inputs:** Project checkout and epic identity.
+**Inputs:** Project checkout, epic identity and evaluated revision.
 
-1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout. Missing or empty configuration leaves branch names unevaluable.
+1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.
 2. Run [List Epic Bases](#list-epic-bases) for the supplied epic.
 3. Return both collections and any missing configuration.
 
@@ -113,7 +120,13 @@ The configured long-lived branches and existing epic bases.
 
 ### Branches
 
-A project states its long-lived branches in `config/branches` at its root, one name per line. A run from a linked worktree reads the statement its main working tree holds.
+A project states its long-lived branches in `config/branches` at its root, one name per line. A run reads the statement at the commit it evaluates, in the repository its checkout locates; which worktree the checkout is, and what its working files hold, choose nothing. The evaluated revision is fetched before it is read.
+
+- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.
+- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.
+- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.
+- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.
+- Verification of merged delivery evaluates the merged commit.
 
 - **Example.**
   workflow-server's `config/branches` names `docker`, `main`, `workflows` and `workspace`.
@@ -139,9 +152,18 @@ A reviewed pull request is read in a detached worktree, named by its number unde
 
 ### Task Branches
 
-A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. Every pull request delivering the unit's work is opened from this branch.
+A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
-Its worktree is named by that branch under the worktree directory of the repository's main working tree.
+- **Changed branches.**
+  A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
+- **Unplanned rows.**
+  A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
+- **Several long-lived branches.**
+  A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
+- **Example.**
+  A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
+
+Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 
 ## Commands
 
@@ -172,11 +194,19 @@ Prints the long-lived branch names, one per line.
 **Inputs:** Project checkout.
 
 - The names meet [Branches](#branches).
-- `--project` is any checkout of the project. The names are the ones `config/branches` states in its main working tree, which a linked worktree resolves for itself.
-- A missing or empty statement prints `unevaluable:`, names what is missing, and exits 1.
+- `--project` is any checkout of the project. `--revision` is the evaluated revision [Branches](#branches) names for the run.
+- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
+- `--names` reads one `--revision`.
+- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision '<revision>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision origin/i07/e00/main
 ```
 
 ### Fetch Remote Branch
