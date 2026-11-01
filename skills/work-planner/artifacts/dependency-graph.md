@@ -10,6 +10,7 @@ Read these files first.
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Work Item](work-item.md)
 - [Plan Change](plan-change.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -51,6 +52,8 @@ A task edge names the producing row for each output the depending row consumes. 
   A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.
 - **A task consuming from every row of an epic names the producing row for each output.**
   An edge another in the cell already implies is dropped, so a prerequisite chain is named by its last row, and the whole-epic reach is what the rows establish either way.
+- **An edge to another epic's row waits for that row's outputs.**
+  The dependent row starts once the producing row is delivered and its outputs are available at the dependent epic's base, as [Producer Outputs](delivery-branches.md#producer-outputs) states; the producing epic's other rows and its closure gate nothing.
 - **An entry that cannot resolve is a permanent condition, not a prerequisite to come.**
   An entry naming no row and linking no issue, naming an issue the run was not given, or naming a row the epic it points to does not carry, cannot resolve. Every tool reading the cell names the entry as written, leaves the row where it stands rather than placing it as work still to come, and exits nonzero.
 

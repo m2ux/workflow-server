@@ -84,6 +84,8 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
 | Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
+| Target | An open or merged pull request naming the epic off its delivery routes: a task pull request into anything but one of the epic's bases, or an integration pull request into anything but the long-lived branch its head names. |
+| No epic | A pull request carrying the initiative's prefix whose title names no epic as `[I07:E00]`, so nothing reads it as delivery. |
 | Source | The configuration path, commit and repository of each `config/branches` statement the long-lived branch names were read from. |
 | Unevaluable | A `config/branches` statement that is absent, empty or unreadable at its epic base, or a revision resolving to no commit, with its source; statements that disagree across the epic bases, each with its source and names; no long-lived branches given; or a base that would be draft whose commits cannot be compared with its long-lived branch, with the reason. |
 | Not checked | Each epic check that reads the long-lived branches, while their names are unevaluable. |
