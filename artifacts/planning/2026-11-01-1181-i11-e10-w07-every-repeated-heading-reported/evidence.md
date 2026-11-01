@@ -1,6 +1,6 @@
 # W07 Delivery Evidence
 
-Delivery head: `c9894b770cc2f955fc58ce82ed3f17f7388686ef` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `8b35508fdb7ad29afcb3227beeeb3baa49dcd460`. Each base merge kept every sibling check beside `duplicate_anchors`, and every result below is from the delivery head.
+Delivery head: `9cf0e2b345d3bebaa079d39e4f435320086edc5d` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `00ce33566ca6bd95e041d0162f90f9c66c590b54`. Each base merge kept every sibling check beside `duplicate_anchors`, and every result below is from the delivery head.
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/rules.json`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
@@ -42,9 +42,7 @@ Result: passed.
 
 ## Base Debt
 
-T5. At `8b35508f` the shared suite fails 18 tests: `command specification nothing cites` (W19) and `heading without a blank line above` (W08) are reported but absent from `KINDS`, and four interface fixtures (W05) carry a specification nothing cites. This branch registers both kinds, maps the first to the Local to the Procedure rule, and cites the fixture specification from its own Fields section. `python3 -m pytest skills/test -q` at `8b35508f`: `18 failed, 142 passed`; at the delivery head: `165 passed`.
-
-Result: passed.
+At `8b35508f` the shared suite failed 18 tests on two reported kinds absent from `KINDS` and four interface fixtures citing nothing. This branch fixed it, and [#1576](https://github.com/m2ux/workflow-server/pull/1576) landed the same fix on the base first; the merge keeps the base's version, so the branch carries none of it.
 
 ## Plan Changes
 
