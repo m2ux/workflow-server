@@ -4,7 +4,7 @@ Author and Audit share the following context; Review follows the design sources 
 
 ## Prerequisites
 
-Read the [command conventions](command-conventions.md#common) before the first command spec. Read the sections below as the task needs them.
+Read the sections below as the task needs them.
 
 ## Terms
 
@@ -46,7 +46,7 @@ Locate unresolved roots through [Find the Server Checkout](#find-the-server-chec
 Select checks from the task's declared check contract and the project's requirements. [Canon Check Conventions](#canon-check-conventions) govern every canon check in this file.
 
 - **A checker the task supplies for a bounded scope.**
-  Read its interface and use [Run Project Check](command-conventions.md#run-project-check); report the scope its observations establish.
+  Read its interface and use [Run Project Check](review-mode.md#run-project-check); report the scope its observations establish.
 - **The project's guard suite.**
   Use [Run Guards on the Delta](#run-guards-on-the-delta) with an identified base and candidate under equivalent conditions, or [Run Guard Suite](#run-guard-suite) for a single candidate or draft.
 - **An established step-list, exit, gate or graph change.**

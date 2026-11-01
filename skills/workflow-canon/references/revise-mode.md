@@ -2,10 +2,6 @@
 
 Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
 
-## Prerequisites
-
-Before the first command spec, read the [command conventions](command-conventions.md#common).
-
 ## Procedure
 
 1. **Read the guidelines.**
@@ -51,7 +47,7 @@ git worktree add <skill-worktree> -b <revision-branch> <remote>/<target-branch>
 
 Validate the skill's structure and run the checks its repository and changed resources require.
 
-- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](command-conventions.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
+- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](review-mode.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
 - Run [Check Skill Files](#check-skill-files) over every skill the revision touches, and inspect frontmatter and unfinished scaffold text. If an installed skill validator is available, run it too.
 - A behavioral walkthrough follows [Revise](revise-mode.md#procedure); mechanical checks alone do not establish instruction quality.
 

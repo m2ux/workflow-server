@@ -50,7 +50,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md links the shared command conventions on a required path and holds no command of its own, so it takes no Commands section.
+  SKILL.md holds no command of its own, so it takes no Commands section.
 
 ## Procedure files
 
