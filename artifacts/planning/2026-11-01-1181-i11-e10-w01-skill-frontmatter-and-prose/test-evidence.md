@@ -1,6 +1,6 @@
 # W01 Test Evidence
 
-Tested revision: `963624146` on `i11/e10/w01-skill-frontmatter-and-prose`, cut from `i11/e10/workspace` at `ba441c2b8`. Every command ran locally from the unit worktree under the workspace sandbox.
+Tested revision: `4106d600e` on `i11/e10/w01-skill-frontmatter-and-prose`, which merges `i11/e10/workspace` at `212bedd48`. Every command ran locally from the unit worktree under the workspace sandbox.
 
 ## T1 Mode Trigger Checks
 
@@ -14,7 +14,7 @@ The `FrontmatterAndLayoutChecks` tests over specimen skills, for the frontmatter
 
 ```text
 python3 -m pytest skills/test -q -k FrontmatterAndLayoutChecks
-14 passed, 76 deselected
+14 passed, 84 deselected
 ```
 
 Against the checker at `ba441c2b8`, the two reporting tests fail, so the suite detects the fault only the new check reports.
@@ -34,20 +34,21 @@ Against the checker at `ba441c2b8`, the five reporting tests fail.
 
 ```text
 python3 -m pytest skills/test skills/work-planner/test -q
-709 passed, 1 skipped, 1139 subtests passed
+743 passed, 1 skipped, 1140 subtests passed
 ```
 
-The two bounded-prose tests now specimen one-line paragraphs separated by blank lines, the layout the guidelines require.
+The two bounded-prose tests specimen one-line paragraphs separated by blank lines, the layout the guidelines require.
 
-The Workflow Canon suite gives 38 failed and 38 passed at `ba441c2b8` and at `963624146` alike, so this change adds no failure there; its failures are outside this unit.
+The Workflow Canon suite gives 39 passed and 38 skipped at the merged base `f0d01fd3f` and at the tested revision alike, so this change adds no failure there.
 
-## T4 Check Over Each Touched Skill
+## T4 Check Over Every Skill
 
 ```text
-python3 skills/scripts/check_skill_files.py skills/work-planner            50 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/workflow-canon          29 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/server-in-the-loop      1 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/gitnexus/gitnexus-guide 1 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills                     77 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills/work-planner        50 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills/workflow-canon      18 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills/server-in-the-loop  1 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills/gitnexus            7 files checked, 0 findings
 ```
 
-At `ba441c2b8` the new checks reported one untriggered mode (work-planner Understand) and seven hard-wrapped items in work-planner and gitnexus-guide; each is fixed at the tested revision. Over the whole `skills` folder the check reports six findings, all in `gitnexus-cli` and all of kinds that predate this unit.
+At `ba441c2b8` the new checks reported one untriggered mode (work-planner Understand) and seven hard-wrapped items in work-planner and gitnexus-guide; the merged base added one more in the workflow-canon entry point. Each is fixed at the tested revision.
