@@ -8,8 +8,10 @@ issues.json is every issue in the repository as `gh api --paginate
 another. Pull requests are skipped.
 
 An agent-engineering issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
-prefix. A proposal carries a [P00] prefix and type:proposal, and it is not a hoist candidate. An open
-issue without one of these prefixes, and without type:proposal, is standalone, and every
+prefix. A proposal carries a [P00] prefix and type:proposal, and it is not a hoist candidate. A
+throwaway is a test fixture declared by a throwaway:* label, a target a write check changes; it stays
+open and belongs in no initiative, so it is not a hoist candidate either. An open issue without one of
+these prefixes, without type:proposal and without a throwaway:* label, is standalone, and every
 standalone issue is a hoist candidate.
 An orphan is one that no open agent-engineering issue's body links, by URL or by #n; one that only
 closed agent-engineering issues cite is still an orphan, and the listing names those citers. A cited
@@ -55,6 +57,11 @@ def labels(issue: dict) -> list[str]:
     return [l['name'] if isinstance(l, dict) else l for l in issue.get('labels', [])]
 
 
+def throwaway(issue: dict) -> bool:
+    """Whether a throwaway:* label declares the issue a test fixture."""
+    return any(l.startswith('throwaway:') for l in labels(issue))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issues', help='every issue, as the paginated REST listing returns them')
@@ -75,7 +82,7 @@ def main() -> int:
             into.setdefault(n, []).append(i['number'])
 
     standalone = sorted((i for i in issues if i['state'] == 'open' and not AGENT_ENGINEERING.match(i['title'])
-                         and 'type:proposal' not in labels(i)),
+                         and 'type:proposal' not in labels(i) and not throwaway(i)),
                         key=lambda i: i['number'])
     for heading, group, citers, which in (
             ('orphans', [i for i in standalone if i['number'] not in live], closed_citers, 'closed '),

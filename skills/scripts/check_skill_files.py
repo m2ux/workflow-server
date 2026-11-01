@@ -293,13 +293,15 @@ def check(path, root, cache, cited, called, structures=None):
     # takes the set the guidelines give it whatever it carries. Where the skill
     # declares a contract for the file, that contract is the set, and the file
     # takes it whether or not it carries a step.
+    measured = ()
     if path.name == 'SKILL.md':
-        found += [(str(where), *finding) for finding in sections_against(headings, ENTRY_SECTIONS)]
+        measured = sections_against(headings, ENTRY_SECTIONS)
     elif entry or procedure_spans(lines, fenced, headings):
         allowed = tuple(entry['sections']) if entry else SECTIONS
         required = tuple(entry.get('required', ())) if entry else ('Procedure',)
-        found += [(str(where), *finding)
-                  for finding in sections_against(headings, allowed, required)]
+        measured = sections_against(headings, allowed, required)
+    for index, kind, detail in measured:
+        report(index, kind, detail)
 
     for index, target in targets(path, lines, fenced):
         name, _, fragment = target.partition('#')
@@ -356,28 +358,43 @@ def check(path, root, cache, cited, called, structures=None):
 
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
+
+    for index, title in empty_sections(lines, headings):
+        report(index, 'heading without content', title)
     return found
 
 
 def sections_against(headings, allowed, required=()):
     """Each departure of a file's top-level sections from a named set: a
     section outside it, one standing ahead of a section the set places before
-    it, and a required one the file lacks. Each finding is a line, a kind and
-    its detail."""
+    it, and a required one the file lacks, each with the line index it stands
+    on, its kind and its detail."""
     sections = [(index, title.strip()) for index, level, title in headings if level == 2]
     rank = -1
     for index, title in sections:
         if title not in allowed:
-            yield index + 1, 'section outside the set', title
+            yield index, 'section outside the set', title
             continue
         place = allowed.index(title)
         if place < rank:
-            yield index + 1, 'sections out of order', f'{allowed[place]} after {allowed[rank]}'
+            yield index, 'sections out of order', f'{allowed[place]} after {allowed[rank]}'
         rank = max(rank, place)
     carried = {title for _, title in sections}
     for title in required:
         if title not in carried:
-            yield 1, 'section missing', title
+            yield 0, 'section missing', title
+
+
+def empty_sections(lines, headings):
+    """Each heading whose section holds nothing but blank lines. A section runs
+    to the next heading of its own level or above, so one whose body is its
+    sub-sections has content, and a fenced example under a heading is content
+    like any other line."""
+    for position, (start, level, title) in enumerate(headings):
+        end = next((index for index, depth, _ in headings[position + 1:]
+                    if depth <= level), len(lines))
+        if not any(line.strip() for line in lines[start + 1:end]):
+            yield start, title
 
 
 def main(argv=None):
@@ -386,10 +403,13 @@ def main(argv=None):
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     options = parser.parse_args(argv)
 
+    # A fixture tree holds test inputs in the format its suite reads, which is
+    # specimen text rather than a skill file, so the guidelines do not reach it.
     files = []
     for name in options.roots:
         root = Path(name).resolve()
-        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))]
+        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
+                  if 'fixtures' not in path.relative_to(root).parts]
 
     declared = {}
     try:
