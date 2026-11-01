@@ -1,6 +1,6 @@
 # Test Evidence — W08
 
-> Delivery evidence · Branch `i11/e10/w08-a-blank-line-above` · Tested revision `e47136976`, which merges `i11/e10/workspace` at `212bedd48`
+> Delivery evidence · Branch `i11/e10/w08-a-blank-line-above` · Tested revision `282de041a`, which merges `i11/e10/workspace` at `3b0df7b6e`
 
 Every command ran from the unit worktree under the workspace sandbox.
 
@@ -12,7 +12,7 @@ Every command ran from the unit worktree under the workspace sandbox.
 python3 -m pytest skills/test/test_check_skill_files.py -q -k HeadingSpacing
 ```
 
-- At `e47136976`: 4 passed.
+- At `282de041a`: 4 passed.
 - With the rule removed from `check_skill_files.py` and the new tests kept: 2 failed, the two that expect a report, so the suite observes the rule.
 
 ## T2
@@ -30,7 +30,8 @@ python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-
 ```
 
 - At the base `ba441c2b8` with the rule applied: one skill-file finding, `work-planner/artifacts/planning-record.md:38`, `## Fields` flush beneath a list item. The check then also read fixture trees, and reported line 5 of each Workflow Canon audit-qualification `produce.md`; the base now leaves fixture trees unread, so the fixture stays as its expected outcomes name it.
-- At `e47136976`: 76 files checked, 0 findings.
+- At `282de041a`: 82 files checked, 0 findings.
+- The `Verify skills` pull request run on that head, [41295307271](https://github.com/m2ux/workflow-server/actions/runs/41295307271), succeeded.
 
 ## T4
 
@@ -42,6 +43,6 @@ python3 -m pytest skills/work-planner/test -q
 CANON_TEST_ENGINE=<engine-root> python3 -m pytest skills/workflow-canon/test -q
 ```
 
-- Shared: 88 passed.
-- Work Planner: 645 passed, 1 skipped.
+- Shared: 118 passed.
+- Work Planner: 690 passed, 1 skipped.
 - Workflow Canon, with the engine at `.worktrees/engine-pin` (`e889276ae`): 77 passed.
