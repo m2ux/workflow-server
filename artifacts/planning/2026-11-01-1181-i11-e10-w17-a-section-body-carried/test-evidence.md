@@ -1,6 +1,6 @@
 # Test Evidence
 
-> W17 · Evaluated at `c6b11dfb4f8ce63a78700a89b028aa46b09b01f7` on `i11/e10/w17-a-section-body-carried`
+> W17 · Evaluated at `385f272a8d8eb2d2885053d2cb95dfeaf7fdb510` on `i11/e10/w17-a-section-body-carried`
 
 Each check ran from the unit's worktree under the workspace sandbox. The changed paths are `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/work-planner/modes/revise-mode.md` and `skills/workflow-canon/references/revise-mode.md`.
 
@@ -32,7 +32,7 @@ python3 -m pytest skills/work-planner/test skills/test -q
 ```
 
 - **Result.**
-  741 passed, 1 skipped, 1141 subtests passed, after merging `origin/i11/e10/workspace` at `212bedd48`.
+  746 passed, 1 skipped, 1141 subtests passed, after merging `origin/i11/e10/workspace` at `a924c02f4`.
 - **Canon suite.**
   `skills/workflow-canon/test` gives 39 passed and 38 skipped while `CANON_TEST_ENGINE` is unset, as its stated prerequisite provides.
 
@@ -42,7 +42,7 @@ The skill-file check over every skill, and the comparison over the change itself
 
 ```bash
 python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon skills/server-in-the-loop skills/gitnexus
-python3 skills/scripts/check_skill_files.py --compare 212bedd48 c6b11dfb4 skills/work-planner skills/workflow-canon
+python3 skills/scripts/check_skill_files.py --compare a924c02f4 385f272a8 skills/work-planner skills/workflow-canon
 ```
 
 - **Skill-file check.**
