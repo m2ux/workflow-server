@@ -1,0 +1,19 @@
+{
+ "scenarios": [
+  {"id": "wp-propose", "skill": "work-planner", "mode": "propose", "intent": "Scope a problem and raise its proposal"},
+  {"id": "wp-plan", "skill": "work-planner", "mode": "plan", "intent": "Raise an epic and write its work items"},
+  {"id": "wp-align", "skill": "work-planner", "mode": "align", "intent": "Check an epic against criteria and templates"},
+  {"id": "wp-sync", "skill": "work-planner", "mode": "sync", "intent": "Record a merged task and verify its criteria"},
+  {"id": "wp-advance", "skill": "work-planner", "mode": "advance", "intent": "Place the next eligible epic Ready"},
+  {"id": "wp-deliver", "skill": "work-planner", "mode": "deliver", "intent": "Merge a passing task and dispatch the next unit",
+   "exclude": {"work-planner/modes/deliver-mode.md": ["run-delivery-session"]}},
+  {"id": "wp-understand", "skill": "work-planner", "mode": "understand", "intent": "Explain a pull request's architecture"},
+  {"id": "wp-hoist", "skill": "work-planner", "mode": "hoist", "intent": "Place a standalone issue"},
+  {"id": "wp-standup", "skill": "work-planner", "mode": "standup", "intent": "Summarize the board's reporting window"},
+  {"id": "wp-revise", "skill": "work-planner", "mode": "revise", "intent": "Change the skill's instructions"},
+  {"id": "wc-author", "skill": "workflow-canon", "mode": "author", "intent": "Author an activity definition"},
+  {"id": "wc-audit", "skill": "workflow-canon", "mode": "audit", "intent": "Audit a workflow against the canon"},
+  {"id": "wc-review", "skill": "workflow-canon", "mode": "review", "intent": "Assess integration readiness"},
+  {"id": "wc-revise", "skill": "workflow-canon", "mode": "revise", "intent": "Change the skill's instructions"}
+ ]
+}
