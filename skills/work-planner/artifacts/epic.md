@@ -76,6 +76,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Draft | An epic base a merged task targets that has no pull request merging it, while a task is undelivered or a criterion is unticked. |
 | Unmerged | An epic base its pull requests target that has not merged into its long-lived branch, once every task is delivered and every criterion is ticked. A draft pull request is named draft. |
 | References | A review pull request whose cited pull requests differ from the task pull requests merged into its base. |
+| Changes | A review pull request whose Changes section names, in a code span, a file absent from the head commit of the base it fronts, with that path. |
 | Uncited | A linked pull request whose task has its own issue and does not link it, or a review pull request that does not link the epic's issue. |
 | Note | A row that links its task issue. |
 | Unplaced | A task issue of this epic whose id is not a row. |
