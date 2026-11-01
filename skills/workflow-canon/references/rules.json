@@ -1,0 +1,18 @@
+{
+  "identity/purpose-and-modes": ["review"],
+  "skillmd-structure/section-order": ["review"],
+  "mode-files/opening": ["review"],
+  "mode-files/sections": ["review"],
+  "mode-files/rules": ["review"],
+  "progressive-disclosure/author": ["review"],
+  "progressive-disclosure/audit": ["review"],
+  "progressive-disclosure/review": ["review"],
+  "progressive-disclosure/revise": ["review"],
+  "progressive-disclosure/command-routing": ["review"],
+  "titles/title-case": ["review"],
+  "reference-ownership/ownership": ["review"],
+  "reference-ownership/currency": ["review"],
+  "reference-ownership/separation": ["review"],
+  "shared-planning/location": ["review"],
+  "complete-audits/authority": ["review"]
+}
