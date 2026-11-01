@@ -90,8 +90,9 @@ The main path meets [Outcomes](#outcomes).
      - **Unmerged.**
        - The close step opens or merges that pull request.
      - **Target.**
-       - Retarget an open pull request to the base it names with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
-         - Where it names one of several, retarget to the base of the long-lived branch its work item's [Component](../artifacts/work-item.md#component) names.
+       - Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed base is the epic base of the long-lived branch that Component names, whether the finding names that base, another, or one of several.
+         - A unit whose work items name several long-lived branches takes each task branch's base from the long-lived branch its last slug word names.
+       - Retarget an open pull request to the confirmed base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
        - Put a merged one to the user, since its merge cannot be moved.
      - **References.**
        - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.

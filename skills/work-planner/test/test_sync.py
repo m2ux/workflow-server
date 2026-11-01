@@ -1514,8 +1514,34 @@ class BranchContract(unittest.TestCase):
         self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
 
     def test_a_task_branch_for_one_of_several_bases_names_its_own(self):
-        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work-workspace')])
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work-workspace'),
+                             pr(951, '[I01:E00] Work: main', base='i01/e00/main', head='i01/e00/w01-work-main')])
         self.assertIn('target: #950 targets main; it targets i01/e00/workspace', out)
+
+    def test_a_single_branch_slug_ending_in_a_branch_name_names_no_base(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='i01/e00/w03-other', head='i01/e00/w04-tidy-workspace'),
+                             pr(951, '[I01:E00] Document', base='i01/e00/w03-other',
+                                head='i01/e00/w05-document-main')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+        self.assertIn('target: #951 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_sibling_ending_in_no_long_lived_branch_confirms_no_slug_word(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='i01/e00/w03-other', head='i01/e00/w04-tidy-workspace'),
+                             pr(951, '[I01:E00] Tidy docs', base='i01/e00/main', head='i01/e00/w04-tidy-docs')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_head_without_a_slug_names_no_branch_by_its_name(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w03-other', head='main'),
+                             pr(951, '[I01:E00] Other', base='i01/e00/main', head='workspace')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_single_branch_slug_ending_in_a_branch_name_yields_to_its_target(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='main', head='i01/e00/w04-tidy-workspace')])
+        self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
 
     def test_a_target_naming_no_long_lived_branch_names_each_base(self):
         out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w02-other', head='i01/e00/w01-work')])

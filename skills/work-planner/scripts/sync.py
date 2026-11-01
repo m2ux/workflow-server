@@ -72,12 +72,13 @@ repository, and one whose long-lived branch resolves to no commit are reported u
 The branch contract: a task pull request naming the epic targets one of its epic bases, and an
 integration pull request, whose head is an epic base, targets the long-lived branch that base names.
 An open or merged pull request off that route is reported target, naming where it goes and where it
-belongs. A task pull request belongs in the epic base of the long-lived branch its task branch's last
-hyphenated word names, else of the one its target names, as main or i07/e01/main does; else every
-epic base is named as one of them. An epic or initiative sync reports as no epic each pull request whose
-title opens with the initiative's id, [I07, and names neither an epic as [I07:E00] nor a task as
-[I07:E00:W01]: a bare [I07], or an epic id in any other form, such as [I07:E1]. Nothing reads it as
-delivery.
+belongs. A task branch's last hyphenated word names the long-lived branch it belongs to only where
+another pull request naming the epic comes from a branch of the same stem ending in another long-lived
+branch, as a unit changing several long-lived branches takes one task branch per base. Otherwise the
+target names it, as main or i07/e01/main does; else every epic base is named as one of them. An epic
+or initiative sync reports as no epic each pull request whose title opens with the initiative's id,
+[I07, and names neither an epic as [I07:E00] nor a task as [I07:E00:W01]: a bare [I07], or an epic id
+in any other form, such as [I07:E1]. Nothing reads it as delivery.
 
 The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link gate in closure.py.
 """
@@ -429,11 +430,11 @@ def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
 
     A task pull request targets one of this epic's bases. An integration pull request, whose head is
     one of those bases, targets the long-lived branch the base names."""
+    named = [pr for pr in sorted(prs, key=lambda p: p['number'])
+             if (title := PR_REF.match(pr.get('title') or '')) and title.groups() == (initiative, epic)]
+    heads = {(pr.get('head') or {}).get('ref') or '' for pr in named}
     lines = []
-    for pr in sorted(prs, key=lambda p: p['number']):
-        title = PR_REF.match(pr.get('title') or '')
-        if not title or title.groups() != (initiative, epic):
-            continue
+    for pr in named:
         if not pr.get('merged_at') and pr.get('state') != 'open':
             continue
         base = (pr.get('base') or {}).get('ref') or ''
@@ -442,22 +443,26 @@ def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
         if lived and base != lived:
             lines.append(f"#{pr['number']} merges {head} into {base or 'no base'}; it targets {lived}")
         elif not lived and not epic_base(base, initiative, epic):
-            bases = ' or '.join(f'i{initiative}/e{epic}/{branch}' for branch in belongs(head, base))
+            bases = ' or '.join(f'i{initiative}/e{epic}/{branch}' for branch in belongs(head, base, heads))
             lines.append(f"#{pr['number']} targets {base or 'no base'}; it targets "
                          f"{'one of ' if ' or ' in bases else ''}{bases}")
     return lines
 
 
-def belongs(head: str, base: str) -> tuple[str, ...]:
+def belongs(head: str, base: str, heads: set[str]) -> tuple[str, ...]:
     """The long-lived branches whose epic base an off-route task pull request belongs in.
 
-    A task branch whose last hyphenated word is a long-lived branch is cut from that branch's base. A
-    target that is a long-lived branch, or ends in one as another epic's base does, names that branch.
-    Otherwise every long-lived branch is a candidate."""
-    for named in (head.rsplit('-', 1)[-1] if '-' in head else '', base.rsplit('/', 1)[-1]):
-        if named in LONG_LIVED:
-            return (named,)
-    return LONG_LIVED
+    A task branch's last hyphenated word names a long-lived branch only for a unit changing several,
+    which takes one task branch per base: another of the epic's task branches in heads shares its stem
+    and ends in another long-lived branch. Otherwise a target that is a long-lived branch, or ends in
+    one as another epic's base does, names that branch. Otherwise every long-lived branch is a candidate."""
+    stem, _, word = head.rpartition('-')
+    siblings = {other_word for other_stem, _, other_word in (other.rpartition('-') for other in heads)
+                if other_stem == stem and other_word != word}
+    if stem and word in LONG_LIVED and siblings & set(LONG_LIVED):
+        return (word,)
+    target = base.rsplit('/', 1)[-1]
+    return (target,) if target in LONG_LIVED else LONG_LIVED
 
 
 def initiative_titles(prs: list[dict], initiative: str):
