@@ -9,9 +9,11 @@ sync.py reads it. fields.json is the board's fields. An issue the rows depend on
 the board is given with --others.
 
 An epic is active as board.py reads activity: a task row a session holds, or an open pull request
-naming the epic that is not its integration pull request. An initiative In Progress waits while an
-epic its table lists is active or In Review, as board.py holds it In Progress. Only an epic the
-initiative's table lists counts.
+naming the epic that is not its integration pull request. An open epic whose criteria are all ticked
+is handed off: board.py places it In Review, or In Progress while its agent review is missing, and
+the queue leaves it where it stands. An initiative In Progress waits while an epic its table lists
+is active, handed off or In Review, as board.py holds it In Progress. Only an epic the initiative's
+table lists counts.
 
 The moves follow the Board Queue field conditions, rendered by statuses.py within the QUEUE jurisdiction, which
 refuses In Review, Done and any task. Printed: the gh call for each Status and assignee change,
@@ -36,7 +38,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import READY_UNDER, Board, Resolution, delivers, linked_issue, rows
+from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
 from format import cell, id_cell, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
 from sync import Unreadable, pull_requests
@@ -89,6 +91,12 @@ def epic_rows(board: Board, key: tuple[str, int], why: str) -> list[tuple[str, t
         return []
     return [(row_id(ident), linked_issue(ident), cell(header, row, 'Depends on'))
             for row in body if (ident := id_cell(header, row))]
+
+
+def handed_off(issue: dict, held: str | None) -> bool:
+    """Whether an epic is past the queue: In Review, Done, closed, or open with every criterion
+    ticked, which board.py places In Review or holds In Progress until its agent review passes."""
+    return held in ('In Review', 'Done') or issue['state'] != 'open' or criteria_met(issue)
 
 
 def active(board: Board, key: tuple[str, int], why: str) -> bool:
@@ -153,8 +161,7 @@ class Queue:
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
-            held = self.status.get(epic_key)
-            if held in ('In Review', 'Done') or self.issues[epic_key]['state'] != 'open':
+            if handed_off(self.issues[epic_key], held := self.status.get(epic_key)):
                 continue
             why = f'{self.line(key)} {row_name}'
             if active(self.board, epic_key, why):
@@ -178,15 +185,17 @@ class Queue:
 
     def park(self) -> None:
         """A Ready epic whose initiative ends neither Ready nor In Progress goes Backlog. Of an
-        initiative waiting on its epics' work, an open epic not In Review is In Progress while
-        active and Backlog otherwise."""
+        initiative waiting on its epics' work, an epic not handed off is In Progress while active and
+        Backlog otherwise."""
         for key, (rows_of, _epics) in self.children.items():
             waiting = key in self.waiting
             if not waiting and self.wanted.get(key, self.status.get(key)) in READY_UNDER:
                 continue
             for row_name, epic_key, _depends in rows_of:
                 held = self.wanted.get(epic_key, self.status.get(epic_key))
-                if waiting and held not in ('In Review', 'Done') and self.issues[epic_key]['state'] == 'open':
+                if handed_off(self.issues[epic_key], held):
+                    continue
+                if waiting:
                     busy = active(self.board, epic_key, f'{self.line(key)} {row_name}')
                     self.place(epic_key, 'In Progress' if busy else 'Backlog')
                 elif held == 'Ready':
@@ -205,6 +214,8 @@ class Queue:
                 continue
             if held == 'In Review':
                 engaged.append(f'{row_name} (In Review)')
+            elif criteria_met(self.issues[epic_key]):
+                engaged.append(f'{row_name} (awaiting review)')
             elif active(self.board, epic_key, f'{self.line(key)} {row_name}'):
                 engaged.append(f'{row_name} (work under way)')
             else:
@@ -223,8 +234,8 @@ class Queue:
 
     def holding(self, key: tuple[str, int]) -> list[str]:
         """What holds an initiative In Progress, as board.py raises it: the open delivery pull requests
-        naming an epic it lists, and each open listed epic In Review or holding a session's row with
-        no such pull request."""
+        naming an epic it lists, and each open listed epic In Review, awaiting its agent review, or
+        holding a session's row with no such pull request."""
         found = []
         if urls := self.pulls(key):
             found.append(f"open pull request {', '.join(urls)}")
@@ -236,6 +247,8 @@ class Queue:
             epic = row_name.split(':')[0][1:]
             if self.status.get(epic_key) == 'In Review':
                 found.append(f'{row_name} In Review')
+            elif criteria_met(self.issues[epic_key]):
+                found.append(f'{row_name} awaiting review')
             elif (not pending(self.prs, tag, {epic}, self.repos(key))
                   and active(self.board, epic_key, f'{self.line(key)} {row_name}')):
                 found.append(f'{row_name} held by a session')
