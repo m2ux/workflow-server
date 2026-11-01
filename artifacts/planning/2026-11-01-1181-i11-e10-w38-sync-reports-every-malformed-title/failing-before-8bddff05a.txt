@@ -1,0 +1,17 @@
+New tests run with the tests added and the fixes absent, at 8bddff05a.
+
+sbx python3 -m pytest skills/work-planner/test -q -k <the new and changed tests>
+FAILED skills/work-planner/test/test_sync.py::BranchContract::test_a_target_naming_no_long_lived_branch_names_each_base
+FAILED skills/work-planner/test/test_sync.py::BranchContract::test_a_task_branch_for_one_of_several_bases_names_its_own
+FAILED skills/work-planner/test/test_sync.py::BranchContract::test_a_task_pull_request_targeting_a_long_lived_branch_is_reported
+FAILED skills/work-planner/test/test_sync.py::EpiclessTitles::test_the_epic_sync_reports_them
+FAILED skills/work-planner/test/test_sync.py::EpiclessTitles::test_the_initiative_sync_reports_them
+FAILED skills/work-planner/test/test_sync.py::ReviewChanges::test_a_line_reference_is_not_part_of_the_path
+FAILED skills/work-planner/test/test_sync.py::ReviewChanges::test_an_extensionless_path_absent_from_the_head_is_named
+7 failed, 8 passed, 721 deselected, 2 subtests passed
+
+N7 covers behaviour already correct at 8bddff05a, so each of its tests is shown against the
+mutant the review named (the one-line change applied, the suite run, the change reverted):
+board-integrated-offroute KILLED test_board.py::RowPrerequisites::test_a_cross_repository_output_merged_into_a_task_branch_is_unverified
+sync-dedup KILLED test_sync.py::HistoricalDelivery::test_a_linked_task_titled_pull_request_is_retitled_once
+closure-repo-case KILLED test_closure.py::Closure::test_a_snapshot_naming_the_repository_in_another_case_passes
