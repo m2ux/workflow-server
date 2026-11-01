@@ -26,23 +26,26 @@ Status, first match wins:
                current agent review
   In Progress  a task issue an open pull request, draft or ready, delivers: its title names the
                epic by the initiative's row id, and its Development field links the issue; a task
-               whose row links the planning record a session holds it with; an epic with an open
-               pull request and a criterion unticked
+               whose row links the planning record a session holds it with; an active epic with a
+               criterion unticked; an initiative an epic its table lists holds In Review or In
+               Progress
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
   (unchanged)  a task gated on a dependency entry that cannot resolve
   Backlog      a task otherwise
-An epic with an open pull request and a criterion unticked is In Progress. With no open pull
-request, Ready or Backlog already on the board is left as it stands. In Progress is left when a
-row has been delivered or an epic is Done, and In Review then becomes In Progress. When work
-has not started, an In Progress or In Review entry becomes Backlog. One not yet on the board is
-In Progress when a row has been delivered or an epic is Done, and Backlog when work has not
-started. Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
+An open epic is active when a task row links the planning record a session holds it with, or an
+open pull request whose title names the epic is not the epic's integration pull request. A
+delivered row is not activity. An inactive epic keeps Ready or Backlog, and In Progress or In
+Review becomes Backlog; one not yet on the board is added at Backlog. An initiative no listed
+epic holds In Progress or In Review keeps the Status it holds, In Review becoming In Progress,
+and one not yet on the board is added at Backlog: Advance mode places and lowers initiatives.
+An epic that has left the initiative's table is not read.
 
 Only an initiative or an epic stands In Review. A task issue is In Progress while its pull request
 is open, and Done once that pull request merges into the epic base and the issue closes as
-completed. An open initiative is In Review when every acceptance criterion is ticked. An epic also requires current published agent review evidence from --agent-reviews; a missing or failing review holds it In Progress. An initiative is In
-Progress when any epic is In Review or In Progress.
+completed. An open initiative is In Review when every acceptance criterion is ticked. An epic also
+requires current published agent review evidence from --agent-reviews; a missing or failing review
+holds it In Progress.
 
 The board's Status field offers Backlog, Ready, In Progress and Done, and In Review optionally;
 statuses.py holds the field, the option body files and the fallback for an option the board lacks.
@@ -62,7 +65,7 @@ Printed: the gh call for each issue to add, item to remove, Status to set and as
 remove, which statuses.py renders within the DELIVERY jurisdiction. Run the calls, fetch the issues
 and items again and re-run: the board is current when nothing is left to do.
 """
-from agent_review import epic_check, load_records
+from agent_review import epic_check, integration, load_records
 
 import argparse
 import json
@@ -82,7 +85,8 @@ PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
-UNPLACED, STARTED = 'unplaced', 'started'
+UNPLACED, RETAINED = 'unplaced', 'retained'
+READY_UNDER = ('Ready', 'In Progress')  # a parent Status under which a child can be Ready
 
 
 def load(paths: list[str]) -> dict[Key, dict]:
@@ -122,6 +126,14 @@ def linked_issue(cell: str) -> Key | None:
     return issue_url(link[2]) if link else None
 
 
+def delivers(pr: dict, tag: str, epic: str) -> bool:
+    """Whether an open pull request carries task work to epic Ixx:Eyy: its title names the epic,
+    and it is not the epic's integration pull request."""
+    ref = PR_REF.match(pr.get('title') or '')
+    return (pr.get('state') == 'open' and bool(ref) and ref.groups() == (tag, epic)
+            and not integration(pr, tag, epic))
+
+
 class Resolution(Enum):
     """How far a Depends on entry resolves. MET is delivered and UNMET is waiting on delivery that
     can still arrive. UNRESOLVABLE is a permanent condition: nothing the plan does next makes the
@@ -159,6 +171,16 @@ class Board:
             header, body = rows(self.issues[key])
             self.tables[key] = header, {i: r for r in body if (i := row_id(id_cell(header, r)))}
         return self.tables[key]
+
+    def active(self, key: Key) -> bool:
+        """Whether an epic has work under way: a task row linking the planning record a session
+        holds it with, or an open pull request delivering to it. Raises Unreadable for a table
+        that cannot be read."""
+        header, tasks = self.table(key)
+        if any(reservation(id_cell(header, r)) for r in tasks.values()):
+            return True
+        ref = PR_REF.match(self.issues[key].get('title') or '')
+        return bool(ref) and any(delivers(p, *ref.groups()) for p in self.pulls.values())
 
     def row_delivered(self, key: Key, task: str, why: str) -> Resolution:
         try:
@@ -210,6 +232,18 @@ class Board:
                 if linked_issue(id_cell(header, item)) == key:
                     answers.append(self.met(cell(header, item, 'Depends on'), parent, epics, why))
         return weakest(answers)
+
+    def startable(self, initiative: Key, epic: Key, depends: str, epics: dict[str, Key],
+                  why: str) -> Resolution:
+        """How far the delivery and planning prerequisites of one unstarted epic resolve: the epic
+        is open with no Open Questions, every entry of its initiative row's Depends on cell is
+        delivered, and every prerequisite epic is completed. An unresolvable gate is the row's own
+        answer, so a caller leaves the epic where it stands."""
+        issue = self.issues.get(epic)
+        if issue is None or issue['state'] != 'open' or open_questions(issue):
+            return Resolution.UNMET
+        return weakest([self.met(depends, initiative, epics, why),
+                        self.epic_prerequisites_met(epic, epics, why)])
 
     def referenced_epics(self, key: Key, epics: dict[str, Key]) -> set[Key]:
         """The epics this one's rows name: those its task rows name outside it, and those its
@@ -311,11 +345,9 @@ def main() -> int:
     status: dict[Key, str | None] = {}
     task_epic: dict[Key, Key] = {}
 
-    def pr_open(epic_key: str, cite: Key | None = None) -> bool:
-        """Whether an open pull request, draft or ready, naming the epic links the issue."""
-        return any(p.get('state') == 'open' and (ref := PR_REF.match(p['title']))
-                   and ref.groups() == (tag, epic_key) and (cite is None or links_issue(p, cite))
-                   for p in prs)
+    def pr_open(epic_key: str, cite: Key) -> bool:
+        """Whether an open pull request, draft or ready, delivering to the epic links the issue."""
+        return any(delivers(p, tag, epic_key) and links_issue(p, cite) for p in prs)
 
     for r in epic_rows:
         ident = id_cell(header, r)
@@ -326,7 +358,6 @@ def main() -> int:
         epic = epics[number]
         epic_key = row_id(ident)[1:]
         task_header, task_rows = board.table(number)
-        delivered_any = False
         for tid, tr in task_rows.items():
             ident = id_cell(task_header, tr)
             task_issue = linked_issue(ident)
@@ -339,7 +370,6 @@ def main() -> int:
                 if len(found) > 1:
                     unresolved.append(f'E{epic_key}:{tid}: {len(found)} task issues titled {prefix}')
                 task_issue = found[0] if len(found) == 1 else None
-            delivered_any |= board.row_delivered(number, tid, f'E{epic_key}:{tid}') is Resolution.MET
             if task_issue is None:
                 continue
             t = tasks[task_issue]
@@ -366,10 +396,8 @@ def main() -> int:
             if problem:
                 review_blocked = True
                 unresolved.append(f'{label(number, home)}: {problem}; handoff blocked')
-        elif pr_open(epic_key):
+        elif board.active(number):
             status[number] = 'In Progress'
-        elif delivered_any:
-            status[number] = STARTED
         else:
             status[number] = UNPLACED
 
@@ -380,10 +408,8 @@ def main() -> int:
         status[root] = 'In Review'
     elif any(s in ('In Review', 'In Progress') for s in epic_status):
         status[root] = 'In Progress'
-    elif any(s in ('Done', STARTED) for s in epic_status):
-        status[root] = STARTED
     else:
-        status[root] = UNPLACED
+        status[root] = RETAINED
 
     field = StatusField(args.fields, args.out, STATUSES)
     status = {k: field.settle(s) for k, s in status.items()}
@@ -398,17 +424,17 @@ def main() -> int:
                 status[key] = None
 
     for key, wanted in list(status.items()):
-        if wanted not in (UNPLACED, STARTED):
+        if wanted not in (UNPLACED, RETAINED):
             continue
         held_status = on_board[key][1] if key in on_board else None
-        if held_status in ('Ready', 'Backlog'):
+        if held_status in ('Ready', 'Backlog') or (wanted == RETAINED and held_status == 'In Progress'):
             status[key] = held_status
-        elif wanted == STARTED and (held_status in ('In Progress', 'In Review') or key not in on_board):
+        elif wanted == RETAINED and held_status == 'In Review':
             status[key] = 'In Progress'
         else:
             status[key] = 'Backlog'
     for task_key, epic_key in task_epic.items():
-        if status.get(task_key) == 'Ready' and status.get(epic_key) not in ('Ready', 'In Progress'):
+        if status.get(task_key) == 'Ready' and status.get(epic_key) not in READY_UNDER:
             status[task_key] = 'Backlog'
 
     changes = Changes(DELIVERY, args.board, field, args.assignee, ' (the board is current)')

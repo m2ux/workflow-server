@@ -9,8 +9,7 @@ from fixtures import run
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
 from align import check_references, repair_plan, reference_repositories
-import sync
-from sync import plan_rows
+from sync import plan_rows, plan_agreement
 
 LEGACY = """## Overview
 
@@ -93,7 +92,7 @@ class PlanRepair(unittest.TestCase):
 class UnreadablePlan(unittest.TestCase):
     def report(self, body):
         report = {'disagreement': []}
-        sync.test_plan_agreement([['[W01](https://github.com/o/r/pull/950)', 'AC1']], ['Task', 'Coverage'], {950: {'body': body}}, report)
+        plan_agreement([['[W01](https://github.com/o/r/pull/950)', 'AC1']], ['Task', 'Coverage'], {950: {'body': body}}, report)
         return report['disagreement']
 
     def test_malformed_plans_are_not_reported_as_missing_observations(self):

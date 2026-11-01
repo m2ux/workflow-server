@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import initiative_body, issue, item, links, pr, run, url
+from fixtures import declared, initiative_body, issue, item, links, pr, run, url, work_item
 from test_agent_review import reviewed_pr
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
@@ -49,7 +49,7 @@ def staged(*entries: tuple[dict, str]) -> list[dict]:
 
 
 def survey(items: list[dict], prs: list[dict] | None = None, *args: str,
-           held: tuple[dict, ...] = ()) -> str:
+           held: tuple[dict, ...] = (), code: int = 0) -> str:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         items_path, prs_path = root / 'items.json', root / 'prs.json'
@@ -59,15 +59,24 @@ def survey(items: list[dict], prs: list[dict] | None = None, *args: str,
         links_path.write_text(json.dumps(list(held)))
         done = run('deliver.py', '--items', str(items_path), '--prs', str(prs_path),
                    '--links', str(links_path), '--date', TODAY, *args)
-        assert done.returncode == 0, done.stderr
+        assert done.returncode == code, done.stdout + done.stderr
         return done.stdout
 
 
-def states(root: Path, *names: str) -> None:
-    """A checkout stating the long-lived branches in config/branches."""
-    stated = root / 'config' / 'branches'
-    stated.parent.mkdir(parents=True, exist_ok=True)
-    stated.write_text(''.join(f'{name}\n' for name in names))
+def planned(root: Path, *components: tuple[str, str]) -> tuple[list[str], dict[str, str]]:
+    """The --engineering arguments of a checkout holding each (task, component) work item, and
+    each task's row id linking its file."""
+    checkout = root / 'engineering'
+    folder = checkout / 'artifacts' / 'planning' / 'record'
+    folder.mkdir(parents=True)
+    ids = {}
+    for task, component in components:
+        (folder / f'{task.lower()}.md').write_text(work_item(component))
+        ids[task] = f'[{task}](https://github.com/o/r/blob/engineering/artifacts/planning/record/{task.lower()}.md)'
+    return ['--engineering', str(checkout)], ids
+
+
+THREE_BASES = ('--bases', 'i07/e00/main,i07/e00/workflows,i07/e00/workspace')
 
 
 def edit(body_issue: dict, *args: str) -> tuple[str, str, int]:
@@ -90,19 +99,85 @@ class Survey(unittest.TestCase):
     def test_a_unit_names_its_epic_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            states(root, 'main')
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                            None, '--project', str(root), '--bases', 'i07/e00/main,i07/e00/workspace')
-        self.assertIn('base i07/e00/main', output)
+                            None, *declared(root, 'main'), '--bases', 'i07/e00/main,i07/e00/workspace')
+        self.assertIn('branch i07/e00/w01-queue-plan, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan', output)
         self.assertNotIn('workspace', output)
 
-    def test_a_unit_names_each_of_its_epic_bases(self):
+    def test_a_unit_takes_a_branch_and_worktree_per_epic_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            states(root, 'main', 'workflows')
-            output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                            None, '--project', str(root), '--bases', 'i07/e00/workflows,i07/e00/main')
-        self.assertIn('bases i07/e00/main i07/e00/workflows', output)
+            engineering, ids = planned(root, ('W01', 'main:src/plan.ts'), ('W02', 'workflows:corpus/plan.md'))
+            body = epic(943, (ids['W01'], 'Queue plan', '', 'W02'), (ids['W02'], 'Queue corpus', '', 'W01'))
+            output = survey(staged((body, 'In Progress')), None, *declared(root, 'main', 'workflows'),
+                            *engineering, '--bases', 'i07/e00/workflows,i07/e00/main')
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, '
+                      'branch i07/e00/w01-queue-plan-main, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-main; '
+                      'branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-workflows\n', output)
+
+    def test_a_unit_takes_only_the_epic_bases_its_rows_change(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'workspace:skills/plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, '
+                      'branch i07/e00/w01-queue-plan, base i07/e00/workspace, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan\n', output)
+        self.assertNotIn('i07/e00/main', output)
+        self.assertNotIn('i07/e00/workflows', output)
+        self.assertIn('available: 1', output)
+
+    def test_a_unit_of_several_bases_declaring_none_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W02', 'skills/plan.py'), ('W03', 'docker:Dockerfile'))
+            body = epic(943, (ids['W02'], 'Queue more', '', ''), (ids['W03'], 'Queue image', '', ''))
+            output = survey(staged((body, 'In Progress')), None,
+                            *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES, code=1)
+        self.assertIn('undeclared I07:E00:W02: component skills/plan.py names no long-lived branch', output)
+        self.assertIn('undeclared I07:E00:W03: component docker:Dockerfile names docker, which has no epic base',
+                      output)
+        self.assertNotIn('  unit ', output)
+        self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 2', output)
+
+    def test_an_unplanned_row_of_several_bases_takes_every_epic_base(self):
+        rows_given = {'plain': ('W01', 'Queue plan', '', ''),
+                      'task issue': ('[W01](https://github.com/o/r/issues/950)', 'Queue plan', '', '')}
+        for case, row in rows_given.items():
+            with self.subTest(case), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                engineering, _ = planned(root)
+                output = survey(staged((epic(943, row), 'In Progress')), None,
+                                *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+                self.assertNotIn('undeclared I07', output)
+                for name in ('main', 'workflows', 'workspace'):
+                    self.assertIn(f'branch i07/e00/w01-queue-plan-{name}, base i07/e00/{name}, '
+                                  f'worktree .worktrees/i07/e00/w01-queue-plan-{name}', output)
+                self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 0, undeclared: 0', output)
+
+    def test_an_unplanned_row_joined_to_a_declared_row_takes_every_epic_base(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W02', 'workspace:skills/plan.py'))
+            body = epic(943, ('W01', 'Queue plan', '', 'W02'), (ids['W02'], 'Queue more', '', 'W01'))
+            output = survey(staged((body, 'In Progress')), None,
+                            *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+        self.assertIn('unit I07:E00:W01+W02', output)
+        for name in ('main', 'workflows', 'workspace'):
+            self.assertIn(f'base i07/e00/{name}', output)
+
+    def test_a_work_item_is_read_only_from_the_engineering_checkout(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            _, ids = planned(root, ('W01', 'workspace:skills/plan.py'))
+            output = survey(staged((epic(943, (ids['W01'], 'Queue plan', '', '')), 'In Progress')),
+                            None, *THREE_BASES, code=1)
+        self.assertIn('undeclared I07:E00:W01: artifacts/planning/record/w01.md needs --engineering to be read',
+                      output)
 
     def test_epic_in_backlog_offers_nothing(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'Backlog')))

@@ -24,7 +24,7 @@ Read these files first.
    - For a task:
      - Retain the task delivery result its delivering pull request established.
    - For an epic:
-     - Run [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) for the complete expected bases.
+     - Run [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) for the complete expected bases, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
      - Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for their merge evidence.
      - Run [Check Epic Completion](../artifacts/epic.md#check-epic-completion) with the current epic JSON, delivery records, complete issue-link snapshot, criterion verification evidence and those base records.
    - For an initiative:

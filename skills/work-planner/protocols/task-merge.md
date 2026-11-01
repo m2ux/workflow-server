@@ -21,13 +21,13 @@ Read these files first.
    - Follow [Issue Delivery](issue-delivery.md) for the delivered unit.
    - Close an eligible task issue through [Issue Closure](issue-closure.md).
 2. **Review.**
-   Follow [Review Pull Request](review-pull-request.md) for the affected epic base, with the epic's issue and the repository setting confirmed for the session.
+   Follow [Review Pull Request](review-pull-request.md) for the affected epic base, with the epic's issue, the project checkout, the fetched epic bases and the repository setting confirmed for the session.
 3. **Complete when ready.**
    When every task and criterion is complete:
    - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and supplied board identity. An unmet delivery or merge condition stays pending.
 4. **Close the epic.**
    After every epic base has merged:
    - Refresh the evidence.
-   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, and output body file.
+   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, fetched epic bases, and output body file.
    - Follow [Issue Closure](issue-closure.md) when eligible.
    - Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery) with the current initiative and every linked epic record. Initiative completion does not gate an epic merge. The epic entering review is the one board change a task merge makes, and the initiative is left to its own sync.

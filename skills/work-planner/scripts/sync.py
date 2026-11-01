@@ -2,11 +2,21 @@
 
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
-  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
+  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W01=951,W02=950] [--project <checkout> --revision origin/i07/e00/main [--revision origin/i07/e00/workflows ...]] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
-  python3 sync.py --names --project <checkout>
+  python3 sync.py --names --project <checkout> --revision <revision>
 
-With --names it prints the long-lived branch names of --project, one per line, as its main working tree states them in config/branches. A missing or empty statement reports the names unevaluable.
+The long-lived branch names are the ones config/branches states at the commit --revision resolves to, in the
+repository --project locates. Which worktree --project is, and what its working files hold, choose nothing.
+An epic sync names each of its epic bases as a --revision. The run reports the configuration path, the
+resolved commit and the repository as the source of each statement it reads. An absent, empty or unreadable
+statement, and a revision resolving to no commit, are reported unevaluable with that source. Statements that
+disagree across the epic bases are each reported unevaluable with their source and names, and none is
+selected. An epic sync with unevaluable names, or given no --project, reports each epic check that reads the
+long-lived branches as not checked, and the epic is not closable.
+
+With --names it reads one --revision and prints the long-lived branch names one per line, and the source on
+standard error. Unevaluable names print unevaluable: with the source and why, and exit 1.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -25,7 +35,12 @@ Task issue ([I07:E00:W01]): --pr names the pull request that delivers it, open o
 names the task's epic. Its criteria are ready to verify while that pull request is open, since the
 evidence is what the pull request and its planning record carry. The task is delivered, and so
 closable, once that pull request has merged.
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
+Closed epics have their Work Breakdown normalized to the current columns before delivery is read;
+--fix holds the normalized body for publication. Ambiguous tables are refused. Linked merged pull
+requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
+and fetch again. A title naming another initiative or epic remains a conflict.
+
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, and an open review pull request whose References differ from the task pull requests merged into its base, naming both sets.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -53,10 +68,12 @@ The closable report establishes normal delivery readiness. Completing the issue 
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
-from format import AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
@@ -130,19 +147,29 @@ def delivery_branch(pr: dict, initiative: str) -> str:
     return epic_base(ref, initiative) or ref
 
 
-def compose_id(task: str, text: str, pr: dict, by_url: dict, initiative: str) -> str:
-    """Link one delivery per long-lived branch, keeping the deliveries the row holds on the others."""
-    url, branch = pr['html_url'], delivery_branch(pr, initiative)
-    kept = []
+def compose_id(task: str, text: str, pulls: list[dict], by_url: dict, initiative: str) -> str:
+    """Link one delivery per long-lived branch: the deliveries the row holds stay in place, and each
+    named pull request the row lacks follows them."""
+    named = {}
+    for pr in pulls:
+        branch = delivery_branch(pr, initiative)
+        if pr['html_url'] not in named and branch in named.values():
+            sys.exit(f'{task}: names two deliveries on {branch or "that branch"}; '
+                     'further work needs another task')
+        named.setdefault(pr['html_url'], branch)
+    held = []
     for _, href in LINK.findall(text):
-        if href == url or ('/pull/' not in href and '/commit/' not in href):
+        if '/pull/' not in href and '/commit/' not in href:
+            continue
+        held.append(href)
+        if href in named:
             continue
         other = by_url.get(href)
-        if other is None or delivery_branch(other, initiative) == branch:
+        if other is None or delivery_branch(other, initiative) in named.values():
+            branch = delivery_branch(other, initiative) if other else ''
             sys.exit(f'{task}: already links a delivery on {branch or "that branch"}; '
                      'further work needs another task')
-        kept.append(href)
-    return ', '.join(f'[{task}]({href})' for href in [*kept, url])
+    return ', '.join(f'[{task}]({href})' for href in [*held, *(url for url in named if url not in held)])
 
 
 def epic_delivery(rows, header, named, links, task_paths, initiative, epic, report, prs):
@@ -164,13 +191,17 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
     for r in rows:
         task = row_id(r[at])
         if task in links:
-            pr = named.get(links[task])
-            if not pr:
-                sys.exit(f'--link {task}={links[task]}: no pull request naming this epic')
-            linked = compose_id(task, r[at], pr, by_url, initiative)
+            pulls = []
+            for number in links[task]:
+                pr = named.get(number)
+                if not pr:
+                    sys.exit(f'--link {task}={number}: no pull request naming this epic')
+                pulls.append(pr)
+            linked = compose_id(task, r[at], pulls, by_url, initiative)
             if linked != r[at].strip():
                 r[at] = linked
-                report['linked'].append(f"{task} → #{pr['number']}")
+                numbers = ', '.join(f'#{n}' for n in dict.fromkeys(links[task]))
+                report['linked'].append(f"{task} → {numbers}")
         ident = r[at]
         joins = set(re.findall(r'W\d\d', cell(header, r, 'Joins')))
         pulls, commits, issue_numbers = [], False, []
@@ -503,7 +534,7 @@ def assignments(body: str) -> list[tuple[int, str]]:
     return found
 
 
-def test_plan_agreement(rows, header, by_number, report):
+def plan_agreement(rows, header, by_number, report):
     """A linked pull request's test plan against the Coverage of the rows it delivers."""
     at = header.index('Task')
     coverage: dict[str, set[int]] = {}
@@ -581,47 +612,101 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     return changed
 
 
-def main_working_tree(project: str) -> Path:
-    """The main working tree of a checkout.
+class Branches(NamedTuple):
+    """The long-lived branch names one config/branches statement declares, and its source.
 
-    A linked worktree's .git is a file naming its gitdir, whose commondir resolves to the main
-    .git directory, and the main working tree is that directory's parent. Any other checkout is
-    its own main working tree."""
-    root = Path(project)
-    marker = root / '.git'
-    if not marker.is_file():
-        return root
-    pointer = marker.read_text().strip()
-    if not pointer.startswith('gitdir:'):
-        return root
-    gitdir = Path(pointer.split(':', 1)[1].strip())
-    if not gitdir.is_absolute():
-        gitdir = root / gitdir
-    common = gitdir / 'commondir'
-    if not common.is_file():
-        return root
-    return (gitdir / common.read_text().strip()).resolve().parent
+    problem is empty when the statement is readable and names a branch; otherwise it says why the
+    names are unevaluable, and names is empty."""
+    names: tuple[str, ...]
+    source: str
+    problem: str = ''
 
 
-def long_lived_names(project: str) -> tuple[str, ...]:
-    """The long-lived branches stated in the main working tree's config/branches.
+# The epic checks that read the long-lived branch names, named when a run cannot read them.
+LONG_LIVED_CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases',
+                     'draft epic bases', 'review pull request References', 'review pull request issue links')
 
-    A missing or empty statement leaves the names unevaluable."""
-    stated = main_working_tree(project) / 'config' / 'branches'
-    if not stated.is_file():
-        sys.exit(f'unevaluable: no config/branches under {main_working_tree(project)}')
-    names = tuple(sorted({line.strip() for line in stated.read_text().splitlines() if line.strip()}))
+
+def git(project: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
+
+
+def read_branches(project: str, revision: str) -> Branches:
+    """The long-lived branches config/branches states at the commit revision resolves to.
+
+    The checkout locates the repository and nothing more: its working files, and which of the
+    repository's worktrees it is, do not choose the names. The source names the configuration path,
+    the resolved commit and the repository's shared git directory, which every worktree of it
+    resolves to; for a revision that resolves to no commit it names the revision. An absent, empty
+    or unreadable statement, and a revision resolving to no commit, leave the names unevaluable."""
+    common = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir')
+    repository = common.stdout.strip() if common.returncode == 0 else project
+    resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
+    if resolved.returncode != 0:
+        return Branches((), f'config/branches at {revision} in {repository}',
+                        'is unreadable: the revision resolves to no commit')
+    commit = resolved.stdout.strip()
+    source = f'config/branches at {commit} in {repository}'
+    kind = git(project, 'cat-file', '-t', f'{commit}:config/branches')
+    if kind.returncode != 0:
+        return Branches((), source, 'is absent')
+    if kind.stdout.strip() != 'blob':
+        return Branches((), source, f'is unreadable: a {kind.stdout.strip()}, not a file')
+    stated = subprocess.run(['git', '-C', project, 'cat-file', 'blob', f'{commit}:config/branches'],
+                            capture_output=True)
+    try:
+        text = stated.stdout.decode('utf-8') if stated.returncode == 0 else None
+    except UnicodeDecodeError:
+        return Branches((), source, 'is unreadable: not UTF-8 text')
+    if text is None:
+        return Branches((), source, 'is unreadable')
+    names = tuple(sorted({line.strip() for line in text.splitlines() if line.strip()}))
     if not names:
-        sys.exit(f'unevaluable: {stated} names no branch')
-    return names
+        return Branches((), source, 'names no branch')
+    return Branches(names, source)
 
 
-def list_long_lived(project: str) -> int:
-    """Print the long-lived branch names, one per line."""
-    if not project:
-        sys.exit('--names needs --project')
-    for name in long_lived_names(project):
+def long_lived_names(project: str, revision: str) -> Branches:
+    """The long-lived branches config/branches states at revision, exiting on unevaluable names.
+
+    The exit message is prefixed unevaluable: and names the source and why."""
+    branches = read_branches(project, revision)
+    if branches.problem:
+        sys.exit(f'unevaluable: {branches.source} {branches.problem}')
+    return branches
+
+
+def epic_base_declarations(project: str, revisions: list[str]) -> tuple[tuple[str, ...], list[str], list[str]]:
+    """The long-lived names an epic's base commits declare, the sources they agree from, and what is unevaluable.
+
+    Each revision is read at its own commit, and revisions resolving to one commit are one source.
+    The names are evaluable when every statement is readable and every one states the same names.
+    Statements that disagree are each reported with their source and names, and none is selected.
+    Evaluable names come with one source line each; otherwise the names are empty."""
+    read: dict[str, Branches] = {}
+    for revision in revisions:
+        branches = read_branches(project, revision)
+        read.setdefault(branches.source, branches)
+    unevaluable = [f'{b.source} {b.problem}' for b in read.values() if b.problem]
+    readable = [b for b in read.values() if not b.problem]
+    if len({b.names for b in readable}) > 1:
+        unevaluable += [f"{b.source} states {', '.join(b.names)}" for b in readable]
+        return (), [], unevaluable
+    if unevaluable:
+        return (), [b.source for b in readable], unevaluable
+    return readable[0].names, [b.source for b in readable], []
+
+
+def list_long_lived(project: str, revisions: list[str]) -> int:
+    """Print the long-lived branch names, one per line, and their source on standard error."""
+    if not (project and revisions):
+        sys.exit('--names needs --project and --revision')
+    if len(revisions) > 1:
+        sys.exit('--names reads one --revision')
+    branches = long_lived_names(project, revisions[0])
+    for name in branches.names:
         print(name)
+    print(f'source: {branches.source}', file=sys.stderr)
     return 0
 
 
@@ -656,29 +741,60 @@ def table(sections):
     return lines, start, end, grid
 
 
+def normalize_closed_table(issue, sections, report):
+    """Normalize a closed epic's table using the shared format rules before delivery reads it."""
+    review = Review(issue)
+    review.kind = 'epic'
+    for section in sections:
+        if section[0] != 'Work Breakdown':
+            continue
+        fixed = review.fix_table(section[1], Template('epic').columns)
+        if review.decide:
+            raise Unreadable('; '.join(review.decide))
+        section[1] = fixed
+        report['normalized'].extend(review.fixed)
+
+
+def title_repairs(rows, header, prs, initiative, epic, report):
+    """Report merged deliveries the rows link, --link included, needing their owning epic prefix for publication and readback."""
+    linked = {href for r in rows for _, href in LINK.findall(id_cell(header, r))}
+    for pr in prs:
+        if pr['html_url'] not in linked or not pr.get('merged_at'):
+            continue
+        prefix = PREFIX.match(pr['title'])
+        if prefix and (prefix[1] != initiative or prefix[2] not in (None, epic)):
+            continue
+        if PR_REF.match(pr['title']):
+            continue
+        purpose = pr['title'][prefix.end():].lstrip() if prefix else pr['title']
+        report['retitle'].append(f"#{pr['number']} → [I{initiative}:E{epic}] {purpose}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('issue', nargs='?')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--links', help='epic: the closing issue references its pull requests hold')
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
-    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, e.g. W01=950,W02=950')
+    parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, an id once for each, e.g. W01=950,W01=951,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
-    parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branch names in config/branches')
+    parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branch names')
+    parser.add_argument('--revision', action='append', default=[], help='a commit config/branches is read at: for an epic, each of its epic bases, e.g. origin/i07/e00/main; repeat for several')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
     if args.names:
-        return list_long_lived(args.project)
+        return list_long_lived(args.project, args.revision)
     if not args.issue:
         sys.exit('an issue file is required')
+    if bool(args.project) != bool(args.revision):
+        sys.exit('--project and --revision go together')
     global LONG_LIVED
+    sources, unevaluable = [], ['long-lived branches not given']
     if args.project:
-        LONG_LIVED = long_lived_names(args.project)
-    elif (main_working_tree('.') / 'config' / 'branches').is_file():
-        LONG_LIVED = long_lived_names('.')
+        LONG_LIVED, sources, unevaluable = epic_base_declarations(args.project, args.revision)
     if (args.tick or args.link) and not args.fix:
         sys.exit('--tick and --link need --fix, which holds the body')
 
@@ -696,13 +812,22 @@ def main() -> int:
     if args.links:
         attach_links(prs, args.links)
     named = for_epic(prs, initiative, epic) if epic else {}
-    links = {k.strip(): int(v) for k, v in (x.split('=') for x in args.link.split(',') if x.strip())}
+    links: dict[str, list[int]] = {}
+    for k, v in (x.split('=') for x in args.link.split(',') if x.strip()):
+        links.setdefault(k.strip(), []).append(int(v))
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
-    report = {k: [] for k in ('linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
+    report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'source', 'unevaluable', 'not checked')}
+    report['source'].extend(sources)
+    if kind == 'epic' or args.project:
+        report['unevaluable'].extend(unevaluable)
+    if kind == 'epic' and not LONG_LIVED:
+        report['not checked'].extend(LONG_LIVED_CHECKS)
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
+    if kind == 'epic' and issue['state'] == 'closed':
+        normalize_closed_table(issue, sections, report)
     lines, start, end, grid = table(sections)
     delivered: dict[str, bool] = {}
     verifiable: dict[str, bool] = {}
@@ -724,6 +849,7 @@ def main() -> int:
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
             delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
+            title_repairs(rows, header, prs, initiative, epic, report)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
             open_named = any(p.get('state') == 'open' for p in named.values())
             started = any(delivered.values()) or open_named or report['unmatched']
@@ -775,7 +901,7 @@ def main() -> int:
     if kind == 'epic' and rows:
         by_number = {p['number']: p for p in prs}
         unmet_coverage(rows, header, by_number, ticked, report)
-        test_plan_agreement(rows, header, by_number, report)
+        plan_agreement(rows, header, by_number, report)
 
     done_changed = False
     if kind != 'task' and rows:
@@ -787,7 +913,7 @@ def main() -> int:
     epic_ready = kind == 'epic' and not open_criteria and not open_rows
     if epic_ready:
         if not LONG_LIVED:
-            branches = 'long-lived branches not given'
+            branches = 'long-lived branches unevaluable'
         else:
             home = issue['repository_url'].split('/repos/', 1)[1]
             report['unmerged'].extend(unmerged_epic_bases(prs, initiative, epic, home))
@@ -812,7 +938,7 @@ def main() -> int:
         rewrite = bool(report['linked']) and kind != 'task' or done_changed
         if rewrite:
             lines[start + 2:end] = [row(r) for r in rows]
-        Path(args.fix).write_text(join_sections(preamble, sections) if rewrite or report['ticked'] else body)
+        Path(args.fix).write_text(join_sections(preamble, sections) if rewrite or report['ticked'] or report['normalized'] else body)
     return 0
 
 

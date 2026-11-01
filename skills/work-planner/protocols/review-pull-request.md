@@ -28,7 +28,7 @@ Read these files first.
 4. **Confirm.**
    Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the published review.
    - Compare its complete body with the published file.
-   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the current epic and refreshed review and task-merge records.
+   - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the current epic, refreshed review and task-merge records, the project checkout and the fetched epic bases.
    - Retain its cited-versus-actual merge findings with the review identity. The session recording each task merge owns this update.
 5. **Review the integration.**
    When the caller requests handoff and supplies confirmed epic readiness:

@@ -179,3 +179,45 @@ class DocumentInterfaces(unittest.TestCase):
                     if destination.parent.name == 'protocols' and destination != path:
                         with self.subTest(file=path.name, target=target):
                             self.assertEqual(fragment, '')
+
+
+RECORD_EPIC_DELIVERY = re.compile(
+    r'\b(?:[Rr]un|[Rr]e-run|[Rr]epeat(?:ing)?)\s+\[?Record Epic Delivery\b')
+
+
+class EpicDeliveryCallers(unittest.TestCase):
+    """Sync Epic reads the long-lived branch names at the epic's bases, so a
+    call to Record Epic Delivery without them never reports an epic closable."""
+
+    def calls(self):
+        found = []
+        for path in sorted(ROOT.rglob('*.md')):
+            for number, line in enumerate(path.read_text().splitlines(), 1):
+                if RECORD_EPIC_DELIVERY.search(line):
+                    found.append((f'{path.relative_to(ROOT)}:{number}', line))
+        return found
+
+    def test_record_epic_delivery_calls_pass_the_epic_bases(self):
+        calls = self.calls()
+        callers = {where.partition(':')[0] for where, _ in calls}
+        self.assertTrue({'modes/deliver-mode.md', 'modes/sync-mode.md',
+                         'modes/align-mode.md', 'protocols/review-pull-request.md',
+                         'protocols/task-merge.md', 'protocols/issue-delivery.md',
+                         'artifacts/epic-issue-body.md'} <= callers)
+        for where, line in calls:
+            with self.subTest(call=where):
+                self.assertIn('epic bases', line)
+
+    def test_record_epic_delivery_takes_the_epic_bases(self):
+        text = (ROOT / 'artifacts' / 'epic-issue-body.md').read_text()
+        section = text.split('### *Record* Epic Delivery', 1)[1].split('\n### ', 1)[0]
+        self.assertIn('fetched epic bases', section)
+        self.assertIn('`--revision`', section)
+
+    def test_a_report_of_the_operation_is_not_a_call(self):
+        self.assertIsNone(RECORD_EPIC_DELIVERY.search(
+            'When [Record Epic Delivery](x.md) reports an epic base unmerged'))
+        self.assertIsNone(RECORD_EPIC_DELIVERY.search(
+            'When the preceding Record Epic Delivery call reports a row done'))
+        self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
+            'Repeat Record Epic Delivery with the saved epic.'))
