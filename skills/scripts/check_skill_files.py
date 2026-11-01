@@ -104,7 +104,7 @@ BARE_LEAD = re.compile(r'^\s*-\s+\*\*[^*]+\*\*\s*$')
 INDENTED = re.compile(r'^\s+\S')
 DESCRIPTION = re.compile(r'^description:\s*(.*?)\s*$')
 BLOCK_SCALARS = ('>', '>-', '>+', '|', '|-', '|+')
-MODE = re.compile(r'^[-*]\s+\*\*\[([^\]]+)\]\([^)]+\)\*\*')
+MODE = re.compile(r'^[-*]\s+(\*\*)?\[([^\]]+)\]\([^)]+\)(?(1)\*\*)')
 BLOCK_START = re.compile(r'^\s*([-*+]\s|\d+[.)]\s|#|\||>|<|`{3,}|~{3,})')
 BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*[^*]+\*\*\s*$')
 PROSE_LIMIT = 8
@@ -120,11 +120,18 @@ RULE_LABEL = re.compile(r'^- \*\*(.+?)\*\*')
 SCRIPT = re.compile(r'(?<![\w./-])((?:[\w.-]+/)*scripts/[\w.-]+\.(?:py|sh|js|mjs|ts))')
 SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
 GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
-REST_GAP = '**REST gap:**'
+REST_GAP = re.compile(r'^\s*(?:[-*+]\s+)?\*\*REST gap:\*\*')
+# Projects (classic) in every form: its types, mutations and connection fields,
+# its REST routes rooted at projects/ or under a repository, organization, user
+# or the authenticated user, and its GraphQL project and projects fields called
+# with arguments. A path segment beneath another, such as a board's web link or
+# a local folder, names no route, and the V2 names carry their suffix.
 CLASSIC = re.compile(r'\b(?:add|move|delete|update|create|clone|convert)?Project(?:Card|Column)s?\b'
-                     r'|\bproject(?:Card|Column)s\b|\bprojects/(?:columns|cards)\b'
+                     r'|\bproject(?:Card|Column)s\b'
+                     r'|(?<![\w./}>-])/?projects/(?:\d|columns\b|cards\b|[{<:])'
+                     r'|(?<![\w./}>-])/?user/(?:projects)\b'
                      r'|(?<!github\.com/)\b(?:repos/[^/\s]+/[^/\s]+|orgs/[^/\s]+|users/[^/\s]+)/projects\b'
-                     r'|\bprojects\s*\(')
+                     r'|\bprojects?\s*\(\s*(?:first|last|after|before|number|orderBy|search|states)\s*:')
 # Every kind of finding the check reports. A rule's `rules.json` entry names
 # the kinds that decide it, or `review` where the read against the guidelines
 # does, so a kind outside this set names no operation.
@@ -615,7 +622,7 @@ def interfaces(path, root, structures):
         graphql = any(fenced[index] and (GRAPHQL.search(lines[index]) or any(
             GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index])))
             for index in span)
-        if graphql and not any(lines[index].startswith(REST_GAP) for index in span):
+        if graphql and not any(REST_GAP.match(lines[index]) for index in span):
             found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
     return found
 
@@ -708,8 +715,9 @@ def description(lines, skip):
 
 
 def modes(lines, headings):
-    """Each mode an entry point lists: a bullet under its Modes section whose
-    bold name links the mode's file, with the line it stands on."""
+    """Each mode an entry point lists: a top-level bullet under its Modes
+    section whose name, bold or plain, links the mode's file, with the line it
+    stands on."""
     start = next((index for index, level, title in headings
                   if level == 2 and anchor_of(title) == 'modes'), None)
     if start is None:
@@ -717,7 +725,7 @@ def modes(lines, headings):
     end = next((index for index, level, _ in headings if index > start and level <= 2), len(lines))
     for index in range(start, end):
         if match := MODE.match(lines[index]):
-            yield index, match[1]
+            yield index, match[2]
 
 
 def untriggered_modes(lines, headings, skip):
