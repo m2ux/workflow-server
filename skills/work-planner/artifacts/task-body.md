@@ -18,7 +18,7 @@ One task body within its supplied epic context.
 **Inputs:** Task scope, epic context, design, criteria and output path.
 
 - Populate the body from the [Template](#template) at the supplied output path.
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions.
+  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the task [Titles](#titles).
   - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
   - Acceptance criteria must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
   - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
@@ -64,7 +64,7 @@ One task body with its confirmed delivery and verified criteria recorded.
 
 ### Titles
 
-- The title is `[I07:E00:W01] Name: Subtitle`.
+- The title is `[I07:E00:W01] Name: Subtitle`. Its prefix is the initiative, epic and row id of its row in the epic's Work Breakdown.
 - The label is `type:task`.
 - `W` is the task within the epic. Tasks count from `W01`.
 

@@ -431,7 +431,7 @@ class DispatchStatus(unittest.TestCase):
     def test_a_task_is_not_set_in_review(self):
         done = self.place(self.board((task(637), 'In Progress')), '--review', '637')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('a dispatch does not set a task In Review', done.stderr)
+        self.assertIn('a task does not stand In Review', done.stderr)
 
     def test_an_issue_off_the_board_is_refused(self):
         done = self.place(self.board((epic(943), 'Ready')), '--progress', '944')

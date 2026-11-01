@@ -4,11 +4,27 @@ fix what is mechanical.
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
+  python3 format.py issue-943.json --prs prs.json --files 950=changed-950.txt … --project <checkout> \
+    --revision origin/i07/e00/workspace
+
+An epic checked with --project and --revision is held to the criteria its project requires. They are
+the ones config/required-criteria.json declares at the commit --revision resolves to, in the repository
+--project locates. Which worktree --project is, and what its working files hold, choose nothing. The
+run prints the declaration path, the resolved commit and the repository as its source. A revision
+resolving to no commit, and a missing, empty or malformed declaration at that commit, leave the
+required criteria unevaluable: the run reports that and names what is missing, and reports no
+criterion as lacking. Each declared criterion is required of an epic one of whose pull requests, from
+--prs, reaches its branch through an epic base or initiative branch and changes a file at or under one
+of its paths. --files gives each pull request's changed files, the path list the tracker returns for
+it. A pull request reaching a declared branch without its changed files leaves that criterion
+unevaluable, unless another one is known to change a declared path. An epic carries a criterion when
+one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
-also carries type:proposal. No prefix and no type:proposal is a standalone issue, which belongs to no
-initiative and takes artifacts/standalone-body.md. The format is read
+also carries type:proposal. A type:task issue is a task whatever its prefix depth, so one whose
+prefix has no task id is checked as a task and reported as missing it. No prefix and no type:proposal
+is a standalone issue, which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
 from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -31,9 +47,10 @@ Fixed in the body written to --fix, keeping the issue's wording:
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
-  - a type:* label that does not match the title's level, a theme:* label on a proposal, or any type:* label on a standalone issue
+  - a type:* label that does not match the issue's kind, a theme:* label on a proposal, or any type:* label on a standalone issue
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
+  - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -65,6 +82,7 @@ Left to decide, since each needs new content or a judgement:
   - an unfilled {{...}} field or #E00 placeholder
   - a Work Breakdown reference to an epic that cannot be linked: one of another initiative, one the
     initiative's table does not list, or any at all when an epic is checked without --initiative
+  - an epic lacking a criterion its project requires, and required criteria that are unevaluable
 
 With --fix, a diff of the body changes is printed. Exit status 1 when anything is left to decide.
 """
@@ -72,8 +90,10 @@ import argparse
 import difflib
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
 BODY_ARTIFACTS = {
@@ -286,14 +306,80 @@ def colon_refs(text: str) -> str:
     return re.sub(r'\bE(\d\d) W(\d\d)\b', r'E\1:W\2', text)
 
 
+DECLARATION = 'config/required-criteria.json'
+DECLARED_FIELDS = ('branch', 'paths', 'criterion', 'phrase', 'row')
+
+
+class Required(NamedTuple):
+    """The criteria a project requires of its epics and the source they were read from.
+
+    unevaluable names what is missing when the declaration cannot be read, and then criteria is empty."""
+    criteria: tuple[dict, ...]
+    source: str
+    unevaluable: str = ''
+
+
+def git(project: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
+
+
+def filled(value, field: str) -> bool:
+    """A declared field holds a non-empty string, and paths a non-empty list of them."""
+    if field == 'paths':
+        return isinstance(value, list) and bool(value) and all(filled(v, 'path') for v in value)
+    return isinstance(value, str) and bool(value.strip())
+
+
+def names(paths: list[str], changed: str) -> bool:
+    """A changed file is one of the declared paths, or lies under one."""
+    return any(changed == p.strip('/') or changed.startswith(p.strip('/') + '/') for p in paths)
+
+
+def refs(numbers: list[int]) -> str:
+    return ', '.join(f'#{n}' for n in numbers)
+
+
+def required_criteria(project: str, revision: str) -> Required:
+    """The required criteria config/required-criteria.json declares at the commit revision resolves to.
+
+    The checkout locates the repository and nothing more: its working files, and which of the
+    repository's worktrees it is, do not choose the criteria. The source names the declaration path,
+    the resolved commit and the repository's shared git directory, which every worktree of it
+    resolves to. A revision that resolves to no commit, and a missing, empty or malformed declaration
+    at that commit, leave the criteria unevaluable."""
+    resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
+    if resolved.returncode != 0:
+        source = f'{DECLARATION} at {revision} in {project}'
+        return Required((), source, f'{revision} resolves to no commit in {project}')
+    commit = resolved.stdout.strip()
+    repository = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.strip()
+    source = f'{DECLARATION} at {commit} in {repository}'
+    stated = git(project, 'cat-file', 'blob', f'{commit}:{DECLARATION}')
+    if stated.returncode != 0:
+        return Required((), source, f'no {source}')
+    try:
+        entries = json.loads(stated.stdout or 'null')
+    except json.JSONDecodeError:
+        return Required((), source, f'{source} is not JSON')
+    if not isinstance(entries, list) or not entries:
+        return Required((), source, f'{source} declares no criterion')
+    for entry in entries:
+        missing = [f for f in DECLARED_FIELDS if not isinstance(entry, dict) or not filled(entry.get(f), f)]
+        if missing:
+            return Required((), source, f'an entry in {source} lacks {", ".join(missing)}')
+    return Required(tuple(entries), source)
+
+
 class Review:
     def __init__(self, issue: dict, initiative: dict | None = None, epics: list[dict] | None = None,
-                 prs: list[dict] | None = None, corpus: str | None = None):
+                 prs: list[dict] | None = None, required: Required | None = None,
+                 files: dict[int, list[str]] | None = None):
         self.issue = issue
         self.initiative = initiative
         self.epics = {e['number']: epic_name(e['title']) for e in epics or []}
         self.prs = prs or []
-        self.corpus = corpus
+        self.required = required
+        self.files = files or {}
         self.fixed: list[str] = []
         self.apply: list[str] = []
         self.decide: list[str] = []
@@ -330,6 +416,10 @@ class Review:
         if self.kind is None:
             self.decide.append(f'title prefix has too many levels: {m[0]}')
             return None
+        if self.kind != 'task' and 'type:task' in self.labels():
+            self.kind = 'task'
+            self.decide.append(f'title prefix {m[0]} has no task id; a task is titled '
+                               '[I07:E00:W01] Name: Subtitle, from its row in its epic')
         self.check_title(m, parts)
         self.check_labels()
         return self.check_body()
@@ -425,6 +515,8 @@ class Review:
                 self.check_references(section[1])
 
         self.check_outcomes(sections)
+        if self.kind == 'epic':
+            self.check_required({h: lines for h, lines in sections}.get('Acceptance Criteria', []))
         self.check_history(sections)
         self.check_plan_ids(sections)
         fixed = join_sections(preamble, sections) if self.fixed else body
@@ -580,32 +672,45 @@ class Review:
                                        'tasks one pull request each can deliver')
         for n in sorted(wanted - delivered):
             self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
-        if self.kind == 'epic':
-            self.check_corpus_audit(by_name.get('Acceptance Criteria', []))
 
-    def check_corpus_audit(self, criteria: list[str]) -> None:
-        """An epic whose pull requests reach the corpus branch carries the corpus audit criterion.
+    def check_required(self, criteria: list[str]) -> None:
+        """An epic whose pull requests change a required criterion's paths on its branch carries it.
 
-        The reach is measured from the pull requests naming this epic. Without them, or without the
-        branch, it is unevaluable and nothing is reported."""
-        if not self.prs or not self.corpus:
+        Unevaluable required criteria are reported, and then no criterion is reported as lacking. The
+        reach is measured from the pull requests naming this epic; without them nothing is lacking. A
+        pull request reaching the branch whose changed files are unknown leaves the criterion
+        unevaluable while no other is known to change a declared path."""
+        if self.required is None:
+            return
+        if self.required.unevaluable:
+            self.decide.append(f'required criteria unevaluable: {self.required.unevaluable}')
             return
         found = PREFIX.match(self.issue['title'])
         parts = re.findall(r'[EW]\d\d', found[2]) if found else []
         if not found or len(parts) != 1:
             return
         prefix = f'[{found[1]}:{parts[0]}]'
-        reaches = False
+        reached: dict[str, list[int]] = {}
         for pr in self.prs:
             if not (pr.get('title') or '').startswith(prefix):
                 continue
             ref = (pr.get('base') or {}).get('ref') or ''
             base = re.fullmatch(r'i\d\d/(?:e\d\d/)?(.+)', ref)
-            if (base[1] if base else ref) == self.corpus:
-                reaches = True
-        if reaches and not any(re.search(r'canon audit', line, re.IGNORECASE) for line in criteria):
-            self.decide.append('its pull requests reach the corpus and no criterion is the corpus '
-                               'audit; add it with the task row that delivers it')
+            reached.setdefault(base[1] if base else ref, []).append(pr['number'])
+        text = '\n'.join(criteria).casefold()
+        for entry in self.required.criteria:
+            if entry['phrase'].casefold() in text:
+                continue
+            numbers = reached.get(entry['branch'], [])
+            changing = [n for n in numbers if any(names(entry['paths'], f) for f in self.files.get(n, ()))]
+            unknown = [n for n in numbers if n not in self.files]
+            if changing:
+                self.decide.append(f'{refs(changing)} change {", ".join(entry["paths"])} on {entry["branch"]} and '
+                                   f'no criterion carries "{entry["phrase"]}"; add "{entry["criterion"]}" '
+                                   f'with the task row "{entry["row"]}"')
+            elif unknown:
+                self.decide.append(f'required criteria unevaluable: no changed files for {refs(unknown)}, '
+                                   f'reaching {entry["branch"]}')
 
     def reorder(self, sections: list[list], template: Template) -> list[list]:
         groups: list[list[list]] = []
@@ -912,19 +1017,36 @@ def main() -> int:
     parser.add_argument('--epic', action='append', help="initiative: an epic's issue JSON, whose title "
                         'names its row; repeat for each epic')
     parser.add_argument('--fix', help='write the mechanically fixed body here')
-    parser.add_argument('--prs', help='epic: pull requests as JSON lines, for the corpus audit check')
-    parser.add_argument('--corpus', help='epic: the long-lived branch the corpus lives on')
+    parser.add_argument('--prs', help='epic: pull requests as JSON lines, for the required criteria check')
+    parser.add_argument('--files', action='append', default=[], metavar='NUMBER=FILE',
+                        help='epic: a pull request\'s changed files, one path per line; repeat for each '
+                        'pull request reaching a declared branch')
+    parser.add_argument('--project', default='', help='epic: any checkout of the repository whose '
+                        'config/required-criteria.json declares the required criteria')
+    parser.add_argument('--revision', default='', help='epic: the commit the declaration is read at, its epic '
+                        'base, e.g. origin/i07/e00/workspace')
     args = parser.parse_args()
+    if bool(args.project) != bool(args.revision):
+        sys.exit('--project and --revision go together')
 
     issue = json.loads(Path(args.issue).read_text())
     initiative = json.loads(Path(args.initiative).read_text()) if args.initiative else None
     epics = [json.loads(Path(e).read_text()) for e in args.epic or []]
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else None
-    review = Review(issue, initiative, epics, prs, args.corpus)
+    required = required_criteria(args.project, args.revision) if args.project else None
+    files = {}
+    for given in args.files:
+        number, _, path = given.partition('=')
+        if not number.isdigit() or not path:
+            sys.exit(f'--files {given}: expected NUMBER=FILE')
+        files[int(number)] = [l.strip() for l in Path(path).read_text().splitlines() if l.strip()]
+    review = Review(issue, initiative, epics, prs, required, files)
     fixed = review.run()
     kind = getattr(review, 'kind', None) or 'unknown kind'
     print(f"#{issue.get('number')} {kind} ({issue.get('state')}): {len(review.fixed)} fixed, "
           f"{len(review.apply)} to apply, {len(review.decide)} to decide")
+    if required:
+        print(f'  source: {required.source}')
     for name, items in (('fixed', review.fixed), ('apply', review.apply), ('decide', review.decide)):
         for item in items:
             print(f'  {name}: {item}')

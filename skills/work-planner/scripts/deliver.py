@@ -30,7 +30,7 @@ issue not given. A run that met an unresolvable entry exits 1.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
-DISPATCH jurisdiction, which refuses any other Status, a task set In Review, and a removal.
+DISPATCH jurisdiction, which refuses any other Status and a removal; every jurisdiction refuses a task set In Review.
 
 --reserve sets the record folder as each row's single link. The record README links its work item.
 --release frees the row by replacing that folder link with its work-item file link. Both write the
