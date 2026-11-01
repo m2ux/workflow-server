@@ -1,6 +1,6 @@
 # Skill frontmatter and prose layout checks — November 2026
 
-> Delivery record · Created 2026-11-01
+> Delivery record · Created 2026-11-01 · Revised 2026-11-01
 
 ## Executive Summary
 
@@ -21,4 +21,5 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
-| Pull request | [#1566](https://github.com/m2ux/workflow-server/pull/1566) |
+| Pull request | [#1566](https://github.com/m2ux/workflow-server/pull/1566), merged into `i11/e10/workspace` as [`9947ff911`](https://github.com/m2ux/workflow-server/commit/9947ff911d95d20273ea7edabcd18ace02d4fde5) |
+| Review pull request | [#1555](https://github.com/m2ux/workflow-server/pull/1555) |
