@@ -44,6 +44,14 @@ Read the [canon prerequisites](canon-context.md#prerequisites), then its [terms]
 - **`fix`**
   Text written in this pass to close a finding. Closed within the pass by [Author](author-mode.md), never reported open.
 
+### Fetch Unit
+
+Reads one section or entry of a home.
+
+- **On disk.**
+  [List units](canon-context.md#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
+- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.
+
 ## Rules
 
 - **Remediation.**
@@ -66,11 +74,3 @@ Prints every canon unit that fires on one construct id, with its file and line.
 ```bash
 npx tsx guards/list-fires-on.ts 'activity.steps[].when' --root <corpus>
 ```
-
-### Fetch Unit
-
-Reads one section or entry of a home.
-
-- **On disk.**
-  [List units](canon-context.md#list-units) for the range, then Read it. For one entry, list the `###` lines and read that block.
-- **In a workflow session.**  `get_resource` with `canon/<home>#<heading>`.

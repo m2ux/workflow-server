@@ -60,7 +60,7 @@ These rules apply to mode procedures and artifact operations.
 These rules govern command and access specifications. Procedural operations follow Procedure and Artifacts below.
 
 - **Spec layout.**
-  A command specification opens with one line on what it does. Its inputs and parameter conditions follow, then its command block or access instructions. Specifications have no numbered steps or bold action labels. The calling operation or mode procedure states when the command runs and what it passes; action preconditions and refusals belong to the governing step.
+  A command specification takes the [shared spec layout](../guidelines.md#commands), and access instructions stand where a command has no block. Specifications have no numbered steps or bold action labels. The calling operation or mode procedure states when the command runs and what it passes; action preconditions and refusals belong to the governing step.
 - **One command.**
   Each specification exposes one command or access action. Put sequencing, branching, repetition and readback in an artifact operation or mode procedure. A working-directory prefix and output-filter pipeline belong to the command they serve. Optional flags for one command share its specification.
 - **One home.**

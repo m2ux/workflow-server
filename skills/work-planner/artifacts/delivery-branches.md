@@ -183,6 +183,19 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 
+### Stash Entries
+
+Every worktree of a repository shares one stash list, so a delivery session that stashes names its entry with a message no other session's entry carries, and acts on that entry alone.
+
+- **Found.**
+  An entry is found by its message, never by its position in the list.
+- **Restored.**
+  An entry is restored with `git stash apply` on that entry's commit, never with a bare `git stash pop`, which takes whichever entry tops the list.
+- **Dropped.**
+  The session that made an entry drops it once restored, by the `stash@{<n>}` reference its message holds at that moment, since `git stash drop` takes no bare commit.
+- **Example.**
+  `git stash push -m "i11/e10/w29 before base merge"`, then `git stash list --format='%H %gd %s'` to find the entry, `git stash apply <entry-commit>`, and `git stash drop "stash@{<n>}"`.
+
 ## Commands
 
 ### List Epic Bases

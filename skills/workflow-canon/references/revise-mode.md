@@ -57,11 +57,21 @@ git diff --check
 
 ### Check Skill Files
 
-Resolves every local link and heading anchor in a skill, and reports the link and layout rules the shared guidelines state.
+Reports each departure of a skill's files from the rules the shared guidelines state.
 
-- Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution.
-- A heading whose anchor an earlier heading of its file holds is reported whether or not a link cites it, since a fragment reaches the first of them.
-- A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
+- Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution. `--quiet` prints the counts alone.
+- **Links.**
+  Every local link and heading anchor resolves. A heading whose anchor an earlier heading of its file holds is reported whether or not a link cites it, since a fragment reaches the first of them. A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
+- **Layout.**
+  A heading jump, a heading without a blank line above it or without content, a malformed bullet, an inline bold lead past the width limit, prose over eight lines, a hard-wrapped line and a trailing blank line are reported.
+- **Sections.**
+  A file carrying a procedure takes the top-level sections the guidelines name, in their order, and an entry point takes its own set whatever it carries. A skill's `structure.json` declares the set for its own directories.
+- **Commands.**
+  A specification standing in the entry point, one a single file other than its own calls, and one nothing cites are reported. So are a shell block in a mode file outside its specifications, GraphQL without a `**REST gap:**` line, and any Projects (classic) interface.
+- **Declarations.**
+  A term the skill's `vocabulary.json` retires, a guide rule restating a shared rule's label under the same section title, a labelled guide rule the `rules.json` beside it leaves undecided, and a mode the frontmatter description gives no trigger phrase are reported.
+- **Moods.**
+  Sibling sections whose titles end in one word open in one mood.
 - Fenced blocks, code spans and `{{...}}` placeholders hold specimen text and are excluded.
 - Exit 0 means no finding; exit 1 lists each one as `file:line: kind`.
 
