@@ -107,15 +107,6 @@ class SkillFileChecks(unittest.TestCase):
         self.write('references/guide.md', f'# Guide\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
         self.assertEqual(self.findings(), [])
 
-    def test_a_repeated_anchor_is_reported_when_it_is_cited(self):
-        self.write('SKILL.md', '# Specimen\n\nSee [terms](references/guide.md#terms).\n')
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
-        self.assertIn('duplicate anchor is cited', self.kinds())
-
-    def test_a_repeated_anchor_nobody_cites_is_left_alone(self):
-        self.write('references/guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
-        self.assertEqual(self.findings(), [])
-
     def test_a_skipped_heading_level_is_reported(self):
         self.write('SKILL.md', '# Specimen\n\n### Deep\n\nA sentence.\n')
         self.assertIn('heading jump', self.kinds())
@@ -1269,6 +1260,62 @@ class UncitedSpecifications(unittest.TestCase):
     def test_the_entry_point_reports_its_specification_as_misplaced_alone(self):
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n' + self.COMMANDS)
         self.assertEqual(self.uncited(), [])
+
+
+class RepeatedHeadings(unittest.TestCase):
+    """A heading whose anchor an earlier heading of its file holds is reported,
+    whether or not a link cites it."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def repeats(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files, {})
+        found = []
+        for path in files:
+            found += checker.check(path, self.root, {}, cited, called, {})
+        return [(Path(where).name, line, detail)
+                for where, line, kind, detail in found if kind == 'duplicate anchor']
+
+    def test_a_repeat_nothing_cites_is_reported(self):
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_a_cited_repeat_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nSee [terms](guide.md#terms).\n')
+        self.write('guide.md', '# Guide\n\n## Terms\n\nOne.\n\n## Terms\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'terms, also at line 3')])
+
+    def test_titles_differing_only_in_what_the_anchor_drops_are_one_anchor(self):
+        self.write('guide.md', '# Guide\n\n## Open Questions\n\nOne.\n\n### open questions?\n\nTwo.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'open-questions, also at line 3')])
+
+    def test_each_further_repeat_names_the_first(self):
+        self.write('guide.md', '# Guide\n\n## Problem\n\nA.\n\n## Problem\n\nB.\n\n## Problem\n\nC.\n')
+        self.assertEqual(self.repeats(), [('guide.md', 7, 'problem, also at line 3'),
+                                          ('guide.md', 11, 'problem, also at line 3')])
+
+    def test_distinct_headings_are_not_repeats(self):
+        self.write('guide.md', '# Guide\n\n## Epic Problem\n\nA.\n\n## Task Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_one_title_in_two_files_is_not_a_repeat(self):
+        self.write('epic.md', '# Epic\n\n## Problem\n\nA.\n')
+        self.write('task.md', '# Task\n\n## Problem\n\nB.\n')
+        self.assertEqual(self.repeats(), [])
+
+    def test_a_repeat_inside_a_fence_is_a_specimen(self):
+        self.write('guide.md', f'# Guide\n\n## Terms\n\n{FENCE}markdown\n## Terms\n{FENCE}\n')
+        self.assertEqual(self.repeats(), [])
 
 
 CANON = Path(__file__).resolve().parents[1] / 'workflow-canon'
