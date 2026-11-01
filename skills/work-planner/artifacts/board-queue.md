@@ -57,7 +57,7 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - Any other Ready or In Progress epic of that initiative moves to Backlog.
 - An epic In Review or Done remains in that state.
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
-- An initiative kept In Progress only while its open pull requests complete readies none of its epics: its active epics stay In Progress, and its Ready epics and its inactive epics In Progress move to Backlog.
+- An initiative kept In Progress only while its open pull requests complete readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
 
 ### Backlog Cascade
 
