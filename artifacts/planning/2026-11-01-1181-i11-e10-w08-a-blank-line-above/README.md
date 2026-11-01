@@ -14,7 +14,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | [W08 work item](w08.md) | Component, scope, design, criteria and test rows for W08 |
 | [Test evidence](test-evidence.md) | The tested revision, commands and results behind each Test Plan row |
-| [Registration evidence](registration-evidence.md) | The tested revision, commands and results behind the finding-kind registration pull request |
+| [Registration evidence](registration-evidence.md) | The tested revision, commands and results behind the pull request stating the Heading spacing rule |
 | [Change list](change-list.md) | Each plan change the session applied or held, and the debt it fixed |
 
 ## Links
