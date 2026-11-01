@@ -19,6 +19,7 @@ The records gate the epic's handoff. An epic moves to In Review, and its review 
 | [Review #1487 at 318850f2](review-1487-318850f2.json) | Fourth review: all nine findings fixed (W19 the last), none open |
 | [Review #1487 at e818761e](review-1487-e818761e.json) | Fifth review, after `workspace` at `b46838c9` merged in: integration diff unchanged, all nine findings fixed, none open |
 | [Review #1487 at 2c67834f](review-1487-2c67834f.json) | Sixth review, after `workspace` at `42e67e00` (#1536) merged in: the merge keeps both sides' rules, nine findings fixed, and a nonblocking test-gap finding open, fixed by W20 |
+| [Review #1487 at e9a418e9](review-1487-e9a418e9.json) | Seventh review, after W20 (#1546): every finding fixed, none open |
 | [Review #1487 at e9a418e9](review-1487-e9a418e9.json) | Current review, after W20 (#1546): all ten findings fixed, none open |
 | [Review #1506](review-1506.json) | Agent review record of the `main` integration at `1cd4a87d`, with no finding |
 | [Review #1497](review-1497.json) | Agent review record of the `workflows` integration at `7f76f53b`, with no finding and the pre-existing `corpus-links` failure |
