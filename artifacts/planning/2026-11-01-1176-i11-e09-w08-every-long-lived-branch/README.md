@@ -12,6 +12,7 @@ Since W06, a sync reads the declaration only at the commit it evaluates, so an e
 
 | Artifact | What it holds |
 | --- | --- |
+| [W08 work item](w08.md) | Component, scope, design and test rows for W08 |
 
 ## Links
 
