@@ -26,11 +26,9 @@ concurrency:
 
 env:
   # Skill folders under `skills/` left out of the check, space-separated. Each is listed while the
-  # check reports findings over it, with those findings stated here:
-  #
-  # - gitnexus: the `gitnexus-cli` entry point holds five command specifications and an inline
-  #   bold lead over the width limit.
-  EXCLUDED: gitnexus
+  # check reports findings over it, with those findings stated here as a list of
+  # `- <skill>: <findings>` lines. Empty while every skill is in scope.
+  EXCLUDED: ''
 
 jobs:
   skill-files:
