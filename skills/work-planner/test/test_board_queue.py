@@ -442,13 +442,14 @@ class ReadyFollowsTheInitiative(unittest.TestCase):
         out = queue(staged((reviewing, 'In Review'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Ready')))
         self.assertIn('[I01:E00] Epic 3: Work: Ready → Backlog', out)
 
-    def waiting(self, held: str, priority: str, unplanned: tuple[str, ...] = ()) -> str:
+    def waiting(self, held: str, priority: str, unplanned: tuple[str, ...] = (),
+                engaged: str = 'In Progress') -> str:
         """An initiative kept In Progress by an open pull request on E00, below a higher one."""
         current = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''),
                              (f"[E01]({url('issues', 5)})", ''), priority=priority)
         high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
         return queue(staged((current, 'In Progress'), (high, 'Backlog'),
-                            (epic(3, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                            (epic(3, '01:E00', ('W01', 'Go', '')), engaged),
                             (epic(5, '01:E01', ('W01', 'Go', '')), held),
                             (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
                      [pr(9, '[I01:E00] Open', base='i01/e00/workspace', head='i01/e00/w01-go')],
@@ -480,6 +481,14 @@ class ReadyFollowsTheInitiative(unittest.TestCase):
                 self.assertIn('wait #1 [I01] Low: Current', out)
                 self.assertIn('[I01:E01] Epic 5: Work: In Progress → Backlog', out)
                 self.assertNotIn('Epic 3: Work: In Progress →', out)
+
+    def test_an_active_epic_under_a_waiting_initiative_is_in_progress(self):
+        for where, priority, unplanned in (('next set', 'priority: 3', ()), ('unplanned', '', ('1',))):
+            with self.subTest(where):
+                out = self.waiting('Backlog', priority, unplanned, engaged='Backlog')
+                self.assertIn('wait #1 [I01] Low: Current', out)
+                self.assertIn('[I01:E00] Epic 3: Work: Backlog → In Progress', out)
+                self.assertNotIn('Epic 5', out)
 
 
 class BacklogTakesTheTree(unittest.TestCase):

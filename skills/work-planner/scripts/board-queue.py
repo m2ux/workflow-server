@@ -21,8 +21,8 @@ returning to Backlog while an epic has work under way or is In Review, and a nex
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
 open pull requests have completed, and its unstarted epics return with it; a Done epic stays Done.
 An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
-are met; an initiative kept In Progress only while its open pull requests finish readies none,
-and its inactive epics In Progress return to Backlog.
+are met; an initiative kept In Progress only while its open pull requests finish readies none:
+its active epics are In Progress and its inactive ones Backlog.
 Initiatives with the same priority number run together, as do the epics of one initiative, whose
 highest number counts the epics already In Progress. An epic with no priority
 label ranks below every number, so it waits while a labelled sibling can start or is running. A
@@ -176,18 +176,19 @@ class Queue:
             self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
 
     def park(self) -> None:
-        """A Ready epic whose initiative ends neither Ready nor In Progress goes Backlog. An
-        initiative waiting on its open pull requests keeps only its active epics In Progress, so its
-        Ready epics and its inactive open epics In Progress go Backlog."""
+        """A Ready epic whose initiative ends neither Ready nor In Progress goes Backlog. Of an
+        initiative waiting on its open pull requests, an open epic not In Review is In Progress while
+        active and Backlog otherwise."""
         for key, (rows_of, _epics) in self.children.items():
             waiting = key in self.waiting
             if not waiting and self.wanted.get(key, self.status.get(key)) in READY_UNDER:
                 continue
             for row_name, epic_key, _depends in rows_of:
                 held = self.wanted.get(epic_key, self.status.get(epic_key))
-                idle = (waiting and held == 'In Progress' and self.issues[epic_key]['state'] == 'open'
-                        and not active(self.board, epic_key, f'{self.line(key)} {row_name}'))
-                if held == 'Ready' or idle:
+                if waiting and held not in ('In Review', 'Done') and self.issues[epic_key]['state'] == 'open':
+                    busy = active(self.board, epic_key, f'{self.line(key)} {row_name}')
+                    self.place(epic_key, 'In Progress' if busy else 'Backlog')
+                elif held == 'Ready':
                     self.place(epic_key, 'Backlog')
 
     def shelve(self, key: tuple[str, int]) -> None:
