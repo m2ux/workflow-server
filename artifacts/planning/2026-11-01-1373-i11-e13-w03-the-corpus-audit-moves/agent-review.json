@@ -1,0 +1,21 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1507",
+    "head": "48ac26494a021600ae740f590035ecbda715d17a",
+    "base": "b0294e20074f715286d7c13451d3df30764d3273",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1373-i11-e13-w03-the-corpus-audit-moves/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (I11:E13 W03 delivery session)",
+    "reviewed_at": "2026-11-01T07:50:00Z",
+    "scope": "Full integration diff workspace (b0294e2)...i11/e13/workspace (48ac264): config/required-criteria.json, skills/work-planner/scripts/format.py (required_criteria, Review.check_required, main), skills/work-planner/test/test_format.py, artifacts/epic-issue-body.md (Populate, Validate Epic Body, Required Criteria), artifacts/initiative-issue-body.md (deferred-debt epic), modes/deliver-mode.md (Dispatch). Callers inspected: every link to the removed corpus-audit anchor and every format.py --corpus use in skills/; none remains.",
+    "criteria": "AC1 via #1504 and its fixture cases for a project declaring one and declaring none; AC2 via #1514 DeclarationAtRevision and CheckFormat cases; AC3 via #1519 ProjectVocabulary guard (fails on the base guide) and format.py runs on #1176 before W02, at 89fb2f0, whose tree 48ac264 carries, and at 13b2ce6 with no declaration.",
+    "validation": "python3 -m unittest discover -s test: 489 tests OK; pytest: 490 passed with the pre-existing test_plan_agreement collection error carried by #1491; check_skill_files.py skills/work-planner: 0 findings.",
+    "findings": [
+      {
+        "description": "The declaration schema carries branch, criterion, phrase and row only, so two clauses the removed Corpus Audit section stated have no home: a row brought the audit only when its work changed definitions (I11:E09 is now held to the audit for a config/branches-only change to workflows), and outstanding meant neither fixed on the epic branch nor taken by an issue.",
+        "severity": "nonblocking",
+        "disposition": "deferred",
+        "ticket": "https://github.com/m2ux/workflow-server/issues/1520"
+      }
+    ]
+  }
+]

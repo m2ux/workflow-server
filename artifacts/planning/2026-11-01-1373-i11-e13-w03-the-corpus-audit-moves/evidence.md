@@ -2,6 +2,8 @@
 
 Task branch `i11/e13/w03-the-corpus-audit-moves` at `89fb2f048`, based on `i11/e13/workspace` at `13b2ce67b`.
 
+Merged into `i11/e13/workspace` by [#1519](https://github.com/m2ux/workflow-server/pull/1519) as `48ac26494`.
+
 ## Changed Paths
 
 - `config/required-criteria.json`
