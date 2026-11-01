@@ -8,6 +8,7 @@ Read these files first.
 
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -80,7 +81,7 @@ An open epic whose acceptance criteria are all ticked is handed off. Board Deliv
 
 ### Task Eligibility
 
-A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that epic to close, since its output reaches this epic's base when that epic's bases merge, and the rows beside it wait for nothing it waits on. The queue contains no task issue changes; task status comes from the supplied delivery state.
+A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state.
 
 ### Proposed Changes
 
