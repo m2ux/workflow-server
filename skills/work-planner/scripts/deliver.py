@@ -21,8 +21,9 @@ cell is delivered. A row waits for what it names and for nothing a sibling row n
 one epic start in the order that epic's own graph sets, whatever its siblings wait on. Tasks that
 name each other in Joins are one unit, and a unit is one session's work.
 
-Printed: a unit line for each available unit, with the record folder, branch and worktree its ids and
-Description give it; an unresolvable line for a row gated on a dependency entry nothing can resolve,
+Printed: a unit line for each available unit, with the record folder its ids and Description give
+it and a branch and worktree for each epic base, suffixed with the base's long-lived name when there
+are several; an unresolvable line for a row gated on a dependency entry nothing can resolve,
 naming the entry; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
@@ -101,13 +102,23 @@ def epic_bases(refs: list[str], initiative: str, epic: str, names: tuple[str, ..
 
 
 def names(tag: str, text: str, ref: int, when: str) -> dict[str, str]:
-    """The record folder, branch and worktree one unit's first task id and Description give it."""
+    """The record folder and branch one unit's first task id and Description give it."""
     stem = tag.lower().replace(':', '-')
     short = slug(text)
-    branch = tag.lower().replace(':', '/') + (f'-{short}' if short else '')
     return {'folder': f'{when}-{ref}-{stem}' + (f'-{short}' if short else ''),
-            'branch': branch,
-            'worktree': f'{WORKTREES}/{branch}'}
+            'branch': tag.lower().replace(':', '/') + (f'-{short}' if short else '')}
+
+
+def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
+    """The (branch, base, worktree) a unit works in for each epic base: one base, or none, keeps the
+    unit's branch; several give each base its own branch, suffixed with that base's long-lived name."""
+    if len(bases) <= 1:
+        return [(branch, bases[0] if bases else '', f'{WORKTREES}/{branch}')]
+    found = []
+    for base in bases:
+        named = f'{branch}-{base.rsplit("/", 1)[1]}'
+        found.append((named, base, f'{WORKTREES}/{named}'))
+    return found
 
 
 def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
@@ -299,10 +310,11 @@ def survey(args: argparse.Namespace) -> int:
                                                for c in CRITERION.findall(detail[task]['coverage'])))
             refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
             bases = epic_bases(refs, initiative, epic, lived)
-            base = (f', base {bases[0]}' if len(bases) == 1
-                    else ', bases ' + ' '.join(bases) if bases else '')
+            where = '; '.join(f'branch {branch}' + (f', base {base}' if base else '')
+                              + f', worktree {worktree}'
+                              for branch, base, worktree in task_branches(name['branch'], bases))
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
-                  f'record {name["folder"]}, branch {name["branch"]}{base}, worktree {name["worktree"]}')
+                  f'record {name["folder"]}, {where}')
             available += 1
     merging = ready_merges(issues, prs, lived)
     for line in merging:

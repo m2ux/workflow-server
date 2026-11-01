@@ -85,15 +85,20 @@ class Survey(unittest.TestCase):
             root = Path(tmp)
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                             None, *declared(root, 'main'), '--bases', 'i07/e00/main,i07/e00/workspace')
-        self.assertIn('base i07/e00/main', output)
+        self.assertIn('branch i07/e00/w01-queue-plan, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan', output)
         self.assertNotIn('workspace', output)
 
-    def test_a_unit_names_each_of_its_epic_bases(self):
+    def test_a_unit_takes_a_branch_and_worktree_per_epic_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
                             None, *declared(root, 'main', 'workflows'), '--bases', 'i07/e00/workflows,i07/e00/main')
-        self.assertIn('bases i07/e00/main i07/e00/workflows', output)
+        self.assertIn(f'record {TODAY}-943-i07-e00-w01-queue-plan, '
+                      'branch i07/e00/w01-queue-plan-main, base i07/e00/main, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-main; '
+                      'branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, '
+                      'worktree .worktrees/i07/e00/w01-queue-plan-workflows\n', output)
 
     def test_epic_in_backlog_offers_nothing(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'Backlog')))
