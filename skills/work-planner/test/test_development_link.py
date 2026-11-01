@@ -5,6 +5,10 @@ REST node-id lookups, applies the add and remove mutations from the query file, 
 batched relation read from either end. A failure the stand-in is told to raise replaces the answer
 to the one call it names.
 
+Live runs against GitHub itself when WORK_PLANNER_LIVE_LINK names an issue and a draft pull request
+on a branch other than the default, already linked, as `owner/repo#issue owner/repo#pull`. It runs
+outside the sandbox, where gh reaches the tracker.
+
 Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
@@ -171,6 +175,30 @@ class Failure(unittest.TestCase):
         self.assertIn('addCloseIssueReferences(input: {issueId: "I:o/r#924", pullRequestIds: ["P:o/r#950"]})', sent)
         self.assertNotIn('$', sent)
 
+
+
+@unittest.skipUnless(os.environ.get('WORK_PLANNER_LIVE_LINK'), 'names no live issue and draft pull request')
+class Live(unittest.TestCase):
+    """The add command against GitHub for a draft pull request whose base is not the default branch."""
+
+    def gh(self, path: str) -> dict:
+        out = subprocess.run(['gh', 'api', path], capture_output=True, text=True)
+        self.assertEqual(out.returncode, 0, out.stderr)
+        return json.loads(out.stdout)
+
+    def test_adding_twice_to_a_draft_on_another_branch_holds_it_once(self):
+        issue, pull = os.environ['WORK_PLANNER_LIVE_LINK'].split()
+        repo, number = pull.split('#')
+        record = self.gh(f'repos/{repo}/pulls/{number}')
+        self.assertTrue(record['draft'])
+        self.assertNotEqual(record['base']['ref'], self.gh(f'repos/{repo}')['default_branch'])
+        for _ in range(2):
+            done = write(os.environ, 'add', issue, pull)
+            self.assertEqual(done.returncode, 0, done.stdout + done.stderr)
+            self.assertIn(f'verified: add {pull} -> {issue}', done.stdout)
+            held_by_issue = done.stdout.split(f'issue {issue}: ', 1)[1].splitlines()[0].split(', ')
+            self.assertEqual(held_by_issue.count(pull), 1)
+            self.assertIn(issue, done.stdout.split(f'pull request {pull}: ', 1)[1].splitlines()[0].split(', '))
 
 if __name__ == '__main__':
     unittest.main()
