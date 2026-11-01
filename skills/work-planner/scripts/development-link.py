@@ -12,6 +12,7 @@ The issue's relation is read before the write, and both ends after it, through t
 the link captures run. An add holds when the issue lists the pull request exactly once, the pull
 request lists the issue, and every other link on the issue stands; a repeated add holds the same
 way. A removal holds when neither end lists the other and every other link on the issue stands.
+Repository names match in any case, as the tracker resolves them.
 
 Exit 0 prints the verified relation from both ends. Exit 1 prints `failed:` with the operation,
 the step and the tracker's error, or `discrepancy:` with the relation read back. An unreadable
@@ -45,6 +46,11 @@ def subject(text: str) -> Key:
     if not match:
         raise argparse.ArgumentTypeError(f'{text!r} is not owner/repo#number')
     return match[1], int(match[2])
+
+
+def same(key: Key) -> Key:
+    """The key repository names compare by, in any case."""
+    return key[0].lower(), key[1]
 
 
 def name(key: Key) -> str:
@@ -112,12 +118,12 @@ def link(operation: str, issue: Key, pull: Key) -> list[str]:
     with tempfile.TemporaryDirectory() as tmp:
         mutate(operation, issue_node, pull_node, Path(tmp, 'mutation.graphql'))
     by_issue, by_pull = relation(ISSUE, issue), relation(PULL_REQUEST, pull)
-    others = Counter(k for k in before if k != pull)
-    expected = others + (Counter({pull: 1}) if operation == 'add' else Counter())
+    others = Counter(same(k) for k in before if same(k) != same(pull))
+    expected = others + (Counter({same(pull): 1}) if operation == 'add' else Counter())
     problems = []
-    if Counter(by_issue) != expected:
+    if Counter(same(k) for k in by_issue) != expected:
         problems.append(f'issue {name(issue)} holds {listing(by_issue)}, expected {listing(list(expected.elements()))}')
-    if (issue in by_pull) != (operation == 'add'):
+    if (same(issue) in {same(k) for k in by_pull}) != (operation == 'add'):
         problems.append(f'pull request {name(pull)} holds {listing(by_pull)}')
     print(f'issue {name(issue)}: {listing(by_issue)}')
     print(f'pull request {name(pull)}: {listing(by_pull)}')

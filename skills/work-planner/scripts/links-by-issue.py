@@ -1,7 +1,7 @@
 """Write each issue's Development pull requests, read from the issue end.
 
 Usage:
-  python3 links-by-issue.py --issues issues.json --out development.json
+  python3 links-by-issue.py --issues issues.json --out issue-links.json
 
 issues.json is one repository's issues as the REST API returns them: the concatenated pages
 `gh api --paginate "repos/{owner}/{repo}/issues?state=all&per_page=100"` writes, or one issue as
