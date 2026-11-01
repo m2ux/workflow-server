@@ -69,8 +69,7 @@ The main path meets [Outcomes](#outcomes).
    - Once the pull request has merged, record it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
    - [Issue Closure](../protocols/issue-closure.md) when it reports closable.
 6. **Sync each epic.**
-   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at:
-   Linking a pull request replaces the planning-record link on that task.
+   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
    - Handle the returned delivery findings:
      - **Conflict.**
        - Put it to the user.
@@ -154,7 +153,7 @@ The main path meets [Outcomes](#outcomes).
     Return saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
     - Report queue decisions unevaluated by this run.
     - Run [Audit Closure Evidence](../artifacts/issue.md#audit-closure-evidence) for the repository holding the issues, and report each closed issue it lists, with its state reason and findings, and each it names unevaluable. This run changes none of them.
-    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
+    - Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
 
 ## Outcomes
 

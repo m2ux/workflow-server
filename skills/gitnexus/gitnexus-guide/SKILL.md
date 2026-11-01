@@ -56,6 +56,7 @@ Lightweight reads (~100-500 tokens) for navigation:
 ## Graph Schema
 
 **Nodes:** File, Function, Class, Interface, Method, Community, Process
+
 **Edges (via CodeRelation.type):** CALLS, IMPORTS, EXTENDS, IMPLEMENTS, DEFINES, MEMBER_OF, STEP_IN_PROCESS
 
 ```cypher

@@ -89,8 +89,7 @@ The main path meets [Outcomes](#outcomes).
    - Resume this alignment with its checked bodies or unresolved findings.
    - Put each problem it reports to the user. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
 9. **Coverage.**
-   For a pull request explicitly selected for alignment, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), publish a converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), and report its URL.
-   When no initiative or epic is selected, continue at step 13, Re-run.
+   For a pull request explicitly selected for alignment, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), publish a converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), and report its URL. When no initiative or epic is selected, continue at step 13, Re-run.
    - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) for the selected initiative and epics.
    - Continue with its returned records.
    - For each task pull request in those records, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), then publish each converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request). Report each converted pull request by URL and refresh its record before recording coverage.
