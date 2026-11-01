@@ -73,7 +73,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Conflict | Tasks that share a pull request and do not name each other in Joins. A row linked to a pull request whose title names another epic. |
 | Unmatched | A merged pull request that names the epic and that no row links. |
 | In flight | An open pull request that names the epic and that no row links. A pull request whose head is an epic base is not a task match. |
-| Draft | An epic base a merged task targets that has no pull request merging it, while a task is undelivered or a criterion is unticked. |
+| Draft | An epic base a merged task targets that holds a commit its long-lived branch lacks and has no open pull request merging it, while a task is undelivered or a criterion is unticked. A base level with or behind its branch is not draft. |
 | Unmerged | An epic base its pull requests target that has not merged into its long-lived branch, once every task is delivered and every criterion is ticked. A draft pull request is named draft. |
 | References | A review pull request whose cited pull requests differ from the task pull requests merged into its base. |
 | Changes | A review pull request whose Changes section names, in a code span, a file absent from the head commit of the base it fronts, with that path. |
@@ -85,7 +85,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
 | Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
 | Source | The configuration path, commit and repository of each `config/branches` statement the long-lived branch names were read from. |
-| Unevaluable | A `config/branches` statement that is absent, empty or unreadable at its epic base, or a revision resolving to no commit, with its source; statements that disagree across the epic bases, each with its source and names; or no long-lived branches given. |
+| Unevaluable | A `config/branches` statement that is absent, empty or unreadable at its epic base, or a revision resolving to no commit, with its source; statements that disagree across the epic bases, each with its source and names; no long-lived branches given; or a base that would be draft whose commits cannot be compared with its long-lived branch, with the reason. |
 | Not checked | Each epic check that reads the long-lived branches, while their names are unevaluable. |
 
 An unmet row links a merged pull request while a covered criterion remains unticked. A linked pull request naming another epic is a conflict and delivers its linked task once merged. A missing linked pull request leaves the supplied evidence incomplete.
