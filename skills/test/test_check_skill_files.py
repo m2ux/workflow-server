@@ -135,12 +135,12 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_prose_over_eight_lines_is_reported(self):
-        body = '\n'.join(f'Sentence {number}.' for number in range(9))
+        body = '\n\n'.join(f'Sentence {number}.' for number in range(9))
         self.write('SKILL.md', f'# Specimen\n\n{body}\n')
         self.assertIn('prose over eight lines', self.kinds())
 
     def test_eight_lines_of_prose_is_within_the_limit(self):
-        body = '\n'.join(f'Sentence {number}.' for number in range(8))
+        body = '\n\n'.join(f'Sentence {number}.' for number in range(8))
         self.write('SKILL.md', f'# Specimen\n\n{body}\n')
         self.assertEqual(self.findings(), [])
 
@@ -521,6 +521,111 @@ class SkillFileChecks(unittest.TestCase):
     def test_the_command_exits_zero_when_clean(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         self.assertEqual(self.run_command(), 0)
+
+
+def entry_point(description, modes=('Audit', 'Revise')):
+    """A specimen entry point whose Modes section lists each named mode."""
+    listed = ''.join(f'- **[{mode}](references/{mode.lower()}-mode.md)**\n'
+                     f'  - Backward-looking, scoped to one skill\n' for mode in modes)
+    return (f'---\nname: specimen\ndescription: {description}\n---\n\n# Specimen\n\n'
+            f'One sentence.\n\n## Modes\n\n{listed}')
+
+
+class FrontmatterAndLayoutChecks(unittest.TestCase):
+    """Mode triggers in the description, and one line per paragraph or item."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        (self.skill / 'references').mkdir(parents=True)
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.write_text(text)
+        return path
+
+    def findings(self):
+        files = sorted(self.skill.rglob('*.md'))
+        cited, called = checker.citations(files)
+        out = []
+        for path in files:
+            out += checker.check(path, self.root, {}, cited, called)
+        return [(Path(where).name, line, kind, detail) for where, line, kind, detail in out]
+
+    def modes_found(self):
+        return [detail for _, _, kind, detail in self.findings() if kind == 'mode without a trigger phrase']
+
+    def wraps_found(self):
+        return [line for _, line, kind, _ in self.findings() if kind == 'hard-wrapped line']
+
+    def seed_modes(self, modes=('Audit', 'Revise')):
+        for mode in modes:
+            self.write(f'references/{mode.lower()}-mode.md', f'# {mode}\n\nA sentence.\n')
+
+    def test_a_description_triggering_every_mode_reports_nothing(self):
+        self.seed_modes()
+        self.write('SKILL.md', entry_point('Use to audit workflow X or revise this skill.'))
+        self.assertEqual(self.findings(), [])
+
+    def test_a_mode_the_description_never_names_is_reported(self):
+        self.seed_modes()
+        self.write('SKILL.md', entry_point('Use to audit workflow X.'))
+        self.assertEqual(self.modes_found(), ['Revise'])
+
+    def test_a_folded_description_is_read_whole(self):
+        self.seed_modes()
+        self.write('SKILL.md', entry_point('>-\n  Use to audit workflow X\n  or revising this skill.'))
+        self.assertEqual(self.modes_found(), [])
+
+    def test_a_trigger_word_inside_another_word_carries_no_mode(self):
+        self.seed_modes(('Plan',))
+        self.write('SKILL.md', entry_point('Use to explain a deplanned board.', ('Plan',)))
+        self.assertEqual(self.modes_found(), ['Plan'])
+
+    def test_a_skill_without_modes_needs_no_trigger(self):
+        self.write('SKILL.md', '---\nname: specimen\ndescription: Use for anything.\n---\n\n# Specimen\n\nOne.\n')
+        self.assertEqual(self.findings(), [])
+
+    def test_a_mode_listed_outside_an_entry_point_is_not_read(self):
+        self.write('references/guide.md', '# Guide\n\n## Modes\n\n- **[Audit](guide.md)**\n')
+        self.assertEqual(self.modes_found(), [])
+
+    def test_a_hard_wrapped_paragraph_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\nOne sentence that the author\nwrapped at a column.\n')
+        self.assertEqual(self.wraps_found(), [3])
+
+    def test_a_hard_wrapped_list_item_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\n- An item that the author\n  wrapped at a column.\n- Another.\n')
+        self.assertEqual(self.wraps_found(), [3])
+
+    def test_a_body_wrapped_under_its_bold_label_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\n- **Label.**\n  The body, which the author\n  wrapped at a column.\n')
+        self.assertEqual(self.wraps_found(), [4])
+
+    def test_a_paragraph_wrapped_three_times_is_reported_once(self):
+        self.write('SKILL.md', '# Specimen\n\nOne\nsentence\nwrapped.\n')
+        self.assertEqual(self.wraps_found(), [3])
+
+    def test_a_lazy_line_after_a_sub_bullet_is_reported(self):
+        self.write('SKILL.md', '# Specimen\n\n1. **Step.**\n   The body.\n   - A sub-bullet.\n   A further line.\n')
+        self.assertEqual(self.wraps_found(), [5])
+
+    def test_one_line_items_and_their_structures_report_nothing(self):
+        self.write('SKILL.md', '# Specimen\n\nOne paragraph.\n\nAnother paragraph.\n\n'
+                               '- **Label.**\n  Its body on one line.\n  - A sub-bullet.\n'
+                               '1. **Step.**  Inline body.\n2. A step.\n\n'
+                               '| A | B |\n| --- | --- |\n| 1 | 2 |\n\n> A quote.\n\n'
+                               '**Inputs:** One line.\n\n**Example:**\n\n<details>\n<summary>More</summary>\n')
+        self.assertEqual(self.wraps_found(), [])
+
+    def test_wrapped_text_inside_a_fence_is_a_specimen(self):
+        self.write('SKILL.md', f'# Specimen\n\n{FENCE}text\nOne sentence that the author\nwrapped.\n{FENCE}\n')
+        self.assertEqual(self.wraps_found(), [])
+
+    def test_a_folded_frontmatter_value_is_not_prose(self):
+        self.write('SKILL.md', '---\nname: specimen\ndescription: >-\n  Use for\n  anything.\n---\n\n# Specimen\n\nOne.\n')
+        self.assertEqual(self.wraps_found(), [])
 
 
 if __name__ == '__main__':
