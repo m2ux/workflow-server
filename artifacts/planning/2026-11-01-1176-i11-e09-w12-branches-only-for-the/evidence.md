@@ -1,6 +1,6 @@
 # W12 Evidence
 
-Delivery head `a58730565` on `i11/e09/w12-branches-only-for-the`, with `i11/e09/workspace` at `bdc2524f6` merged in.
+Delivery head `344584531` on `i11/e09/w12-branches-only-for-the`, with `i11/e09/workspace` at `f3157ae37` merged in.
 
 ## Bases a Unit Changes
 
@@ -20,7 +20,7 @@ test/test_deliver.py::Survey::test_a_work_item_is_read_only_from_the_engineering
 
 ## Full Suite
 
-`python3 -m pytest skills/work-planner/test -q`: 538 passed, 1059 subtests passed.
+`python3 -m pytest skills/work-planner/test -q`: 539 passed, 1061 subtests passed.
 
 ## Documents
 
