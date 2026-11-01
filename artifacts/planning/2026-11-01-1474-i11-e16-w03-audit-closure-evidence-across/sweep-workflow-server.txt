@@ -1,0 +1,262 @@
+unsupported: m2ux/workflow-server#1 closed as completed: acceptance criteria are missing or unticked - Agents lack guidance for consistent workflow tool usage
+unsupported: m2ux/workflow-server#4 closed as completed: acceptance criteria are missing or unticked - Use TOON format for workflows
+unsupported: m2ux/workflow-server#6 closed as completed: acceptance criteria are missing or unticked - Migrate work-package guides from agent-resources to local workflows branch
+unsupported: m2ux/workflow-server#9 closed as completed: acceptance criteria are missing or unticked - docs: Schema documentation lacks usage examples and explanations
+unsupported: m2ux/workflow-server#13 closed as completed: acceptance criteria are missing or unticked - Rename "intent" terminology to "activity" throughout the codebase
+unsupported: m2ux/workflow-server#16 closed as not_planned: acceptance criteria are missing or unticked - Local (engineering) workflow folders
+unsupported: m2ux/workflow-server#17 closed as completed: acceptance criteria are missing or unticked - Check for proper rules migration
+unsupported: m2ux/workflow-server#19 closed as completed: acceptance criteria are missing or unticked - feat: Add mandatory guide association to activities
+unsupported: m2ux/workflow-server#22 closed as not_planned: acceptance criteria are missing or unticked - Support Agent Skills format
+unsupported: m2ux/workflow-server#23 closed as completed: acceptance criteria are missing or unticked - Use a determinstic workflow parser
+unsupported: m2ux/workflow-server#24 closed as completed: acceptance criteria are missing or unticked - Schema expression improvements: documentation, redundancy removal, and optimization
+unsupported: m2ux/workflow-server#26 closed as completed: acceptance criteria are missing or unticked - Guides lack clear ontological separation between activities, skills, and resources
+unsupported: m2ux/workflow-server#29 closed as completed: acceptance criteria are missing or unticked - Add README.md with Mermaid flow diagrams for each workflow
+unsupported: m2ux/workflow-server#31 closed as completed: acceptance criteria are missing or unticked - Resources contain project-specific references and embedded flow semantics
+unsupported: m2ux/workflow-server#34 closed as not_planned: acceptance criteria are missing or unticked; m2ux/workflow-server#35 not merged (closed) - Implement navigation-based workflow engine with server-side enforcement
+unsupported: m2ux/workflow-server#36 closed as not_planned: acceptance criteria are missing or unticked; m2ux/workflow-server#38 not merged (closed) - feat: Ecological Navigation API - situated cognition integration
+unsupported: m2ux/workflow-server#37 closed as not_planned: acceptance criteria are missing or unticked - Delegation Protocol: Sub-Agent Spawning Based on Effectivities
+unsupported: m2ux/workflow-server#40 closed as completed: acceptance criteria are missing or unticked - Add MCP tool to expose TOON schemas for agent interpretation
+unsupported: m2ux/workflow-server#43 closed as completed: acceptance criteria are missing or unticked - Review and improve workflow-server documentation accuracy and completeness
+unsupported: m2ux/workflow-server#48 closed as not_planned: acceptance criteria are missing or unticked - feat: headless Slack workflow runner via Cursor ACP
+unsupported: m2ux/workflow-server#50 closed as not_planned: acceptance criteria are missing or unticked - Improve assumption handling: replace yield confirmations with comprehension iteration and judgement augmentation
+unsupported: m2ux/workflow-server#51 closed as completed: acceptance criteria are missing or unticked - Workflow orchestration checkpoint enforcement is unreliable
+unsupported: m2ux/workflow-server#53 closed as completed: acceptance criteria are missing or unticked - Import new prism families (SDL, behavioral, domain-neutral) from agi-in-md
+unsupported: m2ux/workflow-server#59 closed as completed: acceptance criteria are missing or unticked - MCP tool names overload workflow terminology and lack session management
+unsupported: m2ux/workflow-server#61 closed as completed: acceptance criteria are missing or unticked - Agents not utilizing template resources attached to skill responses
+unsupported: m2ux/workflow-server#63 closed as completed: acceptance criteria are missing or unticked - Workflow execution lacks observability into activity and step progression
+unsupported: m2ux/workflow-server#65 closed as not_planned: acceptance criteria are missing or unticked - work-package: orchestrator/worker execution rules lack structural enforcement
+unsupported: m2ux/workflow-server#67 closed as completed: acceptance criteria are missing or unticked - Quality & Consistency Audit Remediation
+unsupported: m2ux/workflow-server#84 closed as completed: acceptance criteria are missing or unticked - Workflow schemas lack native constructs for multi-agent execution models
+unsupported: m2ux/workflow-server#86 closed as not_planned: acceptance criteria are missing or unticked - Orchestrator and worker bypass mandatory workflow phases — semantic traces never generated, worker bootstrap pre-digested
+unsupported: m2ux/workflow-server#88 closed as completed: acceptance criteria are missing or unticked - Extract convoluted workflow rule groups into dedicated skill+resource sets
+unsupported: m2ux/workflow-server#90 closed as completed: acceptance criteria are missing or unticked - Eliminate standalone rules.toon by migrating content to meta skills
+unsupported: m2ux/workflow-server#92 closed as completed: acceptance criteria are missing or unticked - Agent-id based meta-skill loading and cross-workflow resource resolution
+unsupported: m2ux/workflow-server#95 closed as not_planned: acceptance criteria are missing or unticked - Implement just-in-time skill delivery (deprecate get_skills bulk loading)
+unsupported: m2ux/workflow-server#96 closed as completed: acceptance criteria are missing or unticked - Agents receive excessive skill content upfront, reducing context efficiency
+unsupported: m2ux/workflow-server#98 closed as not_planned: acceptance criteria are missing or unticked - Compress session tokens to reduce context window usage
+unsupported: m2ux/workflow-server#101 closed as not_planned: acceptance criteria are missing or unticked - feat: switch to HTTP/SSE transport to eliminate session token context bloat
+unsupported: m2ux/workflow-server#112 closed as completed: acceptance criteria are missing or unticked; m2ux/workflow-server#113 not merged (closed) - Eliminate session_token transcription drift via MCP-client interceptor CLI
+unsupported: m2ux/workflow-server#114 closed as completed: acceptance criteria are missing or unticked - Follow-on design optimization unlocked by the interceptor (Move #1–#7)
+unsupported: m2ux/workflow-server#115 closed as not_planned: acceptance criteria are missing or unticked - Server-managed session state with workspace-aware MCP server
+unsupported: m2ux/workflow-server#125 closed as completed: acceptance criteria are missing or unticked - Implement markdown-skills migration — techniques + resources under each workflow + server-source changes
+unsupported: m2ux/workflow-server#128 closed as completed: acceptance criteria are missing or unticked - Adopt a canonical naming convention for technique inputs/outputs and rules
+unsupported: m2ux/workflow-server#132 closed as completed: acceptance criteria are missing or unticked - Establish a coherent documentation system for the workflow-server
+unsupported: m2ux/workflow-server#141 closed as not_planned: acceptance criteria are missing or unticked - Path-scoped section references: address a nested resource section through its parent, and make the anchor guard match the runtime
+unsupported: m2ux/workflow-server#145 closed as completed: acceptance criteria are missing or unticked - review-mode: harden against interaction/config-change defects misclassified as low-severity (midnight-node PR #1428 retro)
+unsupported: m2ux/workflow-server#148 closed as not_planned: acceptance criteria are missing or unticked - Comprehension migration: move work-package comprehension onto the codebase-wiki techniques, keeping task notes in planning
+unsupported: m2ux/workflow-server#160 closed as completed: acceptance criteria are missing or unticked - workflow-design: retrospective follow-ups from substrate-node-security-audit remediation (#159)
+unsupported: m2ux/workflow-server#166 closed as completed: acceptance criteria are missing or unticked - Epic: schema/technique/disclosure review backlog (2026-07-03)
+unsupported: m2ux/workflow-server#189 closed as completed: acceptance criteria are missing or unticked - Epic: schema/technique/disclosure review repeat-pass backlog (2026-07-08)
+unsupported: m2ux/workflow-server#193 closed as completed: acceptance criteria are missing or unticked - Add read-only inspect_session tool to remove ad-hoc session.json introspection in close-out activities
+unsupported: m2ux/workflow-server#197 closed as completed: acceptance criteria are missing or unticked - Review mode: posted consolidated review can diverge from the Consolidated Review Format (no conformance gate at the posting boundary)
+unsupported: m2ux/workflow-server#200 closed as completed: acceptance criteria are missing or unticked - work-package: submit-for-review posts a non-conformant PR description yet reports body_conforms=true
+unsupported: m2ux/workflow-server#203 closed as completed: acceptance criteria are missing or unticked - Review mode over-scopes: authored diff uses two-dot against stale merge-base, sweeping in changes merged from base
+unsupported: m2ux/workflow-server#213 closed as not_planned: acceptance criteria are missing or unticked - Workflow profiles: named presets that fix a session's starting state before it runs (stealth mode, review mode)
+unsupported: m2ux/workflow-server#214 closed as completed: acceptance criteria are missing or unticked - remediate-vuln / work-package alignment: landing checklist and stealth-mode follow-ups (#211/#212)
+unsupported: m2ux/workflow-server#218 closed as completed: acceptance criteria are missing or unticked - Review mode: enforce canonical Consolidated Review Format before posting (add conformance gate)
+unsupported: m2ux/workflow-server#224 closed as completed: acceptance criteria are missing or unticked - Epic: work-package planning-artifact verbosity reduction
+unsupported: m2ux/workflow-server#232 closed as completed: acceptance criteria are missing or unticked - Add per-activity and per-workflow token use tracking and cost estimation
+unsupported: m2ux/workflow-server#237 closed as completed: acceptance criteria are missing or unticked - Slim bootstrap protocol: dedupe into techniques without breaking discover
+unsupported: m2ux/workflow-server#241 closed as completed: acceptance criteria are missing or unticked - Trim verbose MCP tool descriptions (tools/list token tax)
+unsupported: m2ux/workflow-server#248 closed as not_planned: acceptance criteria are missing or unticked - Context-cost profile: precompute a workflow's context load to decide when solo runs are allowed
+unsupported: m2ux/workflow-server#266 closed as not_planned: acceptance criteria are missing or unticked - Concern convergence: lift the analyse-challenge pattern from work-package into meta
+unsupported: m2ux/workflow-server#269 closed as completed: acceptance criteria are missing or unticked - Provenance caching: stop reloading every workflow technique for each step on get_activity
+unsupported: m2ux/workflow-server#270 closed as completed: acceptance criteria are missing or unticked - Review-mode: consolidated review links are dead at post time, forcing template abandonment
+unsupported: m2ux/workflow-server#271 closed as completed: acceptance criteria are missing or unticked - Retrospective: friction points from a review-mode run (midnight-node PR #1900)
+unsupported: m2ux/workflow-server#272 closed as completed: acceptance criteria are missing or unticked - Work-package run retrospective: friction points to address
+unsupported: m2ux/workflow-server#283 closed as completed: acceptance criteria are missing or unticked - Docker HTTP bootstrap friction: start_session EACCES on HMAC key + install/layout gaps
+unsupported: m2ux/workflow-server#305 closed as completed: acceptance criteria are missing or unticked - compound-bash-allow: shell keywords parsed as binaries, so while/for/if always prompt
+unsupported: m2ux/workflow-server#309 closed as completed: acceptance criteria are missing or unticked - Worktree path hard-coded to ~/projects/work/, bypassing the .worktrees/ install layout
+unsupported: m2ux/workflow-server#310 closed as completed: acceptance criteria are missing or unticked - [I01:E04] Knowledge Reach: One Graph Across Workflows and Repositories
+unsupported: m2ux/workflow-server#316 closed as not_planned: acceptance criteria are missing or unticked - Admin-only workflows: engineering branch protection blocks the mandatory post-activity push, and the branch mixes two trust classes
+unsupported: m2ux/workflow-server#317 closed as not_planned: acceptance criteria are missing or unticked - Soft checkpoints: gates meant to pause for the user resolve themselves, and the declared timer is never enforced
+unsupported: m2ux/workflow-server#319 closed as completed: acceptance criteria are missing or unticked - Outstanding and deferred items from the review-mode friction continuation session
+unsupported: m2ux/workflow-server#320 closed as not_planned: acceptance criteria are missing or unticked - Requirements-refinement follow-ups: decision gates, binding gaps, and open items left by the PR #318 design session
+unsupported: m2ux/workflow-server#321 closed as completed: acceptance criteria are missing or unticked - Cut workflow-design to a minimal shape: settled as a new additive workflow (workflow-authoring), not an in-place rename
+unsupported: m2ux/workflow-server#322 closed as completed: acceptance criteria are missing or unticked - get_activity: eager resource bundling regresses fresh-mode delivery +24.5% — ledger collapse is mode-gated and the resources map bypasses the headroom budget
+unsupported: m2ux/workflow-server#323 closed as completed: acceptance criteria are missing or unticked - Eliminate the fresh-mode eager-bundling regression: gate the resources map, bound it by the eager budget, and key the delivery ledger per worker
+unsupported: m2ux/workflow-server#324 closed as completed: acceptance criteria are missing or unticked - Workflow-engine defects and run-cost structure surfaced by the #141 work-package run
+unsupported: m2ux/workflow-server#327 closed as completed: acceptance criteria are missing or unticked - Measurement cost: retire the baseline strategy, and reframe the lean-mode lever (#324 D2)
+unsupported: m2ux/workflow-server#330 closed as completed: acceptance criteria are missing or unticked - Artifact declarations that are not filenames reach workers as filenames
+unsupported: m2ux/workflow-server#336 closed as completed: acceptance criteria are missing or unticked - Corpus binding debt: close the 125 fix-later seams #327 triaged
+unsupported: m2ux/workflow-server#337 closed as completed: acceptance criteria are missing or unticked - Server backlog: unfinished work from #189, #232, #322, #323, #324
+unsupported: m2ux/workflow-server#338 closed as completed: acceptance criteria are missing or unticked - Corpus Backlog: The Definition Debt Left Behind by Closed Issues
+unsupported: m2ux/workflow-server#341 closed as completed: acceptance criteria are missing or unticked - Guard reach: a gate expression is counted as consumption but never resolved
+unsupported: m2ux/workflow-server#342 closed as completed: acceptance criteria are missing or unticked - Guard reach: dead-output resolves consumers across workflow boundaries, so duplicate technique names mask real seams
+unsupported: m2ux/workflow-server#343 closed as completed: acceptance criteria are missing or unticked - Delivery routing for #310-#342: two PRs, what rides with what, and what stays out
+unsupported: m2ux/workflow-server#346 closed as completed: acceptance criteria are missing or unticked - work-package review mode: 27 definition defects from PR #1877 review run
+unsupported: m2ux/workflow-server#348 closed as completed: acceptance criteria are missing or unticked - Land the server-side half of the git-derived host-repo binding (#345)
+unsupported: m2ux/workflow-server#353 closed as completed: acceptance criteria are missing or unticked - Re-dispatch overhead is 31% of a work-package run: context-scoped delivery ledger, resume-time references, and checkpoint-at-entry
+unsupported: m2ux/workflow-server#358 closed as not_planned: acceptance criteria are missing or unticked - Cite resources at section grain: the tail of whole-file citations that predate principle 32
+unsupported: m2ux/workflow-server#359 closed as not_planned: acceptance criteria are missing or unticked - Section stratification: the prose around a section is lost when only the section is delivered
+unsupported: m2ux/workflow-server#365 closed as completed: acceptance criteria are missing or unticked - Server backlog: the live remainder of #337 (S2, S3 tail, S4, S5, S7, S8, S9)
+unsupported: m2ux/workflow-server#379 closed as completed: acceptance criteria are missing or unticked - when expressions: ||, parentheses, and precedence before OR step-gate migration
+unsupported: m2ux/workflow-server#380 closed as completed: acceptance criteria are missing or unticked - when expressions: ||, parentheses, and precedence before OR step-gate migration
+unsupported: m2ux/workflow-server#382 closed as not_planned: acceptance criteria are missing or unticked - Reusable parallel fan-out: give the concurrent-suite structure a named meta contract (evaluate scatter-gather and spawn-concurrent)
+unsupported: m2ux/workflow-server#384 closed as not_planned: acceptance criteria are missing or unticked - Parallelisation inventory: find where workflows run independent work sequentially, and plan the migration
+unsupported: m2ux/workflow-server#394 closed as not_planned: acceptance criteria are missing or unticked - Technique folding: inline references between techniques resolve, get checked, and arrive as real steps
+unsupported: m2ux/workflow-server#395 closed as not_planned: acceptance criteria are missing or unticked - Protocol variants: one technique, multiple caller-selected sub-protocols under ## Protocol
+unsupported: m2ux/workflow-server#397 closed as completed: acceptance criteria are missing or unticked - Protocol Structure: Alternatives and Delegation the Server Can See
+unsupported: m2ux/workflow-server#398 closed as completed: acceptance criteria are missing or unticked - Section Delivery: Citing and Delivering Part of a Resource
+unsupported: m2ux/workflow-server#399 closed as completed: acceptance criteria are missing or unticked - Shared Homes: One Home per Capability, Bound Rather Than Copied
+unsupported: m2ux/workflow-server#400 closed as completed: acceptance criteria are missing or unticked - Decision Integrity: The Path From a Gate to a Recorded Decision
+unsupported: m2ux/workflow-server#401 closed as completed: acceptance criteria are missing or unticked - Session Creation: The State a Session Starts In
+unsupported: m2ux/workflow-server#402 closed as completed: acceptance criteria are missing or unticked - Server Unblocks: The Server Capabilities the Corpus Is Waiting On
+unsupported: m2ux/workflow-server#403 closed as completed: acceptance criteria are missing or unticked - Artifact Audience: Writing Each Artifact for Its Actual Reader
+unsupported: m2ux/workflow-server#404 closed as completed: acceptance criteria are missing or unticked - Delivery Cost: What a Delivery Costs to Build and to Send
+unsupported: m2ux/workflow-server#405 closed as completed: acceptance criteria are missing or unticked - Cross-workflow composition: the two technique delivery paths disagree about which containers apply
+unsupported: m2ux/workflow-server#406 closed as completed: acceptance criteria are missing or unticked - Startup delivery weight: the setup ceremony's fixed payloads and per-activity deliveries shrink to what the work needs
+unsupported: m2ux/workflow-server#407 closed as completed: acceptance criteria are missing or unticked - Batched dispatch: one worker walks a run of activities instead of one
+unsupported: m2ux/workflow-server#408 closed as completed: acceptance criteria are missing or unticked - Resumed workers lose their delivery identity, so the server sends the payload twice
+unsupported: m2ux/workflow-server#409 closed as completed: acceptance criteria are missing or unticked - Run profiling counted token usage once per transcript record, so the published figures are about double
+unsupported: m2ux/workflow-server#414 closed as completed: acceptance criteria are missing or unticked - Key directory errors: the fix-it guidance reaches every reason the write failed, not only permission denied
+unsupported: m2ux/workflow-server#417 closed as completed: acceptance criteria are missing or unticked - Activity body: the one part of a delivery a resumed worker always receives again
+unsupported: m2ux/workflow-server#418 closed as completed: acceptance criteria are missing or unticked - Engine rules: move the procedure sitting in rule bodies to the operations, activities and resources that own it
+unsupported: m2ux/workflow-server#419 closed as completed: acceptance criteria are missing or unticked - Delivery identity: confirm on real runs that the re-delivered character count has fallen
+unsupported: m2ux/workflow-server#425 closed as completed: acceptance criteria are missing or unticked - Activity audience: the client dispatch loop runs in the orchestrator instead of a spawned worker
+unsupported: m2ux/workflow-server#428 closed as completed: acceptance criteria are missing or unticked - Agent-read registers: eight artifacts only a later step reads become structured files
+unsupported: m2ux/workflow-server#429 closed as completed: acceptance criteria are missing or unticked - Session reattach: resuming a run rebuilds its workflow instead of continuing it
+unsupported: m2ux/workflow-server#430 closed as completed: acceptance criteria are missing or unticked - Supply-chain hardening: pin safe dependency versions and block known-bad installs
+unsupported: m2ux/workflow-server#432 closed as completed: acceptance criteria are missing or unticked - Variant parity: alternatives chosen by one discriminator are never compared with each other
+unsupported: m2ux/workflow-server#433 closed as completed: acceptance criteria are missing or unticked - Worker resume: a resumed worker is dispatched fire-and-forget and the run goes silent
+unsupported: m2ux/workflow-server#436 closed as completed: acceptance criteria are missing or unticked - Engine Surfaces: Who Shared Engine Content Is Written For
+unsupported: m2ux/workflow-server#437 closed as completed: acceptance criteria are missing or unticked - Deployment hardening: an install is not checked against what is known to be bad
+unsupported: m2ux/workflow-server#438 closed as completed: acceptance criteria are missing or unticked - [I01:E02] Review by Definition: What Reviewers Catch by Hand
+unsupported: m2ux/workflow-server#446 closed as completed: acceptance criteria are missing or unticked - work-package review-mode run: 10 definition and delivery defects (PR #1980 session)
+unsupported: m2ux/workflow-server#469 closed as completed: acceptance criteria are missing or unticked - Step order: decisions taken after the work they were meant to steer
+unsupported: m2ux/workflow-server#472 closed as completed: acceptance criteria are missing or unticked - Walk coverage: the suite records what happened, not what should have
+unsupported: m2ux/workflow-server#473 closed as completed: acceptance criteria are missing or unticked - dispatch-activity in-progress Progress mark is never published, so skipping it is undetectable
+unsupported: m2ux/workflow-server#474 closed as completed: acceptance criteria are missing or unticked - work-package run: 16 friction findings and 6 follow-up requests (index)
+unsupported: m2ux/workflow-server#477 closed as completed: acceptance criteria are missing or unticked - Evaluation workflow: eight defects found by running it to completion
+unsupported: m2ux/workflow-server#479 closed as completed: acceptance criteria are missing or unticked - Walk branch: post-impl-review picks between two steps and does not pick the same one everywhere
+unsupported: m2ux/workflow-server#486 closed as completed: acceptance criteria are missing or unticked - Findings carry impact and cost to fix, but not reachability — so unreachable findings can be tiered blocking
+unsupported: m2ux/workflow-server#491 closed as completed: acceptance criteria are missing or unticked - Running the workflow finds defects that reading it does not: four instances and no way to file them
+unsupported: m2ux/workflow-server#492 closed as completed: acceptance criteria are missing or unticked - Replacing wrapper prose with tools: the acceptance clause and the group own rule cannot both hold
+unsupported: m2ux/workflow-server#493 closed as completed: acceptance criteria are missing or unticked - Activity variable contracts: an activity should declare what it reads and writes
+unsupported: m2ux/workflow-server#496 closed as completed: acceptance criteria are missing or unticked - Activity exits: the workflow stitches the graph, not the activities
+unsupported: m2ux/workflow-server#497 closed as completed: acceptance criteria are missing or unticked - Corpus tests: the definitions cannot check themselves
+unsupported: m2ux/workflow-server#511 closed as completed: acceptance criteria are missing or unticked - Issue creation: a gate the operation announces as a result
+unsupported: m2ux/workflow-server#512 closed as not_planned: acceptance criteria are missing or unticked - Unsatisfiable routing: workers owe a destination they are forbidden the means to find
+unsupported: m2ux/workflow-server#513 closed as completed: acceptance criteria are missing or unticked - Expression grammar: one predicate dialect, and rules that can fail a build
+unsupported: m2ux/workflow-server#518 closed as completed: acceptance criteria are missing or unticked - Rule homes and audiences: a rule reaches the agent that can act on it
+unsupported: m2ux/workflow-server#519 closed as completed: acceptance criteria are missing or unticked - Rule and checkpoint fragments: a shared body needs a shared home, not a host workflow
+unsupported: m2ux/workflow-server#520 closed as completed: acceptance criteria are missing or unticked - Routine: a named run of steps a workflow can reuse
+unsupported: m2ux/workflow-server#523 closed as completed: acceptance criteria are missing or unticked - Runner: a client that executes the mechanical parts of a workflow
+unsupported: m2ux/workflow-server#526 closed as completed: acceptance criteria are missing or unticked - Typed Execution: The Workflow as a Checked Program
+unsupported: m2ux/workflow-server#536 closed as completed: acceptance criteria are missing or unticked - Content defects: five known faults the definitions still carry
+unsupported: m2ux/workflow-server#537 closed as completed: acceptance criteria are missing or unticked - [I01:E00] Live Faults: What Is Wrong in the Definitions Now
+unsupported: m2ux/workflow-server#538 closed as completed: acceptance criteria are missing or unticked - [I01:E01] Effective Decisions: From a Gate to an Applied Outcome
+unsupported: m2ux/workflow-server#539 closed as completed: acceptance criteria are missing or unticked - [I01:E03] Shared Capability: One Home, Cited at the Grain Read
+unsupported: m2ux/workflow-server#561 closed as completed: acceptance criteria are missing or unticked - Requirements refinement: a loop that counts in prose, a verdict nobody reads, and a question left open
+unsupported: m2ux/workflow-server#584 closed as not_planned: acceptance criteria are missing or unticked - Protocol Apply chains: composition that lives in techniques instead of activity steps
+unsupported: m2ux/workflow-server#585 closed as not_planned: acceptance criteria are missing or unticked - Decisionless checkpoints: gates whose answer is never recorded
+unsupported: m2ux/workflow-server#593 closed as completed: acceptance criteria are missing or unticked - Contract blind spots: what activities write invisibly, and read by accident
+unsupported: m2ux/workflow-server#594 closed as completed: acceptance criteria are missing or unticked - Loops that never run: a repeat-until test taken too early, and a declaration read as a disagreement
+unsupported: m2ux/workflow-server#596 closed as not_planned: acceptance criteria are missing or unticked - Convergence loop: a run written as technique prose, and a shell told the names it writes
+unsupported: m2ux/workflow-server#599 closed as completed: acceptance criteria are missing or unticked - Review-mode flag: a gate with no starting value, and the delivery that moves when it gets one
+unsupported: m2ux/workflow-server#601 closed as not_planned: acceptance criteria are missing or unticked - Remedial loops: work applied once whether or not there is anything to apply
+unsupported: m2ux/workflow-server#603 closed as not_planned: acceptance criteria are missing or unticked - Delivery grain: eager bundling and collapse undo each other
+unsupported: m2ux/workflow-server#607 closed as completed: acceptance criteria are missing or unticked - Conditions that make no difference: gates that record nothing and loops that remedy before asking
+unsupported: m2ux/workflow-server#637 closed as completed: acceptance criteria are missing or unticked - [I14:E03:W01] Double-persisted findings: five audits write a file their callers write again
+unsupported: m2ux/workflow-server#638 closed as completed: acceptance criteria are missing or unticked - [I14:E03:W02] Unasked answers: two activities record an assumption outcome in review mode
+unsupported: m2ux/workflow-server#652 closed as completed: acceptance criteria are missing or unticked - [I14:E04:W01] Role Check: Instructions Every Receiving Role Can Act On
+unsupported: m2ux/workflow-server#655 closed as completed: acceptance criteria are missing or unticked - Session store: two overlapping writes lose one of them silently
+unsupported: m2ux/workflow-server#656 closed as completed: acceptance criteria are missing or unticked - Child workflows: a launched workflow is created, driven by nothing, and cannot report back
+unsupported: m2ux/workflow-server#657 closed as completed: acceptance criteria are missing or unticked - Fan-out vocabulary: neither dispatch mode is executable from any of its call sites
+unsupported: m2ux/workflow-server#671 closed as completed: acceptance criteria are missing or unticked - Parallel activities: a graph destination can name only one next activity
+unsupported: m2ux/workflow-server#674 closed as not_planned: acceptance criteria are missing or unticked - Step grammar: the kind field and most step names restate what the step already says
+unsupported: m2ux/workflow-server#678 closed as completed: acceptance criteria are missing or unticked - [I14:E04:W03] Rule scope: a technique rule can carry several constraints and nothing catches it
+unsupported: m2ux/workflow-server#686 closed as not_planned: acceptance criteria are missing or unticked - Coverage walk: a server change buys a full-corpus walk in front of every review
+unsupported: m2ux/workflow-server#692 closed as not_planned: acceptance criteria are missing or unticked - Activity batching: keep the bound, simplify how a worker is continued
+unsupported: m2ux/workflow-server#693 closed as completed: acceptance criteria are missing or unticked - Corpus layout: named roots by kind on both branches
+unsupported: m2ux/workflow-server#706 closed as not_planned: acceptance criteria are missing or unticked; m2ux/workflow-server#1225 not merged (closed); m2ux/workflow-server#1226 not merged (closed) - [I04] Technical Debt: What Still Costs
+unsupported: m2ux/workflow-server#709 closed as not_planned: acceptance criteria are missing or unticked - Step Grammar: Fields That Restate What the Step Already Says
+unsupported: m2ux/workflow-server#732 closed as completed: acceptance criteria are missing or unticked - Requirement citations: analysis carries the source heading the specification links to
+unsupported: m2ux/workflow-server#741 closed as completed: acceptance criteria are missing or unticked - Technique references: one spelling, two rules, and they disagree on 345 of 607 bindings
+unsupported: m2ux/workflow-server#756 closed as completed: acceptance criteria are missing or unticked - Sandbox roots: one writable directory cannot cover a tool and the files it writes
+unsupported: m2ux/workflow-server#757 closed as completed: acceptance criteria are missing or unticked - Coverage walk: a flag set without the collection behind it stalls a specimen
+unsupported: m2ux/workflow-server#759 closed as completed: acceptance criteria are missing or unticked - Corpus-dependent tests: twenty-eight of thirty run in neither gate
+unsupported: m2ux/workflow-server#764 closed as completed: acceptance criteria are missing or unticked - Typecheck scope: the guards, tests and scripts have never been compiled
+unsupported: m2ux/workflow-server#772 closed as completed: acceptance criteria are missing or unticked - Protocol variables: a name a technique introduces for itself is charged to the session
+unsupported: m2ux/workflow-server#775 closed as not_planned: acceptance criteria are missing or unticked - Empty fan: the coverage walk stops at a destination with nothing to run over
+unsupported: m2ux/workflow-server#778 closed as completed: acceptance criteria are missing or unticked - Pattern library: three borrowable activities most checks never read
+unsupported: m2ux/workflow-server#788 closed as completed: acceptance criteria are missing or unticked - Activity advance: three operations omit the parameter that names the activity being left
+unsupported: m2ux/workflow-server#795 closed as completed: acceptance criteria are missing or unticked - Activity loop: declare the walk once as a routine, not three times in three forms
+unsupported: m2ux/workflow-server#801 closed as completed: acceptance criteria are missing or unticked - Activity delivery: repeated content, and a startup response that does not fit
+unsupported: m2ux/workflow-server#812 closed as completed: acceptance criteria are missing or unticked - Activity delivery: a worker response that does not fit either
+unsupported: m2ux/workflow-server#814 closed as completed: acceptance criteria are missing or unticked - Inherited inputs: a technique fetched from another workflow reports the caller's shared contract
+unsupported: m2ux/workflow-server#823 closed as completed: acceptance criteria are missing or unticked - Colliding library names: two shared folders of one name go unmeasured, and share a finding key
+unsupported: m2ux/workflow-server#827 closed as completed: acceptance criteria are missing or unticked - Create issue: the work-package run applies an operation the GitHub library does not hold
+unsupported: m2ux/workflow-server#829 closed as completed: acceptance criteria are missing or unticked - Reference delivery: a marker names a copy no response sent
+unsupported: m2ux/workflow-server#830 closed as completed: acceptance criteria are missing or unticked - Startup delivery: what a workflow says about itself has no bound
+unsupported: m2ux/workflow-server#835 closed as completed: acceptance criteria are missing or unticked - Response bound: the reason stated for it is not what the client does
+unsupported: m2ux/workflow-server#836 closed as not_planned: acceptance criteria are missing or unticked - Terminal shed: going over the limit was chosen against a cost that is not the real one
+unsupported: m2ux/workflow-server#837 closed as completed: acceptance criteria are missing or unticked - Guard coverage: four defect classes a reader found and no check would find again
+unsupported: m2ux/workflow-server#838 closed as completed: acceptance criteria are missing or unticked - Element shape: a contract names an answer's parts but not the fields inside a list entry
+unsupported: m2ux/workflow-server#843 closed as completed: acceptance criteria are missing or unticked - Entry fields: an answer that is a list has nowhere to declare what one entry carries
+unsupported: m2ux/workflow-server#844 closed as completed: acceptance criteria are missing or unticked - GitHub library: a body is kept away from the shell and a title is not
+unsupported: m2ux/workflow-server#845 closed as completed: acceptance criteria are missing or unticked - Operation outputs: a stage declares what crosses its boundary
+unsupported: m2ux/workflow-server#846 closed as completed: acceptance criteria are missing or unticked - Protocol phases: name every phase, and hold the shape with the measurement
+unsupported: m2ux/workflow-server#847 closed as completed: acceptance criteria are missing or unticked - Contract delivery: remove what withholds and fragments a contract
+unsupported: m2ux/workflow-server#851 closed as completed: acceptance criteria are missing or unticked - Identity maps: an activity step binds a same-name input by omitting it
+unsupported: m2ux/workflow-server#862 closed as completed: acceptance criteria are missing or unticked - Silent losses: a workflow key that is dropped and a fan that opens one branch
+unsupported: m2ux/workflow-server#865 closed as completed: acceptance criteria are missing or unticked - Argument syntax: one bare word means two different things, and a dead link exposes it
+unsupported: m2ux/workflow-server#874 closed as not_planned: acceptance criteria are missing or unticked - Element shape: nine operations describe a list entry in prose the check cannot read
+unsupported: m2ux/workflow-server#875 closed as not_planned: acceptance criteria are missing or unticked - Declared type: twelve contracts call a structure a string
+unsupported: m2ux/workflow-server#882 closed as completed: acceptance criteria are missing or unticked - [I08:E03] Support Libraries: Hoist Reusable Operations and Correct Construct Grain
+unsupported: m2ux/workflow-server#883 closed as completed: acceptance criteria are missing or unticked - Contract composition: resolve inherited rules by reference instead of copying them into every technique
+unsupported: m2ux/workflow-server#889 closed as completed: acceptance criteria are missing or unticked - Namespace references: a path spelling survives regrouping the tree above it
+unsupported: m2ux/workflow-server#923 closed as not_planned: acceptance criteria are missing or unticked - GitHub Scratch Target: Label-Family and Project-Field Write Checks
+unsupported: m2ux/workflow-server#947 closed as completed: acceptance criteria are missing or unticked - [I14:E04:W02] Fallback Check: Every Stated Fallback Held by a Declaration
+unsupported: m2ux/workflow-server#973 closed as completed: acceptance criteria are missing or unticked - Meta walk protocol: termination, fan entry, advance arguments and exitless options
+unsupported: m2ux/workflow-server#974 closed as completed: acceptance criteria are missing or unticked - Checkpoint replies carry a correction into the variable bag
+unsupported: m2ux/workflow-server#983 closed as not_planned: acceptance criteria are missing or unticked - Midnight system review: the review target and repository path are read but never set
+unsupported: m2ux/workflow-server#992 closed as not_planned: acceptance criteria are missing or unticked - Walk protocol: second walks, entered sessions and undeclared fan exits
+unsupported: m2ux/workflow-server#994 closed as completed: acceptance criteria are missing or unticked - Requirements refinement: transcript sources, requirement entries and section conventions
+unsupported: m2ux/workflow-server#996 closed as duplicate: acceptance criteria are missing or unticked - Requirements refinement: transcript sources, requirement entries and section conventions
+unsupported: m2ux/workflow-server#997 closed as completed: acceptance criteria are missing or unticked - Guards and canon skill: a vacuous inventory pass, a refused required override, and a missing schema citation
+unsupported: m2ux/workflow-server#1080 closed as completed: acceptance criteria are missing or unticked - [I09:E06] Integration Evidence: Each Epic Criterion on the Paired Branches
+unsupported: m2ux/workflow-server#1102 closed as completed: acceptance criteria are missing or unticked - Planning Root: Sidecar Sessions Miss the Project Tree
+unsupported: m2ux/workflow-server#1112 closed as completed: acceptance criteria are missing or unticked - Canon Audit: Sub-Agents Until The Surface Is Walked
+unsupported: m2ux/workflow-server#1114 closed as not_planned: acceptance criteria are missing or unticked - Verifiable Criteria: Review Mode Checks Each Criterion Against ISO 29148
+unsupported: m2ux/workflow-server#1119 closed as not_planned: acceptance criteria are missing or unticked - Board Ready: An Epic Follows Its Initiative From the Bottom of the Tree
+unsupported: m2ux/workflow-server#1120 closed as not_planned: acceptance criteria are missing or unticked - Board Status: One Initiative In Progress, and Epics Follow It
+unsupported: m2ux/workflow-server#1125 closed as not_planned: acceptance criteria are missing or unticked - [P00] Work Package Modes: Each Run Holds One Mode
+unsupported: m2ux/workflow-server#1147 closed as not_planned: acceptance criteria are missing or unticked - [P01] Binding Convention: One Statement Both Sides Obey
+unsupported: m2ux/workflow-server#1152 closed as completed: acceptance criteria are missing or unticked - Close-Out Seed Profile: Progress Mark Resolves No Row Ownership
+unsupported: m2ux/workflow-server#1153 closed as completed: acceptance criteria are missing or unticked - Bootstrap Routing: The Opening Agent Receives the Walk It Drives
+unsupported: m2ux/workflow-server#1220 closed as completed: acceptance criteria are missing or unticked - Working Directory Refusal: An Unmapped Root Reports a Missing Repository
+unsupported: m2ux/workflow-server#1221 closed as completed: acceptance criteria are missing or unticked - Artifact Destination: A Product Reaches a Reader Outside the Session Folder
+unsupported: m2ux/workflow-server#1227 closed as completed: acceptance criteria are missing or unticked - Dependency Grain: Task Rows Name the Rows They Need
+unsupported: m2ux/workflow-server#1229 closed as completed: acceptance criteria are missing or unticked - Epic In Review: A Status Read From Criteria, Not From One Pull Request
+unsupported: m2ux/workflow-server#1231 closed as completed: acceptance criteria are missing or unticked - Target profile holds one chain values
+unsupported: m2ux/workflow-server#1234 closed as completed: acceptance criteria are missing or unticked - Align Mode: References and Branch Derivation Defects
+unsupported: m2ux/workflow-server#1239 closed as completed: acceptance criteria are missing or unticked - Merge Gate: A Pull Request Merged on the Test Plan It Carries
+unsupported: m2ux/workflow-server#1243 closed as not_planned: acceptance criteria are missing or unticked - Brief Coverage: Criteria That Survive a Renumbering
+unsupported: m2ux/workflow-server#1244 closed as completed: acceptance criteria are missing or unticked - Test Plan Agreement: A Unit Tests Exactly the Criteria Its Row Covers
+unsupported: m2ux/workflow-server#1261 closed as not_planned: acceptance criteria are missing or unticked - Sync reads long-lived names only from a .project directory
+unsupported: m2ux/workflow-server#1263 closed as completed: acceptance criteria are missing or unticked - [I08:E03:W14] GitNexus Readings: Every Answer Taken Through a Tool
+unsupported: m2ux/workflow-server#1264 closed as not_planned: acceptance criteria are missing or unticked - Dependency Rows: A Row Read by Its Task Id, Not Its Links
+unsupported: m2ux/workflow-server#1283 closed as not_planned: acceptance criteria are missing or unticked - [I14:E07:W01] Guard Imports: The Tools Typecheck Completes
+unsupported: m2ux/workflow-server#1284 closed as not_planned: acceptance criteria are missing or unticked - Walk Record Pin: Cited From the Instance That Served the Walk
+unsupported: m2ux/workflow-server#1340 closed as not_planned: acceptance criteria are missing or unticked - Catalog Remainder: Ten Specifications With One Procedure Caller
+unsupported: m2ux/workflow-server#1347 closed as completed: acceptance criteria are missing or unticked - Audit Mode Conflict: The Epic Base Cannot Take Workspace
+unsupported: m2ux/workflow-server#1355 closed as not_planned: acceptance criteria are missing or unticked - GitNexus Skill: Each Command Read Where Its Procedure Runs
+unsupported: m2ux/workflow-server#1357 closed as not_planned: acceptance criteria are missing or unticked - Command Conventions: The Split File Adds One to Every Mode That Opens the Catalog
+unsupported: m2ux/workflow-server#1358 closed as not_planned: acceptance criteria are missing or unticked - Plan Mode: Every Operation It Runs Is Reached Through the Catalog
+unsupported: m2ux/workflow-server#1361 closed as completed: acceptance criteria are missing or unticked - Bold Leads: Three Findings on the Work Breakdown Guide
+unsupported: m2ux/workflow-server#1416 closed as not_planned: acceptance criteria are missing or unticked - Triage Stamps: Every Ledger Names the Tree Its Verdicts Were Made On
+unsupported: m2ux/workflow-server#1423 closed as not_planned: acceptance criteria are missing or unticked - Coverage Walk: A Run on the Branch It Grades
+unsupported: m2ux/workflow-server#1429 closed as not_planned: acceptance criteria are missing or unticked - Parallel Sessions Share One Scratchpad, So Their Working Files Collide
+unsupported: m2ux/workflow-server#1436 closed as not_planned: acceptance criteria are missing or unticked - Meta close-out verifies outcomes against a variable no step writes
+unsupported: m2ux/workflow-server#1445 closed as not_planned: acceptance criteria are missing or unticked - Task Criteria Back-Fill: Every Row in Flight Gated by Its Own Issue
+unsupported: m2ux/workflow-server#1466 closed as not_planned: acceptance criteria are missing or unticked - Quiet Columns: A Cell the Checks Cannot Read Holds Its Row, and the Joins Advisory Rewards Filling It
+unsupported: m2ux/workflow-server#1470 closed as completed: acceptance criteria are missing or unticked - Work Planner: Proposal Board Prefixes and Epic Task Rows
+unsupported: m2ux/workflow-server#1472 closed as not_planned: acceptance criteria are missing or unticked - Development Links: Executable Commands Prevent False Unavailability Reports
+unsupported: m2ux/workflow-server#1488 closed as not_planned: acceptance criteria are missing or unticked - Joined Row Reservation: Joined Rows Share Their Unit Folder
+unsupported: m2ux/workflow-server#1491 closed as completed: acceptance criteria are missing or unticked - Work Planner Suite: Helpers Named as Tests Break a Pytest Run
+unsupported: m2ux/workflow-server#1492 closed as not_planned: acceptance criteria are missing or unticked - Branch Declaration: Long-Lived Branches That Carry No config/branches
+unsupported: m2ux/workflow-server#1493 closed as not_planned: acceptance criteria are missing or unticked - Epic Sync: Disagreeing Declarations Across Epic Bases
+unsupported: m2ux/workflow-server#1499 closed as not_planned: acceptance criteria are missing or unticked - Task Branches: One Branch per Epic Base a Unit Changes
+unsupported: m2ux/workflow-server#1500 closed as not_planned: acceptance criteria are missing or unticked - Epic Sync Links: Every Pull Request a Unit Delivers Through
+261 closed issue(s) listed

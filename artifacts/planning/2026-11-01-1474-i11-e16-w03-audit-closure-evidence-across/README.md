@@ -13,9 +13,13 @@ The single-issue closure gate cannot see a repository-wide fault, so an issue cl
 | Artifact | What it holds |
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
+| [Validation](validation.md) | Each check's procedure, revision and result |
+| [Live sweep output](sweep-workflow-server.txt) | The sweep's listing over m2ux/workflow-server |
+| [Change list](changes.md) | The plan changes the delivery session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E16](https://github.com/m2ux/workflow-server/issues/1474) |
+| Pull request | [#1518](https://github.com/m2ux/workflow-server/pull/1518) |
