@@ -124,7 +124,7 @@ KINDS = (
     'unresolved link', 'unresolved anchor',
     'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
     'inline bold lead too wide', 'prerequisite citation inside one file',
-    'prose over eight lines', 'trailing blank line',
+    'prose over eight lines', 'trailing blank line', 'heading without a blank line above',
     'parallel section in another mood', 'heading without content',
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',

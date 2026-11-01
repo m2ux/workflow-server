@@ -19,6 +19,7 @@
   "layout/one-line-per-item": ["review"],
   "layout/bold-leads": ["inline bold lead too wide", "review"],
   "layout/sub-bullets": ["review"],
+  "layout/heading-spacing": ["heading without a blank line above"],
   "layout/bounded-prose": ["prose over eight lines"],
   "prose/succinct": ["review"],
   "prose/one-home-per-rule": ["convention in both guides", "review"],
