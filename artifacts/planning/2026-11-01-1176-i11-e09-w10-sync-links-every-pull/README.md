@@ -12,9 +12,11 @@ W08's row had to be written by hand because sync kept only the last pull request
 
 | Artifact | What it holds |
 | --- | --- |
+| [W10 work item](w10.md) | Component, scope, design and test rows for W10 |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Source issue | [#1500](https://github.com/m2ux/workflow-server/issues/1500) |
