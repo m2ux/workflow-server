@@ -131,7 +131,7 @@ A source with a planning-record reference is subsumed, with that folder cited be
 
 ### Candidate Issues
 
-Candidates are open issues without an agent-engineering prefix. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
+Candidates are open issues without an agent-engineering prefix, other than a proposal and a declared throwaway target, an issue carrying a `throwaway:*` label. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.
 
 ### Destination Work
 
