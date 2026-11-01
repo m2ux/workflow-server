@@ -2,11 +2,17 @@
 
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
-  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--tick AC1 --fix fixed-943.md]
+  python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W02=950] [--project <checkout> --revision origin/i07/e00/main] [--tick AC1 --fix fixed-943.md]
   python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
-  python3 sync.py --names --project <checkout>
+  python3 sync.py --names --project <checkout> --revision <revision>
 
-With --names it prints the long-lived branch names of --project, one per line, as its main working tree states them in config/branches. A missing or empty statement reports the names unevaluable.
+The long-lived branch names are the ones config/branches states at the commit --revision resolves to, in the
+repository --project locates. Which worktree --project is, and what its working files hold, choose nothing.
+An epic sync names its epic base as --revision. The run reports the configuration path, the resolved commit
+and the repository as its source. A revision resolving to no commit, and a missing or empty statement at that
+commit, report the names unevaluable.
+
+With --names it prints the long-lived branch names one per line, and the source on standard error.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
 pull requests as JSON lines, as the REST API returns them:
@@ -58,8 +64,10 @@ The closable report establishes normal delivery readiness. Completing the issue 
 import argparse
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
 from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
 
@@ -586,47 +594,47 @@ def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool],
     return changed
 
 
-def main_working_tree(project: str) -> Path:
-    """The main working tree of a checkout.
-
-    A linked worktree's .git is a file naming its gitdir, whose commondir resolves to the main
-    .git directory, and the main working tree is that directory's parent. Any other checkout is
-    its own main working tree."""
-    root = Path(project)
-    marker = root / '.git'
-    if not marker.is_file():
-        return root
-    pointer = marker.read_text().strip()
-    if not pointer.startswith('gitdir:'):
-        return root
-    gitdir = Path(pointer.split(':', 1)[1].strip())
-    if not gitdir.is_absolute():
-        gitdir = root / gitdir
-    common = gitdir / 'commondir'
-    if not common.is_file():
-        return root
-    return (gitdir / common.read_text().strip()).resolve().parent
+class Branches(NamedTuple):
+    """The long-lived branch names and the source they were read from."""
+    names: tuple[str, ...]
+    source: str
 
 
-def long_lived_names(project: str) -> tuple[str, ...]:
-    """The long-lived branches stated in the main working tree's config/branches.
+def git(project: str, *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
 
-    A missing or empty statement leaves the names unevaluable."""
-    stated = main_working_tree(project) / 'config' / 'branches'
-    if not stated.is_file():
-        sys.exit(f'unevaluable: no config/branches under {main_working_tree(project)}')
-    names = tuple(sorted({line.strip() for line in stated.read_text().splitlines() if line.strip()}))
+
+def long_lived_names(project: str, revision: str) -> Branches:
+    """The long-lived branches config/branches states at the commit revision resolves to.
+
+    The checkout locates the repository and nothing more: its working files, and which of the
+    repository's worktrees it is, do not choose the names. The source names the configuration path,
+    the resolved commit and the repository's shared git directory, which every worktree of it
+    resolves to. A revision that resolves to no commit, and a missing or empty statement at that
+    commit, leave the names unevaluable."""
+    resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
+    if resolved.returncode != 0:
+        sys.exit(f'unevaluable: {revision} resolves to no commit in {project}')
+    commit = resolved.stdout.strip()
+    repository = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.strip()
+    source = f'config/branches at {commit} in {repository}'
+    stated = git(project, 'cat-file', 'blob', f'{commit}:config/branches')
+    if stated.returncode != 0:
+        sys.exit(f'unevaluable: no {source}')
+    names = tuple(sorted({line.strip() for line in stated.stdout.splitlines() if line.strip()}))
     if not names:
-        sys.exit(f'unevaluable: {stated} names no branch')
-    return names
+        sys.exit(f'unevaluable: {source} names no branch')
+    return Branches(names, source)
 
 
-def list_long_lived(project: str) -> int:
-    """Print the long-lived branch names, one per line."""
-    if not project:
-        sys.exit('--names needs --project')
-    for name in long_lived_names(project):
+def list_long_lived(project: str, revision: str) -> int:
+    """Print the long-lived branch names, one per line, and their source on standard error."""
+    if not (project and revision):
+        sys.exit('--names needs --project and --revision')
+    branches = long_lived_names(project, revision)
+    for name in branches.names:
         print(name)
+    print(f'source: {branches.source}', file=sys.stderr)
     return 0
 
 
@@ -700,19 +708,21 @@ def main() -> int:
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
     parser.add_argument('--epics', nargs='*', default=[], help='initiative: its epic issues as JSON')
     parser.add_argument('--tick', default='', help='criteria to tick, e.g. AC1,AC3')
-    parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branch names in config/branches')
+    parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branch names')
+    parser.add_argument('--revision', default='', help='the commit config/branches is read at: for an epic, its epic base, e.g. origin/i07/e00/main')
     parser.add_argument('--names', action='store_true', help='print the long-lived branch names, one per line')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
     if args.names:
-        return list_long_lived(args.project)
+        return list_long_lived(args.project, args.revision)
     if not args.issue:
         sys.exit('an issue file is required')
+    if bool(args.project) != bool(args.revision):
+        sys.exit('--project and --revision go together')
     global LONG_LIVED
-    if args.project:
-        LONG_LIVED = long_lived_names(args.project)
-    elif (main_working_tree('.') / 'config' / 'branches').is_file():
-        LONG_LIVED = long_lived_names('.')
+    declared = long_lived_names(args.project, args.revision) if args.project else None
+    if declared:
+        LONG_LIVED = declared.names
     if (args.tick or args.link) and not args.fix:
         sys.exit('--tick and --link need --fix, which holds the body')
 
@@ -734,7 +744,9 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'source')}
+    if declared:
+        report['source'].append(declared.source)
     tag, heading, label, ready_key = 'AC', 'Acceptance Criteria', AC, 'ready to verify'
 
     if kind == 'epic' and issue['state'] == 'closed':
