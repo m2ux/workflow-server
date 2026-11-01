@@ -19,6 +19,10 @@ Changed paths:
 
 With `orphans.py` reverted to its base and the test kept, the test fails (1 failed, 1 passed), so it observes the change.
 
+Against the live tracker (every m2ux/workflow-server issue, fetched 2026-11-01), the base script lists #924 (`throwaway:two`) among the cited standalone issues, cited by #946; the delivered script lists the same orphans and the remaining cited issue, and #924 in neither group.
+
+Task pull request [#1548](https://github.com/m2ux/workflow-server/pull/1548) merged into `i11/e10/workspace` as `96295fffa`.
+
 ## T2
 
 **Hoist mode states the exemption** (AC37).
