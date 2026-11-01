@@ -4,13 +4,13 @@
 
 ## Executive Summary
 
-Canon conventions and recognized command placement. Current scope and validation are stated in [w21.md](w21.md); original issue captures retain historical provenance.
+Canon conventions and recognized command placement. Current scope and validation are stated in [w22.md](w22.md); original issue captures retain historical provenance.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [Canon Conventions: The File Every Mode Opens a Second Time](w21.md) | The friction, the design, the references and the parts of the work |
+| [Canon Conventions: The File Every Mode Opens a Second Time](w22.md) | The friction, the design, the references and the parts of the work |
 | [Original issue](original-issue.md) | The issue this record carries, its body and its comments unchanged |
 
 ## Links

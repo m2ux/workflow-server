@@ -4,13 +4,13 @@
 
 ## Executive Summary
 
-Execution callers and required retrieval reach. Current scope and validation are stated in [w23.md](w23.md); original issue captures retain historical provenance.
+Execution callers and required retrieval reach. Current scope and validation are stated in [w19.md](w19.md); original issue captures retain historical provenance.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [Specification Reach: Placement Measured by What a File Must Open](w23.md) | The friction, the design, the references and the parts of the work |
+| [Specification Reach: Placement Measured by What a File Must Open](w19.md) | The friction, the design, the references and the parts of the work |
 | [Original issue](original-issue.md) | The issue this record carries, its body and its comments unchanged |
 
 ## Links
