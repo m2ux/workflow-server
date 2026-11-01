@@ -844,6 +844,8 @@ class SkillWideChecks(unittest.TestCase):
     def artifact(self, specification, script=None):
         if script is not None:
             self.write('scripts/link.py', script)
+        self.write('protocols/link.md', '# Link\n\n## Procedure\n\n'
+                   '1. Run [Link Issue](../artifacts/issue.md#link-issue).\n')
         return self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n\n## Commands\n\n'
                           + specification)
 

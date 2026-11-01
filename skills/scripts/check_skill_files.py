@@ -120,6 +120,7 @@ CLASSIC = re.compile(r'\b(?:add|move|delete|update|create|clone|convert)?Project
 KINDS = (
     'duplicate anchor is cited', 'heading jump',
     'command specification in the entry point', 'command specification with one caller',
+    'command specification nothing cites',
     'section outside the set', 'sections out of order', 'section missing',
     'unresolved link', 'unresolved anchor',
     'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
