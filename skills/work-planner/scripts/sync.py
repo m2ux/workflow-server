@@ -38,9 +38,11 @@ closable, once that pull request has merged.
 Closed epics have their Work Breakdown normalized to the current columns before delivery is read;
 --fix holds the normalized body for publication. Ambiguous tables are refused. Linked merged pull
 requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
-and fetch again. A title naming another initiative or epic remains a conflict.
+and fetch again. A title naming another initiative or epic remains a conflict. An epic or initiative
+sync reports retitle for every pull request, linked or not, whose title names an epic of the initiative
+by a task id, [I07:E00:W01], with the [I07:E00] title it takes.
 
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a file in a code span that is absent from its head commit, naming that path. A file named with a directory stands at that path, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a path in a code span that is absent from its head commit, naming that path. A span less any #anchor or :line suffix names a path when it is a component <branch>:<path> for the review's base, or holds a directory and either carries an extension or opens with a top-level directory of the head, or is a bare name whose extension a file at the head carries. A path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
 completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
 confirmed by the user where it names none. The initiative is closable once every criterion is ticked
@@ -70,8 +72,12 @@ repository, and one whose long-lived branch resolves to no commit are reported u
 The branch contract: a task pull request naming the epic targets one of its epic bases, and an
 integration pull request, whose head is an epic base, targets the long-lived branch that base names.
 An open or merged pull request off that route is reported target, naming where it goes and where it
-belongs. An epic or initiative sync reports each pull request carrying the initiative's prefix whose
-title names no epic as [I07:E00] as no epic, since nothing reads it as delivery.
+belongs. A task pull request belongs in the epic base of the long-lived branch its task branch's last
+hyphenated word names, else of the one its target names, as main or i07/e01/main does; else every
+epic base is named as one of them. An epic or initiative sync reports as no epic each pull request whose
+title opens with the initiative's id, [I07, and names neither an epic as [I07:E00] nor a task as
+[I07:E00:W01]: a bare [I07], or an epic id in any other form, such as [I07:E1]. Nothing reads it as
+delivery.
 
 The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link gate in closure.py.
 """
@@ -436,9 +442,22 @@ def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
         if lived and base != lived:
             lines.append(f"#{pr['number']} merges {head} into {base or 'no base'}; it targets {lived}")
         elif not lived and not epic_base(base, initiative, epic):
-            lines.append(f"#{pr['number']} targets {base or 'no base'}; a task pull request targets "
-                         f"i{initiative}/e{epic}/<long-lived branch>")
+            bases = ' or '.join(f'i{initiative}/e{epic}/{branch}' for branch in belongs(head, base))
+            lines.append(f"#{pr['number']} targets {base or 'no base'}; it targets "
+                         f"{'one of ' if ' or ' in bases else ''}{bases}")
     return lines
+
+
+def belongs(head: str, base: str) -> tuple[str, ...]:
+    """The long-lived branches whose epic base an off-route task pull request belongs in.
+
+    A task branch whose last hyphenated word is a long-lived branch is cut from that branch's base. A
+    target that is a long-lived branch, or ends in one as another epic's base does, names that branch.
+    Otherwise every long-lived branch is a candidate."""
+    for named in (head.rsplit('-', 1)[-1] if '-' in head else '', base.rsplit('/', 1)[-1]):
+        if named in LONG_LIVED:
+            return (named,)
+    return LONG_LIVED
 
 
 def initiative_titles(prs: list[dict], initiative: str):
@@ -450,8 +469,15 @@ def initiative_titles(prs: list[dict], initiative: str):
 
 
 def epicless(prs: list[dict], initiative: str) -> list[str]:
-    """Pull requests carrying the initiative's prefix whose title names no epic."""
-    return [f"#{pr['number']} {pr['title']}" for pr, prefix in initiative_titles(prs, initiative) if not prefix[2]]
+    """Pull requests whose title opens with the initiative's id, as [I07 does, and names no epic as
+    [I07:E00] or a task as [I07:E00:W01]: a bare [I07], or an epic id in any other form."""
+    lines = []
+    for pr in sorted(prs, key=lambda p: p['number']):
+        title = pr.get('title') or ''
+        prefix = PREFIX.match(title)
+        if re.match(rf'\[I{initiative}(?!\d)', title) and not (prefix and prefix[2]):
+            lines.append(f"#{pr['number']} {title}")
+    return lines
 
 
 def task_titled(prs: list[dict], initiative: str) -> list[str]:
@@ -502,29 +528,32 @@ def review_references(prs: list[dict], initiative: str, epic: str, home: str) ->
     return lines
 
 
-# A code span that may name a file: no whitespace or pattern characters, and a last segment with an extension.
-NAMED_FILE = re.compile(r'`([^`\s*?{}<>]*[^`\s*?{}<>/]\.[A-Za-z][A-Za-z0-9]*)(?:#[^`\s]*)?`')
+# A code span that may name a path: no whitespace or pattern characters, less a #anchor or :line suffix.
+NAMED_SPAN = re.compile(r'`([^`\s*?{}<>]+?)(?:#[^`\s]*|:\d+(?:-\d+)?)?`')
+EXTENSION = re.compile(r'[^/]\.([A-Za-z][A-Za-z0-9]*)$')
 
 
 def named_files(body: str) -> list[str]:
-    """The code spans a body's Changes section holds that may name files, in order, each once."""
+    """The code spans a body's Changes section holds that may name paths, in order, each once."""
     _, sections = split_sections((body or '').replace('\r\n', '\n'))
     text = '\n'.join(next((l for h, l in sections if h == 'Changes'), []))
-    return list(dict.fromkeys(m.removeprefix('./').lstrip('/') for m in NAMED_FILE.findall(text)))
+    return list(dict.fromkeys(m.removeprefix('./').lstrip('/') for m in NAMED_SPAN.findall(text)))
 
 
-def head_path(span: str, long_lived: str, extensions: set[str]) -> str | None:
+def head_path(span: str, long_lived: str, extensions: set[str], roots: set[str]) -> str | None:
     """The path a Changes span names at the head of the base for long_lived, or None for a span naming none there.
 
-    A component <branch>:<path> names its path on that branch. A path with a directory is a path. A bare
-    name is a file name only when its extension is one a file at the head carries, so a dotted code name
-    such as board.Outputs names nothing."""
+    A component <branch>:<path> names its path on that branch. A span with a directory names a path when
+    its last segment carries an extension or its first segment is a top-level directory at the head, so
+    a branch such as i07/e00/main names nothing. A bare name is a file name only when its extension is
+    one a file at the head carries, so a dotted code name such as board.Outputs names nothing."""
     branch, colon, path = span.partition(':')
     if colon and '/' not in branch:
         return path.lstrip('/') if branch == long_lived else None
+    extension = EXTENSION.search(span)
     if '/' in span:
-        return span
-    return span if span.rsplit('.', 1)[-1] in extensions else None
+        return span if extension or span.split('/', 1)[0] in roots else None
+    return span if extension and extension[1] in extensions else None
 
 
 def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
@@ -532,9 +561,10 @@ def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
     """Open review pull requests whose Changes name a file absent from the head of the base they front.
 
     A review pull request's head is an epic base, and its head commit is read in the repository
-    project locates. A span names a path as head_path decides; a path with a directory stands at that
-    path, and a bare file name stands anywhere in the tree. Returns a line per absent path, and an
-    unevaluable line per review whose head commit is not given or not held."""
+    project locates. A span names a path as head_path decides; a path with a directory stands where the
+    head holds a file or a directory at that path, and a bare file name stands anywhere in the tree.
+    Returns a line per absent path, and an unevaluable line per review whose head commit is not given
+    or not held."""
     absent, unevaluable = [], []
     for pr in sorted(prs, key=lambda p: p['number']):
         head = pr.get('head') or {}
@@ -554,10 +584,12 @@ def review_changes(prs: list[dict], initiative: str, epic: str, home: str,
         files = set(tree.stdout.splitlines())
         names = {f.rsplit('/', 1)[-1] for f in files}
         extensions = {n.rsplit('.', 1)[-1] for n in names if '.' in n}
+        held = files | {f.rsplit('/', depth)[0] for f in files for depth in range(1, f.count('/') + 1)}
+        roots = {f.split('/', 1)[0] for f in files if '/' in f}
         long_lived = epic_base(head['ref'], initiative, epic)
         for span in paths:
-            path = head_path(span, long_lived, extensions)
-            if path is not None and path not in (files if '/' in path else names):
+            path = head_path(span, long_lived, extensions, roots)
+            if path is not None and path.rstrip('/') not in (held if '/' in path else names):
                 absent.append(f"{name} (#{pr['number']}) names {span}, absent at {sha[:9]}")
     return absent, unevaluable
 

@@ -76,7 +76,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Draft | An epic base a merged task targets that holds a commit its long-lived branch lacks and has no open pull request merging it, while a task is undelivered or a criterion is unticked. A base level with or behind its branch is not draft. |
 | Unmerged | An epic base its pull requests target that has not merged into its long-lived branch, once every task is delivered and every criterion is ticked. A draft pull request is named draft. |
 | References | A review pull request whose cited pull requests differ from the task pull requests merged into its base. |
-| Changes | A review pull request whose Changes section names, in a code span, a file absent from the head commit of the base it fronts, with that span. A span names a file when it holds a directory path, or is a bare name whose extension a file at that head carries; a component `<branch>:<path>` names its path only for the base of that branch. |
+| Changes | A review pull request whose Changes section names, in a code span, a file absent from the head commit of the base it fronts, with that span. A span, less any `#anchor` or `:line` suffix, names a path when it holds a directory and carries an extension or opens with a top-level directory of that head, or is a bare name whose extension a file at that head carries; a component `<branch>:<path>` names its path only for the base of that branch. A path stands where the head holds a file or a directory at it. |
 | Uncited | A linked pull request whose task has its own issue and does not link it, or a review pull request that does not link the epic's issue. |
 | Note | A row that links its task issue. |
 | Unplaced | A task issue of this epic whose id is not a row. |
@@ -84,8 +84,8 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |
 | Ticked early | A criterion ticked while a delivering row is not delivered. |
 | Disagreement | A linked pull request's test plan against the Coverage of the rows it delivers. |
-| Target | An open or merged pull request naming the epic off its delivery routes: a task pull request into anything but one of the epic's bases, or an integration pull request into anything but the long-lived branch its head names. |
-| No epic | A pull request whose title carries the initiative's prefix, `[I07]`, and names no epic, so nothing reads it as delivery. |
+| Target | An open or merged pull request naming the epic off its delivery routes: a task pull request into anything but one of the epic's bases, or an integration pull request into anything but the long-lived branch its head names. Each names the base it belongs in: for a task pull request, the epic base of the long-lived branch its task branch's last slug word names, else of the one its target names, else each epic base as one of them. |
+| No epic | A pull request whose title opens with the initiative's id, `[I07`, and names neither an epic as `[I07:E00]` nor a task as `[I07:E00:W01]`: a bare `[I07]`, or an epic id in any other form, such as `[I07:E1]`. Nothing reads it as delivery. |
 | Source | The configuration path, commit and repository of each `config/branches` statement the long-lived branch names were read from. |
 | Unevaluable | A `config/branches` statement that is absent, empty or unreadable at its epic base, or a revision resolving to no commit, with its source; statements that disagree across the epic bases, each with its source and names; no long-lived branches given; a base that would be draft whose commits cannot be compared with its long-lived branch; or a review whose head commit the checkout does not hold, so its Changes paths are unread; each with the reason. |
 | Not checked | Each epic check that reads the long-lived branches, while their names are unevaluable. |
