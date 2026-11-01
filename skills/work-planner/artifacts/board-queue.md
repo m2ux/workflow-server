@@ -43,8 +43,8 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 
 - The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.
 - An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.
-- An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its open pull requests have completed.
-- An initiative stays In Progress while an open delivery pull request names an epic its Work Breakdown lists, `[Ixx:Eyy]`, even when a higher set has started. The epic's integration pull request is not a delivery pull request, as [Epic Activity](#epic-activity) defines. The highest set moves to In Progress immediately. After the lower set's open pull requests complete, it moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
+- An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its epics' work has completed.
+- An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity) or In Review, even when a higher set has started, as Board Delivery holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
 
@@ -57,7 +57,7 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - Any other Ready or In Progress epic of that initiative moves to Backlog.
 - An epic In Review or Done remains in that state.
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
-- An initiative kept In Progress only while its open pull requests complete readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
+- An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
 
 ### Backlog Cascade
 
@@ -88,7 +88,7 @@ The queue contains calls for Status and assignee changes to initiatives and epic
 | --- | --- | --- |
 | `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a parallel work map |
 | `ask` | An initiative is In Progress and has no priority label | That initiative, for a positive integer or none |
-| `wait` | An open pull request names one of an initiative's epics | That initiative and the pull request |
+| `wait` | An initiative is held In Progress by an epic it lists that is active or In Review | That initiative, the open delivery pull requests, and each epic In Review or held by a session |
 | `reconcile` | An initiative would return to Backlog while an epic of it is active or In Review | That initiative and each such epic, for the user to finish or release |
 | `next` | An initiative is Ready or In Progress and has epics that are Ready | Those epics |
 
