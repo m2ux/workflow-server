@@ -13,6 +13,7 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | Artifact | What it holds |
 | --- | --- |
 | [w14.md](w14.md) | W14's work item: design, component and test obligations |
+| [test-evidence.md](test-evidence.md) | The Test Plan's check results |
 
 ## Links
 
