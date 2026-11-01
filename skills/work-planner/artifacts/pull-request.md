@@ -50,7 +50,7 @@ The complete issue-link snapshot for a supplied set of pull requests.
 **Inputs:** Current pull request records, authenticated access and destination link-snapshot file.
 
 1. Run [Capture Pull Request Links](#capture-pull-request-links) with `prs.json` and destination `links.json`.
-2. If it names an unreadable relation, return the incomplete result.
+2. If it names an unreadable relation, stop and return each one named as a blocker. Incomplete evidence is never a partial snapshot.
 3. Repeat the capture after a link changes.
 4. Return the snapshot for the scripts' `--links` input.
 
@@ -462,7 +462,8 @@ Writes the complete issue-link snapshot for a pull request collection, read from
 
 - The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.
 - Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
-- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation and writes no snapshot.
+- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
+- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.
 
 ```bash
 cd "<workspace>" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs '<pull-request-records-file>' --out '<issue-link-snapshot-file>'
