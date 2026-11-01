@@ -36,7 +36,7 @@ The main path meets [Outcomes](#outcomes).
    - A caller naming the placement, settled with the user before the hoist, has it applied rather than offered again.
 5. **Apply.**
    Run [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement) with each confirmed placement and its current source and destination records.
-   - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records: [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue.
+   - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records, including a new task's row id: [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue.
    - Resume review.
 6. **Review.**
    - Run [Validate Issue Body](../artifacts/issue-body.md#validate-issue-body) on every issue the hoist changed or created.

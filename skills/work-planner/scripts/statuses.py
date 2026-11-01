@@ -8,9 +8,10 @@ completed epic takes. Each plans its own statuses and hands them here, which rea
 items, writes the option body files, renders the gh call for every change, and refuses a change the
 calling mode does not own.
 
+Every jurisdiction refuses a task set In Review: only an initiative or an epic stands there.
 DELIVERY refuses moving an initiative or an epic between Ready and Backlog.
 QUEUE refuses In Review, Done and any task.
-DISPATCH refuses every Status but In Progress and In Review, a task set In Review, and a removal.
+DISPATCH refuses every Status but In Progress and In Review, and a removal.
 
 A Status write sends the body file written under the out directory.
 """
@@ -131,6 +132,8 @@ class Changes:
         """Refuse a change outside this mode's jurisdiction."""
         task = bool(TASK.match(issue.get('title') or ''))
         name = label(key, home)
+        if task and wanted == 'In Review':
+            raise Jurisdiction(f'{name}: a task does not stand In Review')
         if self.scope == QUEUE:
             if wanted in DECIDED:
                 raise Jurisdiction(f'{name}: the queue does not set {wanted}')
@@ -140,8 +143,6 @@ class Changes:
             if wanted not in DISPATCHED:
                 raise Jurisdiction(f'{name}: a dispatch sets {" and ".join(DISPATCHED)}, '
                                    f'not {wanted or "a removal"}')
-            if task and wanted == 'In Review':
-                raise Jurisdiction(f'{name}: a dispatch does not set a task In Review')
         elif not task and held != wanted and {held, wanted} <= {'Ready', 'Backlog'}:
             raise Jurisdiction(f'{name}: delivery does not move an initiative or an epic '
                                f'between Ready and Backlog')

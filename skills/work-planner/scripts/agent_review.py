@@ -85,7 +85,7 @@ def epic_check(epic, prs, records):
     """Require current evidence for every open integration PR belonging to the epic."""
     match = re.match(r'^\[I(\d\d):E(\d\d)\]', epic.get('title', ''))
     if not match or re.match(r'^\[I\d\d:E\d\d:W', epic.get('title', '')):
-        return 'a dispatch does not set a task In Review'
+        return 'a task does not stand In Review'
     home = epic.get('html_url', '').split('/issues/')[0]
     prefix = f'i{match[1]}/e{match[2]}/'
     reviews = [p for p in prs if p.get('state') == 'open'

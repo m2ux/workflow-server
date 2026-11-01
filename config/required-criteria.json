@@ -1,0 +1,9 @@
+[
+  {
+    "branch": "workflows",
+    "paths": ["corpus"],
+    "criterion": "The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.",
+    "phrase": "canon audit",
+    "row": "Canon audit of the changed definitions"
+  }
+]
