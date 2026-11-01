@@ -96,6 +96,11 @@ BULLET = re.compile(r'^(\s*)-(\s*)(.*)$')
 BOLD_LEAD = re.compile(r'^\s*-\s+\*\*')
 BARE_LEAD = re.compile(r'^\s*-\s+\*\*[^*]+\*\*\s*$')
 INDENTED = re.compile(r'^\s+\S')
+DESCRIPTION = re.compile(r'^description:\s*(.*?)\s*$')
+BLOCK_SCALARS = ('>', '>-', '>+', '|', '|-', '|+')
+MODE = re.compile(r'^[-*]\s+\*\*\[([^\]]+)\]\([^)]+\)\*\*')
+BLOCK_START = re.compile(r'^\s*([-*+]\s|\d+[.)]\s|#|\||>|<|`{3,}|~{3,})')
+BARE_LABEL = re.compile(r'^\s*(?:[-*+]\s+|\d+[.)]\s+)?\*\*[^*]+\*\*\s*$')
 PROSE_LIMIT = 8
 LEAD_WIDTH = 100
 SECTIONS = ('Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands')
@@ -130,6 +135,7 @@ KINDS = (
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
+    'mode without a trigger phrase', 'hard-wrapped line',
 )
 OPERATIONS = KINDS + ('review',)
 
@@ -400,12 +406,15 @@ def check(path, root, cache, cited, called, structures=None):
                 if destination == path:
                     report(index, 'prerequisite citation inside one file', target)
 
-    # Bounded prose: consecutive prose lines, lists and tables excluded
-    # because each is one structure and is not split to meet the limit.
+    # Bounded prose: the prose lines of one run, lists and tables excluded
+    # because each is one structure and is not split to meet the limit. Each
+    # paragraph is one line, so the blank line between two continues the run.
     run = 0
     start = 0
     for index, line in enumerate(lines):
-        structural = (fenced[index] or index in skip or not line.strip()
+        if not line.strip() and not fenced[index]:
+            continue
+        structural = (fenced[index] or index in skip
                       or line.lstrip().startswith(('-', '|', '>', '#', '*'))
                       or INDENTED.match(line))
         if structural:
@@ -434,11 +443,18 @@ def check(path, root, cache, cited, called, structures=None):
 
     for index, title in empty_sections(lines, headings):
         report(index, 'heading without content', title)
+
     for index, slug, first in duplicate_anchors(headings):
         report(index, 'duplicate anchor', f'{slug}, also at line {first + 1}')
 
     for index, title in uncited_specifications(path, headings, entry, cited):
         report(index, 'command specification nothing cites', title)
+
+    if path.name == 'SKILL.md':
+        for index, name in untriggered_modes(lines, headings, skip):
+            report(index, 'mode without a trigger phrase', name)
+    for index, text in hard_wraps(lines, fenced, headings, skip):
+        report(index, 'hard-wrapped line', text)
     return found
 
 
@@ -665,6 +681,70 @@ def empty_sections(lines, headings):
                     if depth <= level), len(lines))
         if not any(line.strip() for line in lines[start + 1:end]):
             yield start, title
+
+
+def description(lines, skip):
+    """The frontmatter's description as one string, a folded or literal block
+    joined at its line breaks, since YAML reads it as one value."""
+    text = []
+    inside = False
+    for index in sorted(skip)[1:-1]:
+        line = lines[index]
+        if match := DESCRIPTION.match(line):
+            inside = True
+            if match[1] not in BLOCK_SCALARS:
+                text.append(match[1].strip('\'"'))
+        elif inside and line[:1].isspace():
+            text.append(line.strip())
+        else:
+            inside = False
+    return ' '.join(text)
+
+
+def modes(lines, headings):
+    """Each mode an entry point lists: a bullet under its Modes section whose
+    bold name links the mode's file, with the line it stands on."""
+    start = next((index for index, level, title in headings
+                  if level == 2 and anchor_of(title) == 'modes'), None)
+    if start is None:
+        return
+    end = next((index for index, level, _ in headings if index > start and level <= 2), len(lines))
+    for index in range(start, end):
+        if match := MODE.match(lines[index]):
+            yield index, match[1]
+
+
+def untriggered_modes(lines, headings, skip):
+    """Each mode the description carries no trigger phrase for. The description
+    alone decides whether the skill loads, so a request reaches a mode only
+    through a phrase there naming it by its own word: "audit workflow X"
+    reaches Audit. A word carries the mode where it opens with the mode's name,
+    a final "e" dropped, so "revising" carries Revise."""
+    words = description(lines, skip).lower()
+    for index, name in modes(lines, headings):
+        stems = [word.lower().removesuffix('e') for word in re.findall(r'\w+', name)]
+        if not re.search(r'\b' + r'\w*\W+'.join(map(re.escape, stems)) + r'\w*', words):
+            yield index, name
+
+
+def hard_wraps(lines, fenced, headings, skip):
+    """Each paragraph or list item carried past its first line. Every item is
+    one line and the editor wraps, so a line that a following line continues,
+    rather than a new block opening, is hard-wrapped. A bold label standing
+    alone takes its body on the next line, which is the one continuation the
+    layout gives a line."""
+    titled = {index for index, _, _ in headings}
+    wrapped = False
+    for index in range(len(lines) - 1):
+        line, following = lines[index], lines[index + 1]
+        continues = not (
+            fenced[index] or fenced[index + 1] or index in skip or index + 1 in skip
+            or index in titled or not line.strip() or not following.strip()
+            or RULE.match(line) or RULE.match(following) or line.lstrip().startswith(('|', '<'))
+            or BLOCK_START.match(following) or BARE_LABEL.match(line))
+        if continues and not wrapped:
+            yield index, line.strip()[:60]
+        wrapped = continues
 
 
 INSTRUCTIONS = {'Use', 'Select', 'Apply', 'Follow', 'Read', 'Run', 'Check', 'Include',

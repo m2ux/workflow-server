@@ -13,7 +13,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Claude Code registers the hook when the skill is invoked and runs it for the rest of the session. Cursor ignores the field.
 - **Description.**
   - It states what the skill covers and the requests that call for it, as the phrases a user would say: "plan the work", "audit workflow X".
-  - It carries at least one such phrase for each mode, since the description alone decides whether the skill loads.
+  - It carries at least one such phrase for each mode, naming the mode by its own word in any form: "audit workflow X" reaches Audit, "revising this skill" reaches Revise. The description alone decides whether the skill loads.
   - It carries no procedure; what each mode does is in the body.
   - It stays under the 1,024-character skill limit.
 
@@ -82,7 +82,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Heading spacing.**
   A blank line stands above every heading, except one opening the file or its body after the frontmatter, so no list item or paragraph reads it in.
 - **Bounded prose.**
-  A run of prose under one heading is at most eight lines. Longer prose splits into named sub-sections, leaving the linked heading where it is. A list or table is one structure and is not split to meet this.
+  A run of prose under one heading, its paragraphs counted together, is at most eight lines. Longer prose splits into named sub-sections, leaving the linked heading where it is. A list or table is one structure and is not split to meet this.
 
 ## Prose
 
@@ -114,7 +114,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   A citation asserting the reader must already hold a section earns its place only where that section is in another file, opened for its own reason. Name it: `Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.`
   - Within one file, position carries the requirement and the citation is dropped: conventions sit ahead of the procedures and commands they govern.
   - A prerequisite citation pointing further down its own file is a defect, whatever its wording. A sequential reader meets it after the point it was meant to serve.
-- **Resolution.**  Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
+- **Resolution.**
+  Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
 
 ## Commands
 

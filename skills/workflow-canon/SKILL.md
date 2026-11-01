@@ -84,8 +84,7 @@ Each operation has one spec. Commands use example values that the caller replace
 - **Python 3.10+**
   The definition edit hook, audit inventory/state/dispatch scripts and their tests.
 - **Paired YAML parser**
-  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.
-  The audit tests read that engine from `CANON_TEST_ENGINE`: the root of an engine checkout whose dependencies are installed.
+  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot. The audit tests read that engine from `CANON_TEST_ENGINE`: the root of an engine checkout whose dependencies are installed.
 - **Agent host and sandbox**
   Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
 - **Claude Code hooks**

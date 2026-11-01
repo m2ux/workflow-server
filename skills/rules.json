@@ -1,7 +1,7 @@
 {
   "frontmatter/fields": ["review"],
   "frontmatter/hooks": ["review"],
-  "frontmatter/description": ["review"],
+  "frontmatter/description": ["mode without a trigger phrase", "review"],
   "files/skillmd": ["review"],
   "files/references": ["review"],
   "files/shared": ["review"],
@@ -16,7 +16,7 @@
   "procedure-files/top-level-sections": ["section outside the set", "sections out of order", "section missing"],
   "procedure-files/what-the-reader-does-with-a-heading-places-it": ["review"],
   "procedure-files/procedure": ["review"],
-  "layout/one-line-per-item": ["review"],
+  "layout/one-line-per-item": ["hard-wrapped line"],
   "layout/bold-leads": ["inline bold lead too wide", "review"],
   "layout/sub-bullets": ["review"],
   "layout/heading-spacing": ["heading without a blank line above"],
