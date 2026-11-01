@@ -14,6 +14,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
 | [W10 work item](w10.md) | Component, scope, design, criteria and test rows for W10 |
+| [Test results](test-results.md) | The evaluated commit, changed paths and each Test Plan check's evidence |
 
 ## Links
 
