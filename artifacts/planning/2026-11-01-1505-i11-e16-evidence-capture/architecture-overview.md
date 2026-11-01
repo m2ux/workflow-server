@@ -70,7 +70,7 @@ flowchart LR
 - **Commands.**
   Each script is one command specification in the artifact whose operation runs it: `pull-request.md` (capture, set, remove), `issue.md` (capture, sweep) and `acceptance-criteria.md` (run at revision).
 - **Callers.**
-  Fetch Pull Request Issue Links, Read Issue Development, Access Development Links, Audit Closure Evidence and Verify Selected Criteria cite those commands; Sync Mode runs the audit, and the Issue Closure protocol runs a link removal the user decides on.
+  Fetch Pull Request Issue Links, Read Issue Development, Access Development Links (which reads the pull request's record before a single capture), Audit Closure Evidence and Verify Selected Criteria cite those commands; Sync Mode runs the audit, and the Issue Closure protocol runs a link removal the user decides on.
 
 ## Behaviour
 
@@ -106,6 +106,8 @@ sequenceDiagram
     Cap-->>Op: snapshot, or exit 1 naming each unreadable
 ```
 
+- **A refused call ends the run.**
+  A `gh` failure carrying no GraphQL errors, such as a rejected credential, exits with what `gh` reported; GraphQL errors are matched to the subjects they reach.
 - **The query travels by file.**
   A GraphQL variable is a literal `$`, which the workspace shell denies, so every value is inlined into a generated file.
 - **A page that is not whole drops the subject.**
@@ -158,21 +160,21 @@ sequenceDiagram
 
 ## Reading Order
 
-1. **[development.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/development.py#L109-L144)** — the shared reader every capture and readback relies on.
-2. **[links-by-pull-request.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/links-by-pull-request.py#L24)** — the snapshot the epic sync consumes.
-3. **[links-by-issue.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/links-by-issue.py#L26)** — the same read from the issue end.
-4. **[pull-request.md](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/artifacts/pull-request.md#L31-L56)** — Access Development Links and Fetch Pull Request Issue Links, which run the captures and writes.
-5. **[development-link.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/development-link.py#L108-L124)** — the write and its two-ended readback.
-6. **[closure-sweep.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/closure-sweep.py#L34-L48)** — the closure findings.
-7. **[issue.md](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/artifacts/issue.md#L94-L112)** — Read Issue Development and Audit Closure Evidence.
-8. **[revision-check.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/scripts/revision-check.py#L48-L84)** — the detached checkout and its removal.
-9. **[acceptance-criteria.md](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/artifacts/acceptance-criteria.md#L15-L80)** — Verify Selected Criteria and Run at Revision.
-10. **[test_documents.py](https://github.com/m2ux/workflow-server/blob/d4948668554c89e1c6120af03148342d3e051149/skills/work-planner/test/test_documents.py#L141-L166)** — the script-reachability guard.
+1. **[development.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/development.py#L114-L149)** — the shared reader every capture and readback relies on.
+2. **[links-by-pull-request.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/links-by-pull-request.py#L24)** — the snapshot the epic sync consumes.
+3. **[links-by-issue.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/links-by-issue.py#L26)** — the same read from the issue end.
+4. **[pull-request.md](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/artifacts/pull-request.md#L31-L58)** — Access Development Links and Fetch Pull Request Issue Links, which run the captures and writes.
+5. **[development-link.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/development-link.py#L108-L124)** — the write and its two-ended readback.
+6. **[closure-sweep.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/closure-sweep.py#L34-L48)** — the closure findings.
+7. **[issue.md](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/artifacts/issue.md#L94-L112)** — Read Issue Development and Audit Closure Evidence.
+8. **[revision-check.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/scripts/revision-check.py#L48-L84)** — the detached checkout and its removal.
+9. **[acceptance-criteria.md](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/artifacts/acceptance-criteria.md#L15-L87)** — Verify Selected Criteria and Run at Revision.
+10. **[test_documents.py](https://github.com/m2ux/workflow-server/blob/cea293b1a56b225359d9b40ede2bc2fc84492e6f/skills/work-planner/test/test_documents.py#L141-L166)** — the script-reachability guard.
 
 ## Risks and Watch Points
 
-- **Network commands run outside the sandbox.**
-  The capture and link commands call `gh`, so their specifications omit `sbx`; the sweep and revision helper run under it.
+- **Some commands run outside the sandbox.**
+  The capture and link commands call `gh`, and the revision helper registers a worktree in the repository's git directory, which `sbx` leaves read-only, so their specifications omit `sbx`. The helper's instrument carries its own `sbx` prefix where it needs one; the sweep runs under `sbx`.
 - **Schema dependence.**
   The relation fields are current GraphQL names; a renamed field surfaces as an unreadable relation, not an empty one.
 
