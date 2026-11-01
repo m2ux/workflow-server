@@ -34,7 +34,9 @@ The observed or updated Development relation for a pull request.
 
 **Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting the applicable preconditions in [Close Tracker Issue](issue.md#close-tracker-issue).
 
-1. For a read-only request, run [Capture Pull Request Links](#capture-pull-request-links) with the pull request's record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.
+1. For a read-only request:
+   - Run [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by.
+   - Run [Capture Pull Request Links](#capture-pull-request-links) with that record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 2. For a link edit:
    - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit.
    - For an addition, run [Set Development Link](#set-development-link) with the pull request and issue identities.
