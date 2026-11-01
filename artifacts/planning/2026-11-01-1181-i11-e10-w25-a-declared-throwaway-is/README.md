@@ -13,6 +13,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | Artifact | What it holds |
 | --- | --- |
 | [W25 work item](w25.md) | Component, scope, design, criteria and test rows for W25 |
+| [Test results](test-results.md) | The evaluated commit, changed paths and each Test Plan check's evidence |
 
 ## Links
 
