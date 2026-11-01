@@ -135,16 +135,40 @@ class Survey(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             engineering, ids = planned(root, ('W02', 'skills/plan.py'), ('W03', 'docker:Dockerfile'))
-            body = epic(943, ('W01', 'Queue plan', '', ''), (ids['W02'], 'Queue more', '', ''),
-                        (ids['W03'], 'Queue image', '', ''))
+            body = epic(943, (ids['W02'], 'Queue more', '', ''), (ids['W03'], 'Queue image', '', ''))
             output = survey(staged((body, 'In Progress')), None,
                             *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES, code=1)
-        self.assertIn('undeclared I07:E00:W01: links no work item', output)
         self.assertIn('undeclared I07:E00:W02: component skills/plan.py names no long-lived branch', output)
         self.assertIn('undeclared I07:E00:W03: component docker:Dockerfile names docker, which has no epic base',
                       output)
         self.assertNotIn('  unit ', output)
-        self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 3', output)
+        self.assertIn('available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 2', output)
+
+    def test_an_unplanned_row_of_several_bases_takes_every_epic_base(self):
+        rows_given = {'plain': ('W01', 'Queue plan', '', ''),
+                      'task issue': ('[W01](https://github.com/o/r/issues/950)', 'Queue plan', '', '')}
+        for case, row in rows_given.items():
+            with self.subTest(case), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                engineering, _ = planned(root)
+                output = survey(staged((epic(943, row), 'In Progress')), None,
+                                *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+                self.assertNotIn('undeclared I07', output)
+                for name in ('main', 'workflows', 'workspace'):
+                    self.assertIn(f'branch i07/e00/w01-queue-plan-{name}, base i07/e00/{name}, '
+                                  f'worktree .worktrees/i07/e00/w01-queue-plan-{name}', output)
+                self.assertIn('available: 1, held: 0, blocked: 0, unresolvable: 0, undeclared: 0', output)
+
+    def test_an_unplanned_row_joined_to_a_declared_row_takes_every_epic_base(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W02', 'workspace:skills/plan.py'))
+            body = epic(943, ('W01', 'Queue plan', '', 'W02'), (ids['W02'], 'Queue more', '', 'W01'))
+            output = survey(staged((body, 'In Progress')), None,
+                            *declared(root, 'main', 'workflows', 'workspace'), *engineering, *THREE_BASES)
+        self.assertIn('unit I07:E00:W01+W02', output)
+        for name in ('main', 'workflows', 'workspace'):
+            self.assertIn(f'base i07/e00/{name}', output)
 
     def test_a_work_item_is_read_only_from_the_engineering_checkout(self):
         with tempfile.TemporaryDirectory() as tmp:

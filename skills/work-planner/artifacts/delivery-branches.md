@@ -156,6 +156,8 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
 
 - **Changed branches.**
   A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
+- **Unplanned rows.**
+  A free row linking no work item is unplanned: its session writes the work item after dispatch. Its unit changes every epic base, and the session opens a pull request only from each branch its work changes.
 - **Several long-lived branches.**
   A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
 - **Example.**
