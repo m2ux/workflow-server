@@ -87,7 +87,8 @@ ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 REPO_OF = re.compile(r'github\.com/([^/]+/[^/]+)/(?:pull|commit)/')
-EPIC_BASE = re.compile(r'^i\d\d/e\d\d/([^/]+)$')
+EPIC_BASE = re.compile(r'^i\d\d/e\d\d/(?!w\d\d(?:-|$))([^/]+)$')
+INITIATIVE_REF = re.compile(r'^i\d\d/')
 REMOTE = 'origin'
 UNPLACED, RETAINED = 'unplaced', 'retained'
 READY_UNDER = ('Ready', 'In Progress')  # a parent Status under which a child can be Ready
@@ -169,13 +170,26 @@ def weakest(answers: Iterable[Resolution]) -> Resolution:
 
 class Output(NamedTuple):
     """One output a delivered producer row carries: the delivery naming it, the repository holding
-    it, its commit, the long-lived branch it lands on, empty for a linked commit, and the pull
-    request delivering it."""
+    it, its commit, the long-lived branch it lands on, and the pull request delivering it. The branch
+    is empty for a linked commit, and for a pull request merged into a ref that is neither an epic
+    base nor a long-lived branch, such as a task branch."""
     delivery: str
     repo: str
     identity: str
     branch: str
     pull: dict | None = None
+
+
+def landing(base: str) -> str:
+    """The long-lived branch a pull request merged into base lands on: the last segment of an epic
+    base, the base itself outside the initiative namespace, and empty for any other initiative ref."""
+    lived = EPIC_BASE.match(base)
+    return lived[1] if lived else '' if INITIATIVE_REF.match(base) else base
+
+
+def off_route(pull: dict) -> str:
+    base = (pull.get('base') or {}).get('ref') or ''
+    return f'it merged into {base}, which is neither an epic base nor a long-lived branch'
 
 
 class Outputs:
@@ -223,6 +237,9 @@ class Outputs:
             return Resolution.UNMET
         if not self.commit(output.identity):
             self.lines.append(f'{named} unverified: {output.identity[:12]} is not in the checkout')
+            return Resolution.UNMET
+        if output.pull is not None and not output.branch:
+            self.lines.append(f'{named} {output.identity[:12]} unverified: {off_route(output.pull)}')
             return Resolution.UNMET
         targets = self.consumer(prefix, output.branch)
         if not targets:
@@ -307,9 +324,8 @@ class Board:
                 outputs.append(Output(href, repo, href.rstrip('/').rsplit('/', 1)[-1], ''))
             elif (pr := self.pulls.get(href)) and pr.get('merged_at'):
                 base = (pr.get('base') or {}).get('ref') or ''
-                lived = EPIC_BASE.match(base)
                 outputs.append(Output(label((repo, pr['number']), self.home), repo,
-                                      pr.get('merge_commit_sha') or '', lived[1] if lived else base, pr))
+                                      pr.get('merge_commit_sha') or '', landing(base), pr))
         return outputs
 
     def integrated(self, output: Output, why: str) -> Resolution:
@@ -317,8 +333,11 @@ class Board:
         delivered to that branch, or a pull request merging its epic base into the branch merged
         after it."""
         named = f'{why}: {output.delivery}'
-        if output.pull is None or not output.branch:
+        if output.pull is None:
             self.outputs.lines.append(f'{named} unverified: {output.repo} holds it on no named branch')
+            return Resolution.UNMET
+        if not output.branch:
+            self.outputs.lines.append(f'{named} unverified: {off_route(output.pull)}')
             return Resolution.UNMET
         base = (output.pull.get('base') or {}).get('ref') or ''
         if base == output.branch:

@@ -650,12 +650,13 @@ class ProducerOutputs(unittest.TestCase):
     def drop(self, branch: str) -> None:
         git(self.checkout, 'update-ref', '-d', f'refs/remotes/origin/{branch}')
 
-    def survey(self, merge: str | None = 'produced', *args: str) -> str:
-        producer = epic(943, (f"[W01]({url('pull', 9)})", 'Produce', '', ''),
+    def survey(self, merge: str | None = 'produced', *args: str, base: str = 'i07/e00/main',
+               link: str | None = None) -> str:
+        producer = epic(943, (f"[W01]({link or url('pull', 9)})", 'Produce', '', ''),
                         ('W02', 'Unrelated', '', ''))
         consumer = epic(944, ('W01', 'Independent work', '', ''),
                         ('W02', 'Consume', f"[E00:W01]({url('issues', 943)})", ''), which='07:E01')
-        delivery = pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base='i07/e00/main')
+        delivery = pr(9, '[I07:E00] Produce', merged='2026-01-01T00:00:00Z', base=base)
         if merge:
             delivery['merge_commit_sha'] = self.produced if merge == 'produced' else merge
         return survey(staged((producer, 'In Progress'), (consumer, 'Ready')), [delivery],
@@ -688,6 +689,25 @@ class ProducerOutputs(unittest.TestCase):
         output = self.survey()
         self.assertIn('unit I07:E01:W02', output)
         self.assertIn('available at origin/main', output)
+
+    def test_a_merge_into_a_task_branch_names_no_long_lived_branch(self):
+        for base in ('i07/e00/w01-produce', 'i07/e01/w02-consume'):
+            with self.subTest(base=base):
+                self.point(base, self.produced)
+                output = self.survey(base=base)
+                self.assertIn('blocked I07:E01:W02', output)
+                self.assertIn(f'output #944 W02: E00:W01 #9 {self.produced[:12]} unverified: it merged into '
+                              f'{base}, which is neither an epic base nor a long-lived branch', output)
+
+    def test_a_linked_commit_is_read_against_each_consumer_base(self):
+        link = url('commit', self.produced)
+        output = self.survey(link=link)
+        self.assertIn('blocked I07:E01:W02', output)
+        self.assertIn(f'{self.produced[:12]} absent at origin/i07/e01/main {self.start[:12]}', output)
+        self.point('i07/e01/workspace', self.produced)
+        output = self.survey(link=link)
+        self.assertIn('unit I07:E01:W02', output)
+        self.assertIn(f'{self.produced[:12]} available at origin/i07/e01/workspace {self.produced[:12]}', output)
 
     def test_missing_evidence_is_rejected(self):
         output = self.survey(None)
