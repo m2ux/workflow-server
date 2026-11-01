@@ -129,6 +129,7 @@ KINDS = (
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
+    'command specification nothing cites', 'heading without a blank line above',
 )
 OPERATIONS = KINDS + ('review',)
 
