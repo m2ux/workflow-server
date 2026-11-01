@@ -103,7 +103,7 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_heading_inside_a_fence_is_not_an_anchor(self):
-        self.write('SKILL.md', f'# Specimen\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
+        self.write('references/guide.md', f'# Guide\n\n## Layout\n\n{FENCE}markdown\n## Layout\n{FENCE}\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_skipped_heading_level_is_reported(self):
@@ -170,13 +170,13 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.findings(), [])
 
     def test_a_selection_link_may_point_anywhere_in_its_file(self):
-        self.write('SKILL.md', '# Specimen\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
-                               '## Spec\n\nA sentence.\n')
+        self.write('references/guide.md', '# Guide\n\n## Route\n\nUse [Spec](#spec) for the run.\n\n'
+                                          '## Spec\n\nA sentence.\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_prerequisite_example_in_a_code_span_is_a_specimen(self):
-        self.write('SKILL.md', '# Specimen\n\n## Common\n\nOne.\n\n'
-                               '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
+        self.write('references/guide.md', '# Guide\n\n## Common\n\nOne.\n\n'
+                                          '- **Rule.**  Cite it as `Read [Common](#common) first.` in the body.\n')
         self.assertEqual(self.findings(), [])
 
     CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
@@ -309,7 +309,7 @@ class SkillFileChecks(unittest.TestCase):
         self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n\n'
                                '## Commands\n\n### Fetch issue\n\nFetches one issue.\n')
         self.write('references/plan.md', calling('Plan', '../SKILL.md#fetch-issue'))
-        self.assertEqual(self.kinds(), {'command specification in the entry point'})
+        self.assertIn('command specification in the entry point', self.kinds())
 
     def test_a_heading_of_a_catalogs_conventions_is_not_a_specification(self):
         self.write('references/commands.md', self.LISTING)
@@ -513,6 +513,56 @@ class SkillFileChecks(unittest.TestCase):
     def test_the_command_exits_zero_when_clean(self):
         self.write('SKILL.md', '# Specimen\n\nA sentence.\n')
         self.assertEqual(self.run_command(), 0)
+
+
+class EntryPointSections(unittest.TestCase):
+    """A skill's entry point measured against the set the shared guidelines
+    name for it, whatever it carries."""
+
+    setUp = SkillFileChecks.setUp
+    write = SkillFileChecks.write
+    findings = SkillFileChecks.findings
+
+    ENTRY = ('---\nname: specimen\n---\n\n# Specimen\n\nOne sentence.\n\n'
+             '- **Plans**  The plans it acts on.\n')
+    MODES = '\n## Modes\n\n- **[Plan](references/plan-mode.md)**\n  - Forward-looking, scoped to one plan\n'
+    RULES = '\n## Rules\n\n- **One home.**  Each rule is stated once.\n'
+    CONVENTIONS = '\n## Conventions\n\n- **Session.**  Unset the token first.\n'
+    DEPENDENCIES = '\n## Dependencies\n\n- **git.**\n'
+
+    def entry(self, *sections):
+        self.write('SKILL.md', self.ENTRY + ''.join(sections))
+        self.write('references/plan-mode.md', '# Plan\n\n## Procedure\n\n1. **Plan.**  Plan it.\n'
+                                              '\n## Rules\n\n- **Scope.**  One plan.\n')
+        return [(line, kind) for name, line, kind in self.findings() if name == 'SKILL.md']
+
+    def test_an_entry_point_carrying_the_named_set_in_order_reports_nothing(self):
+        self.assertEqual(self.entry(self.MODES, self.RULES, self.CONVENTIONS, self.DEPENDENCIES), [])
+
+    def test_each_named_section_is_optional(self):
+        self.assertEqual(self.entry(), [])
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES), [])
+
+    def test_a_section_outside_the_set_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, '\n## Troubleshooting\n\nOne sentence.\n'),
+                         [(16, 'section outside the set')])
+
+    def test_a_section_out_of_order_is_reported(self):
+        self.assertEqual(self.entry(self.MODES, self.DEPENDENCIES, self.RULES),
+                         [(20, 'sections out of order')])
+
+    def test_each_departure_is_reported(self):
+        found = self.entry(self.CONVENTIONS, self.RULES, '\n## After Indexing\n\nOne sentence.\n')
+        self.assertEqual([kind for _, kind in found], ['sections out of order', 'section outside the set'])
+
+    def test_an_entry_point_carrying_steps_takes_its_own_set(self):
+        found = self.entry(self.MODES, '\n## Procedure\n\n1. **Run.**  Run it.\n')
+        self.assertEqual(found, [(16, 'section outside the set')])
+
+    def test_a_contract_covering_every_file_does_not_reach_the_entry_point(self):
+        structure = dict(STRUCTURE, **{'*.md': {'sections': ['Procedure'], 'required': ['Procedure']}})
+        (self.skill / 'structure.json').write_text(json.dumps(structure))
+        self.assertEqual(self.entry(self.MODES, self.RULES), [])
 
 
 class EmptySectionChecks(unittest.TestCase):
