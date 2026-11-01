@@ -21,6 +21,7 @@ Before the first command spec, read the [command conventions](command-convention
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
    - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). Changes to shared rules or templates also run their affected consumer suites.
+   - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
    - Walk a representative request through each changed decision.
    - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
 7. **Deliver.**
@@ -71,6 +72,19 @@ Resolves every local link and heading anchor in a skill, and reports the link an
 ```bash
 python3 skills/scripts/check_skill_files.py skills/workflow-canon
 python3 skills/scripts/check_skill_files.py skills/workflow-canon skills/work-planner
+```
+
+### Compare Section Bodies
+
+Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
+
+- Run from the workspace checkout holding the skills. Name the base and head revisions, then each skill folder the move touches.
+- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
+- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
+- Exit 1 means a section was added, removed or differs.
+
+```bash
+python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/workflow-canon
 ```
 
 ### Run the Skill File Check Tests
