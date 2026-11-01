@@ -34,6 +34,19 @@ Result: passed.
 
 Result: passed.
 
+## T4 Waiting Initiative Raises an Active Epic
+
+Trivial debt found while validating T2: an initiative waiting in a set below the next, or unplanned, never reaches `Queue.activate`, so an active epic of it outside In Progress kept its Status while `board.py` raised it and `board-queue.md` named it In Progress. `Queue.park` places every open epic of a waiting initiative short of In Review by its activity. Delivered on the same branch through [#1527](https://github.com/m2ux/workflow-server/pull/1527), head `d5ff44210f6e4beee10866fa5ac8a556fba8726d`, base `bdc2524f64b45ee2fdf1b0e95638ee67c7953671`.
+
+`ReadyFollowsTheInitiative.test_an_active_epic_under_a_waiting_initiative_is_in_progress`: E00, active through an open delivery pull request and held Backlog, under an initiative waiting in the next set and unplanned. Each subtest asserts `[I01:E00] Epic 3: Work: Backlog → In Progress` and no move for the inactive E01 held Backlog.
+
+- On #1523's `board-queue.py`: the unplanned subtest fails; the next-set subtest passes, since that set reaches `activate`.
+- On the head: both pass. Suite `536 passed, 1054 subtests passed`; `check_skill_files.py` `50 files checked, 0 findings`.
+
+`board-queue.md` Epic Status states: "its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog."
+
+Result: passed.
+
 ## Plan Changes
 
-None applied and none held. The unit created no task, epic or issue, folded no work and moved no row; validation found no debt to defer and no arising issue.
+None applied and none held. The unit created no task, epic or issue, folded no work and moved no row; validation found one trivial debt, fixed in this unit through #1527 (T4), none to defer and no arising issue.

@@ -20,4 +20,4 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
-| Pull request | [#1523](https://github.com/m2ux/workflow-server/pull/1523) |
+| Pull requests | [#1523](https://github.com/m2ux/workflow-server/pull/1523), [#1527](https://github.com/m2ux/workflow-server/pull/1527) |
