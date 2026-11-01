@@ -73,12 +73,17 @@ def query(end: End, subjects: dict[Key, str | None]) -> str:
 
 
 def gh(path: Path) -> dict:
-    """The tracker's response to the query file."""
+    """The tracker's response to the query file. A failed call that carries no GraphQL errors, such
+    as a rejected credential, ends the run with what gh reported, since no subject was read."""
     out = subprocess.run(['gh', 'api', 'graphql', '-F', f'query=@{path}'], capture_output=True, text=True)
     try:
-        return json.loads(out.stdout)
+        answer = json.loads(out.stdout)
     except json.JSONDecodeError:
-        sys.exit(f'GraphQL read failed: {(out.stderr or out.stdout).strip()[:400]}')
+        answer = None
+    if not isinstance(answer, dict) or (out.returncode != 0 and not answer.get('errors')):
+        reported = (answer or {}).get('message') if isinstance(answer, dict) else None
+        sys.exit(f'GraphQL read failed: {(reported or out.stderr or out.stdout).strip()[:400] or f"gh exited {out.returncode}"}')
+    return answer
 
 
 def fault(end: End, node: dict | None, errors: list[tuple[tuple, str]], at: tuple[str, str]) -> str | None:
