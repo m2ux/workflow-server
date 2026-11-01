@@ -12,9 +12,12 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 
 | Artifact | What it holds |
 | --- | --- |
+| [W15 work item](w15.md) | Component, scope, design and test rows for W15 |
+| [Delivery evidence](evidence.md) | Tested revision, changed paths, each Test Plan check's procedure and result, and the run's plan changes |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1523](https://github.com/m2ux/workflow-server/pull/1523) |
