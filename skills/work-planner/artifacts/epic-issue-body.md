@@ -281,6 +281,7 @@ Links each named task's id to the pull requests naming the epic it is delivered 
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
 - `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository.
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
+- An open review pull request's Changes paths are read at its head commit in the `--project` repository: a file named with a directory stands at that path, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
 - `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
 
