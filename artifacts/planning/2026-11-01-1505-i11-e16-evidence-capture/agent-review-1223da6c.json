@@ -1,0 +1,40 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1505",
+    "head": "1223da6cca6ef6646c136e7e62049bb79ba30fee",
+    "base": "51c5e7b7697a004d60ed7b6daf0a46f9d26a1666",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1505-i11-e16-evidence-capture/agent-review-1223da6c.json",
+    "reviewer": "Claude Opus 5.5 reviewer sub-agent",
+    "reviewed_at": "2026-11-01T09:25:46Z",
+    "scope": "Merge 1223da6c: per-parent diffs (42e67e00..22974dd0, 42e67e00..51c5e7b7, 51c5e7b7..HEAD) for the five files both sides touched (test_align.py, test_sync.py, sync-mode.md, issue-closure.md, test_documents.py). Integration diff origin/workspace...HEAD: scripts development.py, links-by-pull-request.py, links-by-issue.py, development-link.py, closure-sweep.py, revision-check.py and their tests; artifacts pull-request.md, issue.md, acceptance-criteria.md; SKILL.md; modes/sync-mode.md; protocols/issue-closure.md; test_documents.py. Imported workspace code: sync.issue_key, sync.pr_repo, sync.attach_links/links_issue, board.criteria_met, check_skill_files.citations/specifications. Epic #1474 body.",
+    "criteria": "AC1 met: test_link_capture PullRequestEnd.test_the_sync_reads_the_snapshot runs sync.py on the capture output; snapshot shape matches sync.attach_links. AC2 met: one entry per collected pull request, empty array when none, duplicates collapsed. AC3 met: links-by-issue keyed by issue number; test_the_issue_end_agrees_with_the_pull_request_end. AC4 met: development.fault/read drop partial pages, report names each unreadable subject, exit 1, no file written; tests cover null node, path errors, missing cursor, later-page failure. AC5 met: closure-sweep lists unticked/missing criteria and unmerged links with state_reason; transferred (not_planned) and unproven cases tested. AC6 met: revision-check resolves to a commit, detached worktree, removal in finally; tests compare git worktree list before/after for pass, fail, unknown revision and unstartable command. AC7 met: test_every_script_is_run_by_a_cited_command covers every scripts/*.py; mutation check (removing the procedure citations of Run at Revision and Capture Issue Links in a scratch copy) made it fail for revision-check and links-by-issue, so it is not vacuous; check_skill_files reports 0 findings. AC8: code supports it and the live test exists (skipped here, not run per instructions); not independently verified. AC9 met: Remove.test_removal_leaves_the_other_links. AC10 met: authentication, permission, unsupported-schema and transport fixtures assert 'failed: <op>: <mutation>: <error>' and no 'unavailable'.",
+    "validation": "sbx python3 -m pytest skills/work-planner/test -q: 619 passed, 1 skipped (live link test), 1136 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills/work-planner: 50 files checked, 0 findings. Merge: test_align.py and test_sync.py resolve to the workspace side byte-for-byte; E16's W07 rename (sync.test_plan_agreement, plan_section) is superseded by workspace's plan_agreement/plan_body rename of the same problem, and no reference to test_plan_agreement or plan_section remains. sync-mode.md, issue-closure.md and test_documents.py carry both sides' additions. Reachability test mutation check run in a scratch copy only.",
+    "findings": [
+      {
+        "description": "skills/work-planner/scripts/development-link.py:115-120 compares repository names case-sensitively. by_issue/by_pull/before come back from the tracker as canonical nameWithOwner, while issue and pull are the user's --issue/--pull text. A caller spelling the repository in another case (e.g. --pull m2ux/Workflow-Server#950) gets a successful mutation reported as 'discrepancy:' exit 1, and on a repeat add the existing link is not excluded from 'others' so the expected count becomes 2. The rest of the skill matches repositories case-insensitively (sync.links_issue, sync.attach_links). Fix: compare on lower-cased keys (normalise the parsed subject and every readback key with repo.lower()), and add a test with a differently cased argument. Severity nonblocking: the tool fails safe (exit 1) rather than reporting a false success.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/modes/sync-mode.md:156 runs Audit Closure Evidence on every sync, and closure-sweep.py:186-193 lists every closed issue lacking a ticked Acceptance Criteria section, including issues closed as not_planned (transferred, duplicates) and issues that never carried criteria (bugs, proposals). In a repository with hundreds of historical closed issues every sync report will carry hundreds of 'unsupported:' lines that do not change between runs, burying the per-issue report the step exists for. AC5 does require listing these with their reason, so the code meets the criterion; the cost is in where it is run. Fix: either scope the sync-mode call to the issues the run touched (the initiative's epics and tasks), or have the sweep classify not_planned closures separately from completed ones so the report can state only completed-but-unsupported as findings.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/artifacts/issue.md:89-91 (Capture Issue Development) still leaves evidence assembly by hand: step 2 runs Read Issue Development without naming the destination file its Inputs require, and step 3 asks the agent to transcribe 'the URL of each pull request the read returned' into Write Development Snapshot, although links-by-issue.py emits {repo, number, state}, not URLs. The epic's stated aim is that a run does not assemble evidence by hand. The two files also share a name: Capture Issue Links' placeholder is '<issue-development-file>' and closure-sweep's flag is --development, while closure.py's --development takes the different Write Development Snapshot shape (development-943.json). Passing development-943.json to closure-sweep is accepted (it is a dict) and every closed issue becomes 'unevaluable'. Fix: name the links destination in step 2 (e.g. links-943.json, matching the Capture Issue Links example), state how each {repo, number} becomes the pull request URL, and rename the sweep flag or placeholder (e.g. --links-by-issue / '<issue-links-file>') so the two shapes are not both called 'development'.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/revision-check.py:257,308-310 uses exit 2 both for helper failures and as a pass-through instrument status, and 'command not started' exits 2 after the JSON header line is printed. pytest itself exits 2 on interruption/usage error, so a caller cannot tell 'helper failed' from 'instrument returned 2'; acceptance-criteria.md:75 also says exit 2 comes 'before any instrument runs', which is untrue of the unstartable-command case once the header is printed. Fix: state in Run at Revision that exit 2 is a helper failure only when its stderr line ('revision not found:', 'checkout not created:', 'command not started:') is present, or pick a helper status outside common instrument codes (e.g. 125, as git bisect run does) and document it.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/links-by-issue.py:232-238 captures the Development relation of every issue in the repository, open and closed, though its only repository-wide caller (Audit Closure Evidence, issue.md:110) uses closed issues alone. On each sync this spends GraphQL calls on open issues the sweep then discards. Fix: have Audit Closure Evidence fetch closed issues only (Fetch All Issues with state=closed, or a filtered copy) before the capture; no script change needed.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]

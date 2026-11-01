@@ -13,7 +13,8 @@ The epic adds six scripts behind the evidence reads the work-planner skill names
 | Artifact | What it holds |
 | --- | --- |
 | [Architecture overview](architecture-overview.md) | Structure, flows and reading order for the epic's change |
-| [Agent review](agent-review.json) | The independent agent review of the integration head, its findings and their fixes |
+| [Agent review](agent-review.json) | The independent agent review of the integration head `22974dd0`, its findings and their fixes |
+| [Agent review at 1223da6c](agent-review-1223da6c.json) | The independent agent review of the merge of `workspace` into the epic base and the full integration diff at `1223da6c`, with five nonblocking findings left open |
 
 ## Links
 
