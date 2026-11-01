@@ -9,7 +9,7 @@
 | Baseline skills tree | `04de875a8517dcf229462e3b939099e16ffe3e63` |
 | Result skills tree, epic base `i11/e10/workspace` | `f0d01fd3fd84ff050fcddf0ff4ff985369ca2c43` |
 | Instrument checker, `skills/scripts/check_skill_files.py` | commit `aa97fc255f705b2d1f009a8e3f13ada0d2286496`, blob `e4e794c27a165c31811d5f18488fa78e51556137` |
-| Tested branch head | `43ed7f77ba620b0f85ba4155837a77cc63d23ed2`, the task branch merged with epic base `212bedd48`; its checker blob is the instrument's |
+| Tested branch head | `16326b1af8a69eb40c7fb665a64caae389e08655`, the task branch merged with epic base `a924c02f4`. Its checker carries later units' checks; the walk run with it gives results identical to the pinned checker's |
 
 ## Instrument
 
@@ -46,7 +46,7 @@ The walk's docstring states them; in short:
 
 ## T1 Callers and Reach Fixtures
 
-`python3 -m pytest skills/test -q` at the tested head: 90 passed, 3 subtests passed.
+`python3 -m pytest skills/test -q` at the tested head: 95 passed, 3 subtests passed.
 
 The `CallersAndReach` class holds one specimen with each case:
 
