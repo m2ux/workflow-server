@@ -34,17 +34,14 @@ The observed or updated Development relation for a pull request.
 
 **Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting the applicable preconditions in [Close Tracker Issue](issue.md#close-tracker-issue).
 
-1. Run [Read Development Links](#read-development-links) for the actual field, including every page and state. A missing tool or inaccessible field is a blocker, not an empty link set.
-2. Return the complete relation for a read-only request.
-3. For a link edit:
+1. For a read-only request, run [Read Development Links](#read-development-links) for the actual field, including every page and state, and return the complete relation. A missing tool or inaccessible field is a blocker, not an empty link set.
+2. For a link edit:
    - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit.
    - For an addition, run [Set Development Link](#set-development-link) with the pull request and issue identities.
    - For removal of an abandoned or incorrect link:
      - Require the supplied user decision.
      - Run [Remove Development Link](#remove-development-link) with those identities.
-4. Run [Read Development Links](#read-development-links) again for the same pull request.
-5. Compare the field with the intended edit.
-6. Return the verified relation or discrepancy.
+3. Return the relation the command verified from both ends, or the discrepancy or failure it names. A failed write is a blocker carrying its operation and error, never an unavailable field.
 
 ### *Fetch* Pull Request Issue Links
 
@@ -404,19 +401,58 @@ Read the actual field across every page and state, recording repository and numb
 
 ### Set Development Link
 
-Adds one pull request to an issue's Development relation.
+Adds one pull request to an issue's Development relation, and reads the relation back from both ends.
 
 **Inputs:** Pull request identity, issue identity, authenticated access and confirmed repository prerequisite.
 
-Use [GitHub's sidebar linking procedure](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue): in the issue's Development selector, select the pull request's repository and pull request, including a different repository when required. Return the edit result.
+- The issue and pull request may sit in different repositories, and the pull request may be a draft on any base branch.
+- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
+- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.
+- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/development-link.py add --issue '<issue-owner>/<issue-repo>#<issue-number>' --pull '<pr-owner>/<pr-repo>#<pull-request-number>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/development-link.py add --issue 'm2ux/workflow-server#637' --pull 'm2ux/workflow-server#950'
+```
+
+**Example output:**
+
+```text
+issue m2ux/workflow-server#637: m2ux/workflow-server#950
+pull request m2ux/workflow-server#950: m2ux/workflow-server#637
+verified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637
+```
 
 ### Remove Development Link
 
-Removes one selected Development relation.
+Removes one pull request from an issue's Development relation, and reads the relation back from both ends.
 
 **Inputs:** Pull request and issue identities, authenticated access and the user's decision authorizing removal of the abandoned or incorrect link.
 
-Deselect the supplied relation in the authenticated Development selector and save the edit. Return the edit result.
+- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.
+- Exit 0 means neither end holds the other and every other link on the issue stands.
+- Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/development-link.py remove --issue '<issue-owner>/<issue-repo>#<issue-number>' --pull '<pr-owner>/<pr-repo>#<pull-request-number>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/development-link.py remove --issue 'm2ux/workflow-server#637' --pull 'm2ux/workflow-server#950'
+```
+
+**Example output:**
+
+```text
+failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration
+```
 
 ### Capture Pull Request Links
 
