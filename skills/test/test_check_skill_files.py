@@ -525,6 +525,36 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.run_command(), 0)
 
 
+class HeadingSpacingChecks(unittest.TestCase):
+    """A heading carries a blank line above it, so no list item or paragraph
+    can read it in as its own text."""
+
+    KIND = 'heading without a blank line above'
+    setUp = SkillFileChecks.setUp
+    write = SkillFileChecks.write
+    findings = SkillFileChecks.findings
+    kinds = SkillFileChecks.kinds
+
+    def test_a_heading_flush_beneath_a_list_item_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Terms\n\n- **One.**\n  A sentence.\n'
+                                          '## Whole\n\nA sentence.\n')
+        self.assertIn(('guide.md', 7, self.KIND), self.findings())
+
+    def test_a_heading_flush_beneath_a_heading_is_reported(self):
+        self.write('references/guide.md', '# Guide\n\n## Outputs\n### Report\n\nA sentence.\n')
+        self.assertIn(('guide.md', 4, self.KIND), self.findings())
+
+    def test_a_heading_opening_the_file_or_its_body_is_left_alone(self):
+        self.write('SKILL.md', '---\nname: specimen\n---\n# Specimen\n\nOne sentence.\n')
+        self.write('references/guide.md', '# Guide\n\n## Terms\n\nA sentence.\n')
+        self.assertNotIn(self.KIND, self.kinds())
+
+    def test_a_heading_inside_a_fence_is_left_alone(self):
+        self.write('references/guide.md', f'# Guide\n\n## Terms\n\n{FENCE}markdown\n'
+                                          f'A sentence.\n## Template\n{FENCE}\n')
+        self.assertNotIn(self.KIND, self.kinds())
+
+
 class EntryPointSections(unittest.TestCase):
     """A skill's entry point measured against the set the shared guidelines
     name for it, whatever it carries."""

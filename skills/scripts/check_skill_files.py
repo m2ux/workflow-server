@@ -418,6 +418,16 @@ def check(path, root, cache, cited, called, structures=None):
         if run == PROSE_LIMIT + 1:
             report(start, 'prose over eight lines', 'split into named sub-sections')
 
+    # A heading flush against the line above it can be read into that line's
+    # list item or paragraph, losing its section and anchor to a strict reader.
+    # The file's first line and the close of its frontmatter have nothing
+    # above them to absorb it.
+    for index, _, title in headings:
+        if index in skip:
+            continue
+        if index and lines[index - 1].strip() and index - 1 not in skip:
+            report(index, 'heading without a blank line above', title)
+
     for index, detail in mixed_moods(lines, fenced, headings):
         report(index, 'parallel section in another mood', detail)
 
