@@ -13,6 +13,7 @@ A criterion that only one project requires belongs to that project, not to the s
 | Artifact | What it holds |
 | --- | --- |
 | [W01 work item](w01.md) | Component, scope, design, criteria and test rows for W01 |
+| [Delivery evidence](evidence.md) | Changed paths, tested revision and the result of each check |
 
 ## Links
 
