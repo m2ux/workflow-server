@@ -98,18 +98,18 @@ The main path meets [Outcomes](#outcomes).
    - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic bases and output body file:
      - **Unmet.**
        - Each task [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports unmet is a gap.
-       - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot and output body path.
+       - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot, project checkout, fetched epic bases and output body path.
        - For each criterion it returns as already holding, run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria), pass the verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria), and publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - **Repair.**
        - Repair Done cells as [Tables](../artifacts/issue-body.md#tables) states.
        - When the preceding Record Epic Delivery call reports a row done, or a tick cleared, run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) from the output body file, without asking.
      - **Absent.**
        - Fetch a linked pull request missing from the records with [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-       - Repeat Record Epic Delivery with the refreshed records and the same output body file.
+       - Repeat Record Epic Delivery with the refreshed records, the same epic bases and the same output body file.
      - **Unlinked.**
        - For a criterion ticked while its row links no pull request and no commit, request issue discussion through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
        - Link the one delivery that discussion names, taking a path as the commit that holds it. Several candidates, or none, go to the user before linking.
-       - Repeat Record Epic Delivery with the corrected evidence and the same output body file.
+       - Repeat Record Epic Delivery with the corrected evidence, the same epic bases and the same output body file.
    - For an initiative being aligned:
      - Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery) with the current initiative JSON, every linked epic's current JSON and an output body file.
      - Present the returned [Delivery Findings](../artifacts/initiative.md#delivery-findings) to the user.
@@ -141,9 +141,9 @@ The main path meets [Outcomes](#outcomes).
     - Confirm it with the user; an unanswered placement stays pending.
     - Apply the confirmed row through [Revise Epic Rows](../artifacts/epic-issue-body.md#revise-epic-rows).
     - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-    - Repeat Record Epic Delivery with the saved epic JSON, current task records, pull request records, complete issue-link snapshot and the same output body file. An unanswered placement stays pending.
+    - Repeat Record Epic Delivery with the saved epic JSON, current task records, pull request records, complete issue-link snapshot, the project checkout, the fetched epic bases and the same output body file. An unanswered placement stays pending.
 12. **Review pull requests.**
-    Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for each open epic.
+    Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for each open epic, with the project checkout and its fetched epic bases.
     - Open a reported base as a draft review pull request.
     - Leave the epic open. A subsequent delivery or sync run establishes readiness from the completed delivery evidence.
 13. **Re-run.**
