@@ -1,8 +1,8 @@
 # W07 Delivery Evidence
 
-Delivery head: `45e885309d99ccdb7fe7699b65a8ff72d3b8a5fe` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `04bfa7a8c4c539402be6e16856e04e212a4a953d`. Merging that base brought W16's `empty_sections`, W15's `mixed_moods`, W17's `--compare` and W21's entry-point sections beside `duplicate_anchors`; the checks run from `check`, and every result below is from the delivery head.
+Delivery head: `c9894b770cc2f955fc58ce82ed3f17f7388686ef` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `8b35508fdb7ad29afcb3227beeeb3baa49dcd460`. Each base merge kept every sibling check beside `duplicate_anchors`, and every result below is from the delivery head.
 
-Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
+Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/rules.json`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
 Every command ran from the unit worktree under the workspace sandbox.
 
@@ -24,19 +24,25 @@ Result: all passed.
 
 ## Shared Check Suite
 
-T2. `python3 -m pytest skills/test -q`: `113 passed, 3 subtests passed`.
+T2. `python3 -m pytest skills/test -q`: `165 passed, 3 subtests passed`.
 
 Result: passed.
 
 ## Work Planner Suite
 
-T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `645 passed, 1 skipped, 1138 subtests passed`.
+T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `690 passed, 1 skipped, 1830 subtests passed`.
 
 Result: passed.
 
 ## Every Repository Skill
 
-T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `76 files checked, 38 findings`, none of them `duplicate anchor`. All 38 are `section outside the set` in the entry points of `gitnexus` and `server-in-the-loop`, from W21's entry-point rule; `verify-skills.yml` holds both skills in `EXCLUDED`, and the in-scope run `check_skill_files.py skills/work-planner skills/workflow-canon` reports `68 files checked, 0 findings`. No repository skill carries a repeated heading, so no heading needed renaming. The pull request's Verify skills run passes on the delivery head.
+T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `82 files checked, 0 findings`. No repository skill carries a repeated heading, so no heading needed renaming. `skills/rules.json` maps the Resolution rule to `duplicate anchor`, and `KINDS` registers it.
+
+Result: passed.
+
+## Base Debt
+
+T5. At `8b35508f` the shared suite fails 18 tests: `command specification nothing cites` (W19) and `heading without a blank line above` (W08) are reported but absent from `KINDS`, and four interface fixtures (W05) carry a specification nothing cites. This branch registers both kinds, maps the first to the Local to the Procedure rule, and cites the fixture specification from its own Fields section. `python3 -m pytest skills/test -q` at `8b35508f`: `18 failed, 142 passed`; at the delivery head: `165 passed`.
 
 Result: passed.
 
