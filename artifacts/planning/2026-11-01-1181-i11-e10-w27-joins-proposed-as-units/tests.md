@@ -1,6 +1,6 @@
 # Test evidence
 
-Evaluated at `6e3f7bf2e` on `i11/e10/w27-joins-proposed-as-units`, `origin/i11/e10/workspace` at `50a6535db` merged in. Each suite runs from the worktree under `sbx`.
+Evaluated at `2955c577c` on `i11/e10/w27-joins-proposed-as-units`, `origin/i11/e10/workspace` at `c299822c4` merged in. Each suite runs from the worktree under `sbx`.
 
 ## T1
 
@@ -55,4 +55,4 @@ E10:W02, E10:W23, E10:W24 extend workspace:skills/work-planner/scripts/sync.py: 
 
 ## T5
 
-**Suites.** `python3 -m pytest skills/work-planner/test -q`: 660 passed, 1 skipped, 1822 subtests passed. `python3 -m pytest skills/test -q`: 114 passed. `check_skill_files.py skills/work-planner skills/workflow-canon`, the roots CI checks: 68 files, 0 findings.
+**Suites.** `python3 -m pytest skills/work-planner/test -q`: 690 passed, 1 skipped, 1830 subtests passed. `python3 -m pytest skills/test -q`: 114 passed. `check_skill_files.py skills/work-planner skills/workflow-canon`, the roots CI checks: 68 files, 0 findings.
