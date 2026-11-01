@@ -32,7 +32,7 @@
   "links/prerequisite-citation": ["prerequisite citation inside one file"],
   "links/resolution": ["unresolved link", "unresolved anchor", "duplicate anchor is cited"],
   "commands/one-spec-per-operation": ["review"],
-  "commands/local-to-the-procedure": ["command specification with one caller", "command specification in the entry point", "review"],
+  "commands/local-to-the-procedure": ["command specification with one caller", "command specification in the entry point", "command specification nothing cites", "review"],
   "commands/spec-layout": ["review"],
   "commands/named-by-link": ["command spelled out in a mode", "review"],
   "commands/interface": ["GraphQL without a REST gap", "Projects classic interface", "review"],
