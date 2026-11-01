@@ -166,6 +166,11 @@ class UnitAccounting(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('E06:W01, E06:W02: joined unit covers 7 criteria, more than the bound of 6', text)
 
+    def test_a_lone_row_over_the_bound_joins_nothing(self):
+        code, text = check(breakdown(('W01', 'AC1, AC2, AC3, AC4, AC5, AC6, AC7', '', '', '')), {})
+        self.assertEqual(code, 0, text)
+        self.assertNotIn('joined unit', text)
+
 
 class DirectoryComponents(unittest.TestCase):
     """A component is one file, so a work item declaring a directory is a problem."""
