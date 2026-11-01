@@ -40,7 +40,7 @@ Verified completion of an issue and its linked delivery.
 3. Run [Check Issue Closure](#check-issue-closure) with `--issue`, `--development`, and `--prs` for those fresh records.
 4. Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
    - Keep the issue open for an open, draft, closed without merge, or unreadable linked pull request.
-   - Obtain the user's decision before removing an abandoned or incorrect Development link. A replacement pull request does not remove the requirement on a link still present.
+   - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
 5. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write. A changed link set requires another capture and check.
 
 ### *Close* Transferred Work
