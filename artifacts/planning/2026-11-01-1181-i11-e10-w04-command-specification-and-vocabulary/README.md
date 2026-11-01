@@ -16,6 +16,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | [W05 work item](w05.md) | Component, scope, design, criteria and test rows for W05 |
 | [W06 work item](w06.md) | Component, scope, design, criteria and test rows for W06 |
 | [Test results](test-results.md) | The delivery evidence each Test Plan row links to |
+| [Change list](change-list.md) | The plan changes the session applied and held |
 
 ## Links
 

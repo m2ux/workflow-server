@@ -1,6 +1,6 @@
 # Test Results
 
-Delivery evidence for I11:E10 W04, W05 and W06, recorded at branch head `8118bf10b` of `i11/e10/w04-command-specification-and-vocabulary`, which holds `origin/i11/e10/workspace` at `04bfa7a8c`.
+Delivery evidence for I11:E10 W04, W05 and W06. Each check was first run at branch head `8118bf10b`, and repeated after every merge of the moving epic base; the final run is at head `65e9c7429`, holding `origin/i11/e10/workspace` at `3b0df7b6e`, which merged into the base as `8bc789521` through #1571.
 
 ## Commands Check
 
@@ -24,12 +24,11 @@ Delivery evidence for I11:E10 W04, W05 and W06, recorded at branch head `8118bf1
 
 ## Full Suites
 
-- `python3 -m pytest skills/test -q`: 142 passed.
-- `python3 -m pytest skills/work-planner/test -q`: 645 passed, 1 skipped.
-- `skills/workflow-canon/test` fails at collection on an unset `CANON_TEST_ENGINE`, at the base and at this head alike; that prerequisite is AC18's.
+- `python3 -m pytest skills/test skills/work-planner/test -q` at `65e9c7429`: 838 passed, 1 skipped.
+- `python3 -m pytest skills/workflow-canon/test -q` at `65e9c7429`, with `CANON_TEST_ENGINE` unset: 39 passed, 38 skipped.
 
 ## Corpus Run
 
-- `python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon`: 68 files checked, 0 findings.
-- `python3 skills/scripts/check_skill_files.py skills`: 38 findings, every one `section outside the set` in gitnexus and server-in-the-loop entry points, which the base reports identically and the skill gate holds out.
+- `python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon`: 0 findings at every run.
+- `python3 skills/scripts/check_skill_files.py skills` at `65e9c7429`: 83 files checked, 0 findings; at `8118bf10b` it held only the 38 entry-point findings the base then reported for gitnexus and server-in-the-loop.
 - Before the corpus changes, the new checks reported: four GraphQL specifications without a REST gap in Work Planner's `pull-request.md` and `issue.md`; two Work Planner Prose rules restating shared labels; a retired `PRs` in `align-mode.md` and `PR` in `agent_review.py`; and, after each base merge, each newly added shared rule until `rules.json` named its operation.
