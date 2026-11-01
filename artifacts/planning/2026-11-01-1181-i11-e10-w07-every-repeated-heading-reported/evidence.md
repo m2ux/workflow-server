@@ -1,6 +1,6 @@
 # W07 Delivery Evidence
 
-Delivery head: `467c6d87956f2c2fb93e1fbdb526aef6364bfa5c` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `be02e819b5f22026aa6d8fee92ad1658922e28d4`. Merging that base brought W16's `empty_sections`, W15's `mixed_moods` and W17's `--compare` beside `duplicate_anchors`; the checks run from `check`, and every result below is from the delivery head.
+Delivery head: `45e885309d99ccdb7fe7699b65a8ff72d3b8a5fe` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `04bfa7a8c4c539402be6e16856e04e212a4a953d`. Merging that base brought W16's `empty_sections`, W15's `mixed_moods`, W17's `--compare` and W21's entry-point sections beside `duplicate_anchors`; the checks run from `check`, and every result below is from the delivery head.
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
@@ -24,7 +24,7 @@ Result: all passed.
 
 ## Shared Check Suite
 
-T2. `python3 -m pytest skills/test -q`: `106 passed, 3 subtests passed`.
+T2. `python3 -m pytest skills/test -q`: `113 passed, 3 subtests passed`.
 
 Result: passed.
 
@@ -36,7 +36,7 @@ Result: passed.
 
 ## Every Repository Skill
 
-T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `76 files checked, 0 findings`. No repository skill carries a repeated heading, so no heading needed renaming.
+T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `76 files checked, 38 findings`, none of them `duplicate anchor`. All 38 are `section outside the set` in the entry points of `gitnexus` and `server-in-the-loop`, from W21's entry-point rule; `verify-skills.yml` holds both skills in `EXCLUDED`, and the in-scope run `check_skill_files.py skills/work-planner skills/workflow-canon` reports `68 files checked, 0 findings`. No repository skill carries a repeated heading, so no heading needed renaming. The pull request's Verify skills run passes on the delivery head.
 
 Result: passed.
 
