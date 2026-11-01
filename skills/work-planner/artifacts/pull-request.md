@@ -399,6 +399,8 @@ Adds one pull request to an issue's Development relation, and reads the relation
 
 **Inputs:** Pull request identity, issue identity, authenticated access and confirmed repository prerequisite.
 
+**REST gap:** REST exposes no write to the Development relation; `addCloseIssueReferences` is a GraphQL mutation alone.
+
 - The issue and pull request may sit in different repositories, and the pull request may be a draft on any base branch.
 - The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.
@@ -428,6 +430,8 @@ Removes one pull request from an issue's Development relation, and reads the rel
 
 **Inputs:** Pull request and issue identities, authenticated access and the user's decision authorizing removal of the abandoned or incorrect link.
 
+**REST gap:** REST exposes no write to the Development relation; `removeCloseIssueReferences` is a GraphQL mutation alone.
+
 - The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.
 - Exit 0 means neither end holds the other and every other link on the issue stands.
 - Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.
@@ -453,6 +457,8 @@ failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeClose
 Writes the complete issue-link snapshot for a pull request collection, read from the pull-request end of the Development relation.
 
 **Inputs:** Pull request records as JSON lines, from any number of repositories, and destination link-snapshot file.
+
+**REST gap:** REST exposes no read of a pull request's closing issue references.
 
 - The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.
 - Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.

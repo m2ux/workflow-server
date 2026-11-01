@@ -42,9 +42,9 @@ These rules apply to mode procedures and artifact operations.
 - **Input labels.**
   Artifact operation and command input declarations start with the bold label **Inputs:**. The input description uses normal text.
 
-- **One home per rule.**
-  A rule is stated once. Its home is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
-- **Terms.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
+- **Rule homes.**
+  A rule's [one home](../guidelines.md#prose) is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
+- **Scheme.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
 - **Examples.**
   A name, label, branch, path or board that belongs to one project is an example. The rule states what holds for every project.
 - **Consumers.**
