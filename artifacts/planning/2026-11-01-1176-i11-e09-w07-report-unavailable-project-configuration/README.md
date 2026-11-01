@@ -13,6 +13,7 @@ Without that report, a run that read no declaration looks the same as one that r
 | Artifact | What it holds |
 | --- | --- |
 | [W07 work item](w07.md) | Component, scope, design, criteria and test rows for W07 |
+| [Delivery evidence](evidence.md) | Tested revision, changed paths, each Test Plan check's procedure and result, and the run's plan changes |
 
 ## Links
 
@@ -21,3 +22,4 @@ Without that report, a run that read no declaration looks the same as one that r
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
 | Prerequisite | [W06, #1490](https://github.com/m2ux/workflow-server/pull/1490) |
 | Folded issue | [#1493](https://github.com/m2ux/workflow-server/issues/1493) |
+| Pull request | [#1501](https://github.com/m2ux/workflow-server/pull/1501) |
