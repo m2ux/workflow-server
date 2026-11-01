@@ -12,6 +12,7 @@ Sessions without a browser reported the field as unavailable even though the API
 
 | Artifact | What it holds |
 | --- | --- |
+| [W06 work item](w06.md) | Component, scope, design and test rows for W06 |
 
 ## Links
 
