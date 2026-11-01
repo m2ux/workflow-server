@@ -48,5 +48,5 @@ E14 W11 follows final verification to E10 W29.
 [#1530](https://github.com/m2ux/workflow-server/issues/1530) records the join-rule findings and is delivered by two E10 rows, joined on `deps.py`. Its five criteria exceed one row's grain, so they take AC42–AC44 and AC45–AC46.
 
 - [W27](work-items/e10/w27.md) restates the rule around its one bar and proposes units from shared components.
-- [W28](work-items/e10/w28.md) accounts a split unit with one line and bounds a unit's size.
+- [W28](work-items/e10/w28.md) accounts a split unit with one line and bounds a unit at six criteria, two full rows' worth, which every current E10 unit meets.
 - Both change skill instructions, so final verification follows them as W29.
