@@ -162,6 +162,37 @@ class EpicPrerequisites(unittest.TestCase):
         self.assertIs(board.epic_prerequisites_met(key, {}, 'consumer'), Resolution.MET)
 
 
+class Startable(unittest.TestCase):
+    """The delivery and planning prerequisites of an unstarted epic."""
+
+    def board(self, questions: bool = False) -> tuple[Board, dict]:
+        producer = issue(2, '[I01:E00] Producer: Work', body=epic_body(('W01', 'Produce', '')))
+        body = epic_body(('W01', 'Work', '')) + ('\n## Open Questions\n\n- Which shape?\n' if questions else '')
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=body)
+        initiative = issue(1, '[I01] Theme: Work', body=initiative_body(
+            (f"[E00]({url('issues', 2)})", ''), (f"[E01]({url('issues', 3)})", f"[E00]({url('issues', 2)})")))
+        return Board({('o/r', 1): initiative, ('o/r', 2): producer, ('o/r', 3): consumer}, [], 'o/r'), producer
+
+    def startable(self, board: Board, depends: str) -> Resolution:
+        return board.startable(('o/r', 1), ('o/r', 3), depends, {'E00': ('o/r', 2)}, 'E01')
+
+    def test_an_epic_waits_on_its_prerequisite_epic(self):
+        board, producer = self.board()
+        self.assertIs(self.startable(board, 'E00'), Resolution.UNMET)
+        producer['state'], producer['state_reason'] = 'closed', 'completed'
+        self.assertIs(self.startable(board, 'E00'), Resolution.MET)
+
+    def test_an_open_question_holds_an_epic_whose_delivery_is_met(self):
+        board, producer = self.board(questions=True)
+        producer['state'], producer['state_reason'] = 'closed', 'completed'
+        self.assertIs(self.startable(board, 'E00'), Resolution.UNMET)
+
+    def test_an_entry_that_cannot_resolve_is_the_answer(self):
+        board, producer = self.board()
+        producer['state'], producer['state_reason'] = 'closed', 'completed'
+        self.assertIs(self.startable(board, 'E09 (W04)'), Resolution.UNRESOLVABLE)
+
+
 def board_fields(*names: str) -> list[dict]:
     return [{'id': 7, 'name': 'Status', 'options': [{'name': name, 'id': n} for n, name in enumerate(names, start=1)]}]
 
@@ -223,7 +254,7 @@ class InitiativeStatus(unittest.TestCase):
     def open_pair(self, initiative_status: str, epic_status: str, epic: dict | None = None,
                   pulls: str = '', held: tuple[dict, ...] = (), tasks: tuple[dict, ...] = (),
                   statuses: tuple[str, ...] = ('Backlog', 'Ready', 'In Progress', 'Done'),
-                  code: int = 0, reviews=()) -> str:
+                  code: int = 0, reviews=(), task_held: tuple[str, ...] = ()) -> str:
         epic = epic or issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         initiative = issue(1, '[I01] First: Initiative',
                            body=initiative_body((f"[E00]({url('issues', 2)})", '')))
@@ -237,7 +268,7 @@ class InitiativeStatus(unittest.TestCase):
         for n, task in enumerate(tasks):
             task['id'] = 20 + n
             task['assignees'] = [{'login': 'me'}]
-            on_board.append({**item(task, 'Backlog'), 'id': 200 + n})
+            on_board.append({**item(task, task_held[n] if task_held else 'Backlog'), 'id': 200 + n})
         with tempfile.TemporaryDirectory() as tmp:
             root, epic_path = Path(tmp, 'initiative.json'), Path(tmp, 'epic.json')
             fields, items, prs = Path(tmp, 'fields.json'), Path(tmp, 'items.json'), Path(tmp, 'prs.json')
@@ -363,6 +394,18 @@ class InitiativeStatus(unittest.TestCase):
     def test_a_row_linking_its_work_item_leaves_the_task_issue_out_of_progress(self):
         item_file = 'https://github.com/o/r/blob/engineering/artifacts/planning/2026-10-06-2-i01-e00-w01-go/w01.md'
         self.assertNotIn('→ In Progress', self.held_row(item_file))
+
+    def test_a_backlog_epic_takes_its_unstarted_task_issues_and_keeps_done(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            (f"[W01]({url('issues', 3)})", 'Go', ''), (f"[W02]({url('issues', 4)})", 'Done', '')))
+        unstarted = issue(3, '[I01:E00:W01] Go: Task')
+        done = issue(4, '[I01:E00:W02] Done: Task', 'closed')
+        out = self.open_pair('Backlog', 'Backlog', epic, tasks=(unstarted, done), task_held=('Ready', 'Done'),
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Ready → Backlog', out)
+        self.assertIn("--method DELETE repos/o/r/issues/3/assignees -f 'assignees[]=me'", out)
+        self.assertNotIn('set #4', out)
+        self.assertNotIn('DELETE repos/o/r/issues/4/assignees', out)
 
     def test_a_ready_epic_with_a_delivered_row_stays_ready(self):
         epic = issue(2, '[I01:E00] First: Epic',
