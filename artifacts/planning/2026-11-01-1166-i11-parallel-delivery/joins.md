@@ -1,0 +1,49 @@
+# I11 Pair Decisions, 1 November 2026
+
+Each line records one pair as separate pull requests, so the two rows can be delivered in parallel.
+
+- E09:W01 and E09:W08: separate. W08 delivers on the main, workflows and docker bases, which no other E09 row changes.
+- E09:W02 and E09:W08: separate. W08 delivers on the main, workflows and docker bases, which no other E09 row changes.
+- E09:W03 and E09:W08: separate. W08 delivers on the main, workflows and docker bases, which no other E09 row changes.
+- E09:W04 and E09:W08: separate. W08 delivers on the main, workflows and docker bases, which no other E09 row changes.
+- E09:W07 and E09:W08: separate. W08 delivers on the main, workflows and docker bases, which no other E09 row changes.
+- E10:W01 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W02 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W03 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W04 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W05 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W06 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W07 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W08 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W09 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W10 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W11 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W12 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W13 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W14 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W15 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W16 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W17 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W18 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W19 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W20 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W21 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W22 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W23 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W24 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E10:W25 and E10:W26: separate. W26 adds the checkout-declaration test, which no other E10 row writes; separate reviews keep it revertible alone.
+- E16:W02 and E16:W06: separate. W06 writes the Development-link commands, distinct from the capture, sweep, revision and audit work.
+- E16:W03 and E16:W06: separate. W06 writes the Development-link commands, distinct from the capture, sweep, revision and audit work.
+- E16:W04 and E16:W06: separate. W06 writes the Development-link commands, distinct from the capture, sweep, revision and audit work.
+- E16:W05 and E16:W06: separate. W06 writes the Development-link commands, distinct from the capture, sweep, revision and audit work.
+- E18:W02 and E18:W03: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W02 and E18:W04: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W02 and E18:W05: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W03 and E18:W04: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W03 and E18:W05: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W03 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W04 and E18:W05: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W04 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W05 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E18:W02 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
+- E14:W03 and E14:W04: separate. Work Planner and Workflow Canon citations are two skills' files, so two sessions run them in parallel; W05 to W07 wait on both.
