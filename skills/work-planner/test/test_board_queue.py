@@ -442,6 +442,35 @@ class ReadyFollowsTheInitiative(unittest.TestCase):
         out = queue(staged((reviewing, 'In Review'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Ready')))
         self.assertIn('[I01:E00] Epic 3: Work: Ready → Backlog', out)
 
+    def waiting(self, held: str, priority: str, unplanned: tuple[str, ...] = ()) -> str:
+        """An initiative kept In Progress by an open pull request on E00, below a higher one."""
+        current = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''),
+                             (f"[E01]({url('issues', 5)})", ''), priority=priority)
+        high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        return queue(staged((current, 'In Progress'), (high, 'Backlog'),
+                            (epic(3, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                            (epic(5, '01:E01', ('W01', 'Go', '')), held),
+                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
+                     [pr(9, '[I01:E00] Open', base='i01/e00/workspace', head='i01/e00/w01-go')],
+                     unplanned=unplanned)
+
+    def test_an_initiative_waiting_in_the_next_set_readies_no_epic(self):
+        out = self.waiting('Backlog', 'priority: 3')
+        self.assertIn('wait #1 [I01] Low: Current', out)
+        self.assertNotIn('Epic 5', out)
+        self.assertNotIn('next #1', out)
+
+    def test_a_ready_epic_under_an_initiative_waiting_below_the_next_set_returns_to_backlog(self):
+        out = self.waiting('Ready', 'priority: 1')
+        self.assertNotIn('Epic 3: Work: In Progress →', out)
+        self.assertIn('wait #1 [I01] Low: Current', out)
+        self.assertIn('[I01:E01] Epic 5: Work: Ready → Backlog', out)
+
+    def test_a_ready_epic_under_a_waiting_unplanned_initiative_returns_to_backlog(self):
+        out = self.waiting('Ready', '', unplanned=('1',))
+        self.assertIn('wait #1 [I01] Low: Current', out)
+        self.assertIn('[I01:E01] Epic 5: Work: Ready → Backlog', out)
+
 
 class BacklogTakesTheTree(unittest.TestCase):
     """An initiative returning to Backlog takes its unstarted epics, keeps Done and names work under
