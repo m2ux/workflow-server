@@ -84,6 +84,7 @@ ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
 UNPLACED, RETAINED = 'unplaced', 'retained'
+READY_UNDER = ('Ready', 'In Progress')  # a parent Status under which a child can be Ready
 
 
 def load(paths: list[str]) -> dict[Key, dict]:
@@ -229,6 +230,18 @@ class Board:
                 if linked_issue(id_cell(header, item)) == key:
                     answers.append(self.met(cell(header, item, 'Depends on'), parent, epics, why))
         return weakest(answers)
+
+    def startable(self, initiative: Key, epic: Key, depends: str, epics: dict[str, Key],
+                  why: str) -> Resolution:
+        """How far the delivery and planning prerequisites of one unstarted epic resolve: the epic
+        is open with no Open Questions, every entry of its initiative row's Depends on cell is
+        delivered, and every prerequisite epic is completed. An unresolvable gate is the row's own
+        answer, so a caller leaves the epic where it stands."""
+        issue = self.issues.get(epic)
+        if issue is None or issue['state'] != 'open' or open_questions(issue):
+            return Resolution.UNMET
+        return weakest([self.met(depends, initiative, epics, why),
+                        self.epic_prerequisites_met(epic, epics, why)])
 
     def referenced_epics(self, key: Key, epics: dict[str, Key]) -> set[Key]:
         """The epics this one's rows name: those its task rows name outside it, and those its
@@ -424,7 +437,7 @@ def main() -> int:
         else:
             status[key] = 'Backlog'
     for task_key, epic_key in task_epic.items():
-        if status.get(task_key) == 'Ready' and status.get(epic_key) not in ('Ready', 'In Progress'):
+        if status.get(task_key) == 'Ready' and status.get(epic_key) not in READY_UNDER:
             status[task_key] = 'Backlog'
 
     changes = Changes(DELIVERY, args.board, field, args.assignee, ' (the board is current)')

@@ -84,7 +84,7 @@ class Queue(unittest.TestCase):
         out = queue(staged((low, 'In Progress'), (high, 'Backlog'), (started, 'Backlog'),
                            (waiting, 'Backlog'), (nxt, 'Backlog')), merged)
         self.assertIn('[I01] Low: Current: In Progress → Ready', out)
-        self.assertNotIn('[I01:E00] Epic 3: Work: Backlog →', out)
+        self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', out)
         self.assertNotIn('Epic 4', out)
         self.assertIn('[I02] High: Next: Backlog → In Progress', out)
 
@@ -388,6 +388,107 @@ class Queue(unittest.TestCase):
         self.assertIn('wait #1 [I01] Bare: Current:', out)
         self.assertNotIn('[I03] Low: Waiting: Ready →', out)
         self.assertIn('[I02] High: Next: Ready → In Progress', out)
+
+
+def assigned(content: dict) -> dict:
+    content['assignees'] = [{'login': 'me'}]
+    return content
+
+
+class ReadyFollowsTheInitiative(unittest.TestCase):
+    """An unstarted epic is Ready exactly when its initiative is Ready or In Progress and its
+    delivery and planning prerequisites are met."""
+
+    def three(self, held: str, **gates) -> str:
+        """Initiatives the queue places In Progress, Ready and Backlog, each with one epic held."""
+        top = initiative(1, 'Top: Now', (f"[E00]({url('issues', 4)})", gates.get('depends', '')),
+                         priority='priority: 5')
+        mid = initiative(2, 'Mid: Next', (f"[E00]({url('issues', 5)})", gates.get('depends', '')),
+                         priority='priority: 3')
+        low = initiative(3, 'Low: Later', (f"[E00]({url('issues', 6)})", gates.get('depends', '')),
+                         priority='priority: 1')
+        questions = gates.get('questions', '')
+        return queue(staged((top, 'In Progress'), (mid, 'Ready'), (low, 'Backlog'),
+                            (epic(4, '01:E00', ('W01', 'Go', ''), questions=questions), held),
+                            (epic(5, '02:E00', ('W01', 'Go', ''), questions=questions), held),
+                            (epic(6, '03:E00', ('W01', 'Go', ''), questions=questions), held),
+                            (issue(9, '[I09] Elsewhere: Open', body=initiative_body()), 'Backlog')))
+
+    def test_an_epic_is_ready_under_an_in_progress_or_ready_initiative(self):
+        out = self.three('Backlog')
+        self.assertIn('[I01:E00] Epic 4: Work: Backlog → Ready', out)
+        self.assertIn('[I02:E00] Epic 5: Work: Backlog → Ready', out)
+        self.assertIn('next #2 [I02] Mid: Next: E00', out)
+        self.assertNotIn('Epic 6', out)
+
+    def test_a_ready_epic_under_a_backlog_initiative_returns_to_backlog(self):
+        out = self.three('Ready')
+        self.assertNotIn('[I01:E00] Epic 4: Work: Ready →', out)
+        self.assertNotIn('[I02:E00] Epic 5: Work: Ready →', out)
+        self.assertIn('[I03:E00] Epic 6: Work: Ready → Backlog', out)
+
+    def test_an_unmet_delivery_prerequisite_keeps_the_epic_in_backlog(self):
+        out = self.three('Ready', depends=f"[I09]({url('issues', 9)})")
+        for name in ('[I01:E00] Epic 4', '[I02:E00] Epic 5', '[I03:E00] Epic 6'):
+            self.assertIn(f'{name}: Work: Ready → Backlog', out)
+
+    def test_an_unmet_planning_prerequisite_keeps_the_epic_in_backlog(self):
+        out = self.three('Backlog', questions='Which shape?')
+        self.assertNotIn('→', out)
+        self.assertIn('to do: 0', out)
+
+    def test_an_epic_under_an_initiative_in_review_leaves_ready(self):
+        reviewing = initiative(1, 'Done: Waiting', (f"[E00]({url('issues', 3)})", ''))
+        out = queue(staged((reviewing, 'In Review'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Ready')))
+        self.assertIn('[I01:E00] Epic 3: Work: Ready → Backlog', out)
+
+
+class BacklogTakesTheTree(unittest.TestCase):
+    """An initiative returning to Backlog takes its unstarted epics, keeps Done and names work under
+    way or in review for reconciliation."""
+
+    def shelved(self, *epics: tuple[dict, str], prs: list[dict] | None = None) -> str:
+        rows = [(f"[E{n:02d}]({url('issues', content['number'])})", '') for n, (content, _) in enumerate(epics)]
+        bare = assigned(initiative(1, 'Bare: Parked', *rows, priority=''))
+        return queue(staged((bare, 'Ready'), *epics), prs)
+
+    def test_unstarted_epics_return_without_an_assignee_and_done_stays(self):
+        done = issue(2, '[I01:E00] Epic 2: Work', 'closed', body=epic_body(('W01', 'Go', '')))
+        out = self.shelved((done, 'Done'), (assigned(epic(3, '01:E01', ('W01', 'Go', ''))), 'Ready'))
+        self.assertIn('[I01] Bare: Parked: Ready → Backlog', out)
+        self.assertIn('[I01:E01] Epic 3: Work: Ready → Backlog', out)
+        self.assertIn("repos/o/r/issues/3/assignees -f 'assignees[]=me'", out)
+        self.assertIn('--method DELETE repos/o/r/issues/1/assignees', out)
+        self.assertNotIn('Epic 2', out)
+        self.assertNotIn('reconcile', out)
+
+    def test_an_epic_in_review_is_reported_and_nothing_moves(self):
+        out = self.shelved((epic(2, '01:E00', ('W01', 'Go', '')), 'In Review'),
+                           (epic(3, '01:E01', ('W01', 'Go', '')), 'Ready'))
+        self.assertIn('reconcile #1 [I01] Bare: Parked: E00 (In Review)', out)
+        self.assertNotIn('→', out)
+
+    def test_a_reserved_epic_is_reported_and_nothing_moves(self):
+        out = self.shelved((epic(2, '01:E00', (f'[W01]({RECORD})', 'Go', '')), 'In Progress'),
+                           (epic(3, '01:E01', ('W01', 'Go', '')), 'Ready'))
+        self.assertIn('reconcile #1 [I01] Bare: Parked: E00 (work under way)', out)
+        self.assertNotIn('→', out)
+
+    def test_an_open_delivery_pull_request_is_reported_and_nothing_moves(self):
+        out = self.shelved((epic(2, '01:E00', ('W01', 'Go', '')), 'In Progress'),
+                           prs=[pr(9, '[I01:E00] Go', base='i01/e00/workspace', head='i01/e00/w01-go')])
+        self.assertIn('reconcile #1 [I01] Bare: Parked: E00 (work under way)', out)
+        self.assertNotIn('→', out)
+
+    def test_an_unplanned_initiative_holding_a_reservation_is_reported(self):
+        bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 3)})", ''), priority='')
+        nxt = initiative(2, 'Next: Up', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        out = queue(staged((bare, 'In Progress'), (nxt, 'Backlog'),
+                           (epic(3, '01:E00', (f'[W01]({RECORD})', 'Go', '')), 'In Progress'),
+                           (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), unplanned=('1',))
+        self.assertIn('reconcile #1 [I01] Bare: Current: E00 (work under way)', out)
+        self.assertNotIn('[I01] Bare: Current: In Progress →', out)
+        self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
 
 
 class UnresolvableGates(unittest.TestCase):
