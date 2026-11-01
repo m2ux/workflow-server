@@ -22,3 +22,12 @@ Evaluated at `6963384d` on `i11/e10/w20-a-specification-no-procedure`, which mer
 
 - `python3 -m pytest skills/work-planner/test -q`: 690 passed, 1 skipped.
 - `python3 -m unittest discover -s skills/workflow-canon/test -p 'test_*.py'`: 77 ran, OK, 38 skipped (engine-bound).
+
+## T5 Finding Kinds Registered
+
+Evaluated at `f4ceed59` on `i11/e10/w20-register-uncited-kind`, cut from `i11/e10/workspace` at `8b35508f`. At that base the shared suite failed 18 tests: #1571 made an unregistered kind an error, and #1575 (this unit) and #1561 (W08) each reported one.
+
+- `python3 -m pytest skills/test -q`: 160 passed.
+- `python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon skills/gitnexus skills/server-in-the-loop`: 82 files checked, 0 findings.
+- `python3 -m pytest skills/work-planner/test -q`: 690 passed, 1 skipped.
+- `python3 -m unittest discover -s skills/workflow-canon/test -p 'test_*.py'`: OK, 38 skipped.
