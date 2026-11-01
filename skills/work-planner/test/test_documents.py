@@ -138,6 +138,33 @@ class DocumentInterfaces(unittest.TestCase):
             with self.subTest(protocol=name):
                 self.assertIn(name, files)
 
+    def test_every_script_is_run_by_a_cited_command(self):
+        """A script exists because a procedure runs it. It is run where a
+        command specification names it and a procedure cites that
+        specification, or where a script so run imports it."""
+        paths = sorted(ROOT.rglob('*.md'))
+        _, called = checker.citations(paths)
+        run = set()
+        for path in paths:
+            lines, fenced, headings = checker.scan(path)
+            for start, title in checker.specifications(headings):
+                if not called.get(path, {}).get(checker.anchor_of(title)):
+                    continue
+                end = next((i for i, level, _ in headings if i > start and level <= 3), len(lines))
+                for line in lines[start:end]:
+                    run |= set(re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', line))
+        scripts = {path.stem: path.read_text() for path in (ROOT / 'scripts').glob('*.py')}
+        grown = True
+        while grown:
+            imported = {name for name, text in scripts.items() if any(
+                re.search(rf'^(?:import|from) {re.escape(name)}\b', scripts[user], re.MULTILINE)
+                for user in run if user in scripts)}
+            grown = not imported <= run
+            run |= imported
+        for name in sorted(scripts):
+            with self.subTest(script=name):
+                self.assertIn(name, run)
+
     def test_protocols_are_entered_whole(self):
         """A protocol is one coordinated sequence, so a caller runs the file
         rather than reaching into a step of it."""

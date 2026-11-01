@@ -153,6 +153,7 @@ The main path meets [Outcomes](#outcomes).
 14. **Report.**
     Return saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
     - Report queue decisions unevaluated by this run.
+    - Run [Audit Closure Evidence](../artifacts/issue.md#audit-closure-evidence) for the repository holding the issues, and report each closed issue it lists, with its state reason and findings, and each it names unevaluable. This run changes none of them.
     Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
 
 ## Outcomes

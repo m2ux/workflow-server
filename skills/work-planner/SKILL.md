@@ -88,7 +88,7 @@ Select the mode as appropriate to fulfill the user request:
   - **Example.**  workflow-server's dynamic-shell restrictions deny a body inlined in the command.
   - Keep these files in a working directory outside the repository.
 - **Scripts.**
-  Scripts run under `sbx`, invoked by its absolute path from `<workspace>`, the checkout holding this skill.
+  Scripts run under `sbx`, invoked by its absolute path from `<workspace>`, the checkout holding this skill. A script that reaches the tracker calls `gh` itself, and one that adds a worktree writes the repository's git directory, which `sbx` leaves read-only; each runs from `<workspace>` outside `sbx`.
 - **Boards.**
   A project board sits under `users/{owner}`, or `orgs/{owner}` when `gh api repos/{owner}/{repo} --jq .owner.type` is `Organization`.
 - **Example values.**  Substitute the real ones:
