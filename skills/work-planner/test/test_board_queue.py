@@ -471,6 +471,16 @@ class ReadyFollowsTheInitiative(unittest.TestCase):
         self.assertIn('wait #1 [I01] Low: Current', out)
         self.assertIn('[I01:E01] Epic 5: Work: Ready → Backlog', out)
 
+    def test_an_inactive_epic_in_progress_under_a_waiting_initiative_returns_to_backlog(self):
+        for where, priority, unplanned in (('next set', 'priority: 3', ()),
+                                           ('below the next set', 'priority: 1', ()),
+                                           ('unplanned', '', ('1',))):
+            with self.subTest(where):
+                out = self.waiting('In Progress', priority, unplanned)
+                self.assertIn('wait #1 [I01] Low: Current', out)
+                self.assertIn('[I01:E01] Epic 5: Work: In Progress → Backlog', out)
+                self.assertNotIn('Epic 3: Work: In Progress →', out)
+
 
 class BacklogTakesTheTree(unittest.TestCase):
     """An initiative returning to Backlog takes its unstarted epics, keeps Done and names work under
