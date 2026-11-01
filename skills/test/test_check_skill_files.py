@@ -576,6 +576,63 @@ class EmptySectionChecks(unittest.TestCase):
             self.assertEqual(checker.main([str(self.skill)]), 0)
 
 
+class ParallelSectionMood(unittest.TestCase):
+    """Sibling sections whose titles end in one word open in one mood."""
+
+    COMMANDS = ('## Commands\n\n### Check Shell Syntax\n\nParse a script.\n\n'
+                '### Validate Compose\n\nResolve the file.\n')
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+
+    def findings(self, text):
+        path = self.skill / 'coverage.md'
+        path.write_text(text)
+        cited, called = checker.citations([path], {})
+        return [(line, detail) for _, line, kind, detail
+                in checker.check(path, self.root, {}, cited, called, {})
+                if kind == 'parallel section in another mood']
+
+    def test_a_section_directing_among_stating_siblings_is_reported(self):
+        found = self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            'For engine work, [Check Shell Syntax](#check-shell-syntax) and '
+            '[Validate Compose](#validate-compose) establish the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) for changed helpers.\n\n'
+            '## Workflows Coverage\n\nUse [Validate Compose](#validate-compose) for the corpus.\n\n'
+            + self.COMMANDS)
+        self.assertEqual(found, [(7, 'Docker Coverage directs, Main Coverage states'),
+                                 (11, 'Workflows Coverage directs, Main Coverage states')])
+
+    def test_siblings_in_one_mood_report_nothing(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) establishes the baseline.\n\n'
+            '## Docker Coverage\n\n'
+            '[Check Shell Syntax](#check-shell-syntax) covers changed helpers, and '
+            '[Validate Compose](#validate-compose) resolves the file.\n\n'
+            '## Workspace Coverage\n\nThe check exercises the scripts.\n\n' + self.COMMANDS), [])
+
+    def test_specifications_directing_together_report_nothing(self):
+        self.assertEqual(self.findings('# Coverage\n\n' + self.COMMANDS), [])
+
+    def test_sections_of_different_kinds_or_parents_are_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Images\n\nUse the reviewed files.\n\n'
+            '### Build Coverage\n\nUse a disposable tree.\n'), [])
+
+    def test_an_opening_neither_mood_decides_is_not_compared(self):
+        self.assertEqual(self.findings(
+            '# Coverage\n\n## Main Coverage\n\nThe suite establishes the baseline.\n\n'
+            '## Docker Coverage\n\nEngine tests alone do not cover this.\n\n'
+            '## Shell Coverage\n\n- **Helpers.**  Use disposable directories.\n'), [])
+
+
 # A specimen move: Fetch Issue leaves the issue artifact for the sync mode,
 # its link retargeted, and the other sections stay where they stand.
 BEFORE = {
