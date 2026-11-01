@@ -51,6 +51,16 @@ link naming the next operation. A selection link points wherever its target
 sits; a prerequisite citation names a section the reader must already hold,
 so its target belongs in another file.
 
+The skill-wide checks read what a skill declares rather than guessing from
+its prose. A mode file reaches a command by its operation's name, so a shell
+block outside its specifications is reported. A skill's `vocabulary.json`
+names the terms its concepts retire, and each retired term is reported. A
+skill's guide repeating a shared rule's label in a section of the same title
+states one convention twice. A specification sending GraphQL states its REST
+gap, and Projects (classic) is reported wherever it stands. Each labelled
+rule of a guide names, in the `rules.json` beside it, the finding kinds or
+the review that decide it, and the kinds are those this check registers.
+
 Sibling sections whose titles end in one word state one kind of thing, so
 they open in one mood, judged from the first words of each opening sentence.
 
@@ -88,6 +98,36 @@ LEAD_WIDTH = 100
 SECTIONS = ('Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands')
 ENTRY_SECTIONS = ('Modes', 'Rules', 'Conventions', 'Dependencies')
 STRUCTURE = 'structure.json'
+VOCABULARY = 'vocabulary.json'
+RULES = 'rules.json'
+GUIDE = 'guidelines.md'
+SHELL = ('', 'bash', 'sh', 'shell', 'zsh', 'console')
+RULE_LABEL = re.compile(r'^- \*\*(.+?)\*\*')
+SCRIPT = re.compile(r'(?<![\w./-])((?:[\w.-]+/)*scripts/[\w.-]+\.(?:py|sh|js|mjs|ts))')
+SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
+GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
+REST_GAP = '**REST gap:**'
+CLASSIC = re.compile(r'\b(?:add|move|delete|update|create|clone|convert)?Project(?:Card|Column)s?\b'
+                     r'|\bproject(?:Card|Column)s\b|\bprojects/(?:columns|cards)\b'
+                     r'|(?<!github\.com/)\b(?:repos/[^/\s]+/[^/\s]+|orgs/[^/\s]+|users/[^/\s]+)/projects\b'
+                     r'|\bprojects\s*\(')
+# Every kind of finding the check reports. A rule's `rules.json` entry names
+# the kinds that decide it, or `review` where the read against the guidelines
+# does, so a kind outside this set names no operation.
+KINDS = (
+    'duplicate anchor is cited', 'heading jump',
+    'command specification in the entry point', 'command specification with one caller',
+    'section outside the set', 'sections out of order', 'section missing',
+    'unresolved link', 'unresolved anchor',
+    'empty bullet', 'bullet without a space', 'bullet holding a code fence', 'bullet holding a bullet',
+    'inline bold lead too wide', 'prerequisite citation inside one file',
+    'prose over eight lines', 'trailing blank line',
+    'parallel section in another mood', 'heading without content',
+    'command spelled out in a mode', 'retired term', 'convention in both guides',
+    'GraphQL without a REST gap', 'Projects classic interface',
+    'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
+)
+OPERATIONS = KINDS + ('review',)
 
 
 def anchor_of(text):
@@ -267,11 +307,10 @@ def citations(paths, structures=None):
 def check(path, root, cache, cited, called, structures=None):
     lines, fenced, headings = scan(path)
     skip = frontmatter(lines)
-    where = path.relative_to(root)
     found = []
 
     def report(index, kind, detail=''):
-        found.append((str(where), index + 1, kind, detail))
+        found.append(finding(path, root, index, kind, detail))
 
     def anchors(target):
         if target not in cache:
@@ -387,6 +426,198 @@ def check(path, root, cache, cited, called, structures=None):
 
     for index, title in empty_sections(lines, headings):
         report(index, 'heading without content', title)
+    return found
+
+
+def finding(path, root, index, kind, detail=''):
+    """One finding, of a kind the check registers, so every rule a
+    `rules.json` names a kind for reaches a check that reports it."""
+    if kind not in KINDS:
+        raise KeyError(f'unregistered finding kind: {kind}')
+    return (str(named(path, root)), index + 1, kind, detail)
+
+
+def fence_openings(lines):
+    """Each code block's opening line with its info string's first word,
+    lower-cased, empty where the block names no language."""
+    inside = None
+    for index, line in enumerate(lines):
+        if inside:
+            if re.fullmatch(r'\s*' + re.escape(inside[0]) + '{' + str(len(inside)) + r',}\s*', line):
+                inside = None
+        elif match := FENCE.match(line):
+            inside = match[1]
+            words = line.strip()[len(match[1]):].split()
+            yield index, words[0].lower() if words else ''
+
+
+def mode_commands(path, root, structures):
+    """Commands check: a mode reaches a command by its operation's name, so a
+    shell or unlabelled block in a mode file outside its command
+    specifications is a command spelled out where it should be named. A mode
+    file is named `<mode>-mode.md`, as the guidelines name it."""
+    if not path.name.endswith('-mode.md'):
+        return []
+    lines, _, headings = scan(path)
+    held = specification_spans(headings, len(lines), held_section(contract(path, structures)))
+    return [finding(path, root, index, 'command spelled out in a mode', lines[index].strip())
+            for index, language in fence_openings(lines)
+            if language in SHELL and index not in held]
+
+
+def declaration_at(directory, name, cache, read):
+    """The nearest declaration file of a name at or above a directory, read
+    once, empty where none stands."""
+    key = (directory, name)
+    if key not in cache:
+        path = directory / name
+        if path.is_file():
+            cache[key] = read(path)
+        elif directory.parent == directory:
+            cache[key] = {}
+        else:
+            cache[key] = declaration_at(directory.parent, name, cache, read)
+    return cache[key]
+
+
+def vocabulary(path):
+    """One skill's vocabulary: each concept's term mapped to the terms it
+    retires, refused whole where it is not that shape."""
+    try:
+        terms = json.loads(path.read_text())
+    except json.JSONDecodeError as error:
+        raise ValueError(f'{path}: {error}') from error
+    if not isinstance(terms, dict) or not all(
+            isinstance(retired, list) and all(isinstance(term, str) for term in retired)
+            for retired in terms.values()):
+        raise ValueError(f'{path}: maps no term to a list of retired terms')
+    return {term: [(old, re.compile(r'(?<![\w-])' + re.escape(old) + r'(?![\w-])')) for old in retired]
+            for term, retired in terms.items()}
+
+
+def retired_terms(path, root, cache):
+    """Vocabulary check: a concept carries the one term its skill's
+    `vocabulary.json` names, so a retired term is reported in the skill's
+    markdown outside code, and anywhere in a script, identifiers included."""
+    terms = declaration_at(path.parent, VOCABULARY, cache, vocabulary)
+    if not terms:
+        return []
+    if path.suffix == '.md':
+        lines, fenced, _ = scan(path)
+        lines = ['' if fenced[index] else CODE_SPAN.sub('', line) for index, line in enumerate(lines)]
+    else:
+        lines = path.read_text().splitlines()
+    return [finding(path, root, index, 'retired term', f'{old} for {term}')
+            for index, line in enumerate(lines)
+            for term, retired in terms.items()
+            for old, pattern in retired if pattern.search(line)]
+
+
+def labelled_rules(path):
+    """A guide's house rules: each top-level bullet opening with a bold label,
+    keyed by the anchors of its section and its label, with its line."""
+    lines, fenced, _ = scan(path)
+    section = ''
+    for index, line in enumerate(lines):
+        if fenced[index]:
+            continue
+        if line.startswith('## '):
+            section = anchor_of(line[3:])
+        elif match := RULE_LABEL.match(line):
+            yield f'{section}/{anchor_of(match[1])}', index
+
+
+def skill_of(path):
+    """The folder holding the skill a file belongs to: the nearest one at or
+    above it carrying a SKILL.md."""
+    return next((folder for folder in path.parents if (folder / 'SKILL.md').is_file()), None)
+
+
+def shared_guide(path):
+    """The shared guide binding the skill a file belongs to, in the folder
+    holding that skill, where it stands."""
+    skill = skill_of(path)
+    guide = skill.parent / GUIDE if skill else None
+    return guide if guide and guide.is_file() else None
+
+
+def doubled_conventions(path, root):
+    """Guides check: a convention has one home, so a rule a skill's guide
+    states under the label and section title of a shared rule is reported."""
+    shared = shared_guide(path)
+    if path.name != GUIDE or not shared or shared == path:
+        return []
+    homes = {key: index for key, index in labelled_rules(shared)}
+    return [finding(path, root, index, 'convention in both guides',
+                    f'{key}, stated in {named(shared, root)}:{homes[key] + 1}')
+            for key, index in labelled_rules(path) if key in homes]
+
+
+def script_of(path, line):
+    """Each skill script a command line runs, resolved against the folders
+    above the file holding it."""
+    for name in SCRIPT.findall(line):
+        script = next((folder / name for folder in path.parents if (folder / name).is_file()), None)
+        if script:
+            yield script
+
+
+def interfaces(path, root, structures):
+    """Interface check: GitHub is reached through REST wherever REST supports
+    the operation, so a specification whose command sends GraphQL, itself or
+    through a script it runs, states its REST gap; and Projects (classic) is
+    reached nowhere, so any trace of it is reported whatever else stands."""
+    lines, fenced, headings = scan(path) if path.suffix == '.md' else (
+        path.read_text().splitlines(), [], [])
+    found = [finding(path, root, index, 'Projects classic interface', match[0])
+             for index, line in enumerate(lines) if (match := CLASSIC.search(line))]
+    if path.suffix != '.md':
+        return found
+    total = len(lines)
+    for start, title in specifications(headings, held_section(contract(path, structures))):
+        end = next((index for index, level, _ in headings if index > start and level <= 3), total)
+        span = range(start, end)
+        graphql = any(fenced[index] and (GRAPHQL.search(lines[index]) or any(
+            GRAPHQL.search(script.read_text()) for script in script_of(path, lines[index])))
+            for index in span)
+        if graphql and not any(lines[index].startswith(REST_GAP) for index in span):
+            found.append(finding(path, root, start, 'GraphQL without a REST gap', title))
+    return found
+
+
+def rule_operations(path):
+    """A guide's `rules.json`: each rule key mapped to the operations that
+    decide it, refused whole where it is not that shape."""
+    try:
+        rules = json.loads(path.read_text())
+    except json.JSONDecodeError as error:
+        raise ValueError(f'{path}: {error}') from error
+    if not isinstance(rules, dict) or not all(
+            isinstance(operations, list) and operations for operations in rules.values()):
+        raise ValueError(f'{path}: maps no rule to a list of operations')
+    return rules
+
+
+def undecided_rules(guide, root):
+    """Rules check: each house rule a guide states names, in the `rules.json`
+    beside it, the operations that decide it: the kinds this check reports,
+    or the review against the guidelines. Prose that is no labelled rule
+    states no rule, so it names nothing."""
+    declared = guide.parent / RULES
+    operations = rule_operations(declared) if declared.is_file() else {}
+    found = []
+    seen = {}
+    for key, index in labelled_rules(guide):
+        if key in seen:
+            found.append(finding(guide, root, index, 'ambiguous house rule', f'{key}, also at line {seen[key] + 1}'))
+            continue
+        seen[key] = index
+        unknown = [name for name in operations.get(key, ()) if name not in OPERATIONS]
+        if key not in operations or unknown:
+            found.append(finding(guide, root, index, 'house rule no operation decides',
+                                 key + (f', naming {", ".join(unknown)}' if unknown else '')))
+    found += [finding(declared, root, 0, 'declared rule absent', key)
+              for key in operations if key not in seen]
     return found
 
 
@@ -667,10 +898,13 @@ def main(argv=None):
     # A fixture tree holds test inputs in the format its suite reads, which is
     # specimen text rather than a skill file, so the guidelines do not reach it.
     files = []
+    scripts = []
     for name in options.roots:
         root = Path(name).resolve()
         files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
                   if 'fixtures' not in path.relative_to(root).parts]
+        scripts += [(path, root.parent) for path in sorted(root.rglob('*'))
+                    if path.suffix in SCRIPT_SUFFIXES and 'scripts' in path.relative_to(root.parent).parts]
 
     declared = {}
     try:
@@ -682,6 +916,26 @@ def main(argv=None):
     findings = []
     for path, root in files:
         findings += check(path, root, cache, cited, called, declared)
+
+    guides = {path: root for path, root in files if path.name == GUIDE}
+    for path, root in files:
+        if (shared := shared_guide(path)):
+            guides.setdefault(shared, root)
+    terms = {}
+    try:
+        for path, root in files:
+            findings += mode_commands(path, root, declared)
+            findings += doubled_conventions(path, root)
+            findings += interfaces(path, root, declared)
+        for path, root in files + scripts:
+            findings += retired_terms(path, root, terms)
+        for path, root in scripts:
+            findings += interfaces(path, root, declared)
+        for guide, root in guides.items():
+            findings += undecided_rules(guide, root)
+    except ValueError as error:
+        print(f'unreadable declaration — {error}')
+        return 1
 
     if not options.quiet:
         for where, line, kind, detail in findings:
