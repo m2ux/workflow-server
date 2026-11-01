@@ -99,6 +99,7 @@ One task pull request's test plan aligned to its current table.
 - A pull request working on no epic takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
 - The prefix is how an epic's pull requests are found, and each one, open or merged, is matched to the tasks it works on from its changes and the tasks' Descriptions.
 - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which tells it from a task pull request.
+- A title carrying an initiative's prefix names one of its epics. An epic sync reports one that does not as `no epic`.
 
 ### Review Body
 

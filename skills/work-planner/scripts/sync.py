@@ -3,7 +3,7 @@
 Usage:
   python3 sync.py issue-637.json --prs prs.json [--pr 950] [--tick AC1 --fix fixed-637.md]
   python3 sync.py issue-943.json --prs prs.json --links links.json [--tasks issue-637.json ...] [--link W01=950,W01=951,W02=950] [--project <checkout> --revision origin/i07/e00/main [--revision origin/i07/e00/workflows ...]] [--tick AC1 --fix fixed-943.md]
-  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ...
+  python3 sync.py issue-936.json --epics issue-943.json issue-937.json ... [--prs prs.json]
   python3 sync.py --names --project <checkout> --revision <revision>
 
 The long-lived branch names are the ones config/branches states at the commit --revision resolves to, in the
@@ -62,6 +62,12 @@ target has merged into its long-lived branch. A pull request whose head is an ep
 merges that base and is not a task delivery. Each such base still unmerged is reported unmerged, naming
 an open pull request that merges it when one is open. A draft is named draft. When a task has merged
 into an epic base and the epic is not yet complete, that base is reported draft.
+
+The branch contract: a task pull request naming the epic targets one of its epic bases, and an
+integration pull request, whose head is an epic base, targets the long-lived branch that base names.
+An open or merged pull request off that route is reported target, naming where it goes and where it
+belongs. An epic or initiative sync reports each pull request carrying the initiative's prefix whose
+title names no epic as [I07:E00] as no epic, since nothing reads it as delivery.
 
 The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link and repository-setting gate in closure.py.
 """
@@ -374,6 +380,35 @@ def draft_bases(prs: list[dict], initiative: str, epic: str, home: str) -> list[
     return pending
 
 
+def misrouted(prs: list[dict], initiative: str, epic: str) -> list[str]:
+    """Open or merged pull requests naming this epic that leave the branch contract.
+
+    A task pull request targets one of this epic's bases. An integration pull request, whose head is
+    one of those bases, targets the long-lived branch the base names."""
+    lines = []
+    for pr in sorted(prs, key=lambda p: p['number']):
+        title = PR_REF.match(pr.get('title') or '')
+        if not title or title.groups() != (initiative, epic):
+            continue
+        if not pr.get('merged_at') and pr.get('state') != 'open':
+            continue
+        base = (pr.get('base') or {}).get('ref') or ''
+        head = (pr.get('head') or {}).get('ref') or ''
+        lived = epic_base(head, initiative, epic)
+        if lived and base != lived:
+            lines.append(f"#{pr['number']} merges {head} into {base or 'no base'}; it targets {lived}")
+        elif not lived and not epic_base(base, initiative, epic):
+            lines.append(f"#{pr['number']} targets {base or 'no base'}; a task pull request targets "
+                         f"i{initiative}/e{epic}/<long-lived branch>")
+    return lines
+
+
+def epicless(prs: list[dict], initiative: str) -> list[str]:
+    """Pull requests carrying the initiative's prefix whose title names no epic as [Ixx:Eyy]."""
+    return [f"#{pr['number']} {pr['title']}" for pr in sorted(prs, key=lambda p: p['number'])
+            if (pr.get('title') or '').startswith(f'[I{initiative}') and not PR_REF.match(pr['title'])]
+
+
 def pull_numbers(found: set[int]) -> str:
     return ', '.join(f'#{n}' for n in sorted(found)) or 'none'
 
@@ -624,7 +659,8 @@ class Branches(NamedTuple):
 
 # The epic checks that read the long-lived branch names, named when a run cannot read them.
 LONG_LIVED_CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases',
-                     'draft epic bases', 'review pull request References', 'review pull request issue links')
+                     'draft epic bases', 'review pull request References', 'review pull request issue links',
+                     'pull request targets')
 
 
 def git(project: str, *args: str) -> subprocess.CompletedProcess:
@@ -818,7 +854,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'source', 'unevaluable', 'not checked')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'target', 'no epic', 'source', 'unevaluable', 'not checked')}
     report['source'].extend(sources)
     if kind == 'epic' or args.project:
         report['unevaluable'].extend(unevaluable)
@@ -925,6 +961,9 @@ def main() -> int:
             report['draft'].extend(draft_bases(prs, initiative, epic, home))
         report['references'].extend(review_references(prs, initiative, epic, home))
         report['uncited'].extend(unlinked_reviews(prs, initiative, epic, issue_key(issue)))
+        report['target'].extend(misrouted(prs, initiative, epic))
+    if kind != 'task':
+        report['no epic'].extend(epicless(prs, initiative))
     print(f"#{issue['number']} {kind} ({issue['state']})")
     for name, items in report.items():
         for item in items:
