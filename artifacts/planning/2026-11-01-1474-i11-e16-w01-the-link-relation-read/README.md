@@ -13,9 +13,13 @@ Building that snapshot by hand costs one call per pull request, and nothing chec
 | Artifact | What it holds |
 | --- | --- |
 | [W01 work item](w01.md) | Component, scope, design, criteria and test rows for W01 |
+| [Validation](validation.md) | Changed paths, capture tests, live capture and regressions |
+| [Change list](changes.md) | Plan changes applied and held by the delivery session |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E16](https://github.com/m2ux/workflow-server/issues/1474) |
+| Pull request | [#1508](https://github.com/m2ux/workflow-server/pull/1508) |
+| Follow-up pull request | [#1509](https://github.com/m2ux/workflow-server/pull/1509) |
