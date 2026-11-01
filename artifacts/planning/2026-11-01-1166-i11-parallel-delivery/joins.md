@@ -47,3 +47,4 @@ Each line records one pair as separate pull requests, so the two rows can be del
 - E18:W05 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
 - E18:W02 and E18:W06: separate. Each row writes a different record family (issue text, pull request titles, board options, branches, trace comments), so separate sessions run them in parallel.
 - E14:W03 and E14:W04: separate. Work Planner and Workflow Canon citations are two skills' files, so two sessions run them in parallel; W05 to W07 wait on both.
+- E09:W09 and E09:W10: separate. W09 writes the Task Branches field and the delivery plan; W10 writes sync link recording; two sessions run them in parallel.
