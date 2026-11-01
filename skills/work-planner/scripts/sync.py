@@ -756,7 +756,7 @@ def normalize_closed_table(issue, sections, report):
 
 
 def title_repairs(rows, header, prs, initiative, epic, report):
-    """Report merged linked deliveries needing their owning epic prefix for publication and readback."""
+    """Report merged deliveries the rows link, --link included, needing their owning epic prefix for publication and readback."""
     linked = {href for r in rows for _, href in LINK.findall(id_cell(header, r))}
     for pr in prs:
         if pr['html_url'] not in linked or not pr.get('merged_at'):
@@ -848,8 +848,8 @@ def main() -> int:
             sys.exit('Work Breakdown has no Coverage column; run format.py first')
         header, rows = grid[0], grid[2:]
         if kind == 'epic':
-            title_repairs(rows, header, prs, initiative, epic, report)
             delivered = epic_delivery(rows, header, named, links, args.tasks, initiative, epic, report, prs)
+            title_repairs(rows, header, prs, initiative, epic, report)
             questions = next((l for h, l in sections if h == 'Open Questions'), [])
             open_named = any(p.get('state') == 'open' for p in named.values())
             started = any(delivered.values()) or open_named or report['unmatched']
