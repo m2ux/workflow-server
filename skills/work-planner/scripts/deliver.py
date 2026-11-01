@@ -240,7 +240,12 @@ def survey(args: argparse.Namespace) -> int:
     prs = pull_requests(args.prs) if args.prs else []
     if args.prs:
         attach_links(prs, args.links)
-    lived = long_lived_names(args.project) if args.project else ()
+    if bool(args.project) != bool(args.revision):
+        sys.exit('--project and --revision go together')
+    declared = long_lived_names(args.project, args.revision) if args.project else None
+    lived = declared.names if declared else ()
+    if declared:
+        print(f'source: {declared.source}')
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
     board = Board(issues, [], home, prs)
     epics: dict[str, dict[str, tuple[str, int]]] = {}
@@ -408,7 +413,8 @@ def main() -> int:
     parser.add_argument('--release', help='task ids to free, e.g. W01')
     parser.add_argument('--records', help='the URL of the planning records folder')
     parser.add_argument('--date', help='the day the record is opened, today by default')
-    parser.add_argument('--project', default='', help='checkout whose main working tree states the long-lived branches in config/branches')
+    parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branches')
+    parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')

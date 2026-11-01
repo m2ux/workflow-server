@@ -95,7 +95,7 @@ The main path meets [Outcomes](#outcomes).
    - Continue with its returned records.
    - For each task pull request in those records, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), then publish each converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request). Report each converted pull request by URL and refresh its record before recording coverage.
    - An epic review carries no task test plan.
-   - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout and output body file:
+   - For each epic being aligned, run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with its current JSON, returned pull request records and complete issue-link snapshot, task records, confirmed matches, project checkout, fetched epic base and output body file:
      - **Unmet.**
        - Each task [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) reports unmet is a gap.
        - Follow [Plan Gap Task](../artifacts/epic-issue-body.md#plan-gap-task) with the current epic JSON and body, delivered task row, unmet criterion ids, delivery records, complete issue-link snapshot and output body path.
@@ -128,7 +128,7 @@ The main path meets [Outcomes](#outcomes).
 
     After preparing the bases, align the selected initiative's pull requests:
     - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests).
-    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches). Unevaluable branch names stop this step with a finding.
+    - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches), at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
     - Point an open task pull request at its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
     - When that pull request is not mergeable, [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) merges the epic base into the task branch. A conflict is reported and the pull request stays open.

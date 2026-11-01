@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import initiative_body, issue, item, links, pr, run, url
+from fixtures import declared, initiative_body, issue, item, links, pr, run, url
 from test_agent_review import reviewed_pr
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
@@ -63,13 +63,6 @@ def survey(items: list[dict], prs: list[dict] | None = None, *args: str,
         return done.stdout
 
 
-def states(root: Path, *names: str) -> None:
-    """A checkout stating the long-lived branches in config/branches."""
-    stated = root / 'config' / 'branches'
-    stated.parent.mkdir(parents=True, exist_ok=True)
-    stated.write_text(''.join(f'{name}\n' for name in names))
-
-
 def edit(body_issue: dict, *args: str) -> tuple[str, str, int]:
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -90,18 +83,16 @@ class Survey(unittest.TestCase):
     def test_a_unit_names_its_epic_base(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            states(root, 'main')
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                            None, '--project', str(root), '--bases', 'i07/e00/main,i07/e00/workspace')
+                            None, *declared(root, 'main'), '--bases', 'i07/e00/main,i07/e00/workspace')
         self.assertIn('base i07/e00/main', output)
         self.assertNotIn('workspace', output)
 
     def test_a_unit_names_each_of_its_epic_bases(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            states(root, 'main', 'workflows')
             output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')),
-                            None, '--project', str(root), '--bases', 'i07/e00/workflows,i07/e00/main')
+                            None, *declared(root, 'main', 'workflows'), '--bases', 'i07/e00/workflows,i07/e00/main')
         self.assertIn('bases i07/e00/main i07/e00/workflows', output)
 
     def test_epic_in_backlog_offers_nothing(self):
