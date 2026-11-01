@@ -1,6 +1,6 @@
 # W01 Test Evidence
 
-Tested revision: `9cd096a3b` on `i11/e10/w01-skill-frontmatter-and-prose`, which merges `i11/e10/workspace` at `be02e819b`. Every command ran locally from the unit worktree under the workspace sandbox.
+Tested revision: `a13614b61` on `i11/e10/w01-skill-frontmatter-and-prose`, which merges `i11/e10/workspace` at `ac4220296`. Every command ran locally from the unit worktree under the workspace sandbox.
 
 ## T1 Mode Trigger Checks
 
@@ -14,10 +14,12 @@ The `FrontmatterAndLayoutChecks` tests over specimen skills, for the frontmatter
 
 ```text
 python3 -m pytest skills/test -q -k FrontmatterAndLayoutChecks
-14 passed, 101 deselected
+14 passed, 172 deselected
 ```
 
 Against the checker at `ba441c2b8`, the two reporting tests fail, so the suite detects the fault only the new check reports.
+
+The finding kind is registered in the check's `KINDS`, and `skills/rules.json` maps `frontmatter/description` to it beside `review`, which the rules gate in the shared suite reads.
 
 ## T2 Hard-Wrap Checks
 
@@ -28,27 +30,23 @@ The same class, for the layout check.
 - `test_one_line_items_and_their_structures_report_nothing` — one-line paragraphs, a label with its body beneath, sub-bullets, steps, a table, a quote, bold field lines and HTML report nothing.
 - `test_wrapped_text_inside_a_fence_is_a_specimen` and `test_a_folded_frontmatter_value_is_not_prose` — fences and frontmatter are not prose.
 
-Against the checker at `ba441c2b8`, the five reporting tests fail.
+Against the checker at `ba441c2b8`, the five reporting tests fail. The finding kind is registered in `KINDS`, and `skills/rules.json` maps `layout/one-line-per-item` to it.
 
 ## T3 Shared and Work Planner Suites
 
 ```text
 python3 -m pytest skills/test skills/work-planner/test -q
-760 passed, 1 skipped, 1141 subtests passed
+876 passed, 1 skipped, 1837 subtests passed
 ```
 
-The two bounded-prose tests specimen one-line paragraphs separated by blank lines, the layout the guidelines require.
+The two bounded-prose tests specimen one-line paragraphs separated by blank lines, the layout the guidelines require. The entry-point section specimens carry a description triggering their Plan mode, as a conforming entry point does.
 
-The Workflow Canon suite gives 39 passed and 38 skipped at the merged base `f0d01fd3f` and at the tested revision alike, and the same at `9cd096a3b`, so this change adds no failure there.
+The Workflow Canon suite gives 39 passed and 38 skipped at the tested revision, as at the merged bases before it.
 
 ## T4 Check Over Every Skill
 
 ```text
-python3 skills/scripts/check_skill_files.py skills                     77 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/work-planner        50 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/workflow-canon      18 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/server-in-the-loop  1 files checked, 0 findings
-python3 skills/scripts/check_skill_files.py skills/gitnexus            7 files checked, 0 findings
+python3 skills/scripts/check_skill_files.py skills    82 files checked, 0 findings
 ```
 
-At `ba441c2b8` the new checks reported one untriggered mode (work-planner Understand) and seven hard-wrapped items in work-planner and gitnexus-guide; the merged base added one more in the workflow-canon entry point. Each is fixed at the tested revision.
+At `ba441c2b8` the new checks reported one untriggered mode (work-planner Understand) and seven hard-wrapped items in work-planner and gitnexus-guide; a later base added one in the workflow-canon entry point. The base at `ac4220296` adds none of either kind, and reports one wide bold lead in `skills/guidelines.md` (Resolution), whose body now stands beneath its label. Each is fixed at the tested revision.
