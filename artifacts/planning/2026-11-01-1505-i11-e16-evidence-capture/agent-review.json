@@ -1,0 +1,45 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1505",
+    "head": "22974dd02632bc30e408293994dd859be48a25db",
+    "base": "42e67e0044b5023efd9c57a89628a88ee459df0c",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1505-i11-e16-evidence-capture/agent-review.json",
+    "reviewer": "Claude Opus 5.5 reviewer sub-agent",
+    "reviewed_at": "2026-11-01T09:13:11Z",
+    "scope": "Re-review at 22974dd0: the delta cea293b1..22974dd0 is one SKILL.md line (Scripts rule), read in full; it now names both outside-sbx cases (scripts reaching the tracker, and a script adding a worktree in the repository's git directory), consistent with acceptance-criteria.md Run at Revision and the capture/link command specs. Earlier at cea293b1: Prior full review of the integration diff 42e67e00...d4948668 (scripts development.py, links-by-pull-request.py, links-by-issue.py, development-link.py, closure-sweep.py, revision-check.py, their tests, the markdown operations and command specifications and all callers) carried forward; the fix diff d4948668..cea293b1 read in full: acceptance-criteria.md Run at Revision, pull-request.md Access Development Links and Capture Pull Request Links, issue.md Capture Issue Links, development.gh, the FailedCall tests in test_link_capture.py and the Live test in test_development_link.py. Checked Read Pull Request State / Save Pull Request Snapshot yields a full REST object with html_url, and SKILL.md's Scripts rule against the new outside-sbx helper. Read the fix evidence at engineering/artifacts/planning/2026-11-01-1474-i11-e16-review-fixes/validation.md.",
+    "criteria": "AC1-AC7, AC9, AC10 met as in the prior review; AC4 diagnostics now name gh's reason for a call refused outright (FailedCall tests). AC6: the helper runs outside sbx, so git worktree add can register in the repository's git directory; the fix record shows a live run passing and leaving no revision-check worktree. AC8 met: Live test (skipped without WORK_PLANNER_LIVE_LINK) asserts the pull request is a draft on a non-default base and that two adds each hold it once with bidirectional readback; validation.md records it passing against m2ux/workflow-server#1474 and #1505 (draft on workspace, default main). Not re-run here because it writes to GitHub.",
+    "validation": "At 22974dd0: sbx pytest 544 passed, 1 skipped, 1078 subtests passed; check_skill_files 50 files checked, 0 findings. At cea293b1: sbx python3 -m pytest skills/work-planner/test -q: 544 passed, 1 skipped (Live), 1078 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills/work-planner: 50 files checked, 0 findings. Live test and outside-sbx revision-check run not repeated (GitHub write / repository git-dir write); relied on validation.md.",
+    "findings": [
+      {
+        "description": "skills/work-planner/artifacts/acceptance-criteria.md:79,85 specified Run at Revision under sbx, where git worktree add cannot write the repository's git directory (reproduced exit 2). Fixed: the command runs outside sbx and the instrument carries its own sbx prefix.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1539"
+      },
+      {
+        "description": "skills/work-planner/artifacts/pull-request.md:35-37 Access Development Links ran Capture Pull Request Links with a record nothing supplied. Fixed: step 1 runs Read Pull Request State first, whose Save Pull Request Snapshot is the full REST object carrying html_url.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1540"
+      },
+      {
+        "description": "skills/work-planner/scripts/development.py:75-81 reported a gh call refused outright (401) as every subject 'not returned'. Fixed: a nonzero exit without GraphQL errors, or non-object JSON, exits 'GraphQL read failed:' with gh's message; GraphQL errors still return for per-subject naming; both capture specs document it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1541"
+      },
+      {
+        "description": "AC8's draft pull request on a non-default branch was not exercised by test_development_link.py. Fixed: Live test asserts draft and non-default base and two adds holding the link once from both ends; its passing run is recorded in the fix validation.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1542"
+      },
+      {
+        "description": "skills/work-planner/SKILL.md:91 states scripts run under sbx and only a script that reads the tracker runs outside it, but revision-check.py (acceptance-criteria.md:76-79) now runs outside sbx for a different reason: it registers a worktree in the repository's git directory. The skill-level rule contradicts that command. Fix: generalise the SKILL.md sentence to scripts that reach the tracker or write a repository's git directory, so the rule covers both.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1545"
+      }
+    ]
+  }
+]
