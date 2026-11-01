@@ -1,6 +1,6 @@
 # Test Evidence
 
-Checks run for W11 and W13 at `75c41ece9` on `i11/e10/w11-bold-leads-within-the`, cut from `i11/e10/workspace` at `ba441c2b8`.
+Checks run for W11 and W13 at `cb05777ff` on `i11/e10/w11-bold-leads-within-the`: the change `75c41ece9`, merged with `i11/e10/workspace` at `96295fffa`. The same checks passed at `75c41ece9` over the base `ba441c2b8`.
 
 ## Baseline
 
@@ -34,4 +34,4 @@ Shared and work-planner suites, run as a regression check over the unchanged che
 python3 -m pytest skills/test skills/work-planner/test -q
 ```
 
-Output: `695 passed, 1 skipped, 1139 subtests passed`.
+Output: `696 passed, 1 skipped, 1139 subtests passed`.
