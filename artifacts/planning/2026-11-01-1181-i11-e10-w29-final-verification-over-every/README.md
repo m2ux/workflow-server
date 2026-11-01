@@ -13,9 +13,13 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | Artifact | What it holds |
 | --- | --- |
 | [W29 work item](w29.md) | Component, scope, design, criteria and test rows for W29 |
+| [Test evidence](test-evidence.md) | The final verification run over every skill, with inventory, command, output and exit status |
+| [Disclosure walk](disclosure-walk.md) | Live disclosure walks over the gitnexus and server-in-the-loop entry points |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1578](https://github.com/m2ux/workflow-server/pull/1578) |
