@@ -53,12 +53,20 @@ so its target belongs in another file.
 Sibling sections whose titles end in one word state one kind of thing, so
 they open in one mood, judged from the first words of each opening sentence.
 
+A move is judged between two revisions rather than in one tree, so
+`--compare <base> <head>` reads the named skill folders from git at each and
+compares every third-level section's body with its counterpart, reporting
+each one that differs other than by a link target.
+
     python3 skills/scripts/check_skill_files.py skills/workflow-canon
+    python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/work-planner
 """
 
 import argparse
+import difflib
 import json
 import re
+import subprocess
 import sys
 from pathlib import Path
 
@@ -94,7 +102,12 @@ def named(path, root):
 
 def scan(path):
     """Each line with the fence state it sits in, and the file's headings."""
-    lines = path.read_text().splitlines()
+    return parse(path.read_text())
+
+
+def parse(text):
+    """Each line of a text with the fence state it sits in, and its headings."""
+    lines = text.splitlines()
     fenced = []
     inside = None
     for line in lines:
@@ -465,6 +478,111 @@ def mixed_moods(lines, fenced, headings):
                 yield index, f'{title} {found}, {first_title} {first_mood}'
 
 
+def bodies(texts):
+    """Every third-level section of each file, as (file, heading, body) in
+    file order. A body runs to the next heading of its level or above, and is
+    held with its relative link targets reduced to their fragments, since a
+    moved section's links must change and a retarget is not an edit."""
+    found = []
+    for name in sorted(texts):
+        lines, _, headings = parse(texts[name])
+        for position, (start, level, title) in enumerate(headings):
+            if level != 3:
+                continue
+            end = next((index for index, depth, _ in headings[position + 1:] if depth <= 3),
+                       len(lines))
+            body = [LINK.sub(retarget, line) for line in lines[start + 1:end]]
+            while body and not body[0].strip():
+                body.pop(0)
+            while body and not body[-1].strip():
+                body.pop()
+            found.append((name, title.strip(), body))
+    return found
+
+
+def retarget(match):
+    """A link with its target reduced to its fragment. An absolute URL is kept
+    whole, since no move within a repository changes it."""
+    target = match[1]
+    if '://' in target or target.startswith('mailto:'):
+        return match[0]
+    _, hash_, fragment = target.partition('#')
+    return match[0][:match.start(1) - match.start(0)] + hash_ + fragment + ')'
+
+
+def compare(before, after):
+    """Each section of two revisions paired with its counterpart and judged.
+    A section keeps its file where that file still holds its heading, and
+    otherwise pairs with the same heading in another file, so a move reads
+    as a move. Returns (kind, base file, head file, heading, diff)."""
+    left = bodies(before)
+    right = bodies(after)
+    unpaired = list(range(len(right)))
+    pairs = []
+    pending = []
+    for index, (name, title, _) in enumerate(left):
+        match = next((other for other in unpaired
+                      if right[other][0] == name and right[other][1] == title), None)
+        if match is None:
+            pending.append(index)
+        else:
+            unpaired.remove(match)
+            pairs.append((index, match))
+    removed = []
+    for index in pending:
+        match = next((other for other in unpaired if right[other][1] == left[index][1]), None)
+        if match is None:
+            removed.append(index)
+        else:
+            unpaired.remove(match)
+            pairs.append((index, match))
+
+    results = []
+    for index, other in sorted(pairs):
+        name, title, body = left[index]
+        moved_to, _, carried = right[other]
+        if body != carried:
+            diff = list(difflib.unified_diff(body, carried, name, moved_to, lineterm=''))
+            results.append(('differing', name, moved_to, title, diff))
+        else:
+            results.append(('identical' if name == moved_to else 'moved', name, moved_to, title, []))
+    results += [('removed', left[index][0], None, left[index][1], []) for index in removed]
+    results += [('added', None, right[other][0], right[other][1], []) for other in unpaired]
+    return results, len(left), len(right)
+
+
+def tree_at(revision, roots):
+    """The text of each markdown file under the roots at a revision, keyed by
+    its path relative to the working directory."""
+    listed = subprocess.run(['git', 'ls-tree', '-r', '--name-only', revision, '--', *roots],
+                            capture_output=True, text=True, check=True).stdout.split('\n')
+    return {name: subprocess.run(['git', 'show', f'{revision}:./{name}'],
+                                 capture_output=True, text=True, check=True).stdout
+            for name in listed if name.endswith('.md')}
+
+
+def compare_revisions(base, head, roots, quiet=False):
+    """The comparison as the review's evidence: each section's judgement, a
+    diff for each differing body, and the section count at each revision.
+    Exit 1 where any section is added, removed or differing."""
+    try:
+        results, counted_base, counted_head = compare(tree_at(base, roots), tree_at(head, roots))
+    except subprocess.CalledProcessError as error:
+        print(f'unreadable revision — {error.stderr.strip()}')
+        return 1
+    for kind, name, moved_to, title, diff in results:
+        if quiet:
+            continue
+        where = f'{name} -> {moved_to}' if name and moved_to and name != moved_to else name or moved_to
+        print(f'{kind}: {where} ### {title}')
+        for line in diff:
+            print(f'  {line}')
+    changed = sum(kind in ('added', 'removed', 'differing') for kind, *_ in results)
+    print(f'{counted_base} sections at {base}, {counted_head} sections at {head}, '
+          f'{changed} added, removed or differing')
+    return 1 if changed else 0
+
+
 STEP = 'step'
 SPECIFICATION = 'specification'
 PREREQUISITE_READ = 'prerequisite'
@@ -526,7 +644,11 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('roots', nargs='+', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
+    parser.add_argument('--compare', nargs=2, metavar=('BASE', 'HEAD'),
+                        help='compare section bodies between two revisions')
     options = parser.parse_args(argv)
+    if options.compare:
+        return compare_revisions(*options.compare, options.roots, options.quiet)
 
     # A fixture tree holds test inputs in the format its suite reads, which is
     # specimen text rather than a skill file, so the guidelines do not reach it.
