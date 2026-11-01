@@ -333,18 +333,33 @@ class InitiativeStatus(unittest.TestCase):
                              statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
         self.assertIn('[I01:E00:W01] Go: Task: Backlog → Ready', out)
 
-    def task_pair(self, held: tuple[dict, ...]) -> str:
+    def task_pair(self, held: tuple[dict, ...], draft: bool = False) -> str:
         """An epic whose W01 links a task issue, and an open pull request naming the epic."""
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Go', '')))
         task = issue(3, '[I01:E00:W01] Go: Task')
         return self.open_pair('In Progress', 'In Progress', epic,
-                              json.dumps(pr(9, '[I01:E00] Go')) + '\n', held=held, tasks=(task,),
+                              json.dumps(pr(9, '[I01:E00] Go', draft=draft)) + '\n', held=held, tasks=(task,),
                               statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
 
-    def test_a_pull_request_linking_the_task_issue_puts_it_in_review(self):
-        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Review', self.task_pair((links(9, 3),)))
+    def test_a_ready_pull_request_linking_the_task_issue_puts_it_in_progress(self):
+        out = self.task_pair((links(9, 3),))
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Progress', out)
+        self.assertNotIn('→ In Review', out)
 
-    def test_a_pull_request_linking_nothing_leaves_the_task_issue_out_of_review(self):
+    def test_a_draft_pull_request_linking_the_task_issue_puts_it_in_progress(self):
+        out = self.task_pair((links(9, 3),), draft=True)
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → In Progress', out)
+        self.assertNotIn('→ In Review', out)
+
+    def test_a_merged_pull_request_and_a_completed_task_issue_put_it_done(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('issues', 3)})", 'Go', '')))
+        task = issue(3, '[I01:E00:W01] Go: Task', 'closed')
+        merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z', base='i01/e00/workspace')) + '\n'
+        out = self.open_pair('In Progress', 'In Progress', epic, merged, held=(links(9, 3),), tasks=(task,),
+                             statuses=('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'))
+        self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → Done', out)
+
+    def test_a_pull_request_linking_nothing_leaves_the_task_issue_ready(self):
         out = self.task_pair(())
         self.assertNotIn('→ In Review', out)
         self.assertIn('set #3 [I01:E00:W01] Go: Task: Backlog → Ready', out)

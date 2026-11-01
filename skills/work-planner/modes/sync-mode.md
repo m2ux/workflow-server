@@ -143,9 +143,9 @@ The main path meets [Outcomes](#outcomes).
       - Run [Copy Project Board](../artifacts/board.md#copy-project-board) with the owner, repository, theme title and originating proposal record when applicable.
     - Follow [Record Board Delivery](../artifacts/board-delivery.md#record-board-delivery) after the issue bodies and closures are saved.
 13. **Explain each change entering review.**
-    For each task or epic newly confirmed In Review by the board step:
-    - Run [Understand Mode](understand-mode.md) with the task's open pull request or each epic review pull request, one run per base.
-    - Complete each overview before continuing; an initiative has no overview of its own. An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed. A reviewer meets the overview on the pull request it explains. The run that integrates an epic base owns that epic's overview; this step writes one only where the board step confirms a task or epic In Review that integration did not already explain.
+    For each epic newly confirmed In Review by the board step:
+    - Run [Understand Mode](understand-mode.md) with each epic review pull request, one run per base.
+    - Complete each overview before continuing; an initiative has no overview of its own. An issue already In Review when the sync began keeps the overview it has: the pull request it explains is the one already reviewed. A reviewer meets the overview on the pull request it explains. The run that integrates an epic base owns that epic's overview; this step writes one only where the board step confirms an epic In Review that integration did not already explain.
 14. **Report.**
     Return saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
     - Report queue decisions unevaluated by this run.
@@ -160,6 +160,6 @@ The main path meets [Outcomes](#outcomes).
 - **The board is current.**
   The theme board shows where the initiative and its epics stand, including what a reviewer can take up.
 - **A change entering review is explained.**
-  Each task and epic that enters review has an overview on the pull request a reviewer reads.
+  Each epic that enters review has an overview on the pull request a reviewer reads.
 - **The queue stays undecided.**
   A sync on its own leaves the choice of what to start next undecided.

@@ -37,15 +37,15 @@ epic's repository.
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each other pull request counting towards the epic, merged in the
                window, that links none of the epic's task issues listed.
-  In progress  epics and task issues In Progress or In Review, each epic with its open pull
-               requests that link none of its task issues In Progress or In Review, ready for
-               review (In Review) or draft, or else, with no line under it, its next task.
+  In progress  epics In Progress or In Review and task issues In Progress, each epic with its
+               open pull requests that link none of its task issues In Progress, in review when
+               ready for review or draft, or else, with no line under it, its next task.
   Next         epics and task issues Ready, ranked by the priority label of their initiative, then
                by their epic's own (a larger number first; no label after every number) and then by
                reference, and an epic ahead of any listed epic naming it; the first five,
                and a count of the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
-task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
+task issue, if it has one, is on the board and not In Progress. A task is undelivered
 while every pull request its id links is open. A task issue that
 belongs to an epic which names its task as next is not listed again.
 
@@ -61,7 +61,7 @@ sections, each issue or pull request by its bare URL, and a key to the reference
 last. Each initiative, and each issue or pull request under Completed, In progress and Next, opens
 with the mark of its state. An initiative, and a group's heading, is done when its issue is Done,
 or closed if off the board; in review when In Review; else in progress. Its lines are done; in
-progress, in review or draft; and an epic's next task and each Next item are ready. Unresolved
+progress, a pull request in review or draft; and an epic's next task and each Next item are ready. Unresolved
 dependencies, unreadable epics, pull requests without a repository and initiatives not given print
 to stderr.
 """
@@ -307,7 +307,7 @@ def main() -> int:
         ref = reference(*epics[ek])
         for tid, r in rows.items():
             backing = on_board(linked_issue(id_cell(header, r)))
-            if linked_issue(id_cell(header, r)) and (not backing or status.get(backing) in ACTIVE):
+            if linked_issue(id_cell(header, r)) and (not backing or status.get(backing) == 'In Progress'):
                 continue
             if board.row_delivered(ek, tid, ref) is not Resolution.MET and board.met(
                     cell(header, r, 'Depends on'), ek, epic_ids.get(scope_of_epic[ek], {}),
@@ -342,8 +342,8 @@ def main() -> int:
         line = f"W{tasks[k][2]} {epic_name(issues[k]['title'])} — {issues[k]['html_url']}"
         if done(k):
             add(completed, k, f'{DONE} {line}')
-        elif status.get(k) in ACTIVE:
-            add(progress, k, f'{MARK[status[k]]} {line}')
+        elif status.get(k) == 'In Progress':
+            add(progress, k, f'{WORKING} {line}')
         elif status.get(k) == 'Ready':
             ready.append((k, ''))
     for ek in sorted((k for k in tagged if k in epics), key=group_of):
@@ -374,7 +374,7 @@ def main() -> int:
             add(progress, ek)
             group = progress.group(group_of(ek))
             for pr in named:
-                if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) in ACTIVE):
+                if pr.get('state') == 'open' and not listed(pr, lambda n: status.get(n) == 'In Progress'):
                     state = DRAFT if pr.get('draft') else REVIEW
                     group.append(f"{state} {pr_title(pr)} — {pr['html_url']}")
             if not group and (task := next_task(ek, header, rows)):
