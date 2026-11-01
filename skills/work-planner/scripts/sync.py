@@ -63,7 +63,7 @@ merges that base and is not a task delivery. Each such base still unmerged is re
 an open pull request that merges it when one is open. A draft is named draft. When a task has merged
 into an epic base and the epic is not yet complete, that base is reported draft.
 
-The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link and repository-setting gate in closure.py.
+The closable report establishes normal delivery readiness. Completing the issue also requires the Development-link gate in closure.py.
 """
 import argparse
 import json
