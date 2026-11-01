@@ -9,7 +9,7 @@
 | Baseline skills tree | `04de875a8517dcf229462e3b939099e16ffe3e63` |
 | Result skills tree, epic base `i11/e10/workspace` | `f0d01fd3fd84ff050fcddf0ff4ff985369ca2c43` |
 | Instrument checker, `skills/scripts/check_skill_files.py` | commit `aa97fc255f705b2d1f009a8e3f13ada0d2286496`, blob `e4e794c27a165c31811d5f18488fa78e51556137` |
-| Tested branch head | `aa97fc255f705b2d1f009a8e3f13ada0d2286496`, the task branch merged with the epic base above |
+| Tested branch head | `43ed7f77ba620b0f85ba4155837a77cc63d23ed2`, the task branch merged with epic base `212bedd48`; its checker blob is the instrument's |
 
 ## Instrument
 
@@ -69,7 +69,7 @@ Every earlier placement fixture passes unchanged, so callers are what they were.
 
 ## T3 Work Planner Suite
 
-`python3 -m pytest skills/work-planner/test -q` at the tested head: 627 passed, 1 skipped, 1137 subtests passed.
+`python3 -m pytest skills/work-planner/test -q` at the tested head: 645 passed, 1 skipped, 1137 subtests passed.
 
 ## T4 Retrieval Measurements
 
