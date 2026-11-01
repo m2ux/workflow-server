@@ -26,4 +26,4 @@
 - `sbx python3 -m pytest skills/test -q`: 219 passed, 36 subtests passed.
 - `sbx python3 -m pytest skills/workflow-canon/test -q`: 39 passed, 38 skipped, 21 subtests passed.
 - `sbx python3 skills/scripts/check_skill_files.py skills/*/`: 81 files checked, 0 findings.
-- Verify Skills on [#1585](https://github.com/m2ux/workflow-server/pull/1585): pending.
+- Verify Skills on [#1585](https://github.com/m2ux/workflow-server/pull/1585) at `c35676c1d` ([run 41326689048](https://github.com/m2ux/workflow-server/actions/runs/41326689048)): both jobs succeed.
