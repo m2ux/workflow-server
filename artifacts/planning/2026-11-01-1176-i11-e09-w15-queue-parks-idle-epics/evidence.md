@@ -1,6 +1,6 @@
 # W15 Delivery Evidence
 
-Delivery head: `300804da7c58797deac2b79f56a1c748c3425313` on `i11/e09/w15-queue-parks-idle-epics`. Base: `400703b086b86a2e5d9135d4e6d9f89cdb7d630d` (`i11/e09/workspace`), unchanged since the branch was cut.
+Delivery head: `b8afe8174adf2cde98473e829ac6a1f4296cefa7` on `i11/e09/w15-queue-parks-idle-epics`. Base: `d33e9983a1a5125eb54f4befe3dc86112db30806` (`i11/e09/workspace`, carrying W14's #1522), merged into the branch at that head. The work was first tested at `300804da7` on base `400703b08`; T1 and T2 touch no path the merge changed, and T3 ran again on the delivery head.
 
 Pull request: [#1523](https://github.com/m2ux/workflow-server/pull/1523).
 
@@ -30,7 +30,7 @@ Result: passed.
 
 ## T3 Full Suite
 
-`python3 -m pytest skills/work-planner/test -q`: `531 passed, 1033 subtests passed`. `python3 skills/scripts/check_skill_files.py skills/work-planner`: `50 files checked, 0 findings`.
+`python3 -m pytest skills/work-planner/test -q`: `532 passed, 1036 subtests passed` on the delivery head (`531 passed, 1033 subtests passed` at `300804da7`). `python3 skills/scripts/check_skill_files.py skills/work-planner`: `50 files checked, 0 findings`.
 
 Result: passed.
 
