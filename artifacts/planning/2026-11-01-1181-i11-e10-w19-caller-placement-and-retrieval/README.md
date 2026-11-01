@@ -17,7 +17,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | [walk.py](walk.py) | The retrieval instrument: each scenario's required reads over one skills tree |
 | [scenarios.json](scenarios.json) | The fixed scenario inputs both revisions are walked with |
 | [walk-04de875a.json](walk-04de875a.json) | Per-scenario counts and read traces at the baseline revision |
-| [walk-ba441c2b.json](walk-ba441c2b.json) | Per-scenario counts and read traces at the epic base revision |
+| [walk-f0d01fd3.json](walk-f0d01fd3.json) | Per-scenario counts and read traces at the epic base revision |
 
 ## Links
 

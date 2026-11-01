@@ -1,7 +1,7 @@
 {
  "instrument": {
   "walk": "26e7749a24ae3198e5840dea04fe7da6f9be982e13b524fe477b787506673722",
-  "checker": "9b91a96a887e74c754bded61b34e28d07cef0729230a29bc8fcfdd9f0eb51974",
+  "checker": "808fff903c50536d834b89503651c73af6717c4c85c637c573e018dbc28eab98",
   "scenarios": "19a2d24d7d36c9d8f5f011ac7a7ab29f7fb4b70964a7a4f6be64dc37210e8931"
  },
  "modes_without_scenario": [],
@@ -12,7 +12,7 @@
    "mode": "propose",
    "status": "measured",
    "files": 8,
-   "lines": 1465,
+   "lines": 1432,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/propose-mode.md",
@@ -136,7 +136,7 @@
     {
      "read": "work-planner/artifacts/issue.md#list-prefixed-titles",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#select-tracker-number:148",
+     "via": "work-planner/artifacts/issue.md#select-tracker-number:143",
      "kind": "step"
     },
     {
@@ -226,13 +226,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -503,182 +503,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -1146,7 +1153,7 @@
    "mode": "plan",
    "status": "measured",
    "files": 37,
-   "lines": 5563,
+   "lines": 5535,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/plan-mode.md",
@@ -1437,7 +1444,7 @@
     {
      "read": "work-planner/artifacts/issue.md#list-prefixed-titles",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#select-tracker-number:148",
+     "via": "work-planner/artifacts/issue.md#select-tracker-number:143",
      "kind": "step"
     },
     {
@@ -1527,13 +1534,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -1717,9 +1724,21 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:63",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/pull-request.md#access-development-links",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
      "kind": "step"
     },
     {
@@ -1731,49 +1750,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/pull-request.md#access-development-links",
-     "how": "run",
-     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -1810,12 +1817,6 @@
      "read": "work-planner/artifacts/issue.md#confirm-repository-auto-close",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:41",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
      "kind": "step"
     },
     {
@@ -2409,7 +2410,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -2517,7 +2518,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -3087,13 +3088,13 @@
     {
      "read": "work-planner/artifacts/issue.md#read-repository-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:109",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:104",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#sweep-closure-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:111",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:106",
      "kind": "step"
     }
    ],
@@ -3479,182 +3480,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -3864,35 +3872,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -4240,7 +4248,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -4257,6 +4265,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -4310,7 +4325,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -4669,7 +4684,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -4893,14 +4908,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -6132,14 +6147,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -6307,14 +6322,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#test-coverage",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#test-coverage",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -7447,7 +7462,7 @@
    "mode": "align",
    "status": "measured",
    "files": 24,
-   "lines": 4058,
+   "lines": 4030,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/align-mode.md",
@@ -7815,13 +7830,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -8187,13 +8202,13 @@
     {
      "read": "work-planner/artifacts/pull-request-body.md#convert-test-plan",
      "how": "run",
-     "via": "work-planner/artifacts/pull-request-body.md#repair-test-plan:58",
+     "via": "work-planner/artifacts/pull-request-body.md#repair-test-plan:59",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/pull-request-body.md#test-plan",
      "how": "run",
-     "via": "work-planner/artifacts/pull-request-body.md#repair-test-plan:60",
+     "via": "work-planner/artifacts/pull-request-body.md#repair-test-plan:61",
      "kind": "step"
     },
     {
@@ -8227,9 +8242,21 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:63",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/pull-request.md#access-development-links",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
      "kind": "step"
     },
     {
@@ -8241,49 +8268,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/pull-request.md#access-development-links",
-     "how": "run",
-     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -8296,12 +8311,6 @@
      "read": "work-planner/artifacts/issue.md#confirm-repository-auto-close",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:41",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
      "kind": "step"
     },
     {
@@ -8379,7 +8388,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -8403,7 +8412,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -8764,182 +8773,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -9149,35 +9165,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -9525,7 +9541,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -9542,6 +9558,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -9595,7 +9618,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -9954,7 +9977,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -10178,14 +10201,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -11451,7 +11474,7 @@
    "mode": "sync",
    "status": "measured",
    "files": 29,
-   "lines": 4731,
+   "lines": 4703,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/sync-mode.md",
@@ -11770,13 +11793,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -11828,6 +11851,12 @@
      "kind": "step"
     },
     {
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
+     "kind": "step"
+    },
+    {
      "read": "work-planner/artifacts/issue.md#close-tracker-issue",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
@@ -11842,43 +11871,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -11912,12 +11935,6 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
-     "kind": "step"
-    },
-    {
      "read": "work-planner/artifacts/pull-request.md#set-development-link",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:42",
@@ -11944,7 +11961,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -12130,7 +12147,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -12946,13 +12963,13 @@
     {
      "read": "work-planner/artifacts/issue.md#read-repository-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:109",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:104",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#sweep-closure-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:111",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:106",
      "kind": "step"
     },
     {
@@ -13127,182 +13144,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -13512,35 +13536,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -13888,7 +13912,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -13905,6 +13929,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -13958,7 +13989,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -14534,7 +14565,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -14758,14 +14789,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -16088,14 +16119,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -16255,7 +16286,7 @@
    "mode": "advance",
    "status": "measured",
    "files": 32,
-   "lines": 5102,
+   "lines": 5074,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/advance-mode.md",
@@ -16679,13 +16710,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -16737,6 +16768,12 @@
      "kind": "step"
     },
     {
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
+     "kind": "step"
+    },
+    {
      "read": "work-planner/artifacts/issue.md#close-tracker-issue",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
@@ -16751,43 +16788,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -16821,12 +16852,6 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
-     "kind": "step"
-    },
-    {
      "read": "work-planner/artifacts/pull-request.md#set-development-link",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:42",
@@ -16853,7 +16878,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -17039,7 +17064,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -17783,13 +17808,13 @@
     {
      "read": "work-planner/artifacts/issue.md#read-repository-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:109",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:104",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#sweep-closure-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:111",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:106",
      "kind": "step"
     },
     {
@@ -18651,182 +18676,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -19036,35 +19068,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -19412,7 +19444,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -19429,6 +19461,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -19482,7 +19521,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -20058,7 +20097,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -20282,14 +20321,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -21465,14 +21504,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -21709,7 +21748,7 @@
    "mode": "deliver",
    "status": "measured",
    "files": 38,
-   "lines": 5540,
+   "lines": 5513,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/deliver-mode.md",
@@ -22187,13 +22226,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -22245,6 +22284,12 @@
      "kind": "step"
     },
     {
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
+     "kind": "step"
+    },
+    {
      "read": "work-planner/artifacts/issue.md#close-tracker-issue",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
@@ -22259,43 +22304,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -22329,12 +22368,6 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
-     "kind": "step"
-    },
-    {
      "read": "work-planner/artifacts/pull-request.md#set-development-link",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:42",
@@ -22361,7 +22394,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -22547,7 +22580,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -23291,13 +23324,13 @@
     {
      "read": "work-planner/artifacts/issue.md#read-repository-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:109",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:104",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#sweep-closure-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:111",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:106",
      "kind": "step"
     },
     {
@@ -23923,182 +23956,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -24308,35 +24348,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -24684,7 +24724,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -24701,6 +24741,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -24754,7 +24801,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -25330,7 +25377,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -25554,14 +25601,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -27080,112 +27127,112 @@
     {
      "target": "../artifacts/issue.md#read-tracker-issue",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 26,
+     "line": 27,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/placement.md#draft-issue-placement",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 27,
+     "line": 28,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/plan-change.md#check-plan-change-autonomy",
-     "in": "work-planner/modes/hoist-mode.md",
-     "line": 30,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "../artifacts/plan-change.md#record-plan-change",
      "in": "work-planner/modes/hoist-mode.md",
      "line": 31,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "../artifacts/plan-change.md#held-change",
+     "target": "../artifacts/plan-change.md#record-plan-change",
      "in": "work-planner/modes/hoist-mode.md",
      "line": 32,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "../guidelines.md#modes",
+     "target": "../artifacts/plan-change.md#held-change",
      "in": "work-planner/modes/hoist-mode.md",
      "line": 33,
      "kind": "step",
      "how": "read"
     },
     {
+     "target": "../guidelines.md#modes",
+     "in": "work-planner/modes/hoist-mode.md",
+     "line": 34,
+     "kind": "step",
+     "how": "read"
+    },
+    {
      "target": "../artifacts/placement.md#apply-issue-placement",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 38,
+     "line": 39,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/placement.md#rewrite-orphan-issue",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 39,
+     "line": 40,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/placement.md#subsume-orphan-work",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 39,
+     "line": 40,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/issue-body.md#validate-issue-body",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 42,
+     "line": 43,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/dependency-graph.md#check-dependencies-and-numbering",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/plan-change.md#check-plan-change-autonomy",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 44,
+     "line": 45,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/plan-change.md#held-change",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 44,
+     "line": 45,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/issue-body.md#apply-body-corrections",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 45,
+     "line": 46,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/issue.md#save-tracker-issue",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 46,
+     "line": 47,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "../artifacts/plan-change.md#change-list",
      "in": "work-planner/modes/hoist-mode.md",
-     "line": 52,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
@@ -27654,14 +27701,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -27996,7 +28043,7 @@
    "mode": "understand",
    "status": "measured",
    "files": 14,
-   "lines": 2751,
+   "lines": 2721,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/understand-mode.md",
@@ -28336,7 +28383,7 @@
     {
      "read": "work-planner/artifacts/pull-request-body.md#template",
      "how": "run",
-     "via": "work-planner/artifacts/pull-request-body.md#link-architecture-overview:43",
+     "via": "work-planner/artifacts/pull-request-body.md#link-architecture-overview:44",
      "kind": "step"
     },
     {
@@ -28370,9 +28417,21 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:63",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/pull-request.md#access-development-links",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "kind": "step"
+    },
+    {
+     "read": "work-planner/artifacts/issue.md#close-tracker-issue",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
      "kind": "step"
     },
     {
@@ -28384,55 +28443,43 @@
     {
      "read": "work-planner/artifacts/issue.md#fetch-tracker-issue",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:88",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:85",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/pull-request.md#access-development-links",
-     "how": "run",
-     "via": "work-planner/artifacts/pull-request.md#link-pull-request-to-issue:65",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -28445,12 +28492,6 @@
      "read": "work-planner/artifacts/issue.md#confirm-repository-auto-close",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:41",
-     "kind": "step"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
      "kind": "step"
     },
     {
@@ -28661,182 +28702,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -29046,35 +29094,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -29422,7 +29470,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -29439,6 +29487,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -29492,7 +29547,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -30039,7 +30094,7 @@
    "mode": "hoist",
    "status": "measured",
    "files": 20,
-   "lines": 3871,
+   "lines": 3844,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/hoist-mode.md",
@@ -30199,7 +30254,7 @@
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-repository-issues:130",
+     "via": "work-planner/artifacts/issue.md#read-repository-issues:125",
      "kind": "step"
     },
     {
@@ -30223,7 +30278,7 @@
     {
      "read": "work-planner/artifacts/issue.md#read-tracker-issue",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:26",
+     "via": "work-planner/modes/hoist-mode.md:27",
      "kind": "step"
     },
     {
@@ -30247,7 +30302,7 @@
     {
      "read": "work-planner/artifacts/placement.md#draft-issue-placement",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:27",
+     "via": "work-planner/modes/hoist-mode.md:28",
      "kind": "step"
     },
     {
@@ -30271,7 +30326,7 @@
     {
      "read": "work-planner/artifacts/plan-change.md#check-plan-change-autonomy",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:30",
+     "via": "work-planner/modes/hoist-mode.md:31",
      "kind": "step"
     },
     {
@@ -30295,7 +30350,7 @@
     {
      "read": "work-planner/artifacts/plan-change.md#record-plan-change",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:31",
+     "via": "work-planner/modes/hoist-mode.md:32",
      "kind": "step"
     },
     {
@@ -30313,13 +30368,13 @@
     {
      "read": "work-planner/guidelines.md#modes",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:33",
+     "via": "work-planner/modes/hoist-mode.md:34",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/placement.md#apply-issue-placement",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:38",
+     "via": "work-planner/modes/hoist-mode.md:39",
      "kind": "step"
     },
     {
@@ -30367,13 +30422,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -30619,7 +30674,7 @@
     {
      "read": "work-planner/artifacts/placement.md#rewrite-orphan-issue",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:39",
+     "via": "work-planner/modes/hoist-mode.md:40",
      "kind": "step"
     },
     {
@@ -30703,7 +30758,7 @@
     {
      "read": "work-planner/artifacts/placement.md#subsume-orphan-work",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:39",
+     "via": "work-planner/modes/hoist-mode.md:40",
      "kind": "step"
     },
     {
@@ -30715,13 +30770,13 @@
     {
      "read": "work-planner/artifacts/issue.md#close-as-not-planned",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-transferred-work:54",
+     "via": "work-planner/artifacts/issue.md#close-transferred-work:52",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue-body.md#apply-body-corrections",
      "how": "run",
-     "via": "work-planner/modes/hoist-mode.md:45",
+     "via": "work-planner/modes/hoist-mode.md:46",
      "kind": "step"
     },
     {
@@ -30896,182 +30951,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -31281,35 +31343,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -31657,7 +31719,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -31674,6 +31736,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -31727,7 +31796,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -32303,7 +32372,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -32527,14 +32596,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -33373,7 +33442,7 @@
    "mode": "standup",
    "status": "measured",
    "files": 31,
-   "lines": 4875,
+   "lines": 4847,
    "opened": [
     "work-planner/SKILL.md",
     "work-planner/modes/standup-mode.md",
@@ -33814,13 +33883,13 @@
     {
      "read": "work-planner/artifacts/issue.md#post-inline-comment",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:65",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:63",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#post-comment-file",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#comment-on-issue:66",
+     "via": "work-planner/artifacts/issue.md#comment-on-issue:64",
      "kind": "step"
     },
     {
@@ -33872,6 +33941,12 @@
      "kind": "step"
     },
     {
+     "read": "work-planner/artifacts/issue.md#auto-close-setting",
+     "how": "run",
+     "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
+     "kind": "step"
+    },
+    {
      "read": "work-planner/artifacts/issue.md#close-tracker-issue",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:35",
@@ -33886,43 +33961,37 @@
     {
      "read": "work-planner/artifacts/issue.md#read-issue-development",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:89",
+     "via": "work-planner/artifacts/issue.md#capture-issue-development:86",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#capture-issue-links",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#read-issue-development:100",
+     "via": "work-planner/artifacts/issue.md#read-issue-development:95",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#fetch-all-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-links:448",
+     "via": "work-planner/artifacts/issue.md#capture-issue-links:415",
      "kind": "specification"
-    },
-    {
-     "read": "work-planner/artifacts/issue.md#write-development-snapshot",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#capture-issue-development:90",
-     "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#check-issue-closure",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:40",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:38",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#close-as-completed",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-tracker-issue:44",
+     "via": "work-planner/artifacts/issue.md#close-tracker-issue:42",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#set-completed-state",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#close-as-completed:79",
+     "via": "work-planner/artifacts/issue.md#close-as-completed:76",
      "kind": "step"
     },
     {
@@ -33956,12 +34025,6 @@
      "kind": "step"
     },
     {
-     "read": "work-planner/artifacts/issue.md#auto-close-setting",
-     "how": "run",
-     "via": "work-planner/artifacts/issue.md#confirm-repository-auto-close:121",
-     "kind": "step"
-    },
-    {
      "read": "work-planner/artifacts/pull-request.md#set-development-link",
      "how": "run",
      "via": "work-planner/artifacts/pull-request.md#access-development-links:42",
@@ -33988,7 +34051,7 @@
     {
      "read": "work-planner/artifacts/epic.md#delivery-findings",
      "how": "run",
-     "via": "work-planner/artifacts/epic.md#match-pull-requests:102",
+     "via": "work-planner/artifacts/epic.md#match-pull-requests:103",
      "kind": "specification"
     },
     {
@@ -34174,7 +34237,7 @@
     {
      "read": "work-planner/artifacts/epic-issue-body.md#test-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:284",
+     "via": "work-planner/artifacts/epic-issue-body.md#sync-epic:285",
      "kind": "specification"
     },
     {
@@ -34894,13 +34957,13 @@
     {
      "read": "work-planner/artifacts/issue.md#read-repository-issues",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:109",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:104",
      "kind": "step"
     },
     {
      "read": "work-planner/artifacts/issue.md#sweep-closure-evidence",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:111",
+     "via": "work-planner/artifacts/issue.md#audit-closure-evidence:106",
      "kind": "step"
     },
     {
@@ -34942,7 +35005,7 @@
     {
      "read": "work-planner/artifacts/issue.md#find-initiative-issue",
      "how": "run",
-     "via": "work-planner/artifacts/issue.md#locate-initiative-issue:139",
+     "via": "work-planner/artifacts/issue.md#locate-initiative-issue:134",
      "kind": "step"
     }
    ],
@@ -35720,182 +35783,189 @@
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 40,
+     "line": 38,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-completed",
      "in": "work-planner/artifacts/issue.md",
-     "line": 44,
+     "line": 42,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#comment-on-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 53,
+     "line": 51,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#close-as-not-planned",
      "in": "work-planner/artifacts/issue.md",
-     "line": 54,
+     "line": 52,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 55,
+     "line": 53,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-inline-comment",
      "in": "work-planner/artifacts/issue.md",
-     "line": 65,
+     "line": 63,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#post-comment-file",
      "in": "work-planner/artifacts/issue.md",
-     "line": 66,
+     "line": 64,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 75,
+     "line": 73,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#check-issue-closure",
      "in": "work-planner/artifacts/issue.md",
-     "line": 77,
+     "line": 74,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#set-completed-state",
      "in": "work-planner/artifacts/issue.md",
-     "line": 79,
+     "line": 76,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 88,
+     "line": 85,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 89,
-     "kind": "step",
-     "how": "read"
-    },
-    {
-     "target": "#write-development-snapshot",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 90,
+     "line": 86,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 100,
+     "line": 95,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-repository-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 109,
+     "line": 104,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#read-issue-development",
      "in": "work-planner/artifacts/issue.md",
-     "line": 110,
+     "line": 105,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#sweep-closure-evidence",
      "in": "work-planner/artifacts/issue.md",
-     "line": 111,
+     "line": 106,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#auto-close-setting",
      "in": "work-planner/artifacts/issue.md",
-     "line": 121,
+     "line": 116,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 130,
+     "line": 125,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#find-initiative-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 139,
+     "line": 134,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#list-prefixed-titles",
      "in": "work-planner/artifacts/issue.md",
-     "line": 148,
+     "line": 143,
      "kind": "step",
      "how": "read"
     },
     {
-     "target": "#fetch-all-issues",
+     "target": "#fetch-tracker-issue",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#capture-issue-links",
      "in": "work-planner/artifacts/issue.md",
-     "line": 326,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#check-issue-closure",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 328,
-     "kind": "specification",
-     "how": "read"
-    },
-    {
-     "target": "#fetch-tracker-issue",
-     "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 303,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#fetch-all-issues",
      "in": "work-planner/artifacts/issue.md",
-     "line": 448,
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#capture-issue-links",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 323,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#check-issue-closure",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 325,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-tracker-issue",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
+     "kind": "specification",
+     "how": "read"
+    },
+    {
+     "target": "#fetch-all-issues",
+     "in": "work-planner/artifacts/issue.md",
+     "line": 415,
      "kind": "specification",
      "how": "read"
     },
@@ -36105,35 +36175,35 @@
     {
      "target": "#template",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 43,
+     "line": 44,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#convert-test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 58,
+     "line": 59,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "#test-plan",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 60,
+     "line": 61,
      "kind": "step",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "read"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "read"
     },
@@ -36481,7 +36551,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 19,
      "kind": "step",
@@ -36498,6 +36568,13 @@
      "target": "#merge-epic-pull-request",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 27,
+     "kind": "step",
+     "how": "read"
+    },
+    {
+     "target": "issue.md#auto-close-setting",
+     "in": "work-planner/artifacts/pull-request.md",
+     "line": 35,
      "kind": "step",
      "how": "read"
     },
@@ -36551,7 +36628,7 @@
      "how": "read"
     },
     {
-     "target": "issue.md#close-tracker-issue",
+     "target": "issue.md#auto-close-setting",
      "in": "work-planner/artifacts/pull-request.md",
      "line": 63,
      "kind": "step",
@@ -37155,7 +37232,7 @@
     {
      "target": "#delivery-findings",
      "in": "work-planner/artifacts/epic.md",
-     "line": 102,
+     "line": 103,
      "kind": "specification",
      "how": "read"
     },
@@ -37379,14 +37456,14 @@
     {
      "target": "#test-evidence",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 284,
+     "line": 285,
      "kind": "specification",
      "how": "read"
     },
     {
      "target": "#task-delivery",
      "in": "work-planner/artifacts/epic-issue-body.md",
-     "line": 342,
+     "line": 343,
      "kind": "specification",
      "how": "read"
     },
@@ -38492,14 +38569,14 @@
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 131,
+     "line": 134,
      "kind": "descriptive",
      "how": "run"
     },
     {
      "target": "issue-body.md#coverage-reports",
      "in": "work-planner/artifacts/pull-request-body.md#fields",
-     "line": 132,
+     "line": 135,
      "kind": "descriptive",
      "how": "run"
     },
@@ -39044,7 +39121,7 @@
    "mode": "author",
    "status": "measured",
    "files": 10,
-   "lines": 973,
+   "lines": 975,
    "opened": [
     "workflow-canon/SKILL.md",
     "workflow-canon/references/author-mode.md",
@@ -39628,7 +39705,7 @@
    "mode": "audit",
    "status": "measured",
    "files": 9,
-   "lines": 914,
+   "lines": 916,
    "opened": [
     "workflow-canon/SKILL.md",
     "workflow-canon/references/audit-mode.md",
@@ -40244,7 +40321,7 @@
    "mode": "review",
    "status": "measured",
    "files": 6,
-   "lines": 639,
+   "lines": 640,
    "opened": [
     "workflow-canon/SKILL.md",
     "workflow-canon/references/review-mode.md",
@@ -40577,7 +40654,7 @@
    "mode": "revise",
    "status": "measured",
    "files": 6,
-   "lines": 497,
+   "lines": 498,
    "opened": [
     "workflow-canon/SKILL.md",
     "workflow-canon/references/revise-mode.md",

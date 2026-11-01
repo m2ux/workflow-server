@@ -7,9 +7,9 @@
 | Role | Commit |
 | --- | --- |
 | Baseline skills tree | `04de875a8517dcf229462e3b939099e16ffe3e63` |
-| Result skills tree, epic base `i11/e10/workspace` | `ba441c2b8159e81b37ee5ccbbec75b2d3a06d10d` |
-| Instrument checker, `skills/scripts/check_skill_files.py` | commit `aa3fb6107451e5b74b8885073b684a2e67d4a669`, blob `4cf9a482b2b6f98d851791545c3942addc7ace77` |
-| Tested branch head | `aa3fb6107451e5b74b8885073b684a2e67d4a669` |
+| Result skills tree, epic base `i11/e10/workspace` | `f0d01fd3fd84ff050fcddf0ff4ff985369ca2c43` |
+| Instrument checker, `skills/scripts/check_skill_files.py` | commit `aa97fc255f705b2d1f009a8e3f13ada0d2286496`, blob `e4e794c27a165c31811d5f18488fa78e51556137` |
+| Tested branch head | `aa97fc255f705b2d1f009a8e3f13ada0d2286496`, the task branch merged with the epic base above |
 
 ## Instrument
 
@@ -17,7 +17,7 @@
 | --- | --- |
 | [walk.py](walk.py) | `26e7749a24ae3198e5840dea04fe7da6f9be982e13b524fe477b787506673722` |
 | [scenarios.json](scenarios.json) | `19a2d24d7d36c9d8f5f011ac7a7ab29f7fb4b70964a7a4f6be64dc37210e8931` |
-| checker at the commit above | `9b91a96a887e74c754bded61b34e28d07cef0729230a29bc8fcfdd9f0eb51974` |
+| checker at the commit above | `808fff903c50536d834b89503651c73af6717c4c85c637c573e018dbc28eab98` |
 
 Each output file repeats these three digests under `instrument`, so a trace names the instrument that produced it.
 
@@ -27,10 +27,10 @@ Extract each tree and the checker from the project checkout, then run the walk o
 
 ```bash
 git archive 04de875a8517dcf229462e3b939099e16ffe3e63 skills | tar -x -C <trees>/04de875a
-git archive ba441c2b8159e81b37ee5ccbbec75b2d3a06d10d skills | tar -x -C <trees>/ba441c2b
-git show aa3fb6107:skills/scripts/check_skill_files.py > <scratch>/check_skill_files.py
+git archive f0d01fd3fd84ff050fcddf0ff4ff985369ca2c43 skills | tar -x -C <trees>/f0d01fd3
+git show aa97fc255:skills/scripts/check_skill_files.py > <scratch>/check_skill_files.py
 python3 walk.py <scratch>/check_skill_files.py <trees>/04de875a/skills scenarios.json walk-04de875a.json
-python3 walk.py <scratch>/check_skill_files.py <trees>/ba441c2b/skills scenarios.json walk-ba441c2b.json
+python3 walk.py <scratch>/check_skill_files.py <trees>/f0d01fd3/skills scenarios.json walk-f0d01fd3.json
 ```
 
 ### Reading Rules
@@ -46,7 +46,7 @@ The walk's docstring states them; in short:
 
 ## T1 Callers and Reach Fixtures
 
-`python3 -m pytest skills/test -q` at the tested head: 82 passed, 3 subtests passed.
+`python3 -m pytest skills/test -q` at the tested head: 90 passed, 3 subtests passed.
 
 The `CallersAndReach` class holds one specimen with each case:
 
@@ -59,17 +59,17 @@ The `CallersAndReach` class holds one specimen with each case:
 - **Prerequisites.**
   A Prerequisites entry and a canonical `Read [...] first.` sentence are classified `prerequisite`; a descriptive link in Fields is neither caller nor reach.
 
-Every one of the 76 earlier fixtures passes unchanged, so callers are what they were.
+Every earlier placement fixture passes unchanged, so callers are what they were.
 
 ## T2 Shared Skill-File Check
 
-`python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon` at the tested head: 79 files checked, 0 findings.
+`python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-canon` at the tested head: 68 files checked, 0 findings.
 
-Over every skill, the check reports 6 findings, all in `skills/gitnexus/gitnexus-cli/SKILL.md`. The same 6 stand at the epic base before this change. E10 W11 and W13 own them.
+`python3 skills/scripts/check_skill_files.py skills`, over every skill and the shared guidelines: 77 files checked, 0 findings.
 
 ## T3 Work Planner Suite
 
-`python3 -m pytest skills/work-planner/test -q` at the tested head: 619 passed, 1 skipped, 1136 subtests passed.
+`python3 -m pytest skills/work-planner/test -q` at the tested head: 627 passed, 1 skipped, 1137 subtests passed.
 
 ## T4 Retrieval Measurements
 
@@ -77,27 +77,27 @@ Both runs measure every scenario, and neither reports a mode without a scenario 
 
 | Output | SHA-256 |
 | --- | --- |
-| [walk-04de875a.json](walk-04de875a.json) | `e7a0f2a9242e1827d4eb8f68d996574f629eab61bd153bf0f43e1de087f1a162` |
-| [walk-ba441c2b.json](walk-ba441c2b.json) | `f205aa81457eb4e10ea4177ae1345c0d2a51fa0b699da8e696a2d0f5baf8dd38` |
+| [walk-04de875a.json](walk-04de875a.json) | `929c807f43d195ce16267b0481163e746926661ce1776d26ae5292ba073bcc80` |
+| [walk-f0d01fd3.json](walk-f0d01fd3.json) | `b6b9a05178bc5d58c55b8de6e9e18cbf1fb5e48f4caea079bbb43bd15220d4d9` |
 
 Each scenario's `trace` is the ordered list of sections read, with the citation and kind that reached each one. `opened` is the distinct file list the count is taken from.
 
 | Scenario | Files baseline | Files result | Difference | Lines baseline | Lines result | Files added |
 | --- | --- | --- | --- | --- | --- | --- |
-| wp-propose | 8 | 8 | 0 | 1395 | 1465 | none |
-| wp-plan | 36 | 37 | +1 | 5270 | 5563 | `artifacts/agent-review.md` |
-| wp-align | 23 | 24 | +1 | 3818 | 4058 | `artifacts/agent-review.md` |
-| wp-sync | 27 | 29 | +2 | 4367 | 4731 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
-| wp-advance | 30 | 32 | +2 | 4737 | 5102 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
-| wp-deliver | 37 | 38 | +1 | 5244 | 5540 | `artifacts/agent-review.md` |
-| wp-understand | 12 | 14 | +2 | 2497 | 2751 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
-| wp-hoist | 19 | 20 | +1 | 3656 | 3871 | `artifacts/agent-review.md` |
-| wp-standup | 29 | 31 | +2 | 4511 | 4875 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
+| wp-propose | 8 | 8 | 0 | 1395 | 1432 | none |
+| wp-plan | 36 | 37 | +1 | 5270 | 5535 | `artifacts/agent-review.md` |
+| wp-align | 23 | 24 | +1 | 3818 | 4030 | `artifacts/agent-review.md` |
+| wp-sync | 27 | 29 | +2 | 4367 | 4703 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
+| wp-advance | 30 | 32 | +2 | 4737 | 5074 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
+| wp-deliver | 37 | 38 | +1 | 5244 | 5513 | `artifacts/agent-review.md` |
+| wp-understand | 12 | 14 | +2 | 2497 | 2721 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
+| wp-hoist | 19 | 20 | +1 | 3656 | 3844 | `artifacts/agent-review.md` |
+| wp-standup | 29 | 31 | +2 | 4511 | 4847 | `artifacts/work-item.md`, `artifacts/agent-review.md` |
 | wp-revise | 4 | 4 | 0 | 613 | 613 | none |
-| wc-author | 10 | 10 | 0 | 973 | 973 | none |
-| wc-audit | 9 | 9 | 0 | 914 | 914 | none |
-| wc-review | 6 | 6 | 0 | 639 | 639 | none |
-| wc-revise | 6 | 6 | 0 | 497 | 497 | none |
+| wc-author | 10 | 10 | 0 | 973 | 975 | none |
+| wc-audit | 9 | 9 | 0 | 914 | 916 | none |
+| wc-review | 6 | 6 | 0 | 639 | 640 | none |
+| wc-revise | 6 | 6 | 0 | 497 | 498 | none |
 
 No file is opened at the baseline and absent at the result. `artifacts/agent-review.md` is new since the baseline, added by `7e77333b7`. `artifacts/work-item.md` stands at both revisions, and a citation added since the baseline reaches it. The result tree is the epic base, not the settled E14 integration head.
 
