@@ -2,6 +2,12 @@
 
 The long-lived branches, epic bases and task branches used for delivery.
 
+## Prerequisites
+
+Read these files first.
+
+- [Work Item](work-item.md)
+
 ## Operations
 
 ### *Prepare* Delivery Bases
@@ -148,8 +154,10 @@ A reviewed pull request is read in a detached worktree, named by its number unde
 
 A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
+- **Changed branches.**
+  A unit changes the long-lived branches its rows' work items name in their [Component](work-item.md#component) declarations. A unit of an epic with one base changes that base.
 - **Several long-lived branches.**
-  A unit changing more than one long-lived branch takes one task branch per epic base, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
+  A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
 - **Example.**
   A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
 

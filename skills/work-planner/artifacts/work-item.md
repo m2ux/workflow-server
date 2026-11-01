@@ -8,6 +8,7 @@ Read these files first.
 
 - [Issue Body](issue-body.md)
 - [Pull Request Body](pull-request-body.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -27,7 +28,7 @@ One task's local implementation plan.
 ### Template
 
 ````markdown
-**Component:** {{The one component this task's implementation extends}}
+**Component:** {{The long-lived branch and path of the one component this task's implementation extends}}
 
 ## Overview
 
@@ -58,9 +59,10 @@ One file per task, named for its id in lowercase, such as `w01.md`. The record's
 
 ### Component
 
-One declaration line ahead of the first heading, naming the single component the Implementation part extends as the path to it in the repository that holds it.
+One declaration line ahead of the first heading, naming the single component the Implementation part extends as `<long-lived branch>:<path>`: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py`.
 
 - A task that creates the component names the path it creates.
+- The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.
 - A task whose implementation extends more than one component is split into a task for each.
 
 ### Sections
