@@ -1,6 +1,6 @@
 # A review body's prose measured against its branch — November 2026
 
-> Delivery record · Created 2026-11-01
+> Delivery record · Created 2026-11-01 · Revised 2026-11-01
 
 ## Executive Summary
 
@@ -14,9 +14,11 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | [W23 work item](w23.md) | Component, scope, design, criteria and test rows for W23 |
 | [Test results](test-results.md) | The evaluated commit, changed paths and each Test Plan check's evidence |
+| [Change list](change-list.md) | Each plan change the delivery session applied and each it held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1557](https://github.com/m2ux/workflow-server/pull/1557) |
