@@ -14,9 +14,11 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | --- | --- |
 | [w14.md](w14.md) | W14's work item: design, component and test obligations |
 | [test-evidence.md](test-evidence.md) | The Test Plan's check results |
+| [change-list.md](change-list.md) | The plan changes this delivery applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1522](https://github.com/m2ux/workflow-server/pull/1522) |
