@@ -28,10 +28,7 @@ env:
   # Skill folders under `skills/` left out of the check, space-separated. Each is listed while the
   # check reports findings over it, with those findings stated here as a list of
   # `- <skill>: <findings>` lines. Empty while every skill is in scope.
-  #
-  # - gitnexus: entry-point sections outside the set in the debugging, exploring, guide,
-  #   impact-analysis and refactoring SKILL.md files
-  EXCLUDED: 'gitnexus'
+  EXCLUDED: ''
 
 jobs:
   skill-files:
