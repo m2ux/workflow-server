@@ -121,17 +121,23 @@ SCRIPT = re.compile(r'(?<![\w./-])((?:[\w.-]+/)*scripts/[\w.-]+\.(?:py|sh|js|mjs
 SCRIPT_SUFFIXES = ('.py', '.sh', '.js', '.mjs', '.ts')
 GRAPHQL = re.compile(r'\bapi\s+graphql\b|([\'"])graphql\1')
 REST_GAP = re.compile(r'^\s*(?:[-*+]\s+)?\*\*REST gap:\*\*')
-# Projects (classic) in every form: its types, mutations and connection fields,
-# its REST routes rooted at projects/ or under a repository, organization, user
-# or the authenticated user, and its GraphQL project and projects fields called
-# with arguments. A path segment beneath another, such as a board's web link or
-# a local folder, names no route, and the V2 names carry their suffix.
-CLASSIC = re.compile(r'\b(?:add|move|delete|update|create|clone|convert)?Project(?:Card|Column)s?\b'
+# Projects (classic) in every form: its card and column types, each of its
+# mutations, its card and column connection fields, its REST routes rooted at
+# projects/ or under a repository, organization, user or the authenticated
+# user, whether relative or under an API base URL, its GraphQL project field
+# called with arguments, and its projects field with or without them. A path
+# segment beneath another, such as a board's web link or a local folder, names
+# no route, and the V2 names carry their suffix.
+API_BASE = r'(?<=api\.github\.com/)|(?<=/api/v3/)'
+CLASSIC = re.compile(r'\bProject(?:Card|Column)s?\b'
+                     r'|\b(?:(?:add|move|delete|update)Project(?:Card|Column)|(?:create|update|delete|clone)Project'
+                     r'|convertProjectCard(?:NoteToIssue)|(?:link|unlink)Repository(?:To|From)Project)\b'
                      r'|\bproject(?:Card|Column)s\b'
-                     r'|(?<![\w./}>-])/?projects/(?:\d|columns\b|cards\b|[{<:])'
-                     r'|(?<![\w./}>-])/?user/(?:projects)\b'
-                     r'|(?<!github\.com/)\b(?:repos/[^/\s]+/[^/\s]+|orgs/[^/\s]+|users/[^/\s]+)/projects\b'
-                     r'|\bprojects?\s*\(\s*(?:first|last|after|before|number|orderBy|search|states)\s*:')
+                     rf'|(?:{API_BASE}|(?<![\w./}}>-])/?)(?:projects/(?:\d|columns\b|cards\b|[{{<:])|user/(?:projects)\b)'
+                     rf'|(?:{API_BASE}|(?<!github\.com/))'
+                     r'\b(?:repos/[^/\s]+/[^/\s]+|orgs/[^/\s]+|users/[^/\s]+)/projects\b'
+                     r'|\bprojects?\s*\(\s*(?:first|last|after|before|number|orderBy|search|states)\s*:'
+                     r'|\bprojects\s*\{')
 # Every kind of finding the check reports. A rule's `rules.json` entry names
 # the kinds that decide it, or `review` where the read against the guidelines
 # does, so a kind outside this set names no operation.
@@ -1018,31 +1024,37 @@ def duplicate_anchors(headings):
         seen.setdefault(slug, index)
 
 
-def held_aside(findings, excluded):
+def held_aside(findings, excluded, roots):
     """The findings to report, and each excluded skill's count of those held
-    aside. A finding names its file relative to the folder holding its root,
-    which for an excluded skill is the folder holding that skill. An excluded
-    skill holding no finding is reported, so its exclusion lapses with its
-    last finding."""
-    skills = [Path(name).resolve() for name in excluded]
-    held = {skill: 0 for skill in skills}
+    aside. A finding names its file relative to the folder holding its root, so
+    an excluded skill is named relative to the folder holding the root that
+    holds it, at whatever depth beneath that root it lies; a skill no root
+    holds is named as given and holds no finding. A finding is held aside when
+    its file lies within an excluded skill's folder, which a sibling sharing
+    the skill's name as a prefix does not. An excluded skill holding no finding
+    is reported, so its exclusion lapses with its last finding."""
+    held = {}
+    for name in excluded:
+        skill = Path(name).resolve()
+        root = next((root for root in roots if skill.is_relative_to(root)), None)
+        held[skill.relative_to(root.parent) if root else Path(name)] = 0
     reported = []
     for item in findings:
-        skill = next((skill for skill in skills if (skill.parent / item[0]).is_relative_to(skill)), None)
+        skill = next((skill for skill in held if Path(item[0]).is_relative_to(skill)), None)
         if skill:
             held[skill] += 1
         else:
             reported.append(item)
     for skill, count in held.items():
         if not count:
-            reported.append((skill.name, 0, 'excluded skill without a finding',
+            reported.append((skill.as_posix(), 0, 'excluded skill without a finding',
                              'remove it from the exclusions'))
-    return reported, {skill.name: count for skill, count in held.items() if count}
+    return reported, {skill.as_posix(): count for skill, count in held.items() if count}
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument('roots', nargs='+', help='skill folders to check')
+    parser.add_argument('roots', nargs='*', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     parser.add_argument('--compare', nargs=2, metavar=('BASE', 'HEAD'),
                         help='compare section bodies between two revisions')
@@ -1054,10 +1066,10 @@ def main(argv=None):
 
     # A fixture tree holds test inputs in the format its suite reads, which is
     # specimen text rather than a skill file, so the guidelines do not reach it.
+    roots = [Path(name).resolve() for name in options.roots]
     files = []
     scripts = []
-    for name in options.roots:
-        root = Path(name).resolve()
+    for root in roots:
         files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
                   if 'fixtures' not in path.relative_to(root).parts]
         scripts += [(path, root.parent) for path in sorted(root.rglob('*'))
@@ -1094,7 +1106,7 @@ def main(argv=None):
         print(f'unreadable declaration — {error}')
         return 1
 
-    findings, held = held_aside(findings, options.exclude)
+    findings, held = held_aside(findings, options.exclude, roots)
     if not options.quiet:
         for where, line, kind, detail in findings:
             print(f'{where}:{line}: {kind}' + (f' — {detail}' if detail else ''))
