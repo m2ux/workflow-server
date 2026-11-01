@@ -13,6 +13,7 @@ W08 had to invent suffixed branches with no rule to follow. The work item carrie
 | Artifact | What it holds |
 | --- | --- |
 | [W09 work item](w09.md) | Component, scope, design and test rows for W09 |
+| [Evidence](evidence.md) | Survey tests, the W08 precedent, suite and document checks |
 
 ## Links
 
