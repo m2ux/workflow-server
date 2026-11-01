@@ -11,6 +11,7 @@ This record holds the delivery of I11:E10 W36, which fixes findings 7-12 of the 
 | Artifact | What it holds |
 | --- | --- |
 | [W36 work item](w36.md) | Component, scope and criterion for W36 |
+| [Test evidence](test-evidence.md) | Each finding's test, Sync mode's handler read, and the suite runs at the head |
 | [Failing before](failing-before-ba685e7ed.txt) | The new tests failing against `ba685e7ed`, run with the tests added and the fixes absent |
 
 ## Links
