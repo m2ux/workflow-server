@@ -25,8 +25,9 @@ command of its own, so a
 specification standing there is reported wherever it is cited from. The
 top-level sections of a file carrying a procedure are the set the guidelines
 name, in the order they name them, Procedure among them, so the reader knows
-what the file carries before opening it. A file carrying no procedure keeps
-its own shape.
+what the file carries before opening it. A skill's entry point takes the set
+the guidelines name for it whatever it carries. Any other file carrying no
+procedure keeps its own shape.
 
 A skill that adds directories of its own declares what they carry in its
 `structure.json`, keyed by a directory name or by a `*suffix` its filenames
@@ -65,6 +66,7 @@ INDENTED = re.compile(r'^\s+\S')
 PROSE_LIMIT = 8
 LEAD_WIDTH = 100
 SECTIONS = ('Prerequisites', 'Procedure', 'Reference', 'Rules', 'Commands')
+ENTRY_SECTIONS = ('Modes', 'Rules', 'Conventions', 'Dependencies')
 STRUCTURE = 'structure.json'
 
 
@@ -288,27 +290,16 @@ def check(path, root, cache, cited, called, structures=None):
     # knows what the file holds before opening it. What the file carries selects
     # it: a catalog, a context file and a contract file state what a procedure
     # consults, and nothing about them is a sequence. A skill's entry point
-    # takes the structure the guidelines give it whatever it carries. Where the
-    # skill declares a contract for the file, that contract is the set, and the
-    # file takes it whether or not it carries a step.
-    allowed = tuple(entry['sections']) if entry else SECTIONS
-    required = tuple(entry.get('required', ())) if entry else ('Procedure',)
-    if entry or (path.name != 'SKILL.md' and procedure_spans(lines, fenced, headings)):
-        sections = [(index, title.strip()) for index, level, title in headings if level == 2]
-        rank = -1
-        for index, title in sections:
-            if title not in allowed:
-                report(index, 'section outside the set', title)
-                continue
-            place = allowed.index(title)
-            if place < rank:
-                report(index, 'sections out of order',
-                       f'{allowed[place]} after {allowed[rank]}')
-            rank = max(rank, place)
-        carried = {title for _, title in sections}
-        for title in required:
-            if title not in carried:
-                report(0, 'section missing', title)
+    # takes the set the guidelines give it whatever it carries. Where the skill
+    # declares a contract for the file, that contract is the set, and the file
+    # takes it whether or not it carries a step.
+    if path.name == 'SKILL.md':
+        found += [(str(where), *finding) for finding in sections_against(headings, ENTRY_SECTIONS)]
+    elif entry or procedure_spans(lines, fenced, headings):
+        allowed = tuple(entry['sections']) if entry else SECTIONS
+        required = tuple(entry.get('required', ())) if entry else ('Procedure',)
+        found += [(str(where), *finding)
+                  for finding in sections_against(headings, allowed, required)]
 
     for index, target in targets(path, lines, fenced):
         name, _, fragment = target.partition('#')
@@ -366,6 +357,27 @@ def check(path, root, cache, cited, called, structures=None):
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
     return found
+
+
+def sections_against(headings, allowed, required=()):
+    """Each departure of a file's top-level sections from a named set: a
+    section outside it, one standing ahead of a section the set places before
+    it, and a required one the file lacks. Each finding is a line, a kind and
+    its detail."""
+    sections = [(index, title.strip()) for index, level, title in headings if level == 2]
+    rank = -1
+    for index, title in sections:
+        if title not in allowed:
+            yield index + 1, 'section outside the set', title
+            continue
+        place = allowed.index(title)
+        if place < rank:
+            yield index + 1, 'sections out of order', f'{allowed[place]} after {allowed[rank]}'
+        rank = max(rank, place)
+    carried = {title for _, title in sections}
+    for title in required:
+        if title not in carried:
+            yield 1, 'section missing', title
 
 
 def main(argv=None):
