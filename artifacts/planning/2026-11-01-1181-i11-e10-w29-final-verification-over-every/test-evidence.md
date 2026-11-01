@@ -55,6 +55,7 @@ python3 -m pytest skills/workflow-canon/test -q
 Verify Skills on the pull request's head.
 
 - [Run 41300228363](https://github.com/m2ux/workflow-server/actions/runs/41300228363) at `524ba6353`: both jobs succeed, no skill excluded, and the check step prints `81 files checked, 0 findings`.
+- [Run 41300350837](https://github.com/m2ux/workflow-server/actions/runs/41300350837) on the push to `i11/e10/workspace` at merge commit `62a1b793c`, whose tree is identical to `524ba6353`: both jobs succeed.
 
 ## T4
 
