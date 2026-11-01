@@ -13,6 +13,8 @@ A criterion only one project requires belongs to that project. With the declarat
 | Artifact | What it holds |
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
+| [Delivery evidence](evidence.md) | Changed paths, tested revisions and the result of each check |
+| [Change list](changes.md) | Each plan change the delivery applied or held |
 
 ## Links
 
