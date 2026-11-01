@@ -1,6 +1,6 @@
 # W01 Test Evidence
 
-Tested revision: `4106d600e` on `i11/e10/w01-skill-frontmatter-and-prose`, which merges `i11/e10/workspace` at `212bedd48`. Every command ran locally from the unit worktree under the workspace sandbox.
+Tested revision: `9cd096a3b` on `i11/e10/w01-skill-frontmatter-and-prose`, which merges `i11/e10/workspace` at `be02e819b`. Every command ran locally from the unit worktree under the workspace sandbox.
 
 ## T1 Mode Trigger Checks
 
@@ -14,7 +14,7 @@ The `FrontmatterAndLayoutChecks` tests over specimen skills, for the frontmatter
 
 ```text
 python3 -m pytest skills/test -q -k FrontmatterAndLayoutChecks
-14 passed, 84 deselected
+14 passed, 101 deselected
 ```
 
 Against the checker at `ba441c2b8`, the two reporting tests fail, so the suite detects the fault only the new check reports.
@@ -34,12 +34,12 @@ Against the checker at `ba441c2b8`, the five reporting tests fail.
 
 ```text
 python3 -m pytest skills/test skills/work-planner/test -q
-743 passed, 1 skipped, 1140 subtests passed
+760 passed, 1 skipped, 1141 subtests passed
 ```
 
 The two bounded-prose tests specimen one-line paragraphs separated by blank lines, the layout the guidelines require.
 
-The Workflow Canon suite gives 39 passed and 38 skipped at the merged base `f0d01fd3f` and at the tested revision alike, so this change adds no failure there.
+The Workflow Canon suite gives 39 passed and 38 skipped at the merged base `f0d01fd3f` and at the tested revision alike, and the same at `9cd096a3b`, so this change adds no failure there.
 
 ## T4 Check Over Every Skill
 
