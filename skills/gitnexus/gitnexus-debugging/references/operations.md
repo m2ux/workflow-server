@@ -15,7 +15,7 @@ The procedure that traces a bug through the GitNexus knowledge graph, and the pa
 4. **Read its context.**
    Run `gitnexus_context({name: "<suspect>"})` to see its callers, callees and processes.
 5. **Trace the execution flow.**
-   Where a process applies, read `gitnexus://repo/{name}/process/{name}`.
+   Where a process applies, read `gitnexus://repo/{name}/process/{name}`, with the repository name `gitnexus://repos` lists.
 6. **Trace custom call chains.**
    Where needed, run `gitnexus_cypher({query: "MATCH path..."})` for a call chain the other tools do not show.
 7. **Confirm the root cause.**

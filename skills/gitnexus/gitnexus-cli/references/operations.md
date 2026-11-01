@@ -11,7 +11,7 @@ The procedures that run the GitNexus CLI, and the commands they run. Every comma
 2. **Clean a corrupt index.**
    Where the index is corrupt, run [Delete Index](#delete-index).
 3. **Build.**
-   Run [Build Index](#build-index) where the repository has no index, its code changed substantially, or `gitnexus://repo/{name}/context` reports the index stale.
+   Run [Build Index](#build-index) where the repository has no index, its code changed substantially, or `gitnexus://repo/{name}/context` reports the index stale. The repository's name is the one [List Repositories](#list-repositories) prints.
 4. **Verify.**
    Read `gitnexus://repo/{name}/context` to confirm the index loaded, then take the task to the GitNexus skill that answers it: `gitnexus-exploring`, `gitnexus-debugging`, `gitnexus-impact-analysis` or `gitnexus-refactoring`.
    - A fault met here is answered in [Troubleshooting](#troubleshooting).
