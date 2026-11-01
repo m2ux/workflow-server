@@ -79,7 +79,7 @@ class Sweep(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_unreadable_evidence_blocks_the_sweep(self):
-        for development in ('not json', '[]'):
+        for development in ('not json', '[]', '{"2": [{"state": "MERGED"}]}'):
             with self.subTest(development=development):
                 result = self.sweep([closed(2)], development)
                 self.assertEqual(result.returncode, 1)
