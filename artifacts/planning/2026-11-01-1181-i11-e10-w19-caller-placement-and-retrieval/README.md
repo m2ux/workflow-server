@@ -18,11 +18,13 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | [scenarios.json](scenarios.json) | The fixed scenario inputs both revisions are walked with |
 | [walk-04de875a.json](walk-04de875a.json) | Per-scenario counts and read traces at the baseline revision |
 | [walk-f0d01fd3.json](walk-f0d01fd3.json) | Per-scenario counts and read traces at the epic base revision |
+| [Change list](change-list.md) | Plan changes the delivery session applied and held, and the debt it found |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1563](https://github.com/m2ux/workflow-server/pull/1563), merged into `i11/e10/workspace` as `50a6535db` |
 | Retrieval baseline decision | [retrieval-baseline.md](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-project17-plan-review/retrieval-baseline.md) |
 | Caller and retrieval decision | [caller-retrieval-contract.md](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-31-project17-plan-review/caller-retrieval-contract.md) |
