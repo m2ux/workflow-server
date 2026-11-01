@@ -13,9 +13,12 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | Artifact | What it holds |
 | --- | --- |
 | [W18 work item](w18.md) | Component, scope, design, criteria and test rows for W18 |
+| [Test evidence](test.md) | Procedures, revisions and results behind the pull request's Test Plan |
+| [Change list](changes.md) | The plan changes the delivery session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1550](https://github.com/m2ux/workflow-server/pull/1550) |
