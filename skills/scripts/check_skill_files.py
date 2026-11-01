@@ -126,6 +126,7 @@ KINDS = (
     'inline bold lead too wide', 'prerequisite citation inside one file',
     'prose over eight lines', 'trailing blank line',
     'parallel section in another mood', 'heading without content',
+    'heading without a blank line above', 'command specification nothing cites',
     'command spelled out in a mode', 'retired term', 'convention in both guides',
     'GraphQL without a REST gap', 'Projects classic interface',
     'house rule no operation decides', 'ambiguous house rule', 'declared rule absent',
