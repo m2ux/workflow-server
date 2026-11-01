@@ -280,12 +280,13 @@ class InitiativeStatus(unittest.TestCase):
         self.assertNotIn('→ Backlog', out)
         self.assertIn('to do: 0', out)
 
-    def test_a_delivered_epic_leaves_in_review(self):
+    def test_a_delivered_row_alone_leaves_the_epic_out_of_progress(self):
         epic = issue(2, '[I01:E00] First: Epic',
                      body=epic_body(('[W01](https://github.com/o/r/pull/9)', 'Go', '')))
         merged = json.dumps(pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')) + '\n'
-        out = self.open_pair('In Progress', 'In Review', epic, merged)
-        self.assertIn('set #2 [I01:E00] First: Epic: In Review → In Progress', out)
+        for held in ('In Progress', 'In Review'):
+            out = self.open_pair('In Progress', held, epic, merged)
+            self.assertIn(f'set #2 [I01:E00] First: Epic: {held} → Backlog', out)
 
     def test_an_open_pull_request_with_an_unticked_criterion_leaves_the_epic_in_progress(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
@@ -370,6 +371,135 @@ class InitiativeStatus(unittest.TestCase):
         out = self.open_pair('Ready', 'Ready', epic, merged)
         self.assertNotIn('→ In Progress', out)
         self.assertIn('to do: 0', out)
+
+
+RECORD = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/'
+STATUSES = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')
+
+
+def placed(initiative: dict, epics: list[tuple[dict, str | None]], pulls: list[dict] = (),
+           initiative_status: str | None = 'Backlog', reviews=(), held=(), code: int = 0) -> str:
+    """board.py on one initiative and its epics, each with the Status it holds; None is off the board."""
+    initiative['id'] = 11
+    on_board = [] if initiative_status is None else [{**item(initiative, initiative_status), 'id': 100}]
+    for n, (epic, status) in enumerate(epics):
+        epic['id'] = 12 + n
+        if status is not None:
+            on_board.append({**item(epic, status), 'id': 101 + n})
+    with tempfile.TemporaryDirectory() as tmp:
+        files = {name: Path(tmp, f'{name}.json') for name in ('initiative', 'fields', 'items', 'prs',
+                                                              'links', 'reviews')}
+        files['initiative'].write_text(json.dumps(initiative))
+        files['fields'].write_text(json.dumps(board_fields(*STATUSES)))
+        files['items'].write_text(json.dumps(on_board))
+        files['prs'].write_text(''.join(json.dumps(p) + '\n' for p in pulls))
+        files['links'].write_text(json.dumps(list(held)))
+        files['reviews'].write_text(json.dumps(list(reviews)))
+        epic_paths = []
+        for n, (epic, _status) in enumerate(epics):
+            path = Path(tmp, f'epic-{n}.json')
+            path.write_text(json.dumps(epic))
+            epic_paths.append(str(path))
+        done = run('board.py', str(files['initiative']), '--epics', *epic_paths,
+                   '--prs', str(files['prs']), '--links', str(files['links']),
+                   '--agent-reviews', str(files['reviews']), '--board', 'users/o/projectsV2/9',
+                   '--fields', str(files['fields']), '--items', str(files['items']),
+                   '--out', str(Path(tmp, 'out')), '--assignee', 'me')
+    if done.returncode != code:
+        raise AssertionError(done.stderr or done.stdout)
+    return done.stdout
+
+
+def listing(*numbers: int) -> dict:
+    """An initiative whose table lists the epics of these issue numbers, as E00, E01 and on."""
+    return issue(1, '[I01] First: Initiative', body=initiative_body(
+        *((f"[E{n:02d}]({url('issues', number)})", '') for n, number in enumerate(numbers))))
+
+
+def ticked(body: str) -> str:
+    return body.replace('- [ ] **AC1.**', '- [x] **AC1.**')
+
+
+class EpicActivity(unittest.TestCase):
+    """An open epic is In Progress while a session holds a row or a delivery pull request is open
+    on it, until it passes the reviewed-handoff gate."""
+
+    def test_a_reservation_alone_puts_the_epic_in_progress(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({RECORD})', 'Go', '')))
+        out = placed(listing(2), [(epic, 'Backlog')])
+        self.assertIn('set #2 [I01:E00] First: Epic: Backlog → In Progress', out)
+        self.assertIn('set #1 [I01] First: Initiative: Backlog → In Progress', out)
+
+    def test_an_open_delivery_pull_request_alone_puts_the_epic_in_progress(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        task = pr(9, '[I01:E00] Go', base='i01/e00/workspace', head='i01/e00/w01-go')
+        out = placed(listing(2), [(epic, 'Ready')], [task])
+        self.assertIn('set #2 [I01:E00] First: Epic: Ready → In Progress', out)
+
+    def test_an_integration_draft_alone_is_not_work_under_way(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=epic_body((f"[W01]({url('pull', 9)})", 'Go', ''), ('W02', 'More', '')))
+        merged = pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')
+        draft = pr(10, '[I01:E00] Integration', base='workspace', head='i01/e00/workspace', draft=True)
+        out = placed(listing(2), [(epic, 'In Progress')], [merged, draft])
+        self.assertIn('set #2 [I01:E00] First: Epic: In Progress → Backlog', out)
+        self.assertNotIn('[I01] First: Initiative: Backlog →', out)
+
+    def test_an_inactive_epic_keeps_ready_or_backlog_and_joins_the_board_at_backlog(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        for held in ('Ready', 'Backlog'):
+            self.assertNotIn('[I01:E00] First: Epic:', placed(listing(2), [(epic, held)]))
+        self.assertIn('add #2 [I01:E00] First: Epic (Backlog)', placed(listing(2), [(epic, None)]))
+
+    def test_a_completed_epic_is_done(self):
+        epic = issue(2, '[I01:E00] First: Epic', 'closed', body=epic_body((f'[W01]({RECORD})', 'Go', '')))
+        out = placed(listing(2), [(epic, 'In Progress')])
+        self.assertIn('set #2 [I01:E00] First: Epic: In Progress → Done', out)
+
+    def test_an_active_epic_passing_the_handoff_gate_is_in_review(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=ticked(epic_body((f'[W01]({RECORD})', 'Go', ''))))
+        pull, record = reviewed_pr('01:E00')
+        out = placed(listing(2), [(epic, 'In Progress')], [pull], 'In Progress', reviews=(record,))
+        self.assertIn('set #2 [I01:E00] First: Epic: In Progress → In Review', out)
+
+    def test_stale_review_holds_an_active_completed_epic_in_progress(self):
+        epic = issue(2, '[I01:E00] First: Epic',
+                     body=ticked(epic_body((f'[W01]({RECORD})', 'Go', ''))))
+        pull, record = reviewed_pr('01:E00')
+        pull['head']['sha'] = 'c' * 40
+        out = placed(listing(2), [(epic, 'In Review')], [pull], 'In Progress', reviews=(record,), code=1)
+        self.assertIn('set #2 [I01:E00] First: Epic: In Review → In Progress', out)
+        self.assertIn('stale agent review', out)
+
+
+class InitiativeMembership(unittest.TestCase):
+    """An initiative is raised to In Progress only by the epics its table lists."""
+
+    def test_an_epic_that_has_left_the_table_does_not_raise_the_initiative(self):
+        listed = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        left = issue(5, '[I01:E01] Moved: Epic', body=epic_body((f'[W01]({RECORD})', 'Go', '')))
+        open_pr = pr(9, '[I01:E01] Go')
+        for initiative_status in ('Backlog', 'Ready'):
+            out = placed(listing(2), [(listed, 'Backlog'), (left, 'In Progress')], [open_pr],
+                         initiative_status)
+            self.assertNotIn('[I01] First: Initiative:', out)
+            self.assertNotIn('#5', out)
+
+    def test_the_same_epic_listed_raises_the_initiative(self):
+        listed = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        member = issue(5, '[I01:E01] Moved: Epic', body=epic_body((f'[W01]({RECORD})', 'Go', '')))
+        out = placed(listing(2, 5), [(listed, 'Backlog'), (member, 'In Progress')], [pr(9, '[I01:E01] Go')])
+        self.assertIn('set #1 [I01] First: Initiative: Backlog → In Progress', out)
+
+    def test_completed_work_alone_starts_no_initiative(self):
+        done = issue(2, '[I01:E00] First: Epic', 'closed', body=epic_body(('W01', 'Go', '')))
+        self.assertIn('add #1 [I01] First: Initiative (Backlog)', placed(listing(2), [(done, 'Done')], [], None))
+
+    def test_an_initiative_with_no_active_epic_keeps_its_status(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        for held in ('Backlog', 'Ready', 'In Progress'):
+            self.assertNotIn('[I01] First: Initiative:', placed(listing(2), [(epic, 'Ready')], [], held))
 
 
 if __name__ == '__main__':
