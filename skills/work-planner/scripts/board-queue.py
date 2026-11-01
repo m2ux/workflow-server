@@ -8,6 +8,10 @@ items.json is the board's items with the Status field, as board.py reads them. p
 sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
 the board is given with --others.
 
+An epic is active, and an initiative waits on an open pull request, as board.py reads activity:
+a task row a session holds, or an open pull request naming the epic that is not its integration
+pull request. Only an epic the initiative's table lists counts.
+
 The moves follow the Board Queue field conditions, rendered by statuses.py within the QUEUE jurisdiction, which
 refuses In Review, Done and any task. Printed: the gh call for each Status and assignee change,
 an order line for each kind when nothing is In Progress and no initiative has a priority, an ask
@@ -27,10 +31,10 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import Board, Resolution, linked_issue, open_questions, rows, weakest
+from board import Board, Resolution, delivers, linked_issue, open_questions, rows, weakest
 from format import cell, id_cell, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import PR_REF, Unreadable, pull_requests
+from sync import Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
@@ -57,12 +61,12 @@ def is_initiative(issue: dict) -> bool:
     return bool(parsed) and not parsed[1]
 
 
-def pending(prs: list[dict], tag: str, repos: set[str]) -> list[str]:
-    """Open pull requests of an initiative, in its repository or an epic's."""
+def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:
+    """Open delivery pull requests naming an epic the initiative lists, by its Eyy number, in its
+    repository or an epic's."""
     found = []
     for pr in prs:
-        matched = PR_REF.match(pr.get('title') or '')
-        if pr.get('state') != 'open' or not matched or matched[1] != tag:
+        if not any(delivers(pr, tag, epic) for epic in epics):
             continue
         home = PULL_HOME.search(pr.get('html_url') or '')
         if home and home[1].lower() not in repos:
@@ -82,17 +86,13 @@ def epic_rows(board: Board, key: tuple[str, int], why: str) -> list[tuple[str, t
             for row in body if (ident := id_cell(header, row))]
 
 
-def partial(board: Board, key: tuple[str, int], why: str) -> bool:
-    """Whether an open epic has a delivered task row."""
-    issue = board.issues.get(key)
-    if issue is None or issue['state'] != 'open':
-        return False
+def active(board: Board, key: tuple[str, int], why: str) -> bool:
+    """Whether an open epic has work under way, as Board.active reads it."""
     try:
-        _, tasks = board.table(key)
+        return board.active(key)
     except Unreadable as exc:
         board.unresolved.append(f'{why}: {exc}')
         return False
-    return any(board.row_delivered(key, task, why) is Resolution.MET for task in tasks)
 
 
 def is_next(board: Board, initiative: tuple[str, int], epic: tuple[str, int] | None, depends: str,
@@ -151,8 +151,8 @@ class Queue:
         return {key[0].lower(), *(epic[0].lower() for _, epic, _ in rows_of)}
 
     def activate(self, key: tuple[str, int]) -> None:
-        """Partly completed epics are In Progress, and the unstarted epics of the highest priority
-        set are Ready. The set counts the epics already under way, so a lower one waits."""
+        """Active epics are In Progress, and the epics of the highest priority set that can start
+        are Ready. The set counts the epics already under way, so a lower one waits."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
@@ -160,17 +160,15 @@ class Queue:
             if held in ('In Review', 'Done') or self.issues[epic_key]['state'] != 'open':
                 continue
             why = f'{self.line(key)} {row_name}'
-            if partial(self.board, epic_key, why):
+            if active(self.board, epic_key, why):
                 self.place(epic_key, 'In Progress')
-                running.append(epic_key)
-            elif held == 'In Progress':
                 running.append(epic_key)
             elif (answer := is_next(self.board, key, epic_key, depends, epics, why)) is Resolution.MET:
                 candidates.append(epic_key)
             elif answer is Resolution.UNRESOLVABLE:
                 self.unresolvable.append(why)
                 continue
-            elif held == 'Ready':
+            elif held in ('Ready', 'In Progress'):
                 self.place(epic_key, 'Backlog')
         ranked = {epic_key: rank(self.issues[epic_key]) for epic_key in (*candidates, *running)}
         top = max((found for found in ranked.values() if found is not None), default=None)
@@ -197,7 +195,9 @@ class Queue:
                 self.place(epic_key, 'Backlog')
 
     def pulls(self, key: tuple[str, int]) -> list[str]:
-        return pending(self.prs, tags(self.issues[key]['title'])[0], self.repos(key))
+        listed = {row_name.split(':')[0][1:] for row_name, _epic, _depends
+                  in epic_rows(self.board, key, self.line(key))}
+        return pending(self.prs, tags(self.issues[key]['title'])[0], listed, self.repos(key))
 
     def ready_names(self, key: tuple[str, int]) -> list[str]:
         rows_of, _epics = self.load(key)

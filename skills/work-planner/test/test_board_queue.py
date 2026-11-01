@@ -10,6 +10,7 @@ from pathlib import Path
 from fixtures import epic_body, initiative_body, issue, item, pr, run, url
 
 
+RECORD = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/'
 FIELDS = [{'id': 7, 'name': 'Status', 'options': [
     {'name': name, 'id': n} for n, name in enumerate(
         ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done'), start=1)]}]
@@ -245,7 +246,7 @@ class Queue(unittest.TestCase):
         started = epic(2, '01:E00', (f"[W01]({url('pull', 9)})", 'Go', ''), priority='priority: 5')
         later = epic(3, '01:E01', ('W01', 'Go', ''), priority='priority: 2')
         out = queue(staged((current, 'In Progress'), (started, 'In Progress'), (later, 'Backlog')),
-                    [pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')])
+                    [pr(9, '[I01:E00] Go')])
         self.assertNotIn('[I01:E01] Epic 3: Work: Backlog → Ready', out)
 
     def test_an_epic_with_no_table_is_reported_and_leaves_the_queue_running(self):
@@ -283,12 +284,46 @@ class Queue(unittest.TestCase):
         out = queue(staged((current, 'In Progress'), (prerequisite, 'Done'), (dependent, 'Backlog')), pulls)
         self.assertIn('[I01:E01] Epic 3: Work: Backlog → Ready', out)
 
-    def test_a_partly_completed_epic_of_the_in_progress_initiative_is_in_progress(self):
+    def test_a_reserved_epic_of_the_in_progress_initiative_is_in_progress(self):
         current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
-        started = epic(2, '01:E00', ('[W01](https://github.com/o/r/pull/9)', 'Go', ''))
-        out = queue(staged((current, 'In Progress'), (started, 'Ready')),
-                    [pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')])
+        held = epic(2, '01:E00', (f'[W01]({RECORD})', 'Go', ''))
+        out = queue(staged((current, 'In Progress'), (held, 'Ready')))
         self.assertIn('[I01:E00] Epic 2: Work: Ready → In Progress', out)
+
+    def test_an_epic_with_an_open_delivery_pull_request_is_in_progress(self):
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
+        out = queue(staged((current, 'In Progress'), (epic(2, '01:E00', ('W01', 'Go', '')), 'Backlog')),
+                    [pr(9, '[I01:E00] Go', base='i01/e00/workspace', head='i01/e00/w01-go')])
+        self.assertIn('[I01:E00] Epic 2: Work: Backlog → In Progress', out)
+
+    def test_a_delivered_row_alone_leaves_the_epic_to_the_ready_rule(self):
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''))
+        started = epic(2, '01:E00', (f"[W01]({url('pull', 9)})", 'Go', ''), ('W02', 'More', ''))
+        merged = [pr(9, '[I01:E00] Go', merged='2026-01-01T00:00:00Z')]
+        out = queue(staged((current, 'In Progress'), (started, 'In Progress')), merged)
+        self.assertIn('[I01:E00] Epic 2: Work: In Progress → Ready', out)
+        asking = epic(2, '01:E00', (f"[W01]({url('pull', 9)})", 'Go', ''), questions='Which shape?')
+        out = queue(staged((current, 'In Progress'), (asking, 'In Progress')), merged)
+        self.assertIn('[I01:E00] Epic 2: Work: In Progress → Backlog', out)
+
+    def test_an_integration_draft_does_not_hold_the_swap(self):
+        low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''))
+        high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        draft = pr(9, '[I01:E00] Integration', base='workspace', head='i01/e00/workspace', draft=True)
+        out = queue(staged((low, 'In Progress'), (high, 'Backlog'),
+                           (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), [draft])
+        self.assertNotIn('wait ', out)
+        self.assertIn('[I01] Low: Current: In Progress → Ready', out)
+
+    def test_a_pull_request_naming_an_epic_the_table_does_not_list_does_not_hold_the_swap(self):
+        low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''))
+        high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+        out = queue(staged((low, 'In Progress'), (high, 'Backlog'),
+                           (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), [pr(9, '[I01:E01] Moved')])
+        self.assertNotIn('wait ', out)
+        self.assertIn('[I01] Low: Current: In Progress → Ready', out)
 
     def test_the_lower_of_two_incumbents_returns_to_backlog(self):
         low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 4)})", ''), priority='priority: 2')
@@ -375,15 +410,6 @@ class UnresolvableGates(unittest.TestCase):
     def test_a_prerequisite_that_has_not_landed_places_the_row(self):
         done = self.run_with(f"[E00]({url('issues', 3)})")
         self.assertNotIn('cannot resolve', done.stdout)
-        self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', done.stdout)
-        self.assertEqual(done.returncode, 0)
-
-    def test_a_note_from_reading_delivery_leaves_the_exit_status_alone(self):
-        one = initiative(1, 'Theme: Work', (f"[E00]({url('issues', 3)})", ''))
-        done = queue_run(staged(
-            (one, 'In Progress'),
-            (epic(3, '01:E00', (f"[W01]({url('issues', 9)})", 'Go', '')), 'Backlog')))
-        self.assertIn('cannot resolve', done.stdout)
         self.assertIn('[I01:E00] Epic 3: Work: Backlog → Ready', done.stdout)
         self.assertEqual(done.returncode, 0)
 
