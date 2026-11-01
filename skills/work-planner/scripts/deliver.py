@@ -2,7 +2,9 @@
 or release a task row.
 
 Usage:
-  python3 deliver.py --items items.json --prs prs.json --links links.json [--others issue-750.json ...] [--date 2026-10-06]
+  python3 deliver.py --items items.json --prs prs.json --links links.json [--others issue-750.json ...]
+      [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
+      [--engineering .engineering] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
@@ -22,12 +24,19 @@ one epic start in the order that epic's own graph sets, whatever its siblings wa
 name each other in Joins are one unit, and a unit is one session's work.
 
 Printed: a unit line for each available unit, with the record folder its ids and Description give
-it and a branch and worktree for each epic base, suffixed with the base's long-lived name when there
-are several; an unresolvable line for a row gated on a dependency entry nothing can resolve,
-naming the entry; a hold line for each reserved row; a blocked line for a free row whose
+it and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
+when there are several; an unresolvable line for a row gated on a dependency entry nothing can
+resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
+work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
 dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
-issue not given. A run that met an unresolvable entry exits 1.
+issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
+
+The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
+row links its work-item file, which --engineering, the checkout holding the planning records, gives
+to read; the file's declaration line names the long-lived branch and the path of its component:
+  **Component:** workspace:skills/work-planner/scripts/deliver.py
+A unit of an epic with one base works on that base.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
@@ -49,6 +58,7 @@ from datetime import date as day
 from pathlib import Path
 
 from board import Board, Resolution, rows
+from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
@@ -62,6 +72,8 @@ RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
+WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
+ON_BRANCH = re.compile(r'([^:/\s]+):\S')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
 
@@ -109,14 +121,48 @@ def names(tag: str, text: str, ref: int, when: str) -> dict[str, str]:
             'branch': tag.lower().replace(':', '/') + (f'-{short}' if short else '')}
 
 
+def long_lived(base: str) -> str:
+    """The long-lived branch an epic base is cut for, its last segment."""
+    return base.rsplit('/', 1)[-1]
+
+
+def changed_bases(unit: list[str], detail: dict, bases: list[str], checkout: str) -> tuple[list[str], list[str]]:
+    """The epic bases a unit changes, as its rows' work items name their long-lived branches, and
+    each row naming none of the bases with why. A unit of an epic with one base, or none, changes those."""
+    if len(bases) <= 1:
+        return bases, []
+    items, missing = {}, []
+    for task in unit:
+        path = detail[task]['item']
+        if not path:
+            missing.append(f'{task}: links no work item')
+        elif not checkout:
+            missing.append(f'{task}: {path} needs --engineering to be read')
+        else:
+            items[task] = Path(checkout) / path
+    components, problems = read_components(items)
+    missing += problems
+    named = {long_lived(base) for base in bases}
+    changed = set()
+    for task, component in sorted(components.items()):
+        branch = ON_BRANCH.match(component)
+        if not branch:
+            missing.append(f'{task}: component {component} names no long-lived branch')
+        elif branch[1] not in named:
+            missing.append(f'{task}: component {component} names {branch[1]}, which has no epic base')
+        else:
+            changed.add(branch[1])
+    return ([] if missing else [base for base in bases if long_lived(base) in changed]), missing
+
+
 def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
-    """The (branch, base, worktree) a unit works in for each epic base: one base, or none, keeps the
-    unit's branch; several give each base its own branch, suffixed with that base's long-lived name."""
+    """The (branch, base, worktree) a unit works in for each epic base it changes: one base, or none,
+    keeps the unit's branch; several give each base its own branch, suffixed with that base's long-lived name."""
     if len(bases) <= 1:
         return [(branch, bases[0] if bases else '', f'{WORKTREES}/{branch}')]
     found = []
     for base in bases:
-        named = f'{branch}-{base.rsplit("/", 1)[1]}'
+        named = f'{branch}-{long_lived(base)}'
         found.append((named, base, f'{WORKTREES}/{named}'))
     return found
 
@@ -186,9 +232,11 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
         else:
             state[task] = 'free'
         found = ISSUE_URL.search(next((href for href in hrefs(ident) if ISSUE_URL.search(href)), ''))
+        item = WORK_ITEM.search(next((href for href in hrefs(ident) if WORK_ITEM.search(href)), ''))
         detail[task] = {'description': cell(header, r, 'Description').split(' →', 1)[0].strip(),
                         'coverage': cell(header, r, 'Coverage'), 'held': held,
                         'issue': int(found[1]) if found else None,
+                        'item': item[1] if item else '',
                         'cause': cause,
                         'depends': cell(header, r, 'Depends on')}
     return header, body, state, detail
@@ -266,7 +314,7 @@ def survey(args: argparse.Namespace) -> int:
             epics.setdefault(parsed[0], {})[f'E{parsed[1]}'] = key
 
     when = args.date or day.today().isoformat()
-    available = held = waiting = unreadable = 0
+    available = held = waiting = unreadable = undeclared = 0
     for key in sorted(issues):
         issue = issues[key]
         if not is_epic(issue) or status.get(key) not in STARTED:
@@ -305,11 +353,17 @@ def survey(args: argparse.Namespace) -> int:
                 print(f'  blocked I{initiative}:E{epic}:{ids}: {reason}')
                 waiting += 1
                 continue
+            refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
+            bases, missing = changed_bases(unit, detail, epic_bases(refs, initiative, epic, lived),
+                                           args.engineering)
+            if missing:
+                for why in missing:
+                    print(f'  undeclared I{initiative}:E{epic}:{why}')
+                undeclared += len(missing)
+                continue
             name = names(tag, detail[first]['description'], detail[first]['issue'] or key[1], when)
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
-            refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
-            bases = epic_bases(refs, initiative, epic, lived)
             where = '; '.join(f'branch {branch}' + (f', base {base}' if base else '')
                               + f', worktree {worktree}'
                               for branch, base, worktree in task_branches(name['branch'], bases))
@@ -322,8 +376,8 @@ def survey(args: argparse.Namespace) -> int:
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
-          f'unresolvable: {unreadable}, merge: {len(merging)}')
-    return 1 if unreadable else 0
+          f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}')
+    return 1 if unreadable or undeclared else 0
 
 
 def place(args: argparse.Namespace) -> int:
@@ -427,6 +481,7 @@ def main() -> int:
     parser.add_argument('--date', help='the day the record is opened, today by default')
     parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branches')
     parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
+    parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row links')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')
