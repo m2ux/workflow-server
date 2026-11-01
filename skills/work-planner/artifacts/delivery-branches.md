@@ -62,13 +62,14 @@ The current epic base merged into a unit's task branch.
 
 The worktree and branch one unit's session works in.
 
-**Inputs:** Project checkout, worktree path, task branch, epic base and confirmed prerequisite evidence.
+**Inputs:** Project checkout, worktree path, task branch, its epic base and confirmed prerequisite evidence.
 
 1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).
-2. When the unit changes several long-lived branches, select the corresponding epic base for this worktree.
-3. Run [Fetch Remote Branch](#fetch-remote-branch) from the checkout of the repository the work changes, passing that epic base; stop on failure.
-4. Run [Add Task Worktree](#add-task-worktree) with the supplied path and task branch, rooted in the fetched epic base.
-5. Return the worktree path and branch or the failure.
+2. Run [Fetch Remote Branch](#fetch-remote-branch) from the checkout of the repository the work changes, passing the supplied epic base; stop on failure.
+3. Run [Add Task Worktree](#add-task-worktree) with the supplied path and task branch, rooted in the fetched epic base.
+4. Return the worktree path and branch or the failure.
+
+A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
 
 ### *Create* Pull Request Worktree
 
@@ -145,9 +146,14 @@ A reviewed pull request is read in a detached worktree, named by its number unde
 
 ### Task Branches
 
-A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. Every pull request delivering the unit's work is opened from this branch.
+A unit's task branch is cut from the epic base for the long-lived branch the unit changes, named for its initiative, epic and first task in lowercase separated by slashes, and hyphenated with a slug of at most four words from its Description when one exists: `i01/e02/w04-write-defaults`. The unit's pull request is opened from this branch into that base.
 
-Its worktree is named by that branch under the worktree directory of the repository's main working tree.
+- **Several long-lived branches.**
+  A unit changing more than one long-lived branch takes one task branch per epic base, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
+- **Example.**
+  A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
+
+Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 
 ## Commands
 

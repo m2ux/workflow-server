@@ -24,11 +24,11 @@ One delivery plan from supplied board and delivery evidence.
 
 ### Work Units
 
-A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. One unit is one pull request's work. Its task ids and Descriptions determine the planning-folder identity, branch, epic base and worktree.
+A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. One unit is one session's work, delivered by one pull request into each epic base it changes. Its task ids and Descriptions determine the planning-folder identity, and with each epic base its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them.
 
 ### Report Lines
 
-- A `unit` line names one session's tasks, Coverage, record folder, branch, base and worktree. One base is `base i07/e00/main`; several are `bases i07/e00/main i07/e00/workflows`.
+- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`.
 - A `hold` line names a row a session holds and the record it links.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
