@@ -36,7 +36,9 @@ Snapshot: 2026-10-31. Source inspected at workspace commit `04de875a8517dcf22946
 | E10:W24 | [W24](../../2026-10-13-1407-i11-e10-w25-draft-report-a-base-named/w24.md) | `skills/work-planner/scripts/sync.py` |
 | E10:W25 | [W25](../../2026-10-13-1408-i11-e10-w26-throwaway-targets-a-fixture-is/w25.md) | `skills/work-planner/scripts/orphans.py` |
 | E10:W26 | [W26](e10/w26.md) | `skills/work-planner/test/test_checkouts.py` |
-| E10:W27 | [W27](../../2026-10-13-1392-i11-e10-w21-check-scope-one-run-over/w27.md) | `skills/scripts/check_skill_files.py` |
+| E10:W27 | [W27](e10/w27.md) | `skills/work-planner/scripts/deps.py` |
+| E10:W28 | [W28](e10/w28.md) | `skills/work-planner/scripts/deps.py` |
+| E10:W29 | [W29](../../2026-10-13-1392-i11-e10-w21-check-scope-one-run-over/w29.md) | `skills/scripts/check_skill_files.py` |
 | E13:W01 | [W01](e13/w01.md) | `skills/work-planner/artifacts/epic-issue-body.md` |
 | E13:W02 | [W02](../../2026-10-13-i11-e13-project-variance/w02.md) | `skills/work-planner/scripts/format.py` |
 | E13:W03 | [W03](e13/w03.md) | `config/` |

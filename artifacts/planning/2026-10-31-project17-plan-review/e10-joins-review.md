@@ -34,12 +34,19 @@ None of these rows is named by a pull request.
 | W20 | W21 | Entry point sections |
 | W21 | W22 | Canon conventions |
 | W22 | W23 | Review Changes prose |
+| W27 | W29 | Final verification |
+
+E14 W11 follows final verification to E10 W29.
 
 ## Verification
 
 - Dependency check over the revised body, all 27 work items and the pair record: no problem and no unaccounted pair. Longest chains: W19 → W20 → W27 and W19 → W22 → W27.
 - Format check over the revised body: no finding.
 
-## Follow-up
+## Join rule
 
-- [#1530](https://github.com/m2ux/workflow-server/issues/1530) restates the join rule around its one bar and has the dependency check propose units from shared components.
+[#1530](https://github.com/m2ux/workflow-server/issues/1530) records the join-rule findings and is delivered by two E10 rows, joined on `deps.py`. Its five criteria exceed one row's grain, so they take AC42–AC44 and AC45–AC46.
+
+- [W27](work-items/e10/w27.md) restates the rule around its one bar and proposes units from shared components.
+- [W28](work-items/e10/w28.md) accounts a split unit with one line and bounds a unit's size.
+- Both change skill instructions, so final verification follows them as W29.

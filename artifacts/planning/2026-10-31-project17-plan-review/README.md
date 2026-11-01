@@ -24,7 +24,7 @@ Six P1 findings and eleven P2 findings identify required reconciliation. Approve
 | [Caller and retrieval](caller-retrieval-contract.md) | Procedure-only callers, required reads and current placement ownership |
 | [Final skill verification](final-skill-verification.md) | The final-verification renumber and whole-repository pass requirements |
 | [Joins reconciliation](joins-reconciliation.md) | Current open-epic joined units and separate-review decisions |
-| [E10 joins review](e10-joins-review.md) | E10 joined units, dependency edges, coverage corrections and the W19–W23 identity map |
+| [E10 joins review](e10-joins-review.md) | E10 joined units, dependency edges, coverage corrections, the join-rule rows and the identity map |
 | [E14 evidence order](e14-evidence-order.md) | Final manifests and measurements follow every input edit |
 | [Branch contract](branch-contract.md) | Epic integration routes and dependency ordering |
 | [API contract](api-contract.md) | REST capability selection, current GraphQL and classic Projects exclusion |
