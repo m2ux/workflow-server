@@ -37,15 +37,15 @@ epic's repository.
                under its epic. Under each epic, the tasks whose row id links a pull request merged
                in the window, and each other pull request counting towards the epic, merged in the
                window, that links none of the epic's task issues listed.
-  In progress  epics and task issues In Progress or In Review, each epic with its open pull
-               requests that link none of its task issues In Progress or In Review, ready for
-               review (In Review) or draft, or else, with no line under it, its next task.
+  In progress  epics In Progress or In Review and task issues In Progress, each epic with its open
+               pull requests that link none of its task issues In Progress, ready for review
+               (In Review) or draft, or else, with no line under it, its next task.
   Next         epics and task issues Ready, ranked by the priority label of their initiative, then
                by their epic's own (a larger number first; no label after every number) and then by
                reference, and an epic ahead of any listed epic naming it; the first five,
                and a count of the rest. An epic names its next task.
 An epic's next task is its first undelivered task whose dependencies are delivered and whose linked
-task issue, if it has one, is on the board and not In Progress or In Review. A task is undelivered
+task issue, if it has one, is on the board and not In Progress. A task is undelivered
 while every pull request its id links is open. A task issue that
 belongs to an epic which names its task as next is not listed again.
 

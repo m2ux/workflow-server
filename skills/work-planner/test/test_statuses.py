@@ -61,6 +61,18 @@ class DeliveryJurisdiction(unittest.TestCase):
             place(plan, EPIC, 'Ready', 'In Review')
         self.assertIn('Ready → In Review', plan.lines[0])
 
+    def test_setting_a_task_in_review_is_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(Jurisdiction) as refused:
+                place(changes(tmp, DELIVERY), TASK, 'In Progress', 'In Review')
+        self.assertIn('a task does not stand In Review', str(refused.exception))
+
+    def test_a_task_held_in_review_moves_to_in_progress(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = changes(tmp, DELIVERY)
+            place(plan, TASK, 'In Review', 'In Progress')
+        self.assertIn('In Review → In Progress', plan.lines[0])
+
     def test_an_epic_moving_from_in_progress_to_backlog_is_allowed(self):
         with tempfile.TemporaryDirectory() as tmp:
             place(changes(tmp, DELIVERY), EPIC, 'In Progress', 'Backlog')
@@ -114,7 +126,7 @@ class DispatchJurisdiction(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             with self.assertRaises(Jurisdiction) as refused:
                 place(changes(tmp, DISPATCH), TASK, 'In Progress', 'In Review')
-        self.assertIn('does not set a task In Review', str(refused.exception))
+        self.assertIn('a task does not stand In Review', str(refused.exception))
 
     def test_setting_the_queue_is_refused(self):
         for wanted in ('Backlog', 'Ready'):

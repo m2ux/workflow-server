@@ -36,7 +36,7 @@ The management paragraph is set off by blank lines, with the board's link beneat
 - **Completed.**
   Items Done whose issue closed in the window, grouped under their epic, and tasks whose pull requests merged in it. Closing is when an issue became Done; an issue the board caught up with later still falls on its closing date.
 - **In progress.**
-  Epics and task issues In Progress or In Review, each epic with its open pull requests, or else its next task.
+  Epics In Progress or In Review and task issues In Progress, each epic with its open pull requests, or else its next task.
 - **Next.**
   The five Ready items, each epic with its next task, and a count of the rest.
   - They rank by the priority label of the initiative their epic belongs to, then by their epic's own.

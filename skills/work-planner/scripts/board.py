@@ -22,12 +22,12 @@ bodies cite, closed other than as completed (an issue a task subsumed), is remov
 Status, first match wins:
   Done         closed as completed
   (removed)    closed any other way
-  In Review    a task issue an open pull request ready for review delivers: its title names the
-               epic by the initiative's row id, and its Development field links the issue; an open
-               initiative whose criteria are all ticked; an epic with ticked criteria and current agent review
-  In Progress  an open draft pull request links a task issue; a task whose row links the planning
-               record a session holds it with; an epic with an open pull request and a criterion
-               unticked
+  In Review    an open initiative whose criteria are all ticked; an epic with ticked criteria and
+               current agent review
+  In Progress  a task issue an open pull request, draft or ready, delivers: its title names the
+               epic by the initiative's row id, and its Development field links the issue; a task
+               whose row links the planning record a session holds it with; an epic with an open
+               pull request and a criterion unticked
   Ready        a task whose epic is Ready or In Progress, whose every dependency is delivered,
                and that has no Open Questions
   (unchanged)  a task gated on a dependency entry that cannot resolve
@@ -39,7 +39,8 @@ has not started, an In Progress or In Review entry becomes Backlog. One not yet 
 In Progress when a row has been delivered or an epic is Done, and Backlog when work has not
 started. Advance mode moves Ready, Backlog and, when no pull request is open, In Progress.
 
-An open task issue is In Review when an open pull request ready for review links it. An open
+A task issue goes from In Progress to Done: its pull request merges into the epic base and the
+task closes, so a task issue held In Review becomes In Progress while it is open. An open
 initiative is In Review when every acceptance criterion is ticked. An epic also requires current published agent review evidence from --agent-reviews; a missing or failing review holds it In Progress. An initiative is In
 Progress when any epic is In Review or In Progress.
 
@@ -310,17 +311,14 @@ def main() -> int:
     status: dict[Key, str | None] = {}
     task_epic: dict[Key, Key] = {}
 
-    def pr_status(epic_key: str, cite: Key | None = None) -> str | None:
-        """In Review for an open pull request ready for review linking the issue, In Progress for
-        an open draft, None for neither."""
-        found = set()
+    def open_pr(epic_key: str, cite: Key | None = None) -> bool:
+        """Whether an open pull request, draft or ready, names the epic and links the cited issue."""
         for p in prs:
             ref = PR_REF.match(p['title'])
-            if p.get('state') != 'open' or not ref or ref.groups() != (tag, epic_key):
-                continue
-            if cite is None or links_issue(p, cite):
-                found.add('In Progress' if p.get('draft') else 'In Review')
-        return 'In Review' if 'In Review' in found else 'In Progress' if found else None
+            if p.get('state') == 'open' and ref and ref.groups() == (tag, epic_key) and (
+                    cite is None or links_issue(p, cite)):
+                return True
+        return False
 
     for r in epic_rows:
         ident = id_cell(header, r)
@@ -350,9 +348,7 @@ def main() -> int:
             t = tasks[task_issue]
             if t['state'] == 'closed':
                 status[task_issue] = 'Done' if completed(t) else None
-            elif found := pr_status(epic_key, task_issue):
-                status[task_issue] = found
-            elif reservation(ident):
+            elif open_pr(epic_key, task_issue) or reservation(ident):
                 status[task_issue] = 'In Progress'
             elif open_questions(t):
                 status[task_issue] = 'Backlog'
@@ -373,7 +369,7 @@ def main() -> int:
             if problem:
                 review_blocked = True
                 unresolved.append(f'{label(number, home)}: {problem}; handoff blocked')
-        elif pr_status(epic_key):
+        elif open_pr(epic_key):
             status[number] = 'In Progress'
         elif delivered_any:
             status[number] = STARTED

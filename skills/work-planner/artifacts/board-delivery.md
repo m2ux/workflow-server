@@ -85,7 +85,7 @@ An open initiative whose criteria are all ticked is In Review. An open epic whos
 
 An initiative or epic with no open pull request and unticked criteria keeps Ready or Backlog, and keeps In Progress when delivery has started. In Review then becomes In Progress. One not yet on the board is added at Backlog, or at In Progress when delivery has started. Delivery does not move an initiative or epic between Ready and Backlog.
 
-A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses, task In Review and removals.
+A task issue goes from In Progress to Done: an open pull request delivering it, draft or ready, holds it In Progress, and its merge into the epic base closes it. No jurisdiction sets a task In Review; only an initiative or an epic stands there, and a task held In Review returns to In Progress while it is open. A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.
 
 Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.
 
