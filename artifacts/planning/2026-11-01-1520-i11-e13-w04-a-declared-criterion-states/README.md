@@ -13,6 +13,7 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | Artifact | What it holds |
 | --- | --- |
 | [W04](w04.md) | The work item: the paths an entry names, the changed files the check reads, and the tests that observe them |
+| [Evidence](evidence.md) | The tests and live check observing AC4 and AC5, with their results |
 
 ## Links
 
