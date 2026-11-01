@@ -1,0 +1,177 @@
+"""The Development relation read from each end by links-by-pull-request.py and links-by-issue.py.
+
+Each capture runs against a stand-in `gh` that answers the query file from a held relation, two
+linked nodes to a page, so a relation longer than a page is read across pages.
+
+Run from the skill directory: python3 -m unittest discover -s test
+"""
+import json
+import os
+import re
+import subprocess
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+
+from fixtures import SCRIPTS, epic_body, issue, pr, run, url
+
+TRACKER = r'''import json, re, sys
+relation = json.load(open(sys.argv[0] + '.json'))
+text = open(sys.argv[sys.argv.index('-F') + 1].split('@', 1)[1]).read()
+data = {}
+for alias, owner, name, body in re.findall(r'(r\d+): repository\(owner: "([^"]+)", name: "([^"]+)"\) \{\n(.*?)\n  \}', text, re.S):
+    repo, block = owner + '/' + name, {}
+    for line in body.splitlines():
+        sub, field, number, connection, after = re.search(
+            r'(\w+): (\w+)\(number: (\d+)\) \{ number (\w+)\([^)]*?(?:after: "(\d+)")?\)', line).groups()
+        held = relation.get(field, {}).get(repo + '#' + number, [] if field == 'issue' else None)
+        if held is None:
+            block[sub] = None
+            continue
+        start = int(after or 0)
+        block[sub] = {'number': int(number), connection: {
+            'nodes': held[start:start + 2],
+            'pageInfo': {'hasNextPage': start + 2 < len(held), 'endCursor': str(start + 2)}}}
+    data[alias] = block
+print(json.dumps({'data': data}))
+'''
+
+
+def tracker(root: Path, links: dict[tuple[str, int], list[tuple[str, int]]], states: dict[int, str] = {},
+            missing: tuple[int, ...] = ()) -> dict[str, str]:
+    """The environment a capture runs in: a stand-in gh holding each pull request's linked issues,
+    and the same relation read from each issue, short of each pull request named missing."""
+    pulls, issues = {}, {}
+    for (repo, number), linked in links.items():
+        if number not in missing:
+            pulls[f'{repo}#{number}'] = [{'number': n, 'repository': {'nameWithOwner': r}} for r, n in linked]
+        for issue_repo, n in linked:
+            issues.setdefault(f'{issue_repo}#{n}', []).append(
+                {'number': number, 'state': states.get(number, 'MERGED'), 'repository': {'nameWithOwner': repo}})
+    gh = root / 'bin' / 'gh'
+    gh.parent.mkdir()
+    gh.write_text(f'#!{sys.executable}\n' + TRACKER)
+    gh.chmod(0o755)
+    Path(str(gh) + '.json').write_text(json.dumps({'pullRequest': pulls, 'issue': issues}))
+    return {**os.environ, 'PATH': f'{gh.parent}{os.pathsep}{os.environ["PATH"]}', 'PYTHONDONTWRITEBYTECODE': '1'}
+
+
+def capture(script: str, env: dict[str, str], *args: str) -> subprocess.CompletedProcess:
+    return subprocess.run([sys.executable, str(SCRIPTS / script), *args], capture_output=True, text=True, env=env)
+
+
+def pull_end(root: Path, env: dict[str, str], pulls: list[dict]) -> tuple[subprocess.CompletedProcess, Path]:
+    records, out = root / 'prs.json', root / 'links.json'
+    records.write_text('\n'.join(json.dumps(p) for p in pulls))
+    return capture('links-by-pull-request.py', env, '--prs', str(records), '--out', str(out)), out
+
+
+def issue_end(root: Path, env: dict[str, str], issues: list[dict]) -> tuple[subprocess.CompletedProcess, Path]:
+    records, out = root / 'issues.json', root / 'development.json'
+    half = len(issues) // 2
+    records.write_text(json.dumps(issues[:half]) + '\n' + json.dumps(issues[half:]))
+    return capture('links-by-issue.py', env, '--issues', str(records), '--out', str(out)), out
+
+
+RELATION = {('o/r', 950): [('o/r', 3), ('o/r', 4), ('o/s', 5), ('o/r', 6), ('o/r', 7)],
+            ('o/r', 951): [], ('o/s', 952): [('o/r', 3)]}
+PULLS = [pr(950, '[I01:E00] Work'), pr(951, '[I01:E00] More'), pr(952, '[I01:E00] Elsewhere', repo='o/s')]
+
+
+class PullRequestEnd(unittest.TestCase):
+    def test_every_pull_request_appears_with_its_issues_or_an_empty_array(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done, out = pull_end(root, tracker(root, RELATION), PULLS)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            snapshot = json.loads(out.read_text())
+        self.assertEqual([(e['repo'], e['number']) for e in snapshot], [('o/r', 950), ('o/r', 951), ('o/s', 952)])
+        held = {(e['repo'], e['number']): [(r['repo'], r['number']) for r in e['closingIssuesReferences']]
+                for e in snapshot}
+        self.assertEqual(held, RELATION)
+
+    def test_a_pull_request_collected_twice_appears_once(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done, out = pull_end(root, tracker(root, RELATION), PULLS + PULLS[:1])
+            self.assertEqual(done.returncode, 0, done.stderr)
+            self.assertEqual(len(json.loads(out.read_text())), 3)
+
+    def test_an_unread_relation_writes_no_snapshot(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done, out = pull_end(root, tracker(root, RELATION, missing=(951,)), PULLS)
+            self.assertEqual(done.returncode, 1)
+            self.assertIn('unreadable: pull request o/r#951', done.stdout)
+            self.assertFalse(out.exists())
+
+    def test_the_sync_reads_the_snapshot(self):
+        task = issue(3, '[I01:E00:W01] Task: One')
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        for relation, uncited in ((RELATION, False), ({('o/r', 950): [('o/r', 4)]}, True)):
+            with tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                captured, links = pull_end(root, tracker(root, relation), PULLS[:1])
+                self.assertEqual(captured.returncode, 0, captured.stderr)
+                (root / 'epic.json').write_text(json.dumps(epic))
+                (root / 'task.json').write_text(json.dumps(task))
+                done = run('sync.py', str(root / 'epic.json'), '--prs', str(root / 'prs.json'),
+                           '--links', str(links), '--tasks', str(root / 'task.json'), '--link', 'W01=950',
+                           '--fix', str(root / 'fixed.md'))
+                self.assertEqual(done.returncode, 0, done.stderr)
+                self.assertIn(f"[W01]({url('pull', 950)})", (root / 'fixed.md').read_text())
+                self.assertEqual('uncited: #950 does not link W01 #3' in done.stdout, uncited, done.stdout)
+
+
+class IssueEnd(unittest.TestCase):
+    ISSUES = [issue(n, f'Issue {n}') for n in (3, 4, 6, 7, 8)] + [{**pr(951, 'Skipped'), 'pull_request': {},
+                                                                    'repository_url': 'https://api.github.com/repos/o/r'}]
+
+    def test_each_issue_is_keyed_by_number_with_its_pull_requests(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done, out = issue_end(root, tracker(root, RELATION, states={952: 'OPEN'}), self.ISSUES)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            development = json.loads(out.read_text())
+        self.assertEqual(sorted(development), ['3', '4', '6', '7', '8'])
+        self.assertEqual(development['3'], [{'repo': 'o/r', 'number': 950, 'state': 'MERGED'},
+                                            {'repo': 'o/s', 'number': 952, 'state': 'OPEN'}])
+        self.assertEqual(development['8'], [])
+
+    def test_the_issue_end_agrees_with_the_pull_request_end(self):
+        relation = {('o/r', 900 + n): [('o/r', 1 + (n * k) % 7) for k in range(n % 4)] for n in range(120)}
+        issues = [issue(n, f'Issue {n}') for n in range(1, 8)]
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            env = tracker(root, relation)
+            by_pull, links = pull_end(root, env, [pr(number, 'Work') for _, number in relation])
+            by_issue, development = issue_end(root, env, issues)
+            self.assertEqual((by_pull.returncode, by_issue.returncode), (0, 0), by_pull.stderr + by_issue.stderr)
+            from_pulls = {(e['number'], r['number']) for e in json.loads(links.read_text())
+                          for r in e['closingIssuesReferences']}
+            from_issues = {(p['number'], int(n)) for n, held in json.loads(development.read_text()).items()
+                           for p in held}
+        self.assertEqual(from_issues, from_pulls)
+        self.assertGreater(max(sum(1 for pair in from_pulls if pair[1] == n) for n in range(1, 8)), 2)
+
+    def test_issues_from_two_repositories_are_refused(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            done, _ = issue_end(root, tracker(root, RELATION), [issue(3, 'One'), issue(5, 'Two', repo='o/s')])
+            self.assertNotEqual(done.returncode, 0)
+            self.assertIn('supply one repository', done.stderr)
+
+
+class Query(unittest.TestCase):
+    def test_the_query_carries_no_variable(self):
+        sys.path.insert(0, str(SCRIPTS))
+        from development import ISSUE, query
+        text = query(ISSUE, {('o/r', 3): None, ('o/s', 5): 'Y3Vyc29y'})
+        self.assertNotIn('$', text)
+        self.assertIn('after: "Y3Vyc29y"', text)
+        self.assertEqual(len(re.findall(r'repository\(', text)), 2)
+
+
+if __name__ == '__main__':
+    unittest.main()
