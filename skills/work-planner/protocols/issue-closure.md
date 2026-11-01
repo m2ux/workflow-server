@@ -36,4 +36,8 @@ Read these files first.
    - If the operation reports a changed link set or missing evidence:
      - Refresh those inputs.
      - Repeat the completion check before trying again.
+   - If it returns an abandoned or incorrect link:
+     - Obtain the user's decision on removing it.
+     - On a decision to remove, run [Access Development Links](../artifacts/pull-request.md#access-development-links) with the link's pull request and issue identities, the removal request, that decision and the confirmed repository setting.
+     - Repeat from the issue step.
    - Report any unmerged link or unmet criterion.
