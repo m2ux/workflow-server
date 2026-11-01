@@ -1,0 +1,137 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1555",
+    "head": "8bddff05a615dc0d01e36b6b87d3a68025daa6ed",
+    "base": "b1eb5351b97add7f5f74428abfdec142b35548e4",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1181-i11-e10-epic-review/review-1555-8bddff05.json",
+    "reviewer": "Claude Opus 5.5 agent review (independent reviewer sub-agent, with two read-only reviewer sub-agents for the checker and the work-planner scripts)",
+    "reviewed_at": "2026-11-01T15:53:12Z",
+    "scope": "Integration diff b1eb5351...8bddff05 (merge base equals target head; 86 files, +5331/-1248), read afresh, with the delta ba685e7e..8bddff05 (20 files: W34 #1579 399c3dbed, W35 #1580 eeae7d3b8 and 21de11811, W36 #1581 026e984bb, 8af034056, f255e65c3, d428349f0) read line by line against each of the 12 findings of review-1555.json. Files: .github/workflows/verify-skills.yml; skills/scripts/check_skill_files.py and skills/test/test_check_skill_files.py; skills/guidelines.md and skills/rules.json; the gitnexus and server-in-the-loop entry points and operations files; workflow-canon SKILL.md and its moved commands; work-planner SKILL.md, guidelines, rules.json, vocabulary.json, every changed mode, protocol and artifact, and scripts board.py, closure.py, closure-sweep.py, links-by-issue.py, deliver.py, deps.py, format.py, orphans.py, sync.py, agent_review.py with their tests. Callers inspected: every producer and consumer of the links-by-issue snapshot (closure.py, closure-sweep.py, issue.md Check Issue Closure, Sweep Closure Evidence, Capture Issue Links), the separate links-by-pull-request snapshot used by sync and deliver, sync-mode step 6 against epic.md finding rows, and the real verify-skills step run under bash -eo pipefail on seeded trees. Probes and mutants ran on scratch copies; no branch was modified.",
+    "criteria": "Epic #1181 AC1-AC52 (all ticked). The 12 earlier findings were re-verified against the code at 8bddff05 (all fixed). AC50: 8 of 17 ReviewedCheckCases fail at ba685e7e (the defect cases); AC52: all nine new script tests fail at ba685e7e and pass at 8bddff05; AC51 run of the real job step over every-skill-excluded and in-scope cases passes. AC7/AC50 are not met in full (absolute-URL classic routes) and AC51 is not met for a nested skill: see the blocking findings. AC27, AC48, AC49 hold by the checker run over skills/*/ (0 findings). Other criteria were spot-checked against their observing tests; the integration content they rest on is unchanged since ba685e7e outside the 20 delta files.",
+    "validation": "At 8bddff05: sbx python3 -m pytest skills/work-planner/test -q: 727 passed, 1 skipped, 1843 subtests passed. sbx python3 -m pytest skills/test -q: 209 passed, 9 subtests passed. sbx python3 -m pytest skills/workflow-canon/test -q (CANON_TEST_ENGINE unset): 39 passed, 38 skipped, 21 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills/*/: 81 files checked, 0 findings.",
+    "findings": [
+      {
+        "description": "AC7 (blocking at ba685e7e): classic REST routes projects/{id}, projects/{id}/columns, POST user/projects and GraphQL project(number:) passed the interface check. Verified fixed at 8bddff05: CLASSIC (skills/scripts/check_skill_files.py:129-134) now matches projects/<digit|{|<|:|columns|cards>, /user/projects, repos|orgs|users/.../projects and project(s)( with a field argument; ReviewedCheckCases (skills/test/test_check_skill_files.py:1619-1636) observes each, and mutants dropping the route alternatives are killed. A residual absolute-URL gap is recorded as a new finding.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1579"
+      },
+      {
+        "description": "check_skill_files.py '\\bprojects\\s*\\(' flagged prose and 'def projects(self):'. Verified fixed: the field alternative requires a GraphQL argument name after the parenthesis; test_prose_naming_projects_is_no_interface and test_a_function_named_projects_is_no_interface observe it, and Projects V2 names, routes and board links stay unflagged (probed).",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1579"
+      },
+      {
+        "description": "A bulleted '- **REST gap:**' line was not accepted, and the gap's span restriction and fenced-only GraphQL detection were unobserved. Verified fixed: REST_GAP is a regex accepting an optional bullet (:123, used at :625); test_a_bulleted_rest_gap_is_accepted, test_a_gap_stated_by_another_specification_does_not_cover_it and test_graphql_named_in_prose_needs_no_gap observe the three cases.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1579"
+      },
+      {
+        "description": "An unbolded mode bullet escaped the trigger-phrase check. Verified fixed: MODE accepts a bold or plain linked name and modes() yields match[2]; test_an_unbolded_mode_bullet_is_checked_for_its_trigger observes it.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1579"
+      },
+      {
+        "description": "Tests not observing the mood-group parent key, the multi-word mode join, hard_wraps' heading exclusion, fence-language case and an entry point's Commands section. Verified fixed: test_siblings_under_different_parents_are_not_compared, test_a_multi_word_mode_is_carried_by_its_words_in_order, test_a_heading_followed_by_its_paragraph_is_not_wrapped, test_a_fence_language_is_read_whatever_its_case and test_an_entry_point_commands_section_is_outside_the_set now exist in ReviewedCheckCases.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1579"
+      },
+      {
+        "description": "verify-skills.yml ran excluded skills in isolation and failed with every skill excluded. Verified fixed: one run over every skills/*/ root with --exclude holding an excluded skill's findings aside (held_aside, check_skill_files.py:1021); roots are never empty while any skill exists, and SkillCheckWorkflow runs the real step over every-skill-excluded and in-scope cases. A nested-skill exclusion defect in the new code is recorded as a new finding.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1580"
+      },
+      {
+        "description": "sync.py NAMED_FILE took any dotted backticked token ('board.Outputs', 'main:src/x.ts') as a file. Verified fixed: NAMED_FILE requires a letter-led extension; a dotted bare name is measured only when a file at the head carries its extension, and a <branch>:<path> component only for that branch's base; ReviewChanges dotted-name and component tests fail at ba685e7e and pass here. A prose/code mismatch on extensionless paths is recorded as a new finding.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "deps.py bounded singleton units. Verified fixed: only units of two or more rows are bounded; test_a_lone_row_over_the_bound_joins_nothing fails at ba685e7e and passes here; dependency-graph.md and the docstring agree.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "board.py read a producer merged into a stacked task branch as MET, and the linked-commit path was untested. Verified fixed: EPIC_BASE/landing leave a task-branch merge unverified (UNMET, 'neither an epic base nor a long-lived branch'); test_a_merge_into_a_task_branch_names_no_long_lived_branch and test_a_linked_commit_is_read_against_each_consumer_base observe both.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "sync-mode.md step 6 lacked handlers for changes, target and no epic, and Unevaluable's text was stale. Verified fixed: step 6 names a handler for every finding row in epic.md, and Unevaluable fetches the bases and heads left unread.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "sync.py epicless reported '[I07:E00:W01]' as no epic and matched '[I070'. Verified fixed: initiative_titles uses the full PREFIX regex, task_titled reports the task-titled form as a retitle, and EpiclessTitles tests fail at ba685e7e and pass here.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "closure.py accepted a links snapshot for another repository's issue of the same number. Verified fixed: links-by-issue.py writes {repository, issues}; closure.py and closure-sweep.py share snapshot() and refuse another repository (closure.py:43); both another_repository tests fail at ba685e7e.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1581"
+      },
+      {
+        "description": "skills/scripts/check_skill_files.py:1021-1041 held_aside rebuilds each finding's path as skill.parent / item[0], which resolves only when the excluded folder is itself a root. In verify-skills.yml the roots are skills/*/, so a nested skill such as skills/gitnexus/gitnexus-cli (EXCLUDED='gitnexus/gitnexus-cli', the form the env comment and --exclude help invite) is never matched: its findings are reported, not held aside, and the run also reports 'gitnexus-cli:0: excluded skill without a finding'. Probe: a tree with family/x/SKILL.md carrying a heading jump and family/y clean, EXCLUDED='family/x', exits 1 printing both lines. AC51 ('judges each excluded skill in a run that also reads the skills citing it') is false for every skill below a family folder. The held_aside docstring's path claim is false in the same case, and no test excludes a nested skill.",
+        "severity": "blocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/scripts/check_skill_files.py:131-133 CLASSIC misses Projects (classic) REST called by absolute API URL: the (?<!github\\.com/) lookbehind meant for board web links also excludes api.github.com/, and the (?<![\\w./}>-]) lookbehind excludes projects/ after a slash. Probe: 'gh api https://api.github.com/repos/o/r/projects' and 'curl https://api.github.com/projects/1' match nothing, so a spec using either passes the check. AC7 ('unconditional rejection of deprecated Projects (classic) APIs') and AC50 ('every Projects (classic) form') are false for that form, and the module comment at :124-128 ('in every form') overstates.",
+        "severity": "blocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/test/test_check_skill_files.py: mutants survive the full skills/test suite (209 passed): REST_GAP.match replaced by search (gap accepted anywhere on a line); held_aside matching by item[0].startswith(skill.name) (an 'alpha' exclusion swallowing 'alphabet/' findings); the CLASSIC mutation prefix cut to (?:add|move)? (deleteProjectCard, updateProjectColumn unflagged); held_aside returning {} counts (the 'N findings held aside' line, check_skill_files.py:1102, is never asserted). test_an_exclusion_only_isolation_supports_fails (:1753) asserts only 'alpha' in output, not the lapse finding.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "AC50's evidence wording: of the 17 ReviewedCheckCases tests, 8 fail against the ba685e7e checker and 9 pass there (column route, V2 and board links, another spec's gap, GraphQL in prose, multi-word mode, entry-point Commands, heading followed by paragraph, fence case, siblings under different parents). Those cover behaviour that was already correct, so 'a test per case that fails against ba685e7ed' is not literally true; the criterion or the tests' framing should say which cases were defects.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/artifacts/epic.md:79 says 'A span names a file when it holds a directory path', but sync.py:506 NAMED_FILE requires the last segment to carry a letter-led extension. Probe: a Changes body naming `scripts/missing-tool`, `Makefile` or `missing/README`, none at the head, reports no changes: line; test_a_span_that_names_no_file_is_not_measured asserts config/branches is not measured. An absent extensionless file in Changes goes unreported, contrary to the spec.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/sync.py:444-455 epicless now requires a full PREFIX match, so malformed initiative titles '[I07:E1] x', '[I07: E00] y' and '[I07 E00] z' are reported by no finding (the old startswith check reported all three as no epic) while still not read as delivery. The '[I070' near-miss fix needed only a boundary.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "Stale descriptions: sync.py module docstring :73-74 says every title naming no epic as [I07:E00] is reported no epic, though a task-titled [I07:E00:W01] is reported retitle and :40-41 does not mention it; :43 says Changes names 'that path' and a bare name 'anywhere in the tree', omitting the extension and <branch>:<path> rules. board.py Outputs docstring (:195-205) lists the unverified cases without a merge into a task branch, which read() now refuses.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/modes/sync-mode.md:91-92 Target handler says 'Retarget an open pull request to the base it names', but for a task pull request misrouted() names only the placeholder i07/e00/<long-lived branch>, never a concrete base, so the handler does not say how to choose the base.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "Work-planner test gaps (mutants survive 727 passed): board.py:339 integrated()'s 'if not output.branch' off-route check (deleting it still yields UNMET but with 'has not merged into  since'); sync.py:1083 retitle de-duplication (dropping it prints a merged row-linked task-titled pull request twice; tests use assertIn); closure.py:43 case-insensitive repository comparison (no mixed-case test).",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": ".github/workflows/verify-skills.yml: no workflow runs pytest skills/test, so SkillCheckWorkflow and the checker suite (AC50, AC51 evidence) are shown only by local runs; a regression in the checker's own tests reaches workspace unreported. Separately, with no skills/*/ folder holding a SKILL.md the step calls the checker with no roots and argparse exits 2 (unreachable in this repository).",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]

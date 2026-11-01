@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-Agent review of the I11:E10 Conformance Checks integration diff before handoff: the `workspace` epic base against its long-lived branch. The review reads the full integration diff and the evidence behind the epic's 49 criteria, and is recorded here for the exact head and base it reviewed.
+Agent review of the I11:E10 Conformance Checks integration diff before handoff: the `workspace` epic base against its long-lived branch. The review reads the full integration diff and the evidence behind the epic's 52 criteria, and is recorded here for the exact head and base it reviewed.
 
 The record gates the epic's handoff. The epic moves to In Review, and its review pull request is marked ready, only while a current record passes for its head. A blocking finding is fixed on the epic base and the review repeated for the new head.
 
@@ -12,7 +12,8 @@ The record gates the epic's handoff. The epic moves to In Review, and its review
 
 | Artifact | What it holds |
 | --- | --- |
-| [Review #1555](review-1555.json) | Agent review record of the `workspace` integration at `ba685e7e`: a blocking AC7 finding (classic Projects REST routes pass the interface check) and eleven nonblocking findings, all open |
+| [Review #1555](review-1555.json) | Agent review record of the `workspace` integration at `ba685e7e`: a blocking AC7 finding (classic Projects REST routes pass the interface check) and eleven nonblocking findings, later fixed by W34–W36 |
+| [Review #1555 at 8bddff05](review-1555-8bddff05.json) | Current review, after W34–W36 (#1579–#1581): the twelve earlier findings fixed, two blocking findings open (an excluded skill nested in a family folder is not held aside; classic REST called by absolute API URL passes the interface check) and eight nonblocking findings open |
 
 ## Links
 
