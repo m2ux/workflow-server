@@ -30,8 +30,9 @@ command specification's own text, and a prerequisite, whether a canonical
 prerequisite sentence or a file's Prerequisites section. A specification
 citing another command needs it to run, so its file reaches that command
 without becoming its caller. Placement reads callers alone; reach decides
-what a scenario reads, which a retrieval walk measures. The
-top-level sections of a file carrying a procedure are the set the guidelines
+what a scenario reads, which a retrieval walk measures.
+
+The top-level sections of a file carrying a procedure are the set the guidelines
 name, in the order they name them, Procedure among them, so the reader knows
 what the file carries before opening it. A file carrying no procedure keeps
 its own shape.
@@ -371,7 +372,22 @@ def check(path, root, cache, cited, called, structures=None):
 
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
+
+    for index, title in empty_sections(lines, headings):
+        report(index, 'heading without content', title)
     return found
+
+
+def empty_sections(lines, headings):
+    """Each heading whose section holds nothing but blank lines. A section runs
+    to the next heading of its own level or above, so one whose body is its
+    sub-sections has content, and a fenced example under a heading is content
+    like any other line."""
+    for position, (start, level, title) in enumerate(headings):
+        end = next((index for index, depth, _ in headings[position + 1:]
+                    if depth <= level), len(lines))
+        if not any(line.strip() for line in lines[start + 1:end]):
+            yield start, title
 
 
 STEP = 'step'
@@ -437,10 +453,13 @@ def main(argv=None):
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     options = parser.parse_args(argv)
 
+    # A fixture tree holds test inputs in the format its suite reads, which is
+    # specimen text rather than a skill file, so the guidelines do not reach it.
     files = []
     for name in options.roots:
         root = Path(name).resolve()
-        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))]
+        files += [(path, root.parent) for path in sorted(root.rglob('*.md'))
+                  if 'fixtures' not in path.relative_to(root).parts]
 
     declared = {}
     try:

@@ -70,8 +70,9 @@ Left to decide, since each needs new content or a judgement:
     standalone issue, whose Proposal states its boundary
   - a Work Breakdown column the template lacks, a Done cell that is neither empty nor a tick, or a row id of
     the wrong form
-  - an Coverage cell that does not name the criteria the row delivers (AC2, AC5), or
-    cites one that does not exist, and a criterion no row delivers. A complete row's cell may be empty
+  - a Coverage cell that does not name the criteria the row delivers (AC2, AC5), complete or open,
+    or cites one that does not exist, and a criterion no row delivers. An empty cell stands only on
+    a complete row another row depends on, the further task that adopted its criteria
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
   - a References section that links issues or pull requests on the same board
@@ -128,6 +129,7 @@ BULLET = re.compile(r'^(\s*)[-*] ')
 SENTENCE = re.compile(r'(?<=[.!?])\s+(?=[A-Z\[`#])')
 OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
+TASK_RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
@@ -298,6 +300,19 @@ def id_form(text: str) -> str:
     bare = re.sub(r'\[([^\]]*)\]\([^)]*\)', r'\1', text)
     parts = [p.strip() for p in bare.split(',') if p.strip()]
     return parts[0] if parts and all(p == parts[0] for p in parts) else bare
+
+
+def depended_on(header: list[str], rows: list[list[str]]) -> set[str]:
+    """The row ids of this table that another row's Depends on names, singly or within a range."""
+    named: set[str] = set()
+    for r in rows:
+        for item in cell(header, r, 'Depends on').split(','):
+            text = LINK.sub(r'\1', item).strip()
+            if span := TASK_RANGE.fullmatch(text):
+                named |= {f'W{n:02d}' for n in range(int(span[1]), int(span[2]) + 1)}
+            elif re.fullmatch(r'W\d\d', text):
+                named.add(text)
+    return named
 
 
 def colon_refs(text: str) -> str:
@@ -638,6 +653,7 @@ class Review:
         wanted = {int(m[1]) for l in by_name.get('Acceptance Criteria', []) if (m := AC.match(l))}
         delivered: set[int] = set()
         cited: list[tuple[str, set[int]]] = []
+        adopted = depended_on(header, [cells(line) for line in table[2:]])
         for line in table[2:]:
             r = cells(line)
             name = row_id(id_cell(header, r))
@@ -650,7 +666,7 @@ class Review:
             listed = (r[covered] if covered < len(r) else '').strip()
             done_at = header.index('Done') if 'Done' in header else None
             done = r[done_at].strip() if done_at is not None and done_at < len(r) else ''
-            if listed == '' and done == TICK:
+            if listed == '' and done == TICK and name in adopted:
                 continue
             if not COVERAGE.fullmatch(listed):
                 self.decide.append(f'{name}: Coverage does not name the criteria it delivers')
