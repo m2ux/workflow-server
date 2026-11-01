@@ -14,6 +14,7 @@ A board that readies epics without their initiative, or parks active work along 
 | --- | --- |
 | [W04 work item](w04.md) | Component, scope, design, criteria and test rows for W04 |
 | [Delivery evidence](evidence.md) | Revisions, fixtures and results behind each Test Plan row |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
