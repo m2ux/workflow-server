@@ -14,3 +14,14 @@ Tested revision: `30a5894ed` on `i11/e09/w13-epic-delivery-recorded-with`, which
 - At `c2418d10c`: `pytest skills/work-planner/test -q`, 533 passed, 1046 subtests passed.
 - At `30a5894ed`: `pytest skills/work-planner/test -q`, 535 passed, 1052 subtests passed.
 - `skills/scripts/check_skill_files.py skills/work-planner`, at both revisions: 50 files checked, 0 findings.
+
+## Delivery
+
+- Merged as #1524 into `i11/e09/workspace` at `bdc2524f6`, whose tree equals the tested revision `30a5894ed`. AC19 is verified there by T1 and ticked on #1176 with W13's Done.
+- Review pull request #1487 carries the change under Branch Configuration and its merge as R14.
+
+## Plan Changes
+
+- Applied: none.
+- Held: none.
+- Deferred debt and arising issues: none.

@@ -13,10 +13,11 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | Artifact | What it holds |
 | --- | --- |
 | [w13.md](w13.md) | W13 work item: the callers' design, the file-change declaration and the test obligation |
-| [test-evidence.md](test-evidence.md) | The tested revision and each Test Plan check's observed result |
+| [test-evidence.md](test-evidence.md) | The tested revision, each Test Plan check's observed result, the merge and the run's plan changes |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1524](https://github.com/m2ux/workflow-server/pull/1524) |
