@@ -206,9 +206,9 @@ class SkillFileChecks(unittest.TestCase):
         self.write('references/sync.md', calling('Sync', 'catalog.md#fetch-issue'))
         self.assertEqual(self.findings(), [])
 
-    def test_a_specification_nobody_cites_stands(self):
+    def test_a_specification_nobody_cites_is_reported(self):
         self.write('references/catalog.md', self.CATALOG)
-        self.assertEqual(self.findings(), [])
+        self.assertEqual(self.findings(), [('catalog.md', 5, 'command specification nothing cites')])
 
     def test_a_specification_only_its_own_file_cites_stands(self):
         self.write('references/catalog.md',
@@ -284,7 +284,8 @@ class SkillFileChecks(unittest.TestCase):
     def test_a_sibling_specification_in_another_file_is_not_a_caller(self):
         self.write('references/catalog.md', self.CATALOG)
         self.write('references/plan.md',
-                   '# Plan\n\n## Commands\n\n### Close issue\n\nCloses one issue.\n'
+                   '# Plan\n\nIssues close through [Close issue](#close-issue).\n'
+                   '\n## Commands\n\n### Close issue\n\nCloses one issue.\n'
                    '\n- Run [Fetch issue](catalog.md#fetch-issue) first.\n')
         self.assertEqual(self.findings(), [])
 
@@ -322,7 +323,8 @@ class SkillFileChecks(unittest.TestCase):
 
     def test_a_heading_of_a_catalogs_conventions_is_not_a_specification(self):
         self.write('references/commands.md', self.LISTING)
-        self.write('references/plan.md', '# Plan\n\nSee [Execution](commands.md#execution) for it.\n')
+        self.write('references/plan.md', '# Plan\n\nSee [Execution](commands.md#execution) '
+                                          'for [Fetch issue](commands.md#fetch-issue).\n')
         self.assertEqual(self.findings(), [])
 
     def test_a_heading_of_a_catalogs_listing_is_a_specification(self):
@@ -435,7 +437,8 @@ class SkillFileChecks(unittest.TestCase):
         self.write('artifacts/issue.md', '# Issue\n\n## Operations\n\n### Read Tracker Issue\n\n'
                    '- Run [Fetch issue](#fetch-issue).\n\n## Fields\n\nNumber.\n\n'
                    '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
-        self.write('artifacts/source.md', '# Source\n\n## Fields\n\nText.\n\n'
+        self.write('artifacts/source.md', '# Source\n\n## Fields\n\n'
+                   'Text, read through [Fetch Source](#fetch-source).\n\n'
                    '## Commands\n\n### Fetch Source\n\nFetches it.\n')
         self.assertEqual(self.findings(), [])
 
@@ -930,6 +933,75 @@ class CallersAndReach(unittest.TestCase):
         guide = self.write('references/guide.md',
                            '# Guide\n\nRead [Fields](../artifacts/body.md#fields) first.\n')
         self.assertEqual(self.kinds(guide)['../artifacts/body.md#fields'], checker.PREREQUISITE_READ)
+
+
+class UncitedSpecifications(unittest.TestCase):
+    """A specification no procedure runs stays with the subject whose text
+    names it, and one nothing names is reported."""
+
+    COMMANDS = '\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def uncited(self):
+        files = sorted(self.skill.rglob('*.md'))
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        found = []
+        for path in files:
+            found += checker.check(path, self.root, {}, cited, called, declared)
+        return [(Path(where).name, detail) for where, _, kind, detail in found
+                if kind == 'command specification nothing cites']
+
+    def test_a_specification_no_procedure_runs_and_nothing_cites_is_reported(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [('catalog.md', 'Fetch issue')])
+
+    def test_a_step_citing_it_clears_the_report(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/plan.md', calling('Plan', 'catalog.md#fetch-issue'))
+        self.assertEqual(self.uncited(), [])
+
+    def test_a_subject_owned_command_nothing_cites_is_reported(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\nNumber.\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [('issue.md', 'Fetch issue')])
+
+    def test_a_subject_owned_command_its_prose_names_stays(self):
+        self.write('artifacts/issue.md', '# Issue\n\n## Fields\n\n'
+                   'Number, read through [Fetch issue](#fetch-issue).\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [])
+
+    def test_a_sibling_specification_citing_it_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS +
+                   '\n### Close issue\n\nCloses one issue.\n'
+                   '\n- Run [Fetch issue](#fetch-issue) first.\n')
+        self.assertEqual(self.uncited(), [('catalog.md', 'Close issue')])
+
+    def test_a_prerequisite_citing_it_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/guide.md',
+                   '# Guide\n\nRead [Fetch issue](catalog.md#fetch-issue) first.\n')
+        self.assertEqual(self.uncited(), [])
+
+    def test_reference_prose_in_another_file_keeps_it(self):
+        self.write('references/catalog.md', '# Catalog\n' + self.COMMANDS)
+        self.write('references/guide.md',
+                   '# Guide\n\nEvery check opens with [Fetch issue](catalog.md#fetch-issue).\n')
+        self.assertEqual(self.uncited(), [])
+
+    def test_the_entry_point_reports_its_specification_as_misplaced_alone(self):
+        self.write('SKILL.md', '---\nname: specimen\n---\n\n# Specimen\n' + self.COMMANDS)
+        self.assertEqual(self.uncited(), [])
 
 
 if __name__ == '__main__':
