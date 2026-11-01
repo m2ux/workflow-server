@@ -21,3 +21,4 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
 | Carried work item | [#1326 record](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-10-12-1326-i11-e10-w07-duplicate-anchors-every-repeated-heading/) |
+| Pull request | [#1556](https://github.com/m2ux/workflow-server/pull/1556) |

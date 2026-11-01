@@ -1,6 +1,6 @@
 # W07 Delivery Evidence
 
-Delivery head: `2daf30f06ac65ece88117322feb0c2af20010458` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `96295fffae4038711394670e736bef013dace994`.
+Delivery head: `7cb286ccd07332dc657e1a67688ff03c98983622` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `8e747419a2fca9db704e7bba11fcb8c8d6510160`. Merging that base brought W16's `empty_sections` beside `duplicate_anchors`; both run from `check`, and every result below is from the delivery head.
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
@@ -24,21 +24,21 @@ Result: all passed.
 
 ## Shared Check Suite
 
-T2. `python3 -m pytest skills/test -q`: `81 passed, 3 subtests passed`.
+T2. `python3 -m pytest skills/test -q`: `89 passed, 3 subtests passed`.
 
 Result: passed.
 
 ## Work Planner Suite
 
-T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `620 passed, 1 skipped, 1136 subtests passed`.
+T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `625 passed, 1 skipped, 1136 subtests passed`.
 
 Result: passed.
 
 ## Every Repository Skill
 
-T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `86 files checked, 6 findings`, none of them `duplicate anchor`. The six stand in `gitnexus/gitnexus-cli/SKILL.md` and are W11's and W13's: five command specifications in the entry point and one inline bold lead too wide. No repository skill carries a repeated heading, so no heading needed renaming.
+T4, AC13. `python3 skills/scripts/check_skill_files.py skills/gitnexus skills/server-in-the-loop skills/work-planner skills/workflow-canon`: `76 files checked, 0 findings`. No repository skill carries a repeated heading, so no heading needed renaming.
 
-Result: passed for this unit's rule.
+Result: passed.
 
 ## Plan Changes
 
