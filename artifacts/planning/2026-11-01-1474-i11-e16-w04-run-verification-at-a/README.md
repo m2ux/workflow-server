@@ -13,6 +13,7 @@ Sync runs that build those checkouts by hand leave them behind. The work item ca
 | Artifact | What it holds |
 | --- | --- |
 | [W04 work item](w04.md) | Component, scope, design, criteria and test rows for W04 |
+| [Delivery evidence](evidence.md) | Tested revision, changed paths and the result of each check |
 
 ## Links
 
