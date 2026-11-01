@@ -22,7 +22,15 @@ whatever its mood, order or count, so a sibling specification, a statement
 of what a command does, and a sentence routing three commands in sequence
 all name a command without running it. A skill's entry point holds no
 command of its own, so a
-specification standing there is reported wherever it is cited from. The
+specification standing there is reported wherever it is cited from.
+
+Reach is a second relation over the same citations. A citation is required
+where the reader must load its target to carry on: a procedure's step, a
+command specification's own text, and a prerequisite, whether a canonical
+prerequisite sentence or a file's Prerequisites section. A specification
+citing another command needs it to run, so its file reaches that command
+without becoming its caller. Placement reads callers alone; reach decides
+what a scenario reads, which a retrieval walk measures. The
 top-level sections of a file carrying a procedure are the set the guidelines
 name, in the order they name them, Procedure among them, so the reader knows
 what the file carries before opening it. A file carrying no procedure keeps
@@ -225,16 +233,14 @@ def citations(paths, structures=None):
     cited = {}
     called = {}
     for path in paths:
-        lines, fenced, headings = scan(path)
-        steps = procedure_spans(lines, fenced, headings, contract(path, structures))
-        for index, target in targets(path, lines, fenced):
+        for _, target, kind in citation_kinds(path, contract(path, structures)):
             name, _, fragment = target.partition('#')
             if not fragment:
                 continue
             destination = (path.parent / name).resolve() if name else path
             anchor = anchor_of(fragment)
             cited.setdefault(destination, {}).setdefault(anchor, set()).add(path)
-            if index in steps:
+            if kind == STEP:
                 called.setdefault(destination, {}).setdefault(anchor, set()).add(path)
     return cited, called
 
@@ -366,6 +372,63 @@ def check(path, root, cache, cited, called, structures=None):
     if lines and not lines[-1].strip():
         report(len(lines) - 1, 'trailing blank line')
     return found
+
+
+STEP = 'step'
+SPECIFICATION = 'specification'
+PREREQUISITE_READ = 'prerequisite'
+DESCRIPTIVE = 'descriptive'
+REQUIRED = (STEP, SPECIFICATION, PREREQUISITE_READ)
+
+
+def citation_kinds(path, entry=None):
+    """Each link target of a file with the kind of citation it stands in.
+
+    A step runs its target, so it alone makes a caller. A command
+    specification's text states what running it needs, and a prerequisite
+    names what the reader must already hold, so each is required reach
+    without running anything. Any other link is descriptive: the reader may
+    follow it and need not."""
+    lines, fenced, headings = scan(path)
+    steps = procedure_spans(lines, fenced, headings, entry)
+    held = specification_spans(headings, len(lines), held_section(entry))
+    listed = set()
+    tops = [index for index, level, _ in headings if level <= 2]
+    for position, start in enumerate(tops):
+        if lines[start].strip() == '## Prerequisites':
+            end = tops[position + 1] if position + 1 < len(tops) else len(lines)
+            listed.update(range(start, end))
+    kinds = []
+    for index, target in targets(path, lines, fenced):
+        sentences = PREREQUISITE.findall(CODE_SPAN.sub('', lines[index]))
+        if index in steps:
+            kind = STEP
+        elif index in held:
+            kind = SPECIFICATION
+        elif index in listed or any(target in LINK.findall(sentence) for sentence in sentences):
+            kind = PREREQUISITE_READ
+        else:
+            kind = DESCRIPTIVE
+        kinds.append((index, target, kind))
+    return kinds
+
+
+def reach(paths, structures=None):
+    """Which files require each fragment of each file, and by which kind of
+    citation. A whole-file citation reaches the file under the empty
+    fragment. Callers are the step citations of this relation; the rest of it
+    loads content without running it."""
+    structures = {} if structures is None else structures
+    reached = {}
+    for path in paths:
+        for _, target, kind in citation_kinds(path, contract(path, structures)):
+            if kind not in REQUIRED:
+                continue
+            name, _, fragment = target.partition('#')
+            destination = (path.parent / name).resolve() if name else path
+            anchor = anchor_of(fragment) if fragment else ''
+            reached.setdefault(destination, {}).setdefault(anchor, set()).add((path, kind))
+    return reached
 
 
 def main(argv=None):

@@ -523,5 +523,115 @@ class SkillFileChecks(unittest.TestCase):
         self.assertEqual(self.run_command(), 0)
 
 
+
+class CallersAndReach(unittest.TestCase):
+    """Callers decide placement and reach decides what a reader loads, over
+    one specimen holding an execution step, a command specification citing a
+    sibling, and an artifact keeping its subject's command."""
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+        self.skill = self.root / 'specimen'
+        self.skill.mkdir()
+        (self.skill / 'structure.json').write_text(json.dumps(STRUCTURE))
+        self.issue = self.write('artifacts/issue.md',
+                                '# Issue\n\n## Prerequisites\n\nRead these files first.\n\n'
+                                '- [Body](body.md)\n\n## Operations\n\n### Read Tracker Issue\n\n'
+                                '- Run [Fetch Issue](#fetch-issue).\n\n## Fields\n\n'
+                                'Number, as [Body](body.md#fields) describes.\n\n'
+                                '## Commands\n\n### Fetch Issue\n\nFetches it.\n')
+        self.body = self.write('artifacts/body.md', '# Body\n\n## Fields\n\nText.\n\n'
+                               '## Commands\n\n### Check Body\n\nChecks it.\n')
+        self.plan = self.write('modes/plan.md',
+                               '# Plan\n\n## Procedure\n\n'
+                               '1. **Read.**  Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).\n'
+                               '2. **Check.**  Run [Check Plan](#check-plan).\n\n'
+                               '## Outcomes\n\nThe plan is read.\n\n## Operations\n\n'
+                               '### Check Plan\n\nChecks it.\n\n'
+                               '- Run [Check Body](../artifacts/body.md#check-body) first.\n')
+
+    def write(self, name, text):
+        path = self.skill / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+        return path
+
+    def files(self):
+        return sorted(self.skill.rglob('*.md'))
+
+    def kinds(self, path):
+        declared = {}
+        return {target: kind for _, target, kind in
+                checker.citation_kinds(path, checker.contract(path, declared))}
+
+    def test_an_execution_step_is_a_caller_and_reach(self):
+        _, called = checker.citations(self.files(), {})
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(self.kinds(self.plan)['../artifacts/issue.md#read-tracker-issue'], checker.STEP)
+        self.assertEqual(called[self.issue]['read-tracker-issue'], {self.plan})
+        self.assertEqual(reached[self.issue]['read-tracker-issue'], {(self.plan, checker.STEP)})
+
+    def test_a_command_specification_link_is_reach_and_no_caller(self):
+        cited, called = checker.citations(self.files(), {})
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(self.kinds(self.plan)['../artifacts/body.md#check-body'], checker.SPECIFICATION)
+        self.assertEqual(cited[self.body]['check-body'], {self.plan})
+        self.assertNotIn('check-body', called.get(self.body, {}))
+        self.assertEqual(reached[self.body]['check-body'], {(self.plan, checker.SPECIFICATION)})
+
+    def test_a_specification_link_moves_no_specification(self):
+        """Without the artifact keeping its subject's commands, the body's
+        command has one file reaching it. A specification's reach asks for no
+        move, and the same citation stated as a step does."""
+        (self.skill / 'structure.json').write_text(json.dumps(
+            {key: {k: v for k, v in entry.items() if k != 'keeps_commands'}
+             for key, entry in STRUCTURE.items()}))
+
+        def placed():
+            files = self.files()
+            declared = {}
+            cited, called = checker.citations(files, declared)
+            findings = []
+            for path in files:
+                findings += checker.check(path, self.root, {}, cited, called, declared)
+            return [(Path(where).name, detail) for where, _, kind, detail in findings
+                    if kind == 'command specification with one caller']
+
+        self.assertEqual(placed(), [])
+        self.write('modes/plan.md', calling('Plan', '../artifacts/body.md#check-body') +
+                   '\n## Outcomes\n\nChecked.\n')
+        self.assertEqual(placed(), [('body.md', 'Check Body, cited from specimen/modes/plan.md')])
+
+    def test_a_subject_owned_artifact_command_stays_with_its_subject(self):
+        _, called = checker.citations(self.files(), {})
+        self.assertEqual(called[self.issue]['fetch-issue'], {self.issue})
+        self.write('modes/sync.md', calling('Sync', '../artifacts/issue.md#fetch-issue') +
+                   '\n## Outcomes\n\nRead.\n')
+        files = self.files()
+        declared = {}
+        cited, called = checker.citations(files, declared)
+        findings = []
+        for path in files:
+            findings += checker.check(path, self.root, {}, cited, called, declared)
+        self.assertEqual(findings, [])
+        reached = checker.reach(files, declared)
+        self.assertEqual({source.name for source, _ in reached[self.issue]['fetch-issue']},
+                         {'issue.md', 'sync.md'})
+
+    def test_prerequisites_are_reach_and_descriptive_links_are_neither(self):
+        kinds = self.kinds(self.issue)
+        self.assertEqual(kinds['body.md'], checker.PREREQUISITE_READ)
+        self.assertEqual(kinds['body.md#fields'], checker.DESCRIPTIVE)
+        reached = checker.reach(self.files(), {})
+        self.assertEqual(reached[self.body][''], {(self.issue, checker.PREREQUISITE_READ)})
+        self.assertNotIn('fields', reached[self.body])
+
+    def test_a_canonical_prerequisite_sentence_is_reach(self):
+        guide = self.write('references/guide.md',
+                           '# Guide\n\nRead [Fields](../artifacts/body.md#fields) first.\n')
+        self.assertEqual(self.kinds(guide)['../artifacts/body.md#fields'], checker.PREREQUISITE_READ)
+
+
 if __name__ == '__main__':
     unittest.main()
