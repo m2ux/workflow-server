@@ -1,6 +1,6 @@
 # Architecture Overview — Board Reading: Delivery Activity and Historical Evidence
 
-> architecture-overview · [m2ux/workflow-server#1487](https://github.com/m2ux/workflow-server/pull/1487) · 2026-11-01 · head `318850f2`
+> architecture-overview · [m2ux/workflow-server#1487](https://github.com/m2ux/workflow-server/pull/1487) · 2026-11-01 · head `e818761e`
 
 ## Summary
 
@@ -235,17 +235,17 @@ sequenceDiagram
 
 ## Reading Order
 
-1. **[sync.py read_branches](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/sync.py#L615-L710)** — the declaration every other reader depends on, with `epic_base_declarations` and `--names`.
-2. **[sync.py main](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/sync.py#L789-L852)** — bases read per `--revision`, closed tables normalized, then delivery and title repairs in that order.
-3. **[sync.py compose_id and epic_delivery](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/sync.py#L150-L249)** — several pull requests per task id.
-4. **[sync.py normalize_closed_table and title_repairs](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/sync.py#L744-L770)** — historical tables and prefix checks.
-5. **[board.py delivers and Board](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/board.py#L127-L302)** — activity, delivery and startability, with [agent_review.py integration](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/agent_review.py#L84-L87).
-6. **[board-queue.py Queue](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/board-queue.py#L96-L324)** — `handed_off`, then `activate`, `park`, `shelve`, `holding`, `wait` and `place_sets`.
-7. **[deliver.py changed_bases and task_branches](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/deliver.py#L107-L169)** — bases from work items, one branch per base.
-8. **[deliver.py survey](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/scripts/deliver.py#L287-L382)** — where the declaration, bases and branches meet.
-9. **[delivery-branches.md](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/artifacts/delivery-branches.md)** — which revision each run evaluates, and the task-branch rule.
-10. **[board-queue.md](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/artifacts/board-queue.md)** — the rules the queue implements.
-11. **[epic-issue-body.md](https://github.com/m2ux/workflow-server/blob/318850f2f166c9e3f59c442d08e858332f1f7107/skills/work-planner/artifacts/epic-issue-body.md)** — Sync Epic's inputs, `--revision` and repeated `--link`.
+1. **[sync.py read_branches](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/sync.py#L615-L710)** — the declaration every other reader depends on, with `epic_base_declarations` and `--names`.
+2. **[sync.py main](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/sync.py#L789-L852)** — bases read per `--revision`, closed tables normalized, then delivery and title repairs in that order.
+3. **[sync.py compose_id and epic_delivery](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/sync.py#L150-L249)** — several pull requests per task id.
+4. **[sync.py normalize_closed_table and title_repairs](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/sync.py#L744-L770)** — historical tables and prefix checks.
+5. **[board.py delivers and Board](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/board.py#L127-L302)** — activity, delivery and startability, with [agent_review.py integration](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/agent_review.py#L84-L87).
+6. **[board-queue.py Queue](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/board-queue.py#L96-L324)** — `handed_off`, then `activate`, `park`, `shelve`, `holding`, `wait` and `place_sets`.
+7. **[deliver.py changed_bases and task_branches](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/deliver.py#L107-L169)** — bases from work items, one branch per base.
+8. **[deliver.py survey](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/scripts/deliver.py#L287-L382)** — where the declaration, bases and branches meet.
+9. **[delivery-branches.md](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/artifacts/delivery-branches.md)** — which revision each run evaluates, and the task-branch rule.
+10. **[board-queue.md](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/artifacts/board-queue.md)** — the rules the queue implements.
+11. **[epic-issue-body.md](https://github.com/m2ux/workflow-server/blob/e818761e143a4b49d6aed4644ef4ee761811a6a8/skills/work-planner/artifacts/epic-issue-body.md)** — Sync Epic's inputs, `--revision` and repeated `--link`.
 
 ## Risks and Watch Points
 
