@@ -924,7 +924,7 @@ class LongLivedNames(unittest.TestCase):
 
 
 CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases', 'draft epic bases',
-          'review pull request References', 'review pull request issue links')
+          'review pull request References', 'review pull request Changes paths', 'review pull request issue links')
 
 
 class UnavailableDeclaration(unittest.TestCase):
@@ -1545,3 +1545,68 @@ class DraftBase(unittest.TestCase):
                   head='i01/e00/w01-work', repo='o/other')
         out = self.run_sync(base_ahead=0, main_ahead=0, pulls=[task])
         self.assertIn('unevaluable: draft o/other:i01/e00/main: is in o/other, not the --project repository', out)
+
+
+def changes_body(*spans: str) -> str:
+    """A review pull request body whose Changes bullets name the given code spans."""
+    lines = ['## Overview', '', 'The base carries the epic.', '', '## Changes', '', '### Review Bodies', '']
+    lines += [f'- **Names `{span}`.**\n  The behaviour as it is.' for span in spans]
+    return '\n'.join(lines + ['', '## References', '', f"- **R1.** [Work]({url('pull', 950)}) — a task delivery.", ''])
+
+
+class ReviewChanges(unittest.TestCase):
+    """A review body's Changes paths measured against the head commit of the base it fronts.
+
+    The head commit holds config/branches, skills/work-planner/scripts/sync.py and docs/guide.md."""
+
+    def run_sync(self, body: str, sha: str | None = None) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = declared(root, 'docker', 'main', 'workflows')
+            checkout = root / 'checkout'
+            for path in ('skills/work-planner/scripts/sync.py', 'docs/guide.md'):
+                (checkout / path).parent.mkdir(parents=True, exist_ok=True)
+                (checkout / path).write_text('text\n')
+            git(checkout, 'add', '.')
+            git(checkout, 'commit', '-m', 'files')
+            head = git(checkout, 'rev-parse', 'HEAD')
+            review = pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main', body=body)
+            review['head']['sha'] = head if sha is None else sha
+            pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                        base='i01/e00/main', head='i01/e00/w01-work'), review]
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout.replace(head[:9], '<head>')
+
+    def test_a_path_absent_from_the_head_is_named(self):
+        out = self.run_sync(changes_body('skills/work-planner/references/command-conventions.md'))
+        self.assertIn('changes: i01/e00/main (#980) names '
+                      'skills/work-planner/references/command-conventions.md, absent at <head>', out)
+
+    def test_paths_standing_at_the_head_are_silent(self):
+        out = self.run_sync(changes_body('skills/work-planner/scripts/sync.py', './docs/guide.md#usage'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_bare_file_name_stands_anywhere_in_the_tree(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('sync.py')))
+        out = self.run_sync(changes_body('command-conventions.md'))
+        self.assertIn('changes: i01/e00/main (#980) names command-conventions.md, absent at <head>', out)
+
+    def test_a_span_that_names_no_file_is_not_measured(self):
+        out = self.run_sync(changes_body('i01/e00/main', 'sync.py --names', '*.md', 'config/branches', '1.2.3'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_path_outside_changes_is_not_measured(self):
+        body = '\n'.join(['## Overview', '', 'See `missing/file.md`.', '', '## References', '',
+                          f"- **R1.** [Work]({url('pull', 950)}) — a task delivery.", ''])
+        self.assertNotIn('changes:', self.run_sync(body))
+
+    def test_a_head_commit_the_checkout_does_not_hold_is_unevaluable(self):
+        out = self.run_sync(changes_body('docs/guide.md'), sha='0' * 40)
+        self.assertIn(f"unevaluable: i01/e00/main (#980) Changes paths: head {'0' * 40} is not held in", out)
+        self.assertNotIn('changes:', out)
