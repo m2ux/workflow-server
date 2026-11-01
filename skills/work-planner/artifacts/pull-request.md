@@ -52,11 +52,10 @@ The complete issue-link snapshot for a supplied set of pull requests.
 
 **Inputs:** Current pull request records, authenticated access and destination link-snapshot file.
 
-1. For every pull request in `prs.json`, run [Access Development Links](#access-development-links) with a read-only request and its identity. An observed empty field supplies an empty array; an unreadable field leaves the fetch incomplete.
-2. Repeat that read after a link changes.
-3. If any relation is unreadable, return the incomplete result.
-4. Run [Write Pull Request Links](#write-pull-request-links) with the observed complete relations and destination `links.json`, including one entry per pull request and every linked issue's repository and number.
-5. Return the snapshot for the scripts' `--links` input.
+1. Run [Capture Pull Request Links](#capture-pull-request-links) with `prs.json` and destination `links.json`.
+2. If it names an unreadable relation, return the incomplete result.
+3. Repeat the capture after a link changes.
+4. Return the snapshot for the scripts' `--links` input.
 
 ### *Link* Pull Request to Issue
 
@@ -419,22 +418,24 @@ Removes one selected Development relation.
 
 Deselect the supplied relation in the authenticated Development selector and save the edit. Return the edit result.
 
-### Write Pull Request Links
+### Capture Pull Request Links
 
-Saves complete observed Development-linked issues as a JSON array.
+Writes the complete issue-link snapshot for a pull request collection, read from the pull-request end of the Development relation.
 
-**Inputs:** One complete relation per pull request, with all repository and number pairs, and destination link-snapshot file.
+**Inputs:** Pull request records as JSON lines, from any number of repositories, and destination link-snapshot file.
 
-Write the supplied relations in this shape. Substitute numbers as JSON integers. Include each pull request and all its linked issues; use an empty array for a complete relation with no linked issues. Each repository is the one belonging to that pull request or issue.
+- The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.
+- Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
+- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation and writes no snapshot.
 
-```text
-[
-  {
-    "repo": "<pull-request-owner>/<pull-request-repo>",
-    "number": <pull-request-number>,
-    "closingIssuesReferences": [{"repo": "<issue-owner>/<issue-repo>", "number": <issue-number>}]
-  }
-]
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs '<pull-request-records-file>' --out '<issue-link-snapshot-file>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs prs.json --out links.json
 ```
 
 **Example payload:**
