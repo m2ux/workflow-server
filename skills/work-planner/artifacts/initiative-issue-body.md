@@ -203,7 +203,7 @@ A final epic of the initiative holds the debt that initiative's delivery defers.
 - **It takes the debt its own delivery defers.**
   Debt a unit of this epic finds in resolving its row becomes a further row of the epic, so the clear-up absorbs what fixing it uncovers.
 - **It delivers like any other epic.**
-  It takes its bases from the long-lived branches its rows change, carries the [required criteria](epic-issue-body.md#required-criteria) its project declares for the branches those rows reach, and remains open until every delivery base has merged and its completion conditions hold.
+  It takes its bases from the long-lived branches its rows change, carries the [required criteria](epic-issue-body.md#required-criteria) its project declares for the paths those rows change on each branch, and remains open until every delivery base has merged and its completion conditions hold.
 - **The initiative stays open while it stands.**
   Its row is undelivered and its criterion unticked until the epic closes.
 
