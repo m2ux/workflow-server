@@ -171,6 +171,16 @@ def named(path, root):
     return path.relative_to(root) if path.is_relative_to(root) else path
 
 
+class Where(str):
+    """A file as a finding names it, holding the resolved path it names, since
+    roots under different parents can name two files alike."""
+
+    def __new__(cls, path, root):
+        where = super().__new__(cls, named(path, root))
+        where.path = path.resolve()
+        return where
+
+
 def scan(path):
     """Each line with the fence state it sits in, and the file's headings."""
     return parse(path.read_text())
@@ -482,7 +492,7 @@ def finding(path, root, index, kind, detail=''):
     `rules.json` names a kind for reaches a check that reports it."""
     if kind not in KINDS:
         raise KeyError(f'unregistered finding kind: {kind}')
-    return (str(named(path, root)), index + 1, kind, detail)
+    return (Where(path, root), index + 1, kind, detail)
 
 
 def fence_openings(lines):
@@ -1026,30 +1036,31 @@ def duplicate_anchors(headings):
 
 def held_aside(findings, excluded, roots):
     """The findings to report, and each excluded skill's count of those held
-    aside. A finding names its file relative to the folder holding its root, so
-    an excluded skill is named relative to the folder holding the root that
-    holds it, at whatever depth beneath that root it lies; a skill no root
-    holds is named as given and holds no finding. A finding is held aside when
-    its file lies within an excluded skill's folder, which a sibling sharing
-    the skill's name as a prefix does not. An excluded skill holding no finding
-    is reported, so its exclusion lapses with its last finding."""
-    held = {}
+    aside. A finding is held aside when its file's resolved path lies within an
+    excluded skill's folder, which a sibling sharing the skill's name as a
+    prefix, or a like-named file under another root, does not. An excluded
+    skill is named as its findings are, relative to the folder holding the root
+    that holds it, and as given where no root holds it. An excluded skill
+    holding no finding is reported, so its exclusion lapses with its last
+    finding."""
+    names = {}
     for name in excluded:
         skill = Path(name).resolve()
         root = next((root for root in roots if skill.is_relative_to(root)), None)
-        held[skill.relative_to(root.parent) if root else Path(name)] = 0
+        names[skill] = skill.relative_to(root.parent).as_posix() if root else name
+    held = dict.fromkeys(names, 0)
     reported = []
     for item in findings:
-        skill = next((skill for skill in held if Path(item[0]).is_relative_to(skill)), None)
+        skill = next((skill for skill in held if item[0].path.is_relative_to(skill)), None)
         if skill:
             held[skill] += 1
         else:
             reported.append(item)
     for skill, count in held.items():
         if not count:
-            reported.append((skill.as_posix(), 0, 'excluded skill without a finding',
+            reported.append((names[skill], 0, 'excluded skill without a finding',
                              'remove it from the exclusions'))
-    return reported, {skill.as_posix(): count for skill, count in held.items() if count}
+    return reported, {names[skill]: count for skill, count in held.items() if count}
 
 
 def main(argv=None):

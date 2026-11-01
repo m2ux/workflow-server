@@ -1863,5 +1863,33 @@ class ReviewedExclusionAndUrlCases(unittest.TestCase):
         self.assertIn('GraphQL without a REST gap', output)
 
 
+class ExclusionsPlacedByPath(unittest.TestCase):
+    """An excluded skill holds a finding aside only when the finding's file
+    lies within it, whatever name the finding carries: roots under different
+    parents can name files alike."""
+
+    JUMP = SkillCheckWorkflow.JUMP
+
+    def setUp(self):
+        self.root = Path(tempfile.mkdtemp())
+        self.addCleanup(shutil.rmtree, self.root)
+
+    def write(self, name, text):
+        path = self.root / name
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+
+    def test_a_like_named_file_under_another_parent_is_reported(self):
+        self.write('one/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
+        self.write('two/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'one' / 'x'), str(self.root / 'two' / 'x'),
+                                   '--exclude', str(self.root / 'one' / 'x')])
+        self.assertEqual((status, printed.getvalue()),
+                         (1, 'x/SKILL.md:5: heading jump \u2014 h1 to h4\n'
+                             'x excluded, 1 findings held aside\n2 files checked, 1 findings\n'))
+
+
 if __name__ == '__main__':
     unittest.main()
