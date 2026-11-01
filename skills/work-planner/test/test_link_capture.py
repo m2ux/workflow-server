@@ -74,7 +74,7 @@ def pull_end(root: Path, env: dict[str, str], pulls: list[dict]) -> tuple[subpro
 
 
 def issue_end(root: Path, env: dict[str, str], issues: list[dict]) -> tuple[subprocess.CompletedProcess, Path]:
-    records, out = root / 'issues.json', root / 'development.json'
+    records, out = root / 'issues.json', root / 'issue-links.json'
     half = len(issues) // 2
     records.write_text(json.dumps(issues[:half]) + '\n' + json.dumps(issues[half:]))
     return capture('links-by-issue.py', env, '--issues', str(records), '--out', str(out)), out
