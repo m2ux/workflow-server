@@ -14,6 +14,7 @@ E10 brings every house rule the skill states to a check that decides it, so conf
 | --- | --- |
 | [W16 work item](w16.md) | Component, scope, design, criteria and test rows for W16 |
 | [W16 test results](test-results.md) | Tested revision, commands and results behind the pull request Test Plan |
+| [Change list](changes.md) | Each plan change the session applied or held |
 
 ## Links
 
