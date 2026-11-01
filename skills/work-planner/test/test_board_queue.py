@@ -482,6 +482,32 @@ class ReadyFollowsTheInitiative(unittest.TestCase):
                 self.assertIn('[I01:E01] Epic 5: Work: In Progress → Backlog', out)
                 self.assertNotIn('Epic 3: Work: In Progress →', out)
 
+    def test_an_epic_in_review_or_held_by_a_session_keeps_its_initiative_waiting(self):
+        """board.py holds an initiative In Progress while a listed epic is In Review or active, so the
+        queue waits on it in every set rather than moving it."""
+        held_row = (f'[W01]({RECORD})', 'Go', '')
+        integration = [pr(9, '[I01:E00] Integration', head='i01/e00/main', base='main')]
+        for engaged, row, prs, line in (('In Review', ('W01', 'Go', ''), integration, 'E00 In Review'),
+                                        ('In Progress', held_row, [], 'E00 held by a session')):
+            for where, priority, unplanned in (('next set', 'priority: 3', ()),
+                                               ('below the next set', 'priority: 1', ()),
+                                               ('unplanned', '', ('1',))):
+                with self.subTest(engaged=engaged, where=where):
+                    low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''),
+                                     (f"[E01]({url('issues', 5)})", ''), priority=priority)
+                    high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''),
+                                      priority='priority: 5')
+                    out = queue(staged((low, 'In Progress'), (high, 'Backlog'),
+                                       (epic(3, '01:E00', row), engaged),
+                                       (epic(5, '01:E01', ('W01', 'Go', '')), 'Backlog'),
+                                       (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')),
+                                prs, unplanned=unplanned)
+                    self.assertIn(f'wait #1 [I01] Low: Current: {line}', out)
+                    self.assertNotIn('[I01] Low: Current: In Progress →', out)
+                    self.assertNotIn('Epic 3: Work:', out)
+                    self.assertNotIn('Epic 5', out)
+                    self.assertNotIn('reconcile', out)
+
     def test_an_active_epic_under_a_waiting_initiative_is_in_progress(self):
         for where, priority, unplanned in (('next set', 'priority: 3', ()), ('unplanned', '', ('1',))):
             with self.subTest(where):
@@ -529,14 +555,15 @@ class BacklogTakesTheTree(unittest.TestCase):
         self.assertIn('reconcile #1 [I01] Bare: Parked: E00 (work under way)', out)
         self.assertNotIn('→', out)
 
-    def test_an_unplanned_initiative_holding_a_reservation_is_reported(self):
+    def test_an_unplanned_initiative_holding_a_reservation_waits(self):
         bare = initiative(1, 'Bare: Current', (f"[E00]({url('issues', 3)})", ''), priority='')
         nxt = initiative(2, 'Next: Up', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
         out = queue(staged((bare, 'In Progress'), (nxt, 'Backlog'),
                            (epic(3, '01:E00', (f'[W01]({RECORD})', 'Go', '')), 'In Progress'),
                            (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), unplanned=('1',))
-        self.assertIn('reconcile #1 [I01] Bare: Current: E00 (work under way)', out)
+        self.assertIn('wait #1 [I01] Bare: Current: E00 held by a session', out)
         self.assertNotIn('[I01] Bare: Current: In Progress →', out)
+        self.assertNotIn('Epic 3: Work: In Progress →', out)
         self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
 
 
