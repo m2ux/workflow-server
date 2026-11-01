@@ -14,9 +14,13 @@ The row fixes a finding raised on the epic's own integration review, so it lands
 | --- | --- |
 | [W12 work item](w12.md) | Component, scope, design and test rows for W12 |
 | [Evidence](evidence.md) | Survey tests, suite and document checks |
+| [Change list](changes.md) | Plan changes applied and held, and held steps |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1526](https://github.com/m2ux/workflow-server/pull/1526) |
+| Review pull request | [#1487](https://github.com/m2ux/workflow-server/pull/1487) |
+| Arising issue | [#1529](https://github.com/m2ux/workflow-server/issues/1529) |
