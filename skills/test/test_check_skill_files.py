@@ -1731,20 +1731,19 @@ class SkillCheckWorkflow(unittest.TestCase):
         path.write_text(text)
 
     def run_jobs(self, excluded):
-        """Every run step of every job, in order, with `EXCLUDED` set; the
-        workflow passes when each step exits zero."""
+        """Every run step of the skill-check job, in order, with `EXCLUDED`
+        set; the job passes when each step exits zero."""
         import yaml
         workflow = yaml.safe_load(WORKFLOW.read_text())
         env = {**os.environ, **workflow.get('env', {}), 'EXCLUDED': excluded}
         output, passed = '', True
-        for job in workflow['jobs'].values():
-            for step in job['steps']:
-                if 'run' not in step:
-                    continue
-                run = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', step['run']],
-                                     cwd=self.root, env=env, capture_output=True, text=True)
-                output += run.stdout + run.stderr
-                passed = passed and run.returncode == 0
+        for step in workflow['jobs']['skill-files']['steps']:
+            if 'run' not in step:
+                continue
+            run = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', step['run']],
+                                 cwd=self.root, env=env, capture_output=True, text=True)
+            output += run.stdout + run.stderr
+            passed = passed and run.returncode == 0
         return passed, output
 
     def test_the_seeded_tree_reports_nothing_judged_whole(self):
@@ -1753,11 +1752,12 @@ class SkillCheckWorkflow(unittest.TestCase):
     def test_an_exclusion_only_isolation_supports_fails(self):
         passed, output = self.run_jobs('alpha')
         self.assertFalse(passed)
-        self.assertIn('alpha', output)
+        self.assertIn('alpha:0: excluded skill without a finding', output)
 
     def test_an_excluded_skill_with_a_finding_in_the_whole_tree_passes(self):
         self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
-        self.assertTrue(self.run_jobs('alpha')[0])
+        self.assertEqual(self.run_jobs('alpha'),
+                         (True, 'alpha excluded, 1 findings held aside\n3 files checked, 0 findings\n'))
 
     def test_every_skill_excluded_passes(self):
         self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
@@ -1772,6 +1772,95 @@ class SkillCheckWorkflow(unittest.TestCase):
 
     def test_an_exclusion_naming_no_skill_fails(self):
         self.assertFalse(self.run_jobs('gamma')[0])
+
+
+class ReviewedExclusionAndUrlCases(unittest.TestCase):
+    """Each case the agent review of #1555 at 8bddff05a raised against the
+    check: a nested excluded skill and a sibling sharing its name's prefix,
+    Projects (classic) called by an absolute API URL, every classic mutation,
+    a REST gap named mid-line, a tree holding no skill, and the job running
+    the check's own suite."""
+
+    setUp = SkillCheckWorkflow.setUp
+    write = SkillCheckWorkflow.write
+    run_jobs = SkillCheckWorkflow.run_jobs
+    CATALOG = SkillCheckWorkflow.CATALOG
+    JUMP = SkillCheckWorkflow.JUMP
+
+    def classic(self, line):
+        return checker.CLASSIC.search(line) is not None
+
+    # Exclusions.
+
+    def test_a_nested_excluded_skill_is_held_aside(self):
+        self.write('family/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
+        self.write('family/y/SKILL.md', '# Y\n\nA sentence.\n')
+        self.assertEqual(self.run_jobs('family/x'),
+                         (True, 'family/x excluded, 1 findings held aside\n5 files checked, 0 findings\n'))
+
+    def test_a_sibling_sharing_the_excluded_name_is_reported(self):
+        self.write('family/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
+        self.write('family/xy/SKILL.md', '# XY\n\nA sentence.\n' + self.JUMP)
+        self.assertEqual(self.run_jobs('family/x'),
+                         (False, 'family/xy/SKILL.md:5: heading jump \u2014 h1 to h4\n'
+                                 'family/x excluded, 1 findings held aside\n5 files checked, 1 findings\n'))
+
+    def test_a_tree_holding_no_skill_passes(self):
+        shutil.rmtree(self.root / 'skills' / 'alpha')
+        shutil.rmtree(self.root / 'skills' / 'beta')
+        self.assertEqual(self.run_jobs(''), (True, '0 files checked, 0 findings\n'))
+
+    def test_the_workflow_runs_the_checks_own_suite(self):
+        import yaml
+        jobs = yaml.safe_load(WORKFLOW.read_text())['jobs'].values()
+        runs = [step['run'] for job in jobs for step in job['steps'] if 'run' in step]
+        self.assertTrue(any(re.search(r'\bpytest\b.*\bskills/test\b', run) for run in runs))
+
+    # Projects (classic) by absolute API URL.
+
+    def test_a_classic_route_by_absolute_api_url_is_reported(self):
+        for line in ('gh api https://api.github.com/repos/o/r/projects',
+                     'curl https://api.github.com/projects/1',
+                     'curl -X POST https://api.github.com/user/projects',
+                     'gh api https://api.github.com/orgs/o/projects',
+                     'curl https://github.example.com/api/v3/projects/columns/7'):
+            with self.subTest(line=line):
+                self.assertTrue(self.classic(line))
+
+    def test_board_web_links_and_v2_names_are_no_interface(self):
+        for line in ('See https://github.com/orgs/o/projects/3 for the board.',
+                     'https://github.com/users/u/projects/17',
+                     'gh api https://api.github.com/orgs/o/projectsV2',
+                     'deleteProjectV2Item(input: {})', 'createProjectV2(input: {})',
+                     'linkProjectV2ToRepository(input: {})', 'updateProjectV2(input: {})'):
+            with self.subTest(line=line):
+                self.assertFalse(self.classic(line))
+
+    # Every classic mutation.
+
+    def test_every_classic_mutation_is_reported(self):
+        for name in ('addProjectCard', 'addProjectColumn', 'moveProjectCard', 'moveProjectColumn',
+                     'deleteProjectCard', 'deleteProjectColumn', 'updateProjectCard', 'updateProjectColumn',
+                     'createProject', 'updateProject', 'deleteProject', 'cloneProject',
+                     'convertProjectCardNoteToIssue', 'linkRepositoryToProject', 'unlinkRepositoryFromProject'):
+            with self.subTest(name=name):
+                self.assertTrue(self.classic(f'mutation {{ {name}(input: {{}}) {{ clientMutationId }} }}'))
+
+    def test_a_projects_field_without_arguments_is_reported(self):
+        self.assertTrue(self.classic('{ repository(owner: "o", name: "r") { projects { totalCount } } }'))
+        self.assertFalse(self.classic('{ node(id: "x") { ... on ProjectV2Item { project { title } } } }'))
+
+    # The REST gap.
+
+    def test_a_rest_gap_named_mid_line_is_no_gap(self):
+        guide = self.root / 'skills' / 'alpha' / 'artifacts' / 'issue.md'
+        guide.parent.mkdir(parents=True)
+        guide.write_text('# Issue\n\n## Commands\n\n### Link Issue\n\n'
+                         'Links one issue, as the **REST gap:** of Unlink Issue states.\n\n'
+                         f'{FENCE}bash\ngh api graphql -F query=@link.graphql\n{FENCE}\n')
+        passed, output = self.run_jobs('')
+        self.assertFalse(passed)
+        self.assertIn('GraphQL without a REST gap', output)
 
 
 if __name__ == '__main__':
