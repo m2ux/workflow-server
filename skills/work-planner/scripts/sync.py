@@ -516,7 +516,7 @@ def assignments(body: str) -> list[tuple[int, str]]:
     return found
 
 
-def test_plan_agreement(rows, header, by_number, report):
+def plan_agreement(rows, header, by_number, report):
     """A linked pull request's test plan against the Coverage of the rows it delivers."""
     at = header.index('Task')
     coverage: dict[str, set[int]] = {}
@@ -824,7 +824,7 @@ def main() -> int:
     if kind == 'epic' and rows:
         by_number = {p['number']: p for p in prs}
         unmet_coverage(rows, header, by_number, ticked, report)
-        test_plan_agreement(rows, header, by_number, report)
+        plan_agreement(rows, header, by_number, report)
 
     done_changed = False
     if kind != 'task' and rows:

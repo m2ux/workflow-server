@@ -862,7 +862,7 @@ def epic_rows(*rows: tuple[str, str, str]) -> str:
     return '\n'.join(lines + ['', '## Acceptance Criteria', ''] + criteria + [''])
 
 
-def test_plan(*rows: tuple[str, str], prose: str = '') -> str:
+def plan_body(*rows: tuple[str, str], prose: str = '') -> str:
     """A pull request body whose Test Plan table holds rows of (test, coverage)."""
     lines = ['## Test Plan', '', '| Test | Description | Coverage | Pass |', '| --- | --- | --- | --- |']
     lines += [f'| {test} | The check holds. | {coverage} | |' for test, coverage in rows]
@@ -887,7 +887,7 @@ class TestPlanAgreement(unittest.TestCase):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+                    body=plan_body(('T1', 'AC1'), ('T2', 'AC3')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
@@ -895,7 +895,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_a_covered_criterion_no_plan_row_names_is_reported(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1, AC2', '')))
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC2 covered and named by no test', done.stdout)
@@ -911,7 +911,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_an_empty_test_cell_is_unobserved(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC1 covered and no test observes it', done.stdout)
@@ -920,7 +920,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_an_exact_plan_reports_nothing(self):
         task = f"[W01]({url('pull', 950)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows((task, 'AC1', '')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -929,7 +929,7 @@ class TestPlanAgreement(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
             (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
             (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), ('T2', 'AC2')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), ('T2', 'AC2')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -938,7 +938,7 @@ class TestPlanAgreement(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(
             (f"[W01]({url('pull', 950)})", 'AC1', 'W02'),
             (f"[W02]({url('pull', 950)})", 'AC2', 'W01')))
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1')))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1')))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W02: AC2 covered and named by no test', done.stdout)
@@ -947,7 +947,7 @@ class TestPlanAgreement(unittest.TestCase):
     def test_a_disagreement_leaves_linking_and_ticks_unchanged(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_rows(('W01', 'AC1', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
-                    body=test_plan(('T1', 'AC1'), ('T2', 'AC3')))]
+                    body=plan_body(('T1', 'AC1'), ('T2', 'AC3')))]
         done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', '--tick', 'AC1')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
@@ -959,7 +959,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here; it belongs to W03.'
-        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
@@ -971,7 +971,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         for prose in ('AC2 is left to W03.', 'AC2 is owned by W03.'):
-            pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+            pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
             done, _fixed = self.run_sync(epic, pulls)
             self.assertEqual(done.returncode, 0, done.stderr)
             self.assertIn('disagreement: #950 W03: AC2 assigned to W03, which the table gives to W02', done.stdout)
@@ -981,7 +981,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC1 and AC2 belong to W03.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W03: AC1 assigned to W03, which the table gives to W01', done.stdout)
@@ -992,7 +992,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here; it belongs to W02.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
@@ -1002,7 +1002,7 @@ class TestPlanAgreement(unittest.TestCase):
             (f"[W01]({url('pull', 950)})", 'AC1', ''),
             ('W02', 'AC2', '')))
         prose = 'AC2 is not delivered here. It belongs to W03.'
-        pulls = [pr(950, '[I01:E00] Work', body=test_plan(('T1', 'AC1'), prose=prose))]
+        pulls = [pr(950, '[I01:E00] Work', body=plan_body(('T1', 'AC1'), prose=prose))]
         done, _fixed = self.run_sync(epic, pulls)
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertNotIn('disagreement:', done.stdout)
