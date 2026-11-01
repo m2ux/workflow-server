@@ -1468,6 +1468,11 @@ class HistoricalDelivery(unittest.TestCase):
                 result, _ = self.inspect(record, [pr(950, prefix + ' Work', merged='2026-09-01T00:00:00Z')])
                 self.assertIn('retitle: #950 → [I01:E00] Work', result.stdout)
 
+    def test_a_linked_task_titled_pull_request_is_retitled_once(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        result, _ = self.inspect(record, [pr(950, '[I01:E00:W01] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(result.stdout.count('retitle: #950'), 1, result.stdout)
+
     def test_another_initiatives_prefix_is_a_conflict(self):
         record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
         result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
@@ -1506,8 +1511,16 @@ class BranchContract(unittest.TestCase):
     def test_a_task_pull_request_targeting_a_long_lived_branch_is_reported(self):
         out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                                 base='main', head='i01/e00/w01-work')])
-        self.assertIn('target: #950 targets main; a task pull request targets '
-                      'i01/e00/<long-lived branch>', out)
+        self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
+
+    def test_a_task_branch_for_one_of_several_bases_names_its_own(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work-workspace')])
+        self.assertIn('target: #950 targets main; it targets i01/e00/workspace', out)
+
+    def test_a_target_naming_no_long_lived_branch_names_each_base(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w02-other', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e00/w02-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
 
     def test_a_task_pull_request_targeting_another_epics_base_is_reported(self):
         out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e01/main', head='i01/e00/w01-work')])
@@ -1557,7 +1570,8 @@ class EpiclessTitles(unittest.TestCase):
 
     PULLS = [pr(950, '[I01] Shared work'), pr(951, '[I01:E00:W01] Task-titled work', merged='2026-09-01T00:00:00Z'),
              pr(952, '[I01:E00] Named work'), pr(953, '[I02] Another initiative'),
-             pr(954, '[I010] Near-miss prefix')]
+             pr(954, '[I010] Near-miss prefix'), pr(955, '[I01:E1] Short epic id'),
+             pr(956, '[I01: E00] Spaced epic id'), pr(957, '[I01 E00] Unseparated epic id')]
 
     def run_sync(self, record: dict, *args: str) -> str:
         with tempfile.TemporaryDirectory() as tmp:
@@ -1576,6 +1590,9 @@ class EpiclessTitles(unittest.TestCase):
         self.assertNotIn('no epic: #952', out)
         self.assertNotIn('no epic: #953', out)
         self.assertNotIn('#954', out)
+        for line in ('#955 [I01:E1] Short epic id', '#956 [I01: E00] Spaced epic id',
+                     '#957 [I01 E00] Unseparated epic id'):
+            self.assertIn(f'no epic: {line}', out)
 
     def test_the_epic_sync_reports_them(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1714,8 +1731,23 @@ class ReviewChanges(unittest.TestCase):
         self.assertIn('changes: i01/e00/main (#980) names command-conventions.md, absent at <head>', out)
 
     def test_a_span_that_names_no_file_is_not_measured(self):
-        out = self.run_sync(changes_body('i01/e00/main', 'sync.py --names', '*.md', 'config/branches', '1.2.3'))
+        out = self.run_sync(changes_body('i01/e00/main', 'sync.py --names', '*.md', '1.2.3', 'Makefile'))
         self.assertNotIn('changes:', out)
+
+    def test_an_extensionless_path_absent_from_the_head_is_named(self):
+        out = self.run_sync(changes_body('skills/work-planner/scripts/missing-tool', 'config/missing'))
+        self.assertIn('changes: i01/e00/main (#980) names skills/work-planner/scripts/missing-tool, absent at <head>', out)
+        self.assertIn('changes: i01/e00/main (#980) names config/missing, absent at <head>', out)
+
+    def test_an_extensionless_file_or_directory_at_the_head_is_silent(self):
+        out = self.run_sync(changes_body('config/branches', 'skills/work-planner/scripts', 'skills/work-planner/'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_line_reference_is_not_part_of_the_path(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('skills/work-planner/scripts/sync.py:444',
+                                                                'docs/guide.md:3-9')))
+        out = self.run_sync(changes_body('docs/missing.md:12'))
+        self.assertIn('changes: i01/e00/main (#980) names docs/missing.md, absent at <head>', out)
 
     def test_a_path_outside_changes_is_not_measured(self):
         body = '\n'.join(['## Overview', '', 'See `missing/file.md`.', '', '## References', '',

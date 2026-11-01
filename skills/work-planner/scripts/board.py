@@ -201,7 +201,8 @@ class Outputs:
     there; a linked commit is read against each base the consumer has. A merge into the producer's
     own base alone is not availability. Every reading is recorded in lines, naming the producer
     row, the output, the consumer commit and the answer. An output with no commit, one the checkout
-    does not hold, or a reading with no project is unverified, and leaves the row unmet."""
+    does not hold, one merged into a branch that is neither an epic base nor a long-lived branch, such
+    as a task branch, or a reading with no project is unverified, and leaves the row unmet."""
 
     def __init__(self, project: str = ''):
         self.project = project
