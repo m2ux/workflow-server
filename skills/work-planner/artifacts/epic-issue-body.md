@@ -219,6 +219,8 @@ A project states the criteria its epics must carry in `config/required-criteria.
 | `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. |
 | `row` | The Description of the task row that delivers the criterion. |
 
+- **The declared row delivers the criterion.**
+  It carries the declared `row` as its Description, depends on the rows whose work reaches the declared branch, and covers that criterion alone.
 - **The evaluated commit holds the statement.**
   The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.
 - **An absent statement is unevaluable.**
@@ -236,21 +238,6 @@ A project states the criteria its epics must carry in `config/required-criteria.
     }
   ]
   ```
-
-### Corpus Audit
-
-An epic whose tasks change workflow definitions carries this criterion, and a final task row delivers it:
-
-```markdown
-- [ ] **ACn.** The definitions this epic changes carry no outstanding confirmed finding, as the canon audit's coverage report shows.
-```
-
-- **The row is the epic's last.**
-  It is named `Canon audit of the changed definitions`, depends on the rows whose definitions it audits, and covers this criterion alone.
-- **A finding closes by a fix on this epic's branch or by an issue that takes it.**
-  Outstanding means neither.
-- **Definitions change when a task row's work reaches the branch the corpus lives on.**
-  A row that only changes the engine, continuous integration or the workspace does not bring the criterion.
 
 ### Task Delivery
 
