@@ -1,0 +1,75 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1555",
+    "head": "ba685e7eda1c1058c0b279a482b4871b06d09479",
+    "base": "b1eb5351b97add7f5f74428abfdec142b35548e4",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1181-i11-e10-epic-review/review-1555.json",
+    "reviewer": "Claude Opus 5.5 agent review (independent reviewer sub-agent, with two read-only reviewer sub-agents for the checker and the work-planner scripts)",
+    "reviewed_at": "2026-11-01T11:27:33Z",
+    "scope": "Integration diff b1eb5351...ba685e7e (merge base equals target head; 84 files, +4984/-1226): .github/workflows/verify-skills.yml; skills/scripts/check_skill_files.py and skills/test/test_check_skill_files.py; skills/guidelines.md and skills/rules.json; the gitnexus and server-in-the-loop entry points and their new references/operations.md and loop-mode.md; workflow-canon SKILL.md Conventions, the deleted command-conventions.md and the moved Run Project Check, Fetch Unit and Run Audit Script Tests, audit_fixtures; work-planner SKILL.md Checkouts vocabulary, guidelines, rules.json, vocabulary.json, every changed mode, protocol and artifact, and scripts board.py, closure.py, closure-sweep.py, deliver.py, deps.py, format.py, orphans.py, sync.py, agent_review.py with their tests including the new test_checkouts.py. Callers inspected: links-by-issue.py (the snapshot closure.py now reads), every Close Tracker Issue / Capture Issue Development / Confirm Repository Auto-Close call site, Record Epic Delivery callers of the Changes path findings, and the check's citation resolution across skills. Probes and 66 mutants were run against scratch copies; no branch was modified.",
+    "criteria": "Epic #1181 AC1-AC49 (all ticked). Each criterion was read against the code and its observing test; mutants confirmed that the tests for AC1-AC6, AC8-AC16, AC20, AC22, AC23, AC25, AC30, AC33, AC35, AC36, AC38-AC47 fail when the deciding logic is removed. AC17, AC19, AC27, AC48, AC49 hold by the full checker run (0 findings). AC18: the canon suite skips, not fails, without CANON_TEST_ENGINE. AC24: verify-skills.yml runs on every pull_request (no branch filter) and on pushes to workspace and i[0-9]+/[e[0-9]+/]workspace (GitHub filter '+' is one-or-more). AC31/AC32/AC37 read in pull-request-body.md, hoist-mode.md. AC7 is not met in full: see the blocking finding. AC28/AC34 (retrieval walk, disclosure measurements) were checked for the workflow-canon Conventions move only; the planning-record measurements were not re-run.",
+    "validation": "At ba685e7e: sbx python3 -m pytest skills/work-planner/test -q: 720 passed, 1 skipped, 1835 subtests passed. sbx python3 -m pytest skills/test -q: 186 passed, 7 subtests passed. sbx python3 -m pytest skills/workflow-canon/test -q (CANON_TEST_ENGINE unset): 39 passed, 38 skipped, 21 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills: 82 files checked, 0 findings. Running all three suites in one pytest invocation fails collection on a fixtures module name collision; each suite runs alone as CI and the skill docs prescribe.",
+    "findings": [
+      {
+        "description": "AC7 (blocking): the interface check does not reject Projects (classic) unconditionally. skills/scripts/check_skill_files.py:118-121 CLASSIC matches only projects/columns|cards, {repos,orgs,users}/.../projects, the ProjectCard/ProjectColumn names and 'projects('. The classic REST routes /projects/{id}, /projects/{id}/columns, /projects/{id}/collaborators and POST user/projects pass, as does GraphQL repository { project(number: N) { columns } }. Probe: a spec holding 'gh api projects/123/columns' and 'gh api --method POST user/projects -f name=x' reports 0 'Projects classic interface' findings. Mutant: deleting the projects/(columns|cards) alternative leaves the whole suite passing, so no fixture covers it.",
+        "severity": "blocking",
+        "disposition": "open"
+      },
+      {
+        "description": "check_skill_files.py:121 '\\bprojects\\s*\\(' reports ordinary prose and code as a classic interface: 'The board spans several projects (repositories and docs)' and 'def projects(self):' each yield 'Projects classic interface'. Any future skill prose with that phrasing fails CI.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "check_skill_files.py:612 accepts a REST gap only as a line starting '**REST gap:**'. A spec stating '- **REST gap:** ...' as a bullet is reported 'GraphQL without a REST gap' though guidelines.md:145 only asks for a '**REST gap:** line'. The gap's restriction to its own spec span and the fenced-lines-only GraphQL detection (:609) are untested: mutants accepting a gap anywhere in the file, or GraphQL mentioned in prose, pass the suite.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "check_skill_files.py:101 MODE requires '- **[Name](file)**'; a mode bullet without bold ('- [Revise](r-mode.md)') is never checked for a trigger phrase, so AC1 is escaped silently (probe: only the bold mode was reported). The bullet form is left to review, so nothing reports the escape.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "Tests that do not observe what they claim: skills/test/test_check_skill_files.py:698 test_sections_of_different_kinds_or_parents_are_not_compared uses a ### under a different ##, which heading level already separates; dropping the parent from the mood group key passes. Also unobserved (each mutant passes): the multi-word mode join, hard_wraps' heading exclusion, fence-language lower-casing, and an entry point rejecting a ## Commands section (adding Commands to ENTRY_SECTIONS at :107 passes).",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": ".github/workflows/verify-skills.yml:62-70 runs each excluded skill alone, so citations from other skills are absent and 'command specification nothing cites' or one-caller findings can appear only from the isolation, keeping an exclusion alive after its real findings are fixed. :52 with every skill excluded passes an empty roots array, argparse nargs='+' exits 2 and the job fails.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/sync.py:493 NAMED_FILE takes any backticked dotted token as a file: a Changes bullet naming 'board.Outputs', 'args.project' or the component form 'main:src/bundle/assembly.ts' is reported 'changes: ... names board.Outputs, absent at <sha>', a false AC30 finding on ordinary review bodies.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/deps.py:472-476 checks the bound over every unit including singletons, so a lone row covering AC1..AC7 is reported 'joined unit covers 7 criteria' though it joins nothing. Either the message or the scope is wrong.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/board.py:308-311 with Outputs.consumer (:212-214): a producer pull request merged into a stacked task branch (i07/e00/w01-x) does not match EPIC_BASE, so the fallback reads origin/i07/e00/w01-x and reports MET, contradicting the Producer Outputs rule that a merge into the producer's own base alone is not availability. Off-contract input, which sync reports as 'target'. The linked-commit path (:204-208, for-each-ref over consumer bases) has no test: replacing it with names = [] passes test_board.py and test_deliver.py.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "Stale prose: skills/work-planner/modes/sync-mode.md step 6's delivery-findings handlers list nothing for the new 'changes', 'target' and 'no epic' findings, and the Unevaluable handler (:110-113) says 'The epic stays open until every epic base states the same readable declaration' though unevaluable now also carries unread draft bases and unread Changes heads.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/sync.py:444-447 epicless reports a task-titled pull request '[I07:E00:W01] ...' as 'no epic' although it names E00, and startswith('[I07') also matches '[I070'. The finding text misleads the reader acting on it.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "skills/work-planner/scripts/closure.py blockers/main reads the snapshot entry by issue number only; the removed repo/number identity check means a links file captured for another repository's issue of the same number passes silently. Low risk while Capture Issue Development derives both files together.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]
