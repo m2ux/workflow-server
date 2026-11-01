@@ -1,0 +1,46 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1487",
+    "head": "400703b086b86a2e5d9135d4e6d9f89cdb7d630d",
+    "base": "b0294e20074f715286d7c13451d3df30764d3273",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1176-i11-e09-epic-review/review-1487.json",
+    "reviewer": "Claude Opus 5.5 agent review (epic handoff session, independent reviewer sub-agent)",
+    "reviewed_at": "2026-11-01T08:30:00Z",
+    "scope": "Full integration diff workspace...i11/e09/workspace (27 files under skills/work-planner: sync.py, board.py, board-queue.py, deliver.py, agent_review.py, tests and artifact, mode and protocol prose), first at d78de4468 and again for the delta to 400703b0 (PR #1521). Callers of changed functions in the scripts inspected, with failure paths of read_branches, compose_id, normalize_closed_table, Board.active and Queue placement probed.",
+    "criteria": "AC2-AC17 traced to tests: AC2 InitiativeMembership; AC3 EpicActivity; AC4 ReadyFollowsTheInitiative incl. three waiting-initiative tests; AC5 BacklogTakesTheTree; AC6-AC7 HistoricalDelivery; AC8 board.md themes table; AC9 LongLivedNames; AC10-AC12 PinnedEpicBase; AC11/AC13 UnavailableDeclaration; AC14 SeveralEpicBases; AC15 sync.py --names per base head; AC16 test_a_unit_takes_a_branch_and_worktree_per_epic_base; AC17 sync link tests. All hold at 400703b0.",
+    "validation": "pytest skills/work-planner/test at 400703b0: 530 passed, 1030 subtests passed. check_skill_files.py skills/work-planner: 0 findings. sync.py --names at each epic base head prints docker, main, workflows, workspace. Epic sync at 400703b0: no unmatched, references or uncited finding beyond #1487 References (updated); a pre-existing #1265 test-plan disagreement on AC10/AC11. No CI check runs on the head; target workspace requires one approving review and no status check.",
+    "findings": [
+      {
+        "description": "AC4 false: an initiative kept In Progress only by open pull requests readied its epics (next set Backlog to Ready; lower set and unplanned kept Ready). board-queue.py place_sets, activate, park.",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/pull/1521"
+      },
+      {
+        "description": "deliver.py survey (task_branches, survey) gives every unit a task branch and worktree per epic base, whether or not the unit changes that long-lived branch; pre-existing breadth.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "Record Epic Delivery callers in deliver-mode.md, review-pull-request.md, epic-issue-body.md, align-mode.md and sync-mode.md omit the fetched epic bases, so sync reports unevaluable and never closable; fails safe.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "sync.py title_repairs runs before epic_delivery applies --link, so a pull request linked in the same run is checked for its prefix only on the next run.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "test_board_queue.py test_unstarted_epics_return_without_an_assignee_and_done_stays asserts an assignee string that a POST also matches; behaviour is DELETE as required.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      },
+      {
+        "description": "board-queue.py activate: an inactive epic already In Progress under a waiting initiative keeps In Progress (board.py moves it to Backlog, so the scripts converge); board-queue.md does not state the case.",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]

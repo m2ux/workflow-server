@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1497",
+    "head": "7f76f53b881c74f8dbbe4eda07547c71c4ed7f13",
+    "base": "a4b5b9cca9283b430c279a2362694764a88de101",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1176-i11-e09-epic-review/review-1497.json",
+    "reviewer": "Claude Opus 5.5 agent review (epic handoff session, independent reviewer sub-agent)",
+    "reviewed_at": "2026-11-01T08:30:00Z",
+    "scope": "Full integration diff workflows...i11/e09/workflows: one added file, config/branches (4 lines), from task merge #1495. Its readers (sync.py read_branches on workspace) and the workflows branch tree for any config/ consumer inspected; none exists.",
+    "criteria": "AC15: an epic sync of an epic base cut from this long-lived branch reads a declaration at that base commit, shown by sync.py --names against the base head. AC9: the names are exactly the four the statement lists.",
+    "validation": "sync.py --names --revision origin/i11/e09/workflows prints docker, main, workflows, workspace from config/branches at 7f76f53b881c74f8dbbe4eda07547c71c4ed7f13; the file equals workspace config/branches byte for byte. Target workflows requires one approving review and no status check. Head checks: checkpoint options pass; Verify corpus guard sweep fails on corpus-links (a ../../support/gitnexus relative link in the corpus), the same failure the workflows head a4b5b9cc carries, so it is pre-existing, not caused by this epic and not required.",
+    "findings": []
+  }
+]

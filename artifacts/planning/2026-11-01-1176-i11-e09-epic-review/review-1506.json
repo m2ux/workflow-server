@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1506",
+    "head": "1cd4a87d9314a939517beaccd1ef317b6d361ede",
+    "base": "824e364391089f44a14065202947b4c8a62204d0",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1176-i11-e09-epic-review/review-1506.json",
+    "reviewer": "Claude Opus 5.5 agent review (epic handoff session, independent reviewer sub-agent)",
+    "reviewed_at": "2026-11-01T08:30:00Z",
+    "scope": "Full integration diff main...i11/e09/main: one added file, config/branches (4 lines), from task merge #1494. Its readers (sync.py read_branches on workspace) and the main branch tree for any config/ consumer inspected; none exists.",
+    "criteria": "AC15: an epic sync of an epic base cut from this long-lived branch reads a declaration at that base commit, shown by sync.py --names against the base head. AC9: the names are exactly the four the statement lists.",
+    "validation": "sync.py --names --revision origin/i11/e09/main prints docker, main, workflows, workspace from config/branches at 1cd4a87d9314a939517beaccd1ef317b6d361ede; the file equals workspace config/branches byte for byte. Target main requires one approving review and no status check. Head checks: typecheck, schemas and test suite, walk delivery cost, definitions-call-tools and build-and-push all pass.",
+    "findings": []
+  }
+]
