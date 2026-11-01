@@ -1,6 +1,6 @@
 # W26 Test Results
 
-Evaluated at commit `120a6ca54` on `i11/e10/w26-each-command-names-the`, which merges `i11/e10/workspace` at `212bedd48`.
+Evaluated at commit `93b26f7c4` on `i11/e10/w26-each-command-names-the`, which merges `i11/e10/workspace` at `a924c02f4`.
 
 Changed paths: `skills/work-planner/SKILL.md`, `skills/work-planner/test/test_checkouts.py`, and files under `skills/work-planner/artifacts/` (delivery-branches, delivery-brief, planning-record, pull-request, repository-graph), `skills/work-planner/modes/` (all ten) and `skills/work-planner/protocols/` (all six). All lie within the work item's file-change declaration.
 
