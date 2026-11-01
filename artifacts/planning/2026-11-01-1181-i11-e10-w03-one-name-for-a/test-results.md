@@ -1,6 +1,6 @@
 # W03 and W10 Test Results
 
-Evaluated at commit `fa728f799` on `i11/e10/w03-one-name-for-a`, which merges `i11/e10/workspace` at `96295fffa`.
+Evaluated at commit `37a88c112` on `i11/e10/w03-one-name-for-a`, which merges `i11/e10/workspace` at `f0d01fd3f`.
 
 Changed paths:
 
@@ -47,7 +47,7 @@ With `deliver.py` reverted to `ba441c2b8` and the tests kept, four of the six fa
 
 **Work-planner suite.**
 
-`cd <worktree> && sbx python3 -m pytest skills/work-planner/test -q` — 629 passed, 1 skipped, 1136 subtests passed.
+`cd <worktree> && sbx python3 -m pytest skills/work-planner/test -q` — 636 passed, 1 skipped, 1137 subtests passed.
 
 ## T6
 
