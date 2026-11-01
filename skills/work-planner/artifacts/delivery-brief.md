@@ -15,7 +15,7 @@ Read these files first.
 
 One complete prompt file for a confirmed delivery unit.
 
-**Inputs:** Epic URL, task ids, Descriptions, each task's component, criteria, test obligations, each task branch with its epic base and worktree, reserved folder, engineering worktree, board identity, change allowance, supplied session procedure and output path.
+**Inputs:** Epic URL, task ids, Descriptions, each task's component, criteria, test obligations, each task branch with its epic base and worktree, the project checkout, reserved folder, engineering worktree, board identity, change allowance, supplied session procedure and output path.
 
 1. Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.
    - Each part must meet [Fields](#fields).
@@ -29,7 +29,7 @@ The brief is a working file, not part of the delivered change, so it sits in a w
 
 ### Work Identity
 
-The brief names the epic issue URL, task ids, Descriptions, covered acceptance criteria and the theme board carrying the epic's item. It includes each task branch, with the epic base it is cut from and the worktree where the session works on it.
+The brief names the epic issue URL, task ids, Descriptions, covered acceptance criteria and the theme board carrying the epic's item. It includes each task branch, with the epic base it is cut from and the unit checkout where the session works on it, and the project checkout the session merges through.
 
 ### Planning Record
 

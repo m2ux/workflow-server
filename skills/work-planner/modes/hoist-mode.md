@@ -2,6 +2,8 @@
 
 Brings the chosen standalone issues into the agent-engineering structure, or leaves them open according to the user's decision.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

@@ -2,6 +2,8 @@
 
 The published architecture overview, planning record and pull request link that explain one pull request's change.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -17,13 +19,13 @@ Read these files first.
 
 1. **Prepare the evidence.**
    Read the supplied pull request's identity, title, base and verified head through [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-   - Call [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) with the repository checkout, pull request number and verified head.
+   - Call [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) with the project checkout, pull request number and verified head.
    - On a changed-head finding:
      - Repeat Read Pull Request State for the same pull request.
      - Repeat Create Pull Request Worktree using its new verified head.
    - Continue to measurement only when the worktree matches that head.
    - Obtain its changed paths through [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-   - Call [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with that worktree, head and base.
+   - Call [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with the review checkout it returns, head and base.
    - On stale index evidence, repeat Measure Repository Change after its index update.
    - On a changed revision:
      - Repeat Read Pull Request State.

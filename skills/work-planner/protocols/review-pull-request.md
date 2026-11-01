@@ -2,6 +2,8 @@
 
 The draft pull request and body that present one epic base's delivered changes for review.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
