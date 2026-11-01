@@ -1,6 +1,6 @@
 # W22 Test Evidence
 
-Head `0d72b413e23f84b96945409f490b23288e913212` on `i11/e10/w22-canon-conventions-reached-without`, which carries `origin/i11/e10/workspace` at `3b0df7b6e`. Base for the negative runs: `707c1bb24f605f2a164f2bb32d134e209f4fa1e6`, with the head's test file copied into a detached worktree. Every command runs from the unit worktree under `sbx`.
+Head `86f0bc04acff5882fe21ba3a929fa718f8b2299f` on `i11/e10/w22-canon-conventions-reached-without`, which carries `origin/i11/e10/workspace` at `00ce33566`. Base for the negative runs: `707c1bb24f605f2a164f2bb32d134e209f4fa1e6`, with the head's test file copied into a detached worktree. Every command runs from the unit worktree under `sbx`.
 
 ## T1
 
@@ -39,7 +39,8 @@ Run Project Check placement (AC29): `python3 -m pytest skills/test/test_check_sk
 
 Shared and work-planner suites: `python3 -m pytest skills/test skills/work-planner/test -q`.
 
-- 811 passed, 1 skipped, 1837 subtests passed.
+- 857 passed, 1 skipped, 1837 subtests passed.
+- At `8b35508fd` the base itself failed 18 shared-suite tests: two finding kinds unregistered in `KINDS`, and interface fixtures holding a specification nothing cites. This branch fixed both (`a72af28d5`); #1576 landed the same registration on the base, and the merge at the head takes the base's.
 
 ## T4
 
