@@ -87,8 +87,8 @@ The main path meets [Outcomes](#outcomes).
    - A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
    - A held row stays held while its session plans and implements. The pull request's link replaces the record's link, which frees the row.
 8. **Dispatch.**
-   - Confirm each corpus-changing epic has its [Corpus Audit](../artifacts/epic-issue-body.md#corpus-audit) criterion, whose row is that epic's last.
-   - Keep that audit row a unit of its own, joined to no other row, so it is confirmed and held like any other before a session starts for it.
+   - Confirm each epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its rows' branches bring, each with the declared row delivering it.
+   - Keep each such row a unit of its own, joined to no other row, so it is confirmed and held like any other before a session starts for it.
 
    For each held unit:
    - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree).

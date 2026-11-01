@@ -426,6 +426,22 @@ class RequiredReach(unittest.TestCase):
         self.assertFalse(any('no criterion carries' in item for item in r.decide))
 
 
+class ProjectVocabulary(unittest.TestCase):
+    def test_a_projects_required_criterion_stands_only_in_the_guide_example(self):
+        example = re.search(r'```json\n.*?\n\s*```', guide_section('Required Criteria'), re.DOTALL)[0]
+        terms = {term.casefold() for entry in AUDIT.criteria for term in (entry['phrase'], entry['row'])}
+        skill = SCRIPTS.parent
+        sources = [p for p in sorted(skill.rglob('*')) if p.suffix in ('.md', '.py', '.json') and 'test' not in p.parts]
+        found = []
+        for path in sources:
+            text = path.read_text()
+            if path == GUIDE:
+                text = text.replace(example, '')
+            found += [f'{path.relative_to(skill)}: {term}' for term in terms if term in text.casefold()]
+        self.assertTrue(sources)
+        self.assertEqual(found, [])
+
+
 GIT = ('git', '-c', 'user.email=t@t', '-c', 'user.name=T', '-c', 'init.defaultBranch=main',
        '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null')
 
