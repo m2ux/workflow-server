@@ -126,7 +126,7 @@ The main path meets [Outcomes](#outcomes).
       - Follow [Epic Integration](../protocols/epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and selected board identity or its confirmed absence.
       - Report incomplete delivery or unmet merge requirements.
     - Fetch the pull requests again after merging.
-    - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records and the same project checkout.
+    - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records and the same project checkout and epic base.
     - [Issue Closure](../protocols/issue-closure.md) each epic the re-run reports closable.
 11. **Sync the initiative.**
     Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
