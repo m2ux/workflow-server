@@ -1373,7 +1373,7 @@ class TaskCriteria(unittest.TestCase):
 
 
 class HistoricalDelivery(unittest.TestCase):
-    def inspect(self, record, pulls):
+    def inspect(self, record, pulls, *args):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             source, records, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
@@ -1381,7 +1381,7 @@ class HistoricalDelivery(unittest.TestCase):
             records.write_text('\n'.join(json.dumps(p) for p in pulls))
             result = run('sync.py', str(source), '--prs', str(records),
                          '--links', links_file(root, []), '--fix', str(fixed),
-                         *declared(root, 'main', 'workflows'))
+                         *declared(root, 'main', 'workflows'), *args)
             return result, fixed.read_text() if fixed.exists() else None
 
     def test_closed_table_normalizes_embedded_coverage_before_delivery(self):
@@ -1430,6 +1430,22 @@ class HistoricalDelivery(unittest.TestCase):
         self.assertNotIn('retitle:', reread.stdout)
         self.assertNotIn('conflict:', reread.stdout)
         self.assertEqual(stable, fixed)
+
+    def test_pull_request_linked_in_the_run_is_checked_for_its_prefix_in_that_run(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
+        named = pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')
+        result, fixed = self.inspect(record, [named], '--link', 'W01=950')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn(f'[W01]({url("pull", 950)})', fixed)
+        self.assertIn('linked: W01 → #950', result.stdout)
+        self.assertNotIn('retitle:', result.stdout)
+        for title in ('Work', '[I01] Work', '[I01:E00:W01] Work'):
+            with self.subTest(title=title):
+                result, fixed = self.inspect(record, [pr(950, title, merged='2026-09-01T00:00:00Z')],
+                                             '--link', 'W01=950')
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn('--link W01=950: no pull request naming this epic', result.stderr)
+                self.assertIsNone(fixed)
 
     def test_title_repairs_exclude_open_unlinked_and_other_epic_titles(self):
         record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
