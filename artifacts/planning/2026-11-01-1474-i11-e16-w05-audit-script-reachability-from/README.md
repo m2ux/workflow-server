@@ -14,9 +14,11 @@ E16 added several scripts: link capture, the revision helper, the closure sweep 
 | --- | --- |
 | [W05 work item](w05.md) | Component, scope, design and test rows for W05 |
 | [Reachability audit](audit.md) | Each script's path to a calling procedure, the gap found, the check decision and validation output |
+| [Change list](changes.md) | Plan changes this session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E16](https://github.com/m2ux/workflow-server/issues/1474) |
+| Pull request | [#1537](https://github.com/m2ux/workflow-server/pull/1537) |
