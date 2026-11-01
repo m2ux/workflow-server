@@ -17,7 +17,7 @@ Read these files first.
 
 One epic body and its local validation findings.
 
-**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows, available pull request records, corpus branch and output path.
+**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows, available pull request records, project checkout, evaluated revision and output path.
 
 1. Populate the body from the [Template](#template) at the supplied output path.
    - Every section must meet [Fields](#fields).
@@ -26,7 +26,7 @@ One epic body and its local validation findings.
 3. Fill the epic-specific cells.
    - Each row must meet [Work Breakdown](#work-breakdown).
 4. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
-5. Pass that snapshot, initiative context, available pull request records, corpus branch and output file to [Validate Epic Body](#validate-epic-body).
+5. Pass that snapshot, initiative context, available pull request records, project checkout, evaluated revision and output file to [Validate Epic Body](#validate-epic-body).
 6. Identify unresolved publication links separately; they remain pending until tracker identities exist.
 7. Return the draft rows, their dependency references and the validation findings for the caller's cross-body ordering check.
 
@@ -73,11 +73,12 @@ Held task rows returned to their work-item links.
 
 The body's local format and field findings.
 
-**Inputs:** Epic JSON, initiative context, current pull request records, corpus branch and output file.
+**Inputs:** Epic JSON, initiative context, current pull request records, project checkout, evaluated revision and output file.
 
-1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying initiative JSON as `--initiative`, pull requests as `--prs` and corpus branch as `--corpus`.
-2. Read reach from each epic pull request's base, through an epic base or initiative branch. Without both pull requests and the corpus branch, reach is unevaluable.
-3. Include a missing [Corpus Audit](#corpus-audit) criterion on a corpus-changing epic and any epic criterion no task row delivers in the findings.
+1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying initiative JSON as `--initiative`, pull requests as `--prs`, the checkout as `--project` and the revision as `--revision`.
+   - The evaluated revision is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
+2. Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
+3. Include in the findings each [Required Criteria](#required-criteria) criterion an epic reaching its branch lacks, required criteria the declaration leaves unevaluable, and any epic criterion no task row delivers.
 4. Return the corrected body, mechanical diff and unresolved findings for the caller.
 
 ### *Revise* Epic Rows
@@ -207,20 +208,36 @@ An epic criterion meets the [shared acceptance criteria](issue-body.md#shared-ac
 
 Each question holds only what is undecided and has a recommendation in the planning record. A settled point belongs in that record. No question remains when the epic starts.
 
-### Corpus Audit
+### Required Criteria
 
-An epic whose tasks change workflow definitions carries this criterion, and a final task row delivers it:
+A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string:
 
-```markdown
-- [ ] **ACn.** The definitions this epic changes carry no outstanding confirmed finding, as the canon audit's coverage report shows.
-```
+| Field | What it states |
+| --- | --- |
+| `branch` | The long-lived branch that brings the criterion. An epic carries it when a task row's work reaches this branch. |
+| `criterion` | The criterion's text, which the epic carries after its `**ACn.**` label. |
+| `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. |
+| `row` | The Description of the task row that delivers the criterion. |
 
-- **The row is the epic's last.**
-  It is named `Canon audit of the changed definitions`, depends on the rows whose definitions it audits, and covers this criterion alone.
-- **A finding closes by a fix on this epic's branch or by an issue that takes it.**
-  Outstanding means neither.
-- **Definitions change when a task row's work reaches the branch the corpus lives on.**
-  A row that only changes the engine, continuous integration or the workspace does not bring the criterion.
+- **The declared row delivers the criterion.**
+  It carries the declared `row` as its Description, depends on the rows whose work reaches the declared branch, and covers that criterion alone.
+- **The evaluated commit holds the statement.**
+  The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.
+- **An absent statement is unevaluable.**
+  A revision resolving to no commit, a missing or empty file at that commit, an empty array, unreadable JSON, or an entry lacking a field leaves the project's required criteria unevaluable. The check reports that and names what is missing, and reports no epic as lacking a criterion. A project declaring nothing acquires no other project's criteria.
+- **Example.**
+  workflow-server requires its corpus audit:
+
+  ```json
+  [
+    {
+      "branch": "workflows",
+      "criterion": "The definitions this epic changes carry no outstanding confirmed finding, as the canon audit's coverage report shows.",
+      "phrase": "canon audit",
+      "row": "Canon audit of the changed definitions"
+    }
+  ]
+  ```
 
 ### Task Delivery
 

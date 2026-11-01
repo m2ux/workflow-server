@@ -2,14 +2,19 @@
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
+import json
 import re
+import subprocess
 import sys
+import tempfile
+import textwrap
 import unittest
+from pathlib import Path
 
-from fixtures import SCRIPTS, issue, pr
+from fixtures import SCRIPTS, issue, pr, run
 
 sys.path.insert(0, str(SCRIPTS))
-from format import DEPENDENCY, Review  # noqa: E402
+from format import DECLARATION, DECLARED_FIELDS, DEPENDENCY, Required, Review, required_criteria  # noqa: E402
 
 
 def body(problem: str, proposal: str) -> str:
@@ -334,50 +339,246 @@ class References(unittest.TestCase):
         self.assertTrue(any('References: names' in item and '#2' in item for item in r.decide))
 
 
-WANTED = 'no criterion is the corpus audit'
+GUIDE = SCRIPTS.parent / 'artifacts' / 'epic-issue-body.md'
 
 
-def corpus_review(criterion: str, base: str, corpus: str | None = 'workflows',
-                  title: str = '[I01:E00] First: Epic') -> Review:
-    """An epic whose one pull request targets base, reviewed for the corpus audit criterion."""
+def guide_section(heading: str) -> str:
+    """One Fields subsection of the epic guide, up to the next heading of its level."""
+    text = GUIDE.read_text()
+    return text.split(f'\n### {heading}\n', 1)[1].split('\n### ', 1)[0]
+
+
+def guide_example() -> str:
+    return textwrap.dedent(re.search(r'```json\n(.*?)\n\s*```', guide_section('Required Criteria'), re.DOTALL)[1])
+
+
+AUDIT = Required(tuple(json.loads(guide_example())), 'the guide example')
+LOAD_TEST = {'branch': 'main', 'criterion': 'The service holds its load target, as the load test shows.',
+             'phrase': 'load test', 'row': 'Load test of the changed service'}
+WANTED = 'no criterion carries "canon audit"'
+
+
+def epic_with(criterion: str, title: str = '[I01:E00] First: Epic') -> dict:
     body = ('## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Done |\n'
             '| --- | --- | --- | --- | --- | --- |\n| W01 | Work | AC1 | | | |\n\n'
             f'## Acceptance Criteria\n\n- [ ] **AC1.** {criterion}\n')
-    epic = issue(2, title, body=body, labels=('type:epic', 'theme:mechanical'))
+    return issue(2, title, body=body, labels=('type:epic', 'theme:mechanical'))
+
+
+def required_review(criterion: str, base: str, required: Required | None = AUDIT,
+                    title: str = '[I01:E00] First: Epic') -> Review:
+    """An epic whose one pull request targets base, reviewed for the criteria its project requires."""
     prefix = title.split(']')[0] + ']'
-    r = Review(epic, prs=[pr(950, f'{prefix} Work', base=base)], corpus=corpus)
+    r = Review(epic_with(criterion, title), prs=[pr(950, f'{prefix} Work', base=base)], required=required)
     r.run()
     return r
 
 
-class CorpusAudit(unittest.TestCase):
-    def test_an_epic_reaching_the_corpus_states_the_audit(self):
-        r = corpus_review('Holds.', 'i01/e00/workflows')
+class RequiredReach(unittest.TestCase):
+    def test_an_epic_reaching_the_branch_states_the_criterion(self):
+        r = required_review('Holds.', 'i01/e00/workflows')
+        found = [item for item in r.decide if WANTED in item]
+        self.assertEqual(len(found), 1)
+        self.assertIn('Canon audit of the changed definitions', found[0])
+
+    def test_a_deferred_debt_epic_reaching_the_branch_states_the_criterion(self):
+        r = required_review('Holds.', 'i01/e09/workflows',
+                            title='[I01:E09] Deferred Debt: The Clear-Up This Initiative Owes')
         self.assertTrue(any(WANTED in item for item in r.decide))
 
-    def test_a_deferred_debt_epic_reaching_the_corpus_states_the_audit(self):
-        r = corpus_review('Holds.', 'i01/e09/workflows',
-                          title='[I01:E09] Deferred Debt: The Clear-Up This Initiative Owes')
+    def test_an_epic_reaching_the_long_lived_branch_states_the_criterion(self):
+        r = required_review('Holds.', 'workflows')
         self.assertTrue(any(WANTED in item for item in r.decide))
 
-    def test_an_epic_reaching_the_corpus_through_its_long_lived_branch_states_it(self):
-        r = corpus_review('Holds.', 'workflows')
+    def test_an_epic_reaching_through_an_initiative_branch_states_the_criterion(self):
+        r = required_review('Holds.', 'i01/workflows')
         self.assertTrue(any(WANTED in item for item in r.decide))
 
-    def test_an_epic_reaching_the_corpus_through_an_initiative_branch_states_it(self):
-        r = corpus_review('Holds.', 'i01/workflows')
-        self.assertTrue(any(WANTED in item for item in r.decide))
-
-    def test_the_audit_criterion_answers_the_check(self):
-        r = corpus_review("The definitions this epic changes carry no outstanding confirmed finding, "
-                          "as the canon audit's coverage report shows.", 'i01/e00/workflows')
+    def test_the_phrase_in_any_case_answers_the_check(self):
+        r = required_review("The definitions carry no finding, as the Canon Audit's coverage report shows.",
+                            'i01/e00/workflows')
         self.assertFalse(any(WANTED in item for item in r.decide))
 
-    def test_an_epic_off_the_corpus_states_nothing(self):
-        r = corpus_review('Holds.', 'i01/e00/main')
-        self.assertFalse(any(WANTED in item for item in r.decide))
+    def test_an_epic_off_the_branch_states_nothing(self):
+        r = required_review('Holds.', 'i01/e00/main')
+        self.assertFalse(any('no criterion carries' in item for item in r.decide))
 
-    def test_an_unnamed_corpus_branch_leaves_the_reach_unevaluable(self):
-        r = corpus_review('Holds.', 'i01/e00/workflows', corpus=None)
-        self.assertFalse(any(WANTED in item for item in r.decide))
+    def test_the_declared_vocabulary_alone_is_matched(self):
+        declared = Required((LOAD_TEST,), 'another project')
+        on_main = required_review('Holds.', 'i01/e00/main', declared)
+        self.assertTrue(any('no criterion carries "load test"' in item and 'Load test of the changed service' in item
+                            for item in on_main.decide))
+        on_workflows = required_review('Holds.', 'i01/e00/workflows', declared)
+        self.assertFalse(any('no criterion carries' in item for item in on_workflows.decide))
 
+    def test_an_epic_checked_without_a_declaration_is_held_to_nothing(self):
+        r = required_review('Holds.', 'i01/e00/workflows', required=None)
+        self.assertFalse(any('required criteria' in item or 'no criterion carries' in item for item in r.decide))
+
+    def test_unevaluable_criteria_are_reported_and_none_is_lacking(self):
+        r = required_review('Holds.', 'i01/e00/workflows', Required((), 'nowhere', 'no declaration'))
+        self.assertIn('required criteria unevaluable: no declaration', r.decide)
+        self.assertFalse(any('no criterion carries' in item for item in r.decide))
+
+    def test_an_epic_without_pull_requests_lacks_nothing(self):
+        r = Review(epic_with('Holds.'), required=AUDIT)
+        r.run()
+        self.assertFalse(any('no criterion carries' in item for item in r.decide))
+
+
+class ProjectVocabulary(unittest.TestCase):
+    def test_a_projects_required_criterion_stands_only_in_the_guide_example(self):
+        example = re.search(r'```json\n.*?\n\s*```', guide_section('Required Criteria'), re.DOTALL)[0]
+        terms = {term.casefold() for entry in AUDIT.criteria for term in (entry['phrase'], entry['row'])}
+        skill = SCRIPTS.parent
+        sources = [p for p in sorted(skill.rglob('*')) if p.suffix in ('.md', '.py', '.json') and 'test' not in p.parts]
+        found = []
+        for path in sources:
+            text = path.read_text()
+            if path == GUIDE:
+                text = text.replace(example, '')
+            found += [f'{path.relative_to(skill)}: {term}' for term in terms if term in text.casefold()]
+        self.assertTrue(sources)
+        self.assertEqual(found, [])
+
+
+GIT = ('git', '-c', 'user.email=t@t', '-c', 'user.name=T', '-c', 'init.defaultBranch=main',
+       '-c', 'commit.gpgsign=false', '-c', 'core.hooksPath=/dev/null')
+
+
+def git(cwd: Path, *args: str) -> str:
+    """Run git in cwd and return its output, failing the test on a git error."""
+    done = subprocess.run([*GIT, *args], cwd=cwd, capture_output=True, text=True)
+    assert done.returncode == 0, done.stderr
+    return done.stdout.strip()
+
+
+def commit_declaration(checkout: Path, text: str | None, message: str = 'declare') -> str:
+    """Commit the declaration holding text, or its removal when text is None, returning the commit."""
+    path = checkout / DECLARATION
+    if text is None:
+        path.unlink(missing_ok=True)
+    else:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text)
+    git(checkout, 'add', '--all')
+    git(checkout, 'commit', '--allow-empty', '-m', message)
+    return git(checkout, 'rev-parse', 'HEAD')
+
+
+class DeclarationAtRevision(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.checkout = self.root / 'checkout'
+        self.checkout.mkdir()
+        git(self.checkout, 'init')
+
+    def read(self, revision: str, checkout: Path | None = None) -> Required:
+        return required_criteria(str(checkout or self.checkout), revision)
+
+    def test_the_guide_names_the_declaration_and_its_fields(self):
+        section = guide_section('Required Criteria')
+        self.assertIn(f'`{DECLARATION}` at its root', section)
+        self.assertEqual(tuple(re.findall(r'^\| `(\w+)` \|', section, re.MULTILINE)), DECLARED_FIELDS)
+
+    def test_the_criteria_and_their_source_come_from_the_resolved_commit(self):
+        commit = commit_declaration(self.checkout, guide_example())
+        read = self.read('HEAD')
+        self.assertEqual(read.unevaluable, '')
+        self.assertEqual(read.criteria, AUDIT.criteria)
+        common = git(self.checkout, 'rev-parse', '--path-format=absolute', '--git-common-dir')
+        self.assertEqual(read.source, f'{DECLARATION} at {commit} in {common}')
+
+    def test_divergent_revisions_each_read_their_own_declaration(self):
+        audit = commit_declaration(self.checkout, guide_example())
+        git(self.checkout, 'switch', '-c', 'other')
+        load = commit_declaration(self.checkout, json.dumps([LOAD_TEST]))
+        self.assertEqual(self.read(audit).criteria, AUDIT.criteria)
+        self.assertEqual(self.read('main').criteria, AUDIT.criteria)
+        self.assertEqual(self.read(load).criteria, (LOAD_TEST,))
+        self.assertIn(load, self.read('other').source)
+
+    def test_working_files_choose_nothing(self):
+        commit_declaration(self.checkout, guide_example())
+        (self.checkout / DECLARATION).write_text(json.dumps([LOAD_TEST]))
+        self.assertEqual(self.read('HEAD').criteria, AUDIT.criteria)
+
+    def test_the_same_revision_reads_alike_from_every_worktree(self):
+        commit_declaration(self.checkout, guide_example())
+        linked = self.root / 'linked'
+        git(self.checkout, 'worktree', 'add', '-b', 'side', str(linked))
+        commit_declaration(linked, json.dumps([LOAD_TEST]))
+        self.assertEqual(self.read('main', linked), self.read('main'))
+        self.assertEqual(self.read('side', linked), self.read('side'))
+        self.assertEqual(self.read('main').criteria, AUDIT.criteria)
+
+    def test_a_revision_resolving_to_no_commit_is_unevaluable(self):
+        commit_declaration(self.checkout, guide_example())
+        read = self.read('no-such-branch')
+        self.assertIn('no-such-branch resolves to no commit', read.unevaluable)
+        self.assertEqual(read.criteria, ())
+
+    def test_a_project_declaring_none_is_unevaluable(self):
+        commit_declaration(self.checkout, None)
+        self.assertTrue(self.read('HEAD').unevaluable.startswith(f'no {DECLARATION} at '))
+
+    def test_a_declaration_at_another_revision_supplies_nothing(self):
+        declared = commit_declaration(self.checkout, guide_example())
+        removed = commit_declaration(self.checkout, None, 'remove')
+        self.assertEqual(self.read(declared).criteria, AUDIT.criteria)
+        self.assertIn(f'no {DECLARATION} at {removed}', self.read('HEAD').unevaluable)
+        (self.checkout / DECLARATION).write_text(guide_example())
+        self.assertEqual(self.read('HEAD').criteria, ())
+
+    def test_an_empty_declaration_is_unevaluable(self):
+        for text in ('', '[]', '{}'):
+            with self.subTest(text=text):
+                commit_declaration(self.checkout, text)
+                read = self.read('HEAD')
+                self.assertTrue(read.unevaluable.endswith('declares no criterion'))
+                self.assertEqual(read.criteria, ())
+
+    def test_an_unreadable_declaration_is_unevaluable(self):
+        commit_declaration(self.checkout, 'branch: workflows')
+        self.assertTrue(self.read('HEAD').unevaluable.endswith('is not JSON'))
+
+    def test_an_entry_lacking_a_field_is_unevaluable(self):
+        entry = {'branch': 'workflows', 'criterion': 'Holds.', 'phrase': ''}
+        commit_declaration(self.checkout, json.dumps([entry]))
+        self.assertTrue(self.read('HEAD').unevaluable.endswith('lacks phrase, row'))
+
+
+class CheckFormat(unittest.TestCase):
+    def setUp(self):
+        self.root = Path(self.enterContext(tempfile.TemporaryDirectory()))
+        self.checkout = self.root / 'checkout'
+        self.checkout.mkdir()
+        git(self.checkout, 'init')
+        self.epic = self.root / 'epic.json'
+        self.epic.write_text(json.dumps(epic_with('Holds.')))
+        self.prs = self.root / 'prs.json'
+        self.prs.write_text(json.dumps(pr(950, '[I01:E00] Work', base='i01/e00/workflows')) + '\n')
+
+    def check(self, *args: str):
+        return run('format.py', str(self.epic), '--prs', str(self.prs), *args)
+
+    def test_the_run_names_its_source_and_the_lacking_criterion(self):
+        commit = commit_declaration(self.checkout, guide_example())
+        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+        self.assertEqual(done.returncode, 1)
+        self.assertIn(f'source: {DECLARATION} at {commit} in ', done.stdout)
+        self.assertIn(WANTED, done.stdout)
+
+    def test_a_missing_declaration_is_reported_unevaluable(self):
+        commit_declaration(self.checkout, None)
+        (self.checkout / DECLARATION).parent.mkdir(exist_ok=True)
+        (self.checkout / DECLARATION).write_text(guide_example())
+        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+        self.assertEqual(done.returncode, 1)
+        self.assertIn('required criteria unevaluable: no ' + DECLARATION, done.stdout)
+        self.assertNotIn('no criterion carries', done.stdout)
+
+    def test_project_and_revision_go_together(self):
+        done = self.check('--project', str(self.checkout))
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--project and --revision go together', done.stderr)
