@@ -1,6 +1,6 @@
 # Initiative Membership and Epic Activity Determine Status — November 2026
 
-> Delivery record · Created 2026-11-01
+> Delivery record · Created 2026-11-01 · Revised 2026-11-01
 
 ## Executive Summary
 
@@ -14,10 +14,12 @@ The board check reads these statuses, so an epic dropped from its initiative's t
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design, criteria and test rows for W03 |
 | [Delivery evidence](evidence.md) | Revisions, fixtures and results behind each Test Plan row |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E09](https://github.com/m2ux/workflow-server/issues/1176) |
+| Pull request | [#1489](https://github.com/m2ux/workflow-server/pull/1489) |
 | Earlier record | [2026-10-31 W03 record](../2026-10-31-1176-i11-e09-w03-initiative-membership-and-epic/) |
