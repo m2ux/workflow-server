@@ -1,0 +1,22 @@
+# Evidence Capture Review — November 2026
+
+> architecture-overview · Created 2026-11-01
+
+## Executive Summary
+
+This record explains the I11:E16 review pull request, which merges the Evidence Capture epic base into `workspace`. It holds the architecture overview a reviewer reads before the diff.
+
+The epic adds six scripts behind the evidence reads the work-planner skill names. A reviewer meeting the skill for the first time needs the shared reader, the two flows and the order to read the files in before the diff makes sense.
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+| [Architecture overview](architecture-overview.md) | Structure, flows and reading order for the epic's change |
+
+## Links
+
+| Resource | Link |
+| --- | --- |
+| Pull request | [#1505](https://github.com/m2ux/workflow-server/pull/1505) |
+| Epic | [I11:E16](https://github.com/m2ux/workflow-server/issues/1474) |
