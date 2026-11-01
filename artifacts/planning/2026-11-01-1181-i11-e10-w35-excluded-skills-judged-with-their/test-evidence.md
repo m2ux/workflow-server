@@ -1,6 +1,6 @@
 # Test Evidence — W35
 
-> Delivery evidence · Branch `i11/e10/w35-excluded-skills-judged-with-their` · Head `21de11811`, on epic base `i11/e10/workspace` at `ba685e7ed`
+> Delivery evidence · Branch `i11/e10/w35-excluded-skills-judged-with-their` · Head `3569be3f5`, which merges epic base `i11/e10/workspace` after W34; the failing-before run is at `ba685e7ed`
 
 T1 and T2 run locally from the unit's worktree under `sbx`; T3 is the Verify Skills workflow on GitHub.
 
@@ -17,12 +17,12 @@ T1 and T2 run locally from the unit's worktree under `sbx`; T3 is the Verify Ski
   ```
 
   The first is the finding's isolation half: excluding `alpha` passes though its only finding comes from isolation. The second is its empty-roots half: with every skill excluded the in-scope step exits 2.
-- **After, at `21de11811`.**
+- **After, at `3569be3f5`.**
   `6 passed, 186 deselected`. Cases: the seeded tree reports nothing judged whole; an exclusion only isolation supports fails and names `alpha` (AC51); an excluded skill with a real finding passes; every skill excluded passes (AC51); an in-scope finding fails; an exclusion naming no skill fails.
 
 ## T2
 
-- `sbx python3 -m pytest skills/test -q`: 192 passed, 7 subtests passed.
+- `sbx python3 -m pytest skills/test -q`: 209 passed, 9 subtests passed.
 - `sbx python3 -m pytest skills/work-planner/test -q`: 720 passed, 1 skipped, 1835 subtests passed.
 - `sbx python3 -m pytest skills/workflow-canon/test -q`: 39 passed, 38 skipped, 21 subtests passed.
 - `sbx python3 skills/scripts/check_skill_files.py skills/gitnexus/ skills/server-in-the-loop/ skills/work-planner/ skills/workflow-canon/`: 81 files checked, 0 findings.
@@ -30,4 +30,4 @@ T1 and T2 run locally from the unit's worktree under `sbx`; T3 is the Verify Ski
 
 ## T3
 
-The Verify Skills workflow on pull request [#1580](https://github.com/m2ux/workflow-server/pull/1580) at `21de11811`, with `EXCLUDED` empty: the single job runs the check over every skill folder and passes.
+The Verify Skills workflow on pull request [#1580](https://github.com/m2ux/workflow-server/pull/1580) at `3569be3f5`, with `EXCLUDED` empty: the single job runs the check over every skill folder and passes ([run 41322080455](https://github.com/m2ux/workflow-server/actions/runs/41322080455), success).
