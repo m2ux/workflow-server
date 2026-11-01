@@ -211,6 +211,39 @@ class Proposal(unittest.TestCase):
         self.assertTrue(any('initiative template' in item for item in r.decide))
 
 
+class TaskKind(unittest.TestCase):
+    """The type:task label holds against a shallower prefix; a task id in the prefix holds against the label."""
+
+    def run_review(self, title: str, labels: tuple[str, ...]) -> Review:
+        r = Review(issue(485, title, body=body('Gap.', 'Design.'), labels=labels))
+        r.run()
+        return r
+
+    def test_a_task_titled_with_its_epic_prefix_lacks_its_task_id(self):
+        r = self.run_review('[I07:E01] Bootstrap Form: State It in the Eval README', ('type:task', 'tech-debt'))
+        self.assertEqual(r.kind, 'task')
+        self.assertIn('title prefix [I07:E01] has no task id; a task title is [I07:E00:W01] Name: Subtitle',
+                      r.decide)
+        self.assertFalse(any('type:epic' in item for item in r.apply))
+        self.assertFalse(any('Work Breakdown' in item or 'theme' in item for item in r.decide))
+
+    def test_a_task_titled_with_its_initiative_prefix_lacks_its_task_id(self):
+        r = self.run_review('[I07] Bootstrap Form: State It in the Eval README', ('type:task',))
+        self.assertEqual(r.kind, 'task')
+        self.assertIn('title prefix [I07] has no task id; a task title is [I07:E00:W01] Name: Subtitle', r.decide)
+
+    def test_a_task_id_in_the_prefix_outranks_an_epic_label(self):
+        r = self.run_review('[I07:E01:W03] Bootstrap Form: State It in the Eval README', ('type:epic',))
+        self.assertEqual(r.kind, 'task')
+        self.assertIn('labels: remove type:epic, add type:task', r.apply)
+        self.assertFalse(any('task id' in item for item in r.decide))
+
+    def test_a_titled_task_has_no_finding(self):
+        r = self.run_review('[I07:E01:W03] Bootstrap Form: State It in the Eval README', ('type:task',))
+        self.assertEqual(r.decide, [])
+        self.assertEqual(r.apply, [])
+
+
 class TaskRowDependencies(unittest.TestCase):
     """A task row names rows; the initiative row is the one that names epics."""
 
