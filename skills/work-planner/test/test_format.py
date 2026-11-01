@@ -353,9 +353,11 @@ def guide_example() -> str:
 
 
 AUDIT = Required(tuple(json.loads(guide_example())), 'the guide example')
-LOAD_TEST = {'branch': 'main', 'criterion': 'The service holds its load target, as the load test shows.',
+LOAD_TEST = {'branch': 'main', 'paths': ['services/api'],
+             'criterion': 'The service holds its load target, as the load test shows.',
              'phrase': 'load test', 'row': 'Load test of the changed service'}
 WANTED = 'no criterion carries "canon audit"'
+DEFINITION = 'corpus/meta/workflow.toon'
 
 
 def epic_with(criterion: str, title: str = '[I01:E00] First: Epic') -> dict:
@@ -366,10 +368,15 @@ def epic_with(criterion: str, title: str = '[I01:E00] First: Epic') -> dict:
 
 
 def required_review(criterion: str, base: str, required: Required | None = AUDIT,
-                    title: str = '[I01:E00] First: Epic') -> Review:
-    """An epic whose one pull request targets base, reviewed for the criteria its project requires."""
+                    title: str = '[I01:E00] First: Epic', files: tuple[str, ...] | None = (DEFINITION,),
+                    more: tuple[dict, ...] = (), more_files: dict[int, list[str]] | None = None) -> Review:
+    """An epic whose pull request #950 targets base and changes files, None when they are not supplied,
+    reviewed for the criteria its project requires."""
     prefix = title.split(']')[0] + ']'
-    r = Review(epic_with(criterion, title), prs=[pr(950, f'{prefix} Work', base=base)], required=required)
+    changed = {} if files is None else {950: list(files)}
+    changed.update(more_files or {})
+    r = Review(epic_with(criterion, title), prs=[pr(950, f'{prefix} Work', base=base), *more],
+               required=required, files=changed)
     r.run()
     return r
 
@@ -379,6 +386,7 @@ class RequiredReach(unittest.TestCase):
         r = required_review('Holds.', 'i01/e00/workflows')
         found = [item for item in r.decide if WANTED in item]
         self.assertEqual(len(found), 1)
+        self.assertIn('#950 change corpus on workflows', found[0])
         self.assertIn('Canon audit of the changed definitions', found[0])
 
     def test_a_deferred_debt_epic_reaching_the_branch_states_the_criterion(self):
@@ -405,10 +413,11 @@ class RequiredReach(unittest.TestCase):
 
     def test_the_declared_vocabulary_alone_is_matched(self):
         declared = Required((LOAD_TEST,), 'another project')
-        on_main = required_review('Holds.', 'i01/e00/main', declared)
+        both = (DEFINITION, 'services/api/handler.py')
+        on_main = required_review('Holds.', 'i01/e00/main', declared, files=both)
         self.assertTrue(any('no criterion carries "load test"' in item and 'Load test of the changed service' in item
                             for item in on_main.decide))
-        on_workflows = required_review('Holds.', 'i01/e00/workflows', declared)
+        on_workflows = required_review('Holds.', 'i01/e00/workflows', declared, files=both)
         self.assertFalse(any('no criterion carries' in item for item in on_workflows.decide))
 
     def test_an_epic_checked_without_a_declaration_is_held_to_nothing(self):
@@ -424,6 +433,43 @@ class RequiredReach(unittest.TestCase):
         r = Review(epic_with('Holds.'), required=AUDIT)
         r.run()
         self.assertFalse(any('no criterion carries' in item for item in r.decide))
+
+
+class RequiredPaths(unittest.TestCase):
+    def test_a_change_touching_no_declared_path_is_held_to_nothing(self):
+        r = required_review('Holds.', 'i01/e00/workflows', files=('config/branches',))
+        self.assertFalse(any('no criterion carries' in item or 'required criteria' in item for item in r.decide))
+
+    def test_a_change_touching_one_declared_path_is_held_to_its_criterion(self):
+        r = required_review('Holds.', 'i01/e00/workflows', files=('config/branches', DEFINITION))
+        self.assertTrue(any(WANTED in item for item in r.decide))
+
+    def test_a_declared_path_names_itself_and_what_lies_under_it(self):
+        declared = Required(({**AUDIT.criteria[0], 'paths': ['corpus/meta/', 'README.md']},), 'paths')
+        for changed, held in (('corpus/meta', True), ('corpus/meta/workflow.toon', True), ('README.md', True),
+                              ('corpus/metadata.toon', False), ('corpus/README.md', False), ('docs/README.md', False)):
+            with self.subTest(changed=changed):
+                r = required_review('Holds.', 'workflows', declared, files=(changed,))
+                self.assertEqual(any(WANTED in item for item in r.decide), held)
+
+    def test_a_change_to_a_declared_path_on_another_branch_is_held_to_nothing(self):
+        r = required_review('Holds.', 'i01/e00/main')
+        self.assertFalse(any('no criterion carries' in item or 'required criteria' in item for item in r.decide))
+
+    def test_a_pull_request_without_its_changed_files_is_unevaluable(self):
+        r = required_review('Holds.', 'i01/e00/workflows', files=None)
+        self.assertIn('required criteria unevaluable: no changed files for #950, reaching workflows', r.decide)
+        self.assertFalse(any(WANTED in item for item in r.decide))
+
+    def test_a_known_change_to_a_declared_path_holds_the_epic_beside_an_unknown_one(self):
+        r = required_review('Holds.', 'i01/e00/workflows', files=None,
+                            more=(pr(951, '[I01:E00] More', base='workflows'),), more_files={951: [DEFINITION]})
+        self.assertTrue(any(WANTED in item and '#951 change' in item for item in r.decide))
+        self.assertFalse(any('unevaluable' in item for item in r.decide))
+
+    def test_an_epic_carrying_the_criterion_needs_no_changed_files(self):
+        r = required_review("Holds, as the canon audit's coverage report shows.", 'i01/e00/workflows', files=None)
+        self.assertFalse(any('no criterion carries' in item or 'required criteria' in item for item in r.decide))
 
 
 class ProjectVocabulary(unittest.TestCase):
@@ -545,7 +591,15 @@ class DeclarationAtRevision(unittest.TestCase):
     def test_an_entry_lacking_a_field_is_unevaluable(self):
         entry = {'branch': 'workflows', 'criterion': 'Holds.', 'phrase': ''}
         commit_declaration(self.checkout, json.dumps([entry]))
-        self.assertTrue(self.read('HEAD').unevaluable.endswith('lacks phrase, row'))
+        self.assertTrue(self.read('HEAD').unevaluable.endswith('lacks paths, phrase, row'))
+
+    def test_paths_other_than_a_list_of_paths_are_unevaluable(self):
+        for paths in ('corpus', [], [''], ['corpus', 3]):
+            with self.subTest(paths=paths):
+                commit_declaration(self.checkout, json.dumps([{**LOAD_TEST, 'paths': paths}]))
+                read = self.read('HEAD')
+                self.assertTrue(read.unevaluable.endswith('lacks paths'))
+                self.assertEqual(read.criteria, ())
 
 
 class CheckFormat(unittest.TestCase):
@@ -558,9 +612,11 @@ class CheckFormat(unittest.TestCase):
         self.epic.write_text(json.dumps(epic_with('Holds.')))
         self.prs = self.root / 'prs.json'
         self.prs.write_text(json.dumps(pr(950, '[I01:E00] Work', base='i01/e00/workflows')) + '\n')
+        self.files = self.root / 'changed-950.txt'
+        self.files.write_text(f'config/branches\n{DEFINITION}\n')
 
     def check(self, *args: str):
-        return run('format.py', str(self.epic), '--prs', str(self.prs), *args)
+        return run('format.py', str(self.epic), '--prs', str(self.prs), '--files', f'950={self.files}', *args)
 
     def test_the_run_names_its_source_and_the_lacking_criterion(self):
         commit = commit_declaration(self.checkout, guide_example())
@@ -577,6 +633,18 @@ class CheckFormat(unittest.TestCase):
         self.assertEqual(done.returncode, 1)
         self.assertIn('required criteria unevaluable: no ' + DECLARATION, done.stdout)
         self.assertNotIn('no criterion carries', done.stdout)
+
+    def test_changed_files_touching_no_declared_path_bring_nothing(self):
+        commit_declaration(self.checkout, guide_example())
+        self.files.write_text('config/branches\n')
+        done = self.check('--project', str(self.checkout), '--revision', 'HEAD')
+        self.assertNotIn('no criterion carries', done.stdout)
+        self.assertNotIn('unevaluable', done.stdout)
+
+    def test_files_name_their_pull_request(self):
+        done = run('format.py', str(self.epic), '--files', str(self.files))
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('expected NUMBER=FILE', done.stderr)
 
     def test_project_and_revision_go_together(self):
         done = self.check('--project', str(self.checkout))

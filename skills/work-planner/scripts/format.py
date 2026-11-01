@@ -4,7 +4,8 @@ fix what is mechanical.
 Usage:
   python3 format.py issue-943.json [--initiative issue-936.json] [--fix fixed-943.md]
   python3 format.py issue-936.json --epic issue-943.json --epic issue-937.json … [--fix fixed-936.md]
-  python3 format.py issue-943.json --prs prs.json --project <checkout> --revision origin/i07/e00/workspace
+  python3 format.py issue-943.json --prs prs.json --files 950=changed-950.txt … --project <checkout> \
+    --revision origin/i07/e00/workspace
 
 An epic checked with --project and --revision is held to the criteria its project requires. They are
 the ones config/required-criteria.json declares at the commit --revision resolves to, in the repository
@@ -12,9 +13,12 @@ the ones config/required-criteria.json declares at the commit --revision resolve
 run prints the declaration path, the resolved commit and the repository as its source. A revision
 resolving to no commit, and a missing, empty or malformed declaration at that commit, leave the
 required criteria unevaluable: the run reports that and names what is missing, and reports no
-criterion as lacking. Each declared criterion is required of an epic whose pull requests, from --prs,
-reach its branch through an epic base or initiative branch, and an epic carries it when one of its
-acceptance criteria holds its phrase, in any case.
+criterion as lacking. Each declared criterion is required of an epic one of whose pull requests, from
+--prs, reaches its branch through an epic base or initiative branch and changes a file at or under one
+of its paths. --files gives each pull request's changed files, the path list the tracker returns for
+it. A pull request reaching a declared branch without its changed files leaves that criterion
+unevaluable, unless another one is known to change a declared path. An epic carries a criterion when
+one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
@@ -301,7 +305,7 @@ def colon_refs(text: str) -> str:
 
 
 DECLARATION = 'config/required-criteria.json'
-DECLARED_FIELDS = ('branch', 'criterion', 'phrase', 'row')
+DECLARED_FIELDS = ('branch', 'paths', 'criterion', 'phrase', 'row')
 
 
 class Required(NamedTuple):
@@ -315,6 +319,22 @@ class Required(NamedTuple):
 
 def git(project: str, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
+
+
+def filled(value, field: str) -> bool:
+    """A declared field holds a non-empty string, and paths a non-empty list of them."""
+    if field == 'paths':
+        return isinstance(value, list) and bool(value) and all(filled(v, 'path') for v in value)
+    return isinstance(value, str) and bool(value.strip())
+
+
+def names(paths: list[str], changed: str) -> bool:
+    """A changed file is one of the declared paths, or lies under one."""
+    return any(changed == p.strip('/') or changed.startswith(p.strip('/') + '/') for p in paths)
+
+
+def refs(numbers: list[int]) -> str:
+    return ', '.join(f'#{n}' for n in numbers)
 
 
 def required_criteria(project: str, revision: str) -> Required:
@@ -342,8 +362,7 @@ def required_criteria(project: str, revision: str) -> Required:
     if not isinstance(entries, list) or not entries:
         return Required((), source, f'{source} declares no criterion')
     for entry in entries:
-        missing = [f for f in DECLARED_FIELDS
-                   if not isinstance(entry, dict) or not isinstance(entry.get(f), str) or not entry[f].strip()]
+        missing = [f for f in DECLARED_FIELDS if not isinstance(entry, dict) or not filled(entry.get(f), f)]
         if missing:
             return Required((), source, f'an entry in {source} lacks {", ".join(missing)}')
     return Required(tuple(entries), source)
@@ -351,12 +370,14 @@ def required_criteria(project: str, revision: str) -> Required:
 
 class Review:
     def __init__(self, issue: dict, initiative: dict | None = None, epics: list[dict] | None = None,
-                 prs: list[dict] | None = None, required: Required | None = None):
+                 prs: list[dict] | None = None, required: Required | None = None,
+                 files: dict[int, list[str]] | None = None):
         self.issue = issue
         self.initiative = initiative
         self.epics = {e['number']: epic_name(e['title']) for e in epics or []}
         self.prs = prs or []
         self.required = required
+        self.files = files or {}
         self.fixed: list[str] = []
         self.apply: list[str] = []
         self.decide: list[str] = []
@@ -647,10 +668,12 @@ class Review:
             self.decide.append(f'AC{n} is delivered by no Work Breakdown row')
 
     def check_required(self, criteria: list[str]) -> None:
-        """An epic whose pull requests reach a required criterion's branch carries that criterion.
+        """An epic whose pull requests change a required criterion's paths on its branch carries it.
 
         Unevaluable required criteria are reported, and then no criterion is reported as lacking. The
-        reach is measured from the pull requests naming this epic; without them nothing is lacking."""
+        reach is measured from the pull requests naming this epic; without them nothing is lacking. A
+        pull request reaching the branch whose changed files are unknown leaves the criterion
+        unevaluable while no other is known to change a declared path."""
         if self.required is None:
             return
         if self.required.unevaluable:
@@ -661,19 +684,27 @@ class Review:
         if not found or len(parts) != 1:
             return
         prefix = f'[{found[1]}:{parts[0]}]'
-        reached = set()
+        reached: dict[str, list[int]] = {}
         for pr in self.prs:
             if not (pr.get('title') or '').startswith(prefix):
                 continue
             ref = (pr.get('base') or {}).get('ref') or ''
             base = re.fullmatch(r'i\d\d/(?:e\d\d/)?(.+)', ref)
-            reached.add(base[1] if base else ref)
+            reached.setdefault(base[1] if base else ref, []).append(pr['number'])
         text = '\n'.join(criteria).casefold()
         for entry in self.required.criteria:
-            if entry['branch'] in reached and entry['phrase'].casefold() not in text:
-                self.decide.append(f'its pull requests reach {entry["branch"]} and no criterion carries '
-                                   f'"{entry["phrase"]}"; add "{entry["criterion"]}" with the task row '
-                                   f'"{entry["row"]}"')
+            if entry['phrase'].casefold() in text:
+                continue
+            numbers = reached.get(entry['branch'], [])
+            changing = [n for n in numbers if any(names(entry['paths'], f) for f in self.files.get(n, ()))]
+            unknown = [n for n in numbers if n not in self.files]
+            if changing:
+                self.decide.append(f'{refs(changing)} change {", ".join(entry["paths"])} on {entry["branch"]} and '
+                                   f'no criterion carries "{entry["phrase"]}"; add "{entry["criterion"]}" '
+                                   f'with the task row "{entry["row"]}"')
+            elif unknown:
+                self.decide.append(f'required criteria unevaluable: no changed files for {refs(unknown)}, '
+                                   f'reaching {entry["branch"]}')
 
     def reorder(self, sections: list[list], template: Template) -> list[list]:
         groups: list[list[list]] = []
@@ -981,6 +1012,9 @@ def main() -> int:
                         'names its row; repeat for each epic')
     parser.add_argument('--fix', help='write the mechanically fixed body here')
     parser.add_argument('--prs', help='epic: pull requests as JSON lines, for the required criteria check')
+    parser.add_argument('--files', action='append', default=[], metavar='NUMBER=FILE',
+                        help='epic: a pull request\'s changed files, one path per line; repeat for each '
+                        'pull request reaching a declared branch')
     parser.add_argument('--project', default='', help='epic: any checkout of the repository whose '
                         'config/required-criteria.json declares the required criteria')
     parser.add_argument('--revision', default='', help='epic: the commit the declaration is read at, its epic '
@@ -994,7 +1028,13 @@ def main() -> int:
     epics = [json.loads(Path(e).read_text()) for e in args.epic or []]
     prs = [json.loads(l) for l in Path(args.prs).read_text().splitlines() if l.strip()] if args.prs else None
     required = required_criteria(args.project, args.revision) if args.project else None
-    review = Review(issue, initiative, epics, prs, required)
+    files = {}
+    for given in args.files:
+        number, _, path = given.partition('=')
+        if not number.isdigit() or not path:
+            sys.exit(f'--files {given}: expected NUMBER=FILE')
+        files[int(number)] = [l.strip() for l in Path(path).read_text().splitlines() if l.strip()]
+    review = Review(issue, initiative, epics, prs, required, files)
     fixed = review.run()
     kind = getattr(review, 'kind', None) or 'unknown kind'
     print(f"#{issue.get('number')} {kind} ({issue.get('state')}): {len(review.fixed)} fixed, "

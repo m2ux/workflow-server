@@ -75,11 +75,12 @@ The body's local format and field findings.
 
 **Inputs:** Epic JSON, initiative context, current pull request records, project checkout, evaluated revision and output file.
 
-1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying initiative JSON as `--initiative`, pull requests as `--prs`, the checkout as `--project` and the revision as `--revision`.
+1. Read the changed paths of each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, through [Read Pull Request State](pull-request.md#read-pull-request-state).
+2. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying initiative JSON as `--initiative`, pull requests as `--prs`, each pull request's changed paths as `--files <number>=<changed-paths-file>`, the checkout as `--project` and the revision as `--revision`.
    - The evaluated revision is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
-2. Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
-3. Include in the findings each [Required Criteria](#required-criteria) criterion an epic reaching its branch lacks, required criteria the declaration leaves unevaluable, and any epic criterion no task row delivers.
-4. Return the corrected body, mechanical diff and unresolved findings for the caller.
+3. Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
+4. Include in the findings each [Required Criteria](#required-criteria) criterion an epic lacks whose work changes the criterion's paths on its branch, required criteria the declaration or the changed paths leave unevaluable, and any epic criterion no task row delivers.
+5. Return the corrected body, mechanical diff and unresolved findings for the caller.
 
 ### *Revise* Epic Rows
 
@@ -210,29 +211,33 @@ Each question holds only what is undecided and has a recommendation in the plann
 
 ### Required Criteria
 
-A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string:
+A project states the criteria its epics must carry in `config/required-criteria.json` at its root. The file is a JSON array, and each entry is one required criterion with these fields, each a non-empty string except `paths`:
 
 | Field | What it states |
 | --- | --- |
-| `branch` | The long-lived branch that brings the criterion. An epic carries it when a task row's work reaches this branch. |
+| `branch` | The long-lived branch the criterion's work reaches. |
+| `paths` | A non-empty list of files and directories on `branch`. An epic carries the criterion when a pull request of its work reaching `branch` changes a file that is one of them or lies under one. |
 | `criterion` | The criterion's text, which the epic carries after its `**ACn.**` label. |
 | `phrase` | A phrase identifying the criterion in an epic that carries it, matched without regard to case. |
 | `row` | The Description of the task row that delivers the criterion. |
 
 - **The declared row delivers the criterion.**
-  It carries the declared `row` as its Description, depends on the rows whose work reaches the declared branch, and covers that criterion alone.
+  It carries the declared `row` as its Description, depends on the rows whose work changes the declared paths, and covers that criterion alone.
+- **The tracker states what the work changes.**
+  The check reads each pull request's changed files as the tracker lists them. A pull request reaching the declared branch whose changed files are not supplied leaves the criterion unevaluable, unless another pull request of the epic is known to change a declared path.
 - **The evaluated commit holds the statement.**
   The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.
 - **An absent statement is unevaluable.**
-  A revision resolving to no commit, a missing or empty file at that commit, an empty array, unreadable JSON, or an entry lacking a field leaves the project's required criteria unevaluable. The check reports that and names what is missing, and reports no epic as lacking a criterion. A project declaring nothing acquires no other project's criteria.
+  A revision resolving to no commit, a missing or empty file at that commit, an empty array, unreadable JSON, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names what is missing, and reports no epic as lacking a criterion. A project declaring nothing acquires no other project's criteria.
 - **Example.**
-  workflow-server requires its corpus audit:
+  workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`:
 
   ```json
   [
     {
       "branch": "workflows",
-      "criterion": "The definitions this epic changes carry no outstanding confirmed finding, as the canon audit's coverage report shows.",
+      "paths": ["corpus"],
+      "criterion": "The definitions this epic changes carry no outstanding confirmed finding, one neither fixed on the epic's branch nor taken by an issue, as the canon audit's coverage report shows.",
       "phrase": "canon audit",
       "row": "Canon audit of the changed definitions"
     }
