@@ -100,6 +100,17 @@ The Development pull requests of one issue, or of every issue in one repository,
 1. Run [Capture Issue Links](#capture-issue-links) with the supplied issues and destination.
 2. Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
 
+### *Audit* Closure Evidence
+
+Each closed issue in one repository whose criteria or Development links do not support its closure, with the reason it was closed.
+
+**Inputs:** Repository, authenticated access and destination files for the issue collection and its Development snapshot.
+
+1. Run [Read Repository Issues](#read-repository-issues) for the repository.
+2. Run [Read Issue Development](#read-issue-development) with that collection; an unreadable relation is returned as a blocker and the sweep does not run.
+3. Run [Sweep Closure Evidence](#sweep-closure-evidence) with the collection and the snapshot.
+4. Return each listed issue with its state reason and findings, and each unevaluable issue as missing evidence. The audit changes no issue.
+
 ### *Confirm* Repository Auto-Close
 
 Whether the repository auto-closes issues whose linked pull requests merge, established for this session.
@@ -306,6 +317,34 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development development-943.json --prs development-prs-943.json
+```
+
+### Sweep Closure Evidence
+
+Lists each closed issue whose acceptance criteria are missing or unticked, or whose Development field holds a pull request that has not merged, with the issue's state reason.
+
+**Inputs:** One repository's issue collection, as [Fetch All Issues](#fetch-all-issues) saves it, and the snapshot [Capture Issue Links](#capture-issue-links) wrote from it.
+
+- Criteria are read as [Check Issue Closure](#check-issue-closure) reads them. Open issues and pull requests in the collection are skipped.
+- Each listed line is `unsupported:` with the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, or `unevaluable:` for a closed issue the snapshot holds no link list for, which is missing evidence rather than an empty link set.
+- Exit 0 means every closed issue is supported. Exit 1 means at least one is listed, or the evidence is unreadable. The command performs no network calls or writes.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues '<issues-json-file>' --development '<issue-development-file>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues issues.json --development development.json
+```
+
+**Example output:**
+
+```text
+unsupported: owner/repo#943 closed as completed: acceptance criteria are missing or unticked; owner/repo#980 not merged (closed) - Work Title
+unevaluable: owner/repo#944 closed as not_planned: Development links not captured - Other Title
+2 closed issue(s) listed
 ```
 
 ### Close as Not Planned
