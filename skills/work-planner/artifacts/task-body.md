@@ -64,7 +64,7 @@ One task body with its confirmed delivery and verified criteria recorded.
 
 ### Titles
 
-- The title is `[I07:E00:W01] Name: Subtitle`.
+- The title is `[I07:E00:W01] Name: Subtitle`. Its prefix is the initiative, epic and row id of its row in the epic's Work Breakdown.
 - The label is `type:task`.
 - `W` is the task within the epic. Tasks count from `W01`.
 
