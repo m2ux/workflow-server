@@ -8,15 +8,15 @@ The indexed symbols, relationships and ordered flows for a repository revision.
 
 Current graph evidence for the supplied change.
 
-**Inputs:** Worktree, verified head commit and base branch.
+**Inputs:** Review checkout, verified head commit and base branch.
 
-1. Run [Index Status](#index-status) in the supplied worktree. Every graph command runs in that worktree.
+1. Run [Index Status](#index-status) in the review checkout. Every graph command runs there.
 2. If the repository is unindexed or behind the verified head:
-   - Run [Index Repository](#index-repository).
+   - Run [Index Repository](#index-repository) in the review checkout.
    - Confirm freshness.
-3. Run [Change Surface](#change-surface) against the supplied base using `--base-ref`.
-4. For each changed symbol, run [Symbol Context](#symbol-context).
-5. For each reported flow, run [Flow Trace](#flow-trace).
+3. Run [Change Surface](#change-surface) in the review checkout against the supplied base using `--base-ref`.
+4. For each changed symbol, run [Symbol Context](#symbol-context) in the review checkout.
+5. For each reported flow, run [Flow Trace](#flow-trace) in the review checkout.
 6. Inspect the staleness block on every response. For a behind index:
    - Discard its measurements.
    - Reindex.
@@ -51,7 +51,9 @@ Each flow contains symbols in step order. Each `process_symbols` entry includes 
 
 Reports whether the repository is indexed, and how far behind the index sits.
 
-**Inputs:** Repository worktree and requested revision.
+**Inputs:** Requested revision.
+
+**Acts on:** the checkout it runs in.
 
 ```bash
 gitnexus status
@@ -61,7 +63,9 @@ gitnexus status
 
 Indexes the repository, which an unindexed or behind repository needs before any measurement.
 
-**Inputs:** Repository worktree and requested revision.
+**Inputs:** Requested revision.
+
+**Acts on:** the checkout it runs in.
 
 ```bash
 gitnexus analyze
@@ -71,7 +75,9 @@ gitnexus analyze
 
 Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
 
-**Inputs:** Current indexed worktree and comparison base branch.
+**Inputs:** Comparison base branch.
+
+**Acts on:** the checkout it runs in.
 
 - `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
 
@@ -89,7 +95,9 @@ gitnexus detect-changes --scope compare --base-ref main
 
 Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
 
-**Inputs:** Symbol identity from the supplied change surface and the current graph worktree.
+**Inputs:** Symbol identity from the supplied change surface.
+
+**Acts on:** the checkout it runs in.
 
 ```bash
 gitnexus context '<symbol-identity>'
@@ -105,7 +113,9 @@ gitnexus context reserveRow
 
 Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
 
-**Inputs:** Flow identity from the supplied change surface and the current graph worktree. The result meets [Flow Traces](#flow-traces).
+**Inputs:** Flow identity from the supplied change surface. The result meets [Flow Traces](#flow-traces).
+
+**Acts on:** the checkout it runs in.
 
 ```bash
 gitnexus query --query '<flow-identity>' --limit 1

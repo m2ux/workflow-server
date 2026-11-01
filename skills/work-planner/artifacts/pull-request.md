@@ -145,15 +145,15 @@ The check-run and status evidence for one literal head commit.
 
 Merges each open task pull request whose test plan has passed.
 
-**Inputs:** Task pull request identity, its epic base, the project checkout, the repository prerequisite and the passing test-plan evidence.
+**Inputs:** Task pull request identity, its epic base, the project checkout, the unit checkout holding its task branch, the repository prerequisite and the passing test-plan evidence.
 
 1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's epic base. The base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.
-2. Run [Update Epic Base](delivery-branches.md#update-epic-base) with the supplied project checkout and epic base.
+2. Run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and epic base.
    - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its epic base.
    - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
    - Stop on a handoff for human approval.
    - If the merge is refused:
-     - Run [Update Task Branch](delivery-branches.md#update-task-branch).
+     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its epic base.
      - Repeat Fetch Merge Readiness for the updated task head.
      - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 3. Run [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
