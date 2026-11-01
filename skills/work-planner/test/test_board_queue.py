@@ -567,6 +567,49 @@ class BacklogTakesTheTree(unittest.TestCase):
         self.assertIn('[I02] Next: Up: Backlog → In Progress', out)
 
 
+def handed_off(number: int, which: str) -> dict:
+    """An open epic whose one row is delivered and whose criterion is ticked, awaiting agent review."""
+    found = epic(number, which, ('[W01](https://github.com/o/r/pull/8)', 'Go', ''))
+    found['body'] = found['body'].replace('- [ ] **AC1.**', '- [x] **AC1.**')
+    assert '- [x] **AC1.**' in found['body']
+    return found
+
+
+AWAITING = [pr(9, '[I01:E00] Integration', head='i01/e00/main', base='main'),
+            pr(8, '[I01:E00] Go', merged='2026-01-01T00:00:00Z', base='i01/e00/main', head='i01/e00/w01-go')]
+
+
+class EpicHandoff(unittest.TestCase):
+    """An epic with every criterion ticked awaits its agent review where board.py holds it: the queue
+    neither readies, parks nor releases it, and it holds its initiative In Progress."""
+
+    def test_the_queue_leaves_it_in_progress_under_its_running_initiative(self):
+        only = initiative(1, 'Only: Current', (f"[E00]({url('issues', 3)})", ''))
+        out = queue(staged((only, 'In Progress'), (handed_off(3, '01:E00'), 'In Progress')), AWAITING)
+        self.assertNotIn('Epic 3: Work:', out)
+        self.assertNotIn('next #1', out)
+
+    def test_it_holds_its_initiative_waiting_in_every_set(self):
+        for where, priority, unplanned in (('next set', 'priority: 3', ()),
+                                           ('below the next set', 'priority: 1', ()),
+                                           ('unplanned', '', ('1',))):
+            with self.subTest(where):
+                low = initiative(1, 'Low: Current', (f"[E00]({url('issues', 3)})", ''), priority=priority)
+                high = initiative(2, 'High: Next', (f"[E00]({url('issues', 4)})", ''), priority='priority: 5')
+                out = queue(staged((low, 'In Progress'), (high, 'Backlog'),
+                                   (handed_off(3, '01:E00'), 'In Progress'),
+                                   (epic(4, '02:E00', ('W01', 'Go', '')), 'Backlog')), AWAITING, unplanned)
+                self.assertIn('wait #1 [I01] Low: Current: E00 awaiting review', out)
+                self.assertNotIn('[I01] Low: Current: In Progress →', out)
+                self.assertNotIn('Epic 3: Work:', out)
+
+    def test_a_returning_initiative_names_it_for_reconciliation(self):
+        bare = assigned(initiative(1, 'Bare: Parked', (f"[E00]({url('issues', 3)})", ''), priority=''))
+        out = queue(staged((bare, 'Ready'), (handed_off(3, '01:E00'), 'In Progress')), AWAITING)
+        self.assertIn('reconcile #1 [I01] Bare: Parked: E00 (awaiting review)', out)
+        self.assertNotIn('→', out)
+
+
 class UnresolvableGates(unittest.TestCase):
     """A queue run meeting a Depends on entry it cannot resolve."""
 
