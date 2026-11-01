@@ -12,7 +12,8 @@ E16 added several scripts: link capture, the revision helper, the closure sweep 
 
 | Artifact | What it holds |
 | --- | --- |
-| [W05 work item](w05.md) | Component, scope, design, criteria and test rows for W05 |
+| [W05 work item](w05.md) | Component, scope, design and test rows for W05 |
+| [Reachability audit](audit.md) | Each script's path to a calling procedure, the gap found, the check decision and validation output |
 
 ## Links
 
