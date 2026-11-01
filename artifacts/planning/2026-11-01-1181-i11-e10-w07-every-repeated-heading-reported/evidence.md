@@ -4,6 +4,8 @@ Delivery head: `9cf0e2b345d3bebaa079d39e4f435320086edc5d` on `i11/e10/w07-every-
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/rules.json`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
+Merged into `i11/e10/workspace` as `c75ffd1dcd06a77b6fe5a2dcb5b4e92a4df3ea56` on 2026-11-01 after the pull request's Verify skills run passed on the delivery head; #1181 records W07 done with AC13 ticked, and review pull request #1555 cites #1556.
+
 Every command ran from the unit worktree under the workspace sandbox.
 
 ## Repeated Headings
