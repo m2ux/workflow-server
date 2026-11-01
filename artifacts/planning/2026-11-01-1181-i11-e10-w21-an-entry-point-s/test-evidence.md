@@ -1,8 +1,8 @@
 # Test Evidence — W21
 
-> Delivery evidence · Branch `i11/e10/w21-an-entry-point-s` · Tested at `057755d08e0569c5565fc877e05b00b1757ce55b`, which carries `i11/e10/workspace` at `8e747419a`
+> Delivery evidence · Branch `i11/e10/w21-an-entry-point-s` · Tested at `b3138edf7bb2b19dfe5afaac2df81ec39875aff1`, which carries `i11/e10/workspace` at `212bedd48`
 
-Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`. Every run is local, from the unit's worktree, under `sbx`.
+Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `.github/workflows/verify-skills.yml`. T1 to T3 run locally, from the unit's worktree, under `sbx`; T4 is the gate job on GitHub.
 
 ## T1
 
@@ -13,7 +13,7 @@ python3 -m pytest skills/test/test_check_skill_files.py -q -k EntryPointSections
 ```
 
 - 7 passed.
-- Run against the base checker (`8e747419a`) with the same test file, five fail: section outside the set, section out of order, both together, a Procedure section in an entry point, and a contract matching every file. The two that pass there are the conforming and the empty entry point, which the base reports nothing for either.
+- Run against the base checker (`212bedd48`) with the same test file, five fail: section outside the set, section out of order, both together, a Procedure section in an entry point, and a contract matching every file. The two that pass there are the conforming and the empty entry point, which the base reports nothing for either.
 
 ## T2
 
@@ -25,7 +25,7 @@ python3 -m pytest skills/work-planner/test -q
 ```
 
 - `skills/test`: 91 passed.
-- `skills/work-planner/test`: 625 passed, 1 skipped.
+- `skills/work-planner/test`: 645 passed, 1 skipped.
 
 ## T3
 
@@ -37,6 +37,12 @@ python3 skills/scripts/check_skill_files.py skills/work-planner skills/workflow-
 
 - 68 files checked, 0 findings.
 
+## T4
+
+The skill-check gate, `.github/workflows/verify-skills.yml`, on the pull request's head: every skill outside the exclusions meets the guidelines, and every excluded skill still reports a finding.
+
+- [Run 41294357311](https://github.com/m2ux/workflow-server/actions/runs/41294357311) at `b3138edf7`: both jobs succeed. The run before the exclusions, at `057755d08`, failed the first job with the 38 entry-point findings.
+
 ## Findings Beyond This Unit
 
-The shared check over `skills/gitnexus` and `skills/server-in-the-loop` reports 38 findings at this revision, every one `section outside the set` on an entry point: 30 across five gitnexus entry points (debugging, exploring, guide, impact-analysis, refactoring) and 8 on `server-in-the-loop/SKILL.md`. Their restructuring is two further rows of this epic, [W30](w30.md) and [W31](w31.md).
+The shared check over `skills/gitnexus` and `skills/server-in-the-loop` reports 38 findings at this revision, every one `section outside the set` on an entry point: 30 across five gitnexus entry points (debugging, exploring, guide, impact-analysis, refactoring) and 8 on `server-in-the-loop/SKILL.md`. The gate holds both skills in its exclusions with those findings stated. Their restructuring is two further rows of this epic, [W30](w30.md) and [W31](w31.md), each of which removes its skill from the exclusions.
