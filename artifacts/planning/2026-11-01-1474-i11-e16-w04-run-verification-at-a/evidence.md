@@ -43,3 +43,7 @@ From the project checkout, under the workspace sandbox:
 ## Skill File Check
 
 `python3 skills/scripts/check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.
+
+## Merged Revision
+
+[#1503](https://github.com/m2ux/workflow-server/pull/1503) merged into `i11/e16/workspace` at `8377281d0`. The helper ran its own tests there through Run at Revision: the header reported `8377281d0…`, 6 passed, exit 0, and `git worktree list` before and after is identical. AC6 is verified at this revision.
