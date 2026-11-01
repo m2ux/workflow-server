@@ -1,6 +1,6 @@
 # W07 Delivery Evidence
 
-Delivery head: `42e405dd441bed876fac282cbd5083f1323c34e9` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `212bedd488136a11d7beeeba3247bc130c4925c6`. Merging that base brought W16's `empty_sections` beside `duplicate_anchors`; both run from `check`, and every result below is from the delivery head.
+Delivery head: `467c6d87956f2c2fb93e1fbdb526aef6364bfa5c` on `i11/e10/w07-every-repeated-heading-reported`, which carries `origin/i11/e10/workspace` at `be02e819b5f22026aa6d8fee92ad1658922e28d4`. Merging that base brought W16's `empty_sections`, W15's `mixed_moods` and W17's `--compare` beside `duplicate_anchors`; the checks run from `check`, and every result below is from the delivery head.
 
 Changed paths: `skills/scripts/check_skill_files.py`, `skills/test/test_check_skill_files.py`, `skills/guidelines.md`, `skills/workflow-canon/references/revise-mode.md`.
 
@@ -24,13 +24,13 @@ Result: all passed.
 
 ## Shared Check Suite
 
-T2. `python3 -m pytest skills/test -q`: `89 passed, 3 subtests passed`.
+T2. `python3 -m pytest skills/test -q`: `106 passed, 3 subtests passed`.
 
 Result: passed.
 
 ## Work Planner Suite
 
-T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `645 passed, 1 skipped, 1137 subtests passed`.
+T3. `python3 -m pytest skills/work-planner/test -q`, which imports the shared check: `645 passed, 1 skipped, 1138 subtests passed`.
 
 Result: passed.
 
