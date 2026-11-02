@@ -15,9 +15,11 @@ An agent harness can refuse a merge the skill already authorizes, and the sessio
 | [F03 work item](f03.md) | Component, scope, design and test rows for F03 |
 | [Test results](test-results.md) | The checks run for F03, the revision tested and each result |
 | [Agent review](agent-review.json) | The review record of pull request #1622 at its reviewed head |
+| [Change list](changes.md) | Each plan change the delivery session applied or held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Hot-fix | [F03](https://github.com/m2ux/workflow-server/issues/1586) |
+| Pull request | [#1622](https://github.com/m2ux/workflow-server/pull/1622) |
