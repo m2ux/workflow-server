@@ -1,6 +1,6 @@
 # W04 Test Results
 
-Tested revision: `d99086522a7d5d4bf4786f7e63ec179a7a6579ba` on `i17/e00/w04-sync-reads-every-linked`, which holds `i17/e00/workspace` at `2d89d3b6b`.
+Tested revision: `6e649fd483761af2ed8ce502e24d1c55a83fc83a` on `i17/e00/w04-sync-reads-every-linked`, which holds `i17/e00/workspace` at `91fbb5848`.
 
 ## T1 Linked pull requests settle sync
 
@@ -12,7 +12,7 @@ Tested revision: `d99086522a7d5d4bf4786f7e63ec179a7a6579ba` on `i17/e00/w04-sync
 ## T2 Unit suite
 
 - **Command.** `cd skills/work-planner && sbx python3 -m unittest discover -s test`
-- **Result.** 807 tests, OK (1 skipped).
+- **Result.** 813 tests, OK (1 skipped).
 
 ## T3 Skill file check
 
