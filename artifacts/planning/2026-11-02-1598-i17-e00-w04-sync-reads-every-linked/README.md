@@ -14,6 +14,7 @@ Pull requests whose titles carry no initiative prefix go unread by sync until fe
 | --- | --- |
 | [W04 work item](w04.md) | Component, scope, design and test rows for W04 |
 | [Test results](test-results.md) | Each Test Plan check with its command, revision and result |
+| [Change list](changes.md) | Plan changes the delivery session applied or held |
 
 ## Links
 
