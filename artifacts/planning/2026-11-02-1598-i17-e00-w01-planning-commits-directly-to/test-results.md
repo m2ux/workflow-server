@@ -40,3 +40,11 @@ Run from skills/work-planner: `python3 -m unittest discover -s test`
 Run in the worktree: `python3 skills/scripts/check_skill_files.py skills/work-planner`
 
 - Result: 52 files checked, 0 findings.
+
+## Merged Revision
+
+At 91fbb5848b43a63fae3614c43f225a13f8abe622, the merge of #1605 into i17/e00/workspace with W02 and W03 already merged:
+
+- Skill test suite: 807 tests, OK (1 skipped).
+- Skill-file check: 52 files checked, 0 findings.
+- The T3 search: no match.
