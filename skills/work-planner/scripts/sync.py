@@ -824,11 +824,11 @@ def git(project: str, *args: str) -> subprocess.CompletedProcess:
 
 
 def origin_repository(project: str) -> str:
-    """The owner/name of the GitHub repository the checkout's origin remote names, or '' when it
-    names none."""
-    url = git(project, 'remote', 'get-url', 'origin').stdout.strip()
-    found = re.search(r'github\.com[:/]([^/\s]+/[^/\s]+?)(?:\.git)?/?$', url)
-    return found[1] if found else ''
+    """The owner/name the checkout's origin remote URL ends in, whatever its form: scp-like with any
+    host alias, ssh:// or https. '' when the checkout has no origin."""
+    url = git(project, 'remote', 'get-url', 'origin').stdout.strip().rstrip('/')
+    found = re.search(r'([^/:\s]+)/([^/:\s]+?)(?:\.git)?$', url)
+    return f'{found[1]}/{found[2]}' if found else ''
 
 
 def read_branches(project: str, revision: str) -> Branches:

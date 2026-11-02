@@ -36,6 +36,21 @@ def synced(record: dict, pulls: list[dict], *args: str, held: list[dict] = ()) -
         return fixed.read_text()
 
 
+class OriginRepository(unittest.TestCase):
+    def test_every_remote_url_form_names_its_owner_and_name(self):
+        import sync
+        with tempfile.TemporaryDirectory() as tmp:
+            checkout = Path(tmp)
+            git(checkout, 'init', '-q')
+            self.assertEqual(sync.origin_repository(str(checkout)), '')
+            for url in ('git@github.com:o/r.git', 'git@gh-work:o/r.git', 'ssh://git@github.com:22/o/r.git',
+                        'https://github.com/o/r', 'https://github.com/o/r.git/'):
+                with self.subTest(url=url):
+                    git(checkout, 'remote', 'remove', 'origin') if 'origin' in git(checkout, 'remote') else None
+                    git(checkout, 'remote', 'add', 'origin', url)
+                    self.assertEqual(sync.origin_repository(str(checkout)), 'o/r')
+
+
 class Done(unittest.TestCase):
     def test_an_open_pull_request_replaces_the_planning_record_link(self):
         plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
