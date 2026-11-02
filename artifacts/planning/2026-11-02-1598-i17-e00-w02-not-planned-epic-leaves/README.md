@@ -13,6 +13,7 @@ No rule covers an epic closed as not planned, and the format check asks for a de
 | Artifact | What it holds |
 | --- | --- |
 | [W02 work item](w02.md) | Component, scope, design and test rows for W02 |
+| [Test results](test-results.md) | Each Test Plan check of the W02 pull request, its command, revision and result |
 
 ## Links
 
