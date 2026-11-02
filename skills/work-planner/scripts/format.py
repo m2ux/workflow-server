@@ -406,29 +406,9 @@ class Review:
     def run(self) -> str | None:
         title = self.issue['title']
         if 'type:proposal' in self.labels():
-            self.kind, self.number = 'proposal', None
-            rest = PROPOSAL.sub('', title).strip()
-            if rest == title:
-                self.decide.append('title has no [P00] prefix')
-            if ': ' not in rest:
-                self.decide.append('title has no "Name: Subtitle"')
-            else:
-                name, _, subtitle = rest.partition(': ')
-                self.check_title_shape(name, subtitle)
-            self.check_labels()
-            return self.check_body()
+            return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
         if 'type:hot-fix' in self.labels() or HOTFIX.match(title):
-            self.kind, self.number = 'hot-fix', None
-            rest = HOTFIX.sub('', title).strip()
-            if rest == title:
-                self.decide.append('title has no [F00] prefix')
-            if ': ' not in rest:
-                self.decide.append('title has no "Name: Subtitle"')
-            else:
-                name, _, subtitle = rest.partition(': ')
-                self.check_title_shape(name, subtitle)
-            self.check_labels()
-            return self.check_body()
+            return self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
         m = PREFIX.match(title)
         if not m:
             self.kind, self.number = 'issue', None
@@ -452,6 +432,21 @@ class Review:
             self.decide.append(f'title prefix {m[0]} has no task id; a task is titled '
                                '[I07:E00:W01] Name: Subtitle, from its row in its epic')
         self.check_title(m, parts)
+        self.check_labels()
+        return self.check_body()
+
+    def run_standalone_kind(self, kind: str, prefix: re.Pattern, form: str) -> str:
+        """Check a kind that belongs to no initiative and numbers its own title prefix, as form shows."""
+        title = self.issue['title']
+        self.kind, self.number = kind, None
+        rest = prefix.sub('', title).strip()
+        if rest == title:
+            self.decide.append(f'title has no {form} prefix')
+        if ': ' not in rest:
+            self.decide.append('title has no "Name: Subtitle"')
+        else:
+            name, _, subtitle = rest.partition(': ')
+            self.check_title_shape(name, subtitle)
         self.check_labels()
         return self.check_body()
 
