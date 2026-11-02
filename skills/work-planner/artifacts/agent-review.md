@@ -12,7 +12,7 @@ A review record for the exact integration revision.
 
 1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
 2. Record findings with severity and disposition. Fix each finding [Review Record](#review-record) requires fixed on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
-3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
+3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
 4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 
 ### *Check* Agent Review

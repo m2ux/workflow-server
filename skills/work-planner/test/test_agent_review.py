@@ -35,6 +35,13 @@ def hotfix_pr():
 
 
 class HotFixReview(unittest.TestCase):
+    def test_a_record_written_from_the_pull_request_as_produce_says_passes(self):
+        pull, published = hotfix_pr()
+        record = {**{k: published[k] for k in ('pull_request', 'url', 'reviewer', 'reviewed_at', 'scope',
+                                                 'criteria', 'validation', 'findings')},
+                  'head': pull['head']['sha'], 'base': pull['base']['sha'], 'base_ref': pull['base']['ref']}
+        self.assertIsNone(check(pull, [record]))
+
     def test_every_finding_is_fixed(self):
         pull, record = hotfix_pr()
         record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
