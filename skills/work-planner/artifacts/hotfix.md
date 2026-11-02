@@ -66,7 +66,7 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
    - **A status.**
      - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status.
    - **Off the board.**
-     - Run [Remove Board Item](#remove-board-item) with the supplied board and its item.
+     - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
 4. Return the settled item, or its removal, to the caller.
 
 ## Fields
@@ -125,20 +125,4 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-874.md
-```
-
-### Remove Board Item
-
-Removes one item from a project board.
-
-**Inputs:** Board identity and item id.
-
-```bash
-gh api --method DELETE '<board-identity>/items/<item-id>'
-```
-
-**Example:**
-
-```bash
-gh api --method DELETE 'users/m2ux/projectsV2/9/items/PVTI_example'
 ```

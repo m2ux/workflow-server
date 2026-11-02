@@ -234,6 +234,22 @@ gh api --method PATCH 'users/<owner>/projectsV2/<board-number>/items/<item-id>' 
 gh api --method PATCH 'users/<owner>/projectsV2/13/items/1001' --input status-backlog.json --jq .id
 ```
 
+### Remove Board Item
+
+Removes one item from a board, leaving its issue as it stands.
+
+**Inputs:** Board owner and number, and the item id [Read Board State](#read-board-state) returns.
+
+```bash
+gh api --method DELETE 'users/<owner>/projectsV2/<board-number>/items/<item-id>'
+```
+
+**Example:**
+
+```bash
+gh api --method DELETE 'users/<owner>/projectsV2/9/items/1001'
+```
+
 ### Fetch Board Fields
 
 Saves a board's fields.
