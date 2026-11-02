@@ -54,7 +54,7 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
 - On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.
 - Of the epics that can start, those carrying the highest priority number are next and Ready, all together. The highest counts the epics already In Progress, so an epic of a lower number waits while a higher one runs.
-- An epic with no priority label is never Ready, whatever its siblings' state, so one that can start stays in Backlog. A `rank` line names it, so the user can rank it.
+- An epic with no priority label is never Ready, whatever its siblings' state, so one that can start stays in Backlog.
 - Any other Ready or In Progress epic of that initiative moves to Backlog.
 - An epic In Review or Done, or [handed off](#epic-handoff), remains in that state.
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
@@ -117,13 +117,13 @@ A `Depends on` entry that names no row and links no issue, names an issue the ru
 
 An `order` or `ask` line means a decision is pending. An unresolved issue reference means dependency evidence is missing. Either leaves the queue incomplete.
 
-A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. `wait`, `reconcile`, `next` and `rank` lines remain reportable at that point.
+A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.
 
 ## Commands
 
 ### Compute Board Queue
 
-Prints proposed Status and assignee calls, `order`, `ask`, `wait`, `reconcile`, `next` and `rank` lines, and unresolved issue references for one board queue. It exits nonzero where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
 
 **Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
 

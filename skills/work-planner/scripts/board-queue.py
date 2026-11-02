@@ -8,28 +8,12 @@ items.json is the board's items with the Status field, as board.py reads them. p
 sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
 the board is given with --others.
 
-An epic is active as board.py reads activity: a task row a session holds, or an open pull request
-naming the epic that is not its integration pull request. An open epic whose criteria are all ticked
-is handed off: board.py places it In Review, or In Progress while its agent review is missing, and
-the queue leaves it where it stands. An initiative In Progress waits while an epic its table lists
-is active, handed off or In Review, as board.py holds it In Progress. Only an epic the initiative's
-table lists counts.
+--unplanned names an initiative the user left with no priority.
 
-The moves follow the Board Queue field conditions, rendered by statuses.py within the QUEUE jurisdiction, which
-refuses In Review, Done and any task. Printed: the gh call for each Status and assignee change,
-an order line when no open initiative has a priority, an ask line for an initiative In Progress
-with no priority, a wait line for an initiative held In Progress, a reconcile line for an initiative
-returning to Backlog while an epic has work under way or is In Review, a next line for epics, and
-a rank line naming an initiative's open epics with no priority, for the user to rank.
---unplanned names an initiative the user left with no priority. It returns to Backlog once its
-epics' work has completed, and its unstarted epics return with it; a Done epic stays Done.
-An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
-are met; an initiative kept In Progress only while its epics' work completes readies none:
-its active epics are In Progress and its inactive ones Backlog.
-Initiatives with the same priority number run together, as do the epics of one initiative, whose
-highest number counts the epics already In Progress. An epic with no priority label
-stays in Backlog whatever its siblings' state, and waits on a priority. A priority is a positive
-integer with no maximum.
+The moves and printed lines are the Fields of artifacts/board-queue.md, and each line is one row of
+its Report Lines. Activity is read through board.py. The calls are rendered by statuses.py within
+the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
+and each unresolved issue reference.
 """
 import argparse
 import json

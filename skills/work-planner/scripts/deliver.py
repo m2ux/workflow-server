@@ -18,9 +18,9 @@ request links are read. An issue a row depends on that is not on the board is gi
 
 A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
 delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
-available when its epic is Ready or In Progress and the prerequisite epics its initiative row names
-are completed, its Done cell carries no tick, its id is free, and every entry in its own Depends on
-cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
+available when its epic admits units, as Work Units in artifacts/delivery-plan.md states, the
+prerequisite epics its initiative row names are completed, its Done cell carries no tick, its id is
+free, and every entry in its own Depends on cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
 one epic start in the order that epic's own graph sets, whatever its siblings wait on. An entry
 naming another epic's row is delivered when that row is and each output it delivered is available
 at this epic's base in the repository --project locates, as board.Outputs reads it; that epic's
@@ -50,8 +50,8 @@ take, and the In Review a completed epic with current published agent review evi
 DISPATCH jurisdiction, which refuses any other Status and a removal; every jurisdiction refuses a task set In Review.
 
 --reserve and --release act on whole units: a call naming some rows of a unit and not the others is
-refused. --reserve reads the epic's Status from --items and refuses a unit whose epic is not Ready or
-In Progress there. --reserve sets one record folder as the single link of every row in a unit, the
+refused. --reserve reads the epic's Status from --items and refuses a unit Work Units does not
+admit. --reserve sets one record folder as the single link of every row in a unit, the
 folder the unit's first task id and Description give it, which is the folder the unit line names.
 --release frees each row by replacing that folder link with its work-item file link, the task id in
 lower case inside the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not

@@ -38,8 +38,7 @@ The main path meets [Outcomes](#outcomes).
    - Use its returned owner and board number for the following steps.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
-   - This step reads the board and each open epic's priority label live, before the run changes any status, assignee or branch. No memory, summary or earlier note stands in for that read.
-   - A status move to Ready or In Progress, an assignment and an epic base come only from the queue this step returned in the same run. An epic that queue leaves in Backlog does not start, whatever this run was asked for.
+   - Every status move to Ready or In Progress, assignment and epic base in this run comes from the queue this step returns, read live from the board before anything starts. No memory, summary or earlier note stands in for it.
    - Continue to the fetch step only after it returns a complete applied queue.
    - Report an unavailable dependency, and a queue decision it recorded rather than asked, before dispatch. An incomplete queue means no initiative is under way, so the run has no work to offer.
    - Carry the [change list](../artifacts/plan-change.md#change-list) it returns into the report step.
@@ -179,7 +178,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 - **Available work started.**
   The user has each confirmed unit of the theme board in a session, with a planning record held for that session.
 - **Parallel where the plan allows it.**
-  The units offered are those of the epics planned to start together, and an epic planned for later is not offered while they run. Within a unit, work that can proceed together does.
+  The user has the epics the plan starts together under way at once, and within a unit, work that can proceed together does.
 - **Passed work merged.**
   Each open pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
 - **Review visible on the board.**
