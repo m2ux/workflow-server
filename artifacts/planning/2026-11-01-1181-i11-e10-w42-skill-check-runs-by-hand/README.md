@@ -11,6 +11,7 @@ This record holds the delivery of I11:E10 W42, which removes the Verify Skills w
 | Artifact | What it holds |
 | --- | --- |
 | [W42 work item](w42.md) | Component, design and test rows for W42 |
+| [Test evidence](test-evidence.md) | The absent `.github` directory, the check's options and the suites |
 
 ## Links
 
