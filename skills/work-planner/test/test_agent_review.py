@@ -42,6 +42,11 @@ class HotFixReview(unittest.TestCase):
         record['findings'][0].update(disposition='fixed', evidence='https://github.com/o/r/commit/1')
         self.assertIsNone(check(pull, [record]))
 
+    def test_only_a_changed_head_makes_it_stale(self):
+        pull, record = hotfix_pr()
+        self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+
 
 class AgentReview(unittest.TestCase):
     def setUp(self):

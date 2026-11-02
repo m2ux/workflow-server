@@ -1,7 +1,8 @@
 """Validate published agent review evidence against a current integration pull request.
 
 A blocking finding passes only once fixed, and on a hot-fix's delivering pull request, titled
-[F00], every finding does."""
+[F00], every finding does. A record is current while it names the pull request's head and base;
+on a hot-fix's delivering pull request, while it names its head."""
 import argparse
 import json
 import re
@@ -57,7 +58,7 @@ def check(pr, records):
     head, base = (pr.get('head') or {}).get('sha'), (pr.get('base') or {}).get('sha')
     if not all(isinstance(s, str) and re.fullmatch(r'[0-9a-f]{40}', s) for s in (head, base)):
         return 'missing current integration head or target SHA'
-    current = [r for r in matching if r.get('head') == head and r.get('base') == base]
+    current = [r for r in matching if r.get('head') == head and (hotfix_tag(pr) or r.get('base') == base)]
     if not current:
         return 'stale agent review: integration head or target changed'
     # The last record for this revision is authoritative, including a later blocking finding.

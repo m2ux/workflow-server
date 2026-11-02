@@ -22,7 +22,7 @@ The current review's handoff eligibility.
 **Inputs:** Fresh REST pull request JSON and the published JSON review records fetched from the linked planning record.
 
 1. Run [Validate Agent Review](#validate-agent-review) with those files. Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
-2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; changed tips require another review.
+2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that leaves the record no longer current, as [Review Record](#review-record) states, requires another review.
 
 ## Fields
 
@@ -30,7 +30,7 @@ The current review's handoff eligibility.
 
 Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
-Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. The last record for the same revision is authoritative.
+Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. A record is current while it names the pull request's head and base. One on a hot-fix's delivering pull request is current while it names its head, since its reviewed change is the head against its target and a target that moves on leaves that change as it was. The last record for the same revision is authoritative.
 
 ## Commands
 
