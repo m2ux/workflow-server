@@ -755,6 +755,12 @@ class HotFixes(unittest.TestCase):
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'), text)
         self.assertEqual(r.decide, ['hot-fix format: 2 Target: lines in the Overview; it names one target branch'])
 
+    def test_each_hot_fix_fault_is_reported_once(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix',), hotfix_body(None))
+        self.assertEqual(r.apply, ['labels: add priority: 10'])
+        self.assertEqual(r.decide, ['no theme:* label',
+                                    'hot-fix format: no Target: lines in the Overview; it names one target branch'])
+
     def test_a_standalone_issue_needs_no_target(self):
         r = self.check('Key Validation: Reject Bad Keys', (), body('Gap.', 'Design.'))
         self.assertEqual(r.decide, [])

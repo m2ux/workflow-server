@@ -10,7 +10,7 @@ from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
 from hotfix import (OFF_BOARD, board_status, delivering_pulls, delivery_fault, hotfix_tag, is_hotfix,  # noqa: E402
-                    format_faults, linking_pulls, target, targets, unit_state)
+                    format_faults, hotfix_faults, linking_pulls, target, targets, unit_state)
 
 KEY = ('o/r', 4)
 MERGED = '2026-11-01T00:00:00Z'
@@ -84,6 +84,7 @@ class Format(unittest.TestCase):
             'Reject them.', 'Reject {{how}}.') + '\n## Open Questions\n\n- Which keys?\n'
         self.assertEqual(format_faults(open_), [
             'text before the first section', 'an unfilled {{...}} field', 'open questions remain'])
+        self.assertEqual(hotfix_faults(open_), ['open questions remain'])
         resolved = hotfix()
         resolved['body'] += '\n## Open Questions\n\n'
         self.assertEqual(format_faults(resolved), [])
@@ -92,9 +93,12 @@ class Format(unittest.TestCase):
         bare = hotfix(aim=None)
         bare['body'] = '## Overview\n\nWhy.\n'
         self.assertEqual(format_faults(bare), [
-            'no Target: lines in the Overview; it names one target branch',
             'required section missing: Problem', 'required section missing: Proposal',
-            'required section missing: Acceptance Criteria', 'no acceptance criterion'])
+            'required section missing: Acceptance Criteria',
+            'no Target: lines in the Overview; it names one target branch'])
+        empty = hotfix()
+        empty['body'] = empty['body'].split('## Acceptance Criteria')[0] + '## Acceptance Criteria\n\n'
+        self.assertEqual(format_faults(empty), ['no acceptance criterion'])
 
 
 class BoardStatus(unittest.TestCase):

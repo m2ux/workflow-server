@@ -27,11 +27,29 @@ def is_hotfix(issue: dict) -> bool:
     return hotfix_tag(issue) is not None
 
 
+def hotfix_faults(issue: dict) -> list[str]:
+    """The conditions of the hot-fix Format that no other kind carries, each the issue fails: one
+    Target: line, no open question, and an Acceptance Criteria section holding a criterion. format.py
+    reports these beside its own checks, which cover the rest of the Format."""
+    from format import split_sections  # format imports this module
+    faults = []
+    named = targets(issue)
+    if len(named) != 1:
+        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
+    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
+        faults.append('open questions remain')
+    for heading, lines in sections:
+        if heading == 'Acceptance Criteria' and not any(ITEM.match(line) for line in lines):
+            faults.append('no acceptance criterion')
+    return faults
+
+
 def format_faults(issue: dict) -> list[str]:
     """Each condition of the hot-fix Format in artifacts/hotfix-body.md the issue fails, whatever its
-    wording: the [F00] prefix, the labels its Titles name, one Target: line, the standalone sections
-    with no text before the first, no open question, no unfilled {{...}} field, and every acceptance
-    criterion a checkbox labelled **ACn.**."""
+    wording: the [F00] prefix, the labels its Titles name, the standalone sections with no text before
+    the first, no unfilled {{...}} field, every acceptance criterion a checkbox labelled **ACn.**, and
+    the conditions hotfix_faults reads."""
     from format import AC, Template, split_sections  # format imports this module
     faults = []
     if not is_hotfix(issue):
@@ -41,9 +59,6 @@ def format_faults(issue: dict) -> list[str]:
     if not any(l.startswith('theme:') for l in labels):
         faults.append('no theme:* label')
     faults += [f'{l} beside {PRIORITY}' for l in labels if l.startswith('priority:') and l != PRIORITY]
-    named = targets(issue)
-    if len(named) != 1:
-        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
     template = Template('hot-fix')
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
@@ -51,19 +66,14 @@ def format_faults(issue: dict) -> list[str]:
         faults.append('text before the first section')
     if '{{' in body:
         faults.append('an unfilled {{...}} field')
-    if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
-        faults.append('open questions remain')
     headings = [heading for heading, _ in sections]
     faults += [f'required section missing: {h}' for h in template.headings
                if h not in headings and h not in template.optional]
     faults += [f'extra section: {h}' for h in headings if h not in template.headings]
     lines = next((lines for heading, lines in sections if heading == 'Acceptance Criteria'), [])
-    items = [line for line in lines if ITEM.match(line)]
-    if not items:
-        faults.append('no acceptance criterion')
-    faults += [f'criterion not a checkbox labelled **ACn.**: {line.strip()}' for line in items
-               if not AC.match(line)]
-    return faults
+    faults += [f'criterion not a checkbox labelled **ACn.**: {line.strip()}' for line in lines
+               if ITEM.match(line) and not AC.match(line)]
+    return faults + hotfix_faults(issue)
 
 
 def board_status(issue: dict, held: str | None) -> str | None:
