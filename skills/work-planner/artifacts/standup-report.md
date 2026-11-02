@@ -52,7 +52,7 @@ The management paragraph is set off by blank lines, with the board's link beneat
 - **Hot-fixes.**
   Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with its [delivering pull requests](hotfix.md#delivering-pull-request) beneath. An initiative filter leaves hot-fixes out.
 - **Key.**
-  I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative or epic open and not In Review, or a task issue In Progress), 👀 in review (an initiative or epic In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
+  I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative, epic or hot-fix open and not In Review, or a task issue In Progress), 👀 in review (an initiative, epic or hot-fix In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
 
 ### Management Paragraph
 
