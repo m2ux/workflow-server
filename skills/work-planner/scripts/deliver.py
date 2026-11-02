@@ -53,9 +53,10 @@ An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever 
 as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
 its record folder and branch come from its prefix and its title's name, and its base is its
 repository's default branch, which --default gives as owner/repo=branch, once for each
-repository; a malformed --default stops the run before it prints. A hot-fix an open or merged pull
-request links is running, and is neither offered nor held. Otherwise a hot-fix In Progress is held
-by its dispatch and printed on a hold line. A hot-fix whose repository's default branch is not
+repository; a malformed --default stops the run before it prints. An open hot-fix a merged pull
+request links is printed on an unrecorded line, for its merge to be recorded. A hot-fix an open
+pull request links is running, and is neither offered nor held. Otherwise a hot-fix In Progress is
+held by its dispatch and printed on a hold line. A hot-fix whose repository's default branch is not
 given is printed unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
@@ -271,17 +272,24 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
 
 
 def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str, str], home: str,
-                 when: str, unresolved: list[str]) -> tuple[list[str], int, int]:
+                 when: str, unresolved: list[str]) -> tuple[list[str], int, int, int]:
     """The unit and hold lines of each open hot-fix Ready or In Progress that no open or merged pull
-    request links, as Hot-fix Units in artifacts/delivery-plan.md states, with the count of each."""
-    lines, available, held = [], 0, 0
+    request links, and the unrecorded line of each open hot-fix a merged pull request links, as Hot-fix
+    Units in artifacts/delivery-plan.md states, with the count of each."""
+    lines, available, held, unrecorded = [], 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
         matched = HOTFIX.match(issue.get('title') or '')
-        if not matched or issue['state'] != 'open' or status.get(key) not in STARTED:
+        if not matched or issue['state'] != 'open':
             continue
         tag, where = matched[1], f'{matched[1]} {label(key, home)}'
-        if any(links_issue(p, key) and (p.get('merged_at') or (p.get('state') or 'open') == 'open') for p in prs):
+        linking = sorted((p for p in prs if links_issue(p, key)), key=lambda p: p['number'])
+        if merged := [p for p in linking if p.get('merged_at')]:
+            numbers = ', '.join(f"#{p['number']}" for p in merged)
+            lines.append(f'  unrecorded {where}: {numbers} merged')
+            unrecorded += 1
+            continue
+        if status.get(key) not in STARTED or any((p.get('state') or 'open') == 'open' for p in linking):
             continue
         if status[key] == 'In Progress':
             lines.append(f'  hold {where}: In Progress')
@@ -297,7 +305,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
                      f'branch {name["branch"]}, base {base}, worktree {WORKTREES}/{name["branch"]}')
         available += 1
-    return lines, available, held
+    return lines, available, held, unrecorded
 
 
 def plan_passed(body: str) -> bool:
@@ -452,7 +460,7 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, holding = hotfix_units(issues, status, prs, defaults, home, when, board.unresolved)
+    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, defaults, home, when, board.unresolved)
     for line in lines:
         print(line)
     available += found
@@ -465,7 +473,8 @@ def survey(args: argparse.Namespace) -> int:
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
-          f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}')
+          f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}, '
+          f'unrecorded: {unrecorded}')
     return 1 if unreadable or undeclared else 0
 
 

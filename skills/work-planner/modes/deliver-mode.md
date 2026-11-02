@@ -73,6 +73,9 @@ The main path meets [Outcomes](#outcomes).
 5. **Merge.**
    Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for each `merge` line, with the project checkout and the unit checkout holding its task branch.
    - Run [Task Merge](../protocols/task-merge.md) for each confirmed merge result, with the selected board identity.
+   - For each `unrecorded` line:
+     - Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its merged pull request.
+     - Run [Task Merge](../protocols/task-merge.md) with that merge result and the selected board identity.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
    - Confirm the units to dispatch and the holds to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
@@ -114,7 +117,7 @@ The main path meets [Outcomes](#outcomes).
    - Leave the dispatched session running its Run Delivery Session procedure. The calling mode continues to the report step without waiting for unit completion; the dispatched session owns the implementation, debt and arising-issue work its brief carries.
    - A unit works on each branch [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) names, cut from its base, as [Task Branches](../artifacts/delivery-branches.md#task-branches) defines.
 9. **Report.**
-   Each pull request merged, and each left open by a conflict; each epic moved to In Review; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
+   Each pull request merged, and each left open by a conflict; each hot-fix merge recorded; each epic moved to In Review; each review pull request updated; each unit dispatched, with its record, branch, worktree and the session started for it; each row left held; each blocked row and what blocks it.
    - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, so each plan change this run applied, and each it held for the user, is read in one place.
 
 ### Run Delivery Session

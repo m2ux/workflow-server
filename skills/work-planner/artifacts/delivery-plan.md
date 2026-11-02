@@ -23,7 +23,7 @@ One delivery plan from supplied board and delivery evidence.
 
 1. Run [Fetch Default Branch](#fetch-default-branch) for each repository holding an open [hot-fix](hotfix-body.md) in the supplied board items.
 2. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter and each fetched default branch to `--default`.
-3. Return the units, holds, blockers, undeclared rows, merge candidates and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+3. Return the units, holds, blockers, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ### *Release* Hot-fix Hold
 
@@ -44,7 +44,7 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 
 ### Hot-fix Units
 
-An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row, so no epic record. Its component lies on its repository's default branch, which its session's work item declares. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. A hot-fix an open or merged pull request links is running: the plan neither offers nor holds it. Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no pull request links it.
+An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row, so no epic record. Its component lies on its repository's default branch, which its session's work item declares. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. A hot-fix an open pull request links is running: the plan neither offers nor holds it. An open hot-fix a merged pull request links is unrecorded: its merge awaits the record a hot-fix merge makes, whoever merged it. Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no pull request links it.
 
 ### Report Lines
 
@@ -55,6 +55,7 @@ An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request whose test plan has passed and the base it targets: a task pull request into an epic base, or a hot-fix's pull request into its repository's default branch, its title naming an open hot-fix on the board and its Development field linking that hot-fix.
+- An `unrecorded` line names an open hot-fix and each merged pull request linking it.
 - An unresolved issue reference identifies missing dependency evidence, or a hot-fix whose repository's default branch the run was not given.
 
 ### Branch Context
