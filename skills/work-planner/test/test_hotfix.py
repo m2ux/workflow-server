@@ -10,7 +10,7 @@ from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
 from hotfix import (OFF_BOARD, board_status, delivering_pulls, delivery_fault, hotfix_tag, is_hotfix,  # noqa: E402
-                    linking_pulls, target, targets, unit_state)
+                    format_faults, linking_pulls, target, targets, unit_state)
 
 KEY = ('o/r', 4)
 MERGED = '2026-11-01T00:00:00Z'
@@ -53,6 +53,28 @@ class Target(unittest.TestCase):
         self.assertEqual(target(moved), '')
 
 
+class Format(unittest.TestCase):
+    def test_a_hot_fix_in_the_format_has_no_fault(self):
+        self.assertEqual(format_faults(hotfix()), [])
+
+    def test_each_structural_condition_is_a_fault(self):
+        broken = hotfix()
+        broken['labels'] = [{'name': 'type:hot-fix'}, {'name': 'priority: 3'}]
+        broken['body'] = broken['body'].replace('## Problem', '## Non-Goals\n\n- None.\n\n## Problem')
+        broken['body'] = broken['body'].replace('- [ ] **AC2.** Also holds.', '- Also holds.')
+        self.assertEqual(format_faults(broken), [
+            'no priority: 10 label', 'no theme:* label', 'priority: 3 beside priority: 10',
+            'extra section: Non-Goals', 'criterion not a checkbox labelled **ACn.**: - Also holds.'])
+
+    def test_a_missing_section_target_and_criterion_are_faults(self):
+        bare = hotfix(aim=None)
+        bare['body'] = '## Overview\n\nWhy.\n'
+        self.assertEqual(format_faults(bare), [
+            'no Target: lines in the Overview; it names one target branch',
+            'required section missing: Problem', 'required section missing: Proposal',
+            'required section missing: Acceptance Criteria', 'no acceptance criterion'])
+
+
 class BoardStatus(unittest.TestCase):
     def test_an_open_hot_fix_is_ready_unless_in_progress(self):
         for held, wanted in ((None, 'Ready'), ('Backlog', 'Ready'), ('Done', 'Ready'), ('Ready', 'Ready'),
@@ -60,13 +82,26 @@ class BoardStatus(unittest.TestCase):
             with self.subTest(held=held):
                 self.assertEqual(board_status(hotfix(), held), wanted)
 
-    def test_an_open_hot_fix_out_of_the_format_is_backlog_whatever_it_holds(self):
+    def test_an_open_hot_fix_out_of_the_format_does_not_move_to_ready(self):
         unnamed, unlabelled = hotfix(aim=None), hotfix()
         unlabelled['labels'] = [{'name': 'type:hot-fix'}]
         for issue_ in (unnamed, unlabelled):
-            for held in (None, 'Backlog', 'Ready', 'In Progress', 'In Review'):
+            for held in (None, 'Backlog', 'Ready', 'Done'):
                 with self.subTest(issue=issue_['body'][:40], held=held):
                     self.assertEqual(board_status(issue_, held), 'Backlog')
+
+    def test_a_held_hot_fix_out_of_the_format_keeps_its_hold(self):
+        for held in ('In Progress', 'In Review'):
+            with self.subTest(held=held):
+                self.assertEqual(board_status(hotfix(aim=None), held), 'In Progress')
+
+    def test_wording_findings_do_not_keep_a_hot_fix_from_ready(self):
+        worded = hotfix()
+        worded['title'] = '[F04] Key Validation On Import: Validation No Longer Runs On Import At All Today Here'
+        worded['body'] = worded['body'].replace('Bad keys pass.', 'Validation no longer runs on import.')
+        worded['body'] = worded['body'].replace('**AC1.** Holds.', '**AC1.** Keys are checked; bad ones fail.')
+        self.assertEqual(format_faults(worded), [])
+        self.assertEqual(board_status(worded, 'Backlog'), 'Ready')
 
     def test_a_closed_hot_fix_is_done_or_off_the_board(self):
         self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Progress'), 'Done')

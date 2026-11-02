@@ -45,6 +45,15 @@ One hot-fix body from a confirmed defect.
 - The labels are `type:hot-fix`, the `theme:*` label of the board it sits on, and the [priority label](board-queue.md#priority-sets) for priority 10.
 - `F` is the hot-fix number. Hot-fixes count from `00`.
 
+### Format
+
+An issue is in the hot-fix format when, whatever its wording:
+
+- its title carries the `[F00]` prefix, and its labels include each label [Titles](#titles) names and no other priority label;
+- its Overview names one target, as [Target](#target) states;
+- its sections are the ones [Sections](#sections) names;
+- each acceptance criterion is a checkbox labelled `**ACn.**`.
+
 ### Membership
 
 - A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.

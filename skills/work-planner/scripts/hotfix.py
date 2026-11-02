@@ -1,9 +1,10 @@
 """A hot-fix's identity and lifecycle, as artifacts/hotfix-body.md and artifacts/hotfix.md state them.
 
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
-Overview names the long-lived branch it fixes in one Target: line. Its target, board status, the pull
-requests that deliver it and the state of its delivery unit are read here, and the scripts that
-place, survey, record, check or report a hot-fix call these functions.
+Overview names the long-lived branch it fixes in one Target: line. Its target, its hot-fix format
+faults, its board status, the pull requests that deliver it and the state of its delivery unit are
+read here, and the scripts that place, survey, record, check or report a hot-fix call these
+functions.
 """
 import re
 
@@ -11,6 +12,8 @@ HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
+TYPE = 'type:hot-fix'
+ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 Key = tuple[str, int]
 
 
@@ -24,24 +27,46 @@ def is_hotfix(issue: dict) -> bool:
     return hotfix_tag(issue) is not None
 
 
-def formatted(issue: dict) -> bool:
-    """Whether the hot-fix's title, labels and body meet the hot-fix format: format.py's check of it
-    leaves nothing to apply or decide."""
-    from format import Review  # format imports this module
-    review = Review(issue)
-    review.run()
-    return not (review.apply or review.decide)
+def format_faults(issue: dict) -> list[str]:
+    """Each condition of the hot-fix Format in artifacts/hotfix-body.md the issue fails, whatever its
+    wording: the [F00] prefix, the labels its Titles name, one Target: line, the standalone sections,
+    and every acceptance criterion a checkbox labelled **ACn.**."""
+    from format import AC, Template, split_sections  # format imports this module
+    faults = []
+    if not is_hotfix(issue):
+        faults.append('title has no [F00] prefix')
+    labels = [l['name'] if isinstance(l, dict) else l for l in issue.get('labels') or []]
+    faults += [f'no {wanted} label' for wanted in (TYPE, PRIORITY) if wanted not in labels]
+    if not any(l.startswith('theme:') for l in labels):
+        faults.append('no theme:* label')
+    faults += [f'{l} beside {PRIORITY}' for l in labels if l.startswith('priority:') and l != PRIORITY]
+    named = targets(issue)
+    if len(named) != 1:
+        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
+    template = Template('hot-fix')
+    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    headings = [heading for heading, _ in sections]
+    faults += [f'required section missing: {h}' for h in template.headings
+               if h not in headings and h not in template.optional]
+    faults += [f'extra section: {h}' for h in headings if h not in template.headings]
+    lines = next((lines for heading, lines in sections if heading == 'Acceptance Criteria'), [])
+    items = [line for line in lines if ITEM.match(line)]
+    if not items:
+        faults.append('no acceptance criterion')
+    faults += [f'criterion not a checkbox labelled **ACn.**: {line.strip()}' for line in items
+               if not AC.match(line)]
+    return faults
 
 
 def board_status(issue: dict, held: str | None) -> str | None:
     """The status Board Status gives a hot-fix holding held: Done when closed as completed, OFF_BOARD
-    when closed otherwise, Backlog when open and out of the hot-fix format, In Progress when open and
-    In Progress or In Review, else Ready."""
+    when closed otherwise; when open, In Progress while it holds In Progress or In Review, else Ready
+    once it has no format fault, and Backlog until then."""
     if issue['state'] == 'closed':
         return 'Done' if issue.get('state_reason') == 'completed' else OFF_BOARD
-    if not formatted(issue):
-        return 'Backlog'
-    return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
+    if held in ('In Progress', 'In Review'):
+        return 'In Progress'
+    return 'Backlog' if format_faults(issue) else 'Ready'
 
 
 def targets(issue: dict) -> list[str]:
