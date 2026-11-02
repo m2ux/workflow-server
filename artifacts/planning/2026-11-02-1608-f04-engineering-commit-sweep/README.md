@@ -15,9 +15,11 @@ A folder-scoped commit strands the work of a session that stops before its own c
 | [F04](f04.md) | The work item: component, design and checks for the sweep |
 | [Test Results](test-results.md) | The evidence for each test-plan row |
 | [Agent Review](agent-review.json) | The agent review record of pull request 1620 |
+| [Change List](changes.md) | Each plan change this delivery applied and each it held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Hot-fix | [F04](https://github.com/m2ux/workflow-server/issues/1608) |
+| Delivering pull request | [#1620](https://github.com/m2ux/workflow-server/pull/1620) |
