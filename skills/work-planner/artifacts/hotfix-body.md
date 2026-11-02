@@ -52,7 +52,8 @@ An issue is in the hot-fix format when, whatever its wording:
 
 - its title carries the `[F00]` prefix, and its labels include each label [Titles](#titles) names and no other priority label;
 - its Overview names one target, as [Target](#target) states;
-- its sections are the ones [Sections](#sections) names;
+- its sections are the ones [Sections](#sections) names, with no text before the first and no open question left in Open Questions;
+- it has no unfilled `{{...}}` field;
 - each acceptance criterion is a checkbox labelled `**ACn.**`.
 
 ### Membership

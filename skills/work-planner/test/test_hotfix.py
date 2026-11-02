@@ -78,6 +78,16 @@ class Format(unittest.TestCase):
             'no priority: 10 label', 'no theme:* label', 'priority: 3 beside priority: 10',
             'extra section: Non-Goals', 'criterion not a checkbox labelled **ACn.**: - Also holds.'])
 
+    def test_open_questions_unfilled_fields_and_a_preamble_are_faults(self):
+        open_ = hotfix()
+        open_['body'] = 'Stray text.\n\n' + open_['body'].replace(
+            'Reject them.', 'Reject {{how}}.') + '\n## Open Questions\n\n- Which keys?\n'
+        self.assertEqual(format_faults(open_), [
+            'text before the first section', 'an unfilled {{...}} field', 'open questions remain'])
+        resolved = hotfix()
+        resolved['body'] += '\n## Open Questions\n\n'
+        self.assertEqual(format_faults(resolved), [])
+
     def test_a_missing_section_target_and_criterion_are_faults(self):
         bare = hotfix(aim=None)
         bare['body'] = '## Overview\n\nWhy.\n'

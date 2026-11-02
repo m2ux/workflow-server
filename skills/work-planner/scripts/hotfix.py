@@ -29,8 +29,9 @@ def is_hotfix(issue: dict) -> bool:
 
 def format_faults(issue: dict) -> list[str]:
     """Each condition of the hot-fix Format in artifacts/hotfix-body.md the issue fails, whatever its
-    wording: the [F00] prefix, the labels its Titles name, one Target: line, the standalone sections,
-    and every acceptance criterion a checkbox labelled **ACn.**."""
+    wording: the [F00] prefix, the labels its Titles name, one Target: line, the standalone sections
+    with no text before the first, no open question, no unfilled {{...}} field, and every acceptance
+    criterion a checkbox labelled **ACn.**."""
     from format import AC, Template, split_sections  # format imports this module
     faults = []
     if not is_hotfix(issue):
@@ -44,7 +45,14 @@ def format_faults(issue: dict) -> list[str]:
     if len(named) != 1:
         faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
     template = Template('hot-fix')
-    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    body = (issue.get('body') or '').replace('\r\n', '\n')
+    preamble, sections = split_sections(body)
+    if '\n'.join(preamble).strip():
+        faults.append('text before the first section')
+    if '{{' in body:
+        faults.append('an unfilled {{...}} field')
+    if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
+        faults.append('open questions remain')
     headings = [heading for heading, _ in sections]
     faults += [f'required section missing: {h}' for h in template.headings
                if h not in headings and h not in template.optional]
