@@ -1,8 +1,9 @@
-"""deps.py prints pairs that can share a pull request and do not name each other.
+"""deps.py checks the task graph and proposes the rows that can share a pull request.
 
 Run from the skill directory: python3 -m unittest discover -s test
 """
 import io
+import os
 import sys
 import tempfile
 import unittest
@@ -13,8 +14,8 @@ from pathlib import Path
 from fixtures import SCRIPTS, epic_body, initiative_body, work_item
 
 sys.path.insert(0, str(SCRIPTS))
-from deps import (check_initiative, contention, eligible_unjoined, epic_dependencies,  # noqa: E402
-                  epic_priority, main, normalise)
+from deps import (check_initiative, contention, epic_dependencies, epic_priority,  # noqa: E402
+                  is_directory, main, normalise)
 
 
 def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
@@ -30,8 +31,6 @@ def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
     return code, output.getvalue()
 
 
-RESOLUTIONS = 'can share a pull request: name each other in Joins, or account for the pair in the planning record'
-
 UNJOINED_EPIC = (
     '## Work Breakdown\n\n'
     '| Task | Description | Coverage | Depends on | Joins | Done |\n'
@@ -41,83 +40,171 @@ UNJOINED_EPIC = (
     '| W03 | Three | AC1 | | | |\n'
 )
 
+OPEN = 'or name exactly these rows on one record line with why they stay split'
 
-class EligibleUnjoined(unittest.TestCase):
-    def test_skips_a_dependency_and_a_named_pair(self):
-        def ancestors(name):
-            return {'E06:W01'} if name == 'E06:W02' else set()
 
-        tasks = {
-            'E06:W01': ('a', [], []),
-            'E06:W02': ('b', ['E06:W01'], []),
-            'E06:W03': ('c', [], ['E06:W04']),
-            'E06:W04': ('d', [], ['E06:W03']),
-        }
-        self.assertEqual(eligible_unjoined(tasks, ancestors), [
-            f'E06:W01 and E06:W03 {RESOLUTIONS}',
-            f'E06:W01 and E06:W04 {RESOLUTIONS}',
-            f'E06:W02 and E06:W03 {RESOLUTIONS}',
-            f'E06:W02 and E06:W04 {RESOLUTIONS}',
+def breakdown(*rows: tuple[str, str, str, str, str]) -> str:
+    """An epic body whose Work Breakdown holds rows of (task, coverage, depends on, joins, done)."""
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
+             '| --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | Work | {coverage} | {depends} | {joins} | {done} |'
+              for task, coverage, depends, joins, done in rows]
+    return '\n'.join(lines + [''])
+
+
+def joins_section(text: str) -> list[str]:
+    """The lines the joins section prints."""
+    section = text.split('--- joins: candidate units, rows of one epic extending one component\n')[1]
+    return section.split('\n\n')[0].splitlines()
+
+
+def check(body: str, components: dict[str, str], *records: str) -> tuple[int, str]:
+    """Run the check over one epic E06, a work item per component given, and each record."""
+    bodies = [('E06', body)] + [(f'E06:{task}', work_item(path)) for task, path in components.items()]
+    bodies += [(f'R{index}', record) for index, record in enumerate(records)]
+    with tempfile.TemporaryDirectory() as directory:
+        args = []
+        for name, text in bodies:
+            path = Path(directory) / f'{name}.md'
+            path.write_text(text)
+            args.append(f'{"R" if name.startswith("R") else name}={path}')
+        output = io.StringIO()
+        with redirect_stdout(output):
+            code = main(args)
+    return code, output.getvalue()
+
+
+class CandidateUnits(unittest.TestCase):
+    """Rows of one epic declaring one component are proposed as one unit."""
+
+    SPECIMEN = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', 'W01', '', ''),
+                         ('W03', 'AC3', '', '', ''), ('W04', 'AC4', '', '', ''),
+                         ('W05', 'AC5', '', '', ''), ('W06', 'AC6', '', '', ''))
+    COMPONENTS = {'W01': 'a.py', 'W02': 'a.py', 'W03': 'b.py', 'W04': 'b.py',
+                  'W05': 'c.py', 'W06': 'd.py'}
+
+    def test_rows_declaring_one_component_are_a_candidate_with_the_edge_to_drop(self):
+        code, text = check(self.SPECIMEN, self.COMPONENTS)
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), [
+            'E06:W01, E06:W02 extend a.py: name each other in Joins, dropping the dependency of '
+            f'E06:W02 on E06:W01, {OPEN}',
+            f'E06:W03, E06:W04 extend b.py: name each other in Joins {OPEN}',
         ])
 
-    def test_main_prints_the_section(self):
-        with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'epic.md'
-            path.write_text(UNJOINED_EPIC)
-            output = io.StringIO()
-            with redirect_stdout(output):
-                code = main([f'E06={path}'])
-        text = output.getvalue()
-        self.assertEqual(code, 0)
-        self.assertIn(f'E06:W01 and E06:W03 {RESOLUTIONS}', text)
-        self.assertIn(f'E06:W02 and E06:W03 {RESOLUTIONS}', text)
-        self.assertNotIn('E06:W01 and E06:W02', text)
+    def test_independent_rows_declaring_different_components_draw_no_finding(self):
+        code, text = check(breakdown(('W05', 'AC5', '', '', ''), ('W06', 'AC6', '', '', '')),
+                           {'W05': 'c.py', 'W06': 'd.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), ['none'])
 
+    def test_a_joined_candidate_leaves_the_section(self):
+        code, text = check(breakdown(('W01', 'AC1', '', 'W02', ''), ('W02', 'AC2', '', 'W01', '')),
+                           {'W01': 'a.py', 'W02': 'a.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), ['none'])
 
-class UnresolvableEntries(unittest.TestCase):
-    """The verdict the dependency check gives an entry that cannot resolve."""
+    def test_a_delivered_row_joins_no_candidate(self):
+        code, text = check(breakdown(('W01', '', '', '', '✓'), ('W02', 'AC2', '', '', '')),
+                           {'W01': 'a.py', 'W02': 'a.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), ['none'])
 
-    def test_an_entry_naming_no_row_and_linking_no_issue_cannot_resolve(self):
-        code, text = run([('E06', epic_body(('W01', 'One', ''), ('W02', 'Two', 'E05 (W04)')))])
+    def test_a_path_through_a_row_outside_splits_by_rule(self):
+        code, text = check(breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', 'W01', '', ''),
+                                     ('W03', 'AC3', 'W02', '', '')),
+                           {'W01': 'a.py', 'W02': 'b.py', 'W03': 'a.py'})
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), [
+            'E06:W01, E06:W03 extend a.py: split by rule, E06:W03 needs E06:W02, which needs E06:W01'])
+
+    def test_a_joined_row_needing_another_through_a_row_outside_their_unit_is_a_problem(self):
+        code, text = check(breakdown(('W01', 'AC1', '', 'W03', ''), ('W02', 'AC2', 'W01', '', ''),
+                                     ('W03', 'AC3', 'W02', 'W01', '')), {})
         self.assertEqual(code, 1)
-        self.assertIn("E06:W02: cannot resolve E05 (W04): it names no row and links no issue", text)
+        self.assertIn('E06:W03: joins E06:W01, but needs E06:W02, which needs E06:W01', text)
 
-    def test_a_row_no_epic_given_carries_cannot_resolve(self):
-        code, text = run([('E06', epic_body(('W01', 'One', ''), ('W02', 'Two', 'W07')))])
+
+class UnitAccounting(unittest.TestCase):
+    """A candidate left split is answered by one record line, and a unit holds six criteria."""
+
+    SPLIT = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''), ('W03', 'AC3', '', '', ''))
+    COMPONENTS = {'W01': 'a.py', 'W02': 'a.py', 'W03': 'a.py'}
+
+    def test_one_line_naming_the_candidate_rows_accounts_for_it(self):
+        code, text = check(self.SPLIT, self.COMPONENTS,
+                           '- **E06:W01, E06:W02, E06:W03.** Split: each lands a separate release.\n')
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), ['none'])
+
+    def test_a_line_naming_only_some_of_its_rows_accounts_for_none(self):
+        code, text = check(self.SPLIT, self.COMPONENTS, '- **E06:W01 and E06:W02.** Split.\n')
+        self.assertEqual(joins_section(text), [
+            f'E06:W01, E06:W02, E06:W03 extend a.py: name each other in Joins {OPEN}'])
+
+    def test_a_line_naming_rows_besides_accounts_for_none(self):
+        code, text = check(self.SPLIT, self.COMPONENTS,
+                           '- E06:W01, E06:W02, E06:W03 and E06:W04 are separate.\n')
+        self.assertEqual(len(joins_section(text)), 1)
+
+    def test_a_seven_criterion_candidate_is_split_by_rule(self):
+        code, text = check(breakdown(('W01', 'AC1, AC2, AC3', '', '', ''),
+                                     ('W02', 'AC4, AC5, AC6', '', '', ''), ('W03', 'AC7', '', '', '')),
+                           self.COMPONENTS)
+        self.assertEqual(code, 0, text)
+        self.assertEqual(joins_section(text), [
+            'E06:W01, E06:W02, E06:W03 extend a.py: split by rule, 7 criteria exceed the bound of 6'])
+
+    def test_a_six_criterion_candidate_is_open(self):
+        code, text = check(breakdown(('W01', 'AC1, AC2, AC3', '', '', ''),
+                                     ('W02', 'AC4, AC5, AC6', '', '', '')), {'W01': 'a.py', 'W02': 'a.py'})
+        self.assertEqual(joins_section(text), [f'E06:W01, E06:W02 extend a.py: name each other in Joins {OPEN}'])
+
+    def test_a_joined_unit_over_the_bound_is_a_problem(self):
+        code, text = check(breakdown(('W01', 'AC1, AC2, AC3, AC4', '', 'W02', ''),
+                                     ('W02', 'AC5, AC6, AC7', '', 'W01', '')), {})
         self.assertEqual(code, 1)
-        self.assertIn('E06:W02: cannot resolve E06:W07: no epic given carries that row', text)
+        self.assertIn('E06:W01, E06:W02: joined unit covers 7 criteria, more than the bound of 6', text)
+
+    def test_a_lone_row_over_the_bound_joins_nothing(self):
+        code, text = check(breakdown(('W01', 'AC1, AC2, AC3, AC4, AC5, AC6, AC7', '', '', '')), {})
+        self.assertEqual(code, 0, text)
+        self.assertNotIn('joined unit', text)
 
 
-class RecordedPairs(unittest.TestCase):
-    """The planning-record entry an empty Joins cell rests on."""
+class DirectoryComponents(unittest.TestCase):
+    """A component is one file, so a work item declaring a directory is a problem."""
 
-    def check(self, record: str | None):
+    BODY = breakdown(('W01', 'AC1', '', '', ''), ('W02', 'AC2', '', '', ''))
+
+    def test_a_component_ending_in_a_slash_is_a_problem(self):
+        code, text = check(self.BODY, {'W01': 'workspace:skills/scripts/', 'W02': 'workspace:skills/a.py'})
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01: work item declares directory workspace:skills/scripts/; '
+                      'a component is one file', text)
+        self.assertIn('not checked, no component read: E06:W01', text)
+
+    def test_a_component_carrying_a_glob_is_a_problem(self):
+        code, text = check(self.BODY, {'W01': 'workspace:skills/**', 'W02': 'workspace:skills/a.py'})
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01: work item declares directory workspace:skills/**', text)
+
+    def test_a_component_naming_a_directory_in_the_checkout_is_a_problem(self):
         with tempfile.TemporaryDirectory() as directory:
-            path = Path(directory) / 'epic.md'
-            path.write_text(UNJOINED_EPIC)
-            args = [f'E06={path}']
-            if record is not None:
-                joins = Path(directory) / 'joins.md'
-                joins.write_text(record)
-                args.append(f'R={joins}')
-            output = io.StringIO()
-            with redirect_stdout(output):
-                code = main(args)
-        return code, output.getvalue()
+            (Path(directory) / 'skills' / 'scripts').mkdir(parents=True)
+            (Path(directory) / 'skills' / 'scripts' / 'a.py').write_text('')
+            here = Path.cwd()
+            os.chdir(directory)
+            try:
+                self.assertTrue(is_directory('workspace:skills/scripts'))
+                self.assertFalse(is_directory('workspace:skills/scripts/a.py'))
+                self.assertFalse(is_directory('workspace:config/branches'))
+            finally:
+                os.chdir(here)
 
-    def test_a_recorded_pair_leaves_the_section(self):
-        _, text = self.check('- **E06:W01 and E06:W03.** Each row changes its own file.\n')
-        self.assertNotIn('E06:W01 and E06:W03', text)
-        self.assertIn(f'E06:W02 and E06:W03 {RESOLUTIONS}', text)
 
-    def test_a_pair_in_neither_joins_nor_the_record_is_reported(self):
-        _, text = self.check('- **E06:W01 and E06:W03.** Each row changes its own file.\n')
-        self.assertIn(f'E06:W02 and E06:W03 {RESOLUTIONS}', text)
-
-    def test_a_line_naming_more_than_a_pair_accounts_for_none(self):
-        _, text = self.check('- Rows in this unit: E06:W01, E06:W02 and E06:W03.\n')
-        self.assertIn(f'E06:W01 and E06:W03 {RESOLUTIONS}', text)
-        self.assertIn(f'E06:W02 and E06:W03 {RESOLUTIONS}', text)
+class RecordFiles(unittest.TestCase):
+    """A planning-record file the check cannot read."""
 
     def test_a_record_that_is_not_text_is_a_problem(self):
         with tempfile.TemporaryDirectory() as directory:

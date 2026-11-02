@@ -50,7 +50,7 @@ holds it In Progress.
 The board's Status field offers Backlog, Ready, In Progress and Done, and In Review optionally;
 statuses.py holds the field, the option body files and the fallback for an option the board lacks.
 
-A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task also requires that epic closed as completed, which gates the row naming it and leaves its siblings free. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
+A dependency within an epic is delivered when its task row is, or its issue is closed as completed. A dependency on another epic's task is met when that row is delivered and each output it delivered is available at the consumer's base, as Outputs verifies; the producer epic's other rows and its closure gate nothing. It gates the row naming it and leaves its siblings free. board.py reads no checkout, so an output in the consumer's own repository is unverified here, and a task naming its row stays in Backlog until its session holds it; an output another repository holds is available once it has reached its long-lived branch. An epic starts only after every prerequisite epic its initiative row names is completed. A task row is
 delivered when a linked pull request has merged, or its id links a commit. A row that links a task
 issue and no pull request is delivered when that issue is closed as completed. An open pull request
 does not deliver the task. A bare #750 names an issue in the repository of the issue whose row cites it. An entry naming no row and
@@ -74,17 +74,22 @@ import sys
 from collections.abc import Iterable
 from enum import Enum
 from pathlib import Path
+from typing import NamedTuple
 
 from format import AC, LINK, cell, id_cell, reservation, row_id, split_sections
 from statuses import (DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items,
                       key_of, label)
-from sync import PR_REF, TICKED, Unreadable, attach_links, links_issue, pull_requests, table
+from sync import PR_REF, TICKED, Unreadable, attach_links, git, links_issue, pull_requests, table
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
 RANGE = re.compile(r'^W(\d\d)[–-]W(\d\d)$')
 TASK_REF = re.compile(r'(?:^|:)(W\d\d)$')
+REPO_OF = re.compile(r'github\.com/([^/]+/[^/]+)/(?:pull|commit)/')
+EPIC_BASE = re.compile(r'^i\d\d/e\d\d/(?!w\d\d(?:-|$))([^/]+)$')
+INITIATIVE_REF = re.compile(r'^i\d\d/')
+REMOTE = 'origin'
 UNPLACED, RETAINED = 'unplaced', 'retained'
 READY_UNDER = ('Ready', 'In Progress')  # a parent Status under which a child can be Ready
 
@@ -114,6 +119,12 @@ def rows(issue: dict) -> tuple[list[str], list[list[str]]]:
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
     _, _, _, grid = table(sections)
     return (grid[0], grid[2:]) if grid else ([], [])
+
+
+def repo_of(url: str) -> str:
+    """The owner/repo a pull request or commit URL names, or empty."""
+    found = REPO_OF.search(url)
+    return found[1] if found else ''
 
 
 def issue_url(url: str) -> Key | None:
@@ -157,9 +168,98 @@ def weakest(answers: Iterable[Resolution]) -> Resolution:
     return found
 
 
+class Output(NamedTuple):
+    """One output a delivered producer row carries: the delivery naming it, the repository holding
+    it, its commit, the long-lived branch it lands on, and the pull request delivering it. The branch
+    is empty for a linked commit, and for a pull request merged into a ref that is neither an epic
+    base nor a long-lived branch, such as a task branch."""
+    delivery: str
+    repo: str
+    identity: str
+    branch: str
+    pull: dict | None = None
+
+
+def landing(base: str) -> str:
+    """The long-lived branch a pull request merged into base lands on: the last segment of an epic
+    base, the base itself outside the initiative namespace, and empty for any other initiative ref."""
+    lived = EPIC_BASE.match(base)
+    return lived[1] if lived else '' if INITIATIVE_REF.match(base) else base
+
+
+def off_route(pull: dict) -> str:
+    base = (pull.get('base') or {}).get('ref') or ''
+    return f'it merged into {base}, which is neither an epic base nor a long-lived branch'
+
+
+class Outputs:
+    """Whether an output a producer row delivered is available at its consumer's base commit, read
+    in the repository project locates.
+
+    It is available when its commit is an ancestor of the consumer epic's base on the output's
+    long-lived branch, as the remote holds it, or of that branch while the consumer has no base
+    there; a linked commit is read against each base the consumer has. A merge into the producer's
+    own base alone is not availability. Every reading is recorded in lines, naming the producer
+    row, the output, the consumer commit and the answer. An output with no commit, one the checkout
+    does not hold, one merged into a branch that is neither an epic base nor a long-lived branch, such
+    as a task branch, or a reading with no project is unverified, and leaves the row unmet."""
+
+    def __init__(self, project: str = ''):
+        self.project = project
+        self.lines: list[str] = []
+
+    def commit(self, revision: str) -> str:
+        done = git(self.project, 'rev-parse', '--verify', '--quiet', revision + '^{commit}')
+        return done.stdout.strip() if done.returncode == 0 else ''
+
+    def consumer(self, prefix: str, branch: str) -> list[tuple[str, str]]:
+        """The (revision, commit) an output on branch is read against, or every consumer base for
+        a commit on no named branch."""
+        if not branch:
+            if not prefix:
+                return []
+            done = git(self.project, 'for-each-ref', '--format=%(refname:short)', f'refs/remotes/{REMOTE}/{prefix}/')
+            names = done.stdout.split() if done.returncode == 0 else []
+            return [(name, found) for name in names if (found := self.commit(name))]
+        for revision in ([f'{REMOTE}/{prefix}/{branch}'] if prefix else []) + [f'{REMOTE}/{branch}']:
+            if found := self.commit(revision):
+                return [(revision, found)]
+        return []
+
+    def read(self, output: Output, prefix: str, why: str) -> Resolution:
+        """Whether output is available to the consumer whose branch prefix, such as i07/e01, is
+        prefix, empty for an initiative."""
+        named = f'{why}: {output.delivery}'
+        if not self.project:
+            self.lines.append(f'{named} unverified: no checkout to read it in')
+            return Resolution.UNMET
+        if not output.identity:
+            self.lines.append(f'{named} unverified: it records no merge commit')
+            return Resolution.UNMET
+        if not self.commit(output.identity):
+            self.lines.append(f'{named} unverified: {output.identity[:12]} is not in the checkout')
+            return Resolution.UNMET
+        if output.pull is not None and not output.branch:
+            self.lines.append(f'{named} {output.identity[:12]} unverified: {off_route(output.pull)}')
+            return Resolution.UNMET
+        targets = self.consumer(prefix, output.branch)
+        if not targets:
+            place = '/'.join(part for part in (prefix, output.branch) if part)
+            self.lines.append(f'{named} {output.identity[:12]} unverified: {REMOTE}/{place} resolves to no commit')
+            return Resolution.UNMET
+        held = [(revision, found) for revision, found in targets
+                if git(self.project, 'merge-base', '--is-ancestor', output.identity, found).returncode == 0]
+        revision, found = (held or targets)[0]
+        self.lines.append(f"{named} {output.identity[:12]} {'available' if held else 'absent'} "
+                          f'at {revision} {found[:12]}')
+        return Resolution.MET if held else Resolution.UNMET
+
+
 class Board:
-    def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str, prs: list[dict] | None = None):
+    def __init__(self, issues: dict[Key, dict], unresolved: list[str], home: str, prs: list[dict] | None = None,
+                 outputs: Outputs | None = None):
         self.issues = issues
+        self.outputs = outputs or Outputs()
         self.unresolved = unresolved
         self.home = home
         self.pulls = {p['html_url']: p for p in prs or []}
@@ -212,6 +312,63 @@ class Board:
         if issue is None:
             return Resolution.UNMET
         return self.issue_delivered(issue, why)
+
+    def delivered_outputs(self, key: Key, task: str) -> list[Output]:
+        """The outputs a delivered row carries: the merge commit of each merged pull request it
+        links, on the long-lived branch its base names, and each commit it links."""
+        header, found = self.table(key)
+        outputs = []
+        for link in LINK.finditer(id_cell(header, found[task])):
+            href = link[2]
+            repo = repo_of(href)
+            if '/commit/' in href:
+                outputs.append(Output(href, repo, href.rstrip('/').rsplit('/', 1)[-1], ''))
+            elif (pr := self.pulls.get(href)) and pr.get('merged_at'):
+                base = (pr.get('base') or {}).get('ref') or ''
+                outputs.append(Output(label((repo, pr['number']), self.home), repo,
+                                      pr.get('merge_commit_sha') or '', landing(base), pr))
+        return outputs
+
+    def integrated(self, output: Output, why: str) -> Resolution:
+        """Whether an output another repository holds has reached its long-lived branch: it was
+        delivered to that branch, or a pull request merging its epic base into the branch merged
+        after it."""
+        named = f'{why}: {output.delivery}'
+        if output.pull is None:
+            self.outputs.lines.append(f'{named} unverified: {output.repo} holds it on no named branch')
+            return Resolution.UNMET
+        if not output.branch:
+            self.outputs.lines.append(f'{named} unverified: {off_route(output.pull)}')
+            return Resolution.UNMET
+        base = (output.pull.get('base') or {}).get('ref') or ''
+        if base == output.branch:
+            self.outputs.lines.append(f'{named} available on {output.repo} {output.branch}')
+            return Resolution.MET
+        merges = sorted(p['number'] for p in self.pulls.values()
+                        if repo_of(p['html_url']) == output.repo
+                        and (p.get('head') or {}).get('ref') == base
+                        and (p.get('base') or {}).get('ref') == output.branch
+                        and (p.get('merged_at') or '') >= output.pull['merged_at'])
+        if merges:
+            self.outputs.lines.append(f'{named} available on {output.repo} {output.branch} by '
+                                      f'{label((output.repo, merges[0]), self.home)}')
+            return Resolution.MET
+        self.outputs.lines.append(f'{named} absent: {output.repo} {base} has not merged into {output.branch} since')
+        return Resolution.UNMET
+
+    def outputs_available(self, key: Key, task: str, home: Key, producer: str, why: str) -> Resolution:
+        """Whether every output a delivered row of another epic carries is available to the row
+        naming it: at the consumer's base where the consumer's repository holds the output, and on
+        its long-lived branch where another repository does. producer is the entry as written."""
+        outputs = [output._replace(delivery=f'{producer} {output.delivery}')
+                   for output in self.delivered_outputs(key, task)]
+        if not outputs:
+            self.outputs.lines.append(f'{why}: {producer} unverified: it links no merged delivery or commit')
+            return Resolution.UNMET
+        found = PREFIX.match(self.issues.get(home, {}).get('title') or '')
+        prefix = f'i{found[1]}/e{found[2]}' if found and found[2] else ''
+        return weakest([self.outputs.read(output, prefix, why) if output.repo.lower() == home[0].lower()
+                        else self.integrated(output, why) for output in outputs])
 
     def issue_delivered(self, key: Key, why: str) -> Resolution:
         if key not in self.issues:
@@ -296,8 +453,9 @@ class Board:
                     self.unresolved.append(f'{why}: {UNRESOLVABLE} {text}: {label(key, self.home)} is not given')
                     answer = Resolution.UNRESOLVABLE
                 elif task:
-                    answer = weakest([Resolution.MET if key == home else self.issue_delivered(key, why),
-                                      self.row_delivered(key, task[1], why)])
+                    answer = self.row_delivered(key, task[1], why)
+                    if key != home and answer is Resolution.MET:
+                        answer = self.outputs_available(key, task[1], home, text, why)
                 else:
                     answer = self.issue_delivered(key, why)
             answers.append(answer)

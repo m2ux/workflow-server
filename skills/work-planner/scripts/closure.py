@@ -1,76 +1,69 @@
-"""Check the Development links and repository setting before completing an issue.
+"""Check one issue's criteria and Development links before completing it.
 
 Usage:
-  python3 closure.py --issue issue.json --development development.json --prs prs.json
+  python3 closure.py --issue issue.json --development development.json
 
-development.json records the issue's complete Development pull request list and the verified repository setting: {repo, number, complete, auto_close_issues, pull_requests: [URL, ...]}. complete is true only after every Development link has been read. auto_close_issues is false only after the issue repository's setting has been confirmed disabled. Missing evidence blocks. prs.json contains fresh REST pull request records as JSON lines, fetched by each linked URL.
+issue.json is the issue as `gh api repos/{owner}/{repo}/issues/943` writes it. development.json is
+the snapshot links-by-issue.py writes from that file: the repository its issues belong to, and each
+issue number mapped to the pull requests its Development field holds, open, closed and merged, each
+as {repo, number, state}. Both are fields GitHub exposes; the gate takes no other input. A snapshot
+of another repository's issues is unreadable evidence, since its numbers name other issues.
 
-Exit 0 permits closure only after the caller's normal delivery checks also pass. Exit 1 names each blocker. Every linked pull request must have merged, including a closed pull request. Acceptance criteria must all be ticked. A title or branch name supplies no Development link.
+An issue the snapshot maps to an empty array has an empty Development field, which adds no pull
+request requirement. An issue the snapshot holds no entry for never had its links read, which is
+missing evidence and blocks. links-by-issue.py writes no snapshot when a relation is unreadable, so
+an absent or unreadable file blocks too.
+
+Exit 0 permits closure only after the caller's normal delivery checks also pass. Exit 1 names each
+blocker: acceptance criteria missing or unticked, or a linked pull request that has not merged,
+including a closed one. A title or branch name supplies no Development link.
 """
 import argparse
 import json
-import re
 import sys
 from pathlib import Path
 
 from board import criteria_met
-from sync import issue_key, pull_requests
+from sync import issue_key
 
-PULL = re.compile(r'https://github\.com/([^/]+/[^/]+)/pull/([1-9]\d*)/?$', re.IGNORECASE)
+UNCAPTURED = 'Development links not captured'
 
 
-def blockers(issue: dict, development: dict, prs: list[dict]) -> list[str]:
-    """Unmet closure conditions from the complete link list and current pull request records."""
-    repo, number = issue_key(issue)
-    reasons = []
-    if (str(development.get('repo', '')).casefold(), development.get('number')) != (repo.casefold(), number):
-        reasons.append('Development evidence belongs to another issue')
-    if development.get('complete') is not True:
-        reasons.append('Development links are not confirmed complete')
-    if development.get('auto_close_issues') is not False:
-        reasons.append('repository auto-closing is not confirmed disabled')
-    links = development.get('pull_requests')
+def snapshot(path: str, repository: str) -> dict[str, list[dict] | None]:
+    """The issue links of the snapshot links-by-issue.py wrote for repository, or ValueError for a
+    snapshot of another shape or another repository."""
+    held = json.loads(Path(path).read_text())
+    issues = held.get('issues') if isinstance(held, dict) else None
+    if not isinstance(issues, dict) or not isinstance(held.get('repository'), str) or not all(
+            isinstance(k, str) and k.isdigit() for k in issues) or not all(
+            isinstance(link, dict) and {'repo', 'number', 'state'} <= link.keys()
+            for links in issues.values() if isinstance(links, list) for link in links):
+        raise ValueError(f'{path} is not an issue-links file: a repository and its issue numbers '
+                         'mapped to {repo, number, state} lists')
+    if held['repository'].lower() != repository.lower():
+        raise ValueError(f"the Development snapshot holds {held['repository']} issues, not {repository}")
+    return issues
+
+
+def blockers(issue: dict, links: list[dict] | None) -> list[str]:
+    """What keeps one issue's evidence from supporting its closure, from the links snapshot read."""
     if not isinstance(links, list):
-        reasons.append('Development pull request list is missing or invalid')
-        links = []
-    records = {}
-    for pr in prs:
-        match = PULL.fullmatch(pr.get('html_url') or '')
-        if match:
-            key = (match[1].casefold(), int(match[2]))
-            if key in records:
-                reasons.append(f'{pr["html_url"]}: duplicate pull request evidence')
-            records[key] = pr
-    seen = set()
-    for url in links:
-        match = PULL.fullmatch(url) if isinstance(url, str) else None
-        if not match:
-            reasons.append(f'{url!r}: invalid Development pull request URL')
-            continue
-        key = (match[1].casefold(), int(match[2]))
-        if key in seen:
-            continue
-        seen.add(key)
-        pr = records.get(key)
-        if pr is None:
-            reasons.append(f'{url}: pull request evidence is missing')
-        elif not pr.get('merged_at'):
-            reasons.append(f'{url}: not merged ({"draft" if pr.get("draft") else pr.get("state", "unknown")})')
-    if not criteria_met(issue):
-        reasons.append('acceptance criteria are missing or unticked')
+        return [UNCAPTURED]
+    reasons = [] if criteria_met(issue) else ['acceptance criteria are missing or unticked']
+    reasons += [f'{link["repo"]}#{link["number"]} not merged ({str(link["state"]).lower()})'
+                for link in links if link['state'] != 'MERGED']
     return reasons
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--issue', required=True)
-    parser.add_argument('--development', required=True)
-    parser.add_argument('--prs', required=True)
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser.add_argument('--issue', required=True, help='the issue, as the REST API returns it')
+    parser.add_argument('--development', required=True, help='the snapshot links-by-issue.py wrote')
     args = parser.parse_args()
     try:
         issue = json.loads(Path(args.issue).read_text())
-        development = json.loads(Path(args.development).read_text())
-        reasons = blockers(issue, development, pull_requests(args.prs))
+        repository, number = issue_key(issue)
+        reasons = blockers(issue, snapshot(args.development, repository).get(str(number)))
     except (OSError, ValueError, KeyError, TypeError, AttributeError) as exc:
         print(f'closure blocked: unreadable evidence ({exc})')
         return 1

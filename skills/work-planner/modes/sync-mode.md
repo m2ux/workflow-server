@@ -2,6 +2,8 @@
 
 Records delivery on an initiative, its epics, and their task issues. Each task that has a pull request is linked to that pull request, open or merged. Criteria that now hold are recorded, complete rows are marked done, complete issues are closed, and the initiative's theme board is brought up to date.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -16,6 +18,7 @@ Read these files first.
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Board](../artifacts/board.md)
+- [Work Item](../artifacts/work-item.md)
 - [Understand Mode](understand-mode.md)
 - [Board Delivery](../artifacts/board-delivery.md)
 - [Issue Closure](../protocols/issue-closure.md)
@@ -69,9 +72,12 @@ The main path meets [Outcomes](#outcomes).
    - Once the pull request has merged, record it with [Comment on Issue](../artifacts/issue.md#comment-on-issue): `Delivered by #950.`
    - [Issue Closure](../protocols/issue-closure.md) when it reports closable.
 6. **Sync each epic.**
-   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at:
-   Linking a pull request replaces the planning-record link on that task.
+   Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery), linking every match from the match step, open or merged, with the task issues, the project checkout and the fetched epic bases its long-lived branch names are read at. Linking a pull request replaces the planning-record link on that task.
    - Handle the returned delivery findings:
+     - **Normalized.**
+       - The patch step publishes the corrected table.
+     - **Retitle.**
+       - Retitle the pull request to the title it names with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
      - **Conflict.**
        - Put it to the user.
      - **Unmatched.**
@@ -83,8 +89,17 @@ The main path meets [Outcomes](#outcomes).
        - Leave the epic open while its delivery is incomplete.
      - **Unmerged.**
        - The close step opens or merges that pull request.
+     - **Target.**
+       - Confirm the base it names against its work item's [Component](../artifacts/work-item.md#component): the confirmed base is the epic base of the long-lived branch that Component names, whether the finding names that base, another, or one of several.
+         - A unit whose work items name several long-lived branches takes each task branch's base from the long-lived branch its last slug word names.
+       - Retarget an open pull request to the confirmed base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
+       - Put a merged one to the user, since its merge cannot be moved.
      - **References.**
        - Bring the body up to the merges with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.
+     - **Changes.**
+       - Restate the bullet naming the absent path with [Review Pull Request](../protocols/review-pull-request.md), with the project checkout and the fetched epic bases.
+     - **No epic.**
+       - Give it the epic it works on as the unnamed-deliveries step does, once the user confirms which.
      - **Uncited.**
        - Set the link with [Link Pull Request to Issue](../artifacts/pull-request.md#link-pull-request-to-issue).
        - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
@@ -102,6 +117,10 @@ The main path meets [Outcomes](#outcomes).
        - Return to the select step for this epic.
        - Resolve the questions there.
        - Fetch the saved body before repeating Record Epic Delivery with the same epic bases.
+     - **Ready to verify.**
+       - The verify step settles them.
+     - **Unmet.**
+       - The verify step settles the unticked criteria, planning a gap task for any that need further work.
      - **Ticked early.**
        - Untick them, or link the missing delivery.
      - **Disagreement.**
@@ -109,7 +128,12 @@ The main path meets [Outcomes](#outcomes).
      - **Unevaluable.**
        - Report each source and why to the user, with each check the run names not checked.
        - Leave an unmatched or in-flight pull request whose head is an epic base unmatched, since the run could not tell it from a task delivery.
+       - Fetch each draft base, long-lived branch or review head named unread, and repeat Record Epic Delivery with the same epic bases.
        - The epic stays open until every epic base states the same readable declaration.
+     - **Source.**
+       - Report it with the results.
+     - **Not checked.**
+       - Report each check with the unevaluable sources that left it unread.
    - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.
@@ -154,7 +178,7 @@ The main path meets [Outcomes](#outcomes).
     Return saved delivery results and unresolved findings to the caller, or present them to the user for a direct request.
     - Report queue decisions unevaluated by this run.
     - Run [Audit Closure Evidence](../artifacts/issue.md#audit-closure-evidence) for the repository holding the issues, naming the initiative, epics and tasks this run touched. Report each unsupported and unevaluable issue it returns, with its state reason and findings, and the not-planned closures apart. This run changes none of them.
-    Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
+    - Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports).
 
 ## Outcomes
 

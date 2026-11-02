@@ -30,6 +30,7 @@ The current change carried by one epic base.
 1. Populate the review body from the [Template](#template) using the actual task merges into the base.
    - All populated fields must meet [Fields](#fields), including the review-specific requirements in [Review Body](#review-body).
 2. For a later task merge:
+   - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
    - Add its functional change under the corresponding area.
    - Cite the merged task pull request as the next reference.
 3. Return the complete updated body file to the caller.
@@ -99,11 +100,14 @@ One task pull request's test plan aligned to its current table.
 - A pull request working on no epic takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
 - The prefix is how an epic's pull requests are found, and each one, open or merged, is matched to the tasks it works on from its changes and the tasks' Descriptions.
 - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which tells it from a task pull request.
+- A title carrying an initiative's prefix names one of its epics. An epic sync reports one that names none as `no epic`, and one naming its epic by a task id, `[I07:E00:W01]`, as `retitle`.
 
 ### Review Body
 
 - Overview is one paragraph on what the base carries.
 - Changes holds one heading per area, with a bullet per functional change.
+- A Changes bullet states what the base does and carries no count of the corpus, such as how many specifications or files it holds. A count belongs in the unit's planning record, with the revision that produced it.
+- Each file a Changes bullet names in a code span stands at the base's head. A code name, such as `board.Outputs`, names no file.
 - References cites each task pull request merged into that base.
 - It carries no Test Plan, since it delivers no task of its own, and no statement about what the epic has yet to deliver. The epic's Work Breakdown is where delivery state is read.
 

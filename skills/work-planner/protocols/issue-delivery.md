@@ -2,6 +2,8 @@
 
 The task and epic bodies brought to what one pull request's delivery establishes.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.

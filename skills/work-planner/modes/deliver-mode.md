@@ -2,6 +2,8 @@
 
 Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, stands a completed epic in review on the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, hoist arising issues, and defer the technical debt its validation finds.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -48,8 +50,8 @@ The main path meets [Outcomes](#outcomes).
    - Run [Read Board Assignee](../artifacts/board.md#read-board-assignee) for the assignee.
 4. **Survey.**
    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each candidate epic with its current initiative and epic bodies and all prerequisite issue and base-merge records.
-   - Pass its confirmed result to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
-   - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches), at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
+   - Pass its confirmed result and the project checkout to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
+   - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
    - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree and selected record date.
    - Resolve any missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
    - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs.
@@ -65,14 +67,14 @@ The main path meets [Outcomes](#outcomes).
        - Report an `undeclared` line without asking. Its unit is offered once the row's work item names the long-lived branch of its component.
    - Use the returned [Work Units](../artifacts/delivery-plan.md#work-units) as the units of confirmation and dispatch.
 5. **Merge.**
-   Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for each `merge` line, with the project checkout.
+   Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for each `merge` line, with the project checkout and the unit checkout holding its task branch.
    - Run [Task Merge](../protocols/task-merge.md) for each confirmed merge result, with the selected board identity.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
    - Confirm the units to dispatch and the rows to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a row the user leaves stays held.
    - For each released row:
-     - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows).
+     - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree.
      - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
@@ -93,8 +95,8 @@ The main path meets [Outcomes](#outcomes).
    - Keep each such row a unit of its own, joined to no other row, so it is confirmed and held like any other before a session starts for it.
 
    For each held unit:
-   - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) for each branch the `unit` line names, with its base and worktree.
-   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the confirmed unit, the component each of its rows declares, reserved folder, worktrees, test obligations, selected board identity, this run's allowance and [Run Delivery Session](#run-delivery-session) as the supplied execution procedure.
+   - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) in the project checkout for each branch the `unit` line names, with its base and worktree.
+   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the confirmed unit, the component each of its rows declares, reserved folder, worktrees, the project checkout, test obligations, selected board identity, this run's allowance and [Run Delivery Session](#run-delivery-session) as the supplied execution procedure.
    - Resolve any returned gap before dispatch.
    - The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
    - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
@@ -108,6 +110,8 @@ The main path meets [Outcomes](#outcomes).
 ### Run Delivery Session
 
 The confirmed unit carried from its supplied brief through implementation and delivery.
+
+**Runs in:** the unit checkout.
 
 1. **Read the brief.**
    Read the supplied [Delivery Brief](../artifacts/delivery-brief.md).
@@ -141,8 +145,8 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
 8. **Merge.**
    Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
-   - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the unit's worktree as the project checkout.
-   - On a confirmed merge, run [Task Merge](../protocols/task-merge.md) with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
+   - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.
+   - On a confirmed merge, run [Task Merge](../protocols/task-merge.md) in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
    - Resume the defer step when recording returns; a merge or recording blocker remains explicit.
 9. **Classify and defer the debt.**
    Classify the technical debt this unit's validation finds — running its tests, auditing the definitions it changed, reviewing its pull request — which decides where it is fixed.
@@ -155,13 +159,13 @@ The confirmed unit carried from its supplied brief through implementation and de
    - The session's own classification decides.
    - For each deferred item:
      - Create it as a standalone issue through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-     - Run [Hoist Mode](hoist-mode.md) with that issue identity, the allowance the brief names, and its placement as a new task in this initiative's [deferred-debt epic](../artifacts/initiative-issue-body.md#deferred-debt).
+     - Run [Hoist Mode](hoist-mode.md) in the project checkout with that issue identity, the allowance the brief names, and its placement as a new task in this initiative's [deferred-debt epic](../artifacts/initiative-issue-body.md#deferred-debt).
      - Where the initiative has no such epic, the placement raises it as a new epic, carrying the criterion its initiative row covers.
      - Run [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with the placement it returns.
    - Resume the arising-issues step with each saved placement or reported blocker.
 10. **Arising issues.**
     Create each issue that arose during delivery as a standalone issue with [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), with no agent-engineering prefix.
-    - Run [Hoist Mode](hoist-mode.md) with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
+    - Run [Hoist Mode](hoist-mode.md) in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
     - Run [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with each placement it applied and each it held.
 11. **Report the changes.**
     Register the session's [change list](../artifacts/plan-change.md#change-list) in its planning folder through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record).
@@ -173,8 +177,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 - **Available work started.**
   The user has each confirmed unit of the theme board in a session, with a planning record held for that session.
 - **Parallel where the plan allows it.**
-  The units offered are those of the epics planned to start together, and an epic planned for later is not offered while they run.
-  Within a unit, work that can proceed together does.
+  The units offered are those of the epics planned to start together, and an epic planned for later is not offered while they run. Within a unit, work that can proceed together does.
 - **Passed work merged.**
   Each open pull request whose test plan has passed is merged, and one a conflict blocks stays open with the conflict named.
 - **Review visible on the board.**

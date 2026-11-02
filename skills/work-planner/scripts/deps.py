@@ -9,7 +9,8 @@ component its implementation extends:
   **Component:** main:src/bundle/assembly.ts
 A declared component is read without its link, a wrapping code span, a trailing full stop or a
 leading ./, so two spellings of one path are one component. A value still carrying the template's
-{{…}} placeholder declares none.
+{{…}} placeholder declares none. A component is one file: a value ending in /, carrying a glob, or
+naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
   | Task | Description | Coverage | Depends on | Joins | Done |
@@ -34,12 +35,14 @@ a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A named epic still reaches the rows it stands for, so one body
 carrying the retired form is reported once rather than taking its initiative's gates down with it.
-Joins problems: a task joining one that does not join it back, and
-two joined tasks where one depends on the other, directly or through a task outside the pair.
-Also printed: each pair of tasks in an epic where neither depends on the other, the two do not name
-each other in Joins, and no R= record accounts for the pair. An empty Joins cell rests on such an
-entry, so each line names both resolutions. A record accounts for a pair by naming both ids on one
-of its lines; an R= file that cannot be read is a problem.
+Joins problems: a task joining one that does not join it back, two joined tasks where one depends
+on the other, a joined task needing another through a task outside their unit, and a joined unit
+whose rows cover more than six criteria.
+Also printed: each candidate unit, the undelivered rows of one epic whose work items declare one
+component, that its rows do not join and no R= record line names exactly. An open candidate names
+both resolutions and each direct edge a join drops. A candidate is split by rule, and printed with
+its reason, where its rows cover more than six criteria or a path between two of them runs through
+a row outside it. An R= file that cannot be read is a problem.
 With I=, the initiative's Depends on cells are checked: each epic's cell names exactly the other
 epics required in full by every task or joined unit, less transitive epic dependencies, and names no task.
 Another initiative's epic (I05:E00) or an issue (#750) may also be named.
@@ -67,16 +70,24 @@ COMPONENT = re.compile(r'\*\*Component:\*\*\s*(.+?)\s*$')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}')
 EXTERNAL = re.compile(r'#\d+|I\d\d:E\d\d(?::W\d\d)?')
 INITIATIVE_EPIC = re.compile(r'#\d+|I\d\d:E\d\d')
+CRITERION = re.compile(r'AC\d+')
+BRANCH = re.compile(r'^[^:/]+:')
 MAX_CHAINS = 10
+UNIT_BOUND = 6
 
 
 def cells(line: str) -> list[str]:
     return [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
 
 
-def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]]]:
+def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]], dict[str, set[str]],
+                                           set[str]]:
+    """The tasks, the problems their cells carry, the rows each named epic stood for, the criteria
+    each row's Coverage names, and the rows whose Done cell is filled."""
     rows = {}
     problems = []
+    criteria: dict[str, set[str]] = {}
+    delivered: set[str] = set()
     for epic, path in epics.items():
         header: list[str] = []
         for line in path.read_text().splitlines():
@@ -104,6 +115,9 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]]]
                 problems.append(f'{epic}:{wid}: Task cell also names {", ".join(disagreeing)}')
             rows[f'{epic}:{wid}'] = (row.get('Description', ''), row.get('Depends on', ''),
                                      row.get('Joins', ''))
+            criteria[f'{epic}:{wid}'] = set(CRITERION.findall(row.get('Coverage', '')))
+            if row.get('Done', ''):
+                delivered.add(f'{epic}:{wid}')
 
     tasks = {}
     expanded: dict[str, set[str]] = {}
@@ -132,7 +146,7 @@ def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]]]
         for a in (x.strip() for x in accompany.split(',') if x.strip()):
             acc.append(a if a.startswith('E') else f'{epic}:{a}')
         tasks[key] = (description, dep_list, acc)
-    return tasks, problems, expanded
+    return tasks, problems, expanded, criteria, delivered
 
 
 def normalise(component: str) -> str:
@@ -160,11 +174,20 @@ def read_components(items: dict[str, Path]) -> tuple[dict[str, str], list[str]]:
             if found:
                 declared = normalise(found[1])
                 break
-        if declared and not PLACEHOLDER.search(declared):
-            components[key] = declared
-        else:
+        if not declared or PLACEHOLDER.search(declared):
             problems.append(f'{key}: work item declares no component')
+        elif is_directory(declared):
+            problems.append(f'{key}: work item declares directory {declared}; a component is one file')
+        else:
+            components[key] = declared
     return components, problems
+
+
+def is_directory(component: str) -> bool:
+    """Whether a declared component names a directory: its path ends in `/`, carries a glob, or is
+    a directory under the working directory, where the command runs."""
+    path = BRANCH.sub('', component, count=1)
+    return path.endswith('/') or '*' in path or Path(path or '.').is_dir()
 
 
 def contention(components: dict[str, str]) -> list[tuple[str, str]]:
@@ -174,10 +197,9 @@ def contention(components: dict[str, str]) -> list[tuple[str, str]]:
             if left.split(':')[0] != right.split(':')[0] and components[left] == components[right]]
 
 
-def recorded_pairs(paths: list[Path]) -> tuple[set[frozenset[str]], list[str]]:
-    """The pairs a planning record accounts for. One line naming exactly two task ids accounts for
-    that pair, which is the form a joins artifact takes. A line naming more is prose about several
-    rows, not an account of any one pair, so it accounts for none."""
+def recorded_units(paths: list[Path]) -> tuple[set[frozenset[str]], list[str]]:
+    """The row sets a planning record accounts for: each line naming two or more task ids accounts
+    for the candidate unit holding exactly those rows."""
     found: set[frozenset[str]] = set()
     problems = []
     for path in paths:
@@ -187,30 +209,75 @@ def recorded_pairs(paths: list[Path]) -> tuple[set[frozenset[str]], list[str]]:
             problems.append(f'record {path} is unreadable ({error})')
             continue
         for line in text.splitlines():
-            ids = set(TASK.findall(line))
-            if len(ids) == 2:
-                found.add(frozenset(ids))
+            ids = frozenset(TASK.findall(line))
+            if len(ids) > 1:
+                found.add(ids)
     return found, problems
 
 
-def eligible_unjoined(tasks: dict, ancestors, recorded: set[frozenset[str]] = frozenset()) -> list[str]:
-    """Pairs in one epic that neither depends on the other, that do not name each other, and that
-    no record given accounts for. Each line states both resolutions, so the Joins cell is read as
-    the assertion it is rather than as the way to quiet the report."""
-    keys = sorted(tasks)
+def joined_units(tasks: dict) -> dict[str, frozenset[str]]:
+    """Each task's joined unit: the tasks reached through pairs that name each other in Joins."""
+    units: dict[str, frozenset[str]] = {}
+    for task in sorted(tasks):
+        if task in units:
+            continue
+        unit, pending = set(), [task]
+        while pending:
+            current = pending.pop()
+            if current in unit or current not in tasks:
+                continue
+            unit.add(current)
+            pending.extend(other for other in tasks[current][2]
+                           if other in tasks and current in tasks[other][2])
+        for member in unit:
+            units[member] = frozenset(unit)
+    return units
+
+
+def covered(rows, criteria: dict[str, set[str]]) -> set[str]:
+    """The criteria a set of rows covers together."""
+    return set().union(*(criteria.get(row, set()) for row in rows))
+
+
+def outside_path(rows: frozenset[str], ancestors) -> tuple[str, str, str] | None:
+    """A path between two of the rows through a task outside them, as (needer, via, needed)."""
+    for needer in sorted(rows):
+        for via in sorted(ancestors(needer) - rows):
+            needed = next((row for row in sorted(rows) if row in ancestors(via)), None)
+            if needed:
+                return needer, via, needed
+    return None
+
+
+def candidate_units(tasks: dict, components: dict[str, str], criteria: dict[str, set[str]],
+                    delivered: set[str], ancestors,
+                    recorded: set[frozenset[str]] = frozenset()) -> list[str]:
+    """Each candidate unit, the undelivered rows of one epic declaring one component, that its rows
+    do not join and no record line names exactly. An open candidate names both resolutions and
+    each direct edge a join drops; one the criterion bound or an outside path splits is split by
+    rule and says why."""
+    groups: dict[tuple[str, str], set[str]] = {}
+    for row, component in components.items():
+        if row in tasks and row not in delivered:
+            groups.setdefault((row.split(':')[0], component), set()).add(row)
+    units = joined_units(tasks)
     lines = []
-    for i, left in enumerate(keys):
-        for right in keys[i + 1:]:
-            if left.split(':')[0] != right.split(':')[0]:
-                continue
-            if right in ancestors(left) or left in ancestors(right):
-                continue
-            if right in tasks[left][2] and left in tasks[right][2]:
-                continue
-            if frozenset((left, right)) in recorded:
-                continue
-            lines.append(f'{left} and {right} can share a pull request: name each other in Joins, '
-                         'or account for the pair in the planning record')
+    for (_, component), members in sorted(groups.items()):
+        rows = frozenset(members)
+        if len(rows) < 2 or rows in recorded or all(rows <= units[row] for row in rows):
+            continue
+        head = f'{", ".join(sorted(rows))} extend {component}'
+        count = len(covered(rows, criteria))
+        barred = outside_path(rows, ancestors)
+        if count > UNIT_BOUND:
+            lines.append(f'{head}: split by rule, {count} criteria exceed the bound of {UNIT_BOUND}')
+        elif barred:
+            lines.append(f'{head}: split by rule, {barred[0]} needs {barred[1]}, which needs {barred[2]}')
+        else:
+            edges = [f'{row} on {other}' for row in sorted(rows) for other in tasks[row][1] if other in rows]
+            drop = f', dropping the dependency of {"; ".join(edges)},' if edges else ''
+            lines.append(f'{head}: name each other in Joins{drop} or name exactly these rows on one '
+                         'record line with why they stay split')
     return lines
 
 
@@ -326,8 +393,8 @@ def main(argv: list[str]) -> int:
             items[name] = Path(path)
         else:
             epics[name] = Path(path)
-    tasks, problems, expanded = parse(epics)
-    recorded, unreadable = recorded_pairs(records)
+    tasks, problems, expanded, criteria, delivered = parse(epics)
+    recorded, unreadable = recorded_units(records)
     problems += unreadable
     components, missing = read_components(items)
     problems += missing
@@ -389,6 +456,7 @@ def main(argv: list[str]) -> int:
                 by = next((o for o in listed if o != d and d in ancestors(o)), None)
                 if by and d not in expanded[key]:
                     problems.append(f'{key}: {d} is already implied by {by}')
+        units = joined_units(tasks)
         for key, (_, _, acc) in tasks.items():
             for a in acc:
                 if a not in tasks:
@@ -398,17 +466,22 @@ def main(argv: list[str]) -> int:
                 if a in tasks[key][1]:
                     problems.append(f'{key}: joins {a} and depends on it; the shared pull request holds '
                                     'their order, so drop the dependency')
-                via = next((x for x in ancestors(key) if x != a and a in ancestors(x)), None)
+                via = next((x for x in sorted(ancestors(key) - units[key]) if a in ancestors(x)), None)
                 if via:
                     problems.append(f'{key}: joins {a}, but needs {via}, which needs {a}')
-        joins = eligible_unjoined(tasks, ancestors, recorded)
+        for unit in sorted({u for u in units.values() if len(u) > 1}, key=sorted):
+            count = len(covered(unit, criteria))
+            if count > UNIT_BOUND:
+                problems.append(f'{", ".join(sorted(unit))}: joined unit covers {count} criteria, '
+                                f'more than the bound of {UNIT_BOUND}')
+        joins = candidate_units(tasks, components, criteria, delivered, ancestors, recorded)
         if initiative:
             problems += check_initiative(initiative, tasks)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
     if cyclic:
         return 1
-    print('\n--- joins: eligible pairs named in neither Joins nor a record')
+    print('\n--- joins: candidate units, rows of one epic extending one component')
     print('\n'.join(joins) if joins else 'none')
 
     level: dict[str, int] = {}

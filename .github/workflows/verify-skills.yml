@@ -1,0 +1,80 @@
+name: Verify skills
+
+# The shared skill-file check, `skills/scripts/check_skill_files.py`, over every skill this branch
+# holds. The skills, the guidelines they are measured against and the check itself all live on
+# `workspace`, and GitHub reads a push's workflows from the branch pushed to, so the job that grades
+# them lives here too, as `verify.yml` does on `main` for the engine.
+#
+# A skill held out of scope is still read with every other skill, so the citations reaching it
+# from them count, and the run fails on a held-out skill that no longer reports a finding: the
+# change that clears its last finding also removes it from `EXCLUDED`, so it enters scope with it.
+
+on:
+  push:
+    # A pull request reaches every promotion step, so these cover what reaches a branch without
+    # one. A glob does not cross `/`, so each depth is its own pattern.
+    branches: [workspace, 'i[0-9]+/workspace', 'i[0-9]+/e[0-9]+/workspace']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-skills-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Skill folders under `skills/` held out of scope, space-separated. Each is listed while the
+  # check reports findings over it, with those findings stated here as a list of
+  # `- <skill>: <findings>` lines. Empty while every skill is in scope.
+  #
+  # - gitnexus/gitnexus-cli: 5 command specifications in the entry point, 3 sections outside the
+  #   set, 1 inline bold lead too wide
+  # - gitnexus/gitnexus-debugging: 6 sections outside the set
+  # - gitnexus/gitnexus-exploring: 6 sections outside the set
+  # - gitnexus/gitnexus-guide: 5 sections outside the set, 1 hard-wrapped line
+  # - gitnexus/gitnexus-impact-analysis: 7 sections outside the set
+  # - gitnexus/gitnexus-refactoring: 6 sections outside the set
+  # - server-in-the-loop: 8 sections outside the set
+  # - workflow-canon: 16 house rules no operation decides, 2 command specifications nothing cites,
+  #   2 parallel sections in another mood
+  EXCLUDED: >-
+    gitnexus/gitnexus-cli gitnexus/gitnexus-debugging gitnexus/gitnexus-exploring
+    gitnexus/gitnexus-guide gitnexus/gitnexus-impact-analysis gitnexus/gitnexus-refactoring
+    server-in-the-loop workflow-canon
+
+jobs:
+  skill-files:
+    name: Every skill in scope meets the shared skill guidelines
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # One run over every skill, so a citation crossing from one skill into another resolves
+      # against the tree it lands in. A skill is a folder under `skills/` holding a `SKILL.md` at
+      # any depth; the shared scripts and tests beside them are not skills.
+      - name: Check every skill, holding the exclusions aside
+        run: |
+          roots=()
+          for dir in skills/*/; do
+            [ -n "$(find "$dir" -name SKILL.md -print -quit)" ] && roots+=("$dir")
+          done
+          excluded=()
+          for name in $EXCLUDED; do excluded+=(--exclude "skills/$name"); done
+          python3 skills/scripts/check_skill_files.py "${roots[@]}" "${excluded[@]}"
+
+  check-suite:
+    # The check's own tests, including a run of the job above over seeded trees, so a change to the
+    # check or to that job is judged before it grades the skills.
+    name: The shared skill-file check passes its own tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install the test runner
+        run: python -m pip install pytest pyyaml
+      - name: Run the shared check suite
+        run: python -m pytest skills/test -q

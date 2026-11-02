@@ -31,17 +31,15 @@ One populated body and its metadata, written to the tracker.
 
 Verified completion of an issue and its linked delivery.
 
-**Inputs:** Issue identity, successful normal delivery result, current issue JSON, complete Development snapshot, confirmed repository setting and fresh linked pull request records.
+**Inputs:** Issue identity and successful normal delivery result.
 
-1. Run [Capture Issue Development](#capture-issue-development) for the issue's complete links and confirmed repository setting.
-2. Take the caller's fresh records for every linked pull request, across repositories and states; return missing evidence to the caller.
-   - Confirm GitHub's **Auto-close issues with merged linked pull requests** setting is disabled before any delivery pull request is linked or merged. An enabled or unknown setting blocks those actions until configuration is confirmed. Changing repository settings requires explicit authorization.
-   - Use the issue's entire Development field to establish membership. Titles, branch names, body mentions and a list filtered to one initiative do not establish completeness. An explicitly empty field adds no pull request requirement.
-3. Run [Check Issue Closure](#check-issue-closure) with `--issue`, `--development`, and `--prs` for those fresh records.
-4. Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
-   - Keep the issue open for an open, draft, closed without merge, or unreadable linked pull request.
+1. Run [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
+   - The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no pull request requirement.
+2. Run [Check Issue Closure](#check-issue-closure) with those two files.
+3. Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
+   - Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
    - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
-5. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write. A changed link set requires another capture and check.
+4. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write.
 
 ### *Close* Transferred Work
 
@@ -70,27 +68,23 @@ The supplied discussion text saved on one issue.
 
 An issue closed after its final evidence check.
 
-**Inputs:** Repository, issue number, authenticated access, confirmed repository auto-closing setting, passing normal delivery checks and absolute paths to the current issue, Development and linked pull request evidence.
+**Inputs:** Repository, issue number, authenticated access, passing normal delivery checks and absolute paths for the issue and Development evidence.
 
-1. Run [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access, confirmed repository setting and evidence paths.
-2. Compare its links with the supplied fresh pull request records; return a changed link set or missing evidence to the caller for refresh.
-3. Run [Check Issue Closure](#check-issue-closure) with the current issue, Development and linked pull request files, using absolute evidence paths when changing directory.
-4. Require exit 0 and passing normal delivery checks; a sync report of closable does not permit skipping this gate.
-5. Immediately after the gate passes, run [Set Completed State](#set-completed-state) with the issue's repository and number and the passing evidence.
-6. Return the saved state or failure.
+1. Run [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access and evidence paths.
+2. Run [Check Issue Closure](#check-issue-closure) with the issue and Development files it wrote, using absolute evidence paths when changing directory.
+3. Require exit 0 and passing normal delivery checks; a sync report of closable does not permit skipping this gate.
+4. Immediately after the gate passes, run [Set Completed State](#set-completed-state) with the issue's repository and number and the passing evidence.
+5. Return the saved state or failure.
 
 ### *Capture* Issue Development
 
-The issue's current content and complete Development snapshot.
+The issue's current content and its Development pull requests, as GitHub exposes them.
 
-**Inputs:** Issue identity, authenticated access, observed repository auto-closing setting and issue and Development output paths.
+**Inputs:** Issue identity, authenticated access and issue and Development output paths.
 
 1. Run [Fetch Tracker Issue](#fetch-tracker-issue) into `issue-943.json` or the supplied path.
-2. Run [Read Issue Development](#read-issue-development) with that file for the entire field across repositories and states, saving `links-943.json` or the supplied path. An unreadable relation is incomplete evidence, which blocks the caller; an empty array means the field was checked and empty.
-3. Run [Write Development Snapshot](#write-development-snapshot) with the issue identity, completeness result and repository setting, saving `development-943.json` or the supplied path.
-   - Each `{repo, number}` entry under the issue's number in the links file is the pull request URL `https://github.com/<repo>/pull/<number>`; supply one URL per entry, in the file's order.
-   - Set `complete` true only after the full read, and `auto_close_issues` false only after the repository setting is confirmed disabled.
-4. Return both files and any incomplete evidence. The caller supplies fresh linked pull request records in `development-prs-943.json`.
+2. Run [Read Issue Development](#read-issue-development) with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
+3. Return both files, or the unreadable relation.
 
 ### *Read* Issue Development
 
@@ -168,7 +162,8 @@ GitHub's **Auto-close issues with merged linked pull requests** repository setti
 
 - The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
 - No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
-- An enabled setting blocks delivery links and merges until the setting is confirmed disabled.
+- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
+- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
 
 ## Commands
 
@@ -306,21 +301,22 @@ gh api 'repos/<owner>/<repo>/issues/943' > issue-943.json
 
 ### Check Issue Closure
 
-Checks the issue criteria, the complete link snapshot and every linked pull request.
+Checks the issue's criteria and the state of every pull request its Development field holds.
 
-**Inputs:** Current issue JSON, complete Development snapshot and fresh linked pull request records.
+**Inputs:** The issue, as [Fetch Tracker Issue](#fetch-tracker-issue) saves it, and the snapshot [Capture Issue Links](#capture-issue-links) wrote from it.
 
-- `--issue`, `--development`, and `--prs` are the fresh issue JSON, Development snapshot, and linked pull request records.
+- The gate reads only those two files, each a field GitHub exposes.
+- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
 - Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue '<issue-json-file>' --development '<development-snapshot-file>' --prs '<linked-pull-request-records-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue '<issue-json-file>' --development '<issue-links-file>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development development-943.json --prs development-prs-943.json
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development links-943.json
 ```
 
 ### Sweep Closure Evidence
@@ -329,8 +325,8 @@ Lists each closed issue whose acceptance criteria are missing or unticked, or wh
 
 **Inputs:** One repository's closed issues, as [Fetch Closed Issues](#fetch-closed-issues) or [Fetch Selected Closed Issues](#fetch-selected-closed-issues) saves them, and the issue-links file [Capture Issue Links](#capture-issue-links) wrote from them.
 
-- The sweep audits every closed issue in the collection, so the collection sets its scope. Criteria are read as [Check Issue Closure](#check-issue-closure) reads them. Open issues and pull requests in the collection are skipped.
-- `--issue-links` takes the issue-links file alone; a [Write Development Snapshot](#write-development-snapshot) file, or any other shape, is refused as unreadable evidence.
+- The sweep audits every closed issue in the collection, so the collection sets its scope. Each issue is judged as [Check Issue Closure](#check-issue-closure) judges it. Open issues and pull requests in the collection are skipped.
+- `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
 - Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:
   - `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
   - `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
@@ -420,43 +416,15 @@ gh api --method PATCH 'repos/<owner>/<repo>/issues/<issue-number>' -f state=clos
 gh api --method PATCH 'repos/<owner>/<repo>/issues/943' -f state=closed -f state_reason=completed --jq .state
 ```
 
-### Write Development Snapshot
-
-Saves an observed Development field and repository setting as JSON.
-
-**Inputs:** Repository and issue number, observed links, completeness result, confirmed or unknown auto-closing setting and destination file.
-
-Write the supplied values in this shape. Substitute the issue number as a JSON integer, completeness as a boolean, and the auto-closing setting as a boolean or `null` when unknown. Supply every observed pull request URL, or an empty array when there are none. Preserve incomplete evidence as incomplete.
-
-```text
-{
-  "repo": "<owner>/<repo>",
-  "number": <issue-number>,
-  "complete": <complete>,
-  "auto_close_issues": <auto-close-issues>,
-  "pull_requests": ["<pull-request-url>"]
-}
-```
-
-**Example payload:**
-
-```json
-{
-  "repo": "owner/repo",
-  "number": 943,
-  "complete": true,
-  "auto_close_issues": false,
-  "pull_requests": ["https://github.com/owner/repo/pull/980"]
-}
-```
-
 ### Capture Issue Links
 
 Writes each issue's Development pull requests, read from the issue end of the relation, keyed by issue number.
 
 **Inputs:** One issue's JSON or one repository's issue collection, as [Fetch Tracker Issue](#fetch-tracker-issue) or [Fetch All Issues](#fetch-all-issues) saves it, and destination file.
 
-- Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
+**REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
+
+- The snapshot names the repository its issues belong to. Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
 - Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
 - Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.

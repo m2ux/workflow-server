@@ -2,6 +2,8 @@
 
 The draft pull request and body that present one epic base's delivered changes for review.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -29,7 +31,7 @@ Read these files first.
    Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the published review.
    - Compare its complete body with the published file.
    - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the current epic, refreshed review and task-merge records, the project checkout and the fetched epic bases.
-   - Retain its cited-versus-actual merge findings with the review identity. The session recording each task merge owns this update.
+   - Retain its cited-versus-actual merge findings and its Changes path findings with the review identity. The session recording each task merge owns this update.
 5. **Review the integration.**
    When the caller requests handoff and supplies confirmed epic readiness:
    - Run [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review) with the fresh review metadata, checkout, epic criteria, validation evidence and planning destination.

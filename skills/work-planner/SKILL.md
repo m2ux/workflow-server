@@ -1,7 +1,7 @@
 ---
 name: work-planner
 description: >-
-  Plans and maintains agent-engineering work on GitHub: proposals, initiatives, epics, tasks and theme boards. Use to propose work or scope a problem; plan or break down work; raise, restructure, align or renumber an initiative or epic; check issue format, criteria, dependencies or delivery; fold review findings into issues; sync completed work and close what is finished; advance a board, decide what moves to ready or what to pick up next; deliver board work or dispatch ready tasks; explain a pull request, write its architecture overview or diagram its changes; hoist, triage or find a home for orphan issues; produce a standup or Slack status update; or revise the work-planner skill itself.
+  Plans and maintains agent-engineering work on GitHub: proposals, initiatives, epics, tasks and theme boards. Use to propose work or scope a problem; plan or break down work; raise, restructure, align or renumber an initiative or epic; check issue format, criteria, dependencies or delivery; fold review findings into issues; sync completed work and close what is finished; advance a board, decide what moves to ready or what to pick up next; deliver board work or dispatch ready tasks; understand or explain a pull request, write its architecture overview or diagram its changes; hoist, triage or find a home for orphan issues; produce a standup or Slack status update; or revise the work-planner skill itself.
 ---
 
 # Work Planner
@@ -83,6 +83,13 @@ Select the mode as appropriate to fulfill the user request:
   Once per session, before the first `gh` call, unset `GH_TOKEN` and `GITHUB_TOKEN` so `gh` uses its keyring login. Where shell state does not persist between commands, confirm instead that neither is set in the shell profile.
 - **Repository.**
   `gh` resolves `{owner}/{repo}` from the git remote of the directory it runs in, so run `gh` commands inside a checkout of the repository that holds the issues. `{other}` is a further repository the board's issues live in.
+- **Checkouts.**
+  A command that runs git or GitNexus where it stands declares `**Acts on:** the checkout it runs in.`, and each call to it, or to an operation running it, names one as `the <name> checkout`. Each mode and protocol declares `**Runs in:** the <name> checkout.`, as does a procedure subsection running elsewhere.
+  - `project`  The repository's main working tree.
+  - `epic base`  An epic base's worktree.
+  - `unit`  A unit's task worktree.
+  - `engineering`  The engineering branch's worktree.
+  - `review`  A pull request's detached review worktree.
 - **Bodies.**
   - Bodies and long comments always go through a file (`-F body=@file`), never inline, which avoids quoting.
   - **Example.**  workflow-server's dynamic-shell restrictions deny a body inlined in the command.

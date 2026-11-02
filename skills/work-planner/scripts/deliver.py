@@ -8,7 +8,7 @@ Usage:
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
-  python3 deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
+  python3 deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
 requests as sync.py reads them. links.json holds the closing issue references GitHub holds for those
@@ -20,7 +20,10 @@ delivered, a link to a planning folder is work a session holds, and anything els
 available when its epic is Ready or In Progress and the prerequisite epics its initiative row names
 are completed, its Done cell carries no tick, its id is free, and every entry in its own Depends on
 cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
-one epic start in the order that epic's own graph sets, whatever its siblings wait on. Tasks that
+one epic start in the order that epic's own graph sets, whatever its siblings wait on. An entry
+naming another epic's row is delivered when that row is and each output it delivered is available
+at this epic's base in the repository --project locates, as board.Outputs reads it; that epic's
+other rows and its closure gate nothing. Tasks that
 name each other in Joins are one unit, and a unit is one session's work.
 
 Printed: a unit line for each available unit, with the record folder its ids and Description give
@@ -28,7 +31,9 @@ it and a branch and worktree for each epic base it changes, suffixed with the ba
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
 linked work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
-dependencies are not delivered or whose joined task is unavailable; a merge line for an open pull
+dependencies are not delivered or whose joined task is unavailable; an output line for each
+producer output a row naming another epic's row was read for, naming the output, the consumer
+commit and whether it is available there; a merge line for an open pull
 request that targets the epic base when its test plan has passed; and an unresolved line for an
 issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
@@ -43,10 +48,13 @@ its session writes the work item after dispatch, so its unit works on every epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
 DISPATCH jurisdiction, which refuses any other Status and a removal; every jurisdiction refuses a task set In Review.
 
---reserve sets the record folder as each row's single link. The record README links its work item.
---release frees the row by replacing that folder link with its work-item file link. Both write the
-body to --fix and refuse a row linking a pull request or commit. The planning URL comes from
---records or an existing planning link in the epic.
+--reserve and --release act on whole units: a call naming some rows of a unit and not the others is
+refused. --reserve sets one record folder as the single link of every row in a unit, the folder the
+unit's first task id and Description give it, which is the folder the unit line names. --release frees
+each row by replacing that folder link with its work-item file link, the task id in lower case inside
+the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not
+link it. Both write the body to --fix and refuse a row linking a pull request or commit. The planning
+URL comes from --records or an existing planning link in the epic.
 """
 from agent_review import epic_check, load_records
 
@@ -58,7 +66,7 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, Resolution, rows
+from board import Board, Outputs, Resolution, rows
 from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
@@ -74,6 +82,7 @@ TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
 WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
+FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
 ON_BRANCH = re.compile(r'([^:/\s]+):\S')
 STARTED = ('Ready', 'In Progress')
 WORKTREES = '.worktrees'
@@ -308,7 +317,7 @@ def survey(args: argparse.Namespace) -> int:
     if declared:
         print(f'source: {declared.source}')
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
-    board = Board(issues, [], home, prs)
+    board = Board(issues, [], home, prs, Outputs(args.project))
     epics: dict[str, dict[str, tuple[str, int]]] = {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
@@ -372,6 +381,8 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
+    for line in dict.fromkeys(board.outputs.lines):
+        print(f'  output {line}')
     merging = ready_merges(issues, prs, lived)
     for line in merging:
         print(line)
@@ -421,6 +432,36 @@ def base_url(header: list[str], body: list[list[str]], given: str | None) -> str
     return given.rstrip('/')
 
 
+def whole_units(header: list[str], data: list[list[str]], wanted: list[str]) -> list[list[str]]:
+    """The units the wanted tasks make, refusing a unit the call names only part of."""
+    every = {row_id(id_cell(header, r)): '' for r in data if row_id(id_cell(header, r))}
+    found = []
+    for unit in units(header, data, every):
+        named = [task for task in unit if task in wanted]
+        if not named:
+            continue
+        if left := [task for task in unit if task not in wanted]:
+            sys.exit(f"{', '.join(named)}: joined with {', '.join(left)}, which the call leaves out; "
+                     'a unit is held and released whole')
+        found.append(unit)
+    return found
+
+
+def record_file(checkout: str, folder: str, task: str) -> str:
+    """Why the record the folder URL names, in the checkout, cannot be linked for the task, or ''."""
+    found = FOLDER.search(folder)
+    if not found:
+        return f'{folder} names no path in the records checkout'
+    record = Path(checkout) / found[1]
+    name = f'{task.lower()}.md'
+    if not (record / name).is_file():
+        return f'the record {found[1]} holds no {name}'
+    readme = record / 'README.md'
+    if not readme.is_file() or not re.search(rf'\]\((?:\./)?{re.escape(name)}\)', readme.read_text()):
+        return f'the README of {found[1]} does not link {name}'
+    return ''
+
+
 def edit(args: argparse.Namespace) -> int:
     issue = json.loads(Path(args.epic).read_text())
     parsed = tags(issue.get('title') or '')
@@ -436,31 +477,40 @@ def edit(args: argparse.Namespace) -> int:
     when = args.date or day.today().isoformat()
     at = header.index('Task') if 'Task' in header else 0
     wanted = [t.strip() for t in (args.reserve or args.release).split(',') if t.strip()]
+    by_task = {row_id(id_cell(header, r)): r for r in data if row_id(id_cell(header, r))}
+    for task in wanted:
+        if task not in by_task:
+            sys.exit(f'[I{initiative}:E{epic}] has no row {task}')
+        if in_flight(id_cell(header, by_task[task])):
+            sys.exit(f'{task}: its id links a pull request or a commit')
+    if args.release and not args.engineering:
+        sys.exit('--release needs --engineering, the checkout holding the planning records')
     records = base_url(header, data, args.records) if args.reserve else ''
     changed = []
-    for task in wanted:
-        r = next((r for r in data if row_id(id_cell(header, r)) == task), None)
-        if r is None:
-            sys.exit(f'[I{initiative}:E{epic}] has no row {task}')
-        ident = id_cell(header, r)
-        if in_flight(ident):
-            sys.exit(f'{task}: its id links a pull request or a commit')
-        held = reservation(ident)
+    for unit in whole_units(header, data, wanted):
         if args.reserve:
-            if held:
-                sys.exit(f'{task}: already held by {held}')
+            for task in unit:
+                if held := reservation(id_cell(header, by_task[task])):
+                    sys.exit(f'{task}: already held by {held}')
+            first = by_task[unit[0]]
+            ident = id_cell(header, first)
             found = ISSUE_URL.search(next((href for href in hrefs(ident) if ISSUE_URL.search(href)), ''))
             ref = int(found[1]) if found else issue['number']
-            name = names(ident_tag(initiative, epic, task),
-                         cell(header, r, 'Description').split(' →', 1)[0].strip(), ref, when)
+            name = names(ident_tag(initiative, epic, unit[0]),
+                         cell(header, first, 'Description').split(' →', 1)[0].strip(), ref, when)
             url = f'{records}/{name["folder"]}/'
-            r[at] = f'[{task}]({url})'
-            changed.append(f'{task} → {url}')
+            for task in unit:
+                by_task[task][at] = f'[{task}]({url})'
+                changed.append(f'{task} → {url}')
         else:
-            if not held:
-                sys.exit(f'{task}: its id links no planning folder')
-            r[at] = f'[{task}]({held.rstrip("/")}/{task.lower()}.md)'
-            changed.append(f'{task} released from {held}')
+            for task in unit:
+                held = reservation(id_cell(header, by_task[task]))
+                if not held:
+                    sys.exit(f'{task}: its id links no planning folder')
+                if problem := record_file(args.engineering, held, task):
+                    sys.exit(f'{task}: {problem}')
+                by_task[task][at] = f'[{task}]({held.rstrip("/")}/{task.lower()}.md)'
+                changed.append(f'{task} released from {held}')
     lines[start + 2:end] = [row(r) for r in data]
     Path(args.fix).write_text(join_sections(preamble, sections))
     action = 'reserved' if args.reserve else 'released'
@@ -483,7 +533,7 @@ def main() -> int:
     parser.add_argument('--date', help='the day the record is opened, today by default')
     parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branches')
     parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
-    parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row links')
+    parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row or released row links')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')

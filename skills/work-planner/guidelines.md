@@ -42,9 +42,9 @@ These rules apply to mode procedures and artifact operations.
 - **Input labels.**
   Artifact operation and command input declarations start with the bold label **Inputs:**. The input description uses normal text.
 
-- **One home per rule.**
-  A rule is stated once. Its home is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
-- **Terms.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
+- **Rule homes.**
+  A rule's [one home](../guidelines.md#prose) is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
+- **Scheme.**  The scheme is agent-engineering: an agent-engineering prefix, title, issue or table.
 - **Examples.**
   A name, label, branch, path or board that belongs to one project is an example. The rule states what holds for every project.
 - **Consumers.**
@@ -60,7 +60,7 @@ These rules apply to mode procedures and artifact operations.
 These rules govern command and access specifications. Procedural operations follow Procedure and Artifacts below.
 
 - **Spec layout.**
-  A command specification opens with one line on what it does. Its inputs and parameter conditions follow, then its command block or access instructions. Specifications have no numbered steps or bold action labels. The calling operation or mode procedure states when the command runs and what it passes; action preconditions and refusals belong to the governing step.
+  A command specification takes the [shared spec layout](../guidelines.md#commands), and access instructions stand where a command has no block. Specifications have no numbered steps or bold action labels. The calling operation or mode procedure states when the command runs and what it passes; action preconditions and refusals belong to the governing step.
 - **One command.**
   Each specification exposes one command or access action. Put sequencing, branching, repetition and readback in an artifact operation or mode procedure. A working-directory prefix and output-filter pipeline belong to the command they serve. Optional flags for one command share its specification.
 - **One home.**

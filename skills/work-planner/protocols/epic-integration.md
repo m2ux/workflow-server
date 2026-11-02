@@ -2,6 +2,8 @@
 
 One epic base merged into its long-lived branch, on current branch, epic and pull-request evidence.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -39,8 +41,7 @@ Read these files first.
    - Run [Record Epic Review](../artifacts/board-delivery.md#record-epic-review) requesting In Review, with the epic, board identity, fresh pull request records and published agent review records. Report an absent board item; integration is not gated on board membership.
    - Follow [Fetch Merge Readiness](../artifacts/pull-request.md#fetch-merge-readiness) for the exact current head and target. A conflict, failed or pending check, unmet epic condition or incomplete evidence blocks handoff; run Hold Epic Review and Record Epic Review requesting In Progress before returning that blocker. Pending required human approval is returned to the next step as a human handoff, with merge blocked.
 3. **Merge or hand off.**
-   Refresh the review metadata and run [Check Agent Review](../artifacts/agent-review.md#check-agent-review) with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding.
-   Pass the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence to [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request) with delivery kind epic, without asking for further confirmation.
+   Refresh the review metadata and run [Check Agent Review](../artifacts/agent-review.md#check-agent-review) with the published records; any failure returns to refresh and validate, withdrawing ready and In Review before resolving the finding. Pass the confirmed epic readiness, verified head, target requirements, repository prerequisite and passing evidence to [Merge Delivery Pull Request](../artifacts/pull-request.md#merge-delivery-pull-request) with delivery kind epic, without asking for further confirmation.
    - Return its handoff when a human reviewer must merge. A changed head requires fresh verification; a merge refusal returns to the readiness checks, and a repeated refusal is reported without retrying.
 4. **Confirm the result.**
    Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) to confirm the merged state, verified head, target and merge commit.

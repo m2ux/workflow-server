@@ -2,6 +2,8 @@
 
 Brings the chosen standalone issues into the agent-engineering structure, or leaves them open according to the user's decision.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -22,6 +24,7 @@ The main path meets [Outcomes](#outcomes).
 2. **List candidates.**
    Call [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates) with the complete issue collection.
    - Use its candidates and available destinations for triage.
+   - A declared throwaway target, an issue carrying a `throwaway:*` label, is not a candidate: it is a fixture a write check changes, so it stays open and belongs in no initiative.
 3. **Triage.**
    Read each candidate's body and discussion through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue), with the initiative and epic bodies whose themes or criteria it touches.
    - Supply that evidence and planning-record references to [Draft Issue Placement](../artifacts/placement.md#draft-issue-placement) for each option.

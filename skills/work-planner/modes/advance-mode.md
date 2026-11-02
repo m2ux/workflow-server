@@ -2,6 +2,8 @@
 
 Decides which initiatives and epics on a theme board are underway and which are next, from current recorded delivery.
 
+**Runs in:** the project checkout.
+
 ## Prerequisites
 
 Read these files first.
@@ -76,5 +78,4 @@ The main path meets [Outcomes](#outcomes).
 - **A parallel work map.**
   Initiatives ranked with the same priority run together. One left unordered waits.
 - **Epics follow the initiative.**
-  On an initiative that is next or underway, the epics planned to start together can start, and an epic with task work under way stays underway.
-  An initiative returning to Backlog takes its unstarted epics with it, and work under way or in review waits for the user to reconcile it.
+  On an initiative that is next or underway, the epics planned to start together can start, and an epic with task work under way stays underway. An initiative returning to Backlog takes its unstarted epics with it, and work under way or in review waits for the user to reconcile it.

@@ -25,7 +25,7 @@ One delivery plan from supplied board and delivery evidence.
 
 ### Work Units
 
-A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. One unit is one session's work, delivered by one pull request into each epic base it changes. Its task ids and Descriptions determine the planning-folder identity, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.
+A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.
 
 ### Report Lines
 
@@ -33,6 +33,7 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero.
 - A `hold` line names a row a session holds and the record it links.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
+- An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request whose test plan has passed and the epic base it targets.
 - An unresolved issue reference identifies missing dependency evidence.
@@ -51,6 +52,7 @@ Computes available work from supplied board and delivery snapshots.
 
 - `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
 - `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.
+- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
 

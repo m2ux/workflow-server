@@ -62,17 +62,63 @@ class RequiredLinks(unittest.TestCase):
 
 
 class RowPrerequisites(unittest.TestCase):
-    def test_cross_repository_task_waits_for_its_epic(self):
+    def test_cross_repository_task_waits_for_its_output_to_reach_its_long_lived_branch(self):
+        upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other', body=epic_body(
+            (f"[W01]({url('pull', 9, 'o/other')})", 'Produce', ''), ('W02', 'Unrelated', '')))
+        key = ('o/r', 3)
+        dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other',
+                    base='i02/e00/main', head='i02/e00/w01-produce')]
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
+        self.assertIn('consumer: I02:E00:W01 o/other#9 absent: o/other i02/e00/main has not merged into main since',
+                      board.outputs.lines)
+        pulls.append(pr(12, '[I02:E00] Producer', merged='2026-01-02T00:00:00Z', repo='o/other',
+                        base='main', head='i02/e00/main'))
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.MET)
+        self.assertEqual(upstream['state'], 'open')
+        self.assertIn('consumer: I02:E00:W01 o/other#9 available on o/other main by o/other#12',
+                      board.outputs.lines)
+
+    def test_a_cross_repository_output_merged_into_a_task_branch_is_unverified(self):
         upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
                          body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
         key = ('o/r', 3)
         dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
         consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
-        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other')]
+        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-01T00:00:00Z', repo='o/other',
+                    base='i02/e00/w02-stack', head='i02/e00/w01-produce')]
         board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
         self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
-        upstream['state'], upstream['state_reason'] = 'closed', 'completed'
-        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.MET)
+        self.assertEqual(board.outputs.lines, ['consumer: I02:E00:W01 o/other#9 unverified: it merged into '
+                                               'i02/e00/w02-stack, which is neither an epic base nor a '
+                                               'long-lived branch'])
+
+    def test_an_integration_merged_before_the_delivery_does_not_carry_it(self):
+        upstream = issue(2, '[I02:E00] Producer: Work', repo='o/other',
+                         body=epic_body((f"[W01]({url('pull', 9, 'o/other')})", 'Produce', '')))
+        key = ('o/r', 3)
+        dependency = f"[I02:E00:W01]({url('issues', 2, 'o/other')})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        pulls = [pr(9, '[I02:E00] Produce', merged='2026-01-03T00:00:00Z', repo='o/other', base='i02/e00/main'),
+                 pr(12, '[I02:E00] Producer', merged='2026-01-02T00:00:00Z', repo='o/other',
+                    base='main', head='i02/e00/main')]
+        board = Board({('o/other', 2): upstream, key: consumer}, [], 'o/r', pulls)
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
+
+    def test_a_same_repository_output_is_unverified_without_a_checkout(self):
+        key = ('o/r', 3)
+        producer = issue(2, '[I01:E00] Producer: Work', 'closed',
+                         body=epic_body((f"[W01]({url('pull', 9)})", 'Produce', '')))
+        dependency = f"[E00:W01]({url('issues', 2)})"
+        consumer = issue(3, '[I01:E01] Consumer: Work', body=epic_body(('W01', 'Consume', dependency)))
+        pulls = [pr(9, '[I01:E00] Produce', merged='2026-01-01T00:00:00Z', base='i01/e00/main')]
+        board = Board({('o/r', 2): producer, key: consumer}, [], 'o/r', pulls)
+        self.assertIs(board.met(dependency, key, {}, 'consumer'), Resolution.UNMET)
+        self.assertEqual(board.outputs.lines, ['consumer: E00:W01 #9 unverified: no checkout to read it in'])
+        self.assertEqual(board.unresolved, [])
 
     def test_missing_prerequisite_is_reported_and_blocks(self):
         key = ('o/r', 3)

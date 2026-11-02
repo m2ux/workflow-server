@@ -95,6 +95,11 @@ class RenumberEpics(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertIn('[E02](https://github.com/o/r/issues/946)', after['initiative'])
 
+    def test_an_initiative_pull_request_naming_no_epic_does_not_hold_the_map(self):
+        code, _, _, after = epics('6:2', prs=[pr(950, '[I07] Work')])
+        self.assertEqual(code, 0)
+        self.assertIn('[E02](https://github.com/o/r/issues/946)', after['initiative'])
+
     def test_a_pull_request_on_an_epic_its_map_keeps_does_not_hold_the_map(self):
         code, _, _, after = epics('6:6,1:2', prs=[pr(950, '[I07:E06] Last')])
         self.assertEqual(code, 0)

@@ -695,12 +695,14 @@ class EpicClose(unittest.TestCase):
         self.assertNotIn('unmerged', out)
         self.assertIn('closable: no (unticked AC1)', out)
 
-    def test_the_first_merged_task_opens_the_epic_base_as_a_draft(self):
+    def test_a_base_no_revision_names_is_unevaluable_rather_than_draft(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
                     base='i01/e00/main', head='i01/e00/w01-work')]
         out = self.run_sync(body, pulls)
-        self.assertIn('draft: i01/e00/main', out)
+        self.assertIn('unevaluable: draft i01/e00/main: no --revision names it, '
+                      'so what it carries against main is unread', out)
+        self.assertNotIn('draft: ', out)
         self.assertNotIn('unmerged', out)
         self.assertIn('closable: no (undelivered W02)', out)
 
@@ -755,6 +757,7 @@ class PinnedEpicBase(unittest.TestCase):
             root = Path(tmp)
             checkout, linked = root / 'checkout', root / 'linked'
             repository(checkout, 'docker', 'main')
+            git(checkout, 'branch', 'workflows')
             git(checkout, 'worktree', 'add', str(linked), '-b', 'i01/e00/workflows')
             base = commit_branches(linked, 'docker', 'main', 'workflows')
             (checkout / 'config' / 'branches').write_text('docs\n')
@@ -784,7 +787,9 @@ class PinnedEpicBase(unittest.TestCase):
     def test_the_long_lived_revision_does_not_know_the_base(self):
         body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
         out, base = self.run_sync(body, self.pulls(), 'main')
-        self.assertNotIn('i01/e00/workflows', out)
+        self.assertNotIn('draft:', out)
+        self.assertNotIn('unmerged:', out)
+        self.assertIn('target: #950 targets i01/e00/workflows', out)
         self.assertNotIn(base, out)
         self.assertIn('closable: yes', out)
 
@@ -921,7 +926,7 @@ class LongLivedNames(unittest.TestCase):
 
 
 CHECKS = ('epic-base pull requests set apart from task deliveries', 'unmerged epic bases', 'draft epic bases',
-          'review pull request References', 'review pull request issue links')
+          'review pull request References', 'review pull request Changes paths', 'review pull request issue links')
 
 
 class UnavailableDeclaration(unittest.TestCase):
@@ -1463,8 +1468,328 @@ class HistoricalDelivery(unittest.TestCase):
                 result, _ = self.inspect(record, [pr(950, prefix + ' Work', merged='2026-09-01T00:00:00Z')])
                 self.assertIn('retitle: #950 → [I01:E00] Work', result.stdout)
 
+    def test_a_linked_task_titled_pull_request_is_retitled_once(self):
+        record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
+        result, _ = self.inspect(record, [pr(950, '[I01:E00:W01] Work', merged='2026-09-01T00:00:00Z')])
+        self.assertEqual(result.stdout.count('retitle: #950'), 1, result.stdout)
+
     def test_another_initiatives_prefix_is_a_conflict(self):
         record = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({url("pull", 950)})', 'Work', '')))
         result, _ = self.inspect(record, [pr(950, '[I02] Work', merged='2026-09-01T00:00:00Z')])
         self.assertNotIn('retitle:', result.stdout)
         self.assertIn('conflict:', result.stdout)
+
+
+class BranchContract(unittest.TestCase):
+    """Task pull requests target their epic's base, and an integration pull request merges that
+    base into the long-lived branch it names."""
+
+    def run_sync(self, pulls: list[dict], body: str = '', number: int = 2, which: str = '01:E00',
+                 project: bool = True) -> str:
+        epic = issue(number, f'[I{which}] First: Epic',
+                     body=body or epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            names = declared(root, 'main', 'workspace') if project else []
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []), *names)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_the_valid_routes_report_no_target(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(951, '[I01:E00] Work: workspace', base='i01/e00/workspace',
+                                head='i01/e00/w01-work-workspace'),
+                             pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                                base='main', head='i01/e00/main')])
+        self.assertNotIn('target:', out)
+
+    def test_a_task_pull_request_targeting_a_long_lived_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='main', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
+
+    def test_a_task_branch_for_one_of_several_bases_names_its_own(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work-workspace'),
+                             pr(951, '[I01:E00] Work: main', base='i01/e00/main', head='i01/e00/w01-work-main')])
+        self.assertIn('target: #950 targets main; it targets i01/e00/workspace', out)
+
+    def test_a_single_branch_slug_ending_in_a_branch_name_names_no_base(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='i01/e00/w03-other', head='i01/e00/w04-tidy-workspace'),
+                             pr(951, '[I01:E00] Document', base='i01/e00/w03-other',
+                                head='i01/e00/w05-document-main')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+        self.assertIn('target: #951 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_sibling_ending_in_no_long_lived_branch_confirms_no_slug_word(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='i01/e00/w03-other', head='i01/e00/w04-tidy-workspace'),
+                             pr(951, '[I01:E00] Tidy docs', base='i01/e00/main', head='i01/e00/w04-tidy-docs')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_head_without_a_slug_names_no_branch_by_its_name(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w03-other', head='main'),
+                             pr(951, '[I01:E00] Other', base='i01/e00/main', head='workspace')])
+        self.assertIn('target: #950 targets i01/e00/w03-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_single_branch_slug_ending_in_a_branch_name_yields_to_its_target(self):
+        out = self.run_sync([pr(950, '[I01:E00] Tidy', base='main', head='i01/e00/w04-tidy-workspace')])
+        self.assertIn('target: #950 targets main; it targets i01/e00/main', out)
+
+    def test_a_target_naming_no_long_lived_branch_names_each_base(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/w02-other', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e00/w02-other; it targets one of i01/e00/main or '
+                      'i01/e00/workspace', out)
+
+    def test_a_task_pull_request_targeting_another_epics_base_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e01/main', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e01/main', out)
+
+    def test_a_task_pull_request_targeting_an_undeclared_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/docs', head='i01/e00/w01-work')])
+        self.assertIn('target: #950 targets i01/e00/docs', out)
+
+    def test_an_integration_pull_request_into_another_long_lived_branch_is_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(980, '[I01:E00] First', base='workspace', head='i01/e00/main')])
+        self.assertIn('target: #980 merges i01/e00/main into workspace; it targets main', out)
+
+    def test_an_integration_into_the_wrong_branch_leaves_the_base_unmerged(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        out = self.run_sync([pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                                base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z',
+                                base='workspace', head='i01/e00/main')], body)
+        self.assertIn('target: #980 merges i01/e00/main into workspace', out)
+        self.assertIn('closable: no (unmerged i01/e00/main)', out)
+
+    def test_a_pull_request_closed_without_merging_is_not_reported(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', state='closed', base='main', head='i01/e00/w01-work')])
+        self.assertNotIn('target:', out)
+
+    def test_an_epic_integrates_while_another_epic_is_incomplete(self):
+        body = ticked(epic_body((f"[W01]({url('pull', 960)})", 'Work', '')))
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='i01/e00/main', head='i01/e00/w01-work'),
+                             pr(960, '[I01:E01] Other', merged='2026-09-01T00:00:00Z',
+                                base='i01/e01/main', head='i01/e01/w01-other'),
+                             pr(981, '[I01:E01] Second', merged='2026-09-02T00:00:00Z',
+                                base='main', head='i01/e01/main')], body, number=3, which='01:E01')
+        self.assertNotIn('target:', out)
+        self.assertIn('closable: yes', out)
+
+    def test_the_contract_is_not_checked_without_the_long_lived_branches(self):
+        out = self.run_sync([pr(950, '[I01:E00] Work', base='main', head='i01/e00/w01-work')], project=False)
+        self.assertNotIn('target:', out)
+        self.assertIn('not checked: pull request targets', out)
+
+
+class EpiclessTitles(unittest.TestCase):
+    """An initiative pull request whose title names no epic is reported."""
+
+    PULLS = [pr(950, '[I01] Shared work'), pr(951, '[I01:E00:W01] Task-titled work', merged='2026-09-01T00:00:00Z'),
+             pr(952, '[I01:E00] Named work'), pr(953, '[I02] Another initiative'),
+             pr(954, '[I010] Near-miss prefix'), pr(955, '[I01:E1] Short epic id'),
+             pr(956, '[I01: E00] Spaced epic id'), pr(957, '[I01 E00] Unseparated epic id')]
+
+    def run_sync(self, record: dict, *args: str) -> str:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in self.PULLS))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def assert_epicless(self, out: str) -> None:
+        self.assertIn('no epic: #950 [I01] Shared work', out)
+        self.assertNotIn('no epic: #951', out)
+        self.assertIn('retitle: #951 → [I01:E00] Task-titled work', out)
+        self.assertNotIn('no epic: #952', out)
+        self.assertNotIn('no epic: #953', out)
+        self.assertNotIn('#954', out)
+        for line in ('#955 [I01:E1] Short epic id', '#956 [I01: E00] Spaced epic id',
+                     '#957 [I01 E00] Unseparated epic id'):
+            self.assertIn(f'no epic: {line}', out)
+
+    def test_the_epic_sync_reports_them(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out = self.run_sync(issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', ''))),
+                                '--links', links_file(Path(tmp), []))
+        self.assert_epicless(out)
+
+    def test_the_initiative_sync_reports_them(self):
+        initiative = issue(1, '[I01] First: Initiative', body=initiative_body((f"[E00]({url('issues', 2)})", '')))
+        out = self.run_sync(initiative)
+        self.assert_epicless(out)
+
+
+class DraftBase(unittest.TestCase):
+    """An epic base is draft only where it carries a commit its long-lived branch lacks.
+
+    The remote-tracking refs origin/main and origin/i01/e00/main stand where a fetch leaves them, and
+    the base is named to the run as origin/i01/e00/main. fork/i01/e00/main stands beside the base on a
+    remote that holds no long-lived branch. W02 is undelivered, so the epic is incomplete."""
+
+    BODY = ticked(epic_body((f"[W01]({url('pull', 950)})", 'Work', ''), ('W02', 'More', '')))
+    TASK = pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main', head='i01/e00/w01-work')
+
+    def run_sync(self, base_ahead: int, main_ahead: int, pulls: list[dict] = (),
+                 revisions: tuple[str, ...] = ('origin/i01/e00/main',)) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=self.BODY)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            checkout = root / 'checkout'
+            start = repository(checkout, 'docker', 'main')
+            for ref, ahead in (('i01/e00/main', base_ahead), ('main', main_ahead)):
+                git(checkout, 'checkout', '-q', '-B', f'local/{ref}', start)
+                for n in range(ahead):
+                    git(checkout, 'commit', '--allow-empty', '-m', f'{ref} {n}')
+                git(checkout, 'update-ref', f'refs/remotes/origin/{ref}', 'HEAD')
+            git(checkout, 'update-ref', 'refs/remotes/fork/i01/e00/main', 'origin/i01/e00/main')
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in [self.TASK, *pulls]))
+            args = ['--project', str(checkout)]
+            for revision in revisions:
+                args += ['--revision', revision]
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path), '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout
+
+    def test_a_base_level_with_its_branch_is_not_draft(self):
+        out = self.run_sync(base_ahead=0, main_ahead=0)
+        self.assertNotIn('draft', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_a_base_behind_its_branch_is_not_draft(self):
+        out = self.run_sync(base_ahead=0, main_ahead=3)
+        self.assertNotIn('draft', out)
+
+    def test_a_base_ahead_of_its_branch_is_draft(self):
+        out = self.run_sync(base_ahead=1, main_ahead=0)
+        self.assertIn('draft: i01/e00/main', out)
+        self.assertNotIn('unevaluable:', out)
+
+    def test_a_base_ahead_of_and_behind_its_branch_is_draft(self):
+        self.assertIn('draft: i01/e00/main', self.run_sync(base_ahead=1, main_ahead=3))
+
+    def test_a_merged_review_leaves_a_level_base_without_a_draft(self):
+        review = pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/e00/main')
+        self.assertNotIn('draft', self.run_sync(base_ahead=0, main_ahead=0, pulls=[review]))
+
+    def test_a_base_that_gains_a_commit_after_its_review_merged_is_draft_again(self):
+        review = pr(980, '[I01:E00] First', merged='2026-09-02T00:00:00Z', base='main', head='i01/e00/main')
+        self.assertIn('draft: i01/e00/main', self.run_sync(base_ahead=1, main_ahead=0, pulls=[review]))
+
+    def test_an_open_review_withholds_the_draft(self):
+        review = pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main')
+        self.assertNotIn('draft:', self.run_sync(base_ahead=1, main_ahead=0, pulls=[review]))
+
+    def test_a_long_lived_branch_absent_beside_the_base_is_unevaluable(self):
+        out = self.run_sync(base_ahead=1, main_ahead=0, revisions=('fork/i01/e00/main',))
+        self.assertIn('unevaluable: draft i01/e00/main: fork/main resolves to no commit', out)
+        self.assertNotIn('draft: ', out)
+
+    def test_a_base_in_another_repository_is_unevaluable(self):
+        task = pr(951, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main',
+                  head='i01/e00/w01-work', repo='o/other')
+        out = self.run_sync(base_ahead=0, main_ahead=0, pulls=[task])
+        self.assertIn('unevaluable: draft o/other:i01/e00/main: is in o/other, not the --project repository', out)
+
+
+def changes_body(*spans: str) -> str:
+    """A review pull request body whose Changes bullets name the given code spans."""
+    lines = ['## Overview', '', 'The base carries the epic.', '', '## Changes', '', '### Review Bodies', '']
+    lines += [f'- **Names `{span}`.**\n  The behaviour as it is.' for span in spans]
+    return '\n'.join(lines + ['', '## References', '', f"- **R1.** [Work]({url('pull', 950)}) — a task delivery.", ''])
+
+
+class ReviewChanges(unittest.TestCase):
+    """A review body's Changes paths measured against the head commit of the base it fronts.
+
+    The head commit holds config/branches, skills/work-planner/scripts/sync.py and docs/guide.md."""
+
+    def run_sync(self, body: str, sha: str | None = None) -> str:
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            args = declared(root, 'docker', 'main', 'workflows')
+            checkout = root / 'checkout'
+            for path in ('skills/work-planner/scripts/sync.py', 'docs/guide.md'):
+                (checkout / path).parent.mkdir(parents=True, exist_ok=True)
+                (checkout / path).write_text('text\n')
+            git(checkout, 'add', '.')
+            git(checkout, 'commit', '-m', 'files')
+            head = git(checkout, 'rev-parse', 'HEAD')
+            review = pr(980, '[I01:E00] First', draft=True, base='main', head='i01/e00/main', body=body)
+            review['head']['sha'] = head if sha is None else sha
+            pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z',
+                        base='i01/e00/main', head='i01/e00/w01-work'), review]
+            issue_path, pulls_path = root / 'issue.json', root / 'prs.json'
+            issue_path.write_text(json.dumps(epic))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(issue_path), '--prs', str(pulls_path),
+                       '--links', links_file(root, []), *args)
+            self.assertEqual(done.returncode, 0, done.stderr)
+            return done.stdout.replace(head[:9], '<head>')
+
+    def test_a_path_absent_from_the_head_is_named(self):
+        out = self.run_sync(changes_body('skills/work-planner/references/command-conventions.md'))
+        self.assertIn('changes: i01/e00/main (#980) names '
+                      'skills/work-planner/references/command-conventions.md, absent at <head>', out)
+
+    def test_paths_standing_at_the_head_are_silent(self):
+        out = self.run_sync(changes_body('skills/work-planner/scripts/sync.py', './docs/guide.md#usage'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_bare_file_name_stands_anywhere_in_the_tree(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('sync.py')))
+        out = self.run_sync(changes_body('command-conventions.md'))
+        self.assertIn('changes: i01/e00/main (#980) names command-conventions.md, absent at <head>', out)
+
+    def test_a_span_that_names_no_file_is_not_measured(self):
+        out = self.run_sync(changes_body('i01/e00/main', 'sync.py --names', '*.md', '1.2.3', 'Makefile'))
+        self.assertNotIn('changes:', out)
+
+    def test_an_extensionless_path_absent_from_the_head_is_named(self):
+        out = self.run_sync(changes_body('skills/work-planner/scripts/missing-tool', 'config/missing'))
+        self.assertIn('changes: i01/e00/main (#980) names skills/work-planner/scripts/missing-tool, absent at <head>', out)
+        self.assertIn('changes: i01/e00/main (#980) names config/missing, absent at <head>', out)
+
+    def test_an_extensionless_file_or_directory_at_the_head_is_silent(self):
+        out = self.run_sync(changes_body('config/branches', 'skills/work-planner/scripts', 'skills/work-planner/'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_line_reference_is_not_part_of_the_path(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('skills/work-planner/scripts/sync.py:444',
+                                                                'docs/guide.md:3-9')))
+        out = self.run_sync(changes_body('docs/missing.md:12'))
+        self.assertIn('changes: i01/e00/main (#980) names docs/missing.md, absent at <head>', out)
+
+    def test_a_path_outside_changes_is_not_measured(self):
+        body = '\n'.join(['## Overview', '', 'See `missing/file.md`.', '', '## References', '',
+                          f"- **R1.** [Work]({url('pull', 950)}) — a task delivery.", ''])
+        self.assertNotIn('changes:', self.run_sync(body))
+
+    def test_a_dotted_name_no_file_at_the_head_carries_is_not_measured(self):
+        out = self.run_sync(changes_body('board.Outputs', 'args.project', 'Outputs.consumer'))
+        self.assertNotIn('changes:', out)
+
+    def test_a_component_names_its_path_on_the_branch_the_review_fronts(self):
+        self.assertNotIn('changes:', self.run_sync(changes_body('main:docs/guide.md', 'workflows:missing/flow.yaml')))
+        out = self.run_sync(changes_body('main:docs/missing.md'))
+        self.assertIn('changes: i01/e00/main (#980) names main:docs/missing.md, absent at <head>', out)
+
+    def test_a_head_commit_the_checkout_does_not_hold_is_unevaluable(self):
+        out = self.run_sync(changes_body('docs/guide.md'), sha='0' * 40)
+        self.assertIn(f"unevaluable: i01/e00/main (#980) Changes paths: head {'0' * 40} is not held in", out)
+        self.assertNotIn('changes:', out)

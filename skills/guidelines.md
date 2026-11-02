@@ -13,7 +13,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - Claude Code registers the hook when the skill is invoked and runs it for the rest of the session. Cursor ignores the field.
 - **Description.**
   - It states what the skill covers and the requests that call for it, as the phrases a user would say: "plan the work", "audit workflow X".
-  - It carries at least one such phrase for each mode, since the description alone decides whether the skill loads.
+  - It carries at least one such phrase for each mode, naming the mode by its own word in any form: "audit workflow X" reaches Audit, "revising this skill" reaches Revise. The description alone decides whether the skill loads.
   - It carries no procedure; what each mode does is in the body.
   - It stays under the 1,024-character skill limit.
 
@@ -29,6 +29,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 
 ## SKILL.md structure
 
+- **Top-level sections.**
+  - Modes, Rules, Conventions and Dependencies, in that order, each optional.
+  - The Opening stands under the title, ahead of them. Anything else the entry point needs is a sub-section under one of them.
 - **Opening.**
   One sentence on what the skill does, then a bulleted list with one item for each thing it acts on.
 - **Modes.**
@@ -42,10 +45,12 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
     - It has no trailing full stop, no purpose clause, and no board status outside that phrase.
 - **Rules.**
   A statement that binds every mode goes in Rules, never as loose prose in another section.
+- **Conventions.**
+  The skill-wide prerequisites that [Conventions](#commands) places in the entry point.
 - **Dependencies.**
   Every tool, sandbox, runtime, branch and harness capability the skill relies on is named in Dependencies, with what it is needed for.
 - **Commands.**
-  SKILL.md links the shared command conventions on a required path and holds no command of its own.
+  SKILL.md holds no command of its own, so it takes no Commands section.
 
 ## Procedure files
 
@@ -74,8 +79,10 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - No bold words open a running sentence. A step such as "**Fetch** each issue" becomes the label "**Fetch.**" with "Fetch each issue …" beneath it.
 - **Sub-bullets.**
   An item that describes several discrete points lists them as sub-bullets. A single sentence, or a simple list within one sentence, stays as it is.
+- **Heading spacing.**
+  A blank line stands above every heading, except one opening the file or its body after the frontmatter, so no list item or paragraph reads it in.
 - **Bounded prose.**
-  A run of prose under one heading is at most eight lines. Longer prose splits into named sub-sections, leaving the linked heading where it is. A list or table is one structure and is not split to meet this.
+  A run of prose under one heading, its paragraphs counted together, is at most eight lines. Longer prose splits into named sub-sections, leaving the linked heading where it is. A list or table is one structure and is not split to meet this.
 
 ## Prose
 
@@ -83,9 +90,17 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **One home per rule.**
   - Each rule is stated once: in SKILL.md, the mode that owns it, or the guide the modes share.
   - Every other file cites it by link, never restates it.
+  - A skill's guide states no rule under the label and section title of a rule in this file.
+- **Deciding operation.**
+  - Each labelled rule a guide states names the operations that decide it, in `rules.json` beside that guide, keyed `<section-anchor>/<label-anchor>`.
+  - An operation is a kind of finding the shared check reports, or `review`, the read of a change against the guidelines that a skill's Revise procedure runs.
 - **The design as it is.**
   Present tense, with no account of what the text replaced: no "previously", "no longer" or "instead of".
-- **Terms.**  After a rename, every use of the old term goes, in prose, docstrings and identifiers.
+- **Terms.**
+  - One concept carries one term. After a rename, every use of the old term goes, in prose, docstrings and identifiers.
+  - `vocabulary.json` beside SKILL.md maps each concept's term to the terms it retires. A retired term stands nowhere in the skill's markdown outside code, nor anywhere in its scripts.
+- **One mood for parallel sections.**
+  Sibling sections whose titles end in one word, such as Main Coverage and Docker Coverage, state one kind of thing, so each opens in the same mood: each says what holds, or each directs the reader. A dependency between the commands a section names is stated as one, and a section that directs an order of work is a procedure.
 
 ## Links
 
@@ -99,7 +114,8 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   A citation asserting the reader must already hold a section earns its place only where that section is in another file, opened for its own reason. Name it: `Read [Audit Command Conventions](change-surface.md#audit-command-conventions) first.`
   - Within one file, position carries the requirement and the citation is dropped: conventions sit ahead of the procedures and commands they govern.
   - A prerequisite citation pointing further down its own file is a defect, whatever its wording. A sequential reader meets it after the point it was meant to serve.
-- **Resolution.**  Every link resolves to a file that exists, and every anchor to a heading in it.
+- **Resolution.**
+  Every link resolves to a file that exists, and every anchor to one heading in it: no two headings of a file share an anchor.
 
 ## Commands
 
@@ -110,6 +126,9 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
   - A specification sits in the file whose procedure runs it, in a `## Commands` section at the end of that file.
   - A single catalog holds only those specifications most of whose entries have several callers. Where a block of a catalog has one caller, it belongs to that caller.
   - A caller is a procedure that runs the command. A sibling specification, and any passage of prose naming a command, does not make the file holding it a caller.
+  - Reach is what a reader must load: a step's citation, a specification's citation, and a prerequisite. A specification citing another command reaches it without calling it, so reach measures retrieval and leaves placement to callers.
+  - Placement follows the skill's declared structure. A structure whose commands belong to their subject keeps each there, however few procedures call it.
+  - A specification no procedure runs has no caller to place it, so it stays with the subject of the file whose prose or sibling specification names it. One nothing cites has no reader, whatever structure holds it.
   - A procedure is a section carrying numbered steps, whatever its heading names it. The step is the author stating that the reader performs these, in this order, and is the only place a file records that.
   - Prose runs nothing whatever its mood, order or count: a sentence routing three commands in sequence names them as a statement of what one command does names it. State a route as steps to call them.
   - SKILL.md holds no specification. A command the entry point names is specified in the file whose procedure runs it, or in the catalog.
@@ -120,6 +139,11 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Named by link.**
   - Prose names a spec by linking to its sub-section, mid-sentence: "run [Check Body Format](work-planner/artifacts/issue-body.md#check-body-format) on each epic".
   - A command body is inlined only in the file that owns the spec.
+  - A mode file holds a shell or unlabelled code block only inside its command specifications.
+- **Interface.**
+  - A command reaches GitHub through REST wherever REST supports the operation, and through current GraphQL where it does not.
+  - A specification whose command sends GraphQL, itself or through a script it runs, states what REST lacks on a `**REST gap:**` line.
+  - Projects (classic) fields, types, mutations and REST endpoints are never used. Project operations use Projects V2.
 - **Conventions.**
   - Session setup, execution location, example values and other skill-wide prerequisites stand where a procedure reaching them opens no further file: SKILL.md, which selects the mode, or the file holding the operations those procedures open anyway.
   - Conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.

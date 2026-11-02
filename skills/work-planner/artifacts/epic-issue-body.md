@@ -10,6 +10,7 @@ Read these files first.
 - [Pull Request](pull-request.md)
 - [Epic](epic.md)
 - [Issue](issue.md)
+- [Dependency Graph](dependency-graph.md)
 
 ## Operations
 
@@ -56,17 +57,17 @@ Task rows held for one confirmed delivery session.
 **Inputs:** Epic JSON, confirmed task ids, supplied planning-folder identity, planning-records base URL, record date and output body file.
 
 1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit.
-2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, ids as `--reserve`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
-3. Return the body with the folder as each row's single link, meeting [Task Delivery](#task-delivery).
+2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
+3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).
 
 ### *Release* Task Rows
 
 Held task rows returned to their work-item links.
 
-**Inputs:** Epic JSON, task ids, explicit user decision releasing the hold and output body file.
+**Inputs:** Epic JSON, task ids, explicit user decision releasing the hold, engineering worktree and output body file.
 
 1. Require the supplied release decision and refuse any row that is not held.
-2. Run [Release Row](#release-row) with the epic as `--epic`, ids as `--release` and output as `--fix`.
+2. Run [Release Row](#release-row) with the epic as `--epic`, every id of each released unit as `--release`, the engineering worktree as `--engineering` and output as `--fix`.
 3. Return the body with each task id linked to its lowercase work-item file inside the reserved folder, meeting [Task Delivery](#task-delivery).
 
 ### *Validate* Epic Body
@@ -172,7 +173,7 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
 - **Description.**
   Each detail beyond the phrase is a criterion stating one invariant.
 - **Coverage.**
-  Coverage names the epic's criteria the task must meet. Each row claims only criteria its work makes true; it cannot claim a criterion another row delivers alone or one its work cannot meet. A complete task's cell is empty.
+  Coverage names the epic's criteria the task delivers, whether its Done cell is ticked or empty. Each row claims only criteria its work makes true; it cannot claim a criterion another row delivers alone or one its work cannot meet. A cell is empty only on a delivered task whose criteria a further task adopts, as task grain states.
 - **Depends on.**
   A task row names the rows it depends on. An earlier task in the epic (`W03`, `W04–W09`), a row of an earlier epic (`[E01:W02](…)`), or something outside the initiative (`#750`, `[I05:E00:W02](…)`).
   - A task row names rows, never an epic. It names the row producing each output it consumes (`[E01:W01](…), [E01:W02](…)`), and where the task consumes from every row of an epic that is what establishes the whole-epic reach.
@@ -187,11 +188,12 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
   - Reusable routines, techniques, and resources are specced, created, and tested before an activity binds them. The grain of an existing resource is in that work.
   - When the behaviour a wired activity produces differs from the behaviour the work expected, that task changes the routine, technique, or resource, and the tests that cover the change, until fit, form, and function hold.
 - **Joins.**
-  The tasks that share one pull request. Each names the other, and neither depends on the other, directly or through a task outside the pair: the pull request holds their order.
-  - Joins are complete before any issue of the epic is created. Every pair of tasks in the epic where neither depends on the other, directly or through another task, is accounted for.
-  - A pair that shares a pull request names each other.
-  - A pair that does not is named in the planning record, with why.
-  - An empty cell is a task that shares no pull request, and only once that record names every such pair.
+  The tasks that share one pull request. Two tasks sharing one name each other, and tasks linked by such pairs are one joined unit.
+  - A joined unit holds no Depends on between its members: the pull request orders their commits.
+  - Only a path between two members through a task outside the unit bars a join.
+  - A joined unit covers at most six criteria, two full rows' worth, so it stays one pull request's worth.
+  - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
+  - An empty cell is a task that shares no pull request.
 - **Numbering.**
   Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**
@@ -248,7 +250,7 @@ A project states the criteria its epics must carry in `config/required-criteria.
 
 - **Task ids.**
   - An unreserved task awaiting its pull request links its file in the planning record: `[W01](…/w01.md)`. The file name is the task id in lower case.
-  - Every link on a task row names that row's id, and the row carries one delivery per long-lived branch its unit changes. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. The folder's README links the work-item file. Releasing the reservation points the row to that file.
+  - Every link on a task row names that row's id, and the row carries one delivery per long-lived branch its unit changes. A reserved task links only its planning folder: `[W01](…/2026-10-06-943-i07-e00-w01-queue-plan/)`. Every row of a joined unit links the one folder its first row names. The folder's README links each work-item file by the name the row's link carries. Releasing the reservation points the row to that file.
   - Once a pull request is open, its link replaces the planning link: `[W01](…/pull/950)`. A unit changing two long-lived branches links the pull request on each: `[W01](…/pull/950), [W01](…/pull/951)`. Further delivery work on one of those branches gets another task row under Task grain. Joined rows each link their shared pull request.
   - The task is delivered when a linked pull request has merged, or its id links a commit.
   - A link to an open pull request does not deliver the task.
@@ -279,8 +281,10 @@ Links each named task's id to the pull requests naming the epic it is delivered 
 - A row whose id links its task issue links the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
+- An epic base is reported `draft` only where it holds a commit its long-lived branch lacks. The base is read at the `--revision` naming it and the long-lived branch beside it on the same remote, so `origin/i07/e00/main` is compared with `origin/main`; a base no `--revision` names is reported `unevaluable`.
 - `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository.
 - An absent, empty or unreadable statement, and statements that disagree across the bases, are reported `unevaluable` with their source. Without the long-lived branch names, the run names each check it did not make as `not checked`, and an epic that would otherwise be closable is not.
+- An open review pull request's Changes paths are read at its head commit in the `--project` repository: a path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree. A head commit the repository does not hold is reported `unevaluable`.
 - Passed checks settle criteria under [Test Evidence](#test-evidence).
 - `--link` names each task id and the pull request number it links. An id repeats once for each pull request, one per long-lived branch its unit changes. The row keeps the deliveries it links in place and gains each named one it lacks, so a repeated run leaves it unchanged. `--tasks` is the task issues. `--links` is the pull requests' Development-linked issues. `--fix` is the body written with the Done ticks.
 
@@ -316,11 +320,12 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ### Reserve Row
 
-Holds each named task row for one session, by setting its record folder as the row's single link.
+Holds each named unit for one session, by setting its record folder as the single link of every row in it.
 
 **Inputs:** Epic JSON, confirmed reservable task ids, planning-folder identity, record date, records base URL and output body file.
 - `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
 - The caller supplies the planned folder identity; `--date` is the day it is opened.
+- The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.
 
 `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
 
@@ -338,17 +343,19 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 Frees each named task row, by replacing the planning-folder link with its work-item file link.
 
-**Inputs:** Epic JSON, confirmed held task ids, authorized release and output body file.
+**Inputs:** Epic JSON, confirmed held task ids, authorized release, engineering worktree and output body file.
 - The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
+- `--engineering` is the checkout holding the planning records. A row whose folder there holds no such file, or whose README does not link it, is refused.
+- A call naming some rows of a joined unit and not the others is refused.
 
 `<task-ids>` is a comma-separated list of task ids.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '<epic-json-file>' --release '<task-ids>' --fix '<output-body-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '<epic-json-file>' --release '<task-ids>' --engineering '<engineering-worktree>' --fix '<output-body-file>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --fix fixed-943.md
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
 ```

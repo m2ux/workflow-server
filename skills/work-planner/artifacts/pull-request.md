@@ -16,7 +16,7 @@ Read these files first.
 
 One task or epic pull request's merge result, or its handoff for human approval.
 
-**Inputs:** Pull request identity, delivery kind, verified head, target requirements, current passing readiness evidence and the caller's confirmed repository prerequisite documented in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, delivery kind, verified head, target requirements, current passing readiness evidence and the caller's confirmed repository prerequisite documented in [Auto-Close Setting](issue.md#auto-close-setting).
 
 1. Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
    - Report the pull request as ready for approval, naming what was verified.
@@ -32,7 +32,7 @@ One task or epic pull request's merge result, or its handoff for human approval.
 
 The observed or updated Development relation for a pull request.
 
-**Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting the applicable preconditions in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, authenticated access and requested relation read or write; for an edit, the issue identity, confirmed repository prerequisite and any user decision authorizing removal of an abandoned or incorrect link, meeting [Auto-Close Setting](issue.md#auto-close-setting) and the removal precondition in [Close Tracker Issue](issue.md#close-tracker-issue).
 
 1. For a read-only request:
    - Run [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by.
@@ -60,7 +60,7 @@ The complete issue-link snapshot for a supplied set of pull requests.
 
 The verified delivery-issue relation for a pull request.
 
-**Inputs:** Pull request identity, delivery issue identity, current pull request records, link-snapshot destination, authenticated access and the caller's confirmed repository prerequisite documented in [Close Tracker Issue](issue.md#close-tracker-issue).
+**Inputs:** Pull request identity, delivery issue identity, current pull request records, link-snapshot destination, authenticated access and the caller's confirmed repository prerequisite documented in [Auto-Close Setting](issue.md#auto-close-setting).
 
 1. Run [Access Development Links](#access-development-links) with the supplied identities, requested link addition and confirmed repository prerequisite.
 2. Stop on a blocker or an unverified edit.
@@ -145,15 +145,15 @@ The check-run and status evidence for one literal head commit.
 
 Merges each open task pull request whose test plan has passed.
 
-**Inputs:** Task pull request identity, its epic base, the project checkout, the repository prerequisite and the passing test-plan evidence.
+**Inputs:** Task pull request identity, its epic base, the project checkout, the unit checkout holding its task branch, the repository prerequisite and the passing test-plan evidence.
 
 1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's epic base. The base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.
-2. Run [Update Epic Base](delivery-branches.md#update-epic-base) with the supplied project checkout and epic base.
+2. Run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and epic base.
    - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its epic base.
    - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
    - Stop on a handoff for human approval.
    - If the merge is refused:
-     - Run [Update Task Branch](delivery-branches.md#update-task-branch).
+     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its epic base.
      - Repeat Fetch Merge Readiness for the updated task head.
      - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 3. Run [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
@@ -399,6 +399,8 @@ Adds one pull request to an issue's Development relation, and reads the relation
 
 **Inputs:** Pull request identity, issue identity, authenticated access and confirmed repository prerequisite.
 
+**REST gap:** REST exposes no write to the Development relation; `addCloseIssueReferences` is a GraphQL mutation alone.
+
 - The issue and pull request may sit in different repositories, and the pull request may be a draft on any base branch.
 - The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
 - Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.
@@ -428,6 +430,8 @@ Removes one pull request from an issue's Development relation, and reads the rel
 
 **Inputs:** Pull request and issue identities, authenticated access and the user's decision authorizing removal of the abandoned or incorrect link.
 
+**REST gap:** REST exposes no write to the Development relation; `removeCloseIssueReferences` is a GraphQL mutation alone.
+
 - The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.
 - Exit 0 means neither end holds the other and every other link on the issue stands.
 - Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.
@@ -453,6 +457,8 @@ failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeClose
 Writes the complete issue-link snapshot for a pull request collection, read from the pull-request end of the Development relation.
 
 **Inputs:** Pull request records as JSON lines, from any number of repositories, and destination link-snapshot file.
+
+**REST gap:** REST exposes no read of a pull request's closing issue references.
 
 - The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.
 - Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
