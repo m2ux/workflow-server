@@ -1,0 +1,22 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1621",
+    "head": "b405238fe269505d6717d48438c9328df8ffe6b3",
+    "base": "9d71790c2668debbc03a2ba1d00509e8bea3bff6",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1538-f02-empty-required-criteria/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (delivery session agent review)",
+    "reviewed_at": "2026-11-02",
+    "scope": "Full diff workspace..f02-empty-required-criteria: skills/work-planner/scripts/format.py (module docstring, Required, required_criteria), test/test_format.py (DeclarationAtRevision, CheckFormat), artifacts/epic-issue-body.md Required Criteria. Callers inspected: Review.check_required (unevaluable suppresses lacking findings; empty criteria report nothing), main (prints source whenever --project is given); no other script imports required_criteria or reads its fault text; skill prose referencing Required Criteria (epic-issue-body.md Validate step 4, deliver-mode.md) states no empty-declaration rule.",
+    "criteria": "AC1: missing file, empty and whitespace file, and [] read no criterion and no fault, and format.py prints no required-criteria line (T1). AC2: {}, null, a string and a bare object read 'is not an array'; non-JSON reads 'is not JSON'; format.py reports both as unevaluable with source and fault (T2). AC3: guide bullets checked by test_the_guide_requires_nothing_of_a_project_declaring_nothing; old wording absent from skills/ (T3).",
+    "validation": "skills/work-planner: 834 tests OK (1 skipped); test_format 99 OK at the reviewed head; skill-file check 52 files, 0 findings.",
+    "findings": [
+      {
+        "description": "The Required docstring said unevaluable names what is missing, while an unreadable declaration now carries a fault such as 'is not an array'.",
+        "severity": "nonblocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/b405238fe269505d6717d48438c9328df8ffe6b3"
+      }
+    ]
+  }
+]
