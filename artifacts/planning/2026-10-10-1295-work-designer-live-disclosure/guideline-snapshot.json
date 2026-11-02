@@ -1,0 +1,14 @@
+{
+  "base": "0a6ac0b180370c03d6c10095aae577a003254834",
+  "files": {
+    "skills/guidelines.md": "e846a02bd1b66fbc0d5bd63556cf4db5bd59588d2a2b073adb6d73980b0375a9",
+    "skills/work-designer/SKILL.md": "2473db26f9ef551fbe727311fab3bde417e1aa7682e55b8bc09b117294f97d0f",
+    "skills/work-designer/references/guidelines.md": "39154e9ecc73e11ded950fc5a548c2a26bdc15c39e2ee800ffdbacf53b0f9e95",
+    "skills/work-designer/references/revise-mode.md": "b9b5dda059cb373050e7ab169efdf03e600a85b3b81cec752cd79f7befd9a685"
+  },
+  "validation": {
+    "files": 12,
+    "local_links": 98,
+    "external_links": 33
+  }
+}

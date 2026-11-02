@@ -1,0 +1,350 @@
+{
+  "scenario": "guidelines-revise-a",
+  "session_id": "01a12562-1783-7641-aa65-e1458545dab7",
+  "source": {
+    "subagent": {
+      "thread_spawn": {
+        "parent_thread_id": "01a12457-67a2-7350-9541-c6d156e7c316",
+        "depth": 1,
+        "agent_path": "/root/guidelines_revise_a",
+        "agent_nickname": "Beauvoir",
+        "agent_role": null
+      }
+    }
+  },
+  "snapshot": {
+    "base": "0a6ac0b180370c03d6c10095aae577a003254834",
+    "files": {
+      "skills/guidelines.md": "e846a02bd1b66fbc0d5bd63556cf4db5bd59588d2a2b073adb6d73980b0375a9",
+      "skills/work-designer/SKILL.md": "2473db26f9ef551fbe727311fab3bde417e1aa7682e55b8bc09b117294f97d0f",
+      "skills/work-designer/references/guidelines.md": "39154e9ecc73e11ded950fc5a548c2a26bdc15c39e2ee800ffdbacf53b0f9e95",
+      "skills/work-designer/references/revise-mode.md": "b9b5dda059cb373050e7ab169efdf03e600a85b3b81cec752cd79f7befd9a685"
+    },
+    "validation": {
+      "files": 12,
+      "local_links": 98,
+      "external_links": 33
+    }
+  },
+  "final_answer_observed": true,
+  "decoded_shell_results": 32,
+  "truncated_calls": [],
+  "sources": [
+    {
+      "path": "skills/work-designer/SKILL.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Work Designer",
+          "start": 7,
+          "end": 59
+        },
+        {
+          "heading": "Modes",
+          "start": 16,
+          "end": 28
+        },
+        {
+          "heading": "Rules",
+          "start": 29,
+          "end": 43
+        },
+        {
+          "heading": "Dependencies",
+          "start": 44,
+          "end": 59
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/references/commands.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": [
+        {
+          "heading": "Conventions",
+          "start": 5,
+          "end": 19
+        },
+        {
+          "heading": "Inspect Project Identity",
+          "start": 22,
+          "end": 32
+        },
+        {
+          "heading": "Run Skill Checks",
+          "start": 172,
+          "end": 183
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/references/coverage.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": []
+    },
+    {
+      "path": "skills/work-designer/references/guidelines.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Guidelines",
+          "start": 1,
+          "end": 42
+        },
+        {
+          "heading": "Identity",
+          "start": 5,
+          "end": 9
+        },
+        {
+          "heading": "SKILL.md Structure",
+          "start": 10,
+          "end": 13
+        },
+        {
+          "heading": "Progressive Disclosure",
+          "start": 14,
+          "end": 24
+        },
+        {
+          "heading": "Titles",
+          "start": 25,
+          "end": 29
+        },
+        {
+          "heading": "Project Variants",
+          "start": 30,
+          "end": 38
+        },
+        {
+          "heading": "Shared Planning",
+          "start": 39,
+          "end": 42
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/references/planning.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": []
+    },
+    {
+      "path": "skills/work-designer/references/review-mode.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Review Mode",
+          "start": 1,
+          "end": 76
+        },
+        {
+          "heading": "Procedure",
+          "start": 5,
+          "end": 35
+        },
+        {
+          "heading": "Coverage",
+          "start": 36,
+          "end": 52
+        },
+        {
+          "heading": "Findings",
+          "start": 53,
+          "end": 56
+        },
+        {
+          "heading": "Verdicts",
+          "start": 57,
+          "end": 64
+        },
+        {
+          "heading": "Rules",
+          "start": 65,
+          "end": 76
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/references/revise-mode.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Revise Mode",
+          "start": 1,
+          "end": 32
+        },
+        {
+          "heading": "Procedure",
+          "start": 5,
+          "end": 26
+        },
+        {
+          "heading": "Rules",
+          "start": 27,
+          "end": 32
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/references/variants.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": [
+        {
+          "heading": "Selection",
+          "start": 5,
+          "end": 17
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/templates/integration-review.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Integration Review",
+          "start": 1,
+          "end": 46
+        },
+        {
+          "heading": "Verdict",
+          "start": 3,
+          "end": 6
+        },
+        {
+          "heading": "Reviewed Scope",
+          "start": 7,
+          "end": 16
+        },
+        {
+          "heading": "Findings",
+          "start": 17,
+          "end": 29
+        },
+        {
+          "heading": "{{Area of Concern}}",
+          "start": 19,
+          "end": 29
+        },
+        {
+          "heading": "Coverage",
+          "start": 30,
+          "end": 35
+        },
+        {
+          "heading": "Gaps and Residual Risk",
+          "start": 36,
+          "end": 39
+        },
+        {
+          "heading": "Documentation and PR Accuracy",
+          "start": 40,
+          "end": 43
+        },
+        {
+          "heading": "Required Actions",
+          "start": 44,
+          "end": 46
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/variants/workflow-server/VARIANT.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": [
+        {
+          "heading": "Identity",
+          "start": 5,
+          "end": 10
+        },
+        {
+          "heading": "Revise Configuration",
+          "start": 35,
+          "end": 38
+        }
+      ]
+    },
+    {
+      "path": "skills/work-designer/variants/workflow-server/commands.md",
+      "complete_file_observed": false,
+      "complete_sections_observed": [
+        {
+          "heading": "Conventions",
+          "start": 3,
+          "end": 6
+        },
+        {
+          "heading": "Check Skill Summaries",
+          "start": 147,
+          "end": 153
+        }
+      ]
+    },
+    {
+      "path": "skills/guidelines.md",
+      "complete_file_observed": true,
+      "complete_sections_observed": [
+        {
+          "heading": "Skill Guidelines",
+          "start": 1,
+          "end": 128
+        },
+        {
+          "heading": "Frontmatter",
+          "start": 5,
+          "end": 19
+        },
+        {
+          "heading": "Files",
+          "start": 20,
+          "end": 26
+        },
+        {
+          "heading": "SKILL.md structure",
+          "start": 27,
+          "end": 42
+        },
+        {
+          "heading": "Mode files",
+          "start": 43,
+          "end": 50
+        },
+        {
+          "heading": "Layout",
+          "start": 51,
+          "end": 62
+        },
+        {
+          "heading": "Prose",
+          "start": 63,
+          "end": 72
+        },
+        {
+          "heading": "Links",
+          "start": 73,
+          "end": 80
+        },
+        {
+          "heading": "Commands",
+          "start": 81,
+          "end": 94
+        },
+        {
+          "heading": "Progressive Disclosure",
+          "start": 95,
+          "end": 109
+        },
+        {
+          "heading": "Disclosure Verification",
+          "start": 110,
+          "end": 120
+        },
+        {
+          "heading": "Changes",
+          "start": 121,
+          "end": 128
+        }
+      ]
+    }
+  ],
+  "method": "Exact complete-source matching against returned stdout or intact JSON-escaped text in truncated aggregates. Heading inventories are not body reads. Missing matches require manual inspection; decoded counts can omit truncated fragments. Private reasoning is excluded."
+}

@@ -71,6 +71,30 @@ The 58 registered guards (`guards/guards.ts:62-643`; the brief's "60" counts `ch
 | Enforcement annotation (owner/strictness) | documentation of intent | none | unchanged | nothing | keep | None |
 | Ledgers (7 files, 600 entries: 143 harmless, 432 fix-later, 25 unassigned, 0 live-bug) and walks | human verdicts a guard reads; `section-framing` never reads the verdict (`check-section-framing.ts:110-150`) | none | unchanged: a law has no triage channel. A ledgered finding under a law is either fixed or the law carries a typed exception | nothing | keep; unify the four verdict vocabularies | None |
 
+### 1d. The canon as laws
+
+The canon at `corpus/canon/` (workflows branch, `15860ff3`) states its rules in prose: 166 anti-patterns in `resources/anti-patterns.md`, 48 principles and one universal obligation in `resources/design-principles.md` and `schema-construct-inventory.md`, 7 convention rows and 9 catalogue rules, and 13 document-format phases in `techniques/reformat-doc.md`. A reader classified all 245 as a clean law over the parsed definition (**yes**), a rule with a checkable half and an intent half (**partly**), or prose, intent or taste that no checker reaches (**no**); the full classification with a file and line for every rule is `notes/maps/canon.json`.
+
+| Verdict | Anti-patterns | Principles | Conventions and catalogue rules | Format phases | Total |
+|---|---|---|---|---|---|
+| yes, a clean law | 38 | 8 | 12 | 4 | 62 |
+| partly | | | | | 96 |
+| no | | | | | 86 |
+
+Two structural facts matter more than the counts. Every anti-pattern already carries a **Fires on** line whose ids are schema field paths (`anti-patterns.md:35-42`), and the `fires-on-ids` guard proves those ids exist in the generated schemas, so the canon already quantifies over typed definition structure, which is what a law needs. And the canon concedes its own static limits: roles are not readable from the tree (`anti-patterns.md:831`), and a schema check settles nothing for an argument the server demands only in some state (`anti-patterns.md:2311`).
+
+The 62 clean candidates, grouped by what a law would range over. Guards named with `~` are the reader's inference from the guard's `proves` line; **none** means no guard polices the rule today.
+
+| Group | Rules | Polices today | What the spike shows |
+|---|---|---|---|
+| Binding and dataflow over steps and signatures | AP-33 no-set-of-technique-output, AP-35 no-intra-step-input-set, AP-36 techniques-list-disjoint, AP-55 hoist-shared-inputs, AP-62 bind-protocol-locals, AP-89 checkpoint-requires-decision, AP-132 unproduced-value-read, AP-142 output-without-destination, AP-144 declared-input-never-read, AP-145 apply-omits-declared-input, AP-152 inherited-input-re-declared, AP-166 inherited-input-never-spent | `self-provisioned-input`, `activity-technique-overlap`, `inherited-inputs` ×2, `~activity-variables`, `~binding-fidelity`; **none** for AP-33, AP-62, AP-89, AP-144, AP-145, AP-166 | `reads_resolve` and `no_orphan_input` are AP-132 over one activity; `option_exits_declared` is the structural half of AP-89. Each is a computation over the generated data, one line of proof. AP-142 (dead output) is the same walk over the whole workflow, not built |
+| Structure and file tree | AP-17 bound-step-no-description, AP-18 no-monolith-masking-steps, AP-31 no-hand-authored-artifacts, AP-39 hoist-universal-techniques, AP-69 no-activity-prose-rules, AP-96 artifact-audience-declared, AP-116 no-template-creation-guide, AP-134 artifact-name-is-filename, AP-163 construct-folder-without-a-readme, DP-11, DP-22, DP-25, DP-28, DP-43 | `description-hygiene`, `audience`, `artifact-guides`, `~refs`; **none** for AP-18, AP-31, AP-39, AP-69, AP-134, AP-163, DP-11, DP-22, DP-25 | Field-presence and field-equality laws over parsed YAML and headings; the same shape as `loops_bounded`. A Bend law needs the parsed tree as data, which the generator provides for YAML and would need to provide for markdown headings and the file tree |
+| Lexical form and citation grammar | AP-47, AP-53, AP-57, AP-58, AP-61, AP-99, AP-114, AP-125, AP-128, AP-136, AP-140, AP-143, AP-149, AP-158, AP-159, AP-160, AP-161, DP-32, DP-33, DP-36, the 7 convention rows, 4 catalogue rules, RD-4, RD-5, RD-9, RD-11 | `rule-citation-form`, `bootstrap-self-contained`, `~technique-template`, `section-framing`, `~tool-call-shape`, `~protocol-shape`, `~unserved-operation-refs`, `~citation-grain`, `fires-on-ids`, `~when-expression`; **none** for 13 of them | Regexes and counts over text. Decidable, but a type system over definitions is the wrong tool; these stay guards in any placement |
+
+What follows for the placements. Twelve of the clean candidates are the dataflow family the spike proved by computation, and six of those twelve have no guard today, so a typed invariant registry gains six laws the corpus has never been held to (AP-33, AP-62, AP-89, AP-144, AP-145, AP-166). The 96 partly-checkable rules keep their guards, with the checkable half as a law and the intent half as a walker's judgement. The 86 prose rules, the whole Interaction and Execution families and Canon Hygiene among them, are the audit walkers' and stay so under every placement.
+
+One side finding: four guard sources cite anti-pattern ordinals that have since drifted (`check-activity-technique-overlap.ts:2` cites AP-69 for techniques-list-disjoint, now AP-36; `check-self-provisioned-input.ts:2` cites AP-68, now AP-35; `check-identifier-qualification.ts` cites AP-60, now AP-66; `check-technique-template.ts` cites AP-55, now AP-58), against the catalogue's own rule to cite the kebab name and never the number (`anti-patterns.md:23-25`).
+
 ## Part 2. The trust boundary
 
 Each bullet of `docs/fidelity.md` Limits of Detectability (`fidelity.md:427-434`), classified. **Moves**: Bend makes it refused or proven. **Narrows**: Bend shrinks what an agent can fake. **Inherent**: no type system reaches it. Each classification names what the guarantee would rest on.

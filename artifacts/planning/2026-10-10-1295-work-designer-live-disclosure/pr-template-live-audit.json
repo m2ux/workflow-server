@@ -1,0 +1,16 @@
+{
+  "session": "01a12573-87ed-74e1-8e1b-a5a7995bec4c",
+  "complete_returned_files": {
+    "skills/work-planner/SKILL.md": true,
+    "skills/work-planner/templates/pull-request.md": true,
+    "skills/work-planner/references/work-breakdown.md": true
+  },
+  "shell_results": 7,
+  "table_only": true,
+  "rows": 9,
+  "partial_rows": [
+    "T7",
+    "T8"
+  ],
+  "truncation_observed": false
+}

@@ -1,0 +1,206 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "7.4.0",
+  "agentId": "orchestrator",
+  "executionPath": "agent",
+  "sessionIndex": "THTC3R",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-10-09-949-advisory-read",
+  "frontier": [
+    "dispatch-client-workflow"
+  ],
+  "currentTechnique": "",
+  "exit": "",
+  "seq": 3,
+  "ts": 1791556559,
+  "startedAt": "2026-10-09T14:35:49.076Z",
+  "completedActivities": [],
+  "variables": {
+    "client_initial_activity": "list-labels",
+    "client_session_index": "NNYP25",
+    "client_walk_aborted": false,
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-949-advisory-read",
+    "resume_intent_requested": false,
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "github-library-conformance",
+    "user_request": "Hoist https://github.com/m2ux/workflow-server/issues/949 from I08 to a standalone issue before delivering its advisory read operation and verification.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-10-09T14:35:49.076Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_walk_aborted": false,
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+          "is_monorepo": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-949-advisory-read",
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "Hoist https://github.com/m2ux/workflow-server/issues/949 from I08 to a standalone issue before delivering its advisory read operation and verification."
+        }
+      },
+      "timestamp": "2026-10-09T14:35:49.076Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "start_session",
+      "data": {
+        "sessionIndex": "NNYP25",
+        "workflowId": "github-library-conformance"
+      },
+      "timestamp": "2026-10-09T14:35:49.079Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-10-09T14:35:57.754Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 130398,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-10-09T14:35:59.764Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 2119,
+        "delivery": "full",
+        "stepId": "read-client-position",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-10-09T14:35:59.764Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "read-client-position"
+      },
+      "timestamp": "2026-10-09T14:35:59.764Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled_steps": 1,
+        "delivery": "full",
+        "eager_budget_chars": 76800,
+        "fixed_chars": 75291,
+        "provenance_passes": 1,
+        "resolved_techniques": 39,
+        "response_bound_chars": 60000,
+        "response_spent_chars": 130398,
+        "spent_chars": 53632,
+        "worker_bundle_chars": 51513
+      },
+      "timestamp": "2026-10-09T14:35:59.764Z",
+      "type": "activity_delivered"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "NNYP25",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "currentTechnique": "",
+        "executionPath": "agent",
+        "exit": "",
+        "frontier": [],
+        "history": [
+          {
+            "timestamp": "2026-10-09T14:35:49.079Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "component_path": ".",
+                "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+                "is_monorepo": false,
+                "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-949-advisory-read",
+                "target_repo": "m2ux/workflow-server",
+                "user_request": "Hoist https://github.com/m2ux/workflow-server/issues/949 from I08 to a standalone issue before delivering its advisory read operation and verification."
+              }
+            },
+            "timestamp": "2026-10-09T14:35:49.079Z",
+            "type": "variables_seeded"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 0,
+        "sessionIndex": "NNYP25",
+        "startedAt": "2026-10-09T14:35:49.079Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1791556549,
+        "variables": {
+          "component_path": ".",
+          "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+          "is_monorepo": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-10-09-949-advisory-read",
+          "target_repo": "m2ux/workflow-server",
+          "user_request": "Hoist https://github.com/m2ux/workflow-server/issues/949 from I08 to a standalone issue before delivering its advisory read operation and verification."
+        },
+        "workflowId": "github-library-conformance",
+        "workflowVersion": "1.1.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-10-09T14:35:49.079Z",
+      "triggeredFrom": {
+        "activityId": "start_session"
+      },
+      "workflowId": "github-library-conformance"
+    }
+  ],
+  "deliveredContent": {
+    "orchestrator": {
+      "bundle:agent-conduct": "b9a1d9894f4eccc4",
+      "bundle:contract:harness-compat": "d08b482d8ff8b61e",
+      "bundle:contract:meta": "9ff9bc5a37782bb6",
+      "bundle:contract:workflow-engine": "7e91e9b1690f37b4",
+      "bundle:harness-compat::claude-code": "8825f231592c5782",
+      "bundle:harness-compat::cline": "5b42af722a0badbf",
+      "bundle:harness-compat::cursor": "419be49821d3c4fe",
+      "bundle:harness-compat::generic": "89991c8d993534ca",
+      "bundle:harness-compat::resolve-harness-operation": "a994f89bf591dbd8",
+      "bundle:orchestrator-conduct": "23b445a884be988b",
+      "bundle:variable-binding": "9dae996fd78827ff",
+      "bundle:worker-conduct": "2ea72de0afeda0ce",
+      "bundle:workflow-engine::activity-worker": "39eee7342dd2c946",
+      "bundle:workflow-engine::compose-steps-complete": "c97fd92506f03e40",
+      "bundle:workflow-engine::handle-sub-workflow": "d2de4a1ea4894264",
+      "bundle:workflow-engine::resume-from-checkpoint": "e298305b1468d2cd",
+      "bundle:workflow-engine::step-control": "0137c4b5fd7184fa",
+      "bundle:workflow-engine::take-activity": "7989fd4f75348fbb",
+      "bundle:workflow-engine::workflow-orchestrator": "3322c857e3e68eed",
+      "bundle:workflow-engine::yield-checkpoint": "72cc5063739c4988",
+      "note:step_techniques:4083f882c5b46610": "4083f882c5b46610",
+      "technique:workflow-engine::read-session": "fc16c6f259b3128c"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
