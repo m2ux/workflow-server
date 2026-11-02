@@ -55,6 +55,7 @@ Printed as fixes to apply to the issue itself:
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
+  - a hot-fix whose Overview does not name its target branch in exactly one Target: line
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -100,7 +101,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from hotfix import HOTFIX, PRIORITY, is_hotfix
+from hotfix import HOTFIX, PRIORITY, is_hotfix, targets
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
 BODY_ARTIFACTS = {
@@ -412,7 +413,9 @@ class Review:
         if 'type:proposal' in self.labels():
             return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
         if is_hotfix(self.issue):
-            return self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
+            fixed = self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
+            self.check_target()
+            return fixed
         m = PREFIX.match(title)
         if not m:
             self.kind, self.number = 'issue', None
@@ -456,6 +459,14 @@ class Review:
             self.check_title_shape(name, subtitle)
         self.check_labels()
         return self.check_body()
+
+    def check_target(self) -> None:
+        """A hot-fix's Overview names its target branch in one Target: line."""
+        named = targets(self.issue)
+        if not named:
+            self.decide.append('Overview: no Target: line naming the branch the hot-fix fixes')
+        elif len(named) > 1:
+            self.decide.append(f'Overview: {len(named)} Target: lines; a hot-fix names one target branch')
 
     def check_title(self, m: re.Match, parts: list[str]) -> None:
         title = self.issue['title']

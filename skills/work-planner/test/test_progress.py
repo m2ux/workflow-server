@@ -8,7 +8,7 @@ import unittest
 from datetime import date, datetime, timezone
 from pathlib import Path
 
-from fixtures import (SCRIPTS, epic_body, initiative_body, issue, item, links, pr, progress, run,
+from fixtures import (SCRIPTS, epic_body, hotfix, initiative_body, issue, item, links, pr, progress, run,
                       section, url)
 
 sys.path.insert(0, str(SCRIPTS))
@@ -534,8 +534,7 @@ class Repositories(unittest.TestCase):
 
 class HotFixes(unittest.TestCase):
     def hotfix(self, number, state='open', closed=None):
-        return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
-                     labels=('type:hot-fix', 'priority: 10'))
+        return hotfix(number, state, closed)
 
     def test_a_hot_fix_done_in_the_window_is_completed_with_its_pull_request(self):
         out = summary([item(self.hotfix(4, 'closed', IN), 'Done')],
@@ -551,16 +550,6 @@ class HotFixes(unittest.TestCase):
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *F04 Key Validation* — {url('issues', 4)}",
             f"    📝 Reject Bad Keys — {url('pull', 950)}"])
-
-    def test_a_linking_pull_request_without_its_base_repository_is_named_on_stderr(self):
-        bare = pr(950, '[F04] Reject Bad Keys', draft=True)
-        done = progress([item(self.hotfix(4), 'In Progress'), item(self.hotfix(5), 'Backlog')], [bare],
-                        '--since', SINCE, held=(links(950, 4, 5),))
-        self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertEqual(section(done.stdout, 'In progress'), [f"🔄 *F04 Key Validation* — {url('issues', 4)}"])
-        notices = [line for line in done.stderr.splitlines() if 'names no default branch' in line]
-        self.assertEqual(len(notices), 1)
-        self.assertIn(f"F04 {url('issues', 4)}", notices[0])
 
     def test_a_ready_hot_fix_leads_next(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Task', '')))

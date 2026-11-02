@@ -23,6 +23,21 @@ def issue(number: int, title: str, state: str = 'open', closed: str | None = Non
             'body': body, 'labels': [{'name': l} for l in labels]}
 
 
+def hotfix_body(target: str | None = 'main', criteria: tuple[str, ...] = ('Holds.', 'Also holds.')) -> str:
+    """A hot-fix body in the standalone template, whose Overview names target in its Target: line."""
+    named = f'Target: `{target}`\n\n' if target else ''
+    return (f'## Overview\n\nRejects bad keys.\n\n{named}## Problem\n\nBad keys pass.\n\n'
+            '## Proposal\n\nReject them.\n\n## Acceptance Criteria\n\n'
+            + ''.join(f'- [ ] **AC{n}.** {text}\n' for n, text in enumerate(criteria, 1)))
+
+
+def hotfix(number: int, state: str = 'open', closed: str | None = None, target: str | None = 'main',
+           labels: tuple[str, ...] = ('type:hot-fix', 'theme:canon', 'priority: 10')) -> dict:
+    """An open or closed hot-fix titled [Fnn] for its number, in the hot-fix format."""
+    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
+                 hotfix_body(target), labels)
+
+
 BOARD = 'https://api.github.com/orgs/o/projectsV2/7'
 
 
@@ -53,13 +68,12 @@ def initiative_body(*rows: tuple[str, str]) -> str:
 
 
 def pr(number: int, title: str, merged: str | None = None, state: str | None = None, draft: bool = False,
-       body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None,
-       default: str = 'main') -> dict:
+       body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None) -> dict:
     record = {'number': number, 'title': title, 'body': body, 'html_url': url('pull', number, repo),
               'node_id': f'PR_node{number}',
               'state': state or ('closed' if merged else 'open'), 'draft': draft, 'merged_at': merged}
     if base:
-        record['base'] = {'ref': base, 'repo': {'full_name': repo, 'default_branch': default}}
+        record['base'] = {'ref': base, 'repo': {'full_name': repo}}
     if head:
         record['head'] = {'ref': head}
     return record

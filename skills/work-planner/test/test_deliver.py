@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import declared, git, initiative_body, issue, item, links, pr, run, url, work_item
+from fixtures import declared, git, hotfix, initiative_body, issue, item, links, pr, run, url, work_item
 from test_agent_review import reviewed_pr
 
 RECORDS = 'https://github.com/o/r/tree/engineering/artifacts/planning'
@@ -760,19 +760,19 @@ class ProducerOutputs(unittest.TestCase):
         self.assertNotIn('output ', output)
 
 
-def hotfix(number: int) -> dict:
-    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
-                 labels=('type:hot-fix', 'theme:canon'),
-                 body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n- [ ] **AC2.** Also holds.\n')
-
-
 class HotFixUnits(unittest.TestCase):
-    def test_a_ready_hot_fix_is_one_unit_cut_from_the_default_branch(self):
-        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')))
+    def test_a_ready_hot_fix_is_one_unit_cut_from_its_target(self):
+        out = survey(staged((hotfix(4, target='workspace'), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')))
         self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
-                      'branch f04-key-validation, base (default branch), worktree .worktrees/f04-key-validation', out)
+                      'branch f04-key-validation, base workspace, worktree .worktrees/f04-key-validation', out)
         self.assertNotIn('unresolved', out)
         self.assertIn('available: 1', out)
+
+    def test_a_ready_hot_fix_naming_no_target_is_undeclared(self):
+        out = survey(staged((hotfix(4, target=None), 'Ready')), code=1)
+        self.assertIn('  undeclared F04 #4: its Overview names no target in one Target: line', out)
+        self.assertNotIn('  unit F04', out)
+        self.assertIn('undeclared: 1', out)
 
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
         out = survey(staged((hotfix(4), 'In Progress')), None)
@@ -795,15 +795,15 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('unresolved', out)
         self.assertIn('  hold F05 #5: In Progress', out)
 
-    def test_a_passed_hot_fix_pull_request_into_the_default_branch_is_a_merge_candidate(self):
-        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='main'),
-                 pr(952, '[F04] Reject Bad Keys', body=PLAN, base='i07/e00/main'),
-                 pr(953, '[F09] Reject Bad Keys', body=PLAN, base='main'),
-                 pr(954, '[F04] Reject Bad Keys', base='main'),
-                 pr(955, '[F04] Reject Bad Keys', body=PLAN, base='main')]
-        out = survey(staged((hotfix(4), 'In Progress')), pulls,
+    def test_a_passed_hot_fix_pull_request_into_its_target_is_a_merge_candidate(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='workspace'),
+                 pr(952, '[F04] Reject Bad Keys', body=PLAN, base='main'),
+                 pr(953, '[F09] Reject Bad Keys', body=PLAN, base='workspace'),
+                 pr(954, '[F04] Reject Bad Keys', base='workspace'),
+                 pr(955, '[F04] Reject Bad Keys', body=PLAN, base='workspace')]
+        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls,
                      held=tuple(links(n, 4) for n in (951, 952, 953, 954)))
-        self.assertIn('  merge #951 F04: base main', out)
+        self.assertIn('  merge #951 F04: base workspace', out)
         for number in (952, 953, 954, 955):
             self.assertNotIn(f'merge #{number}', out)
 

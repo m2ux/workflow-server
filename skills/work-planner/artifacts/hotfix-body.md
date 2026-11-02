@@ -18,11 +18,12 @@ Read these files first.
 
 One hot-fix body from a confirmed defect.
 
-**Inputs:** Hot-fix number, problem, design, criteria, theme label and output path.
+**Inputs:** Hot-fix number, confirmed target, problem, design, criteria, theme label and output path.
 
 - Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
   - The work must meet [Definition](#definition).
   - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
+  - The Overview must name the confirmed target as [Target](#target) states.
   - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
   - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
 
@@ -30,8 +31,13 @@ One hot-fix body from a confirmed defect.
 
 ### Definition
 
-- A hot-fix fixes a defect in the repository's default branch as it stands, such as `main`.
+- A hot-fix fixes a defect in one long-lived branch outside the initiative, epic and task branch structure, as that branch stands, such as `main` or `workspace`. That branch is its target.
 - Work that needs an open initiative, epic or task is not a hot-fix.
+
+### Target
+
+- The Overview names the target in one line of its own, `Target:` and the branch in a code span: ``Target: `workspace` ``.
+- The target is confirmed with the hot-fix's placement.
 
 ### Titles
 

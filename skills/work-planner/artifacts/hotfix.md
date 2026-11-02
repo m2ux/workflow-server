@@ -11,7 +11,6 @@ Read these files first.
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Repository Labels](repository-labels.md)
-- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -85,7 +84,7 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 - An open hot-fix Ready on the board is a delivery unit of its own, whatever any epic's state. Its issue is the unit's task issue; it has no row and no epic record.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
-- Its component lies on its repository's default branch, which its session's work item declares.
+- Its component lies on its [target](hotfix-body.md#target), which its session's work item declares.
 - **Running.**
   Any open pull request whose Development field links it makes it running: it is neither offered nor held. A linking pull request is enough to keep a second session off it, while only a [delivering pull request](#delivering-pull-request) is merged or recorded as its fix.
 - **Unrecorded.**
@@ -95,14 +94,14 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 ### Branch
 
-A hot-fix's branch is cut from its repository's default branch, unnamed in its `unit` line as `(default branch)` and resolved where [Create Task Worktree](delivery-branches.md#create-task-worktree) cuts it, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
+A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `unit` line names as its base, and is named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
 
 ### Delivering Pull Request
 
-- A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is that repository's default branch, as the record names it in `base.repo.default_branch`, and its Development field links the hot-fix.
+- A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch).
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
-- A pull request merged into a branch that was the default before a rename stops counting, since each record names its repository's current default branch.
+- A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
 
 ### Delivery Record
 
