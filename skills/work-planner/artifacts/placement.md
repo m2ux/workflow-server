@@ -66,7 +66,7 @@ One selected destination for an orphan's work.
      - Run [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
      - Publish through [Save Tracker Issue](issue.md#save-tracker-issue).
    - **Hot-fix.**
-     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue and the confirmed theme board.
+     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue.
      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
    - **Leave.**
      - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
@@ -128,7 +128,7 @@ The work remains tracked by the taking issue.
 - **Existing task, new task and new epic.**
   The source is subsumed, its work planned as an ordinary task row.
 - **Hot-fix.**
-  The source is kept, under the hot-fix layout. It stands in Backlog until its rewritten body is validated and saved, and only then is set Ready.
+  The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.
 - **New initiative.**
   A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
 - **Existing criterion.**

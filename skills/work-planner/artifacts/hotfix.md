@@ -18,14 +18,13 @@ Read these files first.
 
 ### *Open* Hot-fix Issue
 
-A source issue made a hot-fix on its confirmed theme board, held in Backlog for its body rewrite.
+A source issue's hot-fix number and labels, ready for its body rewrite.
 
-**Inputs:** Repository, source issue identity and the confirmed theme board.
+**Inputs:** Repository and source issue identity.
 
 1. Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
 2. Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-3. Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and Backlog, as its [placement](placement.md#disposition-conditions) orders.
-4. Return the hot-fix number and the saved board item to the caller, which rewrites the issue's body, title and labels, then settles its status through [Settle Hot-fix Board Status](#settle-hot-fix-board-status).
+3. Return the hot-fix number to the caller, which rewrites and saves the issue's body, title and labels, then places it through [Settle Hot-fix Board Status](#settle-hot-fix-board-status), as its [placement](placement.md#disposition-conditions) orders.
 
 ### *Hold* Hot-fix Unit
 
@@ -77,7 +76,7 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 ### Board Status
 
-- An open hot-fix is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it. It first reaches Ready as its [placement](placement.md#disposition-conditions) orders.
+- An open hot-fix is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
 - A hot-fix never stands In Review: one found there moves to In Progress.
 - A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
