@@ -133,7 +133,7 @@ The main path meets [Outcomes](#outcomes).
        - Report it with the results.
      - **Not checked.**
        - Report each check with the unevaluable sources that left it unread.
-   - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, and unplaced are clear, apart from a pull request the user leaves unmatched.
+   - After applying the returned findings, repeat Record Epic Delivery with the revised epic body and refreshed delivery records, retaining the complete issue-link snapshot, the same epic bases and output body path. Recording the epic's delivery is finished when unmatched, in flight, uncited, note, unchanged, and unplaced are clear, apart from a pull request the user leaves unmatched.
 7. **Verify.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for the criteria reported ready to verify, supplying the current issue body, delivery findings, relevant delivery revisions, named instruments and the project checkout.
    - Retain the returned verified criterion ids and evidence for the tick step.

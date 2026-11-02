@@ -48,11 +48,12 @@ and fetch again. A title naming another initiative or epic remains a conflict. A
 sync reports retitle for every pull request, linked or not, whose title names an epic of the initiative
 by a task id, [I07:E00:W01], with the [I07:E00] title it takes.
 
-Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a path in a code span that is absent from its head commit, naming that path. A span less any #anchor or :line suffix names a path when it is a component <branch>:<path> for the review's base, or holds a directory and either carries an extension or opens with a top-level directory of the head, or is a bare name whose extension a file at the head carries. A path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
+Epic: --link links each named task's id to a pull request naming the epic, open or merged, and refuses one that does not name this epic. An id repeats once for each pull request it links, one per long-lived branch; the row keeps the deliveries it links in place and gains each named one it lacks. A row whose id links its task issue links the pull request instead, and an existing delivery link is preserved; further work needs another task. A task is delivered when a linked pull request has merged, or its id links a commit. A linked pull request whose title names another epic is reported as a conflict and still delivers the task once it has merged. A linked pull request absent from the given pull requests is reported and does not deliver the task. A row that links a task issue and no pull request is delivered when that issue, given by --tasks, is closed as completed; one whose task issue is not given is unchecked, keeps its Done cell, is reported unchanged, and leaves the epic not closable. An open pull request does not deliver the task. Done carries a tick when the row is delivered and every criterion its Coverage names is ticked. A row that links a merged pull request while a criterion its Coverage names is unticked is unmet, and its Done cell stays empty. Reported: a merged pull request naming the epic that no row links as unmatched, an open one no row links as in flight, other than a pull request whose head is an epic base, a linked pull request whose Development field does not link the task's issue as uncited, a review pull request that does not link the epic's issue as uncited, unmet coverage, a test plan disagreement, a row linked to a pull request naming another epic, rows sharing a pull request that do not name each other in Joins, work started while Open Questions remain, an open review pull request whose References differ from the task pull requests merged into its base, naming both sets, and an open review pull request whose Changes names a path in a code span that is absent from its head commit, naming that path. A span less any #anchor or :line suffix names a path when it is a component <branch>:<path> for the review's base, or holds a directory and either carries an extension or opens with a top-level directory of the head, or is a bare name whose extension a file at the head carries. A path with a directory stands where the head holds a file or a directory at it, and a bare file name anywhere in the tree; a head commit the --project repository does not hold is reported unevaluable.
 Initiative: a row is delivered when the epic issue its id links, given by --epics, is closed as
-completed, and Done carries a tick then. A criterion is verified by the automated test it names, or
-confirmed by the user where it names none. The initiative is closable once every criterion is ticked
-and every epic row is delivered. Initiatives group and track their epics; delivery branches belong
+completed, and Done carries a tick then. A row whose epic issue is not given is unchecked: its Done
+cell stands as it is, the run reports it unchanged, and the initiative is not closable. A criterion is
+verified by the automated test it names, or confirmed by the user where it names none. The initiative
+is closable once every criterion is ticked and every epic row is delivered. Initiatives group and track their epics; delivery branches belong
 to epics and tasks.
 
 Reported for each acceptance criterion of a task, epic or initiative:
@@ -247,10 +248,11 @@ def epic_delivery(rows, header, named, links, task_paths, initiative, epic, repo
         landed = commits or any(given.get(number, {}).get('merged_at') for number in pulls)
         if not pulls and not commits and issue_numbers:
             number = issue_numbers[0]
-            if number not in by_number:
-                report['note'].append(f'{task}: no --tasks issue for #{number}')
-            landed = issue_done(by_number[number]) if number in by_number else False
             report['note'].append(f'{task} links task issue #{number}; link its pull request')
+            if number not in by_number:
+                report['unchanged'].append(f'{task}: its task issue #{number} is not given by --tasks, so its Done cell stands')
+                continue
+            landed = issue_done(by_number[number])
         task_issue = by_task.get(task)
         if task_issue:
             key = issue_key(task_issue)
@@ -294,15 +296,20 @@ def unmet_coverage(rows, header, by_number, ticked, report):
 
 
 def initiative_delivery(rows, header, epics, report):
+    """Each row's delivery by the epic issue its id links. A row whose issue is not among epics is left out."""
     delivered = {}
     for r in rows:
         ident = id_cell(header, r)
         epic = row_id(ident)
         link = LINK.fullmatch(ident.strip())
         issue = ISSUE_URL.search(link[2]) if link else None
-        if not issue or int(issue[1]) not in epics:
-            report['note'].append(f'{epic}: its id links no issue given by --epics')
-        delivered[epic] = bool(issue) and epics.get(int(issue[1]), False)
+        if not issue:
+            report['note'].append(f'{epic}: its id links no issue')
+            delivered[epic] = False
+        elif int(issue[1]) not in epics:
+            report['unchanged'].append(f'{epic}: its issue #{issue[1]} is not given by --epics, so its Done cell stands')
+        else:
+            delivered[epic] = epics[int(issue[1])]
     return delivered
 
 
@@ -776,13 +783,16 @@ def plan_agreement(rows, header, by_number, report):
 
 
 def sync_done(rows, header, delivered: dict[str, bool], ticked: dict[int, bool], kind: str, report) -> bool:
-    """Set a tick on each complete row, and clear it on each row that is not. Returns whether any changed."""
+    """Set a tick on each complete row, and clear it on each row that is not. A row absent from delivered keeps
+    its Done cell. Returns whether any changed."""
     if 'Done' not in header:
         return False
     at = header.index('Done')
     changed = False
     for r in rows:
         name = row_id(id_cell(header, r))
+        if name not in delivered:
+            continue
         if kind == 'epic':
             acs = cited(cell(header, r, 'Coverage'))
             complete = bool(delivered.get(name)) and all(ticked.get(n) for n in acs)
@@ -1025,7 +1035,7 @@ def main() -> int:
     body = (issue.get('body') or '').replace('\r\n', '\n')
     preamble, sections = split_sections(body)
     report = {k: [] for k in ('normalized', 'retitle', 'linked', 'unmatched', 'conflict', 'in flight', 'uncited', 'ready to verify',
-                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unplaced', 'unmerged', 'draft', 'references', 'changes', 'target', 'no epic', 'source', 'unevaluable', 'not checked')}
+                              'unmet', 'disagreement', 'ticked early', 'ticked', 'done', 'cleared', 'open questions', 'note', 'unchanged', 'unplaced', 'unmerged', 'draft', 'references', 'changes', 'target', 'no epic', 'source', 'unevaluable', 'not checked')}
     report['source'].extend(sources)
     if kind == 'epic' or args.project:
         report['unevaluable'].extend(unevaluable)
@@ -1092,8 +1102,9 @@ def main() -> int:
             ready.add(n)
             if n not in evidenced:
                 report[ready_key].append(f"{tag}{n} ({', '.join(rows_for)})")
-        if is_ticked and not done:
-            pending = [t for t in rows_for if not observable.get(t)] or ['no row cites it']
+        # A row this run was not given evidence for is unchecked, which shows no tick early.
+        pending = [t for t in rows_for if t in observable and not observable[t]] if rows_for else ['no row cites it']
+        if is_ticked and pending:
             why = 'has no pull request' if kind in SINGLE else 'undelivered'
             report['ticked early'].append(f"{tag}{n} ({', '.join(pending)} {why})")
 
@@ -1120,9 +1131,10 @@ def main() -> int:
         done_changed = sync_done(rows, header, delivered, ticked, kind, report)
 
     open_rows = [t for t, d in delivered.items() if not d]
+    unchecked = [name for r in rows if (name := row_id(id_cell(header, r))) not in delivered]
     open_criteria = [f'{tag}{n}' for n, t in ticked.items() if not t]
     branches = ''
-    epic_ready = kind == 'epic' and not open_criteria and not open_rows
+    epic_ready = kind == 'epic' and not open_criteria and not open_rows and not unchecked
     if epic_ready:
         if not LONG_LIVED:
             branches = 'long-lived branches unevaluable'
@@ -1151,6 +1163,7 @@ def main() -> int:
         for item in items:
             print(f'  {name}: {item}')
     reasons = [f"undelivered {', '.join(open_rows)}" if open_rows else '',
+               f"unchecked {', '.join(unchecked)}" if unchecked else '',
                f"unticked {', '.join(open_criteria)}" if open_criteria else '',
                branches]
     print('  closable: ' + ('no (' + ', '.join(filter(None, reasons)) + ')' if any(reasons) else 'yes'))

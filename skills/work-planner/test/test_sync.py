@@ -488,6 +488,18 @@ class TaskLinks(unittest.TestCase):
         self.assertIn('ready to verify: AC1 (W01)', done.stdout)
         self.assertIn('note: W01 links task issue #3; link its pull request', done.stdout)
 
+    def test_a_ticked_row_whose_task_issue_is_not_given_keeps_its_tick(self):
+        body = (epic_body((f"[W01]({url('issues', 3)})", 'Work', ''))
+                .replace('| | |', '| | ✓ |', 1).replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+        epic = issue(2, '[I01:E00] First: Epic', body=body)
+        done, fixed = self.run_sync(epic, [])
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('unchanged: W01: its task issue #3 is not given by --tasks, so its Done cell stands', done.stdout)
+        self.assertNotIn('cleared:', done.stdout)
+        self.assertNotIn('ticked early:', done.stdout)
+        self.assertIn('closable: no (unchecked W01', done.stdout)
+        self.assertIn(f"| [W01]({url('issues', 3)}) | Work | AC1 |  | | ✓ |", fixed)
+
 
 class DoneColumn(unittest.TestCase):
     def test_a_missing_done_column_is_added_empty(self):
@@ -566,15 +578,71 @@ class InitiativeClose(unittest.TestCase):
         epic['state_reason'] = 'not_planned'
         self.assertIn('closable: no (undelivered E00)', self.run_sync([epic]))
 
-    def test_a_missing_epic_blocks_closure(self):
+    def test_a_missing_epic_leaves_closure_unchecked(self):
         out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed')], missing=True)
-        self.assertIn('closable: no (undelivered E00)', out)
-        self.assertIn('its id links no issue given by --epics', out)
+        self.assertIn('closable: no (unchecked E00)', out)
+        self.assertIn('unchanged: E00: its issue #2 is not given by --epics, so its Done cell stands', out)
+        self.assertNotIn('ticked early:', out)
+
+    def test_a_row_linking_no_issue_is_undelivered(self):
+        initiative = issue(1, '[I01] First: Initiative', body=initiative_body(('E00', '')))
+        with tempfile.TemporaryDirectory() as tmp:
+            body = Path(tmp, 'issue.json')
+            body.write_text(json.dumps(initiative))
+            done = run('sync.py', str(body), '--epics')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('note: E00: its id links no issue', done.stdout)
+        self.assertIn('closable: no (undelivered E00, unticked AC1)', done.stdout)
 
     def test_completed_epics_still_require_verified_initiative_criteria(self):
         out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed')], ticked=False)
         self.assertIn('closable: no (unticked AC1)', out)
         self.assertIn('ready to verify: AC1 (E00)', out)
+
+
+class InitiativeSubset(unittest.TestCase):
+    """An initiative synced with some of its epics changes only the rows of the epics it was given."""
+
+    def test_rows_whose_epics_are_not_given_keep_their_ticks(self):
+        rows = [(f"[E{n:02d}]({url('issues', n + 2)})", '') for n in range(3)]
+        body = initiative_body(*rows).replace('| |\n', '| ✓ |\n').replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        initiative = issue(1, '[I01] First: Initiative', body=body)
+        given = issue(4, '[I01:E02] Third: Epic', 'closed')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, epic_path, fixed = root / 'issue.json', root / 'epic.json', root / 'fixed.md'
+            issue_path.write_text(json.dumps(initiative))
+            epic_path.write_text(json.dumps(given))
+            done = run('sync.py', str(issue_path), '--epics', str(epic_path), '--fix', str(fixed))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            text = fixed.read_text()
+        for n in range(3):
+            self.assertIn(f"| [E{n:02d}]({url('issues', n + 2)}) | Work | AC1 |  | ✓ |", text)
+        for n in range(2):
+            self.assertIn(f'unchanged: E{n:02d}: its issue #{n + 2} is not given by --epics, so its Done cell stands',
+                          done.stdout)
+        self.assertNotIn('unchanged: E02', done.stdout)
+        self.assertNotIn('cleared:', done.stdout)
+        self.assertNotIn('ticked early:', done.stdout)
+        self.assertIn('closable: no (unchecked E00, E01)', done.stdout)
+
+    def test_a_given_open_epic_clears_only_its_own_tick(self):
+        rows = [(f"[E{n:02d}]({url('issues', n + 2)})", '') for n in range(2)]
+        body = initiative_body(*rows).replace('| |\n', '| ✓ |\n')
+        initiative = issue(1, '[I01] First: Initiative', body=body)
+        given = issue(3, '[I01:E01] Second: Epic')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            issue_path, epic_path, fixed = root / 'issue.json', root / 'epic.json', root / 'fixed.md'
+            issue_path.write_text(json.dumps(initiative))
+            epic_path.write_text(json.dumps(given))
+            done = run('sync.py', str(issue_path), '--epics', str(epic_path), '--fix', str(fixed))
+            self.assertEqual(done.returncode, 0, done.stderr)
+            text = fixed.read_text()
+        self.assertIn(f"| [E00]({url('issues', 2)}) | Work | AC1 | | ✓ |", text)
+        self.assertIn(f"| [E01]({url('issues', 3)}) | Work | AC1 | | |", text)
+        self.assertIn('cleared: E01', done.stdout)
+        self.assertIn('closable: no (undelivered E01, unchecked E00', done.stdout)
 
 
 def ticked(body: str) -> str:
