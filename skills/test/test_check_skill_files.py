@@ -1645,6 +1645,13 @@ class SkillsCheckedTogether(unittest.TestCase):
             checker.main([str(self.root / 'skills' / 'alpha'), '--exclude', 'beta'])
         self.assertEqual(refused.exception.code, 2)
 
+    def test_a_run_names_at_least_one_skill(self):
+        for argv in ([], ['--quiet'], ['--compare', 'HEAD', 'HEAD']):
+            with self.subTest(argv=argv):
+                with self.assertRaises(SystemExit) as refused, redirect_stderr(io.StringIO()):
+                    checker.main(argv)
+                self.assertEqual(refused.exception.code, 2)
+
 
 class ReviewedUrlCases(unittest.TestCase):
     """Each case the agent review of #1555 at 8bddff05a raised against the
