@@ -24,11 +24,23 @@ def is_hotfix(issue: dict) -> bool:
     return hotfix_tag(issue) is not None
 
 
+def formatted(issue: dict) -> bool:
+    """Whether the hot-fix's title, labels and body meet the hot-fix format: format.py's check of it
+    leaves nothing to apply or decide."""
+    from format import Review  # format imports this module
+    review = Review(issue)
+    review.run()
+    return not (review.apply or review.decide)
+
+
 def board_status(issue: dict, held: str | None) -> str | None:
     """The status Board Status gives a hot-fix holding held: Done when closed as completed, OFF_BOARD
-    when closed otherwise, In Progress when open and In Progress or In Review, else Ready."""
+    when closed otherwise, Backlog when open and out of the hot-fix format, In Progress when open and
+    In Progress or In Review, else Ready."""
     if issue['state'] == 'closed':
         return 'Done' if issue.get('state_reason') == 'completed' else OFF_BOARD
+    if not formatted(issue):
+        return 'Backlog'
     return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
 
 

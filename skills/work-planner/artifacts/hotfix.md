@@ -8,6 +8,7 @@ Read these files first.
 
 - [Hot-fix Body](hotfix-body.md)
 - [Issue](issue.md)
+- [Issue Body](issue-body.md)
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Repository Labels](repository-labels.md)
@@ -16,14 +17,14 @@ Read these files first.
 
 ### *Open* Hot-fix Issue
 
-A source issue made a hot-fix on its confirmed theme board, ready for its body rewrite.
+A source issue made a hot-fix on its confirmed theme board, held in Backlog for its body rewrite.
 
 **Inputs:** Repository, source issue identity and the confirmed theme board.
 
 1. Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
 2. Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-3. Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and the status [Board Status](#board-status) gives an open hot-fix.
-4. Return the hot-fix number and the saved board item to the caller, which rewrites the issue's body, title and labels.
+3. Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and Backlog, since the source issue is not yet in the hot-fix format.
+4. Return the hot-fix number and the saved board item to the caller, which rewrites the issue's body, title and labels, then settles its status through [Settle Hot-fix Board Status](#settle-hot-fix-board-status).
 
 ### *Hold* Hot-fix Unit
 
@@ -42,8 +43,9 @@ A held hot-fix returned to the work the delivery plan offers.
 
 1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
    - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
-2. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready.
-3. Return the saved item and its Status to the caller.
+2. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON, then [Check Body Format](issue-body.md#check-body-format) with it for its [format findings](issue-body.md#format-findings).
+3. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and the status [Board Status](#board-status) gives an open hot-fix holding Ready with those findings.
+4. Return the saved item and its Status to the caller.
 
 ### *Record* Hot-fix Delivery
 
@@ -60,23 +62,25 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 **Inputs:** Board identity and the hot-fix issue identity.
 
-1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's current state.
-2. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
-3. Apply the status [Board Status](#board-status) gives that state and Status:
+1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON.
+2. For an open hot-fix, run [Check Body Format](issue-body.md#check-body-format) with that JSON for its [format findings](issue-body.md#format-findings).
+3. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
+4. Apply the status [Board Status](#board-status) gives that state, those findings and Status:
    - **A status.**
      - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
    - **Off the board, with an item.**
      - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
    - **Off the board, with no item.**
      - Change nothing; the hot-fix already stands off the board.
-4. Return the settled item, its removal, or the unchanged board to the caller.
+5. Return the settled item, its removal, or the unchanged board to the caller.
 
 ## Fields
 
 ### Board Status
 
-- An open hot-fix is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it.
-- A hot-fix never stands In Review: one found there moves to In Progress.
+- An open hot-fix is Backlog while it is out of the hot-fix format: checked as a hot-fix, its title, labels or body leave a [format finding](issue-body.md#format-findings) to apply or decide.
+- An open hot-fix in that format is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it.
+- A hot-fix never stands In Review: one in the format found there moves to In Progress.
 - A hot-fix closed as completed is Done, and one closed any other way leaves the board.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
 

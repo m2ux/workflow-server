@@ -76,7 +76,7 @@ One selected destination for an orphan's work.
 
 One kept or left orphan rewritten in the layout of its destination kind.
 
-**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label, confirmed target and the number [Apply Issue Placement](#apply-issue-placement) returned.
+**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label, confirmed target and theme board, and the number [Apply Issue Placement](#apply-issue-placement) returned.
 
 1. Use the selected [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or [Populate Standalone Body](standalone-body.md#populate-standalone-body) body.
    - Carry evidence into Problem and design into Proposal.
@@ -84,7 +84,8 @@ One kept or left orphan rewritten in the layout of its destination kind.
 2. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
    - Resolve findings.
    - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
-   - Return the saved identity to the caller.
+3. For a hot-fix, run [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.
+4. Return the saved identity, and a hot-fix's settled board item, to the caller.
 
 ### *Subsume* Orphan Work
 

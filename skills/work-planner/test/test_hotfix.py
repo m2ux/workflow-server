@@ -60,9 +60,18 @@ class BoardStatus(unittest.TestCase):
             with self.subTest(held=held):
                 self.assertEqual(board_status(hotfix(), held), wanted)
 
+    def test_an_open_hot_fix_out_of_the_format_is_backlog_whatever_it_holds(self):
+        unnamed, unlabelled = hotfix(aim=None), hotfix()
+        unlabelled['labels'] = [{'name': 'type:hot-fix'}]
+        for issue_ in (unnamed, unlabelled):
+            for held in (None, 'Backlog', 'Ready', 'In Progress', 'In Review'):
+                with self.subTest(issue=issue_['body'][:40], held=held):
+                    self.assertEqual(board_status(issue_, held), 'Backlog')
+
     def test_a_closed_hot_fix_is_done_or_off_the_board(self):
         self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Progress'), 'Done')
         self.assertEqual(board_status(hotfix('closed', 'not_planned'), 'Ready'), OFF_BOARD)
+        self.assertEqual(board_status(hotfix('closed', 'completed', aim=None), 'Ready'), 'Done')
 
 
 class DeliveringPulls(unittest.TestCase):
