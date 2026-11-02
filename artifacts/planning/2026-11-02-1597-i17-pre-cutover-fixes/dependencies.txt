@@ -1,0 +1,27 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one component
+none
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E00:W01 - Planning commits directly to engineering
+0 E00:W02 - Not-planned epic leaves its initiative
+0 E00:W03 - Board sync removes uncited not-planned items
+0 E00:W04 - Sync reads every linked pull request
+
+--- component contention: rows of different epics extending one component
+none
+
+--- epic priority (epics sharing a number start together)
+1 E00
+
+--- longest chains: 4, each of 1 steps
+on every chain: none
+E00:W01
+E00:W02
+E00:W03
+E00:W04
