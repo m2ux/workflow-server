@@ -10,10 +10,11 @@ Usage:
 An epic checked with --project and --revision is held to the criteria its project requires. They are
 the ones config/required-criteria.json declares at the commit --revision resolves to, in the repository
 --project locates. Which worktree --project is, and what its working files hold, choose nothing. The
-run prints the declaration path, the resolved commit and the repository as its source. A revision
-resolving to no commit, and a missing, empty or malformed declaration at that commit, leave the
-required criteria unevaluable: the run reports that and names what is missing, and reports no
-criterion as lacking. Each declared criterion is required of an epic one of whose pull requests, from
+run prints the declaration path, the resolved commit and the repository as its source. A missing or
+empty declaration at that commit, or an empty array, requires no criterion. A revision resolving to
+no commit, unreadable JSON, a value other than an array, or an entry lacking a field leaves the
+required criteria unevaluable: the run reports that and names the fault, and reports no criterion
+as lacking. Each declared criterion is required of an epic one of whose pull requests, from
 --prs, reaches its branch through an epic base or initiative branch and changes a file at or under one
 of its paths. --files gives each pull request's changed files, the path list the tracker returns for
 it. A pull request reaching a declared branch without its changed files leaves that criterion
@@ -383,8 +384,9 @@ def required_criteria(project: str, revision: str) -> Required:
     The checkout locates the repository and nothing more: its working files, and which of the
     repository's worktrees it is, do not choose the criteria. The source names the declaration path,
     the resolved commit and the repository's shared git directory, which every worktree of it
-    resolves to. A revision that resolves to no commit, and a missing, empty or malformed declaration
-    at that commit, leave the criteria unevaluable."""
+    resolves to. A missing or empty declaration at that commit, or an empty array, requires no
+    criterion. A revision that resolves to no commit, unreadable JSON, a value other than an array, or
+    an entry lacking a field leaves the criteria unevaluable."""
     resolved = git(project, 'rev-parse', '--verify', '--quiet', '--end-of-options', f'{revision}^{{commit}}')
     if resolved.returncode != 0:
         source = f'{DECLARATION} at {revision} in {project}'
@@ -393,14 +395,14 @@ def required_criteria(project: str, revision: str) -> Required:
     repository = git(project, 'rev-parse', '--path-format=absolute', '--git-common-dir').stdout.strip()
     source = f'{DECLARATION} at {commit} in {repository}'
     stated = git(project, 'cat-file', 'blob', f'{commit}:{DECLARATION}')
-    if stated.returncode != 0:
-        return Required((), source, f'no {source}')
+    if stated.returncode != 0 or not stated.stdout.strip():
+        return Required((), source)
     try:
-        entries = json.loads(stated.stdout or 'null')
+        entries = json.loads(stated.stdout)
     except json.JSONDecodeError:
         return Required((), source, f'{source} is not JSON')
-    if not isinstance(entries, list) or not entries:
-        return Required((), source, f'{source} declares no criterion')
+    if not isinstance(entries, list):
+        return Required((), source, f'{source} is not an array')
     for entry in entries:
         missing = [f for f in DECLARED_FIELDS if not isinstance(entry, dict) or not filled(entry.get(f), f)]
         if missing:

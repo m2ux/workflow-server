@@ -230,8 +230,10 @@ A project states the criteria its epics must carry in `config/required-criteria.
   The check reads each pull request's changed files as the tracker lists them. A pull request reaching the declared branch whose changed files are not supplied leaves the criterion unevaluable, unless another pull request of the epic is known to change a declared path.
 - **The evaluated commit holds the statement.**
   The check reads the file at the commit its evaluated revision resolves to, in the repository its checkout locates, and names that path, commit and repository as its source. Which worktree the checkout is, and what its working files hold, choose nothing.
-- **An absent statement is unevaluable.**
-  A revision resolving to no commit, a missing or empty file at that commit, an empty array, unreadable JSON, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names what is missing, and reports no epic as lacking a criterion. A project declaring nothing acquires no other project's criteria.
+- **A project declaring nothing requires nothing.**
+  A missing or empty file at the evaluated commit, or an empty array, declares no required criterion, and the check reports none. A project declaring nothing acquires no other project's criteria.
+- **An unreadable statement is unevaluable.**
+  A revision resolving to no commit, unreadable JSON, a value other than an array, or an entry lacking a field or stating `paths` as anything but a non-empty list of non-empty strings leaves the project's required criteria unevaluable. The check reports that and names the fault, and reports no epic as lacking a criterion.
 - **Example.**
   workflow-server requires its corpus audit of work that changes the workflow definitions under `corpus` on `workflows`:
 
