@@ -298,14 +298,12 @@ class Queue:
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
                 self.shelve(key)
 
-    def hotfixes(self) -> list[tuple[str, int]]:
+    def hotfixes(self) -> None:
         """Place each open hot-fix Ready, as Hot-fix Status in artifacts/board-queue.md states."""
-        found = [key for key, issue in self.issues.items()
-                 if is_hotfix(issue) and issue['state'] == 'open' and key in self.status]
-        for key in found:
-            if self.status.get(key) not in ('In Progress', 'In Review', 'Done'):
+        for key, issue in self.issues.items():
+            if (is_hotfix(issue) and issue['state'] == 'open' and key in self.status
+                    and self.status.get(key) not in ('In Progress', 'In Review', 'Done')):
                 self.place(key, 'Ready')
-        return found
 
     def decide(self) -> None:
         self.hotfixes()
