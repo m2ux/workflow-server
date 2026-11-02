@@ -134,12 +134,17 @@ def delivering_pulls(prs: list[dict], key: Key, issue: dict) -> list[dict]:
 
 def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: list[dict]) -> str | None:
     """Where an open hot-fix's Delivery Unit stands: unrecorded once a delivering pull request has
-    merged, running while any linking pull request is open, hold while In Progress, unit while Ready,
-    and None otherwise."""
+    merged; running while a linking pull request other than a draft delivering one is open; draft
+    while its open linking pull requests are draft delivering ones, awaiting its review cycle; hold
+    while In Progress, unit while Ready, and None otherwise."""
     if issue['state'] != 'open':
         return None
     if any(p.get('merged_at') for p in delivering):
         return 'unrecorded'
-    if any((p.get('state') or 'open') == 'open' and not p.get('merged_at') for p in linking):
+    numbers = {p['number'] for p in delivering if p.get('draft')}
+    opened = [p for p in linking if (p.get('state') or 'open') == 'open' and not p.get('merged_at')]
+    if any(p['number'] not in numbers for p in opened):
         return 'running'
+    if opened:
+        return 'draft'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)

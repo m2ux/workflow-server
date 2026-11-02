@@ -825,6 +825,13 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('merge #951', out)
         self.assertIn('merge: 0', out)
 
+    def test_a_hot_fix_whose_review_stopped_on_a_draft_is_reported_draft(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', base='workspace', draft=True)]
+        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls, held=(links(951, 4),))
+        self.assertIn('  draft F04 #4: #951 awaits its review cycle', out)
+        self.assertNotIn('hold F04', out)
+        self.assertIn('draft: 1', out)
+
     def test_a_hot_fix_an_open_pull_request_links_is_running(self):
         out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
                      [pr(951, '[F04] Reject Bad Keys', base='main'), pr(952, '[F05] Reject Bad Keys', base='main')], held=(links(951, 4), links(952, 5)))
