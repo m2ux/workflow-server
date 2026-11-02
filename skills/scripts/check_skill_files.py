@@ -72,8 +72,9 @@ A move is judged between two revisions rather than in one tree, so
 compares every third-level section's body with its counterpart, reporting
 each one that differs other than by a link target.
 
-The skills named are read together, so a citation crossing from one into
-another resolves against the tree it lands in; a skill not named is not read.
+A run names one skill or more, read together, so a citation crossing from
+one into another resolves against the tree it lands in; a skill not named is
+not read.
 
     python3 skills/scripts/check_skill_files.py skills/work-planner
     python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/work-planner
@@ -1023,7 +1024,7 @@ def duplicate_anchors(headings):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument('roots', nargs='*', help='skill folders to check')
+    parser.add_argument('roots', nargs='+', help='skill folders to check')
     parser.add_argument('--quiet', action='store_true', help='print the counts alone')
     parser.add_argument('--compare', nargs=2, metavar=('BASE', 'HEAD'),
                         help='compare section bodies between two revisions')
