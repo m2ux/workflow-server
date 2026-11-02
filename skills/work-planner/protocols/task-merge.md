@@ -17,6 +17,7 @@ Read these files first.
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
 - [Hot-fix Body](../artifacts/hotfix-body.md)
 - [Board](../artifacts/board.md)
+- [Board Queue](../artifacts/board-queue.md)
 
 ## Procedure
 
@@ -24,7 +25,7 @@ Read these files first.
    For the merge of a [hot-fix](../artifacts/hotfix-body.md):
    - Follow [Issue Delivery](issue-delivery.md) for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
    - Close the hot-fix issue through [Issue Closure](issue-closure.md) when eligible.
-   - Run [Place Issue on Board](../artifacts/board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Done.
+   - When Issue Closure closed it as completed, run [Place Issue on Board](../artifacts/board.md#place-issue-on-board) with the supplied board, the hot-fix issue and the status [Hot-fix Status](../artifacts/board-queue.md#hot-fix-status) gives it. An issue left open keeps its board item where it stands.
    - Return to the caller. A hot-fix merge records nothing on an epic or initiative.
 2. **Read and record.**
    Follow [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence).
