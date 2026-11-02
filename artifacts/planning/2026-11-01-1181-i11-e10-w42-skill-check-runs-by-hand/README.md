@@ -12,9 +12,12 @@ This record holds the delivery of I11:E10 W42, which removes the Verify Skills w
 | --- | --- |
 | [W42 work item](w42.md) | Component, design and test rows for W42 |
 | [Test evidence](test-evidence.md) | The absent `.github` directory, the check's options and the suites |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1588](https://github.com/m2ux/workflow-server/pull/1588) |
+| Review pull request | [#1589](https://github.com/m2ux/workflow-server/pull/1589) |
