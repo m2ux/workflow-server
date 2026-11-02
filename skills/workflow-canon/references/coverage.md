@@ -79,7 +79,7 @@ Start with the engine's [architecture](https://github.com/m2ux/workflow-server/b
 
 ## Main Coverage
 
-For behavioral engine integration, [Install Engine Dependencies](#install-engine-dependencies), [Run Engine Checks](#run-engine-checks) and [Run Delivery Gate](#run-delivery-gate) establish the baseline on the locked runtime and dependency configuration. The checks include both TypeScript compilations, production build, generated schemas, corpus tool-call shapes and the full test suite.
+For behavioral engine integration, [Install Engine Dependencies](#install-engine-dependencies), [Run Engine Checks](#run-engine-checks) and [Run Delivery Gate](#run-delivery-gate) establish the baseline. Use the locked runtime and dependency configuration. The checks include both TypeScript compilations, production build, generated schemas, corpus tool-call shapes and the full test suite.
 
 Select additional observations for the affected behavior:
 
@@ -99,7 +99,7 @@ For changed documentation or site content, [Check Engine Documentation](#check-e
 
 ## Workflows Coverage
 
-[Run Guard Suite](canon-context.md#run-guard-suite) and [Run Corpus Checks](canon-context.md#run-corpus-checks) establish the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. Both run from the intended engine checkout: the corpus supplies definitions and baselines, and its tooling comes from the paired engine.
+Use [Run Guard Suite](canon-context.md#run-guard-suite) and [Run Corpus Checks](canon-context.md#run-corpus-checks) from the intended engine checkout for the registered guard sweep, roster and walk-protocol validation, snapshots and all-workflows drift. The corpus supplies definitions and baselines; its tooling comes from the paired engine.
 
 - **Definition contracts.**
   Inspect schema agreement; steps, gates, actions, loops, checkpoints, exits and fans; value provenance and absence/null/falsy behavior; routine expansion; technique anatomy and inherited contracts; defaults, executable references and artifact persistence.
@@ -114,7 +114,7 @@ For changed documentation or site content, [Check Engine Documentation](#check-e
 
 ## Docker Coverage
 
-[Check Shell Syntax](#check-shell-syntax) covers changed helpers and [Validate Compose](#validate-compose) resolves the Compose file with disposable paths. For image/runtime changes, [Build Review Image](#build-review-image) builds the reviewed Docker files over the intended engine build context, and [Exercise Review Container](#exercise-review-container) observes the image that build produces.
+[Check Shell Syntax](#check-shell-syntax) for changed helpers and [Validate Compose](#validate-compose) with disposable paths. For image/runtime changes, [Build Review Image](#build-review-image) with the reviewed Docker files and intended engine build context, then [Exercise Review Container](#exercise-review-container).
 
 - **Runtime.**
   Use a disposable container to observe HTTP health/readiness and an MCP interaction, production dependencies and schemas, non-root ownership, corpus read-only access, planning/state writes, configuration precedence and graceful stop.

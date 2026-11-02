@@ -2,6 +2,10 @@
 
 Changes the skill itself: its entry point, mode files, shared guides, commands and templates.
 
+## Prerequisites
+
+Before the first command spec, read the [command conventions](command-conventions.md#common).
+
 ## Procedure
 
 1. **Read the guidelines.**
@@ -16,8 +20,7 @@ Changes the skill itself: its entry point, mode files, shared guides, commands a
    Read each changed file against both guidelines: discovery description, mode summaries, bold leads, one line per item, single rule homes, command links, resolved file links and anchors, and [progressive disclosure](../../guidelines.md#progressive-disclosure).
 6. **Verify.**
    - Confirm frontmatter opens and closes with `---`, contains the required fields and names the skill's folder.
-   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). A change to the audit scripts also runs [their tests](#run-audit-script-tests). Changes to shared rules or templates also run their affected consumer suites.
-   - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
+   - [Run Skill Checks](#run-skill-checks), [Check Skill Summaries](#check-skill-summaries) and [Run the Edit Guard Tests](#run-the-edit-guard-tests). A change to the shared check itself also runs [its tests](#run-the-skill-file-check-tests). Changes to shared rules or templates also run their affected consumer suites.
    - Walk a representative request through each changed decision.
    - For every affected mode, apply [disclosure verification](../../guidelines.md#disclosure-verification) using the skill's [representative scenarios](guidelines.md#progressive-disclosure).
 7. **Deliver.**
@@ -47,7 +50,7 @@ git worktree add <skill-worktree> -b <revision-branch> <remote>/<target-branch>
 
 Validate the skill's structure and run the checks its repository and changed resources require.
 
-- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](review-mode.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
+- Run from the worktree containing the edits. Discover relevant test folders and use [Run Project Check](command-conventions.md#run-project-check) for their actual commands; choose additional suites from the affected consumers.
 - Run [Check Skill Files](#check-skill-files) over every skill the revision touches, and inspect frontmatter and unfinished scaffold text. If an installed skill validator is available, run it too.
 - A behavioral walkthrough follows [Revise](revise-mode.md#procedure); mechanical checks alone do not establish instruction quality.
 
@@ -57,40 +60,17 @@ git diff --check
 
 ### Check Skill Files
 
-Reports each departure of a skill's files from the rules the shared guidelines state.
+Resolves every local link and heading anchor in a skill, and reports the link and layout rules the shared guidelines state.
 
-- Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution. `--quiet` prints the counts alone.
-- **Links.**
-  Every local link and heading anchor resolves. A heading whose anchor an earlier heading of its file holds is reported whether or not a link cites it, since a fragment reaches the first of them. A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
-- **Layout.**
-  A heading jump, a heading without a blank line above it or without content, a malformed bullet, an inline bold lead past the width limit, prose over eight lines, a hard-wrapped line and a trailing blank line are reported.
-- **Sections.**
-  A file carrying a procedure takes the top-level sections the guidelines name, in their order, and an entry point takes its own set whatever it carries. A skill's `structure.json` declares the set for its own directories.
-- **Commands.**
-  A specification standing in the entry point, one a single file other than its own calls, and one nothing cites are reported. So are a shell block in a mode file outside its specifications, GraphQL without a `**REST gap:**` line, and any Projects (classic) interface.
-- **Declarations.**
-  A term the skill's `vocabulary.json` retires, a guide rule restating a shared rule's label under the same section title, a labelled guide rule the `rules.json` beside it leaves undecided, and a mode the frontmatter description gives no trigger phrase are reported.
-- **Moods.**
-  Sibling sections whose titles end in one word open in one mood.
+- Run from the workspace checkout holding the skills. Name each skill folder; several in one run share their anchor resolution.
+- A repeated heading is reported only where a link cites it, since an uncited repeat resolves nothing ambiguously.
+- A `Read [Name](target) first.` sentence is a prerequisite citation, and its target must sit in another file. A link naming the next operation is a selection link and points anywhere.
 - Fenced blocks, code spans and `{{...}}` placeholders hold specimen text and are excluded.
 - Exit 0 means no finding; exit 1 lists each one as `file:line: kind`.
 
 ```bash
 python3 skills/scripts/check_skill_files.py skills/workflow-canon
 python3 skills/scripts/check_skill_files.py skills/workflow-canon skills/work-planner
-```
-
-### Compare Section Bodies
-
-Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
-
-- Run from the workspace checkout holding the skills. Name the base and head revisions, then each skill folder the move touches.
-- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
-- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
-- Exit 1 means a section was added, removed or differs.
-
-```bash
-python3 skills/scripts/check_skill_files.py --compare <base> <head> skills/workflow-canon
 ```
 
 ### Run the Skill File Check Tests
@@ -154,15 +134,4 @@ Drives the edit guard over seeded edits in temporary git repositories, with a st
 
 ```bash
 python3 -m unittest discover -s skills/workflow-canon/test -p test_edit_guard.py
-```
-
-### Run Audit Script Tests
-
-Run inventory, evidence-gate and assignment regressions with the paired parser.
-
-- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
-- Each engine-bound test skips while `CANON_TEST_ENGINE` is unset.
-
-```bash
-CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
 ```

@@ -45,7 +45,7 @@ Apply the shared [progressive disclosure](../../guidelines.md#progressive-disclo
 - **Currency.**
   Check project settings against current instructions and captured revisions. Counts, runtime versions, thresholds and branch pairings come from the sources that own them.
 - **Separation.**
-  An executable operation belongs to the file whose procedure runs it. Skill-wide conventions stand in the entry point's Conventions section; conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
+  An executable operation belongs to the file whose procedure runs it. Skill-wide conventions form one bounded file; conventions governing one procedure's commands sit in that procedure's file, ahead of its Commands section.
 
 ## Shared Planning
 
