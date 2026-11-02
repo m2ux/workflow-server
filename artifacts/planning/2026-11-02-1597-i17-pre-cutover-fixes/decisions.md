@@ -38,3 +38,4 @@ Planning decisions:
 
 - **No tests-pass criterion.** The tests and skill-file check are a gate every pull request meets, so no row carries them as a criterion.
 - **I17 reopened.** Its AC1 is unticked again until E01's fixes are in the extraction commit's history.
+6. **SOLID guidelines first.** Artifact and protocol files are classes, and linked operations are method calls that encapsulate each file's state. A new W01 lands SOLID guidelines fitted to that model in the skill's guidelines, drafted in [e01/solid-guidelines.md](e01/solid-guidelines.md). The audit becomes W02 and measures against them. The fix rows become W03 to W05.
