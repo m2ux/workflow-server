@@ -58,3 +58,29 @@ The full suites and the skill file check at `c780b08b8`:
 
 - `skills/work-planner/test skills/test`: 954 passed, 1 skipped, 1886 subtests passed.
 - `check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.
+
+## T6
+
+One home per rule, for [#1594](https://github.com/m2ux/workflow-server/pull/1594) at head `45cdaf0e7`. The rework's first two commits, `3f781f557` and `a3f052ac4`, merged in #1593. I grepped skills/work-planner for each rule:
+
+| Rule | Owner | Places that link or name it |
+| --- | --- | --- |
+| An epic with no priority label is never Ready | artifacts/board-queue.md, Epic Status | scripts/board-queue.py, the activate docstring |
+| The rank line | artifacts/board-queue.md, Report Lines | board-queue.md Completeness and Compute Board Queue; modes/advance-mode.md, Report step; scripts/board-queue.py, the module and unranked docstrings |
+| The board read live, and an epic started only from the same run's queue | modes/deliver-mode.md, step 2 (Advance) | deliver-mode.md, step 4 (Survey): each epic that queue places Ready or In Progress |
+| A unit only from an epic Ready or In Progress in the supplied board items | artifacts/delivery-plan.md, Work Units | artifacts/epic-issue-body.md, Reserve Task Rows step 1; scripts/deliver.py, the docstring and the refusal message |
+
+These copies were removed:
+- Copies that predate #1593:
+  - board-queue.py's module docstring, which restated Epic Status, Initiative Status, Epic Activity and Report Lines.
+  - Advance mode's Report step and Outcomes, which listed the lines and restated the epic rules.
+  - Deliver mode's "Parallel" outcome.
+  - epic.md's claim that Check Epic Prerequisites permits an epic to be marked Ready.
+- Copies #1593 added: the Reserve Row refusal bullet, the line lists in Completeness and Compute Board Queue, and the restating method docstrings and refusal message.
+
+## T7
+
+At `45cdaf0e7`:
+
+- `skills/work-planner/test skills/test`: 954 passed, 1 skipped, 1888 subtests passed.
+- `check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.

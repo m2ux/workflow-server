@@ -32,3 +32,15 @@ An independent reviewer sub-agent reviewed head `f867342ae` against `3cb9cbcf3`:
 | Deliver mode's live-read bullet restates Advance's fetch | Kept: #1591's Proposal asks Deliver mode to state it |
 | Rationale clauses in Reserve Task Rows and the deliver.py docstring | Fixed in `c780b08b8` |
 | Docstring wrap, extra blank line in test_deliver.py | Fixed in `c780b08b8` |
+
+## One Home per Rule
+
+The user asked that each of #1593's rules be stated once, by its owner. The rework is [#1594](https://github.com/m2ux/workflow-server/pull/1594), branch `skill/one-home-per-rule` cut from `b2710489a` (#1593's merge), head `45cdaf0e7`. The first two rework commits merged with #1593. [Test Evidence](test-evidence.md#t6) has the inventory.
+
+Reviewer sub-agent passes:
+
+| Head | Verdict | Disposition |
+| --- | --- | --- |
+| `3f781f557` | One blocking finding: the start invariant claimed every status move came from the queue, which contradicted dispatch status. Four nonblocking. | Fixed in `a3f052ac4` |
+| `a3f052ac4` | One blocking finding: "computed before the run changes any status" contradicted Advance mode, which syncs and writes first. Three nonblocking: base wording, two docstrings, usage width. | Fixed in `0148be346` |
+| `0148be346` | Approve. One optional finding: the step 4 wording. One note: epic.md's "marked Ready" claim overlapped Epic Status. | Both fixed in `45cdaf0e7` |
