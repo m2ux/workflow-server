@@ -44,7 +44,7 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 
 ### Hot-fix Units
 
-An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. A hot-fix an open or merged pull request links is running: the plan neither offers nor holds it. Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no pull request links it.
+An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row, so no epic record. Its component lies on its repository's default branch, which its session's work item declares. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. A hot-fix an open or merged pull request links is running: the plan neither offers nor holds it. Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no pull request links it.
 
 ### Report Lines
 
