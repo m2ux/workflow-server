@@ -790,6 +790,15 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('F04', out)
         self.assertNotIn('F05', out)
 
+    def test_a_malformed_default_branch_stops_the_run_before_it_prints(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'items.json')
+            path.write_text(json.dumps(staged((hotfix(4), 'Ready'))))
+            done = run('deliver.py', '--items', str(path), '--default', 'o/r')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertEqual(done.stdout, '')
+        self.assertIn('--default o/r: expected owner/repo=branch', done.stderr)
+
     def test_a_hot_fix_without_its_default_branch_is_unresolved(self):
         out = survey(staged((hotfix(4), 'Ready')))
         self.assertIn('unresolved: F04 #4: the default branch of o/r is not given', out)

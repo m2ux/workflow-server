@@ -52,10 +52,11 @@ its session writes the work item after dispatch, so its unit works on every epic
 An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever any epic's state,
 as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
 its record folder and branch come from its prefix and its title's name, and its base is its
-repository's default branch, which --default gives as owner/repo=branch, once for each repository. A hot-fix an open or merged pull request links
-is running, and is neither offered nor held. Otherwise a hot-fix In Progress is held by its
-dispatch and printed on a hold line. A hot-fix whose repository's default branch is not given is printed
-unresolved.
+repository's default branch, which --default gives as owner/repo=branch, once for each
+repository; a malformed --default stops the run before it prints. A hot-fix an open or merged pull
+request links is running, and is neither offered nor held. Otherwise a hot-fix In Progress is held
+by its dispatch and printed on a hold line. A hot-fix whose repository's default branch is not
+given is printed unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -350,7 +351,19 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
     return [line for _, line in sorted(found)]
 
 
+def default_branches(specs: list[str]) -> dict[str, str]:
+    """Each repository's default branch, by lowercased owner/repo, from --default owner/repo=branch."""
+    defaults = {}
+    for spec in specs:
+        repo, _, branch = spec.partition('=')
+        if not repo or not branch:
+            sys.exit(f'--default {spec}: expected owner/repo=branch')
+        defaults[repo.lower()] = branch
+    return defaults
+
+
 def survey(args: argparse.Namespace) -> int:
+    defaults = default_branches(args.default)
     issues = {}
     for path in args.others:
         given = json.loads(Path(path).read_text())
@@ -438,12 +451,6 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    defaults = {}
-    for given in args.default:
-        repo, _, branch = given.partition('=')
-        if not repo or not branch:
-            sys.exit(f'--default {given}: expected owner/repo=branch')
-        defaults[repo.lower()] = branch
     lines, found, holding = hotfix_units(issues, status, prs, defaults, home, when, board.unresolved)
     for line in lines:
         print(line)
