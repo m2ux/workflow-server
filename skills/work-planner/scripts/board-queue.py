@@ -194,9 +194,9 @@ class Queue:
                     self.place(epic_key, 'Backlog')
 
     def shelve(self, key: tuple[str, int]) -> None:
-        """The initiative and its unstarted epics return to Backlog, and a completed epic stays
-        Done. An epic with work under way or In Review is named on a reconcile line, and the
-        initiative and its epics stay where they stand until the user reconciles it."""
+        """The initiative and its unstarted epics return to Backlog, and a closed epic keeps the
+        Status it holds. An epic with work under way or In Review is named on a reconcile line,
+        and the initiative and its epics stay where they stand until the user reconciles it."""
         self.shelved.add(key)
         rows_of, _ = self.load(key)
         unstarted, engaged = [], []
