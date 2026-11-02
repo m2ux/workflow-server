@@ -43,7 +43,7 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 ### Titles
 
-- The title is `[F00] Name: Subtitle`.
+- The title is `[F00] Name: Subtitle`. The `[F00]` prefix is what makes an issue a hot-fix.
 - The labels are `type:hot-fix` and the `theme:*` label of the board it sits on.
 - `F` is the hot-fix number. Hot-fixes count from `00`.
 

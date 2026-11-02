@@ -735,9 +735,11 @@ class HotFixes(unittest.TestCase):
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 3'))
         self.assertEqual(r.apply, ['labels: remove priority: 3, add priority: 10'])
 
-    def test_the_label_alone_makes_a_hot_fix_that_lacks_its_prefix(self):
+    def test_the_label_without_the_prefix_is_a_finding_on_a_standalone_issue(self):
         r = self.check('Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'))
-        self.assertIn('title has no [F00] prefix', r.decide)
+        self.assertEqual(r.kind, 'issue')
+        self.assertIn('type:hot-fix on a title without an [F00] prefix: retitle it as a hot-fix, '
+                      'or remove the label', r.decide)
 
     def test_a_hot_fix_needs_a_theme(self):
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix',))

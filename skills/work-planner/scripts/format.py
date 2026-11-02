@@ -22,11 +22,11 @@ one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
 from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, [F00]
-hot-fix. A proposal also carries type:proposal, and a hot-fix type:hot-fix; either the prefix or the
-label makes an issue a hot-fix. A type:task issue is a task whatever its prefix depth, so one whose
+hot-fix. A proposal also carries type:proposal; the [F00] prefix alone makes an issue a hot-fix,
+which also carries type:hot-fix. A type:task issue is a task whatever its prefix depth, so one whose
 prefix has no task id is checked as a task and reported as missing it. A hot-fix takes the standalone
-template, as artifacts/hotfix-body.md states. No prefix, no type:proposal and no type:hot-fix is a
-standalone issue, which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
+template, as artifacts/hotfix-body.md states. No prefix and no type:proposal is a standalone issue,
+which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
 from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -54,6 +54,7 @@ Printed as fixes to apply to the issue itself:
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
+  - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -410,7 +411,7 @@ class Review:
         title = self.issue['title']
         if 'type:proposal' in self.labels():
             return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
-        if 'type:hot-fix' in self.labels() or HOTFIX.match(title):
+        if HOTFIX.match(title):
             return self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
         m = PREFIX.match(title)
         if not m:
@@ -420,9 +421,12 @@ class Review:
                 self.check_title_shape(name, subtitle)
             else:
                 self.decide.append('title has no "Name: Subtitle"')
-            typed = [l for l in self.labels() if l.startswith('type:')]
+            typed = [l for l in self.labels() if l.startswith('type:') and l != 'type:hot-fix']
             if typed:
                 self.apply.append('labels: ' + ', '.join(f'remove {l}' for l in typed))
+            if 'type:hot-fix' in self.labels():
+                self.decide.append('type:hot-fix on a title without an [F00] prefix: retitle it as a hot-fix, '
+                                   'or remove the label')
             return self.check_body()
         parts = re.findall(r'[EW]\d\d', m[2])
         self.number = m[1][1:]
