@@ -47,6 +47,12 @@ class Target(unittest.TestCase):
         self.assertEqual(targets(twice), ['main', 'workspace'])
         self.assertEqual(target(twice), '')
 
+    def test_a_target_line_in_fenced_code_names_nothing(self):
+        fenced = hotfix()
+        fenced['body'] = fenced['body'].replace('Target: `main`', 'Target: `main`\n\n```\nTarget: `workspace`\n```')
+        self.assertEqual(targets(fenced), ['main'])
+        self.assertEqual(target(fenced), 'main')
+
     def test_a_target_line_outside_the_overview_names_nothing(self):
         moved = hotfix(aim=None)
         moved['body'] = hotfix_body(None) + '\nTarget: `main`\n'
