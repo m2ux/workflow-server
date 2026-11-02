@@ -157,12 +157,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    - For a unit of rows:
      - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's task rows, with the project checkout and the fetched epic bases.
      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
-8. **Merge.**
-   Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
-   - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.
-   - On a confirmed merge, run [Task Merge](../protocols/task-merge.md) in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
-   - Resume the defer step when recording returns; a merge or recording blocker remains explicit.
-9. **Classify and defer the debt.**
+8. **Classify and defer the debt.**
    Classify the technical debt this unit's validation finds — running its tests, auditing the definitions it changed, reviewing its pull request — which decides where it is fixed.
    - A hot-fix unit fixes every item as its [Debt](../artifacts/hotfix-body.md#debt) states.
    - **Blocking.**
@@ -177,7 +172,13 @@ The confirmed unit carried from its supplied brief through implementation and de
      - Run [Hoist Mode](hoist-mode.md) in the project checkout with that issue identity, the allowance the brief names, and its placement as a new task in this initiative's [deferred-debt epic](../artifacts/initiative-issue-body.md#deferred-debt).
      - Where the initiative has no such epic, the placement raises it as a new epic, carrying the criterion its initiative row covers.
      - Run [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with the placement it returns.
-   - Resume the arising-issues step with each saved placement or reported blocker.
+   - Commit each item the unit fixes to its task branch, so the open pull request carries it.
+   - Resume the merge step with each saved placement or reported blocker.
+9. **Merge.**
+   Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
+   - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.
+   - On a confirmed merge, run [Task Merge](../protocols/task-merge.md) in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
+   - Resume the arising-issues step when recording returns; a merge or recording blocker remains explicit.
 10. **Arising issues.**
     Create each issue that arose during delivery as a standalone issue with [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), with no agent-engineering prefix.
     - Run [Hoist Mode](hoist-mode.md) in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
