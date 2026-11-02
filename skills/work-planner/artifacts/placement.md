@@ -13,6 +13,7 @@ Read these files first.
 - [Standalone Body](standalone-body.md)
 - [Hot-fix Body](hotfix-body.md)
 - [Board](board.md)
+- [Board Queue](board-queue.md)
 - [Repository Labels](repository-labels.md)
 - [Dependency Graph](dependency-graph.md)
 
@@ -69,7 +70,7 @@ One selected destination for an orphan's work.
    - **Hot-fix.**
      - Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
      - Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-     - Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and Backlog.
+     - Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and the status [Hot-fix Status](board-queue.md#hot-fix-status) gives an open hot-fix.
      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
    - **Leave.**
      - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
