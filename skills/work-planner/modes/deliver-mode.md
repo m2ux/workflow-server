@@ -58,7 +58,7 @@ The main path meets [Outcomes](#outcomes).
    - Resolve any missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
    - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs.
    - For delivery discrepancies:
-     - Run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) for the affected initiative and epics.
+     - Run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON of the affected initiative.
      - Resume the survey with its returned records.
    - Handle the returned availability findings:
      - **Held work.**

@@ -1,7 +1,8 @@
 """Add to a pull-request collection every pull request the plan links, whatever its title.
 
 Usage:
-  python3 linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json ... [items.json]
+  python3 linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json ...
+  python3 linked-pull-requests.py --prs prs.json --issues items.json
 
 prs.json holds pull requests as JSON lines, as the REST API returns them and sync.py reads them. Each
 --issues file holds issues as the REST API returns them: one issue, concatenated pages, or a board's
