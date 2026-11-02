@@ -352,7 +352,7 @@ DECLARED_FIELDS = ('branch', 'paths', 'criterion', 'phrase', 'row')
 class Required(NamedTuple):
     """The criteria a project requires of its epics and the source they were read from.
 
-    unevaluable names what is missing when the declaration cannot be read, and then criteria is empty."""
+    unevaluable names the fault when the declaration cannot be read, and then criteria is empty."""
     criteria: tuple[dict, ...]
     source: str
     unevaluable: str = ''
