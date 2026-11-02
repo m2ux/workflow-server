@@ -31,7 +31,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import HOTFIX
+from format import is_hotfix
 
 AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
 OPEN_INITIATIVE_OR_EPIC = re.compile(r'^\[I\d\d(?::E\d\d)?\] ')
@@ -85,7 +85,7 @@ def main() -> int:
             into.setdefault(n, []).append(i['number'])
 
     standalone = sorted((i for i in issues if i['state'] == 'open' and not AGENT_ENGINEERING.match(i['title'])
-                         and not HOTFIX.match(i['title'])
+                         and not is_hotfix(i)
                          and 'type:proposal' not in labels(i) and not throwaway(i)),
                         key=lambda i: i['number'])
     for heading, group, citers, which in (

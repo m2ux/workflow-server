@@ -29,7 +29,7 @@ from collections import Counter
 from pathlib import Path
 
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
-from format import HOTFIX, cell, id_cell, row_id
+from format import cell, id_cell, is_hotfix, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
 from sync import Unreadable, issue_done, pull_requests
 
@@ -56,10 +56,6 @@ def tags(title: str) -> tuple[str, str, str] | None:
 def is_initiative(issue: dict) -> bool:
     parsed = tags(issue['title'])
     return bool(parsed) and not parsed[1]
-
-
-def is_hotfix(issue: dict) -> bool:
-    return bool(HOTFIX.match(issue['title']))
 
 
 def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:

@@ -20,7 +20,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import HOTFIX
+from format import is_hotfix
 
 DELIVERY, QUEUE, DISPATCH = 'delivery', 'queue', 'dispatch'
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
@@ -137,7 +137,7 @@ class Changes:
         if task and wanted == 'In Review':
             raise Jurisdiction(f'{name}: a task does not stand In Review')
         if self.scope == QUEUE:
-            completed_hotfix = (HOTFIX.match(issue.get('title') or '') and issue.get('state') == 'closed'
+            completed_hotfix = (is_hotfix(issue) and issue.get('state') == 'closed'
                                 and issue.get('state_reason') == 'completed')
             if wanted in DECIDED and not (wanted == 'Done' and completed_hotfix):
                 raise Jurisdiction(f'{name}: the queue does not set {wanted}')

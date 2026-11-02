@@ -81,7 +81,7 @@ from pathlib import Path
 
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
-from format import HOTFIX, LINK, cell, id_cell, phrase, title_name
+from format import HOTFIX, LINK, cell, hotfix_tag, id_cell, phrase, title_name
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -393,7 +393,7 @@ def main() -> int:
             ready.append((ek, f'next {task[1]}' if task else ''))
 
     hot_ready = []
-    hotfixes = {} if only else {k: m[1] for k, issue in issues.items() if (m := HOTFIX.match(issue['title']))}
+    hotfixes = {} if only else {k: tag for k, issue in issues.items() if (tag := hotfix_tag(issue))}
     for k, tag in sorted(hotfixes.items()):
         head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
         linking = sorted((p for p in by_url.values() if links_issue(p, k)), key=lambda p: p['number'])

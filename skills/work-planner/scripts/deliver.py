@@ -88,8 +88,8 @@ from board import Board, Outputs, Resolution, rows
 from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
-from format import (AC, HOTFIX, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
-                    row, row_id, split_sections, title_name)
+from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
+                    row, row_id, split_sections, title_name, hotfix_tag)
 from sync import (Unreadable, attach_links, links_issue, long_lived_names, plan_rows, pr_repo,
                   pull_requests, table)
 
@@ -279,10 +279,10 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
     lines, available, held, unrecorded = [], 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
-        matched = HOTFIX.match(issue.get('title') or '')
-        if not matched or issue['state'] != 'open':
+        tag = hotfix_tag(issue)
+        if not tag or issue['state'] != 'open':
             continue
-        tag, where = matched[1], f'{matched[1]} {label(key, home)}'
+        where = f'{tag} {label(key, home)}'
         linking = sorted((p for p in prs if links_issue(p, key)), key=lambda p: p['number'])
         if merged := [p for p in linking if p.get('merged_at')]:
             numbers = ', '.join(f"#{p['number']}" for p in merged)
@@ -330,20 +330,19 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
         parsed = tags(issue.get('title') or '')
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
-        if (fixed := HOTFIX.match(issue.get('title') or '')) and issue['state'] == 'open':
-            hotfixes[(key[0].lower(), fixed[1])] = key
+        if (tag := hotfix_tag(issue)) and issue['state'] == 'open':
+            hotfixes[(key[0].lower(), tag)] = key
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
             continue
         base = (pull.get('base') or {}).get('ref') or ''
-        fixed = HOTFIX.match(pull.get('title') or '')
-        if fixed:
+        if tag := hotfix_tag(pull):
             repo = pr_repo(pull).lower()
-            hotfix = hotfixes.get((repo, fixed[1]))
+            hotfix = hotfixes.get((repo, tag))
             if (hotfix and links_issue(pull, hotfix) and base and base == defaults.get(repo)
                     and plan_passed(pull.get('body') or '')):
-                found.append((pull['number'], f"  merge #{pull['number']} {fixed[1]}: base {base}"))
+                found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue
         matched = PR_TITLE.match(pull.get('title') or '')
         if not matched:

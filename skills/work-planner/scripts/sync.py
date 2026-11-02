@@ -92,7 +92,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from format import HOTFIX, Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections, hotfix_tag
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 SINGLE = ('task', 'hot-fix')
@@ -987,11 +987,11 @@ def main() -> int:
 
     issue = json.loads(Path(args.issue).read_text())
     m = PREFIX.match(issue['title'])
-    hotfix = HOTFIX.match(issue['title'])
+    hotfix = hotfix_tag(issue)
     if not m and not hotfix:
         sys.exit(f"title has no [Ixx], [Ixx:Eyy], [Ixx:Eyy:Wzz] or [F00] prefix: {issue['title']}")
     if hotfix:
-        initiative, epic, task, kind = None, None, hotfix[1], 'hot-fix'
+        initiative, epic, task, kind = None, None, hotfix, 'hot-fix'
     else:
         initiative, epic, task = m[1], m[2], m[3] and f'W{m[3]}'
         kind = 'task' if task else 'epic' if epic else 'initiative'

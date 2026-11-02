@@ -250,6 +250,16 @@ def initiative_rows(body: str) -> list[str]:
     return work_table(body)[1]
 
 
+def hotfix_tag(item: dict) -> str | None:
+    """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
+    matched = HOTFIX.match(item.get('title') or '')
+    return matched[1] if matched else None
+
+
+def is_hotfix(issue: dict) -> bool:
+    return hotfix_tag(issue) is not None
+
+
 def title_name(title: str) -> str:
     """The name a prefixed title gives its issue: the text between its [I07:E00] or [F00] prefix and
     the first colon."""
@@ -411,7 +421,7 @@ class Review:
         title = self.issue['title']
         if 'type:proposal' in self.labels():
             return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
-        if HOTFIX.match(title):
+        if is_hotfix(self.issue):
             return self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
         m = PREFIX.match(title)
         if not m:
