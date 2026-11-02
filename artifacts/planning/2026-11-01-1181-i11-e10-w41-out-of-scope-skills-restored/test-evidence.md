@@ -20,6 +20,8 @@
   75 files checked, 0 findings
   ```
 
+- **After merge.** At merge commit `a41d89f80` on `i11/e10/workspace`, the three folders still diff empty against `origin/workspace`, and Verify Skills on the push ([run 41384876026](https://github.com/m2ux/workflow-server/actions/runs/41384876026)) succeeds.
+
 ## T2
 
 - `sbx python3 -m pytest skills/test -q`: 215 passed, 32 subtests passed. Before the suite change, at `fb607966d`, 4 failed: the two `CanonConventionsReach` tests reading Canon's tree and `CanonRunProjectCheck::test_workflow_canon_holds_it_once_with_its_one_caller`.
