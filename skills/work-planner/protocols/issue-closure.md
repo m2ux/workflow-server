@@ -23,7 +23,7 @@ Read these files first.
    Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for every captured link, across repositories and all states.
    - Use a fresh destination file so an earlier snapshot cannot supply membership.
 3. **Check delivery completion.**
-   - For a task:
+   - For a task or a hot-fix:
      - Retain the task delivery result its delivering pull request established.
    - For an epic:
      - Run [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout for the complete expected bases, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.

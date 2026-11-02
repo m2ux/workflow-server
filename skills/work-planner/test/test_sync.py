@@ -1793,3 +1793,33 @@ class ReviewChanges(unittest.TestCase):
         out = self.run_sync(changes_body('docs/guide.md'), sha='0' * 40)
         self.assertIn(f"unevaluable: i01/e00/main (#980) Changes paths: head {'0' * 40} is not held in", out)
         self.assertNotIn('changes:', out)
+
+
+class HotFixDelivery(unittest.TestCase):
+    """A hot-fix is recorded as a task issue whose delivery is the pull request linking it."""
+
+    def run_hotfix(self, pulls: list[dict], held: list[dict], *args: str):
+        record = issue(4, '[F04] Key Validation: Reject Bad Keys', labels=('type:hot-fix',),
+                       body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            body.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, held),
+                       '--fix', str(fixed), *args)
+            return done, fixed.read_text() if fixed.exists() else ''
+
+    def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):
+        done, fixed = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', merged='2026-11-01T00:00:00Z')],
+                                      [links(950, 4)], '--pr', '950', '--tick', 'AC1')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('#4 hot-fix (open)', done.stdout)
+        self.assertIn('linked: F04 delivered by #950', done.stdout)
+        self.assertIn('closable: yes', done.stdout)
+        self.assertIn('- [x] **AC1.** Holds.', fixed)
+
+    def test_a_pull_request_not_linking_it_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys')], [links(950, 7)], '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: no pull request linking F04', done.stderr)
