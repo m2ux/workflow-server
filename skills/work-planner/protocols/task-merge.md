@@ -23,6 +23,7 @@ Read these files first.
    For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
    - Follow [Issue Delivery](issue-delivery.md) for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
    - Close the hot-fix issue through [Issue Closure](issue-closure.md) when eligible.
+   - Run [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status) with the supplied board and the hot-fix issue.
    - Return to the caller.
 2. **Read and record.**
    Follow [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence).

@@ -19,7 +19,7 @@ One delivery plan from supplied board and delivery evidence.
 
 **Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files and optional record date.
 
-1. Run [Fetch Default Branch](#fetch-default-branch) for each repository holding an open [hot-fix](hotfix.md) in the supplied board items.
+1. Run [Fetch Default Branch](hotfix.md#fetch-default-branch) for each repository holding an open [hot-fix](hotfix.md) in the supplied board items or resolved off-board issue files.
 2. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter and each fetched default branch to `--default`.
 3. Return the units, holds, blockers, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
@@ -74,20 +74,4 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --default m2ux/workflow-server=main
-```
-
-### Fetch Default Branch
-
-Prints one repository's default branch.
-
-**Inputs:** Repository.
-
-```bash
-gh api 'repos/<owner>/<repo>' --jq .default_branch
-```
-
-**Example:**
-
-```bash
-gh api 'repos/m2ux/workflow-server' --jq .default_branch
 ```

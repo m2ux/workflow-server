@@ -11,7 +11,6 @@ Read these files first.
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Repository Labels](repository-labels.md)
-- [Task Body](task-body.md)
 
 ## Operations
 
@@ -42,7 +41,7 @@ A held hot-fix returned to the work the delivery plan offers.
 **Inputs:** Board identity and the held hot-fix's issue identity.
 
 1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
-   - Refuse the release while an open or merged [delivering pull request](#delivering-pull-request) reaches it, and return that pull request to the caller.
+   - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
 2. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready.
 3. Return the saved item and its Status to the caller.
 
@@ -52,8 +51,24 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 **Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
 
-1. Run [Sync Task Issue](task-body.md#sync-task-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+1. Run [Fetch Default Branch](#fetch-default-branch) for the hot-fix's repository.
+2. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, the default branch as `--default`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+3. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+
+### *Settle* Hot-fix Board Status
+
+One hot-fix's board item set where [Board Status](#board-status) places it.
+
+**Inputs:** Board identity and the hot-fix issue identity.
+
+1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's current state.
+2. Run [Read Board State](board.md#read-board-state) for its item and Status.
+3. Apply the status [Board Status](#board-status) gives that state and Status:
+   - **A status.**
+     - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status.
+   - **Off the board.**
+     - Run [Remove Board Item](#remove-board-item) with the supplied board and its item.
+4. Return the settled item, or its removal, to the caller.
 
 ## Fields
 
@@ -70,11 +85,11 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 - Its Coverage is every criterion it carries. Its record folder takes its prefix and title name as a task id and Description.
 - Its component lies on its repository's default branch, which its session's work item declares.
 - **Running.**
-  An open [delivering pull request](#delivering-pull-request) makes it running: it is neither offered nor held.
+  Any open pull request whose Development field links it makes it running: it is neither offered nor held. A linking pull request is enough to keep a second session off it, while only a [delivering pull request](#delivering-pull-request) is merged or recorded as its fix.
 - **Unrecorded.**
   A merged delivering pull request on an open hot-fix leaves its merge awaiting the [delivery record](#delivery-record), whoever merged it.
 - **Hold.**
-  Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no delivering pull request reaches it.
+  Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while it is neither running nor unrecorded.
 
 ### Branch
 
@@ -91,3 +106,56 @@ A hot-fix's branch is cut from its repository's default branch, named for its pr
 - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
 - Its board item follows [Board Status](#board-status) once the issue closes.
 - Debt its session finds is fixed as hot-fix [Debt](hotfix-body.md#debt) states, before the delivering pull request merges.
+
+## Commands
+
+### Fetch Default Branch
+
+Prints one repository's default branch.
+
+**Inputs:** Repository.
+
+```bash
+gh api 'repos/<owner>/<repo>' --jq .default_branch
+```
+
+**Example:**
+
+```bash
+gh api 'repos/m2ux/workflow-server' --jq .default_branch
+```
+
+### Sync Hot-fix Issue
+
+Records the pull request that delivers a hot-fix, open or merged, ticks verified criteria, and reports whether it is closable.
+
+**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, the hot-fix repository's default branch, delivering pull request number, verified criterion ids and output file.
+
+- `--default` is `<owner>/<repo>=<default-branch>`; a `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
+- `<criterion-ids>` is a comma-separated list of verified criterion ids.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<hot-fix-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --default '<owner>/<repo>=<default-branch>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --default m2ux/workflow-server=main --pr 950 --tick AC1 --fix fixed-874.md
+```
+
+### Remove Board Item
+
+Removes one item from a project board.
+
+**Inputs:** Board identity and item id.
+
+```bash
+gh api --method DELETE '<board-identity>/items/<item-id>'
+```
+
+**Example:**
+
+```bash
+gh api --method DELETE 'users/m2ux/projectsV2/9/items/PVTI_example'
+```

@@ -7,6 +7,7 @@ A board progress report for a selected window, formatted for pasting into Slack.
 Read these files first.
 
 - [Hot-fix Body](hotfix-body.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -17,12 +18,13 @@ The copyable report and any missing-evidence findings.
 **Inputs:** Board items, pull request records, complete issue-link snapshot, optional window start, initiative filter, resolved off-board initiative records and output paths.
 
 1. Require the complete issue-link snapshot.
-2. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative` and every resolved initiative as `--initiatives`.
-3. If initiative references remain unresolved, return them for the caller to supply.
-4. Write the management paragraph from the rendered Initiatives and Completed sections.
+2. Run [Fetch Default Branch](hotfix.md#fetch-default-branch) for each repository holding a hot-fix in the board items.
+3. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative`, every resolved initiative as `--initiatives` and each fetched default branch as `--default`.
+4. If initiative references remain unresolved, return them for the caller to supply.
+5. Write the management paragraph from the rendered Initiatives and Completed sections.
    - It must meet [Management Paragraph](#management-paragraph).
-5. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
-6. Return the report and separate unresolved findings.
+6. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
+7. Return the report and separate unresolved findings.
    - The report must meet [Fields](#fields).
 
 ## Fields
@@ -49,7 +51,7 @@ The management paragraph is set off by blank lines, with the board's link beneat
   - They rank by the priority label of the initiative their epic belongs to, then by their epic's own.
   - An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.
 - **Hot-fixes.**
-  Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with the pull requests that link it beneath. An initiative filter leaves hot-fixes out.
+  Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with its [delivering pull requests](hotfix.md#delivering-pull-request) beneath. An initiative filter leaves hot-fixes out.
 - **Key.**
   I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative or epic open and not In Review, or a task issue In Progress), 👀 in review (an initiative or epic In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
 
@@ -74,13 +76,14 @@ Prints the standup from supplied board items, pull request records and their iss
 - `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.
 - `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
 - `--summary` gives the paragraph for management.
+- `--default` is one hot-fix repository's default branch, as `<owner>/<repo>=<default-branch>`, read for its delivering pull requests. Repeatable.
 
 The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 `<window-start-date>` uses `YYYY-MM-DD`.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --since '<window-start-date>' --initiative '<initiative-filter>' --initiatives '<initiative-json-file>' --summary '<management-paragraph-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --since '<window-start-date>' --initiative '<initiative-filter>' --initiatives '<initiative-json-file>' --summary '<management-paragraph-file>' --default '<owner>/<repo>=<default-branch>'
 ```
 
 **Example:**

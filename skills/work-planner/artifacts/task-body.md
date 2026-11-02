@@ -73,7 +73,7 @@ One task body with its confirmed delivery and verified criteria recorded.
 
 ### Sync Task Issue
 
-Records the pull request that delivers a task or hot-fix issue, open or merged, ticks verified criteria, and reports whether it is closable.
+Records the pull request that delivers a task issue, open or merged, ticks verified criteria, and reports whether it is closable.
 
 An open pull request supplies verification evidence; completion requires its merge.
 
