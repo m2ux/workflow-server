@@ -17,19 +17,19 @@ table lists counts.
 
 The moves follow the Board Queue field conditions, rendered by statuses.py within the QUEUE jurisdiction, which
 refuses In Review, Done and any task. Printed: the gh call for each Status and assignee change,
-an order line for each kind when nothing is In Progress and no initiative has a priority, an ask
-line for an initiative In Progress with no priority, a tie line when labelled initiatives share
-the highest rank, a wait line for an initiative held In Progress, a reconcile line for an initiative
-returning to Backlog while an epic has work under way or is In Review, and a next line for epics.
+an order line when no open initiative has a priority, an ask line for an initiative In Progress
+with no priority, a wait line for an initiative held In Progress, a reconcile line for an initiative
+returning to Backlog while an epic has work under way or is In Review, a next line for epics, and
+a rank line for an initiative's open epics with no priority.
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
 epics' work has completed, and its unstarted epics return with it; a Done epic stays Done.
 An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
 are met; an initiative kept In Progress only while its epics' work completes readies none:
 its active epics are In Progress and its inactive ones Backlog.
 Initiatives with the same priority number run together, as do the epics of one initiative, whose
-highest number counts the epics already In Progress. An epic with no priority
-label ranks below every number, so it waits while a labelled sibling can start or is running. A
-priority is a positive integer with no maximum.
+highest number counts the epics already In Progress. An epic with no priority label
+stays in Backlog whatever its siblings' state, and waits on a priority. A priority is a positive
+integer with no maximum.
 """
 import argparse
 import json
@@ -156,8 +156,8 @@ class Queue:
     def activate(self, key: tuple[str, int]) -> None:
         """Active epics of a Ready or In Progress initiative are In Progress, and the epics of the
         highest priority set that can start are Ready. The set counts the epics already under way,
-        so a lower one waits. A next line names the Ready epics. An initiative waiting on its
-        epics' work readies none of its epics."""
+        so a lower one waits, and an epic with no priority is never Ready. A next line names the
+        Ready epics. An initiative waiting on its epics' work readies none of its epics."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
@@ -179,7 +179,8 @@ class Queue:
         ranked = {epic_key: rank(self.issues[epic_key]) for epic_key in (*candidates, *running)}
         top = max((found for found in ranked.values() if found is not None), default=None)
         for epic_key in candidates:
-            self.place(epic_key, 'Ready' if top is None or ranked[epic_key] == top else 'Backlog')
+            self.place(epic_key, 'Ready' if ranked[epic_key] is not None and ranked[epic_key] == top
+                       else 'Backlog')
         if names := self.ready_names(key):
             self.notes.append(f"  next {self.line(key)}: {', '.join(names)}")
 
@@ -267,6 +268,15 @@ class Queue:
         return [row_name for row_name, epic_key, _depends in rows_of
                 if self.wanted.get(epic_key, self.status.get(epic_key)) == 'Ready']
 
+    def unranked(self) -> None:
+        """A rank line for each initiative naming its open epics with no priority, which wait on one."""
+        for key, (rows_of, _epics) in sorted(self.children.items()):
+            names = [row_name for row_name, epic_key, _depends in rows_of
+                     if not handed_off(self.issues[epic_key], self.status.get(epic_key))
+                     and rank(self.issues[epic_key]) is None]
+            if names:
+                self.notes.append(f"  rank {self.line(key)}: {', '.join(names)}")
+
     def order(self, keys: list[tuple[str, int]]) -> None:
         """The initiatives the user maps when the board has no priority and nothing In Progress."""
         found = [key for key in keys if self.status.get(key) not in ('Done', 'In Review')]
@@ -309,6 +319,7 @@ class Queue:
         if not labelled:
             self.order(open_initiatives)
             self.park()
+            self.unranked()
             return
         in_progress = [key for key in open_initiatives if self.status.get(key) == 'In Progress']
         for key in in_progress:
@@ -322,6 +333,7 @@ class Queue:
                 self.shelve(key)
         self.place_sets(open_initiatives)
         self.park()
+        self.unranked()
 
 
 def named_keys(specs: list[str], issues: dict, status: dict, flag: str) -> set:

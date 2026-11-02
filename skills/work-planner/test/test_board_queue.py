@@ -33,7 +33,7 @@ def initiative(number: int, name: str, *rows: tuple[str, str], priority: str = '
 
 
 def epic(number: int, which: str, *tasks: tuple[str, str, str], repo: str = 'o/r',
-         questions: str = '', priority: str = '') -> dict:
+         questions: str = '', priority: str = 'priority: 1') -> dict:
     body = epic_body(*tasks)
     if questions:
         body += f'\n## Open Questions\n\n- {questions}\n'
@@ -235,10 +235,37 @@ class Queue(unittest.TestCase):
         self.assertIn('[I01:E00] Epic 2: Work: Backlog → Ready', out)
         self.assertNotIn('[I01:E01] Epic 3: Work: Backlog → Ready', out)
 
-    def test_epics_with_no_priority_start_together(self):
+    def test_an_epic_with_no_priority_stays_in_backlog_when_no_labelled_sibling_can_start(self):
         out = self.pair('', '')
-        self.assertIn('[I01:E00] Epic 2: Work: Backlog → Ready', out)
-        self.assertIn('[I01:E01] Epic 3: Work: Backlog → Ready', out)
+        self.assertNotIn('→ Ready', out)
+        self.assertIn('to do: 0', out)
+
+    def test_a_ready_epic_with_no_priority_returns_to_backlog(self):
+        out = self.pair('', '', held='Ready')
+        self.assertIn('[I01:E01] Epic 3: Work: Ready → Backlog', out)
+        self.assertNotIn('→ Ready', out)
+
+    def test_an_epic_with_no_priority_is_reported_waiting_on_a_priority(self):
+        out = self.pair('priority: 2', '')
+        self.assertIn('rank #1 [I01] Current: Work: E01', out)
+        out = self.pair('', '')
+        self.assertIn('rank #1 [I01] Current: Work: E00, E01', out)
+
+    def test_an_epic_with_no_priority_stays_in_backlog_while_its_labelled_sibling_has_open_questions(self):
+        """The labelled sibling cannot start, so nothing labelled can start or is running."""
+        current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''),
+                             (f"[E01]({url('issues', 3)})", ''))
+        asking = epic(2, '01:E00', ('W01', 'Go', ''), questions='Which shape?', priority='priority: 2')
+        bare = epic(3, '01:E01', ('W01', 'Go', ''), priority='')
+        out = queue(staged((current, 'In Progress'), (asking, 'Backlog'), (bare, 'Backlog')))
+        self.assertNotIn('→ Ready', out)
+        self.assertNotIn('next #1', out)
+        self.assertNotIn('assignees', out)
+        self.assertIn('rank #1 [I01] Current: Work: E01', out)
+
+    def test_a_labelled_epic_is_not_reported_waiting_on_a_priority(self):
+        out = self.pair('priority: 5', 'priority: 2')
+        self.assertNotIn('rank ', out)
 
     def test_a_lower_set_waits_while_a_higher_one_is_under_way(self):
         current = initiative(1, 'Current: Work', (f"[E00]({url('issues', 2)})", ''),
