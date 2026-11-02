@@ -79,6 +79,7 @@ The epic is identified by its repository and issue number. Its state contains ta
 | Changes | A review pull request whose Changes section names, in a code span, a file absent from the head commit of the base it fronts, with that span. A span, less any `#anchor` or `:line` suffix, names a path when it holds a directory and carries an extension or opens with a top-level directory of that head, or is a bare name whose extension a file at that head carries; a component `<branch>:<path>` names its path only for the base of that branch. A path stands where the head holds a file or a directory at it. |
 | Uncited | A linked pull request whose task has its own issue and does not link it, or a review pull request that does not link the epic's issue. |
 | Note | A row that links its task issue. |
+| Unchanged | A row that links a task issue the run was not given. Its Done cell stands, and the epic is not closable until a run is given that issue. |
 | Unplaced | A task issue of this epic whose id is not a row. |
 | Open questions | The epic's Open Questions section remains. |
 | Ready to verify | An unticked criterion whose delivering rows are all delivered and whose linked passed checks do not settle it. |

@@ -197,7 +197,7 @@ Work Breakdown contains its table. Explanatory prose belongs in Proposal. The bo
 
 ### Sync Initiative
 
-Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed.
+Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.
 
 **Inputs:** Initiative JSON, every linked epic record and optional output body file.
 
