@@ -13,6 +13,7 @@ Sync unticks an epic it was not handed, so a partial sync silently undoes record
 | Artifact | What it holds |
 | --- | --- |
 | [F06](f06.md) | The work item: component, design and validation for unchanged unchecked rows |
+| [Agent review](agent-review.json) | The review record for pull request #1618 at its reviewed head |
 
 ## Links
 

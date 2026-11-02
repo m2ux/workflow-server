@@ -1,0 +1,15 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1618",
+    "head": "3bec8a6a1c3b6f0ac61f22a08907711090317494",
+    "base": "9d71790c2668debbc03a2ba1d00509e8bea3bff6",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1617-f06-initiative-sync/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (delivery session agent review)",
+    "reviewed_at": "2026-11-02",
+    "scope": "Full diff workspace..f06-initiative-sync: skills/work-planner/scripts/sync.py (initiative_delivery, epic_delivery task-issue rows, sync_done, criterion readiness and ticked early, open_rows, unchecked, epic_ready, closable line, --fix rewrite), test/test_sync.py, and prose in artifacts/initiative.md, artifacts/initiative-issue-body.md, artifacts/epic.md, modes/sync-mode.md. Callers inspected: every reader of delivered and observable in main; passed_criteria auto-tick; started/open questions; closure.py (imports issue_key only); board.py initiative reading (reports its own unresolved line, writes no Done cell); no script parses the sync report text.",
+    "criteria": "AC1: Done cells of rows whose epic is not given stand after a one-epic --fix run over three ticked rows (T1 and the end-to-end run in f06.md#t1). AC2: each such row is reported 'unchanged: ... is not given by --epics, so its Done cell stands' (T1, T3).",
+    "validation": "skills/work-planner: 834 passed, 1 skipped; skills: 208 passed; end-to-end sync.py run recorded in f06.md#t1.",
+    "findings": []
+  }
+]
