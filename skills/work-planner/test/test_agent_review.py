@@ -30,6 +30,7 @@ def reviewed_pr(tag='07:E00'):
 def hotfix_pr():
     pull, record = reviewed_pr()
     pull['title'] = '[F04] Reject Bad Keys'
+    record['base_ref'] = pull['base']['ref']
     return pull, record
 
 
@@ -42,10 +43,12 @@ class HotFixReview(unittest.TestCase):
         record['findings'][0].update(disposition='fixed', evidence='https://github.com/o/r/commit/1')
         self.assertIsNone(check(pull, [record]))
 
-    def test_only_a_changed_head_makes_it_stale(self):
+    def test_a_changed_head_or_base_branch_makes_it_stale_and_a_moved_target_does_not(self):
         pull, record = hotfix_pr()
         self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40}]))
         self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main'}]))
+        self.assertIn('stale', check(pull, [{k: v for k, v in record.items() if k != 'base_ref'}]))
 
 
 class AgentReview(unittest.TestCase):
