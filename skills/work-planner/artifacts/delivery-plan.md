@@ -34,7 +34,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 ### Report Lines
 
-- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base main, worktree .worktrees/f00-key-validation`.
+- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base (default branch), worktree .worktrees/f00-key-validation`.
 - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero.
 - A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
@@ -42,7 +42,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request whose test plan has passed and the base it targets: a task pull request into an epic base, or an open hot-fix's [delivering pull request](hotfix.md#delivering-pull-request) into its repository's default branch.
 - An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request.
-- An unresolved issue reference identifies missing dependency evidence, or a Ready [hot-fix](hotfix.md) whose repository no pull request record names a default branch for.
+- An unresolved issue reference identifies missing dependency evidence.
 
 ### Branch Context
 

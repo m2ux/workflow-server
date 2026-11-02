@@ -9,6 +9,7 @@ import re
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
+DEFAULT_BASE = '(default branch)'
 Key = tuple[str, int]
 
 
@@ -33,12 +34,6 @@ def board_status(issue: dict, held: str | None) -> str | None:
 def default_branch(pull: dict) -> str:
     """The default branch of the repository a pull request targets, as its REST record names it."""
     return ((pull.get('base') or {}).get('repo') or {}).get('default_branch') or ''
-
-
-def default_branches(prs: list[dict]) -> dict[str, str]:
-    """Each repository's default branch, by lowercased owner/repo, from the pull request records."""
-    from sync import pr_repo  # sync imports format, which imports this module
-    return {pr_repo(p).lower(): branch for p in prs if (branch := default_branch(p))}
 
 
 def linking_pulls(prs: list[dict], key: Key) -> list[dict]:

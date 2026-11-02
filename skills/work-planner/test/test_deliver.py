@@ -768,10 +768,10 @@ def hotfix(number: int) -> dict:
 
 class HotFixUnits(unittest.TestCase):
     def test_a_ready_hot_fix_is_one_unit_cut_from_the_default_branch(self):
-        other = pr(900, '[I07:E00] Queue Plan', '2026-10-01T00:00:00Z', base='i07/e00/main', default='trunk')
-        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')), [other])
+        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')))
         self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
-                      'branch f04-key-validation, base trunk, worktree .worktrees/f04-key-validation', out)
+                      'branch f04-key-validation, base (default branch), worktree .worktrees/f04-key-validation', out)
+        self.assertNotIn('unresolved', out)
         self.assertIn('available: 1', out)
 
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
@@ -790,15 +790,10 @@ class HotFixUnits(unittest.TestCase):
         out = survey(staged((hotfix(4), 'Ready')), [pr(951, 'Unrelated Work', base='workspace')], held=(links(951, 4),))
         self.assertNotIn('unit F04', out)
 
-    def test_only_a_hot_fix_whose_decision_needs_it_asks_for_its_default_branch(self):
+    def test_a_backlog_or_held_hot_fix_raises_nothing_unresolved(self):
         out = survey(staged((hotfix(4), 'Backlog'), (hotfix(5), 'In Progress')))
         self.assertNotIn('unresolved', out)
         self.assertIn('  hold F05 #5: In Progress', out)
-
-    def test_a_hot_fix_without_its_default_branch_is_unresolved(self):
-        out = survey(staged((hotfix(4), 'Ready')))
-        self.assertIn('unresolved: F04 #4: no pull request record names the default branch of o/r', out)
-        self.assertNotIn('  unit ', out)
 
     def test_a_passed_hot_fix_pull_request_into_the_default_branch_is_a_merge_candidate(self):
         pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='main'),

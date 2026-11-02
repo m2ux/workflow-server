@@ -11,6 +11,7 @@ Read these files first.
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Repository Labels](repository-labels.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -94,13 +95,14 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 ### Branch
 
-A hot-fix's branch is cut from its repository's default branch, as the pull request records of that repository name it, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
+A hot-fix's branch is cut from its repository's default branch, unnamed in its `unit` line as `(default branch)` and resolved where [Create Task Worktree](delivery-branches.md#create-task-worktree) cuts it, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
 
 ### Delivering Pull Request
 
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is that repository's default branch, as the record names it in `base.repo.default_branch`, and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch).
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
+- A pull request merged into a branch that was the default before a rename stops counting, since each record names its repository's current default branch.
 
 ### Delivery Record
 

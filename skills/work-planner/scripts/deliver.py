@@ -52,9 +52,8 @@ its session writes the work item after dispatch, so its unit works on every epic
 Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
 artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
 and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
-delivering pull requests. Its base is its repository's default branch, which the pull request
-records name as base.repo.default_branch; a Ready hot-fix whose repository no record names is
-printed unresolved.
+delivering pull requests. Its base is its repository's default branch, printed as
+(default branch); Create Task Worktree in artifacts/delivery-branches.md resolves its name.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -87,7 +86,7 @@ from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from hotfix import default_branches, delivering_pulls, hotfix_tag, linking_pulls, unit_state
+from hotfix import DEFAULT_BASE, delivering_pulls, hotfix_tag, linking_pulls, unit_state
 from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
                   pull_requests, table)
 
@@ -275,8 +274,8 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
-def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str, str], home: str,
-                 when: str, unresolved: list[str]) -> tuple[list[str], int, int, int]:
+def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str,
+                 when: str) -> tuple[list[str], int, int, int]:
     """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state reads,
     with the count of each."""
     lines, available, held, unrecorded = [], 0, 0, 0
@@ -300,14 +299,11 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
             continue
         if state != 'unit':
             continue
-        if not (base := defaults.get(key[0].lower())):
-            unresolved.append(f'{where}: no pull request record names the default branch of {key[0]}')
-            continue
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
-                     f'{branch_lines(name["branch"], [base])}')
+                     f'{branch_lines(name["branch"], [DEFAULT_BASE])}')
         available += 1
     return lines, available, held, unrecorded
 
@@ -446,8 +442,7 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, default_branches(prs), home, when,
-                                                     board.unresolved)
+    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, home, when)
     for line in lines:
         print(line)
     available += found
