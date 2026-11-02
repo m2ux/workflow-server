@@ -47,7 +47,7 @@ The user's decisions:
 1. **Purpose.** [I17:E02](https://github.com/m2ux/workflow-server/issues/1616) gives the skill the file style its prosiform form needs: the groundwork for prosiform compliance. It takes priority, with `priority: 7`.
 2. **Reference, style only.** The example under prosiform's `example/` is an older, stale work-planner. E02 takes its formatting and file shape and none of its content. No `technical-debt.md`, no new protocols; protocol extraction is a SOLID concern for E01's audit.
 3. **Not yet.** Prerequisites sections stay. No prosiform frontmatter and no `pf` instruction.
-4. **Link marks included.** ↳ for a mode, ⇉ for a sub-agent dispatch, ⫽ for parallel dispatch, ¬ for a deferred document.
+4. **No link marks.** The prosiform link marks (↳ ⇉ ⫽ ¬) need prosiform's grammar to place, so they are left for the compliance work along with the frontmatter and the `pf` instruction.
 5. **Per-skill section model.** The shared guidelines and the other skills keep their shape. work-planner declares its model in its own guidelines, `structure.json` and `rules.json`, and the shared checker reads each skill's declared model.
 6. **Rows.** W01 is the section model and checker. W02 builds rules, conventions and configuration from the live SKILL.md and guidelines. W03 restyles the modes and W04 the protocols. W05 to W07 restyle the artifacts in three file groups: issue and bodies; board, queue, planning and review; delivery, branch and pull request. W02 depends on W01, and W03 to W07 depend on W02 and run in parallel.
 7. **Order.** E01 waits for E02: E01's W01 depends on E02, so the SOLID guidelines and the audit work on the restyled skill. The extraction waits for E02 as well.
