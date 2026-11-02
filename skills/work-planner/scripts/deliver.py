@@ -5,7 +5,7 @@ Usage:
   python3 deliver.py --items items.json --prs prs.json --links links.json
       [--others issue-750.json ...]
       [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
-      [--engineering .engineering] [--date 2026-10-06] [--default o/r=main ...]
+      [--engineering .engineering] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL]
@@ -52,10 +52,9 @@ its session writes the work item after dispatch, so its unit works on every epic
 Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
 artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
 and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
-delivering pull requests. Its base is its repository's default branch, which --default gives as
-owner/repo=branch, once for each repository; a malformed --default stops the run before it prints.
-A Ready hot-fix, or one a merged pull request links, whose repository's default branch is not given
-is printed unresolved.
+delivering pull requests. Its base is its repository's default branch, which the pull request
+records name as base.repo.default_branch; a Ready hot-fix whose repository no record names is
+printed unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -288,11 +287,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
             continue
         where = f'{tag} {label(key, home)}'
         linking = linking_pulls(prs, key)
-        base = defaults.get(key[0].lower(), '')
-        if not base and (status.get(key) == 'Ready' or any(p.get('merged_at') for p in linking)):
-            unresolved.append(f'{where}: the default branch of {key[0]} is not given')
-            continue
-        delivering = delivering_pulls(linking, key, tag, base)
+        delivering = delivering_pulls(linking, key, tag)
         state = unit_state(issue, status.get(key), linking, delivering)
         if state == 'unrecorded':
             numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
@@ -304,6 +299,9 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
             held += 1
             continue
         if state != 'unit':
+            continue
+        if not (base := defaults.get(key[0].lower())):
+            unresolved.append(f'{where}: no pull request record names the default branch of {key[0]}')
             continue
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
@@ -327,8 +325,7 @@ def plan_passed(body: str) -> bool:
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
-def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
-                 defaults: dict[str, str]) -> list[str]:
+def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
     """Open pull requests whose test plan has passed: a task's into its epic base, and a hot-fix's
     into its repository's default branch."""
     epics, hotfixes = {}, {}
@@ -344,7 +341,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
             continue
         base = (pull.get('base') or {}).get('ref') or ''
         if tag := hotfix_tag(pull):
-            if (any(delivering_pulls([pull], key, fixed, defaults.get(key[0].lower(), ''))
+            if (any(delivering_pulls([pull], key, fixed)
                     for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue
@@ -364,7 +361,6 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
 
 
 def survey(args: argparse.Namespace) -> int:
-    defaults = default_branches(args.default)
     issues = {}
     for path in args.others:
         given = json.loads(Path(path).read_text())
@@ -450,14 +446,15 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, defaults, home, when, board.unresolved)
+    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, default_branches(prs), home, when,
+                                                     board.unresolved)
     for line in lines:
         print(line)
     available += found
     held += holding
     for line in dict.fromkeys(board.outputs.lines):
         print(f'  output {line}')
-    merging = ready_merges(issues, prs, lived, defaults)
+    merging = ready_merges(issues, prs, lived)
     for line in merging:
         print(line)
     for note in dict.fromkeys(board.unresolved):
@@ -618,8 +615,6 @@ def main() -> int:
     parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
     parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row or released row links')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
-    parser.add_argument('--default', action='append', default=[],
-                        help="a hot-fix repository's default branch, e.g. o/r=main; repeat for each repository")
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')
     parser.add_argument('--agent-reviews', help='published agent review records as a JSON list')

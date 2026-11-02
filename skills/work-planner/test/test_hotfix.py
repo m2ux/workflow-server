@@ -54,18 +54,18 @@ class DeliveringPulls(unittest.TestCase):
                  linked(pr(954, '[F09] Reject Bad Keys', base='main'), 4),
                  linked(pr(955, '[F04] Reject Bad Keys', base='main'), 7),
                  linked(pr(956, '[F04] Reject Bad Keys', base='main', repo='o/s'), 4)]
-        self.assertEqual([p['number'] for p in delivering_pulls(pulls, KEY, 'F04', 'main')], [951])
-        self.assertEqual(delivering_pulls(pulls, KEY, 'F04', ''), [])
+        self.assertEqual([p['number'] for p in delivering_pulls(pulls, KEY, 'F04')], [951])
+        self.assertEqual(delivering_pulls([], KEY, 'F04'), [])
         self.assertEqual([p['number'] for p in linking_pulls(pulls, KEY)], [951, 952, 953, 954, 956])
 
     def test_the_fault_names_the_failed_condition(self):
-        self.assertEqual(delivery_fault(linked(pr(953, '[I07:E00] Other', base='main'), 4), KEY, 'F04', 'main'),
+        self.assertEqual(delivery_fault(linked(pr(953, '[I07:E00] Other', base='main'), 4), KEY, 'F04'),
                          'its title does not open with [F04]')
-        self.assertEqual(delivery_fault(linked(pr(956, '[F04] Fix', base='main', repo='o/s'), 4), KEY, 'F04', 'main'),
+        self.assertEqual(delivery_fault(linked(pr(956, '[F04] Fix', base='main', repo='o/s'), 4), KEY, 'F04'),
                          'it lives in o/s, not o/r')
-        self.assertEqual(delivery_fault(linked(pr(952, '[F04] Fix', base='workspace'), 4), KEY, 'F04', 'main'),
+        self.assertEqual(delivery_fault(linked(pr(952, '[F04] Fix', base='workspace'), 4), KEY, 'F04'),
                          'its base is workspace, not the default branch main')
-        self.assertEqual(delivery_fault(linked(pr(955, '[F04] Fix', base='main'), 7), KEY, 'F04', 'main'),
+        self.assertEqual(delivery_fault(linked(pr(955, '[F04] Fix', base='main'), 7), KEY, 'F04'),
                          'its Development field does not link #4')
 
 

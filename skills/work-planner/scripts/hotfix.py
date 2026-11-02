@@ -5,7 +5,6 @@ status, the pull requests that deliver it and the state of its delivery unit are
 scripts that place, survey, record, check or report a hot-fix call these functions.
 """
 import re
-import sys
 
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
@@ -31,15 +30,15 @@ def board_status(issue: dict, held: str | None) -> str | None:
     return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
 
 
-def default_branches(specs: list[str]) -> dict[str, str]:
-    """Each repository's default branch, by lowercased owner/repo, from --default owner/repo=branch."""
-    defaults = {}
-    for spec in specs:
-        repo, _, branch = spec.partition('=')
-        if not repo or not branch:
-            sys.exit(f'--default {spec}: expected owner/repo=branch')
-        defaults[repo.lower()] = branch
-    return defaults
+def default_branch(pull: dict) -> str:
+    """The default branch of the repository a pull request targets, as its REST record names it."""
+    return ((pull.get('base') or {}).get('repo') or {}).get('default_branch') or ''
+
+
+def default_branches(prs: list[dict]) -> dict[str, str]:
+    """Each repository's default branch, by lowercased owner/repo, from the pull request records."""
+    from sync import pr_repo  # sync imports format, which imports this module
+    return {pr_repo(p).lower(): branch for p in prs if (branch := default_branch(p))}
 
 
 def linking_pulls(prs: list[dict], key: Key) -> list[dict]:
@@ -48,7 +47,7 @@ def linking_pulls(prs: list[dict], key: Key) -> list[dict]:
     return sorted((p for p in prs if links_issue(p, key)), key=lambda p: p['number'])
 
 
-def delivery_fault(pull: dict, key: Key, tag: str, base: str) -> str:
+def delivery_fault(pull: dict, key: Key, tag: str) -> str:
     """Why the pull request does not deliver the hot-fix, or '' when it does: its title opens with the
     hot-fix's tag, it lives in the hot-fix's repository, its base is that repository's default
     branch, and its Development field links the hot-fix."""
@@ -58,16 +57,16 @@ def delivery_fault(pull: dict, key: Key, tag: str, base: str) -> str:
         return f'its title does not open with [{tag}]'
     if pr_repo(pull).lower() != key[0].lower():
         return f'it lives in {pr_repo(pull)}, not {key[0]}'
-    if not base or target != base:
+    if not (base := default_branch(pull)) or target != base:
         return f"its base is {target or 'unknown'}, not the default branch {base or 'unknown'}"
     if not links_issue(pull, key):
         return f'its Development field does not link #{key[1]}'
     return ''
 
 
-def delivering_pulls(prs: list[dict], key: Key, tag: str, base: str) -> list[dict]:
+def delivering_pulls(prs: list[dict], key: Key, tag: str) -> list[dict]:
     """The pull requests that deliver the hot-fix, as delivery_fault tests each, by number."""
-    return sorted((p for p in prs if not delivery_fault(p, key, tag, base)), key=lambda p: p['number'])
+    return sorted((p for p in prs if not delivery_fault(p, key, tag)), key=lambda p: p['number'])
 
 
 def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: list[dict]) -> str | None:

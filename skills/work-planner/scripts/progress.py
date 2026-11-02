@@ -52,9 +52,8 @@ belongs to an epic which names its task as next is not listed again.
 A hot-fix ([F00]) belongs to no initiative and follows the epic groups of each section: under
 Completed when Done and closed in the window, with each delivering pull request merged in the
 window; under In progress when In Progress or In Review, with each open delivering pull request;
-under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds against
-the default branch --default gives, as owner/repo=branch, once for each repository; without it they
-are left out and the hot-fix is reported unresolved. --initiative leaves hot-fixes out.
+under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds.
+--initiative leaves hot-fixes out.
 
 The window opens at the start of --since in local time, by default a week before today.
 --initiative limits the summary to the items working for one initiative; where its number names
@@ -84,7 +83,7 @@ from pathlib import Path
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name
-from hotfix import HOTFIX, default_branches, delivering_pulls, hotfix_tag
+from hotfix import HOTFIX, delivering_pulls, hotfix_tag
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -190,8 +189,6 @@ def main() -> int:
     parser.add_argument('--initiative', help='only this initiative, e.g. I08 or owner/repo:I08')
     parser.add_argument('--initiatives', nargs='*', default=[], help='initiative issues off the board, as JSON')
     parser.add_argument('--summary', help="a plain-language paragraph of the window's accomplishments")
-    parser.add_argument('--default', action='append', default=[],
-                        help="a hot-fix repository's default branch, e.g. o/r=main; repeat for each repository")
     args = parser.parse_args()
     since = date.fromisoformat(args.since) if args.since else week_before(date.today())
     after = datetime.combine(since, time()).astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
@@ -398,14 +395,10 @@ def main() -> int:
             ready.append((ek, f'next {task[1]}' if task else ''))
 
     hot_ready = []
-    defaults = default_branches(args.default)
     hotfixes = {} if only else {k: tag for k, issue in issues.items() if (tag := hotfix_tag(issue))}
     for k, tag in sorted(hotfixes.items()):
         head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
-        if not (base := defaults.get(k[0].lower())):
-            unresolved.append(f"{tag} {issues[k]['html_url']}: the default branch of {k[0]} is not given; "
-                              'its pull requests are left out')
-        delivering = delivering_pulls(list(by_url.values()), k, tag, base or '')
+        delivering = delivering_pulls(list(by_url.values()), k, tag)
         if done(k):
             completed.hotfixes.append(f'{DONE} {head}')
             completed.hotfixes.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"

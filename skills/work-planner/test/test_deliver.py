@@ -768,36 +768,26 @@ def hotfix(number: int) -> dict:
 
 class HotFixUnits(unittest.TestCase):
     def test_a_ready_hot_fix_is_one_unit_cut_from_the_default_branch(self):
-        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')),
-                     None, '--default', 'o/r=main')
+        other = pr(900, '[I07:E00] Queue Plan', '2026-10-01T00:00:00Z', base='i07/e00/main', default='trunk')
+        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')), [other])
         self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
-                      'branch f04-key-validation, base main, worktree .worktrees/f04-key-validation', out)
+                      'branch f04-key-validation, base trunk, worktree .worktrees/f04-key-validation', out)
         self.assertIn('available: 1', out)
 
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
-        out = survey(staged((hotfix(4), 'In Progress')), None, '--default', 'o/r=main')
+        out = survey(staged((hotfix(4), 'In Progress')), None)
         self.assertIn('  hold F04 #4: In Progress', out)
         self.assertNotIn('  unit ', out)
 
     def test_a_hot_fix_in_backlog_or_closed_is_not_offered(self):
         closed = hotfix(5)
         closed['state'] = 'closed'
-        out = survey(staged((hotfix(4), 'Backlog'), (closed, 'Ready')), None, '--default', 'o/r=main')
+        out = survey(staged((hotfix(4), 'Backlog'), (closed, 'Ready')), None)
         self.assertNotIn('F04', out)
         self.assertNotIn('F05', out)
 
-    def test_a_malformed_default_branch_stops_the_run_before_it_prints(self):
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp, 'items.json')
-            path.write_text(json.dumps(staged((hotfix(4), 'Ready'))))
-            done = run('deliver.py', '--items', str(path), '--default', 'o/r')
-        self.assertNotEqual(done.returncode, 0)
-        self.assertEqual(done.stdout, '')
-        self.assertIn('--default o/r: expected owner/repo=branch', done.stderr)
-
     def test_an_open_pull_request_that_links_without_delivering_still_makes_it_running(self):
-        out = survey(staged((hotfix(4), 'Ready')), [pr(951, 'Unrelated Work', base='workspace')],
-                     '--default', 'o/r=main', held=(links(951, 4),))
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, 'Unrelated Work', base='workspace')], held=(links(951, 4),))
         self.assertNotIn('unit F04', out)
 
     def test_only_a_hot_fix_whose_decision_needs_it_asks_for_its_default_branch(self):
@@ -807,7 +797,7 @@ class HotFixUnits(unittest.TestCase):
 
     def test_a_hot_fix_without_its_default_branch_is_unresolved(self):
         out = survey(staged((hotfix(4), 'Ready')))
-        self.assertIn('unresolved: F04 #4: the default branch of o/r is not given', out)
+        self.assertIn('unresolved: F04 #4: no pull request record names the default branch of o/r', out)
         self.assertNotIn('  unit ', out)
 
     def test_a_passed_hot_fix_pull_request_into_the_default_branch_is_a_merge_candidate(self):
@@ -816,7 +806,7 @@ class HotFixUnits(unittest.TestCase):
                  pr(953, '[F09] Reject Bad Keys', body=PLAN, base='main'),
                  pr(954, '[F04] Reject Bad Keys', base='main'),
                  pr(955, '[F04] Reject Bad Keys', body=PLAN, base='main')]
-        out = survey(staged((hotfix(4), 'In Progress')), pulls, '--default', 'o/r=main',
+        out = survey(staged((hotfix(4), 'In Progress')), pulls,
                      held=tuple(links(n, 4) for n in (951, 952, 953, 954)))
         self.assertIn('  merge #951 F04: base main', out)
         for number in (952, 953, 954, 955):
@@ -824,8 +814,7 @@ class HotFixUnits(unittest.TestCase):
 
     def test_a_hot_fix_an_open_pull_request_links_is_running(self):
         out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
-                     [pr(951, '[F04] Reject Bad Keys', base='main'), pr(952, '[F05] Reject Bad Keys', base='main')],
-                     '--default', 'o/r=main', held=(links(951, 4), links(952, 5)))
+                     [pr(951, '[F04] Reject Bad Keys', base='main'), pr(952, '[F05] Reject Bad Keys', base='main')], held=(links(951, 4), links(952, 5)))
         self.assertNotIn('unit F04', out)
         self.assertNotIn('hold F05', out)
         self.assertNotIn('unrecorded', out.split('available:')[0])
@@ -835,22 +824,19 @@ class HotFixUnits(unittest.TestCase):
         out = survey(staged((hotfix(4), 'Ready')),
                      [pr(951, '[I07:E00] Other Work', merged, base='i07/e00/main'),
                       pr(952, '[F04] Reject Bad Keys', merged, base='workspace'),
-                      pr(953, '[F09] Reject Bad Keys', merged, base='main')],
-                     '--default', 'o/r=main', held=(links(951, 4), links(952, 4), links(953, 4)))
+                      pr(953, '[F09] Reject Bad Keys', merged, base='main')], held=(links(951, 4), links(952, 4), links(953, 4)))
         self.assertNotIn('  unrecorded', out)
         self.assertIn('unit F04 #4', out)
 
     def test_an_open_hot_fix_a_merged_pull_request_links_is_unrecorded(self):
         out = survey(staged((hotfix(4), 'In Progress')),
-                     [pr(951, '[F04] Reject Bad Keys', '2026-11-01T00:00:00Z', base='main')],
-                     '--default', 'o/r=main', held=(links(951, 4),))
+                     [pr(951, '[F04] Reject Bad Keys', '2026-11-01T00:00:00Z', base='main')], held=(links(951, 4),))
         self.assertIn('  unrecorded F04 #4: #951 merged', out)
         self.assertNotIn('hold F04', out)
         self.assertIn('unrecorded: 1', out)
 
     def test_a_pull_request_closed_unmerged_leaves_the_hot_fix_free(self):
-        out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')],
-                     '--default', 'o/r=main', held=(links(951, 4),))
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')], held=(links(951, 4),))
         self.assertIn('unit F04 #4', out)
 
 

@@ -539,15 +539,14 @@ class HotFixes(unittest.TestCase):
 
     def test_a_hot_fix_done_in_the_window_is_completed_with_its_pull_request(self):
         out = summary([item(self.hotfix(4, 'closed', IN), 'Done')],
-                      [pr(950, '[F04] Reject Bad Keys', IN, base='main'), pr(951, 'Other Work', IN, base='main')],
-                      '--default', 'o/r=main', held=(links(950, 4), links(951, 4)))
+                      [pr(950, '[F04] Reject Bad Keys', IN, base='main'), pr(951, 'Other Work', IN, base='main')], held=(links(950, 4), links(951, 4)))
         self.assertEqual(section(out, 'Completed'), [
             f"✅ *F04 Key Validation* — {url('issues', 4)}",
             f"    ✅ Reject Bad Keys — {url('pull', 950)}"])
 
     def test_a_hot_fix_in_progress_shows_its_open_pull_request(self):
         out = summary([item(self.hotfix(4), 'In Progress')],
-                      [pr(950, '[F04] Reject Bad Keys', draft=True, base='main')], '--default', 'o/r=main',
+                      [pr(950, '[F04] Reject Bad Keys', draft=True, base='main')],
                       held=(links(950, 4),))
         self.assertEqual(section(out, 'In progress'), [
             f"🔄 *F04 Key Validation* — {url('issues', 4)}",

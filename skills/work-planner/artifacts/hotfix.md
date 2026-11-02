@@ -51,9 +51,8 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 **Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
 
-1. Run [Fetch Default Branch](#fetch-default-branch) for the hot-fix's repository.
-2. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, the default branch as `--default`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-3. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+1. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
 
 ### *Settle* Hot-fix Board Status
 
@@ -93,11 +92,11 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 ### Branch
 
-A hot-fix's branch is cut from its repository's default branch, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
+A hot-fix's branch is cut from its repository's default branch, as the pull request records of that repository name it, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its worktree is named by its branch, as a task branch's is.
 
 ### Delivering Pull Request
 
-- A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is that repository's default branch, and its Development field links the hot-fix.
+- A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is that repository's default branch, as the record names it in `base.repo.default_branch`, and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch).
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
 
@@ -109,39 +108,23 @@ A hot-fix's branch is cut from its repository's default branch, named for its pr
 
 ## Commands
 
-### Fetch Default Branch
-
-Prints one repository's default branch.
-
-**Inputs:** Repository.
-
-```bash
-gh api 'repos/<owner>/<repo>' --jq .default_branch
-```
-
-**Example:**
-
-```bash
-gh api 'repos/m2ux/workflow-server' --jq .default_branch
-```
-
 ### Sync Hot-fix Issue
 
 Records the pull request that delivers a hot-fix, open or merged, ticks verified criteria, and reports whether it is closable.
 
-**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, the hot-fix repository's default branch, delivering pull request number, verified criterion ids and output file.
+**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output file.
 
-- `--default` is `<owner>/<repo>=<default-branch>`; a `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
+- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<hot-fix-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --default '<owner>/<repo>=<default-branch>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<hot-fix-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --default m2ux/workflow-server=main --pr 950 --tick AC1 --fix fixed-874.md
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-874.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-874.md
 ```
 
 ### Remove Board Item

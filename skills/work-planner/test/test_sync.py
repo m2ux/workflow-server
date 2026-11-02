@@ -1807,7 +1807,7 @@ class HotFixDelivery(unittest.TestCase):
             body.write_text(json.dumps(record))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, held),
-                       '--fix', str(fixed), '--default', 'o/r=main', *args)
+                       '--fix', str(fixed), *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):

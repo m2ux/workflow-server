@@ -53,12 +53,13 @@ def initiative_body(*rows: tuple[str, str]) -> str:
 
 
 def pr(number: int, title: str, merged: str | None = None, state: str | None = None, draft: bool = False,
-       body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None) -> dict:
+       body: str = '', repo: str = REPO, base: str | None = None, head: str | None = None,
+       default: str = 'main') -> dict:
     record = {'number': number, 'title': title, 'body': body, 'html_url': url('pull', number, repo),
               'node_id': f'PR_node{number}',
               'state': state or ('closed' if merged else 'open'), 'draft': draft, 'merged_at': merged}
     if base:
-        record['base'] = {'ref': base}
+        record['base'] = {'ref': base, 'repo': {'full_name': repo, 'default_branch': default}}
     if head:
         record['head'] = {'ref': head}
     return record

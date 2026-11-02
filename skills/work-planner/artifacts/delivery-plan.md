@@ -19,9 +19,8 @@ One delivery plan from supplied board and delivery evidence.
 
 **Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files and optional record date.
 
-1. Run [Fetch Default Branch](hotfix.md#fetch-default-branch) for each repository holding an open [hot-fix](hotfix.md) in the supplied board items or resolved off-board issue files.
-2. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter and each fetched default branch to `--default`.
-3. Return the units, holds, blockers, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter.
+2. Return the units, holds, blockers, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 
@@ -43,7 +42,7 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request whose test plan has passed and the base it targets: a task pull request into an epic base, or an open hot-fix's [delivering pull request](hotfix.md#delivering-pull-request) into its repository's default branch.
 - An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request.
-- An unresolved issue reference identifies missing dependency evidence, or a hot-fix whose repository's default branch the run was not given.
+- An unresolved issue reference identifies missing dependency evidence, or a Ready [hot-fix](hotfix.md) whose repository no pull request record names a default branch for.
 
 ### Branch Context
 
@@ -62,16 +61,15 @@ Computes available work from supplied board and delivery snapshots.
 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
-- `--default` is one repository's default branch, as `<owner>/<repo>=<branch>`. Repeatable.
 
 `<epic-base-names>` is a comma-separated list of full epic-base branch names.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --default '<owner>/<repo>=<default-branch>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --default m2ux/workflow-server=main
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering'
 ```

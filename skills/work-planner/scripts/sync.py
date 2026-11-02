@@ -35,9 +35,9 @@ Task issue ([I07:E00:W01]): --pr names the pull request that delivers it, open o
 names the task's epic. Its criteria are ready to verify while that pull request is open, since the
 evidence is what the pull request and its planning record carry. The task is delivered, and so
 closable, once that pull request has merged.
-Hot-fix issue ([F00]): read as a task issue whose --pr is a pull request that delivers it, as
-hotfix.delivering_pulls tests it against --links and --default, the hot-fix repository's default
-branch as owner/repo=branch; a --pr that does not deliver it is refused with the condition it fails.
+Hot-fix issue ([F00]): read as a task issue whose --pr is the pull request of its repository that
+delivers it, as hotfix.delivering_pulls tests it against --links and the default branch the pull
+request record names; a --pr that does not deliver it is refused with the condition it fails.
 Closed epics have their Work Breakdown normalized to the current columns before delivery is read;
 --fix holds the normalized body for publication. Ambiguous tables are refused. Linked merged pull
 requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
@@ -94,7 +94,7 @@ from pathlib import Path
 from typing import NamedTuple
 
 from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
-from hotfix import default_branches, delivering_pulls, delivery_fault, hotfix_tag
+from hotfix import delivering_pulls, delivery_fault, hotfix_tag
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 SINGLE = ('task', 'hot-fix')
@@ -964,8 +964,6 @@ def main() -> int:
     parser.add_argument('issue', nargs='?')
     parser.add_argument('--prs', help='task or epic: pull requests as JSON lines')
     parser.add_argument('--links', help='epic: the closing issue references its pull requests hold')
-    parser.add_argument('--default', action='append', default=[],
-                        help="hot-fix: its repository's default branch, e.g. o/r=main")
     parser.add_argument('--pr', type=int, help='task issue: the pull request that delivered it')
     parser.add_argument('--link', default='', help='epic: task ids to link to pull requests, open or merged, an id once for each, e.g. W01=950,W01=951,W02=950')
     parser.add_argument('--tasks', nargs='*', default=[], help='epic: its task issues as JSON')
@@ -1006,11 +1004,8 @@ def main() -> int:
     prs = pull_requests(args.prs) if args.prs else []
     if args.links:
         attach_links(prs, args.links)
-    base = default_branches(args.default).get(issue_key(issue)[0].lower(), '')
     if kind == 'hot-fix':
-        if not base:
-            sys.exit("a hot-fix needs --default, its repository's default branch as owner/repo=branch")
-        named = {p['number']: p for p in delivering_pulls(prs, issue_key(issue), task, base)}
+        named = {p['number']: p for p in delivering_pulls(prs, issue_key(issue), task)}
     else:
         named = for_epic(prs, initiative, epic) if epic else {}
     links: dict[str, list[int]] = {}
@@ -1037,9 +1032,10 @@ def main() -> int:
     if kind in SINGLE:
         pr = named.get(args.pr) if args.pr else None
         if args.pr and not pr and kind == 'hot-fix':
-            given = next((p for p in prs if p['number'] == args.pr), None)
+            home = issue_key(issue)[0].lower()
+            given = next((p for p in prs if p['number'] == args.pr and pr_repo(p).lower() == home), None)
             sys.exit(f'--pr {args.pr}: does not deliver {task}: '
-                     + (delivery_fault(given, issue_key(issue), task, base) if given else 'it is not among --prs'))
+                     + (delivery_fault(given, issue_key(issue), task) if given else f'it is not among --prs for {home}'))
         if args.pr and not pr:
             sys.exit(f'--pr {args.pr}: no pull request naming I{initiative}:E{epic}')
         merged = bool(pr and pr.get('merged_at'))

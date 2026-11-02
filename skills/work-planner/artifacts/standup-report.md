@@ -18,13 +18,12 @@ The copyable report and any missing-evidence findings.
 **Inputs:** Board items, pull request records, complete issue-link snapshot, optional window start, initiative filter, resolved off-board initiative records and output paths.
 
 1. Require the complete issue-link snapshot.
-2. Run [Fetch Default Branch](hotfix.md#fetch-default-branch) for each repository holding a hot-fix in the board items.
-3. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative`, every resolved initiative as `--initiatives` and each fetched default branch as `--default`.
-4. If initiative references remain unresolved, return them for the caller to supply.
-5. Write the management paragraph from the rendered Initiatives and Completed sections.
+2. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative` and every resolved initiative as `--initiatives`.
+3. If initiative references remain unresolved, return them for the caller to supply.
+4. Write the management paragraph from the rendered Initiatives and Completed sections.
    - It must meet [Management Paragraph](#management-paragraph).
-6. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
-7. Return the report and separate unresolved findings.
+5. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
+6. Return the report and separate unresolved findings.
    - The report must meet [Fields](#fields).
 
 ## Fields
@@ -76,14 +75,13 @@ Prints the standup from supplied board items, pull request records and their iss
 - `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.
 - `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
 - `--summary` gives the paragraph for management.
-- `--default` is one hot-fix repository's default branch, as `<owner>/<repo>=<default-branch>`, read for its delivering pull requests. Repeatable.
 
 The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 `<window-start-date>` uses `YYYY-MM-DD`.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --since '<window-start-date>' --initiative '<initiative-filter>' --initiatives '<initiative-json-file>' --summary '<management-paragraph-file>' --default '<owner>/<repo>=<default-branch>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --since '<window-start-date>' --initiative '<initiative-filter>' --initiatives '<initiative-json-file>' --summary '<management-paragraph-file>'
 ```
 
 **Example:**
