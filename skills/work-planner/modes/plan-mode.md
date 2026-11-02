@@ -11,7 +11,6 @@ Read these files first.
 - [Propose Mode](propose-mode.md)
 - [Guidelines](../guidelines.md)
 - [Planning Record](../artifacts/planning-record.md)
-- [Pull Request Body](../artifacts/pull-request-body.md)
 - [Pull Request](../artifacts/pull-request.md)
 - [Issue](../artifacts/issue.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
@@ -38,16 +37,15 @@ The main path meets [Outcomes](#outcomes).
      - Resume this selection step with its published proposal; an unresolved proposal blocks initiative drafting.
 2. **Prepare the planning record.**
    - For an initiative, epic or complex plan, call [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) with the record identity, folder and supplied evidence files.
-   - For initiative or epic planning:
-     - Populate a discussion body through [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body).
-     - Run [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) as a draft with the planning branch, target, title and body file. Only the user decides to merge that discussion pull request.
+   - The record's folder holds every draft body and work item this plan writes, as [Layout](../artifacts/planning-record.md#layout) states.
+   - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
 3. **Draft each initiative body.**
    - For a new initiative, obtain its proposed prefix through [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the initiative prefix letter.
-   - Run [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body) for each initiative with the scoped proposal, confirmed goal clauses, requirement sources, epic summaries and output path. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
+   - Run [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body) for each initiative with the scoped proposal, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
 4. **Populate the epics.**
-   Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for each epic and each new task row.
-   - Call [Populate Work Item](../artifacts/work-item.md#populate-work-item) for each task with its scope, design, the component its implementation extends, criteria and test requirements.
-   - Register each returned file in the planning record.
+   Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for each epic and each new task row, with an output path in the record's folder.
+   - Call [Populate Work Item](../artifacts/work-item.md#populate-work-item) for each task with its scope, design, the component its implementation extends, criteria, test requirements and an output file in the record's folder.
+   - Register each draft body and returned work-item file in the planning record.
    - Resolve Open Questions before work starts.
    - Run [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) across the drafts and the returned work-item files.
    - Return each epic draft and its format results to the review step.
@@ -77,6 +75,7 @@ The main path meets [Outcomes](#outcomes).
    - Resolve findings.
    - Save the corrected bodies.
    - Update the planning record with evidence, decisions and issue links.
+   - Run Publish Planning Record for the record's folder.
 7. **Keep the goal current.**
    When the goal, a criterion, a Problem, a Proposal or an epic changes:
    - Repeat Review Initiative Goal with the revised bodies and current sources.
@@ -88,11 +87,10 @@ The main path meets [Outcomes](#outcomes).
      - Put the proposed Epic Priority map to the user again where the edges or the contention moved an epic's number.
      - Save each confirmed change as that epic's priority label.
    - Save affected bodies through Save Tracker Issue, matching titles to current numbers and Coverage to current criteria.
-   - Keep local body files as the source for the next pass.
+   - Keep the record's body files as the source for the next pass.
    - Update work-item files and the README inventory for added, renamed or removed tasks.
-   - Update the discussion pull request body and planning record.
-   - Commit.
-   - Push.
+   - Update the planning record.
+   - Run Publish Planning Record for the record's folder.
 8. **Prepare epic delivery.**
    Before any task starts:
    - Resolve every Open Question with the user.
