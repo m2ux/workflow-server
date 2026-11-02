@@ -116,3 +116,5 @@ Select the mode as appropriate to fulfill the user request:
 - **git.**
 - **GitNexus.**
 - **Sub-agents.**
+- **Epic-base merge permission.**
+  The agent harness grants the [Merge Permission](artifacts/pull-request.md#merge-permission) Deliver needs.

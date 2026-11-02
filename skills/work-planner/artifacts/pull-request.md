@@ -26,7 +26,8 @@ One task or epic pull request's merge result, or its handoff for human approval.
    - For example, workflow-server's `main` requires one approving review, so carry an epic to ready and stop.
 2. When approval permits the agent to merge:
    - Call [Merge Pull Request](#merge-pull-request) for a task or [Merge Epic Pull Request](#merge-epic-pull-request) for an epic, passing the verified readiness evidence and authorization result. For an epic, also supply the target requirements and exact verified head SHA.
-   - If the merge is refused, return the refusal to the caller for fresh verification.
+   - If GitHub refuses the merge, return the refusal to the caller for fresh verification.
+   - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
 3. Return the merge result, including its merge commit when supplied, for the caller's readback.
 
 ### *Access* Development Links
@@ -155,8 +156,8 @@ Merges each open task pull request whose test plan has passed.
    - Where its base is an epic base, run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and that base.
    - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.
    - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
-   - Stop on a handoff for human approval.
-   - If the merge is refused:
+   - Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller.
+   - If GitHub refuses the merge:
      - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its base.
      - Repeat Fetch Merge Readiness for the updated task head.
      - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
@@ -224,6 +225,28 @@ A task pull request delivers one task, or a set of tasks that name each other in
 ### Other Pull Requests
 
 A pull request outside epic delivery targets a long-lived branch. An open stacked pull request targets its long-lived branch once its base merges.
+
+### Merge Permission
+
+The agent harness lets a delivery session merge a task pull request into an [epic base](delivery-branches.md#epic-bases), such as `i07/e00/main`, without a prompt. A merge into the default branch stays with a person.
+
+- **Claude Code.**
+  User settings (`~/.claude/settings.json`) grant it with an `autoMode.allow` rule and an `autoMode.environment` entry, each array keeping `"$defaults"`; auto mode reads neither from project settings. `claude auto-mode config` prints the rules in effect.
+
+  ```json
+  {
+    "autoMode": {
+      "environment": [
+        "$defaults",
+        "Source control: github.com/m2ux/workflow-server. Epic bases named iNN/eNN/<branch> carry no review requirement; the default branch requires an approving review"
+      ],
+      "allow": [
+        "$defaults",
+        "Merging a task pull request into an epic base iNN/eNN/<branch> of github.com/m2ux/workflow-server is allowed: the work-planner skill's Deliver mode authorizes it and the base requires no review. Merges into the default branch are not covered"
+      ]
+    }
+  }
+  ```
 
 ### Issue Links
 
