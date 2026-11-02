@@ -1,0 +1,15 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1622",
+    "head": "569ae84422a0031d9b73997ca1541a3b679a3c48",
+    "base": "a5ff02d92910183e706756d6d11dd067df16d989",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1586-f03-harness-merge-permission/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (delivery session agent review)",
+    "reviewed_at": "2026-11-02",
+    "scope": "Full diff workspace..f03-harness-merge-permission: SKILL.md Dependencies, artifacts/pull-request.md (Merge Delivery Pull Request step 2, Merge Task Pull Requests step 2, Merge Permission field), modes/deliver-mode.md Dispatch step. Callers inspected: Deliver step 5 Merge and Run Delivery Session step 10 Merge (both run Merge Task Pull Requests and keep a returned blocker explicit); protocols/epic-integration.md (epic merges into a reviewed target take the approval handoff, untouched); the Deliver dispatch check runs before any worktree, brief or session. Every other statement of a merge refusal or harness permission in the skill's non-test files was searched; none restates the permission.",
+    "criteria": "AC1: Merge Permission states the epic-base merge permission, the Claude Code autoMode.allow and autoMode.environment entries in user settings keeping $defaults, and the default branch left with a person; SKILL.md Dependencies links it (T1). AC2: Deliver Dispatch confirms the permission and stops, naming the absent setting, before any unit begins (T2). AC3: Merge Delivery Pull Request separates a GitHub refusal (fresh verification, one retry) from a permission-layer refusal, which returns the pull request ready and verified for a later Deliver run and never asks the user to approve it (T3).",
+    "validation": "skills/work-planner: 831 tests OK (1 skipped); skill-file check 52 files, 0 findings. Considered and rejected as outside the criteria: the Deliver report step lists no permission-refused pull request (the dispatch check reports the missing permission in the same run); the permission names epic bases while the refusal path covers any target with no review requirement (the issue scopes the permission to epic bases).",
+    "findings": []
+  }
+]
