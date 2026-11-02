@@ -1,0 +1,20 @@
+# Harness Merge Permission — November 2026
+
+> Delivery record · Created 2026-11-02
+
+## Executive Summary
+
+This record holds the delivery of hot-fix F03 into `workspace`. Deliver states the harness permission a session needs to merge a task pull request into an epic base, checks for it before dispatch, and tells a permission-layer refusal apart from a GitHub one.
+
+An agent harness can refuse a merge the skill already authorizes, and the session reads that as a branch blocker and hands it to the user. Stating and checking the permission keeps delivery unattended and leaves default-branch merges with a person.
+
+## Artifacts
+
+| Artifact | What it holds |
+| --- | --- |
+
+## Links
+
+| Resource | Link |
+| --- | --- |
+| Hot-fix | [F03](https://github.com/m2ux/workflow-server/issues/1586) |
