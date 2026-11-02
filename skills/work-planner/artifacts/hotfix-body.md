@@ -53,6 +53,10 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 - It sits on its theme's board.
 - Its priority is 10, carried as a [priority label](board-queue.md#priority-sets).
 
+### Debt
+
+- A hot-fix has no deferred-debt epic: debt its delivery finds, whatever its class, is fixed in its own pull request.
+
 ### Sections
 
 - A hot-fix has the [standalone body](standalone-body.md)'s sections.

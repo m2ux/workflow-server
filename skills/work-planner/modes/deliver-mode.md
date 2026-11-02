@@ -25,6 +25,7 @@ Read these files first.
 - [Plan Change](../artifacts/plan-change.md)
 - [Hoist Mode](hoist-mode.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
+- [Hot-fix Body](../artifacts/hotfix-body.md)
 - [Work Item](../artifacts/work-item.md)
 - [Pull Request Body](../artifacts/pull-request-body.md)
 - [Issue Body](../artifacts/issue-body.md)
@@ -155,6 +156,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Resume the defer step when recording returns; a merge or recording blocker remains explicit.
 9. **Classify and defer the debt.**
    Classify the technical debt this unit's validation finds — running its tests, auditing the definitions it changed, reviewing its pull request — which decides where it is fixed.
+   - A hot-fix unit fixes every item as its [Debt](../artifacts/hotfix-body.md#debt) states.
    - **Blocking.**
      - The unit's own criteria cannot be verified without it, so the unit fixes it, whatever its size.
    - **Trivial.**
