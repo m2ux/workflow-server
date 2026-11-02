@@ -1795,6 +1795,30 @@ class ReviewChanges(unittest.TestCase):
         self.assertNotIn('changes:', out)
 
 
+class IssueWithoutRepository(unittest.TestCase):
+    """An epic, task or initiative sync reads no repository from the issue it is not given one for."""
+
+    def run_sync(self, record: dict, *args: str):
+        del record['repository_url']
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(record))
+            pulls.write_text(json.dumps(pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')))
+            return run('sync.py', str(body), '--prs', str(pulls), '--links', links_file(root, [links(950, 3)]),
+                       *args)
+
+    def test_an_epic_without_repository_url_syncs(self):
+        done = self.run_sync(issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))))
+        self.assertEqual(done.returncode, 0, done.stderr)
+
+    def test_a_task_without_repository_url_syncs(self):
+        done = self.run_sync(issue(3, '[I01:E00:W01] Work: Task', body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n'),
+                             '--pr', '950')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('linked: W01 delivered by #950', done.stdout)
+
+
 class HotFixDelivery(unittest.TestCase):
     """A hot-fix is recorded as a task issue whose delivery is the pull request linking it."""
 
