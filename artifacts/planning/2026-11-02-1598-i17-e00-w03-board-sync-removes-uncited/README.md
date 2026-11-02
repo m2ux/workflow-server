@@ -13,6 +13,8 @@ Items closed as not planned that no plan body cites stay on the board until remo
 | Artifact | What it holds |
 | --- | --- |
 | [W03 work item](w03.md) | Component, scope, design and test rows for W03 |
+| [Test results](test-results.md) | The checks run for W03, the revision tested and each result |
+| [Change list](changes.md) | Each plan change the delivery session applied or held |
 
 ## Links
 
