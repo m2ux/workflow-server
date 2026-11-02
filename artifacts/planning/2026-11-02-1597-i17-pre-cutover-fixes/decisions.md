@@ -23,3 +23,18 @@
 - **Labels.** `bug` is added to both issues, as the shared Labels condition applies it to defects.
 - **Cutover edge names the epic.** The W00 cell names `I17:E00` rather than its rows, because the epic takes further rows as faults are found and a row list would go stale. The dependency check reads another initiative's epic as an external reference.
 - **Record folder.** Named for the initiative's issue, 1597, which matched the number read before creation.
+
+## E01 Skill Separation, 2 November 2026
+
+The user's decisions:
+
+1. **Epic, not a standalone issue.** The delivery-path breach raised as #1614 becomes a separation-of-concerns review of the whole skill, raised as [I17:E01](https://github.com/m2ux/workflow-server/issues/1615). #1614 is closed into it.
+2. **Scope.** Every artifact, mode, protocol and script in `skills/work-planner`, with its tests where a rule moves.
+3. **Shape.** W01 audits the skill against SOLID and the one-home rule and records each breach with its file, rule and owning home in this folder. W02 (prose), W03 (scripts) and W04 (one-home rules) take the findings by concern. Each is split into one row per group of files it touches before it starts.
+4. **Extraction waits.** I16's extraction waits for E01, as for E00, so the skill moves already separated.
+5. **Priority.** The epic carries `priority: 6`.
+
+Planning decisions:
+
+- **No tests-pass criterion.** The tests and skill-file check are a gate every pull request meets, so no row carries them as a criterion.
+- **I17 reopened.** Its AC1 is unticked again until E01's fixes are in the extraction commit's history.
