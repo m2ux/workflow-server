@@ -1811,7 +1811,7 @@ class HotFixDelivery(unittest.TestCase):
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):
-        done, fixed = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', merged='2026-11-01T00:00:00Z')],
+        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z')],
                                       [links(950, 4)], '--pr', '950', '--tick', 'AC1')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('#4 hot-fix (open)', done.stdout)
@@ -1820,6 +1820,11 @@ class HotFixDelivery(unittest.TestCase):
         self.assertIn('- [x] **AC1.** Holds.', fixed)
 
     def test_a_pull_request_not_linking_it_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys')], [links(950, 7)], '--pr', '950')
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys')], [links(950, 7)], '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: no pull request linking F04', done.stderr)
+
+    def test_a_linking_pull_request_without_its_prefix_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys')], [links(950, 4)], '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: no pull request linking F04', done.stderr)

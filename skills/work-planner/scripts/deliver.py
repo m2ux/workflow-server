@@ -49,17 +49,12 @@ to read; the file's declaration line names the long-lived branch and the path of
 A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
 its session writes the work item after dispatch, so its unit works on every epic base.
 
-An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever any epic's state,
-as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
-its record folder and branch come from its prefix and its title's name, and its base is its
-repository's default branch, which --default gives as owner/repo=branch, once for each
-repository; a malformed --default stops the run before it prints. A hot-fix's delivering pull
-request is titled with its [F00], in its repository, into that default branch, with a Development
-link to it. An open hot-fix a merged delivering pull request reaches is printed on an unrecorded
-line, for its merge to be recorded. A hot-fix an open delivering pull request reaches is running,
-and is neither offered nor held. Otherwise a hot-fix In Progress is
-held by its dispatch and printed on a hold line. A hot-fix whose repository's default branch is not
-given is printed unresolved.
+Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
+artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
+and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
+delivering pull requests. Its base is its repository's default branch, which --default gives as
+owner/repo=branch, once for each repository; a malformed --default stops the run before it prints,
+and a hot-fix whose repository's default branch is not given is printed unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -91,8 +86,9 @@ from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
-                    row, row_id, split_sections, title_name, hotfix_tag)
-from sync import (Unreadable, attach_links, links_issue, long_lived_names, plan_rows, pr_repo,
+                    row, row_id, split_sections, title_name)
+from hotfix import delivering_pulls, hotfix_tag, unit_state
+from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -279,19 +275,10 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
-def hotfix_pulls(prs: list[dict], key: tuple[str, int], tag: str, base: str) -> list[dict]:
-    """The pull requests delivering a hot-fix: titled with its tag, in its repository, into its
-    default branch, with a Development link to it."""
-    return sorted((p for p in prs if base and hotfix_tag(p) == tag and pr_repo(p).lower() == key[0].lower()
-                   and ((p.get('base') or {}).get('ref') or '') == base and links_issue(p, key)),
-                  key=lambda p: p['number'])
-
-
 def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str, str], home: str,
                  when: str, unresolved: list[str]) -> tuple[list[str], int, int, int]:
-    """The unit and hold lines of each open hot-fix Ready or In Progress that no open or merged pull
-    request links, and the unrecorded line of each open hot-fix a merged pull request links, as Hot-fix
-    Units in artifacts/delivery-plan.md states, with the count of each."""
+    """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state reads,
+    with the count of each."""
     lines, available, held, unrecorded = [], 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
@@ -303,17 +290,18 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         if not base:
             unresolved.append(f'{where}: the default branch of {key[0]} is not given')
             continue
-        delivering = hotfix_pulls(prs, key, tag, base)
-        if merged := [p for p in delivering if p.get('merged_at')]:
-            numbers = ', '.join(f"#{p['number']}" for p in merged)
+        delivering = delivering_pulls(prs, key, tag, base)
+        state = unit_state(issue, status.get(key), delivering)
+        if state == 'unrecorded':
+            numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
             lines.append(f'  unrecorded {where}: {numbers} merged')
             unrecorded += 1
             continue
-        if status.get(key) not in STARTED or any((p.get('state') or 'open') == 'open' for p in delivering):
-            continue
-        if status[key] == 'In Progress':
+        if state == 'hold':
             lines.append(f'  hold {where}: In Progress')
             held += 1
+            continue
+        if state != 'unit':
             continue
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
@@ -354,7 +342,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
             continue
         base = (pull.get('base') or {}).get('ref') or ''
         if tag := hotfix_tag(pull):
-            if (any(hotfix_pulls([pull], key, fixed, defaults.get(key[0].lower(), ''))
+            if (any(delivering_pulls([pull], key, fixed, defaults.get(key[0].lower(), ''))
                     for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue

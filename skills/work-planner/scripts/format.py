@@ -100,6 +100,8 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
+from hotfix import HOTFIX, PRIORITY, is_hotfix
+
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
 BODY_ARTIFACTS = {
     'proposal': 'proposal-body.md',
@@ -111,8 +113,6 @@ BODY_ARTIFACTS = {
 }
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
-HOTFIX = re.compile(r'^\[(F\d\d)\]')
-HOTFIX_PRIORITY = 'priority: 10'
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
@@ -248,16 +248,6 @@ def epic_issues(body: str) -> dict[str, int]:
 def initiative_rows(body: str) -> list[str]:
     """The rows of an initiative's Work Breakdown table."""
     return work_table(body)[1]
-
-
-def hotfix_tag(item: dict) -> str | None:
-    """The [F00] tag an issue's or pull request's title opens with, which makes an issue a hot-fix."""
-    matched = HOTFIX.match(item.get('title') or '')
-    return matched[1] if matched else None
-
-
-def is_hotfix(issue: dict) -> bool:
-    return hotfix_tag(issue) is not None
 
 
 def title_name(title: str) -> str:
@@ -498,13 +488,13 @@ class Review:
 
     def check_labels(self) -> None:
         labels = self.labels()
-        wanted = [f'type:{self.kind}'] + ([HOTFIX_PRIORITY] if self.kind == 'hot-fix' else [])
+        wanted = [f'type:{self.kind}'] + ([PRIORITY] if self.kind == 'hot-fix' else [])
         themes = [l for l in labels if l.startswith('theme:')]
         wrong = [l for l in labels if l.startswith('type:') and l not in wanted]
         if self.kind == 'proposal':
             wrong += themes
         if self.kind == 'hot-fix':
-            wrong += [l for l in labels if l.startswith('priority:') and l != HOTFIX_PRIORITY]
+            wrong += [l for l in labels if l.startswith('priority:') and l != PRIORITY]
         missing = [l for l in wanted if l not in labels]
         if wrong or missing:
             self.apply.append('labels: ' + ', '.join([f'remove {l}' for l in wrong] +

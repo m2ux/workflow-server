@@ -81,7 +81,8 @@ from pathlib import Path
 
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
-from format import HOTFIX, LINK, cell, hotfix_tag, id_cell, phrase, title_name
+from format import LINK, cell, id_cell, phrase, title_name
+from hotfix import HOTFIX, hotfix_tag
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')

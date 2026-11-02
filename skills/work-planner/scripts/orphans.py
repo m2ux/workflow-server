@@ -31,7 +31,7 @@ import re
 import sys
 from pathlib import Path
 
-from format import is_hotfix
+from hotfix import is_hotfix
 
 AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
 OPEN_INITIATIVE_OR_EPIC = re.compile(r'^\[I\d\d(?::E\d\d)?\] ')

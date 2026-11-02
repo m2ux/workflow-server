@@ -35,8 +35,8 @@ Task issue ([I07:E00:W01]): --pr names the pull request that delivers it, open o
 names the task's epic. Its criteria are ready to verify while that pull request is open, since the
 evidence is what the pull request and its planning record carry. The task is delivered, and so
 closable, once that pull request has merged.
-Hot-fix issue ([F00]): read as a task issue whose --pr is a pull request --links shows linking it,
-whatever its title, since a hot-fix belongs to no epic; it needs --links.
+Hot-fix issue ([F00]): read as a task issue whose --pr is a pull request titled with its [F00] that
+--links shows linking it, since a hot-fix belongs to no epic; it needs --links.
 Closed epics have their Work Breakdown normalized to the current columns before delivery is read;
 --fix holds the normalized body for publication. Ambiguous tables are refused. Linked merged pull
 requests with no prefix or a matching initiative/task prefix report the owning epic title to publish
@@ -92,7 +92,8 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections, hotfix_tag
+from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from hotfix import hotfix_tag
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 SINGLE = ('task', 'hot-fix')
@@ -1003,7 +1004,7 @@ def main() -> int:
     if args.links:
         attach_links(prs, args.links)
     if kind == 'hot-fix':
-        named = {p['number']: p for p in prs if links_issue(p, issue_key(issue))}
+        named = {p['number']: p for p in prs if hotfix_tag(p) == task and links_issue(p, issue_key(issue))}
     else:
         named = for_epic(prs, initiative, epic) if epic else {}
     links: dict[str, list[int]] = {}

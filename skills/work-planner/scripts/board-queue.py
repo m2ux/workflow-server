@@ -29,9 +29,10 @@ from collections import Counter
 from pathlib import Path
 
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
-from format import cell, id_cell, is_hotfix, row_id
+from format import cell, id_cell, row_id
+from hotfix import OFF_BOARD, board_status, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import Unreadable, issue_done, pull_requests
+from sync import Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
@@ -297,21 +298,15 @@ class Queue:
                 self.shelve(key)
 
     def hotfixes(self) -> None:
-        """Place each hot-fix, as Hot-fix Status in artifacts/board-queue.md states: an open one Ready
-        unless In Progress, which it keeps, or In Review, which it leaves for In Progress; one closed as
-        completed Done; and one closed otherwise off the board."""
+        """Place each hot-fix on the board where hotfix.board_status puts it."""
         for key, issue in self.issues.items():
             if not is_hotfix(issue) or key not in self.status:
                 continue
-            if issue['state'] == 'closed':
-                if issue_done(issue):
-                    self.place(key, 'Done')
-                else:
-                    self.removed.add(key)
-            elif self.status.get(key) == 'In Review':
-                self.place(key, 'In Progress')
-            elif self.status.get(key) != 'In Progress':
-                self.place(key, 'Ready')
+            wanted = board_status(issue, self.status.get(key))
+            if wanted == OFF_BOARD:
+                self.removed.add(key)
+            else:
+                self.place(key, wanted)
 
     def decide(self) -> None:
         self.hotfixes()
