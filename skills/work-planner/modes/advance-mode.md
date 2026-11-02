@@ -76,6 +76,6 @@ The main path meets [Outcomes](#outcomes).
 - **A queue.**
   The user has a queue for one theme: which initiatives are underway together, which are next, and which wait.
 - **A parallel work map.**
-  The user's ranking decides which initiatives run together and which wait.
+  The user has a ranking that sets which initiatives run together and which wait.
 - **Epics follow the initiative.**
   The user sees which epics of each initiative are underway, which are next, which wait on a ranking, and which work waits for them to reconcile it.

@@ -38,7 +38,8 @@ The main path meets [Outcomes](#outcomes).
    - Use its returned owner and board number for the following steps.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
-   - Every status move to Ready or In Progress, assignment and epic base in this run comes from the queue this step returns, read live from the board before anything starts. No memory, summary or earlier note stands in for it.
+   - An epic starts only when the queue this step returns in this run places it Ready or In Progress, and its assignment and epic base come from that queue. An epic that queue leaves in Backlog does not start, whatever the run was asked for.
+   - That queue is computed from the board and each open epic's priority label as this step reads them, before the run changes any status, assignee or branch. No memory, summary or earlier note stands in for that read.
    - Continue to the fetch step only after it returns a complete applied queue.
    - Report an unavailable dependency, and a queue decision it recorded rather than asked, before dispatch. An incomplete queue means no initiative is under way, so the run has no work to offer.
    - Carry the [change list](../artifacts/plan-change.md#change-list) it returns into the report step.

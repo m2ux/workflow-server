@@ -3,6 +3,7 @@
 Usage:
   python3 board-queue.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9
       --fields fields.json --out board/ --assignee m2ux [--others issue-750.json ...]
+      [--unplanned 12 ...]
 
 items.json is the board's items with the Status field, as board.py reads them. prs.json is as
 sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
@@ -13,7 +14,8 @@ the board is given with --others.
 The moves and printed lines are the Fields of artifacts/board-queue.md, and each line is one row of
 its Report Lines. Activity is read through board.py. The calls are rendered by statuses.py within
 the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
-and each unresolved issue reference.
+and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
+a row.
 """
 import argparse
 import json
@@ -140,8 +142,8 @@ class Queue:
     def activate(self, key: tuple[str, int]) -> None:
         """Active epics of a Ready or In Progress initiative are In Progress, and the epics of the
         highest priority set that can start are Ready. The set counts the epics already under way,
-        so a lower one waits, and an epic with no priority is never Ready. A next line names the
-        Ready epics. An initiative waiting on its epics' work readies none of its epics."""
+        so a lower one waits; Epic Status in artifacts/board-queue.md sets which can be Ready. A
+        next line names the Ready epics. An initiative waiting on its epics' work readies none of its epics."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
