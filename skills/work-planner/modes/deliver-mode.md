@@ -165,7 +165,7 @@ The confirmed unit carried from its supplied brief through implementation and de
      - It blocks nothing and needs no work item of its own, so the unit fixes it.
    - **Non-trivial.**
      - It blocks nothing and would warrant a work item of its own, so the unit defers it and the epic in hand keeps the scope it was planned with.
-     - A hot-fix unit fixes it in its own pull request, as its [Debt](../artifacts/hotfix-body.md#debt) states.
+     - A hot-fix unit settles it as its [Debt](../artifacts/hotfix-body.md#debt) states.
    - The session's own classification decides.
    - For each deferred item:
      - Create it as a standalone issue through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
