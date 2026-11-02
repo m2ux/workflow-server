@@ -13,6 +13,8 @@ A plan today has two homes, a planning branch with its draft pull request and th
 | Artifact | What it holds |
 | --- | --- |
 | [W01 work item](w01.md) | Component, scope, design and test rows for W01 |
+| [Test results](test-results.md) | Each check in the pull request's Test Plan, with the revision it ran against and its result |
+| [Change list](changes.md) | Each plan change this delivery applied or held |
 
 ## Links
 
