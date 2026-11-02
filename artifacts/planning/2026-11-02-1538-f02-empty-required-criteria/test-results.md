@@ -36,3 +36,7 @@ Run from skills/work-planner: `python3 -m unittest discover -s test`
 Run in the worktree: `python3 skills/scripts/check_skill_files.py skills/work-planner`
 
 - Result: 52 files checked, 0 findings.
+
+## Merged Base
+
+The merge commit a5ff02d92910183e706756d6d11dd067df16d989 on workspace, from #1621, carries format.py, test_format.py and epic-issue-body.md identical to the tested revision, so T1 to T3 hold there.

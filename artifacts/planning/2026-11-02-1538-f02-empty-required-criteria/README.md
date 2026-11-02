@@ -15,6 +15,7 @@ prosiform requires no recurring criterion, and the format check reports every ep
 | [F02 work item](f02.md) | Component, scope, design and test rows for F02 |
 | [Test results](test-results.md) | The checks run for F02, the revision tested and each result |
 | [Agent review](agent-review.json) | The review record for pull request #1621 at its reviewed head |
+| [Change list](changes.md) | Each plan change the delivery session applied or held |
 
 ## Links
 
