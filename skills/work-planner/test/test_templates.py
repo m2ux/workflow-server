@@ -20,14 +20,14 @@ class ArtifactTemplates(unittest.TestCase):
                 expected.append('Acceptance Criteria')
                 if kind in ('initiative', 'proposal'):
                     expected.append('Non-Goals')
-                if kind in ('epic', 'task', 'issue'):
+                if kind in ('epic', 'task', 'issue', 'hot-fix'):
                     expected.append('Open Questions')
                 expected.append('References')
                 if kind == 'proposal':
                     expected = ['Overview', 'Problem', 'Goal', 'Non-Goals', 'References']
                 self.assertEqual(template.headings, expected)
                 self.assertEqual(template.optional,
-                                 {'Open Questions', 'References'} if kind in ('task', 'issue') else
+                                 {'Open Questions', 'References'} if kind in ('task', 'issue', 'hot-fix') else
                                  {'Open Questions'} if kind == 'epic' else
                                  {'References'} if kind == 'proposal' else set())
                 columns = (['Epic', 'Description', 'Coverage', 'Depends on', 'Done'] if kind == 'initiative'

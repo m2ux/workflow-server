@@ -1,4 +1,4 @@
-"""Check a proposal, initiative, epic, task or standalone issue against its agent-engineering template, and
+"""Check a proposal, initiative, epic, task, hot-fix or standalone issue against its agent-engineering template, and
 fix what is mechanical.
 
 Usage:
@@ -21,10 +21,12 @@ unevaluable, unless another one is known to change a declared path. An epic carr
 one of its acceptance criteria holds its phrase, in any case.
 
 issue-943.json is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. The kind comes
-from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task. A proposal
-also carries type:proposal. A type:task issue is a task whatever its prefix depth, so one whose
-prefix has no task id is checked as a task and reported as missing it. No prefix and no type:proposal
-is a standalone issue, which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
+from the title prefix: [P00] proposal, [I07] initiative, [I07:E00] epic, [I07:E00:W01] task, [F00]
+hot-fix. A proposal also carries type:proposal, and a hot-fix type:hot-fix; either the prefix or the
+label makes an issue a hot-fix. A type:task issue is a task whatever its prefix depth, so one whose
+prefix has no task id is checked as a task and reported as missing it. A hot-fix takes the standalone
+template, as artifacts/hotfix-body.md states. No prefix, no type:proposal and no type:hot-fix is a
+standalone issue, which belongs to no initiative and takes artifacts/standalone-body.md. The format is read
 from the Markdown template under Fields in each body artifact: its sections and their order, the sections it marks
 optional ("delete the section", in any case), and its Work Breakdown columns.
 
@@ -76,7 +78,7 @@ Left to decide, since each needs new content or a judgement:
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria or references partly labelled or numbered out of sequence
   - a References section that links issues or pull requests on the same board
-  - no theme:* label on an initiative or epic, a title without "Name: Subtitle" (after the prefix,
+  - no theme:* label on an initiative, epic or hot-fix, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
     subtitle runs past ten
   - an issue several row ids link, which backs several tasks and so belongs under References
@@ -103,9 +105,11 @@ BODY_ARTIFACTS = {
     'epic': 'epic-issue-body.md',
     'task': 'task-body.md',
     'issue': 'standalone-body.md',
+    'hot-fix': 'standalone-body.md',
 }
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
+HOTFIX = re.compile(r'^\[F\d\d\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
@@ -413,6 +417,18 @@ class Review:
                 self.check_title_shape(name, subtitle)
             self.check_labels()
             return self.check_body()
+        if 'type:hot-fix' in self.labels() or HOTFIX.match(title):
+            self.kind, self.number = 'hot-fix', None
+            rest = HOTFIX.sub('', title).strip()
+            if rest == title:
+                self.decide.append('title has no [F00] prefix')
+            if ': ' not in rest:
+                self.decide.append('title has no "Name: Subtitle"')
+            else:
+                name, _, subtitle = rest.partition(': ')
+                self.check_title_shape(name, subtitle)
+            self.check_labels()
+            return self.check_body()
         m = PREFIX.match(title)
         if not m:
             self.kind, self.number = 'issue', None
@@ -478,7 +494,7 @@ class Review:
         if wrong or want not in labels:
             self.apply.append('labels: ' + ', '.join([f'remove {l}' for l in wrong] +
                                                       ([f'add {want}'] if want not in labels else [])))
-        if self.kind in ('initiative', 'epic') and not themes:
+        if self.kind in ('initiative', 'epic', 'hot-fix') and not themes:
             self.decide.append('no theme:* label')
 
     def check_body(self) -> str:
@@ -487,7 +503,7 @@ class Review:
         template = Template(self.kind)
         names = [h for h, _ in sections]
         own = sum(h in template.headings for h in names)
-        for other in KINDS.values() if self.kind != 'issue' else ():
+        for other in KINDS.values() if self.kind not in ('issue', 'hot-fix') else ():
             if other != self.kind and sum(h in Template(other).headings for h in names) > own:
                 self.decide.append(f'body follows the {other} template, not the {self.kind} one')
                 return body
@@ -498,8 +514,9 @@ class Review:
             if h not in names and h not in template.optional:
                 self.decide.append(f'required section missing: {h}')
         for h in names:
-            if h == 'Non-Goals' and self.kind == 'issue':
-                self.decide.append('Non-Goals: a standalone issue states its boundary in the Proposal')
+            if h == 'Non-Goals' and self.kind in ('issue', 'hot-fix'):
+                self.decide.append(f'Non-Goals: a {"hot-fix" if self.kind == "hot-fix" else "standalone issue"} '
+                                   'states its boundary in the Proposal')
             elif h == 'Non-Goals' and self.kind not in ('initiative', 'proposal'):
                 self.decide.append('Non-Goals belong to the initiative: lift any that bound it into the '
                                    "initiative's Non-Goals, then remove the section")

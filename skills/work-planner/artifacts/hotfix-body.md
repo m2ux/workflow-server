@@ -1,0 +1,58 @@
+# Hot-fix Body
+
+Populates one hot-fix issue body and records its delivery.
+
+## Prerequisites
+
+Read these files first.
+
+- [Issue Body](issue-body.md)
+- [Standalone Body](standalone-body.md)
+- [Board Queue](board-queue.md)
+- [Task Body](task-body.md)
+
+## Operations
+
+### *Populate* Hot-fix Body
+
+One hot-fix body from a confirmed defect.
+
+**Inputs:** Hot-fix number, problem, design, criteria, theme label and output path.
+
+- Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
+  - The work must meet [Definition](#definition).
+  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
+  - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+  - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
+
+### *Record* Hot-fix Delivery
+
+One hot-fix body with its confirmed delivery and verified criteria recorded.
+
+**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
+
+1. Run [Sync Task Issue](task-body.md#sync-task-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue.
+
+## Fields
+
+### Definition
+
+- A hot-fix fixes a defect in the repository's default branch as it stands, such as `main`.
+- Work that needs an open initiative, epic or task is not a hot-fix.
+
+### Titles
+
+- The title is `[F00] Name: Subtitle`.
+- The labels are `type:hot-fix` and the `theme:*` label of the board it sits on.
+- `F` is the hot-fix number. Hot-fixes count from `00`.
+
+### Membership
+
+- A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
+- It sits on its theme's board.
+- Its priority is 10, carried as a [priority label](board-queue.md#priority-sets).
+
+### Sections
+
+- A hot-fix has the [standalone body](standalone-body.md)'s sections.
