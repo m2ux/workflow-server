@@ -31,7 +31,7 @@ The main path meets [Outcomes](#outcomes).
    - Return any blocker that prevents current delivery from being established.
 3. **Fetch.**
    - Run [Read Board State](../artifacts/board.md#read-board-state) for the current board items and Status field.
-   - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) Read Board State returned.
+   - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) and items Read Board State returned.
    - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) for those pull requests, which is where the issue each one delivers is read.
    - Run [Read Board Configuration](../artifacts/board.md#read-board-configuration) for the board fields.
    - Run [Read Board Assignee](../artifacts/board.md#read-board-assignee) for the assignee login.

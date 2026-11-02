@@ -104,9 +104,6 @@ The main path meets [Outcomes](#outcomes).
      - **Repair.**
        - Repair Done cells as [Tables](../artifacts/issue-body.md#tables) states.
        - When the preceding Record Epic Delivery call reports a row done, or a tick cleared, run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) from the output body file, without asking.
-     - **Absent.**
-       - Fetch a linked pull request missing from the records with [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-       - Repeat Record Epic Delivery with the refreshed records, the same epic bases and the same output body file.
      - **Unlinked.**
        - For a criterion ticked while its row links no pull request and no commit, request issue discussion through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
        - Link the one delivery that discussion names, taking a path as the commit that holds it. Several candidates, or none, go to the user before linking.
@@ -128,7 +125,7 @@ The main path meets [Outcomes](#outcomes).
     - Return missing prerequisite evidence before creating a base.
 
     After preparing the bases, align the selected initiative's pull requests:
-    - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests).
+    - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests), with the initiative, epic and task issues this alignment fetched.
     - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
     - Point an open task pull request at its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
