@@ -79,21 +79,27 @@ def planned(root: Path, *components: tuple[str, str]) -> tuple[list[str], dict[s
 THREE_BASES = ('--bases', 'i07/e00/main,i07/e00/workflows,i07/e00/workspace')
 
 
-def edit(body_issue: dict, *args: str, records: dict[str, dict[str, str]] | None = None) -> tuple[str, str, int]:
+def edit(body_issue: dict, *args: str, records: dict[str, dict[str, str]] | None = None,
+         status: str | None = 'Ready') -> tuple[str, str, int]:
     """Run an edit; records gives each planning folder's files, written to an engineering checkout
-    passed as --engineering."""
+    passed as --engineering. A reservation reads the board items, where the epic stands at status,
+    or is absent when status is None."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         path, fixed = root / 'issue.json', root / 'fixed.md'
         path.write_text(json.dumps(body_issue))
         extra = []
+        if '--reserve' in args:
+            items_path = root / 'items.json'
+            items_path.write_text(json.dumps(staged((dict(body_issue), status)) if status else []))
+            extra = ['--items', str(items_path)]
         if records is not None:
             checkout = root / 'engineering'
             for folder, files in records.items():
                 (checkout / 'artifacts' / 'planning' / folder).mkdir(parents=True)
                 for name, text in files.items():
                     (checkout / 'artifacts' / 'planning' / folder / name).write_text(text)
-            extra = ['--engineering', str(checkout)]
+            extra += ['--engineering', str(checkout)]
         done = run('deliver.py', '--epic', str(path), '--fix', str(fixed), '--date', TODAY, *args, *extra)
         return done.stdout + done.stderr, fixed.read_text() if fixed.exists() else '', done.returncode
 
@@ -447,6 +453,32 @@ class Reserve(unittest.TestCase):
         self.assertEqual(code, 1)
         self.assertIn('links a pull request', report)
 
+    def test_reserve_refuses_a_unit_whose_epic_is_not_ready_or_in_progress(self):
+        for status in ('Backlog', 'In Review', 'Done', None):
+            with self.subTest(status=status):
+                report, body, code = edit(epic(943, ('W01', 'Queue plan', '', '')),
+                                          '--reserve', 'W01', '--records', RECORDS, status=status)
+                self.assertEqual(code, 1, report)
+                self.assertIn('#943 [I07:E00] is ' + (status or 'not on the board'), report)
+                self.assertEqual(body, '')
+
+    def test_reserve_holds_a_unit_whose_epic_is_ready_or_in_progress(self):
+        for status in ('Ready', 'In Progress'):
+            with self.subTest(status=status):
+                report, body, code = edit(epic(943, ('W01', 'Queue plan', '', '')),
+                                          '--reserve', 'W01', '--records', RECORDS, status=status)
+                self.assertEqual(code, 0, report)
+                self.assertIn('reserved: W01 →', report)
+
+    def test_reserve_needs_the_board_items(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'issue.json')
+            path.write_text(json.dumps(epic(943, ('W01', 'Queue plan', '', ''))))
+            done = run('deliver.py', '--epic', str(path), '--reserve', 'W01', '--records', RECORDS,
+                       '--fix', str(Path(tmp, 'fixed.md')))
+        self.assertEqual(done.returncode, 1)
+        self.assertIn('--reserve needs --items', done.stderr)
+
     def test_a_reserved_row_is_held_with_one_link(self):
         record = f'{RECORDS}/{TODAY}-943-i07-e00-w01-queue-plan/'
         output = survey(staged((epic(943, (f'[W01]({record})', 'Queue plan', '', '')), 'In Progress')))
@@ -539,10 +571,6 @@ class JoinedReservation(unittest.TestCase):
                                records={self.FOLDER: record('W01', 'W02')})
         self.assertEqual(code, 1)
         self.assertIn('W02: joined with W01, which the call leaves out', report)
-
-
-if __name__ == '__main__':
-    unittest.main()
 
 
 class DispatchStatus(unittest.TestCase):
@@ -730,3 +758,7 @@ class ProducerOutputs(unittest.TestCase):
         output = survey(staged((producer, 'In Progress'), (consumer, 'Ready')), [], *self.names)
         self.assertIn('blocked I07:E01:W01', output)
         self.assertNotIn('output ', output)
+
+
+if __name__ == '__main__':
+    unittest.main()

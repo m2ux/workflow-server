@@ -7,7 +7,8 @@ Usage:
       [--engineering .engineering] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
-  python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
+  python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL] [--date 2026-10-06]
+      --fix fixed-943.md
   python3 deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
@@ -15,27 +16,27 @@ requests as sync.py reads them. links.json holds the closing issue references Gi
 pull requests, as Fetch Pull Request Issue Links writes them, and is where the task issues a pull
 request links are read. An issue a row depends on that is not on the board is given with --others.
 
-A task row's id says where its work stands: a link to a pull request or a commit is work in flight or
-delivered, a link to a planning folder is work a session holds, and anything else is free. A row is
-available when its epic is Ready or In Progress and the prerequisite epics its initiative row names
-are completed, its Done cell carries no tick, its id is free, and every entry in its own Depends on
-cell is delivered. A row waits for what it names and for nothing a sibling row names, so the rows of
-one epic start in the order that epic's own graph sets, whatever its siblings wait on. An entry
-naming another epic's row is delivered when that row is and each output it delivered is available
-at this epic's base in the repository --project locates, as board.Outputs reads it; that epic's
-other rows and its closure gate nothing. Tasks that
-name each other in Joins are one unit, and a unit is one session's work.
+A task row's id says where its work stands: a link to a pull request or a commit is work in flight
+or delivered, a link to a planning folder is work a session holds, and anything else is free. A row
+is available when its epic admits units, as Work Units in artifacts/delivery-plan.md states, the
+prerequisite epics its initiative row names are completed, its Done cell carries no tick, its id is
+free, and every entry in its own Depends on cell is delivered. A row waits for what it names and for
+nothing a sibling row names, so the rows of one epic start in the order that epic's own graph sets,
+whatever its siblings wait on. An entry naming another epic's row is delivered when that row is and
+each output it delivered is available at this epic's base in the repository --project locates, as
+board.Outputs reads it; that epic's other rows and its closure gate nothing. Tasks that name each
+other in Joins are one unit, and a unit is one session's work.
 
-Printed: a unit line for each available unit, with the record folder its ids and Description give
-it and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
+Printed: a unit line for each available unit, with the record folder its ids and Description give it
+and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
-linked work item names no long-lived branch with an epic base, naming why; a hold line for each reserved row; a blocked line for a free row whose
-dependencies are not delivered or whose joined task is unavailable; an output line for each
-producer output a row naming another epic's row was read for, naming the output, the consumer
-commit and whether it is available there; a merge line for an open pull
-request that targets the epic base when its test plan has passed; and an unresolved line for an
-issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
+linked work item names no long-lived branch with an epic base, naming why; a hold line for each
+reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
+task is unavailable; an output line for each producer output a row naming another epic's row was
+read for, naming the output, the consumer commit and whether it is available there; a merge line for
+an open pull request that targets the epic base when its test plan has passed; and an unresolved
+line for an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
@@ -45,16 +46,19 @@ A unit of an epic with one base works on that base. A free row linking no work i
 its session writes the work item after dispatch, so its unit works on every epic base.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
-take, and the In Review a completed epic with current published agent review evidence takes. --prs and --agent-reviews supply the current integration revisions and their review records. The calls are rendered by statuses.py within the
-DISPATCH jurisdiction, which refuses any other Status and a removal; every jurisdiction refuses a task set In Review.
+take, and the In Review a completed epic with current published agent review evidence takes. --prs
+and --agent-reviews supply the current integration revisions and their review records. The calls are
+rendered by statuses.py within the DISPATCH jurisdiction, which refuses any other Status and a
+removal; every jurisdiction refuses a task set In Review.
 
 --reserve and --release act on whole units: a call naming some rows of a unit and not the others is
-refused. --reserve sets one record folder as the single link of every row in a unit, the folder the
-unit's first task id and Description give it, which is the folder the unit line names. --release frees
-each row by replacing that folder link with its work-item file link, the task id in lower case inside
-the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not
-link it. Both write the body to --fix and refuse a row linking a pull request or commit. The planning
-URL comes from --records or an existing planning link in the epic.
+refused. --reserve reads the epic's Status from --items and refuses a unit Work Units does not
+admit. --reserve sets one record folder as the single link of every row in a unit, the folder the
+unit's first task id and Description give it, which is the folder the unit line names. --release
+frees each row by replacing that folder link with its work-item file link, the task id in lower case
+inside the folder, and refuses a row whose folder in --engineering holds no such file or whose
+README does not link it. Both write the body to --fix and refuse a row linking a pull request or
+commit. The planning URL comes from --records or an existing planning link in the epic.
 """
 from agent_review import epic_check, load_records
 
@@ -485,6 +489,14 @@ def edit(args: argparse.Namespace) -> int:
             sys.exit(f'{task}: its id links a pull request or a commit')
     if args.release and not args.engineering:
         sys.exit('--release needs --engineering, the checkout holding the planning records')
+    if args.reserve:
+        if not args.items:
+            sys.exit('--reserve needs --items, the board items holding the epic Status')
+        on_board = {key: status for key, _item, status, _content in board_items(args.items)}
+        standing = on_board.get(key_of(issue), 'not on the board')
+        if standing not in STARTED:
+            sys.exit(f"#{issue['number']} [I{initiative}:E{epic}] is {standing or 'without a Status'}; "
+                     'Work Units in artifacts/delivery-plan.md admits no unit of it')
     records = base_url(header, data, args.records) if args.reserve else ''
     changed = []
     for unit in whole_units(header, data, wanted):
@@ -522,7 +534,7 @@ def edit(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--items', help='the board items with their Status')
+    parser.add_argument('--items', help='the board items with their Status, which a reservation also reads')
     parser.add_argument('--prs', help='pull requests as JSON lines')
     parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--others', nargs='*', default=[], help='issues the rows depend on that are off the board')

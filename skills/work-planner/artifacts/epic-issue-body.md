@@ -11,6 +11,7 @@ Read these files first.
 - [Epic](epic.md)
 - [Issue](issue.md)
 - [Dependency Graph](dependency-graph.md)
+- [Delivery Plan](delivery-plan.md)
 
 ## Operations
 
@@ -54,10 +55,10 @@ Verified criteria and completed rows in one epic body.
 
 Task rows held for one confirmed delivery session.
 
-**Inputs:** Epic JSON, confirmed task ids, supplied planning-folder identity, planning-records base URL, record date and output body file.
+**Inputs:** Epic JSON, confirmed task ids, board items with Status, supplied planning-folder identity, planning-records base URL, record date and output body file.
 
-1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit.
-2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
+1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
+2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, the board items as `--items`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
 3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).
 
 ### *Release* Task Rows
@@ -322,7 +323,8 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 Holds each named unit for one session, by setting its record folder as the single link of every row in it.
 
-**Inputs:** Epic JSON, confirmed reservable task ids, planning-folder identity, record date, records base URL and output body file.
+**Inputs:** Epic JSON, confirmed reservable task ids, board items with Status, planning-folder identity, record date, records base URL and output body file.
+- `--items` is the board's items with Status.
 - `--records` is the URL of the planning records folder, needed when no row id in the epic links a record.
 - The caller supplies the planned folder identity; `--date` is the day it is opened.
 - The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.
@@ -330,13 +332,13 @@ Holds each named unit for one session, by setting its record folder as the singl
 `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '<epic-json-file>' --reserve '<task-ids>' --records '<records-base-url>' --fix '<output-body-file>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic '<epic-json-file>' --reserve '<task-ids>' --items '<board-items-file>' --records '<records-base-url>' --fix '<output-body-file>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --records 'https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning' --fix fixed-943.md
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --epic issue-943.json --reserve W01,W02 --items items.json --records 'https://github.com/<owner>/<repo>/tree/engineering/artifacts/planning' --fix fixed-943.md
 ```
 
 ### Release Row

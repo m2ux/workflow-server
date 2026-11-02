@@ -69,13 +69,13 @@ The main path meets [Outcomes](#outcomes).
    - Resolve new missing evidence or decisions through steps 5 and 6.
    - Repeat this step until the refreshed queue is complete and contains no further call.
 8. **Report.**
-   Report each move and each `order`, `ask`, `wait`, `reconcile` and `next` line using [Report Lines](../artifacts/board-queue.md#report-lines).
+   Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines).
 
 ## Outcomes
 
 - **A queue.**
   The user has a queue for one theme: which initiatives are underway together, which are next, and which wait.
 - **A parallel work map.**
-  Initiatives ranked with the same priority run together. One left unordered waits.
+  The user has a ranking that sets which initiatives run together and which wait.
 - **Epics follow the initiative.**
-  On an initiative that is next or underway, the epics planned to start together can start, and an epic with task work under way stays underway. An initiative returning to Backlog takes its unstarted epics with it, and work under way or in review waits for the user to reconcile it.
+  The user sees which epics of each initiative are underway, which are next, which wait on a ranking, and which work waits for them to reconcile it.
