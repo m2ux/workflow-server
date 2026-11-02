@@ -4,13 +4,15 @@
 
 ## Executive Summary
 
-This record holds the delivery of I11:E10 W43, which fixes findings the one open finding (a run naming no skill passes) of the agent review of #1555 before E10's handoff.
+This record holds the delivery of I11:E10 W43, which has the shared skill check refuse a run naming no skill: the one open finding of the agent review of #1589.
 
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
-| [W43 work item](w43.md) | Component, scope and criterion for W43 |
+| [W43 work item](w43.md) | Component, design and test rows for W43 |
+| [Test evidence](test-evidence.md) | The run naming no skill before and after, and the suites |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
