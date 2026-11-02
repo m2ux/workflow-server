@@ -28,7 +28,21 @@ env:
   # Skill folders under `skills/` held out of scope, space-separated. Each is listed while the
   # check reports findings over it, with those findings stated here as a list of
   # `- <skill>: <findings>` lines. Empty while every skill is in scope.
-  EXCLUDED: ''
+  #
+  # - gitnexus/gitnexus-cli: 5 command specifications in the entry point, 3 sections outside the
+  #   set, 1 inline bold lead too wide
+  # - gitnexus/gitnexus-debugging: 6 sections outside the set
+  # - gitnexus/gitnexus-exploring: 6 sections outside the set
+  # - gitnexus/gitnexus-guide: 5 sections outside the set, 1 hard-wrapped line
+  # - gitnexus/gitnexus-impact-analysis: 7 sections outside the set
+  # - gitnexus/gitnexus-refactoring: 6 sections outside the set
+  # - server-in-the-loop: 8 sections outside the set
+  # - workflow-canon: 16 house rules no operation decides, 2 command specifications nothing cites,
+  #   2 parallel sections in another mood
+  EXCLUDED: >-
+    gitnexus/gitnexus-cli gitnexus/gitnexus-debugging gitnexus/gitnexus-exploring
+    gitnexus/gitnexus-guide gitnexus/gitnexus-impact-analysis gitnexus/gitnexus-refactoring
+    server-in-the-loop workflow-canon
 
 jobs:
   skill-files:
