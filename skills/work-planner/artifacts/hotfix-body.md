@@ -44,14 +44,14 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 ### Titles
 
 - The title is `[F00] Name: Subtitle`. The `[F00]` prefix is what makes an issue a hot-fix.
-- The labels are `type:hot-fix` and the `theme:*` label of the board it sits on.
+- The labels are `type:hot-fix`, the `theme:*` label of the board it sits on, and the [priority label](board-queue.md#priority-sets) for priority 10.
 - `F` is the hot-fix number. Hot-fixes count from `00`.
 
 ### Membership
 
 - A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
 - It sits on its theme's board.
-- It carries priority 10 as a [priority label](board-queue.md#priority-sets). The queue places it by [Hot-fix Status](board-queue.md#hot-fix-status), outside the priority sets, and never ranks it by that number.
+- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by [Hot-fix Status](board-queue.md#hot-fix-status), outside the priority sets.
 
 ### Debt
 

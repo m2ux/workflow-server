@@ -68,7 +68,7 @@ One selected destination for an orphan's work.
      - Publish through [Save Tracker Issue](issue.md#save-tracker-issue).
    - **Hot-fix.**
      - Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
-     - Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) and [Membership](hotfix-body.md#membership) name.
+     - Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
      - Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and Backlog.
      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
    - **Leave.**
@@ -89,7 +89,7 @@ The selected layout, with the original wording preserved for readers.
    - Pass a hot-fix its supplied number and theme label.
 3. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
    - Resolve findings.
-   - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's including the priority label its [Membership](hotfix-body.md#membership) names.
+   - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
    - Return the saved identity to the caller.
 
 ### *Subsume* Orphan Work
