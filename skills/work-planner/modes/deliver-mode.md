@@ -51,7 +51,7 @@ The main path meets [Outcomes](#outcomes).
    - Run [Read Board Configuration](../artifacts/board.md#read-board-configuration).
    - Run [Read Board Assignee](../artifacts/board.md#read-board-assignee) for the assignee.
 4. **Survey.**
-   - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each epic the advance step's queue started, with its current initiative and epic bodies and all prerequisite issue and base-merge records.
+   - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each epic that queue places Ready or In Progress, with its current initiative and epic bodies and all prerequisite issue and base-merge records.
    - Pass its confirmed result and the project checkout to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
    - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
    - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree and selected record date.
