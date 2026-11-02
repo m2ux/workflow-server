@@ -51,11 +51,10 @@ DISPATCH jurisdiction, which refuses any other Status and a removal; every juris
 
 --reserve and --release act on whole units: a call naming some rows of a unit and not the others is
 refused. --reserve reads the epic's Status from --items and refuses a unit whose epic is not Ready or
-In Progress there, so only an epic the board queue started is held. --reserve sets one record folder
-as the single link of every row in a unit, the folder the unit's first task id and Description give
-it, which is the folder the unit line names. --release frees
-each row by replacing that folder link with its work-item file link, the task id in lower case inside
-the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not
+In Progress there. --reserve sets one record folder as the single link of every row in a unit, the
+folder the unit's first task id and Description give it, which is the folder the unit line names.
+--release frees each row by replacing that folder link with its work-item file link, the task id in
+lower case inside the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not
 link it. Both write the body to --fix and refuse a row linking a pull request or commit. The planning
 URL comes from --records or an existing planning link in the epic.
 """

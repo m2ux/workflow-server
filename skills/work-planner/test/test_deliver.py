@@ -760,6 +760,5 @@ class ProducerOutputs(unittest.TestCase):
         self.assertNotIn('output ', output)
 
 
-
 if __name__ == '__main__':
     unittest.main()

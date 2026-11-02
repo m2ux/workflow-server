@@ -56,7 +56,7 @@ Task rows held for one confirmed delivery session.
 
 **Inputs:** Epic JSON, confirmed task ids, board items with Status, supplied planning-folder identity, planning-records base URL, record date and output body file.
 
-1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit whose epic is not Ready or In Progress in the board items, so only work the board queue started is held.
+1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit whose epic is not Ready or In Progress in the board items.
 2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, the board items as `--items`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
 3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).
 

@@ -20,7 +20,7 @@ refuses In Review, Done and any task. Printed: the gh call for each Status and a
 an order line when no open initiative has a priority, an ask line for an initiative In Progress
 with no priority, a wait line for an initiative held In Progress, a reconcile line for an initiative
 returning to Backlog while an epic has work under way or is In Review, a next line for epics, and
-a rank line for an initiative's open epics with no priority.
+a rank line naming an initiative's open epics with no priority, for the user to rank.
 --unplanned names an initiative the user left with no priority. It returns to Backlog once its
 epics' work has completed, and its unstarted epics return with it; a Done epic stays Done.
 An unstarted epic is Ready only while its initiative is Ready or In Progress and its prerequisites
