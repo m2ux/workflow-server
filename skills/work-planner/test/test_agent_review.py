@@ -27,6 +27,22 @@ def reviewed_pr(tag='07:E00'):
     return pull, record
 
 
+def hotfix_pr():
+    pull, record = reviewed_pr()
+    pull['title'] = '[F04] Reject Bad Keys'
+    return pull, record
+
+
+class HotFixReview(unittest.TestCase):
+    def test_every_finding_is_fixed(self):
+        pull, record = hotfix_pr()
+        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
+                               'ticket': 'https://github.com/o/r/issues/5'}]
+        self.assertIn('unfixed finding', check(pull, [record]))
+        record['findings'][0].update(disposition='fixed', evidence='https://github.com/o/r/commit/1')
+        self.assertIsNone(check(pull, [record]))
+
+
 class AgentReview(unittest.TestCase):
     def setUp(self):
         self.pr, self.record = reviewed_pr()

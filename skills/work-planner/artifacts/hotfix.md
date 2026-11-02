@@ -105,7 +105,7 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 
 - A pull request delivers a hot-fix when its title opens with the hot-fix's prefix, `[F00] Purpose`, it lives in the hot-fix's repository, its base is the hot-fix's [target](hotfix-body.md#target), and its Development field links the hot-fix.
 - It is opened from the hot-fix's [branch](#branch), as a draft.
-- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves no blocking finding.
+- It is marked ready for review only once its review cycle is complete: its current [agent review](agent-review.md#review-record) leaves every finding fixed.
 - A reopened hot-fix still counts a delivering pull request merged before it reopened, since the issue records no reopen time.
 - A pull request into a branch the body named as its target before an edit stops counting, since the body names the current target.
 

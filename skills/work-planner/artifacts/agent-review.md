@@ -11,7 +11,7 @@ A review record for the exact integration revision.
 **Inputs:** Fresh pull request metadata, checkout, the criteria the pull request delivers, validation evidence and the planning record destination.
 
 1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
-2. Record findings with severity and disposition. Fix blocking findings on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
+2. Record findings with severity and disposition. Fix each finding [Review Record](#review-record) requires fixed on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
 3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
 4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 
@@ -30,7 +30,7 @@ The current review's handoff eligibility.
 
 Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.
 
-Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. The last record for the same revision is authoritative.
+Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. The last record for the same revision is authoritative.
 
 ## Commands
 

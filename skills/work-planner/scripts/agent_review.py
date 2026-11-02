@@ -1,9 +1,14 @@
-"""Validate published agent review evidence against a current integration pull request."""
+"""Validate published agent review evidence against a current integration pull request.
+
+A blocking finding passes only once fixed, and on a hot-fix's delivering pull request, titled
+[F00], every finding does."""
 import argparse
 import json
 import re
 from pathlib import Path
 from urllib.parse import urlparse
+
+from hotfix import hotfix_tag
 
 
 def load_records(path):
@@ -74,6 +79,8 @@ def check(pr, records):
             return 'invalid finding severity or disposition'
         if severity == 'blocking' and disposition != 'fixed':
             return 'unresolved blocking agent review finding'
+        if hotfix_tag(pr) and disposition != 'fixed':
+            return "unfixed finding on a hot-fix's delivering pull request"
         if disposition == 'open':
             return 'agent review finding needs a disposition'
         if not web_url(finding.get('evidence' if disposition == 'fixed' else 'ticket')):
