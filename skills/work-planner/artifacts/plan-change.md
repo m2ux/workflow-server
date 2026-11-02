@@ -13,7 +13,7 @@ One pending change assessed against the run's allowance.
 1. Match the change to one kind in [Change Kinds](#change-kinds).
 2. Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.
 3. Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
-   - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation).
+   - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
    - An absent allowance holds every change, so a run the user drives decides nothing on their behalf.
 
 ### *Record* Plan Change
@@ -35,7 +35,7 @@ The caller names the change kinds its run applies without asking. A run the user
 
 | Kind | What It Covers |
 | --- | --- |
-| Task creation | A new task row, and the task issue that delivers it |
+| Task creation | A new task row |
 | Epic creation | A new epic, and the initiative row that carries it |
 | Migration | Work moved from one issue to another, with the renumbering that move forces |
 | Re-prioritisation | A priority label, a queue order or a board status |
@@ -46,6 +46,10 @@ An option deciding to leave work where it is changes no plan, so it needs no all
 ### Initiative Creation
 
 A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.
+
+### Hot-fix Creation
+
+A new hot-fix is outside every allowance, since it runs ahead of all queued work. The work stays where it is until the user decides it is a hot-fix.
 
 ### Change List
 
