@@ -209,14 +209,11 @@ class UnitState(unittest.TestCase):
         self.assertIsNone(unit_state(hotfix(), 'Backlog', [], []))
         self.assertIsNone(unit_state(hotfix('closed', 'completed'), 'Ready', [], []))
 
-    def test_an_open_draft_delivering_pull_request_leaves_it_draft(self):
+    def test_an_open_draft_delivering_pull_request_makes_it_running(self):
         draft = pr(951, '[F04] Reject Bad Keys', base='main', draft=True)
-        self.assertEqual(unit_state(hotfix(), 'Ready', [draft], [draft]), 'draft')
-        self.assertEqual(unit_state(hotfix(), 'In Progress', [draft], [draft]), 'hold')
-        ready = pr(951, '[F04] Reject Bad Keys', base='main')
-        self.assertEqual(unit_state(hotfix(), 'In Progress', [ready], [ready]), 'running')
-        stray = pr(952, 'Unrelated Work', base='main', draft=True)
-        self.assertEqual(unit_state(hotfix(), 'In Progress', [draft, stray], [draft]), 'running')
+        for held in ('Ready', 'In Progress'):
+            with self.subTest(held=held):
+                self.assertEqual(unit_state(hotfix(), held, [draft], [draft]), 'running')
 
 
 if __name__ == '__main__':

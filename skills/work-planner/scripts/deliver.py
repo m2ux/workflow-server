@@ -53,8 +53,7 @@ its session writes the work item after dispatch, so its unit works on every epic
 
 Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
 artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
-and branch its prefix and title name give it; a hold line; a draft line naming its draft delivering
-pull requests, whose review cycle is not complete; or an unrecorded line naming its merged
+and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
 delivering pull requests. Its base is its target, the branch its Overview's Target: line names. A
 hot-fix naming no target, or a hot-fix of --project's repository, as its origin remote names it,
 whose target that repository's config/branches does not declare, is printed as an undeclared line
@@ -300,10 +299,10 @@ def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str)
 
 def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
                  lived: tuple[str, ...], repository: str) -> tuple[list[str], int, int, int, int, int]:
-    """The unit, hold, draft and unrecorded line of each open hot-fix, by the state hotfix.unit_state
+    """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state
     reads, and the undeclared or unresolved line of each whose target target_fault refuses, whatever
     its state, with the count of each. A refused target offers no unit."""
-    lines, available, undeclared, held, drafts, unrecorded = [], 0, 0, 0, 0, 0
+    lines, available, undeclared, held, unrecorded = [], 0, 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
         tag = hotfix_tag(issue)
@@ -328,12 +327,6 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
             lines.append(f'  hold {where}: In Progress')
             held += 1
             continue
-        if state == 'draft':
-            numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('draft')
-                                and (p.get('state') or 'open') == 'open' and not p.get('merged_at'))
-            lines.append(f'  draft {where}: {numbers} awaits its review cycle')
-            drafts += 1
-            continue
         if state != 'unit' or kind:
             continue
         base = target(issue)
@@ -343,7 +336,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
                      f'{branch_lines(name["branch"], [base])}')
         available += 1
-    return lines, available, undeclared, held, drafts, unrecorded
+    return lines, available, undeclared, held, unrecorded
 
 
 def plan_passed(body: str) -> bool:
@@ -481,7 +474,7 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, unnamed, holding, drafts, unrecorded = hotfix_units(issues, status, prs, home, when, lived, repository)
+    lines, found, unnamed, holding, unrecorded = hotfix_units(issues, status, prs, home, when, lived, repository)
     for line in lines:
         print(line)
     available += found
@@ -496,7 +489,7 @@ def survey(args: argparse.Namespace) -> int:
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
           f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}, '
-          f'unrecorded: {unrecorded}, draft: {drafts}')
+          f'unrecorded: {unrecorded}')
     return 1 if unreadable or undeclared else 0
 
 

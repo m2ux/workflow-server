@@ -64,8 +64,6 @@ The main path meets [Outcomes](#outcomes).
    - Handle the returned availability findings:
      - **Held work.**
        - Carry each `hold` line to the confirm step, with the record it links and whether a session is still running.
-     - **Draft hot-fix.**
-       - Carry each `draft` line to the confirm step. Its session has released its hold, so none is running.
      - **Blocked work.**
        - Report a `blocked` line without asking. Its dependencies decide when it becomes available.
      - **Undeclared work.**
@@ -78,8 +76,8 @@ The main path meets [Outcomes](#outcomes).
      - Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its merged pull request.
      - Run [Task Merge](../protocols/task-merge.md) with that merge result and the selected board identity.
 6. **Confirm.**
-   Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, each `hold` line with the record it links and whether a session is still running, and each `draft` line.
-   - Confirm the units to dispatch, the holds to release and the drafts to resume as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
+   Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
+   - Confirm the units to dispatch and the holds to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a hold the user leaves stays held.
    - For each released hold:
      - **Released row.**
@@ -102,7 +100,7 @@ The main path meets [Outcomes](#outcomes).
      - A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
      - A held row stays held while its session plans and implements. The pull request's link replaces the record's link, which frees the row.
    - **Hot-fix unit.**
-     - Run [Hold Hot-fix Unit](../artifacts/hotfix.md#hold-hot-fix-unit) with its issue, the selected board identity and the board items the latest Plan Available Work read. A confirmed `draft` resume is held the same way.
+     - Run [Hold Hot-fix Unit](../artifacts/hotfix.md#hold-hot-fix-unit) with its issue, the selected board identity and the board items the latest Plan Available Work read.
    - Retain the queue decisions returned by the completed advance step.
 8. **Dispatch.**
    - Confirm each epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its rows' changes bring, each with the declared row delivering it.
@@ -115,7 +113,6 @@ The main path meets [Outcomes](#outcomes).
    - The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
    - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
    - The sub-agent works in the unit's worktree, reads the brief, and has the engineering worktree in reach for the planning record.
-   - A confirmed `draft` resume starts its session at the review step of Run Delivery Session, in the worktree its branch names, with its draft pull request; it creates no worktree and holds no planning record.
    - Leave the dispatched session running its Run Delivery Session procedure. The calling mode continues to the report step without waiting for unit completion; the dispatched session owns the implementation, debt and arising-issue work its brief carries.
    - A unit works on each branch [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) names, cut from its base, as [Task Branches](../artifacts/delivery-branches.md#task-branches) defines.
 9. **Report.**
@@ -171,7 +168,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Link that published record from the pull request body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
    - Run [Ready Hot-fix Pull Request](../artifacts/pull-request.md#ready-hot-fix-pull-request) with the pull request and the published records.
    - For each returned finding, fix it on the task branch and repeat this step from Produce Agent Review, until Ready Hot-fix Pull Request returns none.
-   - A finding the session cannot fix within its allowance stops it before the merge step: run [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold) with the board identity the brief names and the hot-fix issue, and report the finding. The pull request stays a draft, and the delivery plan reports the hot-fix as draft.
+   - A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
 10. **Merge.**
    Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
    - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.

@@ -47,7 +47,6 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request, never a draft, whose test plan has passed and the base it targets: a task pull request into an epic base, or an open hot-fix's [delivering pull request](hotfix.md#delivering-pull-request) into its target, when no `undeclared` or unresolved line names that hot-fix's target.
-- A `draft` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves draft, and each draft delivering pull request awaiting its review cycle.
 - An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request.
 - An unresolved issue reference identifies missing dependency evidence.
 - An unresolved hot-fix of a repository other than the project checkout's names its target, which that checkout's [Branches](delivery-branches.md#branches) cannot declare. It is offered once a plan whose project checkout is of its repository finds the target declared.
