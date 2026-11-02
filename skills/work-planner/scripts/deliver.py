@@ -322,7 +322,8 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
             held += 1
             continue
         if state == 'draft':
-            numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('draft'))
+            numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('draft')
+                                and (p.get('state') or 'open') == 'open' and not p.get('merged_at'))
             lines.append(f'  draft {where}: {numbers} awaits its review cycle')
             drafts += 1
             continue
