@@ -61,13 +61,15 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 **Inputs:** Board identity and the hot-fix issue identity.
 
 1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's current state.
-2. Run [Read Board State](board.md#read-board-state) for its item and Status.
+2. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
 3. Apply the status [Board Status](#board-status) gives that state and Status:
    - **A status.**
-     - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status.
-   - **Off the board.**
+     - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+   - **Off the board, with an item.**
      - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
-4. Return the settled item, or its removal, to the caller.
+   - **Off the board, with no item.**
+     - Change nothing; the hot-fix already stands off the board.
+4. Return the settled item, its removal, or the unchanged board to the caller.
 
 ## Fields
 
