@@ -38,9 +38,9 @@ reserved row; a blocked line for a free row whose dependencies are not delivered
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
 an open pull request that targets the epic base when its test plan has passed, or for an open
-pull request titled with an open hot-fix's [F00] that targets its repository's default branch when
-its test plan has passed; and an unresolved
-line for an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
+pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
+targets its repository's default branch when its test plan has passed; and an unresolved line for
+an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
@@ -317,13 +317,13 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
                  defaults: dict[str, str]) -> list[str]:
     """Open pull requests whose test plan has passed: a task's into its epic base, and a hot-fix's
     into its repository's default branch."""
-    epics, hotfixes = {}, set()
+    epics, hotfixes = {}, {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
         if (fixed := HOTFIX.match(issue.get('title') or '')) and issue['state'] == 'open':
-            hotfixes.add((key[0].lower(), fixed[1]))
+            hotfixes[(key[0].lower(), fixed[1])] = key
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
@@ -332,7 +332,8 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
         fixed = HOTFIX.match(pull.get('title') or '')
         if fixed:
             repo = pr_repo(pull).lower()
-            if ((repo, fixed[1]) in hotfixes and base and base == defaults.get(repo)
+            hotfix = hotfixes.get((repo, fixed[1]))
+            if (hotfix and links_issue(pull, hotfix) and base and base == defaults.get(repo)
                     and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {fixed[1]}: base {base}"))
             continue

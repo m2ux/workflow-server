@@ -808,10 +808,12 @@ class HotFixUnits(unittest.TestCase):
         pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='main'),
                  pr(952, '[F04] Reject Bad Keys', body=PLAN, base='i07/e00/main'),
                  pr(953, '[F09] Reject Bad Keys', body=PLAN, base='main'),
-                 pr(954, '[F04] Reject Bad Keys', base='main')]
-        out = survey(staged((hotfix(4), 'In Progress')), pulls, '--default', 'o/r=main')
+                 pr(954, '[F04] Reject Bad Keys', base='main'),
+                 pr(955, '[F04] Reject Bad Keys', body=PLAN, base='main')]
+        out = survey(staged((hotfix(4), 'In Progress')), pulls, '--default', 'o/r=main',
+                     held=tuple(links(n, 4) for n in (951, 952, 953, 954)))
         self.assertIn('  merge #951 F04: base main', out)
-        for number in (952, 953, 954):
+        for number in (952, 953, 954, 955):
             self.assertNotIn(f'merge #{number}', out)
 
     def test_a_hot_fix_a_pull_request_links_is_running(self):

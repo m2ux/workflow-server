@@ -54,7 +54,7 @@ An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
-- A `merge` line names an open pull request whose test plan has passed and the base it targets: a task pull request into an epic base, or a hot-fix's pull request into its repository's default branch, its title naming an open hot-fix on the board.
+- A `merge` line names an open pull request whose test plan has passed and the base it targets: a task pull request into an epic base, or a hot-fix's pull request into its repository's default branch, its title naming an open hot-fix on the board and its Development field linking that hot-fix.
 - An unresolved issue reference identifies missing dependency evidence, or a hot-fix whose repository's default branch the run was not given.
 
 ### Branch Context
