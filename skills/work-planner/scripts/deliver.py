@@ -2,14 +2,16 @@
 or release a task row.
 
 Usage:
-  python3 deliver.py --items items.json --prs prs.json --links links.json [--others issue-750.json ...]
+  python3 deliver.py --items items.json --prs prs.json --links links.json
+      [--others issue-750.json ...]
       [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
       [--engineering .engineering] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
-  python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL] [--date 2026-10-06]
+  python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL]
+      [--date 2026-10-06] --fix fixed-943.md
+  python3 deliver.py --epic issue-943.json --release W01 --engineering .engineering
       --fix fixed-943.md
-  python3 deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
 requests as sync.py reads them. links.json holds the closing issue references GitHub holds for those

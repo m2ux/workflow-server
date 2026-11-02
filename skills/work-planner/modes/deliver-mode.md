@@ -38,8 +38,8 @@ The main path meets [Outcomes](#outcomes).
    - Use its returned owner and board number for the following steps.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
-   - An epic starts only when the queue this step returns in this run places it Ready or In Progress, and its assignment and epic base come from that queue. An epic that queue leaves in Backlog does not start, whatever the run was asked for.
-   - That queue is computed from the board and each open epic's priority label as this step reads them, before the run changes any status, assignee or branch. No memory, summary or earlier note stands in for that read.
+   - An epic starts only when the queue this step returns in this run places it Ready or In Progress. Its assignment comes from that queue, and an epic base is prepared only for such an epic. An epic that queue leaves in Backlog does not start, whatever the run was asked for.
+   - That queue is computed from what this step reads live from the board and each open epic's priority label. No memory, summary or earlier note stands in for that read.
    - Continue to the fetch step only after it returns a complete applied queue.
    - Report an unavailable dependency, and a queue decision it recorded rather than asked, before dispatch. An incomplete queue means no initiative is under way, so the run has no work to offer.
    - Carry the [change list](../artifacts/plan-change.md#change-list) it returns into the report step.
@@ -51,7 +51,7 @@ The main path meets [Outcomes](#outcomes).
    - Run [Read Board Configuration](../artifacts/board.md#read-board-configuration).
    - Run [Read Board Assignee](../artifacts/board.md#read-board-assignee) for the assignee.
 4. **Survey.**
-   - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each candidate epic with its current initiative and epic bodies and all prerequisite issue and base-merge records.
+   - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each epic the advance step's queue started, with its current initiative and epic bodies and all prerequisite issue and base-merge records.
    - Pass its confirmed result and the project checkout to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
    - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
    - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree and selected record date.

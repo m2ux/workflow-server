@@ -140,10 +140,8 @@ class Queue:
         return {key[0].lower(), *(epic[0].lower() for _, epic, _ in rows_of)}
 
     def activate(self, key: tuple[str, int]) -> None:
-        """Active epics of a Ready or In Progress initiative are In Progress, and the epics of the
-        highest priority set that can start are Ready. The set counts the epics already under way,
-        so a lower one waits; Epic Status in artifacts/board-queue.md sets which can be Ready. A
-        next line names the Ready epics. An initiative waiting on its epics' work readies none of its epics."""
+        """Place one Ready or In Progress initiative's epics, as Epic Status in
+        artifacts/board-queue.md states, and add its next line."""
         rows_of, epics = self.load(key)
         candidates, running = [], []
         for row_name, epic_key, depends in rows_of:
@@ -255,7 +253,7 @@ class Queue:
                 if self.wanted.get(epic_key, self.status.get(epic_key)) == 'Ready']
 
     def unranked(self) -> None:
-        """A rank line for each initiative naming its open epics with no priority, which wait on one."""
+        """Add the rank lines, as Report Lines in artifacts/board-queue.md states."""
         for key, (rows_of, _epics) in sorted(self.children.items()):
             names = [row_name for row_name, epic_key, _depends in rows_of
                      if not handed_off(self.issues[epic_key], self.status.get(epic_key))
