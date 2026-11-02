@@ -1,6 +1,6 @@
 # Agent Review
 
-Published evidence of an agent's review of one epic integration diff and its acceptance evidence.
+Published evidence of an agent's review of one integration diff, an epic's review pull request or a hot-fix's delivering pull request, and its acceptance evidence.
 
 ## Operations
 
@@ -8,10 +8,10 @@ Published evidence of an agent's review of one epic integration diff and its acc
 
 A review record for the exact integration revision.
 
-**Inputs:** Fresh pull request metadata, checkout, epic criteria, validation evidence and the planning record destination.
+**Inputs:** Fresh pull request metadata, checkout, the criteria the pull request delivers, validation evidence and the planning record destination.
 
 1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
-2. Record findings with severity and disposition. Fix blocking findings on the epic branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
+2. Record findings with severity and disposition. Fix blocking findings on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
 3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
 4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 

@@ -37,7 +37,7 @@ linked work item names no long-lived branch with an epic base, naming why; a hol
 reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
-an open pull request that targets the epic base when its test plan has passed, or for an open
+an open pull request, never a draft, that targets the epic base when its test plan has passed, or for an open
 pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
 targets the hot-fix's target when its test plan has passed; and an unresolved line for
 an issue not given. A run that met an unresolvable entry, an undeclared row or an undeclared hot-fix
@@ -332,7 +332,7 @@ def plan_passed(body: str) -> bool:
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
-    """Open pull requests whose test plan has passed: a task's into its epic base, and a hot-fix's
+    """Open pull requests, never a draft, whose test plan has passed: a task's into its epic base, and a hot-fix's
     into its target."""
     epics, hotfixes = {}, {}
     for key, issue in issues.items():

@@ -819,6 +819,12 @@ class HotFixUnits(unittest.TestCase):
         for number in (952, 953, 954, 955):
             self.assertNotIn(f'merge #{number}', out)
 
+    def test_a_draft_hot_fix_pull_request_is_never_a_merge_candidate(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='workspace', draft=True)]
+        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls, held=(links(951, 4),))
+        self.assertNotIn('merge #951', out)
+        self.assertIn('merge: 0', out)
+
     def test_a_hot_fix_an_open_pull_request_links_is_running(self):
         out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
                      [pr(951, '[F04] Reject Bad Keys', base='main'), pr(952, '[F05] Reject Bad Keys', base='main')], held=(links(951, 4), links(952, 5)))
