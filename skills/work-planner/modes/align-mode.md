@@ -92,7 +92,7 @@ The main path meets [Outcomes](#outcomes).
    - Put each problem it reports to the user. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
 9. **Coverage.**
    For a pull request explicitly selected for alignment, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), publish a converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), and report its URL. When no initiative or epic is selected, continue at step 13, Re-run.
-   - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) for the selected initiative and epics.
+   - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON.
    - Continue with its returned records.
    - For each task pull request in those records, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), then publish each converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request). Report each converted pull request by URL and refresh its record before recording coverage.
    - An epic review carries no task test plan.
@@ -104,9 +104,6 @@ The main path meets [Outcomes](#outcomes).
      - **Repair.**
        - Repair Done cells as [Tables](../artifacts/issue-body.md#tables) states.
        - When the preceding Record Epic Delivery call reports a row done, or a tick cleared, run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) from the output body file, without asking.
-     - **Absent.**
-       - Fetch a linked pull request missing from the records with [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state).
-       - Repeat Record Epic Delivery with the refreshed records, the same epic bases and the same output body file.
      - **Unlinked.**
        - For a criterion ticked while its row links no pull request and no commit, request issue discussion through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
        - Link the one delivery that discussion names, taking a path as the commit that holds it. Several candidates, or none, go to the user before linking.
@@ -128,7 +125,7 @@ The main path meets [Outcomes](#outcomes).
     - Return missing prerequisite evidence before creating a base.
 
     After preparing the bases, align the selected initiative's pull requests:
-    - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests).
+    - Read the pull requests through [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests), with the initiative, epic and task issues this alignment fetched.
     - Read each open epic's branches through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
     - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
     - Point an open task pull request at its epic base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).

@@ -26,7 +26,7 @@ Read these files first.
    - Run [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status) with the supplied board and the hot-fix issue.
    - Return to the caller.
 2. **Read and record.**
-   Follow [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence).
+   Follow [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON.
    - Follow [Issue Delivery](issue-delivery.md) for the delivered unit.
    - Close an eligible task issue through [Issue Closure](issue-closure.md).
 3. **Review.**

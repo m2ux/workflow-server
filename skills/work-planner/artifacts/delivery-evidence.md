@@ -15,16 +15,14 @@ Read these files first.
 
 The pull requests and issue links that establish current delivery.
 
-**Inputs:** Selected repositories and initiative prefix, fetched epic JSON, authenticated access and destination snapshot files.
+**Inputs:** Selected repositories and initiative prefix, the fetched initiative, epic and task issue JSON, authenticated access and destination snapshot files.
 
 1. Fetch the pull requests and their links.
-   - Run [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests).
+   - Run [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests) with the fetched issue files.
    - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links).
    - Use [Access Development Links](pull-request.md#access-development-links) for the actual complete link sets.
 2. Run [Inspect Epic Delivery](epic.md#inspect-epic-delivery) with the epic JSON, pull request records and complete issue-link snapshot.
    - Route the returned [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions.
-   - Fetch any linked pull request absent from the input with [Read Pull Request State](pull-request.md#read-pull-request-state).
-   - Repeat Inspect Epic Delivery with the same epic JSON, refreshed pull request records and complete issue-link snapshot.
 3. Repair each reported missing-prefix title of a merged pull request linked directly by an epic task row, meeting [Named Delivery](#named-delivery).
    - The row identifies its owning epic; preserve the title purpose and set that epic prefix without another confirmation. A title already naming another epic remains a conflict requiring reconciliation.
    - Run [Publish Pull Request](pull-request.md#publish-pull-request) with the confirmed epic prefix and purpose.
@@ -34,14 +32,14 @@ The pull requests and issue links that establish current delivery.
 ## Fields
 
 - **Pull request records.**
-  Every pull request carrying the initiative prefix, across the selected repositories, in all states.
+  Every pull request carrying the initiative prefix, across the selected repositories, and every pull request a Work Breakdown row or a Development link of the initiative's issues names, whatever its title and repository, in all states.
 - **Issue-link snapshot.**
   The complete set of Development links between those pull requests and the issues they deliver, read through the access that exposes them whole.
 - **Findings.** The per-epic [Delivery Findings](epic.md#delivery-findings) the evidence yields.
 
 ### Completeness
 
-Evidence is complete when every linked pull request the snapshot names has a record, including one absent from the initiative list. Incomplete evidence is a blocker, not a partial result.
+Evidence is complete when every pull request the plan links has a record, which [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests) fetches whatever its title. Incomplete evidence is a blocker, not a partial result.
 
 ### Named Delivery
 

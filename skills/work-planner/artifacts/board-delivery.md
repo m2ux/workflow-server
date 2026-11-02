@@ -48,7 +48,7 @@ The board's status and assignees after its issues record delivery.
 1. Read the issues, the board and its delivery records.
    - Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
    - Run [Read Board State](board.md#read-board-state) for the selected board.
-   - Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories.
+   - Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.
    - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
    - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
    - Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.
@@ -80,6 +80,8 @@ The task and epic statuses owned by a delivery dispatch.
 ## Fields
 
 ### Status Changes
+
+An issue closed as completed is Done. Every board item whose issue is closed any other way is removed, whether or not an initiative, epic or task body cites it.
 
 An open initiative whose criteria are all ticked is In Review. An open epic whose criteria are all ticked is In Review only with current published [agent review evidence](agent-review.md#review-record); missing, stale or unresolved review evidence keeps it In Progress.
 

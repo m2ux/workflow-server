@@ -79,7 +79,8 @@ Left to decide, since each needs new content or a judgement:
     or cites one that does not exist, and a criterion no row delivers. An empty cell stands only on
     a complete row another row depends on, the further task that adopted its criteria
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
-  - acceptance criteria or references partly labelled or numbered out of sequence
+  - acceptance criteria partly labelled, or labels that repeat or descend (labels ascending with a
+    gap stand), and references partly labelled or not numbered from R1 without a gap
   - a References section that links issues or pull requests on the same board
   - no theme:* label on an initiative, epic or hot-fix, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
@@ -1054,9 +1055,16 @@ class Review:
                 box = lines[i][:6] if checkbox else '- '
                 lines[i] = f'{box}**{tag}{n}.** ' + lines[i][len(box):]
             self.fixed.append(f'{len(items)} items labelled {tag}1–{tag}{len(items)}')
-        elif not all(numbers) or [int(m[1]) for m in numbers] != list(range(1, len(items) + 1)):
+        elif not all(numbers) or not self.in_sequence(tag, [int(m[1]) for m in numbers]):
             self.decide.append(f'{tag} labels partly missing or out of sequence')
         return lines
+
+    @staticmethod
+    def in_sequence(tag: str, numbers: list[int]) -> bool:
+        """Criterion labels ascend, keeping the gap a removed criterion leaves; references count from one."""
+        if tag == 'AC':
+            return numbers[0] >= 1 and all(a < b for a, b in zip(numbers, numbers[1:]))
+        return numbers == list(range(1, len(numbers) + 1))
 
 
 def main() -> int:
