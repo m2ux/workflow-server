@@ -31,10 +31,9 @@ The record's folder committed and pushed, so every link into it resolves for a r
 **Inputs:** Planning-folder path, the files written into it and a commit message file.
 
 1. Run [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.
-2. Run [Commit Planning Record](#commit-planning-record), which stages and commits that folder in one call.
-   - Confirm the commit holds the files this record wrote, meeting [Shared Worktree](#shared-worktree).
-3. Run [Push Engineering Branch](#push-engineering-branch).
-   - Report a push that will not fast-forward rather than rewriting the branch.
+2. Run [Commit Planning Record](#commit-planning-record).
+   - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
+   - Report a rebase that stops on a conflict rather than rewriting the branch.
 
 ## Fields
 
@@ -64,7 +63,7 @@ The record's folder committed and pushed, so every link into it resolves for a r
 
 ### Shared Worktree
 
-The engineering branch has one worktree and every session writes its records there, so they share one index. A commit therefore names the folder it is for, and a session confirms its own files landed in its own commit rather than assuming the index held only its staging.
+The engineering branch has one worktree and every session writes its records there, so they share one index. A commit on engineering may include other sessions' uncommitted or unpushed work, a `design.md` amendment among them. A session confirms only that its own files reached `origin/engineering` after the push.
 
 ### Layout
 
@@ -113,33 +112,22 @@ git -C '<checkout>' worktree list | grep '\[engineering\]'
 
 ### Commit Planning Record
 
-Stages and commits one planning folder on the engineering worktree.
+Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
 
-**Inputs:** Engineering worktree, planning-folder path and a commit message file.
+**Inputs:** Engineering worktree and a commit message file.
 
-- Staging and committing are one call, and the commit names its folder, so a concurrent session's staged work cannot ride along. See [Shared Worktree](#shared-worktree).
-- Pass the message through a file; the worktree is a linked one, so git writes here run unsandboxed.
+- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
+- Planning records go straight to the branch; they take no pull request.
+- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
 
 ```bash
-cd '<engineering-worktree>' && git add '<planning-folder-path>' && git commit -F '<message-file>' -- '<planning-folder-path>'
+cd '<engineering-worktree>' && git add -A && (git diff --cached --quiet || git commit -F '<message-file>') && git fetch origin engineering && git rebase origin/engineering && git push
 ```
 
 **Example:**
 
 ```bash
-cd .engineering && git add artifacts/planning/2026-10-15-950-queue-plan && git commit -F msg.txt -- artifacts/planning/2026-10-15-950-queue-plan
-```
-
-### Push Engineering Branch
-
-Publishes the engineering branch so a record's links resolve.
-
-**Inputs:** Engineering worktree.
-
-- Planning records go straight to the branch; they take no pull request.
-
-```bash
-cd '<engineering-worktree>' && git push
+cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
 ```
 
 ### Add Planning Record

@@ -73,11 +73,10 @@ class PublishedOnEngineering(unittest.TestCase):
         text = (ROOT / 'artifacts' / 'planning-record.md').read_text()
         publish = section(text, '### *Publish* Planning Record')
         self.assertIn('[Commit Planning Record](#commit-planning-record)', publish)
-        self.assertIn('[Push Engineering Branch](#push-engineering-branch)', publish)
-        self.assertIn("git commit -F '<message-file>' -- '<planning-folder-path>'",
+        self.assertIn("cd '<engineering-worktree>' && git add -A && "
+                      "(git diff --cached --quiet || git commit -F '<message-file>') && "
+                      "git fetch origin engineering && git rebase origin/engineering && git push",
                       section(text, '### Commit Planning Record'))
-        self.assertIn("cd '<engineering-worktree>' && git push",
-                      section(text, '### Push Engineering Branch'))
 
 
 if __name__ == '__main__':
