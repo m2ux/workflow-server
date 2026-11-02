@@ -10,7 +10,7 @@ calling mode does not own.
 
 Every jurisdiction refuses a task set In Review: only an initiative or an epic stands there.
 DELIVERY refuses moving an initiative or an epic between Ready and Backlog.
-QUEUE refuses In Review, Done and any task.
+QUEUE refuses In Review, Done and any task, but for a closed hot-fix's Done.
 DISPATCH refuses every Status but In Progress and In Review, and a removal.
 
 A Status write sends the body file written under the out directory.
@@ -19,6 +19,8 @@ import json
 import re
 import sys
 from pathlib import Path
+
+from format import HOTFIX
 
 DELIVERY, QUEUE, DISPATCH = 'delivery', 'queue', 'dispatch'
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
@@ -135,7 +137,8 @@ class Changes:
         if task and wanted == 'In Review':
             raise Jurisdiction(f'{name}: a task does not stand In Review')
         if self.scope == QUEUE:
-            if wanted in DECIDED:
+            if wanted in DECIDED and not (wanted == 'Done' and HOTFIX.match(issue.get('title') or '')
+                                          and issue.get('state') == 'closed'):
                 raise Jurisdiction(f'{name}: the queue does not set {wanted}')
             if task:
                 raise Jurisdiction(f'{name}: the queue does not move a task')

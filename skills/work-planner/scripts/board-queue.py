@@ -17,8 +17,9 @@ the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
 
-An open hot-fix, titled [F00], is Ready outside every priority set, and keeps In Progress, In Review
-or Done once it holds one; nothing waits on it and it waits on nothing.
+An open hot-fix, titled [F00], is Ready outside every priority set, and keeps In Progress or In
+Review once it holds one; nothing waits on it and it waits on nothing. A closed hot-fix is Done when
+closed as completed, and is removed from the board otherwise.
 """
 import argparse
 import json
@@ -30,7 +31,7 @@ from pathlib import Path
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
 from format import HOTFIX, cell, id_cell, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import Unreadable, pull_requests
+from sync import Unreadable, issue_done, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
@@ -113,6 +114,7 @@ class Queue:
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
         self.unresolvable: list[str] = []
+        self.removed: set = set()
         self.notes: list[str] = []
         self.children: dict = {}
         self.parents: dict = {}
@@ -299,10 +301,18 @@ class Queue:
                 self.shelve(key)
 
     def hotfixes(self) -> None:
-        """Place each open hot-fix Ready, as Hot-fix Status in artifacts/board-queue.md states."""
+        """Place each hot-fix, as Hot-fix Status in artifacts/board-queue.md states: an open one Ready
+        unless In Progress or In Review, one closed as completed Done, and one closed otherwise off
+        the board."""
         for key, issue in self.issues.items():
-            if (is_hotfix(issue) and issue['state'] == 'open' and key in self.status
-                    and self.status.get(key) not in ('In Progress', 'In Review', 'Done')):
+            if not is_hotfix(issue) or key not in self.status:
+                continue
+            if issue['state'] == 'closed':
+                if issue_done(issue):
+                    self.place(key, 'Done')
+                else:
+                    self.removed.add(key)
+            elif self.status.get(key) not in ('In Progress', 'In Review'):
                 self.place(key, 'Ready')
 
     def decide(self) -> None:
@@ -387,6 +397,9 @@ def main() -> int:
     governed = [key for key, issue in issues.items()
                 if key in status and (is_initiative(issue) or is_hotfix(issue) or key in queue.parents)]
     for key in sorted(governed):
+        if key in queue.removed:
+            changes.place(key, queue.line(key), issues[key], status.get(key), None, item_ids[key], home)
+            continue
         new = queue.wanted.get(key)
         if new is None:
             changes.current += 1

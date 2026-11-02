@@ -21,7 +21,7 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
    - The queue must meet [Fields](#fields).
-   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue. In Review, Done and task issues are outside the write scope.
+   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a closed hot-fix's, which [Hot-fix Status](#hot-fix-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 2. Return the proposed Status and assignee calls, report lines and unresolved issue references to the caller.
    - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
    - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.
@@ -63,9 +63,9 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 
 ### Hot-fix Status
 
-- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress once its dispatch places it there.
+- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress or In Review once it holds one.
+- A hot-fix closed as completed is Done, and one closed any other way leaves the board.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
-- A hot-fix In Review or Done remains in that state.
 
 ### Backlog Cascade
 
@@ -92,7 +92,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a closed hot-fix's Done or removal. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 

@@ -680,11 +680,22 @@ class HotFixes(unittest.TestCase):
         self.assertIn('assign #4', out)
         self.assertIn('  order:', out)
 
-    def test_a_hot_fix_keeps_in_progress_and_beyond(self):
-        out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review'), (hotfix(6), 'Done')))
+    def test_a_hot_fix_keeps_in_progress_and_in_review(self):
+        out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))
         self.assertNotIn('[F04]', out)
         self.assertNotIn('[F05]', out)
-        self.assertNotIn('[F06]', out)
+
+    def test_an_open_hot_fix_left_done_returns_to_ready(self):
+        out = queue(staged((hotfix(6), 'Done')))
+        self.assertIn('[F06] Key Validation: Reject Bad Keys: Done → Ready', out)
+
+    def test_a_closed_hot_fix_is_done_or_leaves_the_board(self):
+        merged, dropped = hotfix(4), hotfix(5)
+        merged['state'] = dropped['state'] = 'closed'
+        merged['state_reason'], dropped['state_reason'] = 'completed', 'not_planned'
+        out = queue(staged((merged, 'In Progress'), (dropped, 'Ready')))
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: In Progress → Done', out)
+        self.assertIn('remove #5 [F05] Key Validation: Reject Bad Keys (closed, not completed)', out)
 
     def test_a_hot_fix_holds_back_no_epic(self):
         top = initiative(1, 'Top: Now', (f"[E00]({url('issues', 3)})", ''))
