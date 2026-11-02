@@ -81,24 +81,26 @@ The epic's verified merge into its long-lived target.
 
 ### *Fetch* All Delivery Pull Requests
 
-The pull request collection covering every supplied board repository.
+The pull request collection covering every supplied board repository and every pull request the board's issues link.
 
-**Inputs:** Ordered repository list and destination JSON-lines file.
+**Inputs:** Ordered repository list, the board items file and destination JSON-lines file.
 
 1. Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests) for the first repository and destination `prs.json`. This replaces the destination with a fresh collection.
 2. Stop on failure.
 3. Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests) for each further repository, passing the same destination.
-4. If any fetch failed, return incomplete evidence.
-5. Return the complete collection only after every fetch succeeds.
+4. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that destination and the board items file.
+5. If any fetch failed, return incomplete evidence.
+6. Return the complete collection only after every fetch succeeds.
 
 ### *Read* Initiative Pull Requests
 
-The current delivery pull requests for one initiative.
+The current delivery pull requests for one initiative: each one whose title names it, and each one its plan links, whatever its title.
 
-**Inputs:** Repository, initiative prefix and destination collection file.
+**Inputs:** Repository, initiative prefix, the initiative's issue files (the initiative, its epics and their task issues) and destination collection file.
 
 1. Run [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests) with the supplied repository and prefix, saving the collection to the supplied file.
-2. Return the collection or an incomplete-fetch finding.
+2. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that collection and the supplied issue files.
+3. Return the collection, or an incomplete-fetch finding naming each unreadable relation or pull request.
 
 ### *Read* Pull Request State
 
@@ -521,6 +523,29 @@ gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] 
 
 ```bash
 gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
+```
+
+### Fetch Linked Pull Requests
+
+Appends to a pull request collection each pull request the plan links that the collection lacks, whatever its title.
+
+**Inputs:** Existing destination JSON-lines file and the plan's issues: issue files, or a board items file whose items each carry their issue whole.
+
+**REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
+
+- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives.
+- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows.
+- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker.
+- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs '<pull-request-records-file>' --issues '<issue-file>' ...
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json issue-637.json
 ```
 
 ### Fetch Repository Delivery Pull Requests

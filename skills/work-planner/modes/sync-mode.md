@@ -47,17 +47,16 @@ The main path meets [Outcomes](#outcomes).
      - Return a remaining format failure as a blocker.
 2. **Fetch.**
    - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each issue, including each task issue under an epic being synced, titled as [Titles](../artifacts/task-body.md#titles) states.
-   - Run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the selected repositories and initiative prefix, fetched epic JSON, authenticated access and destination snapshot files.
+   - Run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the selected repositories and initiative prefix, the fetched initiative, epic and task issue JSON, authenticated access and destination snapshot files.
    - Use its returned pull request records, complete issue-link snapshot and findings in the following steps.
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository holding the issues, which gates every link, merge and closure this run makes.
    - Capture each issue's Development links.
-   - Fetch linked pull requests absent from the initiative list before evaluating closure.
 3. **Unnamed deliveries.**
    When the user says work has landed but no pull request names its epic:
    - Find the pull request.
    - Confirm it with the user.
    - Give it the epic's reference, `[I07:E00] Purpose`, with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
-   - Run [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests) again.
+   - Run [Read Initiative Pull Requests](../artifacts/pull-request.md#read-initiative-pull-requests) again, with the fetched issue files.
    - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) again.
 4. **Match pull requests to tasks.**
    Run [Inspect Epic Delivery](../artifacts/epic.md#inspect-epic-delivery) for each epic.

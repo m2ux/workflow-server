@@ -19,8 +19,11 @@ With --names it reads one --revision and prints the long-lived branch names one 
 standard error. Unevaluable names print unevaluable: with the source and why, and exit 1.
 
 Each issue file is the issue as `gh api repos/{owner}/{repo}/issues/943` returns it. prs.json holds
-pull requests as JSON lines, as the REST API returns them:
+pull requests as JSON lines, as the REST API returns them: each one whose title names the initiative,
+and each one a row or a Development link of its issues names whatever its title, as Read Initiative
+Pull Requests fetches them:
   gh api --paginate "repos/{owner}/{repo}/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
+  python3 linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json issue-637.json
 
 links.json holds the closing issue references GitHub holds for those pull requests, as Fetch Pull
 Request Issue Links writes them: an array of {repo, number, closingIssuesReferences: [{repo, number}]}.
