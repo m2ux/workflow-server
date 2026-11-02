@@ -663,3 +663,32 @@ class UnresolvableGates(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def hotfix(number: int) -> dict:
+    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
+                 labels=('type:hot-fix', 'theme:canon', 'priority: 10'))
+
+
+class HotFixes(unittest.TestCase):
+    def test_an_open_hot_fix_is_ready_whatever_the_priority_sets(self):
+        low = initiative(1, 'Low: Later', (f"[E00]({url('issues', 3)})", ''), priority='')
+        out = queue(staged((low, 'Backlog'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (hotfix(4), 'Backlog'), (hotfix(5), None)))
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: Backlog → Ready', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: no Status → Ready', out)
+        self.assertIn('assign #4', out)
+        self.assertIn('  order:', out)
+
+    def test_a_hot_fix_keeps_in_progress_and_beyond(self):
+        out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review'), (hotfix(6), 'Done')))
+        self.assertNotIn('[F04]', out)
+        self.assertNotIn('[F05]', out)
+        self.assertNotIn('[F06]', out)
+
+    def test_a_hot_fix_holds_back_no_epic(self):
+        top = initiative(1, 'Top: Now', (f"[E00]({url('issues', 3)})", ''))
+        out = queue(staged((top, 'In Progress'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (hotfix(4), 'In Progress')))
+        self.assertIn('Epic 3: Work: Backlog → Ready', out)
+        self.assertNotIn('wait', out)

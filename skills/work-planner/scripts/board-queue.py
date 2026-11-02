@@ -1,4 +1,4 @@
-"""Decide which initiatives and epics on a theme board are Ready or In Progress.
+"""Decide which initiatives, epics and hot-fixes on a theme board are Ready or In Progress.
 
 Usage:
   python3 board-queue.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9
@@ -16,6 +16,9 @@ its Report Lines. Activity is read through board.py. The calls are rendered by s
 the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
+
+An open hot-fix, titled [F00], is Ready outside every priority set, and keeps In Progress, In Review
+or Done once it holds one; nothing waits on it and it waits on nothing.
 """
 import argparse
 import json
@@ -30,6 +33,7 @@ from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_it
 from sync import Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
+HOTFIX = re.compile(r'^\[F\d\d\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 
@@ -52,6 +56,10 @@ def tags(title: str) -> tuple[str, str, str] | None:
 def is_initiative(issue: dict) -> bool:
     parsed = tags(issue['title'])
     return bool(parsed) and not parsed[1]
+
+
+def is_hotfix(issue: dict) -> bool:
+    return bool(HOTFIX.match(issue['title']))
 
 
 def pending(prs: list[dict], tag: str, epics: set[str], repos: set[str]) -> list[str]:
@@ -291,7 +299,17 @@ class Queue:
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
                 self.shelve(key)
 
+    def hotfixes(self) -> list[tuple[str, int]]:
+        """Place each open hot-fix Ready, as Hot-fix Status in artifacts/board-queue.md states."""
+        found = [key for key, issue in self.issues.items()
+                 if is_hotfix(issue) and issue['state'] == 'open' and key in self.status]
+        for key in found:
+            if self.status.get(key) not in ('In Progress', 'In Review', 'Done'):
+                self.place(key, 'Ready')
+        return found
+
     def decide(self) -> None:
+        self.hotfixes()
         open_initiatives = [key for key, issue in self.issues.items()
                             if is_initiative(issue) and issue['state'] == 'open' and key in self.status]
         for key in open_initiatives:
@@ -369,7 +387,8 @@ def main() -> int:
 
     field = StatusField(args.fields, args.out, PLACED)
     changes = Changes(QUEUE, args.board, field, args.assignee, ' (the queue is current)')
-    governed = [key for key, issue in issues.items() if key in status and (is_initiative(issue) or key in queue.parents)]
+    governed = [key for key, issue in issues.items()
+                if key in status and (is_initiative(issue) or is_hotfix(issue) or key in queue.parents)]
     for key in sorted(governed):
         new = queue.wanted.get(key)
         if new is None:

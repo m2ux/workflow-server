@@ -2,7 +2,7 @@
 
 Three modes decide a board's Status, and each owns a part of it. Sync mode decides what delivery
 settles: Done, In Review, In Progress, and the Ready a task's dependencies earn. Advance mode
-decides the queue: which initiatives and epics are Backlog, Ready or In Progress. Deliver mode
+decides the queue: which initiatives, epics and hot-fixes are Backlog, Ready or In Progress. Deliver mode
 decides what a dispatch settles: the In Progress a held row and its epic take, and the In Review a
 completed epic takes. Each plans its own statuses and hands them here, which reads the board's
 items, writes the option body files, renders the gh call for every change, and refuses a change the

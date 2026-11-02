@@ -125,7 +125,7 @@ An initiative carries one `theme:*` label, and each of its epics carries the sam
 
 - A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
 - It is linked to the repository.
-- It holds the theme's initiatives, their epics and their task issues.
+- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
 
 ### Repositories
 

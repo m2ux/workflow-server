@@ -1,6 +1,6 @@
 # Board Queue
 
-The queue for one theme board: initiative priority sets, status and assignee changes, pending decisions, waiting work, next epics and epics waiting on a priority.
+The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics and epics waiting on a priority.
 
 ## Prerequisites
 
@@ -9,6 +9,7 @@ Read these files first.
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
+- [Hot-fix Body](hotfix-body.md)
 
 ## Operations
 
@@ -60,6 +61,12 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
 - An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
 
+### Hot-fix Status
+
+- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress once its dispatch places it there.
+- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
+- A hot-fix In Review or Done remains in that state.
+
 ### Backlog Cascade
 
 An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. A completed epic stays Done. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.
@@ -85,7 +92,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives and epics. Status changes are between Backlog, Ready and In Progress. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 
