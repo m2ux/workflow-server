@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-Agent review of the I11:E10 Conformance Checks integration diff before handoff: the `workspace` epic base against its long-lived branch. The review reads the full integration diff and the evidence behind the epic's 50 criteria, and is recorded here for the exact head and base it reviewed.
+Agent review of the I11:E10 Conformance Checks integration diff before handoff: the `workspace` epic base against its long-lived branch. The review reads the full integration diff and the evidence behind the epic's 48 live criteria, and is recorded here for the exact head and base it reviewed.
 
 The record gates the epic's handoff. The epic moves to In Review, and its review pull request is marked ready, only while a current record passes for its head. A blocking finding is fixed on the epic base and the review repeated for the new head.
 
@@ -16,11 +16,12 @@ The record gates the epic's handoff. The epic moves to In Review, and its review
 | [Review #1555 at 8bddff05](review-1555-8bddff05.json) | Review after W34–W36 (#1579–#1581): the twelve earlier findings fixed, two blocking findings open (an excluded skill nested in a family folder is not held aside; classic REST called by absolute API URL passes the interface check) and eight nonblocking findings open, later fixed by W37–W39 |
 | [Review #1555 at 39a2841e](review-1555-39a2841e.json) | Review after W37–W39 (#1582–#1584): all 22 earlier findings fixed, no blocking finding, and one nonblocking finding open (an off-route task pull request is sent to the base its branch's last slug word names, which a single-branch unit's slug can name by coincidence), later fixed by W40 |
 | [Review #1555 at 8ce70c28](review-1555-8ce70c28.json) | Review re-checking W40 (#1585): the last open finding fixed, all 23 findings fixed and none open |
-| [Review #1555 at a41d89f8](review-1555-a41d89f8.json) | Current review, a re-check of W41 (#1587): gitnexus, Workflow Canon and server-in-the-loop byte-identical to `workspace` and held aside through `EXCLUDED`, seven criteria retired with them, no new finding, all 23 findings fixed |
+| [Review #1555 at a41d89f8](review-1555-a41d89f8.json) | Final review of #1555, a re-check of W41 (#1587): gitnexus, Workflow Canon and server-in-the-loop byte-identical to `workspace` and held aside through `EXCLUDED`, seven criteria retired with them, no new finding, all 23 findings fixed; #1555 merged at this head |
+| [Review #1589 at 6b7afb23](review-1589-6b7afb23.json) | Current review, of #1589 carrying W42 (#1588): the Verify Skills workflow and the check's `--exclude` option removed, no blocking finding, and one nonblocking finding open (the check's skill list may be empty, so a run naming no skill passes) |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10 Conformance Checks](https://github.com/m2ux/workflow-server/issues/1181) |
-| Review pull request, `workspace` | [#1555](https://github.com/m2ux/workflow-server/pull/1555) |
+| Review pull request, `workspace` | [#1555](https://github.com/m2ux/workflow-server/pull/1555), merged; [#1589](https://github.com/m2ux/workflow-server/pull/1589) |

@@ -1,0 +1,20 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1589",
+    "head": "6b7afb230aab0524d2fb67e6043ab0e786cc1342",
+    "base": "d7feec2dc43603509278f64b44d284d6dd3ac2b9",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1181-i11-e10-epic-review/review-1589-6b7afb23.json",
+    "reviewer": "Claude Opus 5.5 agent review (independent reviewer sub-agent)",
+    "reviewed_at": "2026-11-02T04:11:51Z",
+    "scope": "Integration diff d7feec2d...6b7afb23 (merge base a41d89f8, the #1555 merge's second parent; 3 files, +35/-244), W42 (#1588: 0e93e5dad, 50db272e5) and nothing else: .github/workflows/verify-skills.yml deleted; skills/scripts/check_skill_files.py (module docstring, KINDS, Where, finding, held_aside, main and its argparse options); skills/test/test_check_skill_files.py (SkillCheckWorkflow, ReviewedExclusionAndUrlCases and ExclusionsPlacedByPath replaced by SkillsCheckedTogether and ReviewedUrlCases). Callers inspected: every producer of a finding tuple (all through finding()), main's output and exit path, compare_revisions, and argparse's handling of an empty root list. Stale-claim search over the head outside the three out-of-scope skills for verify-skills, Verify Skills, EXCLUDED, --exclude, held aside, excluded skill and .github/workflows, and over work-planner, skills/guidelines.md, skills/rules.json, docs and README for CI claims; #1181 criteria and the #1589 body read. No branch was modified.",
+    "criteria": "Epic #1181 AC58: git ls-tree of the head holds no .github entry, and the check's --help names no --exclude while --exclude is refused with exit 2 (test_the_check_takes_no_exclusion). AC24, AC51 and AC55 are retired by W42 and AC57 reworded without EXCLUDED; the earlier #1555 records' findings on exclusions, held_aside placement and the CI check-suite concern code W42 removes, so the retirement disposes of them. Surviving behaviour keeps its tests: cross-skill citation resolution (test_the_seeded_tree_reports_nothing_judged_whole), a finding failing the run, classic API URLs, every classic mutation and the mid-line REST gap now run through checker.main directly. No in-scope file, rule, prose or criterion still describes the workflow, CI for skills or the exclusion; initiative-issue-body.md:169's 'a check that continuous integration runs' is a generic evidence class, not a claim about this repository. The one residue is the open finding.",
+    "validation": "At 6b7afb23: sbx python3 -m pytest skills/test -q: 207 passed, 32 subtests passed. sbx python3 -m pytest skills/work-planner/test -q: 739 passed, 1 skipped, 1845 subtests passed. sbx python3 skills/scripts/check_skill_files.py skills/work-planner: 50 files checked, 0 findings. sbx python3 skills/scripts/check_skill_files.py with no root: '0 files checked, 0 findings', exit 0. --exclude: exit 2.",
+    "findings": [
+      {
+        "description": "skills/scripts/check_skill_files.py main(): parser.add_argument('roots', nargs='*') is a remnant of the removed workflow. W37 relaxed it from workspace's nargs='+' only so the Verify Skills step could pass over a tree holding no skill (the test that observed that, test_a_tree_holding_no_skill_passes, is removed by W42). With no workflow it serves nothing, and it lets a run naming no skill pass: python3 skills/scripts/check_skill_files.py prints '0 files checked, 0 findings' and exits 0, so a by-hand verification or a script passing an empty skill list reads as a clean check where workspace's argparse refused it with exit 2. Fix: restore nargs='+' (the --compare form already names its roots).",
+        "severity": "nonblocking",
+        "disposition": "open"
+      }
+    ]
+  }
+]
