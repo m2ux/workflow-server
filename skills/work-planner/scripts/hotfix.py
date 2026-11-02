@@ -5,8 +5,18 @@ Overview names the long-lived branch it fixes in one Target: line. Its target, i
 faults, its board status, the pull requests that deliver it and the state of its delivery unit are
 read here, and the scripts that place, survey, record, check or report a hot-fix call these
 functions.
+
+Usage:
+  python3 hotfix.py issue-874.json
+
+Run on an issue, it prints each condition of the hot-fix Format the issue fails, as format_faults
+reads it, and exits 1 when there is one. That is the one check of whether a hot-fix may stand Ready.
 """
+import argparse
+import json
 import re
+import sys
+from pathlib import Path
 
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
@@ -149,3 +159,18 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
     if opened:
         return 'draft'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('issue', help='issue JSON as the REST API returns it')
+    issue = json.loads(Path(parser.parse_args().issue).read_text())
+    faults = format_faults(issue)
+    print(f"#{issue.get('number')}: {'out of' if faults else 'in'} the hot-fix format")
+    for fault in faults:
+        print(f'  fault: {fault}')
+    return 1 if faults else 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

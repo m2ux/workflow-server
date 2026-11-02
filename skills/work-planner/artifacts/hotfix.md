@@ -8,7 +8,6 @@ Read these files first.
 
 - [Hot-fix Body](hotfix-body.md)
 - [Issue](issue.md)
-- [Issue Body](issue-body.md)
 - [Board](board.md)
 - [Board Delivery](board-delivery.md)
 - [Repository Labels](repository-labels.md)
@@ -44,8 +43,8 @@ A held hot-fix returned to the work the delivery plan offers.
 
 1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
    - Refuse the release while its [Delivery Unit](#delivery-unit) is running, draft or unrecorded, and return the pull request that makes it so to the caller. A draft one is resumed at its review rather than released.
-2. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON, then [Check Body Format](issue-body.md#check-body-format) with it. Its `hot-fix format:` findings are the [Format](hotfix-body.md#format) conditions the issue fails.
-3. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and the status [Board Status](#board-status) gives an open hot-fix released to Ready with those findings.
+2. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON, then [Check Hot-fix Format](#check-hot-fix-format) with it.
+3. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and the status [Board Status](#board-status) gives an open hot-fix released to Ready with those faults.
 4. Return the saved item and its Status to the caller.
 
 ### *Record* Hot-fix Delivery
@@ -64,9 +63,9 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 **Inputs:** Board identity and the hot-fix issue identity.
 
 1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON.
-2. For an open hot-fix, run [Check Body Format](issue-body.md#check-body-format) with that JSON. Its `hot-fix format:` findings are the [Format](hotfix-body.md#format) conditions the issue fails.
+2. For an open hot-fix, run [Check Hot-fix Format](#check-hot-fix-format) with that JSON.
 3. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
-4. Apply the status [Board Status](#board-status) gives that state, those findings and Status:
+4. Apply the status [Board Status](#board-status) gives that state, those faults and Status:
    - **A status.**
      - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
    - **Off the board, with an item.**
@@ -117,6 +116,24 @@ A hot-fix's branch is cut from its [target](hotfix-body.md#target), which its `u
 - Its board item follows [Board Status](#board-status) once the issue closes.
 
 ## Commands
+
+### Check Hot-fix Format
+
+Prints each [Format](hotfix-body.md#format) condition one hot-fix issue fails. It is the one check board placement reads for Ready.
+
+**Inputs:** Hot-fix issue JSON.
+
+- Exit 0 means the issue is in the hot-fix format; exit 1 lists each fault.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/hotfix.py '<hot-fix-json-file>'
+```
+
+**Example:**
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/hotfix.py issue-874.json
+```
 
 ### Sync Hot-fix Issue
 

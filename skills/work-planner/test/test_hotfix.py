@@ -5,7 +5,11 @@ Run from the skill directory: python3 -m unittest discover -s test
 import sys
 import unittest
 
-from fixtures import SCRIPTS, hotfix_body, issue, pr
+import json
+import tempfile
+from pathlib import Path
+
+from fixtures import SCRIPTS, hotfix_body, issue, pr, run
 from fixtures import hotfix as hotfix_issue
 
 sys.path.insert(0, str(SCRIPTS))
@@ -104,6 +108,27 @@ class Format(unittest.TestCase):
         empty = hotfix()
         empty['body'] = empty['body'].split('## Acceptance Criteria')[0] + '## Acceptance Criteria\n\n'
         self.assertEqual(format_faults(empty), ['no acceptance criterion'])
+
+
+class CheckFormat(unittest.TestCase):
+    def run_check(self, record: dict):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'issue.json')
+            path.write_text(json.dumps(record))
+            return run('hotfix.py', str(path))
+
+    def test_the_command_prints_every_format_fault(self):
+        unlabelled = hotfix(aim=None)
+        unlabelled['labels'] = [{'name': 'type:hot-fix'}]
+        done = self.run_check(unlabelled)
+        self.assertEqual(done.returncode, 1, done.stderr)
+        self.assertEqual(done.stdout.splitlines(), [
+            '#4: out of the hot-fix format', '  fault: no priority: 10 label', '  fault: no theme:* label',
+            '  fault: no Target: lines in the Overview; it names one target branch'])
+
+    def test_a_hot_fix_in_the_format_passes(self):
+        done = self.run_check(hotfix())
+        self.assertEqual((done.returncode, done.stdout), (0, '#4: in the hot-fix format\n'))
 
 
 class BoardStatus(unittest.TestCase):

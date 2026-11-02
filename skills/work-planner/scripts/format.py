@@ -56,7 +56,7 @@ Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
   - each condition of a hot-fix's Format that no other kind carries, as hotfix.hotfix_faults reads
-    it, prefixed "hot-fix format:": one Target: line, no open question, and a criterion; the checks
+    it, prefixed "hot-fix:": one Target: line, no open question, and a criterion; the checks
     above report the rest of its Format
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
@@ -429,7 +429,7 @@ class Review:
             return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
         if is_hotfix(self.issue):
             fixed = self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
-            self.decide.extend(f'hot-fix format: {fault}' for fault in hotfix_faults(self.issue))
+            self.decide.extend(f'hot-fix: {fault}' for fault in hotfix_faults(self.issue))
             return fixed
         m = PREFIX.match(title)
         if not m:
