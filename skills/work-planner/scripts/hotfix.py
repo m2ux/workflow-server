@@ -12,7 +12,6 @@ HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
-FENCE = re.compile(r'^ {0,3}(?:```|~~~)')
 TYPE = 'type:hot-fix'
 ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 Key = tuple[str, int]
@@ -72,15 +71,10 @@ def board_status(issue: dict, held: str | None) -> str | None:
 
 def targets(issue: dict) -> list[str]:
     """The branch each Target: line of the issue's Overview names, in order, outside fenced code."""
-    from format import split_sections  # format imports this module
+    from format import prose, split_sections  # format imports this module
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    named, fence = [], False
-    for line in next((lines for heading, lines in sections if heading == 'Overview'), []):
-        if FENCE.match(line):
-            fence = not fence
-        elif not fence and (found := TARGET.match(line)):
-            named.append(found[1])
-    return named
+    lines = prose(next((lines for heading, lines in sections if heading == 'Overview'), []))
+    return [found[1] for line in lines if (found := TARGET.match(line))]
 
 
 def target(issue: dict) -> str:

@@ -140,6 +140,7 @@ OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 TASK_RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
+FENCE = re.compile(r'^ {0,3}(?:```|~~~)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
     'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d:W\d\d|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
@@ -151,7 +152,7 @@ def split_sections(text: str) -> tuple[list[str], list[list]]:
     """Return the lines before the first H2, and [heading, lines] for each H2 section."""
     preamble, sections, fence = [], [], False
     for line in text.split('\n'):
-        if line.startswith('```'):
+        if FENCE.match(line):
             fence = not fence
         m = None if fence else re.match(r'^## (.+?)\s*$', line)
         if m:
@@ -161,6 +162,17 @@ def split_sections(text: str) -> tuple[list[str], list[list]]:
         else:
             preamble.append(line)
     return preamble, sections
+
+
+def prose(lines: list[str]) -> list[str]:
+    """A section's lines outside fenced code, a fence opening and closing as split_sections reads it."""
+    kept, fence = [], False
+    for line in lines:
+        if FENCE.match(line):
+            fence = not fence
+        elif not fence:
+            kept.append(line)
+    return kept
 
 
 def join_sections(preamble: list[str], sections: list[list]) -> str:
