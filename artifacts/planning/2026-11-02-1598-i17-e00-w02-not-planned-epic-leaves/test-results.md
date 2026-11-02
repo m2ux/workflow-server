@@ -30,3 +30,7 @@ Tested revision: [8c12e7a7b](https://github.com/m2ux/workflow-server/commit/8c12
 
 - **Command.** `python3 skills/scripts/check_skill_files.py skills/work-planner`
 - **Result.** 52 files checked, 0 findings.
+
+## Merged Revision
+
+[#1602](https://github.com/m2ux/workflow-server/pull/1602) merged into `i17/e00/workspace` as [7f74d2d45](https://github.com/m2ux/workflow-server/commit/7f74d2d457aa0251c0a6bfd4bc0cc0b4319e8f2e). `git diff 8c12e7a7b 7f74d2d45` is empty, so each result above holds at the merged revision, and AC4, AC5 and AC6 are ticked on the epic from it.
