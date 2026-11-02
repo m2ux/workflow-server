@@ -195,6 +195,49 @@ class CriterionLabels(unittest.TestCase):
         self.assertIn('R labels partly missing or out of sequence', r.decide)
 
 
+def labelled(criteria: str, references: str) -> tuple[Review, str]:
+    """A standalone issue with the given Acceptance Criteria and References items, and its fixed body."""
+    text = ('## Overview\n\nWhy.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n## Proposal\n\n- **Move.**\n  Design.\n\n'
+            f'## Acceptance Criteria\n\n{criteria}\n## References\n\n{references}')
+    r = Review(issue(1, 'Key Validation: Reject Bad Keys', body=text))
+    return r, r.run()
+
+
+class PlainLabels(unittest.TestCase):
+    def test_plain_criterion_labels_are_made_bold(self):
+        r, fixed = labelled('- [ ] AC1. The key is checked.\n- [ ] AC2. A bad key is refused.\n'
+                            '- [ ] AC4. The refusal names the key.\n', '- **R1.** [Source](https://example.com/1)\n')
+        self.assertIn('- [ ] **AC1.** The key is checked.\n- [ ] **AC2.** A bad key is refused.\n'
+                      '- [ ] **AC4.** The refusal names the key.\n', fixed)
+        self.assertIn('3 plain AC labels made bold', r.fixed)
+        self.assertFalse(any('labels' in item for item in r.decide))
+
+    def test_plain_reference_labels_are_made_bold(self):
+        r, fixed = labelled('- [ ] **AC1.** Holds.\n',
+                            '- R1. [Source](https://example.com/1)\n- R2. [Other](https://example.com/2)\n')
+        self.assertIn('- **R1.** [Source](https://example.com/1)\n- **R2.** [Other](https://example.com/2)\n', fixed)
+        self.assertIn('2 plain R labels made bold', r.fixed)
+        self.assertFalse(any('labels' in item for item in r.decide))
+
+    def test_plain_criterion_labels_partly_missing_are_left_to_decide(self):
+        items = '- [ ] AC1. The key is checked.\n- [ ] A bad key is refused.\n'
+        r, fixed = labelled(items, '- **R1.** [Source](https://example.com/1)\n')
+        self.assertIn('AC labels partly missing or out of sequence', r.decide)
+        self.assertIn(items, fixed)
+
+    def test_plain_criterion_labels_out_of_sequence_are_left_to_decide(self):
+        items = '- [ ] AC2. The key is checked.\n- [ ] AC1. A bad key is refused.\n'
+        r, fixed = labelled(items, '- **R1.** [Source](https://example.com/1)\n')
+        self.assertIn('AC labels partly missing or out of sequence', r.decide)
+        self.assertIn(items, fixed)
+
+    def test_plain_reference_labels_with_a_gap_are_left_to_decide(self):
+        items = '- R1. [Source](https://example.com/1)\n- R3. [Other](https://example.com/3)\n'
+        r, fixed = labelled('- [ ] **AC1.** Holds.\n', items)
+        self.assertIn('R labels partly missing or out of sequence', r.decide)
+        self.assertIn(items, fixed)
+
+
 INITIATIVE_GUIDE = SCRIPTS.parent / 'artifacts' / 'initiative-issue-body.md'
 
 
