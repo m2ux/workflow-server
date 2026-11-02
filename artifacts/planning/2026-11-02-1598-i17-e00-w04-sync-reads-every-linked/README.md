@@ -13,6 +13,7 @@ Pull requests whose titles carry no initiative prefix go unread by sync until fe
 | Artifact | What it holds |
 | --- | --- |
 | [W04 work item](w04.md) | Component, scope, design and test rows for W04 |
+| [Test results](test-results.md) | Each Test Plan check with its command, revision and result |
 
 ## Links
 
