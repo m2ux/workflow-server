@@ -1807,11 +1807,11 @@ class HotFixDelivery(unittest.TestCase):
             body.write_text(json.dumps(record))
             pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
             done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, held),
-                       '--fix', str(fixed), *args)
+                       '--fix', str(fixed), '--default', 'o/r=main', *args)
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):
-        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z')],
+        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z', base='main')],
                                       [links(950, 4)], '--pr', '950', '--tick', 'AC1')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('#4 hot-fix (open)', done.stdout)
@@ -1820,11 +1820,19 @@ class HotFixDelivery(unittest.TestCase):
         self.assertIn('- [x] **AC1.** Holds.', fixed)
 
     def test_a_pull_request_not_linking_it_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys')], [links(950, 7)], '--pr', '950')
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='main')], [links(950, 7)], '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('--pr 950: no pull request linking F04', done.stderr)
+        self.assertIn('--pr 950: does not deliver F04: its Development field does not link #4', done.stderr)
 
     def test_a_linking_pull_request_without_its_prefix_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys')], [links(950, 4)], '--pr', '950')
+        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', base='main')], [links(950, 4)],
+                                  '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('--pr 950: no pull request linking F04', done.stderr)
+        self.assertIn('--pr 950: does not deliver F04: its title does not open with [F04]', done.stderr)
+
+    def test_a_linking_pull_request_into_another_branch_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='workspace')], [links(950, 4)],
+                                  '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: does not deliver F04: its base is workspace, not the default branch main',
+                      done.stderr)

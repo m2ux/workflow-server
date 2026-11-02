@@ -53,8 +53,9 @@ Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Deliv
 artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
 and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
 delivering pull requests. Its base is its repository's default branch, which --default gives as
-owner/repo=branch, once for each repository; a malformed --default stops the run before it prints,
-and a hot-fix whose repository's default branch is not given is printed unresolved.
+owner/repo=branch, once for each repository; a malformed --default stops the run before it prints.
+A Ready hot-fix, or one a merged pull request links, whose repository's default branch is not given
+is printed unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -87,7 +88,7 @@ from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
-from hotfix import delivering_pulls, hotfix_tag, unit_state
+from hotfix import default_branches, delivering_pulls, hotfix_tag, linking_pulls, unit_state
 from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
                   pull_requests, table)
 
@@ -286,12 +287,13 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         if not tag or issue['state'] != 'open':
             continue
         where = f'{tag} {label(key, home)}'
-        base = defaults.get(key[0].lower())
-        if not base:
+        linking = linking_pulls(prs, key)
+        base = defaults.get(key[0].lower(), '')
+        if not base and (status.get(key) == 'Ready' or any(p.get('merged_at') for p in linking)):
             unresolved.append(f'{where}: the default branch of {key[0]} is not given')
             continue
-        delivering = delivering_pulls(prs, key, tag, base)
-        state = unit_state(issue, status.get(key), delivering)
+        delivering = delivering_pulls(linking, key, tag, base)
+        state = unit_state(issue, status.get(key), linking, delivering)
         if state == 'unrecorded':
             numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
             lines.append(f'  unrecorded {where}: {numbers} merged')
@@ -359,17 +361,6 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
             continue
         found.append((pull['number'], f"  merge #{pull['number']} I{initiative}:E{epic}: base {base}"))
     return [line for _, line in sorted(found)]
-
-
-def default_branches(specs: list[str]) -> dict[str, str]:
-    """Each repository's default branch, by lowercased owner/repo, from --default owner/repo=branch."""
-    defaults = {}
-    for spec in specs:
-        repo, _, branch = spec.partition('=')
-        if not repo or not branch:
-            sys.exit(f'--default {spec}: expected owner/repo=branch')
-        defaults[repo.lower()] = branch
-    return defaults
 
 
 def survey(args: argparse.Namespace) -> int:

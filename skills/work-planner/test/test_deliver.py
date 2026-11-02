@@ -795,6 +795,16 @@ class HotFixUnits(unittest.TestCase):
         self.assertEqual(done.stdout, '')
         self.assertIn('--default o/r: expected owner/repo=branch', done.stderr)
 
+    def test_an_open_pull_request_that_links_without_delivering_still_makes_it_running(self):
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, 'Unrelated Work', base='workspace')],
+                     '--default', 'o/r=main', held=(links(951, 4),))
+        self.assertNotIn('unit F04', out)
+
+    def test_only_a_hot_fix_whose_decision_needs_it_asks_for_its_default_branch(self):
+        out = survey(staged((hotfix(4), 'Backlog'), (hotfix(5), 'In Progress')))
+        self.assertNotIn('unresolved', out)
+        self.assertIn('  hold F05 #5: In Progress', out)
+
     def test_a_hot_fix_without_its_default_branch_is_unresolved(self):
         out = survey(staged((hotfix(4), 'Ready')))
         self.assertIn('unresolved: F04 #4: the default branch of o/r is not given', out)
