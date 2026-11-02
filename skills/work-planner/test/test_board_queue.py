@@ -676,10 +676,10 @@ class HotFixes(unittest.TestCase):
         self.assertIn('assign #4', out)
         self.assertIn('  order:', out)
 
-    def test_a_hot_fix_keeps_in_progress_and_in_review(self):
+    def test_a_hot_fix_keeps_in_progress_and_leaves_in_review_for_it(self):
         out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))
         self.assertNotIn('[F04]', out)
-        self.assertNotIn('[F05]', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: In Review → In Progress', out)
 
     def test_an_open_hot_fix_left_done_returns_to_ready(self):
         out = queue(staged((hotfix(6), 'Done')))

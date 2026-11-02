@@ -63,7 +63,7 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 
 ### Hot-fix Status
 
-- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress or In Review once it holds one.
+- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it. A hot-fix never stands In Review: one found there moves to In Progress.
 - A hot-fix closed as completed is Done, and one closed any other way leaves the board.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
 

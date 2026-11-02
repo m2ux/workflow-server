@@ -17,8 +17,8 @@ the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
 
-An open hot-fix, titled [F00], is Ready outside every priority set, and keeps In Progress or In
-Review once it holds one; nothing waits on it and it waits on nothing. A closed hot-fix is Done when
+An open hot-fix, titled [F00], is Ready outside every priority set, keeps In Progress once it
+holds it, and leaves In Review for In Progress; nothing waits on it and it waits on nothing. A closed hot-fix is Done when
 closed as completed, and is removed from the board otherwise.
 """
 import argparse
@@ -298,8 +298,8 @@ class Queue:
 
     def hotfixes(self) -> None:
         """Place each hot-fix, as Hot-fix Status in artifacts/board-queue.md states: an open one Ready
-        unless In Progress or In Review, one closed as completed Done, and one closed otherwise off
-        the board."""
+        unless In Progress, which it keeps, or In Review, which it leaves for In Progress; one closed as
+        completed Done; and one closed otherwise off the board."""
         for key, issue in self.issues.items():
             if not is_hotfix(issue) or key not in self.status:
                 continue
@@ -308,7 +308,9 @@ class Queue:
                     self.place(key, 'Done')
                 else:
                     self.removed.add(key)
-            elif self.status.get(key) not in ('In Progress', 'In Review'):
+            elif self.status.get(key) == 'In Review':
+                self.place(key, 'In Progress')
+            elif self.status.get(key) != 'In Progress':
                 self.place(key, 'Ready')
 
     def decide(self) -> None:
