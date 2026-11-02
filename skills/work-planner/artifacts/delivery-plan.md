@@ -10,6 +10,7 @@ Read these files first.
 - [Delivery Branches](delivery-branches.md)
 - [Work Item](work-item.md)
 - [Hot-fix Body](hotfix-body.md)
+- [Board](board.md)
 
 ## Operations
 
@@ -22,6 +23,15 @@ One delivery plan from supplied board and delivery evidence.
 1. Run [Fetch Default Branch](#fetch-default-branch) for each repository holding an open [hot-fix](hotfix-body.md) in the supplied board items.
 2. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter and each fetched default branch to `--default`.
 3. Return the units, holds, blockers, undeclared rows, merge candidates and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+
+### *Release* Hot-fix Hold
+
+A held hot-fix returned to the work the plan offers.
+
+**Inputs:** Board identity and the held hot-fix's issue identity.
+
+1. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready, as [Hot-fix Units](#hot-fix-units) states.
+2. Return the saved item and its Status to the caller.
 
 ## Fields
 

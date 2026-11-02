@@ -73,11 +73,14 @@ The main path meets [Outcomes](#outcomes).
    - Run [Task Merge](../protocols/task-merge.md) for each confirmed merge result, with the selected board identity.
 6. **Confirm.**
    Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
-   - Confirm the units to dispatch and the rows to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
-   - This mode reads no clock and reclaims nothing on its own, so a row the user leaves stays held.
-   - For each released row:
-     - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree.
-     - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+   - Confirm the units to dispatch and the holds to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
+   - This mode reads no clock and reclaims nothing on its own, so a hold the user leaves stays held.
+   - For each released hold:
+     - **Released row.**
+       - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree.
+       - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
+     - **Released hot-fix.**
+       - Run [Release Hot-fix Hold](../artifacts/delivery-plan.md#release-hot-fix-hold) with the selected board identity and the hot-fix issue.
      - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
    - No plan change after this step is put to the user. Each follows [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy).
@@ -185,7 +188,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 - **Review visible on the board.**
   The user sees each completed epic in review on its theme board, with its review pull request ready once its delivery evidence passes.
 - **Holds left to the user.**
-  A row a session holds is released only when the user says so, and a blocked row is named with what blocks it.
+  A hold is released only when the user says so, and a blocked row is named with what blocks it.
 - **One session for each unit.**
   Each confirmed unit has its own session, and a row another session holds is not given a second one.
 - **Delivery that runs unattended.**
