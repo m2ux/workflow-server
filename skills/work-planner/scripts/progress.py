@@ -52,8 +52,7 @@ belongs to an epic which names its task as next is not listed again.
 A hot-fix ([F00]) belongs to no initiative and follows the epic groups of each section: under
 Completed when Done and closed in the window, with each delivering pull request merged in the
 window; under In progress when In Progress or In Review, with each open delivering pull request;
-under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds; a shown
-hot-fix one of whose linking pull requests carries no base.repo.default_branch is named on stderr.
+under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds.
 --initiative leaves hot-fixes out.
 
 The window opens at the start of --since in local time, by default a week before today.
@@ -84,7 +83,7 @@ from pathlib import Path
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name
-from hotfix import HOTFIX, default_branch, delivering_pulls, hotfix_tag, linking_pulls
+from hotfix import HOTFIX, delivering_pulls, hotfix_tag
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -399,11 +398,7 @@ def main() -> int:
     hotfixes = {} if only else {k: tag for k, issue in issues.items() if (tag := hotfix_tag(issue))}
     for k, tag in sorted(hotfixes.items()):
         head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
-        delivering = delivering_pulls(list(by_url.values()), k, tag)
-        shown = done(k) or status.get(k) in ACTIVE
-        if shown and any(not default_branch(p) for p in linking_pulls(list(by_url.values()), k)):
-            unresolved.append(f"{tag} {issues[k]['html_url']}: a pull request linking it names no default "
-                              'branch in base.repo, so its delivery cannot be tested and it is left out')
+        delivering = delivering_pulls(list(by_url.values()), k, issues[k])
         if done(k):
             completed.hotfixes.append(f'{DONE} {head}')
             completed.hotfixes.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"

@@ -72,13 +72,9 @@ The worktree and branch one unit's session works in.
 **Inputs:** Project checkout, worktree path, task branch, its base and confirmed prerequisite evidence.
 
 1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).
-2. Where the supplied base is `(default branch)`, resolve its name in the project checkout of the repository the work changes:
-   - Run [Read Default Branch](#read-default-branch) in the project checkout.
-   - When it prints nothing, run [Set Remote Head](#set-remote-head) in the project checkout, then Read Default Branch again; stop when it still prints nothing.
-   - Use the printed name without its `origin/` prefix as the base.
-3. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the base; stop on failure.
-4. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base.
-5. Return the worktree path, branch and base, or the failure.
+2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the base; stop on failure.
+3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base.
+4. Return the worktree path, branch and base, or the failure.
 
 A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
 
@@ -259,26 +255,6 @@ Fetches one source branch from origin.
 
 ```bash
 git fetch origin '<source-branch>'
-```
-
-### Read Default Branch
-
-Prints the remote-tracking branch origin's HEAD names, such as `origin/main`, or nothing when it is unset.
-
-**Acts on:** the checkout it runs in.
-
-```bash
-git symbolic-ref --quiet --short refs/remotes/origin/HEAD
-```
-
-### Set Remote Head
-
-Records origin's default branch as `refs/remotes/origin/HEAD`, read from the remote.
-
-**Acts on:** the checkout it runs in.
-
-```bash
-git remote set-head origin --auto
 ```
 
 ### Publish Epic Base
