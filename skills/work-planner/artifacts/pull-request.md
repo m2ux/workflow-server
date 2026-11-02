@@ -145,15 +145,16 @@ The check-run and status evidence for one literal head commit.
 
 Merges each open task pull request whose test plan has passed.
 
-**Inputs:** Task pull request identity, its epic base, the project checkout, the unit checkout holding its task branch, the repository prerequisite and the passing test-plan evidence.
+**Inputs:** Task pull request identity, its base, the project checkout, the unit checkout holding its task branch, the repository prerequisite and the passing test-plan evidence.
 
-1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's epic base. The base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.
-2. Run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and epic base.
-   - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its epic base.
+1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's base, as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.
+2. Merge the task pull request.
+   - Where its base is an epic base, run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and that base.
+   - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.
    - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
    - Stop on a handoff for human approval.
    - If the merge is refused:
-     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its epic base.
+     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its base.
      - Repeat Fetch Merge Readiness for the updated task head.
      - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 3. Run [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
@@ -271,14 +272,14 @@ gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -f title='[I07:E00] Purpo
 
 ### Open Task Pull Request
 
-Creates a pull request from a unit's branch to its epic base.
+Creates a pull request from a unit's branch to its base.
 
-**Inputs:** Repository, title, task head, epic base and populated body file.
+**Inputs:** Repository, title, task head, base and populated body file.
 
-- Supply the epic prefix and purpose as title, the task branch as head, the epic base as base, and the complete body file.
+- Supply the title, the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the complete body file.
 
 ```bash
-gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<task-branch>' -f base='<epic-base>' -F 'body=@<body-file>' --jq .html_url
+gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<task-branch>' -f base='<base>' -F 'body=@<body-file>' --jq .html_url
 ```
 
 **Example:**
@@ -308,7 +309,7 @@ gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[I07:E00] Name' -f h
 
 ### Merge Pull Request
 
-Merges the task pull request into its epic base.
+Merges the task pull request into its base.
 
 **Inputs:** Pull request identity, current passing readiness evidence and confirmed authorization for the agent to merge.
 

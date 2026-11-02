@@ -1,6 +1,6 @@
 # Delivery Plan
 
-The available units, held rows, blocked work and merge candidates for one board.
+The available units, held rows and hot-fixes, blocked work and merge candidates for one board.
 
 ## Prerequisites
 
@@ -9,6 +9,7 @@ Read these files first.
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
 - [Work Item](work-item.md)
+- [Hot-fix Body](hotfix-body.md)
 
 ## Operations
 
@@ -18,25 +19,30 @@ One delivery plan from supplied board and delivery evidence.
 
 **Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files and optional record date.
 
-1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter.
-2. Return the units, holds, blockers, undeclared rows, merge candidates and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+1. Run [Fetch Default Branch](#fetch-default-branch) for each repository holding an open [hot-fix](hotfix-body.md) in the supplied board items.
+2. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter and each fetched default branch to `--default`.
+3. Return the units, holds, blockers, undeclared rows, merge candidates and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 
 ### Work Units
 
-A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit comes only from an epic that is Ready or In Progress in the supplied board items: the plan offers no other, and none other is held. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.
+A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit of rows comes only from an epic that is Ready or In Progress in the supplied board items: the plan offers no other row, and none other is held. A [hot-fix unit](#hot-fix-units) has no row. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.
+
+### Hot-fix Units
+
+An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. Its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it.
 
 ### Report Lines
 
-- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`.
+- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base main, worktree .worktrees/f00-key-validation`.
 - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero.
-- A `hold` line names a row a session holds and the record it links.
+- A `hold` line names a row a session holds and the record it links, or a hot-fix In Progress.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
 - A `merge` line names an open pull request whose test plan has passed and the epic base it targets.
-- An unresolved issue reference identifies missing dependency evidence.
+- An unresolved issue reference identifies missing dependency evidence, or a hot-fix whose repository's default branch the run was not given.
 
 ### Branch Context
 
@@ -55,15 +61,32 @@ Computes available work from supplied board and delivery snapshots.
 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
+- `--default` is one repository's default branch, as `<owner>/<repo>=<branch>`. Repeatable.
 
 `<epic-base-names>` is a comma-separated list of full epic-base branch names.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --default '<owner>/<repo>=<default-branch>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --default m2ux/workflow-server=main
+```
+
+### Fetch Default Branch
+
+Prints one repository's default branch.
+
+**Inputs:** Repository.
+
+```bash
+gh api 'repos/<owner>/<repo>' --jq .default_branch
+```
+
+**Example:**
+
+```bash
+gh api 'repos/m2ux/workflow-server' --jq .default_branch
 ```

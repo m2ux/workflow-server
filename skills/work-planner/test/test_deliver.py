@@ -762,3 +762,35 @@ class ProducerOutputs(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def hotfix(number: int) -> dict:
+    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
+                 labels=('type:hot-fix', 'theme:canon'),
+                 body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n- [ ] **AC2.** Also holds.\n')
+
+
+class HotFixUnits(unittest.TestCase):
+    def test_a_ready_hot_fix_is_one_unit_cut_from_the_default_branch(self):
+        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')),
+                     None, '--default', 'o/r=main')
+        self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
+                      'branch f04-key-validation, base main, worktree .worktrees/f04-key-validation', out)
+        self.assertIn('available: 1', out)
+
+    def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
+        out = survey(staged((hotfix(4), 'In Progress')), None, '--default', 'o/r=main')
+        self.assertIn('  hold F04 #4: In Progress', out)
+        self.assertNotIn('  unit ', out)
+
+    def test_a_hot_fix_in_backlog_or_closed_is_not_offered(self):
+        closed = hotfix(5)
+        closed['state'] = 'closed'
+        out = survey(staged((hotfix(4), 'Backlog'), (closed, 'Ready')), None, '--default', 'o/r=main')
+        self.assertNotIn('F04', out)
+        self.assertNotIn('F05', out)
+
+    def test_a_hot_fix_without_its_default_branch_is_unresolved(self):
+        out = survey(staged((hotfix(4), 'Ready')))
+        self.assertIn('unresolved: F04 #4: the default branch of o/r is not given', out)
+        self.assertNotIn('  unit ', out)

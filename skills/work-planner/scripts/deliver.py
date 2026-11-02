@@ -5,7 +5,7 @@ Usage:
   python3 deliver.py --items items.json --prs prs.json --links links.json
       [--others issue-750.json ...]
       [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
-      [--engineering .engineering] [--date 2026-10-06]
+      [--engineering .engineering] [--date 2026-10-06] [--default o/r=main ...]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL]
@@ -47,6 +47,13 @@ to read; the file's declaration line names the long-lived branch and the path of
 A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
 its session writes the work item after dispatch, so its unit works on every epic base.
 
+An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever any epic's state,
+as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
+its record folder and branch come from its prefix and its title's name, and its base is its
+repository's default branch, which --default gives as owner/repo=branch, once for each repository. A hot-fix In Progress is held by its dispatch
+and printed on a hold line. A hot-fix whose repository's default branch is not given is printed
+unresolved.
+
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
 and --agent-reviews supply the current integration revisions and their review records. The calls are
@@ -83,6 +90,8 @@ from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
+HOTFIX = re.compile(r'^\[(F\d\d)\] ([^:]*)')
+CRITERION_LABEL = re.compile(r'^- \[[ xX]\] \*\*(AC\d+)\.\*\*', re.M)
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
@@ -259,6 +268,33 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
+def hotfix_units(issues: dict, status: dict, defaults: dict[str, str], home: str, when: str,
+                 unresolved: list[str]) -> tuple[list[str], int, int]:
+    """The unit and hold lines of each open hot-fix Ready or In Progress, as Hot-fix Units in
+    artifacts/delivery-plan.md states, with the count of each."""
+    lines, available, held = [], 0, 0
+    for key in sorted(issues):
+        issue = issues[key]
+        matched = HOTFIX.match(issue.get('title') or '')
+        if not matched or issue['state'] != 'open' or status.get(key) not in STARTED:
+            continue
+        tag, where = matched[1], f'{matched[1]} {label(key, home)}'
+        if status[key] == 'In Progress':
+            lines.append(f'  hold {where}: In Progress')
+            held += 1
+            continue
+        base = defaults.get(key[0].lower())
+        if not base:
+            unresolved.append(f'{where}: the default branch of {key[0]} is not given')
+            continue
+        name = names(tag, matched[2], key[1], when)
+        coverage = ', '.join(dict.fromkeys(CRITERION_LABEL.findall(issue.get('body') or '')))
+        lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
+                     f'branch {name["branch"]}, base {base}, worktree {WORKTREES}/{name["branch"]}')
+        available += 1
+    return lines, available, held
+
+
 def plan_passed(body: str) -> bool:
     """Whether every check's Pass result is a tick, plain or linked to its evidence."""
     rows = plan_rows(body)
@@ -387,6 +423,17 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
+    defaults = {}
+    for given in args.default:
+        repo, _, branch = given.partition('=')
+        if not repo or not branch:
+            sys.exit(f'--default {given}: expected owner/repo=branch')
+        defaults[repo.lower()] = branch
+    lines, found, holding = hotfix_units(issues, status, defaults, home, when, board.unresolved)
+    for line in lines:
+        print(line)
+    available += found
+    held += holding
     for line in dict.fromkeys(board.outputs.lines):
         print(f'  output {line}')
     merging = ready_merges(issues, prs, lived)
@@ -549,6 +596,8 @@ def main() -> int:
     parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
     parser.add_argument('--engineering', default='', help='the checkout holding the planning records each free row or released row links')
     parser.add_argument('--bases', default='', help='epic bases, comma-separated, e.g. i07/e00/main,i07/e00/workflows')
+    parser.add_argument('--default', action='append', default=[],
+                        help="a hot-fix repository's default branch, e.g. o/r=main; repeat for each repository")
     parser.add_argument('--progress', help='issues to set In Progress, e.g. 637,943')
     parser.add_argument('--review', help='epics to set In Review, e.g. 943')
     parser.add_argument('--agent-reviews', help='published agent review records as a JSON list')

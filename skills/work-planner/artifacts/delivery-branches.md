@@ -7,6 +7,7 @@ The long-lived branches, epic bases and task branches used for delivery.
 Read these files first.
 
 - [Work Item](work-item.md)
+- [Hot-fix Body](hotfix-body.md)
 
 ## Operations
 
@@ -53,13 +54,13 @@ The current long-lived target merged into an epic base.
 
 ### *Update* Task Branch
 
-The current epic base merged into a unit's task branch.
+The current base merged into a unit's task branch.
 
-**Inputs:** Unit checkout, task branch name and corresponding epic base branch.
+**Inputs:** Unit checkout, task branch name and its base, as [Task Branches](#task-branches) names it.
 
-1. Run [Fetch Remote Branch](#fetch-remote-branch) in the unit checkout with the epic base, such as `i07/e00/main`.
+1. Run [Fetch Remote Branch](#fetch-remote-branch) in the unit checkout with the base, such as `i07/e00/main`.
 2. Stop on failure.
-3. Run [Merge Remote Branch](#merge-remote-branch) in the unit checkout with the epic base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported.
+3. Run [Merge Remote Branch](#merge-remote-branch) in the unit checkout with the base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported.
 4. After a successful merge:
    - Run [Push Task Branch](#push-task-branch) in the unit checkout with the task branch as destination.
    - Return the updated branch or the failure.
@@ -68,11 +69,11 @@ The current epic base merged into a unit's task branch.
 
 The worktree and branch one unit's session works in.
 
-**Inputs:** Project checkout, worktree path, task branch, its epic base and confirmed prerequisite evidence.
+**Inputs:** Project checkout, worktree path, task branch, its base and confirmed prerequisite evidence.
 
 1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).
-2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the supplied epic base; stop on failure.
-3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched epic base.
+2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the supplied base; stop on failure.
+3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base.
 4. Return the worktree path and branch or the failure.
 
 A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
@@ -180,6 +181,8 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
   A unit whose rows name more than one long-lived branch takes one task branch per epic base it changes, cut from that base, since the bases share no history. Each is the unit's branch with the base's long-lived branch as its last slug word, and opens its own pull request into its own base.
 - **Example.**
   A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
+- **Hot-fix.**
+  A [hot-fix](hotfix-body.md)'s branch is cut from the repository's default branch, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its pull request is opened from this branch into the default branch.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 
@@ -310,16 +313,16 @@ git push origin HEAD:refs/heads/i07/e00/w01-queue-plan
 
 ### Add Task Worktree
 
-Creates a task branch and worktree at the fetched epic base.
+Creates a task branch and worktree at the fetched base.
 
-**Inputs:** Worktree path, task branch, fetched epic base and confirmed prerequisite evidence.
+**Inputs:** Worktree path, task branch, fetched base and confirmed prerequisite evidence.
 
 **Acts on:** the checkout it runs in.
 
 - The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
 
 ```bash
-git worktree add '<worktree-path>' -b '<task-branch>' 'origin/<epic-base>'
+git worktree add '<worktree-path>' -b '<task-branch>' 'origin/<base>'
 ```
 
 **Example:**
