@@ -211,7 +211,8 @@ class UnitState(unittest.TestCase):
 
     def test_an_open_draft_delivering_pull_request_leaves_it_draft(self):
         draft = pr(951, '[F04] Reject Bad Keys', base='main', draft=True)
-        self.assertEqual(unit_state(hotfix(), 'In Progress', [draft], [draft]), 'draft')
+        self.assertEqual(unit_state(hotfix(), 'Ready', [draft], [draft]), 'draft')
+        self.assertEqual(unit_state(hotfix(), 'In Progress', [draft], [draft]), 'hold')
         ready = pr(951, '[F04] Reject Bad Keys', base='main')
         self.assertEqual(unit_state(hotfix(), 'In Progress', [ready], [ready]), 'running')
         stray = pr(952, 'Unrelated Work', base='main', draft=True)

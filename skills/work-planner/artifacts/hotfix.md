@@ -42,7 +42,8 @@ A held hot-fix returned to the work the delivery plan offers.
 **Inputs:** Board identity and the held hot-fix's issue identity.
 
 1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
-   - Refuse the release while its [Delivery Unit](#delivery-unit) is running, draft or unrecorded, and return the pull request that makes it so to the caller. A draft one is resumed at its review rather than released.
+   - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
+   - A hot-fix whose review cycle is incomplete keeps its draft delivering pull request, and its release leaves it draft for a session to resume.
 2. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's complete JSON, then [Check Hot-fix Format](#check-hot-fix-format) with it.
 3. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and the status [Board Status](#board-status) gives an open hot-fix released to Ready with those faults.
 4. Return the saved item and its Status to the caller.
@@ -92,7 +93,7 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 - **Running.**
   Any open pull request whose Development field links it, other than a draft delivering one, makes it running: it is neither offered nor held. A linking pull request is enough to keep a second session off it, while only a [delivering pull request](#delivering-pull-request) is merged or recorded as its fix.
 - **Draft.**
-  Open linking pull requests that are all draft delivering ones leave its review cycle incomplete: it is neither offered nor released, and a session resumes it at its review.
+  Open linking pull requests that are all draft delivering ones leave its review cycle incomplete. While it holds In Progress, that status is the hold of the session working its review. Otherwise its review has stopped: it is draft, resumed at its review and never offered as a new unit.
 - **Unrecorded.**
   A merged delivering pull request on an open hot-fix leaves its merge awaiting the [delivery record](#delivery-record), whoever merged it.
 - **Hold.**

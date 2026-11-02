@@ -851,11 +851,18 @@ class HotFixUnits(unittest.TestCase):
     def test_a_hot_fix_whose_review_stopped_on_a_draft_is_reported_draft(self):
         pulls = [pr(951, '[F04] Reject Bad Keys', base='workspace', draft=True),
                  pr(950, '[F04] Reject Bad Keys', base='workspace', draft=True, state='closed')]
-        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls,
+        out = survey(staged((hotfix(4, target='workspace'), 'Ready')), pulls,
                      held=(links(951, 4), links(950, 4)))
         self.assertIn('  draft F04 #4: #951 awaits its review cycle', out)
         self.assertNotIn('hold F04', out)
+        self.assertNotIn('unit F04', out)
         self.assertIn('draft: 1', out)
+
+    def test_a_draft_whose_session_holds_it_is_a_hold_and_cannot_be_resumed(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', base='workspace', draft=True)]
+        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls, held=(links(951, 4),))
+        self.assertIn('  hold F04 #4: In Progress', out)
+        self.assertNotIn('  draft F04', out)
 
     def test_a_hot_fix_an_open_pull_request_links_is_running(self):
         out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
