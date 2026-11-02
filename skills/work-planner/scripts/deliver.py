@@ -39,7 +39,8 @@ task is unavailable; an output line for each producer output a row naming anothe
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
 an open pull request, never a draft, that targets the epic base when its test plan has passed, or for an open
 pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
-targets the hot-fix's target when its test plan has passed; and an unresolved line for
+targets the hot-fix's target when its test plan has passed and that target is one a unit line could
+name; and an unresolved line for
 an issue not given. A run that met an unresolvable entry, an undeclared row or an undeclared hot-fix
 exits 1.
 
@@ -358,9 +359,9 @@ def plan_passed(body: str) -> bool:
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
-def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
+def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], repository: str) -> list[str]:
     """Open pull requests, never a draft, whose test plan has passed: a task's into its epic base, and a hot-fix's
-    into its target."""
+    into its target, when target_fault finds nothing against that target."""
     epics, hotfixes = {}, {}
     for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
@@ -374,7 +375,7 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> lis
             continue
         base = (pull.get('base') or {}).get('ref') or ''
         if tag := hotfix_tag(pull):
-            if (any(delivering_pulls([pull], key, fixed)
+            if (any(delivering_pulls([pull], key, fixed) and not target_fault(key, fixed, names, repository)[0]
                     for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue
@@ -488,7 +489,7 @@ def survey(args: argparse.Namespace) -> int:
     undeclared += unnamed
     for line in dict.fromkeys(board.outputs.lines):
         print(f'  output {line}')
-    merging = ready_merges(issues, prs, lived)
+    merging = ready_merges(issues, prs, lived, repository)
     for line in merging:
         print(line)
     for note in dict.fromkeys(board.unresolved):

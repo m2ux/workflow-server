@@ -787,6 +787,18 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('base workspace', out)
         self.assertIn('undeclared: 1', out)
 
+    def test_a_passed_pull_request_into_an_undeclared_target_is_no_merge_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'git@github.com:o/r.git')
+            pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='feature/x'),
+                     pr(952, '[F05] Reject Bad Keys', body=PLAN, base='workspace')]
+            out = survey(staged((hotfix(4, target='feature/x'), 'In Progress'),
+                                (hotfix(5, target='workspace'), 'In Progress')),
+                         pulls, *names, held=(links(951, 4), links(952, 5)))
+        self.assertNotIn('merge #951', out)
+        self.assertIn('  merge #952 F05: base workspace', out)
+
     def test_a_hot_fix_of_another_repository_is_unresolved_without_failing_the_run(self):
         with tempfile.TemporaryDirectory() as tmp:
             names = declared(Path(tmp), 'main', 'workspace')
