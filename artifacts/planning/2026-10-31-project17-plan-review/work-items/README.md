@@ -45,14 +45,13 @@ Snapshot: 2026-10-31. Source inspected at workspace commit `04de875a8517dcf22946
 | E14:W01 | [W01](e14/w01.md) | `workspace:skills/guidelines.md` |
 | E14:W02 | [W02](e14/w02.md) | `workspace:skills/guidelines.md` |
 | E14:W03 | [W03](e14/w03.md) | `workspace:skills/work-planner/SKILL.md` |
-| E14:W04 | [W04](e14/w04.md) | `workspace:skills/workflow-canon/SKILL.md` (retired) |
+| E14:W04 | [W04](e14/w04.md) | `workspace:skills/guidelines.md` |
 | E14:W05 | [W05](e14/w05.md) | `workspace:skills/guidelines.md` |
 | E14:W06 | [W06](e14/w06.md) | `workspace:skills/guidelines.md` |
-| E14:W07 | [W07](e14/w07.md) | `workspace:skills/guidelines.md` |
-| E14:W08 | [W08](e14/w08.md) | `workspace:skills/scripts/check_skill_files.py` |
-| E14:W09 | [W09](e14/w09.md) | `workspace:skills/guidelines.md` |
-| E14:W10 | [W10](e14/w10.md) | `workspace:skills/scripts/check_skill_files.py` |
-| E14:W11 | [W11](e14/w11.md) | `engineering:artifacts/planning/2026-10-13-i11-e14-binding-citations/efficacy.md` |
+| E14:W07 | [W07](e14/w07.md) | `workspace:skills/scripts/check_skill_files.py` |
+| E14:W08 | [W08](e14/w08.md) | `workspace:skills/guidelines.md` |
+| E14:W09 | [W09](e14/w09.md) | `workspace:skills/scripts/check_skill_files.py` |
+| E14:W10 | [W10](e14/w10.md) | none: changes no long-lived branch |
 | E16:W01 | [W01](e16/w01.md) | `skills/work-planner/scripts` |
 | E16:W02 | [W02](e16/w02.md) | `skills/work-planner/scripts` |
 | E16:W03 | [W03](../../2026-10-31-1474-e16-task-boundaries/w03.md) | `skills/work-planner/scripts/closure-sweep.py` |

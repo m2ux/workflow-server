@@ -4,9 +4,9 @@ User selected A: one owner, a pinned baseline and no increase for every matched 
 
 ## Ownership and order
 
-- E14 W11 owns the final comparison and verdict, covering E14 AC23 and I11 AC30.
+- E14 W10 owns the final comparison and verdict, covering E14 AC22 and I11 AC30.
 - E10 W23/AC34 supplies reproducible measurements; it does not own another no-increase criterion.
-- E14 W11 waits for E14 W10 final manifests and E10 W26 final whole-corpus verification. No E10 task depends on E14, so this introduces no cycle.
+- E14 W10 waits for E14 W09 final manifests and E10 W26 final whole-corpus verification. No E10 task depends on E14, so this introduces no cycle.
 - E12 historical measurements retain their completed record; I11's active AC30 coverage belongs to E14 alone.
 
 ## Baseline and instrument
@@ -17,7 +17,7 @@ Use one pinned instrument implementation on both revisions with identical scenar
 
 ## Scenario roster
 
-Each case is a complete mode run, with the same task facts and branch conditions on both revisions:
+Each case is a complete Work Planner mode run, with the same task facts and branch conditions on both revisions:
 
 | Skill | Mode | Fixed scenario intent |
 | --- | --- | --- |
@@ -31,10 +31,6 @@ Each case is a complete mode run, with the same task facts and branch conditions
 | Work Planner | Hoist | Place a standalone issue |
 | Work Planner | Standup | Summarize the board's reporting window |
 | Work Planner | Revise | Change the skill's instructions |
-| Workflow Canon | Author | Author an activity definition |
-| Workflow Canon | Audit | Audit a workflow against the canon |
-| Workflow Canon | Review | Assess integration readiness |
-| Workflow Canon | Revise | Change the skill's instructions |
 
 Freeze concrete fixture inputs for every case before running either side; the roster above fixes coverage, not fabricated run data. Include any additional modes present in either measured revision. A missing counterpart, required source or scenario result is unresolved and blocks the whole verdict; do not drop that case or treat it as zero. New unmatched behavior requires an explicit comparable scenario decision.
 
@@ -48,6 +44,6 @@ Missing, incomplete, incomparable or failing evidence blocks the verdict. Record
 
 ## Status
 
-This defines the required comparison; it does not claim measurements or a passing verdict. I11 AC30, E10 AC34 and E14 AC23 remain unchecked. F12 is reconciled at plan level.
+This defines the required comparison; it does not claim measurements or a passing verdict. I11 AC30, E10 AC34 and E14 AC22 remain unchecked. F12 is reconciled at plan level.
 
 All three published issue bodies match exact live readbacks.

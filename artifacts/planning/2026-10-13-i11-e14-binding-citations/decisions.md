@@ -32,15 +32,15 @@ Of Work Planner's 119 whole-file citations, 42 stand inside a procedure step and
 | --- | --- | --- | --- |
 | An author weighing two layouts has the targets to weigh them against | AC32 | E14 | AC1 |
 | A reader can tell from the instructions when a citation is loaded | AC32 | E14 | AC2, AC3, AC4 |
-| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC5, AC6 |
-| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC7, AC8, AC9 |
-| A prerequisite is met where the step that needs it stands | AC32 | E14 | AC10, AC11, AC12 |
-| A link is what the reader opens | AC32 | E14 | AC13, AC14, AC15 |
-| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC16, AC17, AC18 |
-| The payload a run injects is derived and reviewed rather than inferred | AC32 | E14 | AC19, AC20, AC21 |
-| A check is met as a purpose rather than a path | AC32 | E14 | AC24, AC25, AC26 |
-| A bound step is performed with the content its citation names | AC33 | E14 | AC22 |
-| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC23 |
+| The obligation names the section the reader needs, not the file holding it | AC32 | E14 | AC5 |
+| A whole-file citation says which case calls for it, or calls for every case | AC32 | E14 | AC6, AC7, AC8 |
+| A prerequisite is met where the step that needs it stands | AC32 | E14 | AC9, AC10, AC11 |
+| A link is what the reader opens | AC32 | E14 | AC12, AC13, AC14 |
+| A citation's scope is decided by a check rather than by the author's care | AC32 | E14 | AC15, AC16, AC17 |
+| The payload a run injects is derived and reviewed rather than inferred | AC32 | E14 | AC18, AC19, AC20 |
+| A check is met as a purpose rather than a path | AC32 | E14 | AC23, AC24, AC25 |
+| A bound step is performed with the content its citation names | AC33 | E14 | AC21 |
+| The obligation does not cost the reader more retrieval than the layout it replaces | AC30 | E14 | AC22 |
 
 AC32 answers no requirement of the initiative's source specification. It states what this session's measurement found: the specification requires calling prose to link a specification by name, and says nothing about what the reader owes that link.
 
@@ -174,22 +174,22 @@ The shared guide defines each check the workspace runs — what it decides, whic
 
 ## Chains
 
-Final evidence follows citation changes: W10 depends on W06, W07 and W09; W09 depends on W08, which depends on W05. W11 follows W10. W05 is therefore a transitive prerequisite of both final evidence tasks. Task identities remain stable; their numbers do not imply dispatch order.
+Final evidence follows citation changes: W09 depends on W05, W06 and W08; W08 depends on W07, which depends on W04. W10 follows W09. W04 is therefore a transitive prerequisite of both final evidence tasks. Task identities remain stable; their numbers do not imply dispatch order.
 
 Final manifests and final efficacy/retrieval walks identify the settled corpus revision. Later input changes require regeneration of affected evidence. Generator implementation and its documentation are included before the final walks.
 
 ## Joins
 
-W01 and W02 share one pull request, and so do W06 and W07. W05 stays its own pull request, since it heads the path W08, W09, W10. [Joins](joins.md) answers each candidate unit the dependency check reports.
+W01 and W02 share one pull request, and so do W05 and W06. W04 stays its own pull request, since it heads the path W07, W08, W09. [Joins](joins.md) answers each candidate unit the dependency check reports.
 
 ## Final retrieval verdict
 
-E14 W11 owns I11 AC30 through E14 AC23. E10 W23 supplies measurements; E10 W26 completes verification of its contributing changes. The [pinned comparison contract](../2026-10-31-project17-plan-review/retrieval-baseline.md) defines baseline, scenarios, metric and pass conditions. E12 records remain historical measurements, not proof of this final verdict.
+E14 W10 owns I11 AC30 through E14 AC22. E10 W23 supplies measurements; E10 W26 completes verification of its contributing changes. The [pinned comparison contract](../2026-10-31-project17-plan-review/retrieval-baseline.md) defines baseline, scenarios, metric and pass conditions. E12 records remain historical measurements, not proof of this final verdict.
 
 ## Scope
 
 The user's decision of 2 November 2026: I11 changes only Work Planner and the shared skill files, the guidelines, the rules, the shared skill-file check and its tests. Workflow Canon, GitNexus and server-in-the-loop stand outside it, and no GitHub workflow runs the skill check.
 
-- W04 is retired, and AC6, AC9, AC12 and AC15, which bound Workflow Canon alone, stand as ticked placeholders on the rows that covered them.
-- AC21, which required a manifest in every skill directory, is retired the same way; AC19, AC22, AC23 and AC25 name Work Planner.
+- Workflow Canon's citation task and its criterion carry no row. AC8, AC11 and AC14, which bound Workflow Canon alone, stand as ticked placeholders on the rows that covered them.
+- AC20, which required a manifest in every skill directory, is retired the same way; AC18, AC21, AC22 and AC24 name Work Planner.
 - The measurements above stand as counted on `3c0f1ff5`; the epic body cites Work Planner's alone.
