@@ -17,9 +17,9 @@ An organization's board is under orgs/{owner} in place of users/{owner}.
 The board covers the initiative, every epic its Work Breakdown links, and each task issue whose
 title names a task of those epics or whose issue an epic row links, in whichever repository each
 lives. An issue is known by its repository and number, so an epic another repository holds is tracked like one of the initiative's own, and two
-repositories' issues of one number stay apart. An item already on the board for an issue those
-bodies cite, closed other than as completed (an issue a task subsumed), is removed. Each issue's
-Status, first match wins:
+repositories' issues of one number stay apart. Every item on the board whose issue is closed
+other than as completed is removed, whether or not those bodies cite it. Each issue's Status, first
+match wins:
   Done         closed as completed
   (removed)    closed any other way
   In Review    an open initiative whose criteria are all ticked; an epic with ticked criteria and
@@ -577,9 +577,7 @@ def main() -> int:
         on_board[key] = (item_id, held)
         if key not in status and content['state'] == 'closed' and not completed(content):
             issues.setdefault(key, content)
-            cited = re.compile(rf"{re.escape(content['html_url'])}\b")
-            if any(cited.search(i.get('body') or '') for i in (initiative, *epics.values(), *tasks.values())):
-                status[key] = None
+            status[key] = None
 
     for key, wanted in list(status.items()):
         if wanted not in (UNPLACED, RETAINED):

@@ -490,14 +490,18 @@ STATUSES = ('Backlog', 'Ready', 'In Progress', 'In Review', 'Done')
 
 
 def placed(initiative: dict, epics: list[tuple[dict, str | None]], pulls: list[dict] = (),
-           initiative_status: str | None = 'Backlog', reviews=(), held=(), code: int = 0) -> str:
-    """board.py on one initiative and its epics, each with the Status it holds; None is off the board."""
+           initiative_status: str | None = 'Backlog', reviews=(), held=(), code: int = 0,
+           others: tuple[tuple[dict, str], ...] = ()) -> str:
+    """board.py on one initiative and its epics, each with the Status it holds; None is off the board.
+    Others are further board items, each with its Status, that board.py is not given as issues."""
     initiative['id'] = 11
     on_board = [] if initiative_status is None else [{**item(initiative, initiative_status), 'id': 100}]
     for n, (epic, status) in enumerate(epics):
         epic['id'] = 12 + n
         if status is not None:
             on_board.append({**item(epic, status), 'id': 101 + n})
+    for n, (other, status) in enumerate(others):
+        on_board.append({**item(other, status), 'id': 300 + n})
     with tempfile.TemporaryDirectory() as tmp:
         files = {name: Path(tmp, f'{name}.json') for name in ('initiative', 'fields', 'items', 'prs',
                                                               'links', 'reviews')}
@@ -612,6 +616,32 @@ class InitiativeMembership(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
         for held in ('Backlog', 'Ready', 'In Progress'):
             self.assertNotIn('[I01] First: Initiative:', placed(listing(2), [(epic, 'Ready')], [], held))
+
+
+class ClosedRemoval(unittest.TestCase):
+    """Every board item closed other than as completed leaves the board, cited or not."""
+
+    def closed(self, number: int, reason: str) -> dict:
+        dropped = issue(number, f'[I01:E0{number}] Dropped: Epic', 'closed')
+        dropped['state_reason'] = reason
+        return dropped
+
+    def test_a_cited_item_closed_as_not_planned_is_removed(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        initiative = listing(2)
+        initiative['body'] += f"\nSuperseded: {url('issues', 5)}\n"
+        out = placed(initiative, [(epic, 'Ready')], others=((self.closed(5, 'not_planned'), 'Done'),))
+        self.assertIn('remove #5 [I01:E05] Dropped: Epic (closed, not completed)', out)
+
+    def test_an_uncited_item_closed_as_not_planned_is_removed(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        out = placed(listing(2), [(epic, 'Ready')], others=((self.closed(5, 'not_planned'), 'Done'),))
+        self.assertIn('remove #5 [I01:E05] Dropped: Epic (closed, not completed)', out)
+
+    def test_an_uncited_item_closed_as_completed_keeps_its_place(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Go', '')))
+        out = placed(listing(2), [(epic, 'Ready')], others=((self.closed(5, 'completed'), 'Done'),))
+        self.assertNotIn('#5', out)
 
 
 if __name__ == '__main__':
