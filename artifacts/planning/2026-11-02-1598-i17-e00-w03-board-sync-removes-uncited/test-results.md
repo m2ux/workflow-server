@@ -29,3 +29,9 @@ Run from skills/work-planner: `python3 -m unittest discover -s test`
 Run in the worktree: `python3 skills/scripts/check_skill_files.py skills/work-planner`
 
 - Result: 52 files checked, 0 findings.
+
+## Merged Base
+
+Run from skills/work-planner at the merge commit 2d89d3b6b00761936e5d239fce108825b32fd3ac on i17/e00/workspace, which also carries W02.
+
+- Result: 801 tests, OK (1 skipped).
