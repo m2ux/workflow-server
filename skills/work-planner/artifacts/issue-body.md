@@ -151,6 +151,10 @@ An acceptance criterion meets these. A kind adds its own under its Acceptance Cr
 - **One invariant.**
   Each criterion states a single condition that holds or does not. One joining several is split, and the Coverage cells cite the new ones. A condition over a list of subjects is one condition.
 
+#### Criterion Labels
+
+Criteria are labelled `AC1` onward, in ascending order. A criterion that leaves a body takes its label with it, and the criteria that remain keep theirs, since other work cites them, so the labels may ascend with a gap.
+
 #### Verifiable
 
 - Subjective wording is an observable pass or fail, or the criterion is absent.
