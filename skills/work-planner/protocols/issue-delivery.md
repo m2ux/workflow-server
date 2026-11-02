@@ -13,16 +13,16 @@ Read these files first.
 - [Epic](../artifacts/epic.md)
 - [Acceptance Criteria](../artifacts/acceptance-criteria.md)
 - [Issue](../artifacts/issue.md)
-- [Hot-fix Body](../artifacts/hotfix-body.md)
+- [Hot-fix](../artifacts/hotfix.md)
 
 ## Procedure
 
 1. **Hot-fix.**
-   For a [hot-fix](../artifacts/hotfix-body.md):
+   For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
    - Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for each criterion it carries, with its current body, the delivering pull request, its merged revision, named instruments and the project checkout.
-   - Pass the returned verified criterion ids to [Record Hot-fix Delivery](../artifacts/hotfix-body.md#record-hot-fix-delivery), with the hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number and output body file.
+   - Pass the returned verified criterion ids to [Record Hot-fix Delivery](../artifacts/hotfix.md#record-hot-fix-delivery), with the hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number and output body file.
    - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-   - Return the saved identity and findings to the caller. A hot-fix has no epic row to record.
+   - Return the saved identity and findings to the caller.
 2. **Task issues.**
    Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) for each criterion the delivered task covers, with its current body, delivery findings, delivery revisions, named instruments and the project checkout.
    - Pass the returned verified criterion ids to [Record Task Delivery](../artifacts/task-body.md#record-task-delivery).

@@ -12,9 +12,7 @@ Read these files first.
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Standalone Body](standalone-body.md)
 - [Hot-fix Body](hotfix-body.md)
-- [Board](board.md)
-- [Board Queue](board-queue.md)
-- [Repository Labels](repository-labels.md)
+- [Hot-fix](hotfix.md)
 - [Dependency Graph](dependency-graph.md)
 
 ## Operations
@@ -68,9 +66,7 @@ One selected destination for an orphan's work.
      - Run [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
      - Publish through [Save Tracker Issue](issue.md#save-tracker-issue).
    - **Hot-fix.**
-     - Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
-     - Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
-     - Run [Place Issue on Board](board.md#place-issue-on-board) with the confirmed theme board, the source issue and the status [Hot-fix Status](board-queue.md#hot-fix-status) gives an open hot-fix.
+     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue and the confirmed theme board.
      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
    - **Leave.**
      - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.

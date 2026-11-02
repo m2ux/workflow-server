@@ -1,6 +1,6 @@
 # Hot-fix Body
 
-Populates one hot-fix issue body and records its delivery.
+Populates one hot-fix issue body.
 
 ## Prerequisites
 
@@ -9,7 +9,7 @@ Read these files first.
 - [Issue Body](issue-body.md)
 - [Standalone Body](standalone-body.md)
 - [Board Queue](board-queue.md)
-- [Task Body](task-body.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -24,15 +24,6 @@ One hot-fix body from a confirmed defect.
   - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
   - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
   - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
-
-### *Record* Hot-fix Delivery
-
-One hot-fix body with its confirmed delivery and verified criteria recorded.
-
-**Inputs:** Hot-fix JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
-
-1. Run [Sync Task Issue](task-body.md#sync-task-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue.
 
 ## Fields
 
@@ -51,7 +42,7 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 - A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
 - It sits on its theme's board.
-- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by [Hot-fix Status](board-queue.md#hot-fix-status), outside the priority sets.
+- Its priority 10, which its [Titles](#titles) label carries, ranks it nowhere: the queue places it by its [Board Status](hotfix.md#board-status), outside the priority sets.
 
 ### Debt
 

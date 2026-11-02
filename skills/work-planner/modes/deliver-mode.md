@@ -18,7 +18,7 @@ Read these files first.
 - [Delivery Plan](../artifacts/delivery-plan.md)
 - [Issue](../artifacts/issue.md)
 - [Task Merge](../protocols/task-merge.md)
-- [Hot-fix Hold](../protocols/hotfix-hold.md)
+- [Hot-fix](../artifacts/hotfix.md)
 - [Guidelines](../guidelines.md)
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Planning Record](../artifacts/planning-record.md)
@@ -85,23 +85,23 @@ The main path meets [Outcomes](#outcomes).
        - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree.
        - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - **Released hot-fix.**
-       - Run [Release Hot-fix Hold](../artifacts/delivery-plan.md#release-hot-fix-hold) with the selected board identity and the hot-fix issue.
+       - Run [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold) with the selected board identity and the hot-fix issue.
      - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
    - No plan change after this step is put to the user. Each follows [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy).
 7. **Hold.**
    For each confirmed unit, before its session starts:
+   - For a unit of rows, read the component each row declares from the work-item file the planning record that registered it holds, before a reservation replaces the row's link.
+   - Add its record with [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record), named as the `unit` line gives it.
+   - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
    - **Unit of rows.**
-     - Read the component each of the unit's rows declares from the work-item file the planning record that registered it holds, before a reservation replaces the row's link.
-     - Add its record with [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record), named as the `unit` line gives it.
-     - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
      - Run [Reserve Task Rows](../artifacts/epic-issue-body.md#reserve-task-rows) for the unit's tasks, with the board items the latest Plan Available Work read.
      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the body it writes.
      - Set each task issue of the unit, where one exists, to In Progress and its epic with [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status).
      - A unit's record exists, its row carries that record's link, and the body is patched, before its session starts. A session is never dispatched for a row another one holds.
      - A held row stays held while its session plans and implements. The pull request's link replaces the record's link, which frees the row.
    - **Hot-fix unit.**
-     - Follow [Hot-fix Hold](../protocols/hotfix-hold.md) with its `unit` line, the selected board identity and the board items the latest Plan Available Work read.
+     - Run [Hold Hot-fix Unit](../artifacts/hotfix.md#hold-hot-fix-unit) with its issue, the selected board identity and the board items the latest Plan Available Work read.
    - Retain the queue decisions returned by the completed advance step.
 8. **Dispatch.**
    - Confirm each epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its rows' changes bring, each with the declared row delivering it.
@@ -109,7 +109,7 @@ The main path meets [Outcomes](#outcomes).
 
    For each held unit:
    - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) in the project checkout for each branch the `unit` line names, with its base and worktree.
-   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the confirmed unit, the component each of its rows declares or a [hot-fix unit](../artifacts/delivery-plan.md#hot-fix-units)'s component, reserved folder, worktrees, the project checkout, test obligations, selected board identity, this run's allowance and [Run Delivery Session](#run-delivery-session) as the supplied execution procedure.
+   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the confirmed unit, the component each of its rows declares or a [hot-fix unit](../artifacts/hotfix.md#delivery-unit)'s component, reserved folder, worktrees, the project checkout, test obligations, selected board identity, this run's allowance and [Run Delivery Session](#run-delivery-session) as the supplied execution procedure.
    - Resolve any returned gap before dispatch.
    - The agent running this mode starts each unit through the sub-agent dispatch of the session it was called from, and that dispatch is the only way a unit's session starts.
    - When that session provides no sub-agent dispatch, this mode reports that and stops before any unit begins.
@@ -131,7 +131,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Use its confirmed unit, criteria, tests, each task branch with its base and worktree, planning-folder identity and change allowance.
    - Return missing context before starting.
 2. **Confirm the reservation.**
-   Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or the hold [Hot-fix Units](../artifacts/delivery-plan.md#hot-fix-units) defines for a hot-fix unit.
+   Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or the hold a hot-fix's [Delivery Unit](../artifacts/hotfix.md#delivery-unit) defines.
 3. **Plan.**
    Call [Populate Work Item](../artifacts/work-item.md#populate-work-item) for each task with its reserved file path, scope, design, component, criteria and test requirements from the confirmed delivery brief, so the component the plan was checked against is the one this file declares.
    - Add any further file the work needs, as [Layout](../artifacts/planning-record.md#layout) describes.

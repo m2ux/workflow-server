@@ -7,7 +7,7 @@ The long-lived branches, epic bases and task branches used for delivery.
 Read these files first.
 
 - [Work Item](work-item.md)
-- [Hot-fix Body](hotfix-body.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -182,7 +182,7 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
 - **Example.**
   A unit changing `main` and `workflows` works on `i01/e02/w04-write-defaults-main` from `i01/e02/main` and `i01/e02/w04-write-defaults-workflows` from `i01/e02/workflows`.
 - **Hot-fix.**
-  A [hot-fix](hotfix-body.md)'s branch is cut from the repository's default branch, named for its prefix in lowercase and hyphenated with a slug of at most four words from its title's name: `f00-key-validation`. Its pull request is opened from this branch into the default branch.
+  A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
 

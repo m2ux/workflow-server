@@ -9,7 +9,7 @@ Read these files first.
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
-- [Hot-fix Body](hotfix-body.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -21,7 +21,7 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
    - The queue must meet [Fields](#fields).
-   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a closed hot-fix's, which [Hot-fix Status](#hot-fix-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a closed hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 2. Return the proposed Status and assignee calls, report lines and unresolved issue references to the caller.
    - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
    - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.
@@ -50,6 +50,10 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
 
+### Hot-fix Placement
+
+Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
+
 ### Epic Status
 
 - On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.
@@ -60,12 +64,6 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - An epic In Review or Done, or [handed off](#epic-handoff), remains in that state.
 - A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.
 - An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.
-
-### Hot-fix Status
-
-- An open [hot-fix](hotfix-body.md) is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it. A hot-fix never stands In Review: one found there moves to In Progress.
-- A hot-fix closed as completed is Done, and one closed any other way leaves the board.
-- No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
 
 ### Backlog Cascade
 
@@ -92,7 +90,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a closed hot-fix's Done or removal. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 

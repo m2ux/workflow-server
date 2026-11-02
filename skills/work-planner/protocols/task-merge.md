@@ -15,16 +15,15 @@ Read these files first.
 - [Epic Integration](epic-integration.md)
 - [Epic Issue Body](../artifacts/epic-issue-body.md)
 - [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Hot-fix Body](../artifacts/hotfix-body.md)
-- [Board Queue](../artifacts/board-queue.md)
+- [Hot-fix](../artifacts/hotfix.md)
 
 ## Procedure
 
 1. **Record a hot-fix.**
-   For the merge of a [hot-fix](../artifacts/hotfix-body.md):
+   For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
    - Follow [Issue Delivery](issue-delivery.md) for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
    - Close the hot-fix issue through [Issue Closure](issue-closure.md) when eligible.
-   - Return to the caller. A hot-fix merge records nothing on an epic or initiative, and its board item is settled by [Hot-fix Status](../artifacts/board-queue.md#hot-fix-status).
+   - Return to the caller.
 2. **Read and record.**
    Follow [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence).
    - Follow [Issue Delivery](issue-delivery.md) for the delivered unit.
