@@ -9,7 +9,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
-from contextlib import redirect_stdout
+from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
@@ -1600,13 +1600,10 @@ class ReviewedCheckCases(unittest.TestCase):
         self.assertEqual(self.found('parallel section in another mood'), [])
 
 
-WORKFLOW = Path(__file__).resolve().parents[2] / '.github' / 'workflows' / 'verify-skills.yml'
-
-
-class SkillCheckWorkflow(unittest.TestCase):
-    """The skill-check workflow's job steps, run over a seeded `skills/`
-    tree: alpha holds a command specification beta's prose cites, so alpha
-    judged alone reports it as cited by nothing."""
+class SkillsCheckedTogether(unittest.TestCase):
+    """The check run over a seeded `skills/` tree, naming every skill in it:
+    alpha holds a command specification beta's prose cites, so alpha judged
+    alone reports it as cited by nothing."""
 
     CATALOG = '# Catalog\n\n## Commands\n\n### Fetch issue\n\nFetches one issue.\n'
     JUMP = '\n#### Too deep\n\nA sentence.\n'
@@ -1614,9 +1611,6 @@ class SkillCheckWorkflow(unittest.TestCase):
     def setUp(self):
         self.root = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, self.root)
-        scripts = self.root / 'skills' / 'scripts'
-        scripts.mkdir(parents=True)
-        shutil.copy(Path(checker.__file__), scripts)
         self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n')
         self.write('alpha/references/catalog.md', self.CATALOG)
         self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
@@ -1627,91 +1621,43 @@ class SkillCheckWorkflow(unittest.TestCase):
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(text)
 
-    def run_jobs(self, excluded):
-        """Every run step of the skill-check job, in order, with `EXCLUDED`
-        set; the job passes when each step exits zero."""
-        import yaml
-        workflow = yaml.safe_load(WORKFLOW.read_text())
-        env = {**os.environ, **workflow.get('env', {}), 'EXCLUDED': excluded}
-        output, passed = '', True
-        for step in workflow['jobs']['skill-files']['steps']:
-            if 'run' not in step:
-                continue
-            run = subprocess.run(['bash', '--noprofile', '--norc', '-eo', 'pipefail', '-c', step['run']],
-                                 cwd=self.root, env=env, capture_output=True, text=True)
-            output += run.stdout + run.stderr
-            passed = passed and run.returncode == 0
-        return passed, output
+    def run_check(self, *names):
+        """The check over the named skills; it passes when it exits zero."""
+        printed = io.StringIO()
+        with redirect_stdout(printed):
+            status = checker.main([str(self.root / 'skills' / name) for name in names])
+        return status == 0, printed.getvalue()
 
     def test_the_seeded_tree_reports_nothing_judged_whole(self):
-        self.assertEqual(self.run_jobs(''), (True, '3 files checked, 0 findings\n'))
+        self.assertEqual(self.run_check('alpha', 'beta'), (True, '3 files checked, 0 findings\n'))
 
-    def test_an_exclusion_only_isolation_supports_fails(self):
-        passed, output = self.run_jobs('alpha')
-        self.assertFalse(passed)
-        self.assertIn('alpha:0: excluded skill without a finding', output)
-
-    def test_an_excluded_skill_with_a_finding_in_the_whole_tree_passes(self):
-        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
-        self.assertEqual(self.run_jobs('alpha'),
-                         (True, 'alpha excluded, 1 findings held aside\n3 files checked, 0 findings\n'))
-
-    def test_every_skill_excluded_passes(self):
-        self.write('alpha/SKILL.md', '# Alpha\n\nA sentence.\n' + self.JUMP)
+    def test_a_finding_fails(self):
         self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
                    '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
-        self.assertTrue(self.run_jobs('alpha beta')[0])
+        self.assertFalse(self.run_check('alpha', 'beta')[0])
 
-    def test_a_finding_in_scope_fails(self):
-        self.write('beta/SKILL.md', '# Beta\n\nEvery check opens with '
-                   '[Fetch issue](../alpha/references/catalog.md#fetch-issue).\n' + self.JUMP)
-        self.assertFalse(self.run_jobs('')[0])
+    def test_the_check_takes_no_exclusion(self):
+        printed = io.StringIO()
+        with self.assertRaises(SystemExit), redirect_stdout(printed):
+            checker.main(['--help'])
+        self.assertNotIn('--exclude', printed.getvalue())
+        with self.assertRaises(SystemExit) as refused, redirect_stderr(io.StringIO()):
+            checker.main([str(self.root / 'skills' / 'alpha'), '--exclude', 'beta'])
+        self.assertEqual(refused.exception.code, 2)
 
-    def test_an_exclusion_naming_no_skill_fails(self):
-        self.assertFalse(self.run_jobs('gamma')[0])
 
-
-class ReviewedExclusionAndUrlCases(unittest.TestCase):
+class ReviewedUrlCases(unittest.TestCase):
     """Each case the agent review of #1555 at 8bddff05a raised against the
-    check: a nested excluded skill and a sibling sharing its name's prefix,
-    Projects (classic) called by an absolute API URL, every classic mutation,
-    a REST gap named mid-line, a tree holding no skill, and the job running
-    the check's own suite."""
+    check's surviving rules: Projects (classic) called by an absolute API URL,
+    every classic mutation, and a REST gap named mid-line."""
 
-    setUp = SkillCheckWorkflow.setUp
-    write = SkillCheckWorkflow.write
-    run_jobs = SkillCheckWorkflow.run_jobs
-    CATALOG = SkillCheckWorkflow.CATALOG
-    JUMP = SkillCheckWorkflow.JUMP
+    CATALOG = SkillsCheckedTogether.CATALOG
+    setUp = SkillsCheckedTogether.setUp
+    write = SkillsCheckedTogether.write
+    run_check = SkillsCheckedTogether.run_check
 
     def classic(self, line):
         return checker.CLASSIC.search(line) is not None
-
-    # Exclusions.
-
-    def test_a_nested_excluded_skill_is_held_aside(self):
-        self.write('family/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
-        self.write('family/y/SKILL.md', '# Y\n\nA sentence.\n')
-        self.assertEqual(self.run_jobs('family/x'),
-                         (True, 'family/x excluded, 1 findings held aside\n5 files checked, 0 findings\n'))
-
-    def test_a_sibling_sharing_the_excluded_name_is_reported(self):
-        self.write('family/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
-        self.write('family/xy/SKILL.md', '# XY\n\nA sentence.\n' + self.JUMP)
-        self.assertEqual(self.run_jobs('family/x'),
-                         (False, 'family/xy/SKILL.md:5: heading jump \u2014 h1 to h4\n'
-                                 'family/x excluded, 1 findings held aside\n5 files checked, 1 findings\n'))
-
-    def test_a_tree_holding_no_skill_passes(self):
-        shutil.rmtree(self.root / 'skills' / 'alpha')
-        shutil.rmtree(self.root / 'skills' / 'beta')
-        self.assertEqual(self.run_jobs(''), (True, '0 files checked, 0 findings\n'))
-
-    def test_the_workflow_runs_the_checks_own_suite(self):
-        import yaml
-        jobs = yaml.safe_load(WORKFLOW.read_text())['jobs'].values()
-        runs = [step['run'] for job in jobs for step in job['steps'] if 'run' in step]
-        self.assertTrue(any(re.search(r'\bpytest\b.*\bskills/test\b', run) for run in runs))
 
     # Projects (classic) by absolute API URL.
 
@@ -1755,37 +1701,9 @@ class ReviewedExclusionAndUrlCases(unittest.TestCase):
         guide.write_text('# Issue\n\n## Commands\n\n### Link Issue\n\n'
                          'Links one issue, as the **REST gap:** of Unlink Issue states.\n\n'
                          f'{FENCE}bash\ngh api graphql -F query=@link.graphql\n{FENCE}\n')
-        passed, output = self.run_jobs('')
+        passed, output = self.run_check('alpha', 'beta')
         self.assertFalse(passed)
         self.assertIn('GraphQL without a REST gap', output)
-
-
-class ExclusionsPlacedByPath(unittest.TestCase):
-    """An excluded skill holds a finding aside only when the finding's file
-    lies within it, whatever name the finding carries: roots under different
-    parents can name files alike."""
-
-    JUMP = SkillCheckWorkflow.JUMP
-
-    def setUp(self):
-        self.root = Path(tempfile.mkdtemp())
-        self.addCleanup(shutil.rmtree, self.root)
-
-    def write(self, name, text):
-        path = self.root / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text)
-
-    def test_a_like_named_file_under_another_parent_is_reported(self):
-        self.write('one/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
-        self.write('two/x/SKILL.md', '# X\n\nA sentence.\n' + self.JUMP)
-        printed = io.StringIO()
-        with redirect_stdout(printed):
-            status = checker.main([str(self.root / 'one' / 'x'), str(self.root / 'two' / 'x'),
-                                   '--exclude', str(self.root / 'one' / 'x')])
-        self.assertEqual((status, printed.getvalue()),
-                         (1, 'x/SKILL.md:5: heading jump \u2014 h1 to h4\n'
-                             'x excluded, 1 findings held aside\n2 files checked, 1 findings\n'))
 
 
 if __name__ == '__main__':
