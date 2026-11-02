@@ -249,9 +249,10 @@ def initiative_rows(body: str) -> list[str]:
     return work_table(body)[1]
 
 
-def epic_name(title: str) -> str:
-    """The name an epic's title gives it: the text between the prefix and the first colon."""
-    rest = PREFIX.sub('', title).strip()
+def title_name(title: str) -> str:
+    """The name a prefixed title gives its issue: the text between its [I07:E00] or [F00] prefix and
+    the first colon."""
+    rest = HOTFIX.sub('', PREFIX.sub('', title)).strip()
     return rest.split(': ', 1)[0].strip()
 
 
@@ -397,7 +398,7 @@ class Review:
                  files: dict[int, list[str]] | None = None):
         self.issue = issue
         self.initiative = initiative
-        self.epics = {e['number']: epic_name(e['title']) for e in epics or []}
+        self.epics = {e['number']: title_name(e['title']) for e in epics or []}
         self.prs = prs or []
         self.required = required
         self.files = files or {}
@@ -457,7 +458,7 @@ class Review:
         if ' ' in m[2]:
             fixed = '[' + ':'.join([m[1], *parts]) + ']' + title[m.end():]
             self.apply.append(f'title: {fixed}')
-        name = epic_name(title)
+        name = title_name(title)
         if ': ' not in title[m.end():]:
             self.decide.append('title has no "Name: Subtitle" after the prefix')
         else:

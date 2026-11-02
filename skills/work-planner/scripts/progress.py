@@ -81,7 +81,7 @@ from pathlib import Path
 
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
-from format import HOTFIX, LINK, cell, epic_name, id_cell, phrase
+from format import HOTFIX, LINK, cell, id_cell, phrase, title_name
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -120,11 +120,6 @@ def task_name(r: list[str], header: list[str]) -> str:
 
 def pr_title(pr: dict) -> str:
     return HOTFIX.sub('', PR_REF.sub('', pr['title'])).strip()
-
-
-def hotfix_name(title: str) -> str:
-    """A hot-fix title's name: the text between its [F00] prefix and the first colon."""
-    return HOTFIX.sub('', title).strip().split(': ', 1)[0].strip()
 
 
 def board_link(items: list[dict]) -> str:
@@ -176,7 +171,7 @@ class Section:
         out = []
         for (i, e, repo, number), lines in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
             issue = self.issues.get((repo, number))
-            head = f"*{reference(i, e)} {epic_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
+            head = f"*{reference(i, e)} {title_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
             out.append(f"{self.mark((repo, number))} {head}" + (f" — {issue['html_url']}" if issue else ''))
             out.extend(f'    {line}' for line in lines)
         return out + self.hotfixes or ['• Nothing']
@@ -350,7 +345,7 @@ def main() -> int:
     for k in tagged:
         if k not in tasks:
             continue
-        line = f"W{tasks[k][2]} {epic_name(issues[k]['title'])} — {issues[k]['html_url']}"
+        line = f"W{tasks[k][2]} {title_name(issues[k]['title'])} — {issues[k]['html_url']}"
         if done(k):
             add(completed, k, f'{DONE} {line}')
         elif status.get(k) == 'In Progress':
@@ -400,7 +395,7 @@ def main() -> int:
     hot_ready = []
     hotfixes = {} if only else {k: m[1] for k, issue in issues.items() if (m := HOTFIX.match(issue['title']))}
     for k, tag in sorted(hotfixes.items()):
-        head = f"*{tag} {hotfix_name(issues[k]['title'])}* — {issues[k]['html_url']}"
+        head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
         linking = sorted((p for p in by_url.values() if links_issue(p, k)), key=lambda p: p['number'])
         if done(k):
             completed.hotfixes.append(f'{DONE} {head}')
@@ -420,7 +415,7 @@ def main() -> int:
                               'give its issue with --initiatives')
             continue
         title = issues[k]['title']
-        context.append(f"{mark(k)} *{reference(initiatives[k][0])} {epic_name(title)}:* "
+        context.append(f"{mark(k)} *{reference(initiatives[k][0])} {title_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
     def level(k: Key) -> int:
@@ -463,7 +458,7 @@ def main() -> int:
         for held in waiting.values():
             held.discard(entry[0])
     ready = ordered
-    upcoming = hot_ready + [f"{READY} *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*"
+    upcoming = hot_ready + [f"{READY} *{reference(*tagged[k])} {title_name(issues[k]['title'])}*"
                             + (f', {task}' if task else '') + f" — {issues[k]['html_url']}" for k, task in ready]
     if len(upcoming) > SHOWN:
         upcoming[SHOWN:] = [f'…and {len(upcoming) - SHOWN} more ready']

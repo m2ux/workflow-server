@@ -88,7 +88,7 @@ from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, HOTFIX, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
-                    row, row_id, split_sections)
+                    row, row_id, split_sections, title_name)
 from sync import (Unreadable, attach_links, links_issue, long_lived_names, plan_rows, pr_repo,
                   pull_requests, table)
 
@@ -291,7 +291,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         if not base:
             unresolved.append(f'{where}: the default branch of {key[0]} is not given')
             continue
-        name = names(tag, issue['title'][matched.end():].strip().partition(': ')[0], key[1], when)
+        name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
