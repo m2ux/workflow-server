@@ -7,7 +7,8 @@ Usage:
       [--engineering .engineering] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
-  python3 deliver.py --epic issue-943.json --reserve W01 [--records URL] [--date 2026-10-06] --fix fixed-943.md
+  python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL] [--date 2026-10-06]
+      --fix fixed-943.md
   python3 deliver.py --epic issue-943.json --release W01 --engineering .engineering --fix fixed-943.md
 
 items.json is the board's items with the Status field, as board.py reads them, and prs.json the pull
@@ -49,8 +50,10 @@ take, and the In Review a completed epic with current published agent review evi
 DISPATCH jurisdiction, which refuses any other Status and a removal; every jurisdiction refuses a task set In Review.
 
 --reserve and --release act on whole units: a call naming some rows of a unit and not the others is
-refused. --reserve sets one record folder as the single link of every row in a unit, the folder the
-unit's first task id and Description give it, which is the folder the unit line names. --release frees
+refused. --reserve reads the epic's Status from --items and refuses a unit whose epic is not Ready or
+In Progress there, so only an epic the board queue started is held. --reserve sets one record folder
+as the single link of every row in a unit, the folder the unit's first task id and Description give
+it, which is the folder the unit line names. --release frees
 each row by replacing that folder link with its work-item file link, the task id in lower case inside
 the folder, and refuses a row whose folder in --engineering holds no such file or whose README does not
 link it. Both write the body to --fix and refuse a row linking a pull request or commit. The planning
@@ -485,6 +488,14 @@ def edit(args: argparse.Namespace) -> int:
             sys.exit(f'{task}: its id links a pull request or a commit')
     if args.release and not args.engineering:
         sys.exit('--release needs --engineering, the checkout holding the planning records')
+    if args.reserve:
+        if not args.items:
+            sys.exit('--reserve needs --items, the board items holding the epic Status')
+        on_board = {key: status for key, _item, status, _content in board_items(args.items)}
+        standing = on_board.get(key_of(issue), 'not on the board')
+        if standing not in STARTED:
+            sys.exit(f"#{issue['number']} [I{initiative}:E{epic}] is {standing or 'without a Status'}; "
+                     'a unit is held only while its epic is Ready or In Progress')
     records = base_url(header, data, args.records) if args.reserve else ''
     changed = []
     for unit in whole_units(header, data, wanted):
@@ -522,7 +533,7 @@ def edit(args: argparse.Namespace) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument('--items', help='the board items with their Status')
+    parser.add_argument('--items', help='the board items with their Status, which a reservation also reads')
     parser.add_argument('--prs', help='pull requests as JSON lines')
     parser.add_argument('--links', help='the closing issue references those pull requests hold')
     parser.add_argument('--others', nargs='*', default=[], help='issues the rows depend on that are off the board')
