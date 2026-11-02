@@ -1,0 +1,15 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1620",
+    "head": "b5b67669a1d0c11470e80be1df492fa9a720fcbb",
+    "base": "9d71790c2668debbc03a2ba1d00509e8bea3bff6",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1608-f04-engineering-commit-sweep/agent-review.json",
+    "reviewer": "Claude Opus 5.5 review sub-agent",
+    "reviewed_at": "2026-11-02",
+    "scope": "Full diff origin/workspace...f04-engineering-commit-sweep: skills/work-planner/artifacts/planning-record.md and skills/work-planner/test/test_plan_mode.py; callers of Publish Planning Record in plan-mode.md, deliver-mode.md, change-overview.md and review-pull-request.md; remaining links to the removed Push Engineering Branch anchor.",
+    "criteria": "AC1 sweep command stages all, commits only when staged, rebases on origin/engineering and pushes, a rerun is a no-op; AC2 Shared Worktree states the sweep and the origin/engineering confirmation; AC3 no path-scoped engineering commit remains in skills/work-planner.",
+    "validation": "Idempotent sweep run twice against a scratch bare remote (pass); skill format check 52 files 0 findings; work-planner unittest suite 831 OK, 1 skipped; test_plan_mode 6 OK in review.",
+    "findings": []
+  }
+]

@@ -14,6 +14,7 @@ A folder-scoped commit strands the work of a session that stops before its own c
 | --- | --- |
 | [F04](f04.md) | The work item: component, design and checks for the sweep |
 | [Test Results](test-results.md) | The evidence for each test-plan row |
+| [Agent Review](agent-review.json) | The agent review record of pull request 1620 |
 
 ## Links
 

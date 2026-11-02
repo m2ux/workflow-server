@@ -1,0 +1,15 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1619",
+    "head": "c8ef9a8f2c2cb6208a3fdb1c2c62e5511b0c21fe",
+    "base": "9d71790c2668debbc03a2ba1d00509e8bea3bff6",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1613-f05-plain-label-fix/agent-review.json",
+    "reviewer": "Claude Opus 5.5 reviewer sub-agent",
+    "reviewed_at": "2026-11-02T15:20:07Z",
+    "scope": "diff_range files_inspected callers_inspected: the full diff 9d71790c2..c8ef9a8f2; format.py module docstring, Review.fix_list and in_sequence, the AC and REF patterns, both fix_list callers in Review.check_body (Acceptance Criteria with checkbox, References without), and check_criteria, check_initiative_criteria and check_references, which read the bold labels the fix writes; test_format.py PlainLabels; a direct probe of fix_list for plain bullets, ticked items, continuation lines, unlabelled lists, mixed bold and plain lists, AC0 and R0, and plain labels ascending with a gap",
+    "criteria": "AC1 met: test_format.PlainLabels.test_plain_criterion_labels_are_made_bold makes plain AC1., AC2., AC4. bold with no repeated label. AC2 met: test_format.PlainLabels.test_plain_reference_labels_are_made_bold makes plain R1., R2. bold with no repeated label. AC3 met: test_plain_criterion_labels_partly_missing_are_left_to_decide, test_plain_criterion_labels_out_of_sequence_are_left_to_decide and test_plain_reference_labels_with_a_gap_are_left_to_decide report the labels to decide and leave the items unchanged. Unlabelled and bold-labelled lists behave as before: the existing CriterionLabels tests and the probe.",
+    "validation": "cd skills/work-planner && sbx python3 -m unittest discover -s test -p test_format.py: 101 tests OK. cd skills/work-planner && sbx python3 -m unittest discover -s test: 836 tests OK (skipped=1). sbx python3 skills/scripts/check_skill_files.py skills/work-planner: 52 files checked, 0 findings.",
+    "findings": []
+  }
+]
