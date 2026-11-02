@@ -1,6 +1,6 @@
 # Test Evidence
 
-Base `3cb9cbcf3`; head `f867342ae` on `skill/delivery-board-first`. Failing-before runs keep the new tests and the base scripts (the board-queue run restores `board-queue.py` from the base with a named stash, then applies it back by commit). Commands run from the worktree root:
+Base `3cb9cbcf3`; head `c780b08b8` on `skill/delivery-board-first`. Failing-before runs keep the new tests and the base scripts (the board-queue run restores `board-queue.py` from the base with a named stash, then applies it back by commit). Commands run from the worktree root:
 
 ```bash
 cd <worktree> && <workspace>/scripts/sbx python3 -m pytest skills/work-planner/test skills/test -q
@@ -18,7 +18,7 @@ Tests in `skills/work-planner/test/test_board_queue.py`:
 
 At `3cb9cbcf3`, all three fail. The open-questions case prints `set #3 [I01:E01] Epic 3: Work: Backlog → Ready` and `assign #3 ... (Ready)`, the same move board 17 was offered for #1427.
 
-At `f867342ae`: pass.
+At `c780b08b8`: pass.
 
 ## T2
 
@@ -28,17 +28,17 @@ AC2: Advance reports each open epic with no priority label as waiting on a prior
 - `test_a_labelled_epic_is_not_reported_waiting_on_a_priority`: no `rank` line when every epic is labelled.
 - The open-questions case in T1 also asserts `rank #1 [I01] Current: Work: E01`.
 
-At `3cb9cbcf3`: the first fails (no `rank` line). At `f867342ae`: pass. Advance mode's Report step lists the `rank` line, and [Report Lines](https://github.com/m2ux/workflow-server/blob/skill/delivery-board-first/skills/work-planner/artifacts/board-queue.md#report-lines) defines it.
+At `3cb9cbcf3`: the first fails (no `rank` line). At `c780b08b8`: pass. Advance mode's Report step lists the `rank` line, and [Report Lines](https://github.com/m2ux/workflow-server/blob/skill/delivery-board-first/skills/work-planner/artifacts/board-queue.md#report-lines) defines it.
 
 ## T3
 
-AC3: a read of Deliver mode's Procedure, step 2 (Advance), at `f867342ae`:
+AC3: a read of Deliver mode's Procedure, step 2 (Advance), at `c780b08b8`:
 
 > This step reads the board and each open epic's priority label live, before the run changes any status, assignee or branch. No memory, summary or earlier note stands in for that read.
 >
 > A status move to Ready or In Progress, an assignment and an epic base come only from the queue this step returned in the same run. An epic that queue leaves in Backlog does not start, whatever this run was asked for.
 
-Step 7 (Hold) passes the fetched board items to Reserve Task Rows, so T4's refusal applies on the main path.
+Step 7 (Hold) passes Reserve Task Rows the board items the latest Plan Available Work read, so T4's refusal applies on the main path.
 
 ## T4
 
@@ -50,11 +50,11 @@ The survey already offers no unit from an epic outside Ready and In Progress (`t
 - `test_reserve_holds_a_unit_whose_epic_is_ready_or_in_progress`: Ready and In Progress reserve.
 - `test_reserve_needs_the_board_items`: `--reserve` without `--items` exits 1.
 
-At `3cb9cbcf3`: the refusal (four subtests) and the `--items` test fail; the reservation succeeds (`reserved: W01 → …`). At `f867342ae`: pass.
+At `3cb9cbcf3`: the refusal (four subtests) and the `--items` test fail; the reservation succeeds (`reserved: W01 → …`). At `c780b08b8`: pass.
 
 ## T5
 
-The full suites and the skill file check at `f867342ae`:
+The full suites and the skill file check at `c780b08b8`:
 
 - `skills/work-planner/test skills/test`: 954 passed, 1 skipped, 1886 subtests passed.
 - `check_skill_files.py skills/work-planner`: 50 files checked, 0 findings.
