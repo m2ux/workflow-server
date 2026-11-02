@@ -151,7 +151,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Stage and commit each returning group's own files, then run the unit's tests once every group has returned.
    - A unit of one group, and a session with no sub-agent dispatch, is delivered by this session.
 7. **Open the pull request.**
-   Open the unit's pull request from each task branch its work changes into its base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
+   Open the unit's pull request from each task branch its work changes into its base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), from a body [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body) writes with the unit's change, tasks, criteria and validation evidence, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository, where the session holds no confirmed setting.
    - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
    - For a unit of rows:

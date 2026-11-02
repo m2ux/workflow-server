@@ -78,6 +78,8 @@ README.md is the one file the folder must hold. Any file beyond README.md is add
 
 Each file beyond README.md is a row in the README's Artifacts.
 
+A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record).
+
 ### Header
 
 One blockquote: the classifier, the day the record was created, and a revised date when the README is updated after the work is done.
