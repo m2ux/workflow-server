@@ -153,6 +153,7 @@ The confirmed unit carried from its supplied brief through implementation and de
    Open the unit's pull request from each task branch its work changes into its base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), from a body [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body) writes with the unit's change, tasks, criteria and validation evidence, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository, where the session holds no confirmed setting.
    - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
+   - A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
    - For a unit of rows:
      - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's task rows, with the project checkout and the fetched epic bases.
      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.

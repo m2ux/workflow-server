@@ -117,9 +117,9 @@ One current pull request and its requested supporting records.
 
 One pull request created or updated from supplied content and metadata.
 
-**Inputs:** Repository, optional pull request number, task or epic kind, whether a task pull request is a hot-fix's delivering pull request, body file and selected title, head or base changes, and, for a created delivery pull request, its delivery issue identity, the repository setting confirmed for the session and a link-snapshot destination.
+**Inputs:** Repository, optional pull request number, task or epic kind, body file and selected title, head or base changes, and, for a created delivery pull request, its delivery issue identity, the repository setting confirmed for the session and a link-snapshot destination.
 
-1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state and opening a hot-fix's delivering pull request as a draft.
+1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state. A task pull request titled with a hot-fix prefix always opens as a draft.
    - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).
 2. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields.
 3. Re-read through [Read Pull Request State](#read-pull-request-state).
@@ -276,7 +276,7 @@ Creates a pull request from a unit's branch to its base.
 **Inputs:** Repository, title, task head, base and populated body file.
 
 - Supply the title, the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the complete body file.
-- A hot-fix's delivering pull request also takes `-F draft=true`, as its [Delivering Pull Request](hotfix.md#delivering-pull-request) states.
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
 
 ```bash
 gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<task-branch>' -f base='<base>' -F 'body=@<body-file>' --jq .html_url
