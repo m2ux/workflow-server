@@ -2,6 +2,12 @@
 
 A board progress report for a selected window, formatted for pasting into Slack.
 
+## Prerequisites
+
+Read these files first.
+
+- [Hot-fix Body](hotfix-body.md)
+
 ## Operations
 
 ### *Compose* Standup Report
@@ -39,10 +45,13 @@ The management paragraph is set off by blank lines, with the board's link beneat
   Epics In Progress or In Review and task issues In Progress, each epic with its open pull requests, or else its next task.
 - **Next.**
   The five Ready items, each epic with its next task, and a count of the rest.
+  - Ready hot-fixes lead, since a hot-fix runs beside all queued work.
   - They rank by the priority label of the initiative their epic belongs to, then by their epic's own.
   - An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.
+- **Hot-fixes.**
+  Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with the pull requests that link it beneath. An initiative filter leaves hot-fixes out.
 - **Key.**
-  I Initiative, E Epic and W Work Item. Opening marks are ✅ done, 🔄 in progress (an initiative or epic open and not In Review, or a task issue In Progress), 👀 in review (an initiative or epic In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
+  I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are ✅ done, 🔄 in progress (an initiative or epic open and not In Review, or a task issue In Progress), 👀 in review (an initiative or epic In Review, or a pull request ready for review), 📝 draft and ▶️ ready.
 
 ### Management Paragraph
 

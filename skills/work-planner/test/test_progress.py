@@ -272,7 +272,7 @@ class Window(unittest.TestCase):
     def test_key_to_the_reference_letters_and_marks_ends_the_summary(self):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
         self.assertEqual(out.splitlines()[-4:], [
-            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item',
+            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item, F=Hot-fix',
             '✅ done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
 
     def test_heading_names_the_window_and_initiative(self):
@@ -534,3 +534,33 @@ class Repositories(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class HotFixes(unittest.TestCase):
+    def hotfix(self, number, state='open', closed=None):
+        return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
+                     labels=('type:hot-fix', 'priority: 10'))
+
+    def test_a_hot_fix_done_in_the_window_is_completed_with_its_pull_request(self):
+        out = summary([item(self.hotfix(4, 'closed', IN), 'Done')],
+                      [pr(950, '[F04] Reject Bad Keys', IN)], held=(links(950, 4),))
+        self.assertEqual(section(out, 'Completed'), [
+            f"✅ *F04 Key Validation* — {url('issues', 4)}",
+            f"    ✅ Reject Bad Keys — {url('pull', 950)}"])
+
+    def test_a_hot_fix_in_progress_shows_its_open_pull_request(self):
+        out = summary([item(self.hotfix(4), 'In Progress')],
+                      [pr(950, '[F04] Reject Bad Keys', draft=True)], held=(links(950, 4),))
+        self.assertEqual(section(out, 'In progress'), [
+            f"🔄 *F04 Key Validation* — {url('issues', 4)}",
+            f"    📝 Reject Bad Keys — {url('pull', 950)}"])
+
+    def test_a_ready_hot_fix_leads_next(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Task', '')))
+        out = summary([item(epic, 'Ready'), item(self.hotfix(4), 'Ready')])
+        self.assertEqual(section(out, 'Next')[0], f"▶️ *F04 Key Validation* — {url('issues', 4)}")
+
+    def test_an_initiative_filter_leaves_hot_fixes_out(self):
+        initiative = issue(1, '[I01] Shipped: All', body=initiative_body())
+        out = summary([item(initiative, 'In Progress'), item(self.hotfix(4), 'Ready')], (), '--initiative', 'I01')
+        self.assertNotIn('F04', out)
