@@ -37,7 +37,9 @@ linked work item names no long-lived branch with an epic base, naming why; a hol
 reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
-an open pull request that targets the epic base when its test plan has passed; and an unresolved
+an open pull request that targets the epic base when its test plan has passed, or for an open
+pull request titled with an open hot-fix's [F00] that targets its repository's default branch when
+its test plan has passed; and an unresolved
 line for an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
@@ -85,7 +87,7 @@ from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
                     row_id, split_sections)
-from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
+from sync import (Unreadable, attach_links, long_lived_names, plan_rows, pr_repo,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -308,16 +310,28 @@ def plan_passed(body: str) -> bool:
     return bool(checks) and all(done_mark(mark) == TICK for mark in checks)
 
 
-def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
-    """Open pull requests that target the epic base and whose test plan has passed."""
-    epics = {}
-    for issue in issues.values():
+def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
+                 defaults: dict[str, str]) -> list[str]:
+    """Open pull requests whose test plan has passed: a task's into its epic base, and a hot-fix's
+    into its repository's default branch."""
+    epics, hotfixes = {}, set()
+    for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
+        if (fixed := HOTFIX.match(issue.get('title') or '')) and issue['state'] == 'open':
+            hotfixes.add((key[0].lower(), fixed[1]))
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
+            continue
+        base = (pull.get('base') or {}).get('ref') or ''
+        fixed = HOTFIX.match(pull.get('title') or '')
+        if fixed:
+            repo = pr_repo(pull).lower()
+            if ((repo, fixed[1]) in hotfixes and base and base == defaults.get(repo)
+                    and plan_passed(pull.get('body') or '')):
+                found.append((pull['number'], f"  merge #{pull['number']} {fixed[1]}: base {base}"))
             continue
         matched = PR_TITLE.match(pull.get('title') or '')
         if not matched:
@@ -325,7 +339,6 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> lis
         initiative, epic = matched[1], matched[2]
         if (initiative, epic) not in epics:
             continue
-        base = (pull.get('base') or {}).get('ref') or ''
         segment = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', base)
         if not segment or (names and segment[1] not in names):
             continue
@@ -436,7 +449,7 @@ def survey(args: argparse.Namespace) -> int:
     held += holding
     for line in dict.fromkeys(board.outputs.lines):
         print(f'  output {line}')
-    merging = ready_merges(issues, prs, lived)
+    merging = ready_merges(issues, prs, lived, defaults)
     for line in merging:
         print(line)
     for note in dict.fromkeys(board.unresolved):

@@ -48,7 +48,7 @@ The board's status and assignees after its issues record delivery.
 1. Read the issues, the board and its delivery records.
    - Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
    - Run [Read Board State](board.md#read-board-state) for the selected board.
-   - Run [Fetch All Initiative Pull Requests](pull-request.md#fetch-all-initiative-pull-requests) for its repositories.
+   - Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories.
    - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
    - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
    - Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.

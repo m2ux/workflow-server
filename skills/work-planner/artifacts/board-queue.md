@@ -135,7 +135,7 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 **Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
 
 - `--items` is the board's items with Status.
-- `--prs` is the pull requests that name an initiative.
+- `--prs` is the pull requests that name an initiative or a hot-fix.
 - `--board` is the [board identity](#board-identity).
 - `--fields` is the board's fields.
 - `--out` is the directory the calls are written to.

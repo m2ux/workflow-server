@@ -794,3 +794,13 @@ class HotFixUnits(unittest.TestCase):
         out = survey(staged((hotfix(4), 'Ready')))
         self.assertIn('unresolved: F04 #4: the default branch of o/r is not given', out)
         self.assertNotIn('  unit ', out)
+
+    def test_a_passed_hot_fix_pull_request_into_the_default_branch_is_a_merge_candidate(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='main'),
+                 pr(952, '[F04] Reject Bad Keys', body=PLAN, base='i07/e00/main'),
+                 pr(953, '[F09] Reject Bad Keys', body=PLAN, base='main'),
+                 pr(954, '[F04] Reject Bad Keys', base='main')]
+        out = survey(staged((hotfix(4), 'In Progress')), pulls, '--default', 'o/r=main')
+        self.assertIn('  merge #951 F04: base main', out)
+        for number in (952, 953, 954):
+            self.assertNotIn(f'merge #{number}', out)

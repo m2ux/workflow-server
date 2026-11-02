@@ -79,15 +79,15 @@ The epic's verified merge into its long-lived target.
 4. Confirm the merged state, merge commit, verified head and target.
 5. Return the result or discrepancy.
 
-### *Fetch* All Initiative Pull Requests
+### *Fetch* All Delivery Pull Requests
 
 The pull request collection covering every supplied board repository.
 
 **Inputs:** Ordered repository list and destination JSON-lines file.
 
-1. Run [Fetch Repository Initiative Pull Requests](#fetch-repository-initiative-pull-requests) for the first repository and destination `prs.json`. This replaces the destination with a fresh collection.
+1. Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests) for the first repository and destination `prs.json`. This replaces the destination with a fresh collection.
 2. Stop on failure.
-3. Run [Append Repository Initiative Pull Requests](#append-repository-initiative-pull-requests) for each further repository, passing the same destination.
+3. Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests) for each further repository, passing the same destination.
 4. If any fetch failed, return incomplete evidence.
 5. Return the complete collection only after every fetch succeeds.
 
@@ -539,36 +539,36 @@ gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] 
 gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I07"))' > prs.json
 ```
 
-### Fetch Repository Initiative Pull Requests
+### Fetch Repository Delivery Pull Requests
 
-Starts a collection with all initiative-prefixed pull requests from one repository.
+Starts a collection with all initiative- and hot-fix-prefixed pull requests from one repository.
 
 **Inputs:** Repository and destination JSON-lines file.
 
 ```bash
-gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' > '<pull-request-records-file>'
+gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' > '<pull-request-records-file>'
 ```
 
 **Example:**
 
 ```bash
-gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' > prs.json
+gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' > prs.json
 ```
 
-### Append Repository Initiative Pull Requests
+### Append Repository Delivery Pull Requests
 
-Appends all initiative-prefixed pull requests from one further repository.
+Appends all initiative- and hot-fix-prefixed pull requests from one further repository.
 
 **Inputs:** Repository and existing destination JSON-lines file.
 
 ```bash
-gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> '<pull-request-records-file>'
+gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' >> '<pull-request-records-file>'
 ```
 
 **Example:**
 
 ```bash
-gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I"))' >> prs.json
+gh api --paginate "repos/<owner>/<repo>/pulls?state=all&per_page=100" --jq '.[] | select(.title | startswith("[I") or startswith("[F"))' >> prs.json
 ```
 
 ### Fetch Pull Request Files

@@ -45,7 +45,7 @@ The main path meets [Outcomes](#outcomes).
    - Carry the [change list](../artifacts/plan-change.md#change-list) it returns into the report step.
 3. **Fetch.**
    Run [Read Board State](../artifacts/board.md#read-board-state) with the selected board identity to obtain its current items and Status field.
-   - Run [Fetch All Initiative Pull Requests](../artifacts/pull-request.md#fetch-all-initiative-pull-requests) for the [repositories](../artifacts/board.md#repositories) Read Board State returned.
+   - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) Read Board State returned.
    - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) with those records.
    - Use the pull request records in Plan Available Work; the issue links serve the merge and delivery steps.
    - Run [Read Board Configuration](../artifacts/board.md#read-board-configuration).
