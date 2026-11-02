@@ -5,7 +5,7 @@
 - **No proposal.**  The user waived Plan Mode's Propose Mode run; [the confirmed goal](goal.md) stands as its source.
 - **Four epics in the user's order.**  E01's title name reads Check Definitions, since a title name is two or three words.
 - **No Deferred Debt epic.**  Findings are fixed in the delivery that finds them.
-- **Superseded plan in References.**  #1427 is cited as the source of the carried evidence, by the user's decision.
+- **Superseded plan in References.**  #1427 is cited as the source of the carried evidence, by the user's decision. It stands on board 17, which Issue Body's References rule bars; the user keeps it as a departure from that rule.
 - **Joins.**  E00 W01 and W02 share one pull request on the shared guidelines, and E00 W03 and W04 one on the shared check. E01 W01 and W03 are split by rule, as the [dependency report](dependencies.txt) states.
 - **Measurement revision.**  Head measurements come from origin/workspace `785a5ee8c`, exported, since the local checkout is behind it.
 - **Epic priority.**  E00 is 3, E01 and E02 are 2, E03 is 1, as the [dependency report](dependencies.txt) proposes. E01 and E02 run together.
@@ -28,10 +28,3 @@ The user holds the baseline open. It is settled before E03 starts.
 
 - **A.** Fix the baseline at workflow-server `ed508443`, recording its equivalence to md-composer `93dad5b9`.
 - **B.** Fix it at `785a5ee8c`, the revision the stated figures came from.
-
-### OQ3. Same-Board Reference
-
-Issue Body's References rule bars linking an issue on the same board, and #1427 stands on board 17.
-
-- **A.** Keep #1427 in References as decided, until it closes. **Recommended:** the user decided it, and the record names the departure.
-- **B.** Move it to the planning record's Links and name it in plain text in the body.

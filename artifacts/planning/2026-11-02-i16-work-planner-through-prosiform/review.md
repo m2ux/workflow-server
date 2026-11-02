@@ -59,8 +59,8 @@ Plan Mode step 5, Review Initiative Goal, over the drafts in this record. Format
   - Resolution: every planning artifact is committed directly to engineering, as [Decisions](decisions.md#settled) records.
 - **R1-14. Same-board reference.**  Advisory.
   - Problem: issue-body.md References, "An issue's References section does not link issues or pull requests on the same board"; #1427 stands on board 17.
-  - Resolution: OQ3.
+  - Resolution: kept in References as a recorded departure, as [Decisions](decisions.md#settled) records.
 
 ## Round 2
 
-Review Initiative Goal repeated over the revised bodies: every clause traces to a criterion, every criterion to an epic and a task row ([trace](trace.md)); `format.py` reports nothing to fix, apply or decide on any draft; `deps.py` reports no problem. No content or structural finding remains. Open Questions OQ1 to OQ3 stand for the user; E00 carries the version question and E03 the baseline question.
+Review Initiative Goal repeated over the revised bodies: every clause traces to a criterion, every criterion to an epic and a task row ([trace](trace.md)); `format.py` reports nothing to fix, apply or decide on any draft; `deps.py` reports no problem. No content or structural finding remains. Open Questions OQ1 and OQ2 stand for the user; E00 carries the version question and E03 the baseline question.
