@@ -87,10 +87,10 @@ Every internal citation names a heading. A document read entire is cited by its 
 
 ## The order the check lands in
 
-The shared skill-file check gains the heading rule after both skills comply.
+The shared skill-file check gains the heading rule after Work Planner complies.
 
-- 150 citations across the two skills name no heading, so a check that reports them lands red on the branch it grades.
-- The rule is stated first, both skills are brought to it, and the check is the last task, so no branch carries a failing gate.
+- At `3c0f1ff5`, 119 of Work Planner's citations name no heading, so a check that reports them first reports the skill's own files.
+- The rule is stated first, Work Planner is brought to it, and the check follows, so no branch carries a finding against the skill's own files.
 
 ## Where a prerequisite stands
 
@@ -180,10 +180,16 @@ Final manifests and final efficacy/retrieval walks identify the settled corpus r
 
 ## Joins
 
-E14:W03 and E14:W04 share one pull request: the same section-citation rule applied across Work Planner and Workflow Canon, with both skills supplying its evidence.
-
-Every eligible separate pair is recorded in [current E14 pair decisions](../2026-10-31-project17-plan-review/joins/E14-pairs.md). Dependency edges order the check definitions, final manifests and final walks; these are not independent pairs.
+W01 and W02 share one pull request, and so do W06 and W07. W05 stays its own pull request, since it heads the path W08, W09, W10. [Joins](joins.md) answers each candidate unit the dependency check reports.
 
 ## Final retrieval verdict
 
 E14 W11 owns I11 AC30 through E14 AC23. E10 W23 supplies measurements; E10 W26 completes verification of its contributing changes. The [pinned comparison contract](../2026-10-31-project17-plan-review/retrieval-baseline.md) defines baseline, scenarios, metric and pass conditions. E12 records remain historical measurements, not proof of this final verdict.
+
+## Scope
+
+The user's decision of 2 November 2026: I11 changes only Work Planner and the shared skill files, the guidelines, the rules, the shared skill-file check and its tests. Workflow Canon, GitNexus and server-in-the-loop stand outside it, and no GitHub workflow runs the skill check.
+
+- W04 is retired, and AC6, AC9, AC12 and AC15, which bound Workflow Canon alone, stand as ticked placeholders on the rows that covered them.
+- AC21, which required a manifest in every skill directory, is retired the same way; AC19, AC22, AC23 and AC25 name Work Planner.
+- The measurements above stand as counted on `3c0f1ff5`; the epic body cites Work Planner's alone.
