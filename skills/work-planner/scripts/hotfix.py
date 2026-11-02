@@ -13,6 +13,7 @@ PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
 TYPE = 'type:hot-fix'
+CODE_SPAN = re.compile(r'(`+).*?\1')
 ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 Key = tuple[str, int]
 
@@ -48,9 +49,9 @@ def hotfix_faults(issue: dict) -> list[str]:
 def format_faults(issue: dict) -> list[str]:
     """Each condition of the hot-fix Format in artifacts/hotfix-body.md the issue fails, whatever its
     wording: the [F00] prefix, the labels its Titles name, the standalone sections with no text before
-    the first, no unfilled {{...}} field, every acceptance criterion a checkbox labelled **ACn.**, and
+    the first, no unfilled {{...}} field in its prose outside code, every acceptance criterion a checkbox labelled **ACn.**, and
     the conditions hotfix_faults reads."""
-    from format import AC, Template, split_sections  # format imports this module
+    from format import AC, Template, prose, split_sections  # format imports this module
     faults = []
     if not is_hotfix(issue):
         faults.append('title has no [F00] prefix')
@@ -64,7 +65,7 @@ def format_faults(issue: dict) -> list[str]:
     preamble, sections = split_sections(body)
     if '\n'.join(preamble).strip():
         faults.append('text before the first section')
-    if '{{' in body:
+    if any('{{' in CODE_SPAN.sub('', line) for line in prose(body.split('\n'))):
         faults.append('an unfilled {{...}} field')
     headings = [heading for heading, _ in sections]
     faults += [f'required section missing: {h}' for h in template.headings

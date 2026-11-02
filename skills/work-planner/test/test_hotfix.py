@@ -89,6 +89,11 @@ class Format(unittest.TestCase):
         resolved['body'] += '\n## Open Questions\n\n'
         self.assertEqual(format_faults(resolved), [])
 
+    def test_braces_in_code_are_no_unfilled_field(self):
+        coded = hotfix()
+        coded['body'] = coded['body'].replace('Reject them.', 'Reject them in `${{ github.ref }}`.\n\n```yaml\nref: ${{ github.ref }}\n```')
+        self.assertEqual(format_faults(coded), [])
+
     def test_a_missing_section_target_and_criterion_are_faults(self):
         bare = hotfix(aim=None)
         bare['body'] = '## Overview\n\nWhy.\n'
