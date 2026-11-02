@@ -50,24 +50,7 @@ Read the selected mode's file in full, then follow its links as each step needs 
 - **Planning.**
   When creating or using artifacts, all modes follow [Planning](references/planning.md).
 - **Commands.**
-  Each reference file carries the commands its own procedure runs, under its own conventions, so a file held in full supplies both.
-
-## Conventions
-
-Each operation has one spec. Commands use example values that the caller replaces with the repository, revisions and paths under work.
-
-- **Locations.**
-  `<workspace>` holds the skills and engineering history; `<engine>` is the engine checkout; `<corpus>` is the definition-branch root; `<docker-tree>` is the packaging checkout; `<tool-checkout>` owns a selected check; `<record>` is the shared planning record; `<scratch>` is disposable storage. Use absolute paths for cross-tree inputs.
-- **Execution.**
-  Follow the current host's shell, sandbox and permission instructions. Run Git operations in the tree under work, engine checks in the engine checkout, and skill checks in the workspace. Corpus searches run in the corpus root. Each operation identifies exceptions and separately versioned inputs.
-- **Remote access.**
-  Use the authentication and execution permissions required by the host. GitHub operations use its REST API through the GitHub CLI.
-- **Evidence.**
-  Save outputs under the planning record with their command, working directory, input revisions and exit status. Preserve failed and skipped observations.
-- **Substitution.**
-  Replace angle-bracket placeholders and `{owner}/{repo}` before execution. `950` is an example PR or issue. Derive remote, target and revision-branch names from the repository under work, and check installed command interfaces at the captured revision.
-- **Authored text.**
-  Commit messages and PR bodies go through files.
+  Before the first command spec, read the [shared command conventions](references/command-conventions.md). Each reference file carries the commands its own procedure runs, under its own conventions, so a file held in full supplies both.
 
 ## Dependencies
 
@@ -84,7 +67,7 @@ Each operation has one spec. Commands use example values that the caller replace
 - **Python 3.10+**
   The definition edit hook, audit inventory/state/dispatch scripts and their tests.
 - **Paired YAML parser**
-  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot. The audit tests read that engine from `CANON_TEST_ENGINE`: the root of an engine checkout whose dependencies are installed.
+  The audit adapter loads the paired engine's installed `yaml` package through Node; its identity is captured with the source snapshot.
 - **Agent host and sandbox**
   Repository access, local execution and artifact writing within the selected mode's authority. Independent sub-agents and observable tool results support audit slices and reading-path validation.
 - **Claude Code hooks**

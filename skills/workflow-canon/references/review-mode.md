@@ -2,6 +2,10 @@
 
 Reviews the combined result of the requested integration and produces a report of findings, coverage and readiness.
 
+## Prerequisites
+
+Before the first command spec, read the [command conventions](command-conventions.md#common).
+
 ## Procedure
 
 1. **Establish the subject.**
@@ -23,7 +27,7 @@ Reviews the combined result of the requested integration and produces a report o
    - Associate each check with its exact revision combination, relevant failure scenario and requirement. Include missing checks as evidence gaps.
 5. **Examine and exercise the result.**
    - Inspect the combined diff, shared consumers and the proposed integration result against the documented design.
-   - [Run Project Check](#run-project-check) for each selected observation, inspect its output and preserve evidence in the review record. Read CI definitions for the branches and artifacts each job actually uses.
+   - [Run Project Check](command-conventions.md#run-project-check) for each selected observation, inspect its output and preserve evidence in the review record. Read CI definitions for the branches and artifacts each job actually uses.
    - Reproduce uncertain findings in disposable fixtures. Where attribution is unclear, compare target and candidate under equivalent conditions and explain any pairing differences.
 6. **Check the integration boundaries.**
    - Compare producers and consumers across branches: schema and tool callers, generated and served surfaces, packaging, paths, configuration and host instructions. Inspect CI selection for wrong trees, stale revisions and incomplete coverage scope, and identify assumptions from one constituent PR that another invalidates.
@@ -179,19 +183,6 @@ Read an anchored section from a captured branch revision.
 ```bash
 git show <sha>:<repo-relative-path> | rg -n '^#{1,6} '
 git show <sha>:<repo-relative-path> | sed -n '<start-line>,<end-line>p'
-```
-
-### Run Project Check
-
-Run the check selected by the task or by the reviewed project's manifest, test configuration or CI job.
-
-- A selected canon check also reads [Canon Check Conventions](canon-context.md#canon-check-conventions) before this operation; a checker the task supplies for a bounded scope does not.
-- Replace the command placeholder with that project's actual invocation, including its runtime, check arguments and explicit dependency paths.
-- Capture the working directory, input revisions, measured cases, skips, exit status and output. Assess the result against the active mode's requirements.
-
-```bash
-cd <tool-checkout>
-<project-check-command>
 ```
 
 ### Fetch Check Evidence

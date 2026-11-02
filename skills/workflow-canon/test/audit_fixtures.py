@@ -14,10 +14,6 @@ from audit_inventory import inventory
 from audit_state import bind, ingest
 
 
-MISSING_ENGINE = ('CANON_TEST_ENGINE is unset: it names the root of an engine checkout '
-                  'whose dependencies are installed')
-
-
 class AuditFixture(unittest.TestCase):
     def setUp(self):
         self.temporary = tempfile.TemporaryDirectory()
@@ -25,7 +21,7 @@ class AuditFixture(unittest.TestCase):
         self.root = Path(self.temporary.name)
         engine = os.environ.get('CANON_TEST_ENGINE')
         if not engine:
-            raise unittest.SkipTest(MISSING_ENGINE)
+            self.fail('CANON_TEST_ENGINE must name an engine with its installed yaml package')
         self.engine = Path(engine)
         self.write('corpus/canon/resources/anti-patterns.md',
                    '# Anti-patterns\n\n## Structural\n\n### AP-01. missing-contract\n'

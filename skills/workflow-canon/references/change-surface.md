@@ -82,7 +82,7 @@ Coverage completion and conformance are separate. Confirmed violations can have 
 ### Freshness and Resume
 
 - **Inspect the run.**
-  Start with [status](#check-audit-status), which returns bounded counts, generation identity and artifact paths. Every state change renders the views; [render](#render-audit-surface) regenerates them from the ledger when one is missing or hand-edited. Locate residuals through the coverage document's headings and assignment identifiers; issue the relevant [packet](audit-dispatch.md#write-audit-packet) for source, mapping and ownership detail. The script-owned JSON ledger stores the complete dataset and is accessed through these projections.
+  Start with [status](#check-audit-status), which returns bounded counts, generation identity and artifact paths. Locate residuals through the coverage document's headings and assignment identifiers; issue the relevant [packet](audit-dispatch.md#write-audit-packet) for source, mapping and ownership detail. The script-owned JSON ledger stores the complete dataset and is accessed through these projections.
 - **Source generations.**
   Any corpus membership/byte change, scope correction, canon change, parser/engine change or audit-tool change blocks use of the captured generation. [Refresh](#refresh-audit-surface) captures the current generation and invalidates all its mapping, verification and evaluation evidence because cross-element dependency reach can exceed local source rows. An identical generation preserves its pending work. Archived state and immutable returns retain prior evidence.
 - **Mapping corrections.**
@@ -178,4 +178,14 @@ Retire interrupted ownership so its unresolved work can be planned again.
 
 ```bash
 python3 <skill-root>/scripts/audit_surface.py retry --run <run> --assignment <id> --reason '<reason>'
+```
+
+### Run Audit Script Tests
+
+Run inventory, evidence-gate and assignment regressions with the paired parser.
+
+- Run from the skill worktree. Synthetic judgments test coordination, not semantic corpus conformance.
+
+```bash
+CANON_TEST_ENGINE=<engine-root> python3 -m unittest discover -s skills/workflow-canon/test -p 'test_audit_*.py'
 ```
