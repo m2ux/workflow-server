@@ -820,6 +820,16 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('hold F05', out)
         self.assertNotIn('unrecorded', out.split('available:')[0])
 
+    def test_a_merged_pull_request_that_does_not_deliver_the_hot_fix_leaves_it_recorded(self):
+        merged = '2026-11-01T00:00:00Z'
+        out = survey(staged((hotfix(4), 'Ready')),
+                     [pr(951, '[I07:E00] Other Work', merged, base='i07/e00/main'),
+                      pr(952, '[F04] Reject Bad Keys', merged, base='workspace'),
+                      pr(953, '[F09] Reject Bad Keys', merged, base='main')],
+                     '--default', 'o/r=main', held=(links(951, 4), links(952, 4), links(953, 4)))
+        self.assertNotIn('  unrecorded', out)
+        self.assertIn('unit F04 #4', out)
+
     def test_an_open_hot_fix_a_merged_pull_request_links_is_unrecorded(self):
         out = survey(staged((hotfix(4), 'In Progress')),
                      [pr(951, '[F04] Reject Bad Keys', '2026-11-01T00:00:00Z', base='main')],

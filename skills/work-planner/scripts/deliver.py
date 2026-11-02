@@ -53,9 +53,11 @@ An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever 
 as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
 its record folder and branch come from its prefix and its title's name, and its base is its
 repository's default branch, which --default gives as owner/repo=branch, once for each
-repository; a malformed --default stops the run before it prints. An open hot-fix a merged pull
-request links is printed on an unrecorded line, for its merge to be recorded. A hot-fix an open
-pull request links is running, and is neither offered nor held. Otherwise a hot-fix In Progress is
+repository; a malformed --default stops the run before it prints. A hot-fix's delivering pull
+request is titled with its [F00], in its repository, into that default branch, with a Development
+link to it. An open hot-fix a merged delivering pull request reaches is printed on an unrecorded
+line, for its merge to be recorded. A hot-fix an open delivering pull request reaches is running,
+and is neither offered nor held. Otherwise a hot-fix In Progress is
 held by its dispatch and printed on a hold line. A hot-fix whose repository's default branch is not
 given is printed unresolved.
 
@@ -277,6 +279,14 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
+def hotfix_pulls(prs: list[dict], key: tuple[str, int], tag: str, base: str) -> list[dict]:
+    """The pull requests delivering a hot-fix: titled with its tag, in its repository, into its
+    default branch, with a Development link to it."""
+    return sorted((p for p in prs if base and hotfix_tag(p) == tag and pr_repo(p).lower() == key[0].lower()
+                   and ((p.get('base') or {}).get('ref') or '') == base and links_issue(p, key)),
+                  key=lambda p: p['number'])
+
+
 def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str, str], home: str,
                  when: str, unresolved: list[str]) -> tuple[list[str], int, int, int]:
     """The unit and hold lines of each open hot-fix Ready or In Progress that no open or merged pull
@@ -289,21 +299,21 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         if not tag or issue['state'] != 'open':
             continue
         where = f'{tag} {label(key, home)}'
-        linking = sorted((p for p in prs if links_issue(p, key)), key=lambda p: p['number'])
-        if merged := [p for p in linking if p.get('merged_at')]:
+        base = defaults.get(key[0].lower())
+        if not base:
+            unresolved.append(f'{where}: the default branch of {key[0]} is not given')
+            continue
+        delivering = hotfix_pulls(prs, key, tag, base)
+        if merged := [p for p in delivering if p.get('merged_at')]:
             numbers = ', '.join(f"#{p['number']}" for p in merged)
             lines.append(f'  unrecorded {where}: {numbers} merged')
             unrecorded += 1
             continue
-        if status.get(key) not in STARTED or any((p.get('state') or 'open') == 'open' for p in linking):
+        if status.get(key) not in STARTED or any((p.get('state') or 'open') == 'open' for p in delivering):
             continue
         if status[key] == 'In Progress':
             lines.append(f'  hold {where}: In Progress')
             held += 1
-            continue
-        base = defaults.get(key[0].lower())
-        if not base:
-            unresolved.append(f'{where}: the default branch of {key[0]} is not given')
             continue
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
@@ -337,17 +347,15 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...],
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
         if (tag := hotfix_tag(issue)) and issue['state'] == 'open':
-            hotfixes[(key[0].lower(), tag)] = key
+            hotfixes[key] = tag
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
             continue
         base = (pull.get('base') or {}).get('ref') or ''
         if tag := hotfix_tag(pull):
-            repo = pr_repo(pull).lower()
-            hotfix = hotfixes.get((repo, tag))
-            if (hotfix and links_issue(pull, hotfix) and base and base == defaults.get(repo)
-                    and plan_passed(pull.get('body') or '')):
+            if (any(hotfix_pulls([pull], key, fixed, defaults.get(key[0].lower(), ''))
+                    for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
                 found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue
         matched = PR_TITLE.match(pull.get('title') or '')
