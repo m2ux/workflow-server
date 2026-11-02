@@ -1,0 +1,15 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1624",
+    "head": "bf1baac9ed0259455c7b762ebcadec49cb1e01b1",
+    "base": "9a0f06d7c043a1514d918c8c8547d754beec62e7",
+    "base_ref": "workspace",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1623-f07-hot-fix-review-status/agent-review.json",
+    "reviewer": "Claude Opus 5.5 (delivery session agent review)",
+    "reviewed_at": "2026-11-02",
+    "scope": "Full diff workspace..f07-hot-fix-review-status: scripts/hotfix.py board_status, scripts/board-queue.py (--links, delivering pulls, settle fallback), scripts/statuses.py QUEUE jurisdiction, the three test files, and prose in hotfix.md, board-queue.md, board-delivery.md, advance-mode.md, standup-report.md, SKILL.md and board.py. Callers inspected: Settle Hot-fix Board Status (placement.md Raise step 3 and protocols/task-merge.md step 1), deliver.py hotfix_units and unit_state, progress.py hot-fix marks, Ready Hot-fix Pull Request.",
+    "criteria": "AC1: board_status gives In Review for an open ready delivering pull request and In Progress for a draft one; Advance places both (T1, T2). AC2: a hot-fix In Review with a ready delivering pull request keeps In Review through board-queue (T2). AC3: no skill file or script says a hot-fix never stands In Review, or that only an initiative or an epic does without naming the hot-fix (T4).",
+    "validation": "skills/work-planner: 847 passed, 1 skipped; skills/test: 208 passed; skill-file check 52 files, 0 findings. Considered and rejected as outside the criteria or not breaking a realistic run: Settle Hot-fix Board Status reads no pull requests (its two callers run at creation and after the merge, when no delivering pull request is open, so the result is correct); a merged but unrecorded hot-fix returns to In Progress (it no longer awaits review, and Task Merge records and closes it in the same session); unit_state gives no line for a hot-fix In Review whose pull request closed unmerged (behaviour as before for that status, and Advance moves it to In Progress); board_status and unit_state read delivering versus linking pull requests (behaviour as before); Delivery Unit prose names In Progress as the hold (an In Review hot-fix has an open pull request, so it is running); nothing writes In Review at Mark Review Ready (Deliver advances the board each run, and the issue asks for no new mechanism); QUEUE admits In Review for any open hot-fix (the queue derives it only from board_status); delivering_pulls scans every pull request per hot-fix (negligible at board scale).",
+    "findings": []
+  }
+]
