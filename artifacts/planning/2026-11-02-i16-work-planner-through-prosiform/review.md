@@ -38,7 +38,7 @@ Plan Mode step 5, Review Initiative Goal, over the drafts in this record. Format
 
 - **R1-8. A shared-check caller this work never edits.**  Major.
   - Problem: `skills/workflow-canon/references/revise-mode.md` lines 72 to 73 run the shared check over workflow-canon, which would take every new finding.
-  - Resolution: E00 AC10 holds the prosiform findings to the skills named to them; how a skill is named is OQ2.
+  - Resolution: E00 AC10 holds the prosiform findings to the skills named to them; a command-line option names each skill, as [Decisions](decisions.md#settled) records.
 - **R1-9. An absent instrument could pass silently.**  Major.
   - Problem: a check that skips the compile when `pf` is missing would report a clean skill.
   - Resolution: E00 AC9 makes an absent or mismatched `pf` a finding.
@@ -47,7 +47,7 @@ Plan Mode step 5, Review Initiative Goal, over the drafts in this record. Format
   - Resolution: E03 AC3 compares both revisions with one version; which version is OQ1.
 - **R1-11. The stated baseline does not resolve here.**  Major.
   - Problem: `93dad5b9` is an md-composer commit; `git cat-file` in workflow-server: "Not a valid object name 93dad5b9".
-  - Resolution: OQ3, recommending workflow-server `ed508443`, markdown-identical.
+  - Resolution: OQ2, held open by the user.
 - **R1-12. A finding against the skill's own files before it conforms.**  Minor.
   - Problem: holding Work Planner to the findings before E02 and E03 land would leave a finding on each branch between.
   - Resolution: E03 W02 names Work Planner to the findings once every mode compiles within the budget.
@@ -56,11 +56,11 @@ Plan Mode step 5, Review Initiative Goal, over the drafts in this record. Format
 
 - **R1-13. Discussion branch conflicts with the shared engineering worktree.**  Advisory.
   - Problem: planning-record.md Add Planning Record, "The engineering branch takes no further worktree and no branch", against Plan Mode step 2's draft discussion pull request from a planning branch.
-  - Resolution: OQ4.
+  - Resolution: every planning artifact is committed directly to engineering, as [Decisions](decisions.md#settled) records.
 - **R1-14. Same-board reference.**  Advisory.
   - Problem: issue-body.md References, "An issue's References section does not link issues or pull requests on the same board"; #1427 stands on board 17.
-  - Resolution: OQ5.
+  - Resolution: OQ3.
 
 ## Round 2
 
-Review Initiative Goal repeated over the revised bodies: every clause traces to a criterion, every criterion to an epic and a task row ([trace](trace.md)); `format.py` reports nothing to fix, apply or decide on any draft; `deps.py` reports no problem. No content or structural finding remains. Open Questions OQ1 to OQ5 stand for the user, and the epic Open Questions carry OQ1 to OQ3.
+Review Initiative Goal repeated over the revised bodies: every clause traces to a criterion, every criterion to an epic and a task row ([trace](trace.md)); `format.py` reports nothing to fix, apply or decide on any draft; `deps.py` reports no problem. No content or structural finding remains. Open Questions OQ1 to OQ3 stand for the user; E00 carries the version question and E03 the baseline question.

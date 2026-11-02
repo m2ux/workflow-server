@@ -18,7 +18,7 @@ It matters because prosiform compiles every local link into the bundle an agent 
 | [Goal Trace](trace.md) | Each clause traced to its criteria, epics and epic criteria |
 | [Review](review.md) | Each review finding and its resolution |
 | [Dependency Report](dependencies.txt) | The dependency, joins, contention and priority report over the drafts |
-| [Initiative Draft](bodies/initiative.md) | The initiative body, arriving with the discussion pull request |
+| [Initiative Draft](bodies/initiative.md) | The initiative body |
 | [E00 Draft](bodies/e00.md) | Shared Prosiform Rules |
 | [E01 Draft](bodies/e01.md) | Check Definitions |
 | [E02 Draft](bodies/e02.md) | Work Planner Links |
