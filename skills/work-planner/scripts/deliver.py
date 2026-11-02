@@ -196,6 +196,12 @@ def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
     return found
 
 
+def branch_lines(branch: str, bases: list[str]) -> str:
+    """The branch, base and worktree text of a unit line, one entry for each base."""
+    return '; '.join(f'branch {name}' + (f', base {base}' if base else '') + f', worktree {worktree}'
+                     for name, base, worktree in task_branches(branch, bases))
+
+
 def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
     """The tasks each row names in Joins, by task id."""
     found = {}
@@ -303,7 +309,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
-                     f'branch {name["branch"]}, base {base}, worktree {WORKTREES}/{name["branch"]}')
+                     f'{branch_lines(name["branch"], [base])}')
         available += 1
     return lines, available, held, unrecorded
 
@@ -453,9 +459,7 @@ def survey(args: argparse.Namespace) -> int:
             name = names(tag, detail[first]['description'], detail[first]['issue'] or key[1], when)
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
-            where = '; '.join(f'branch {branch}' + (f', base {base}' if base else '')
-                              + f', worktree {worktree}'
-                              for branch, base, worktree in task_branches(name['branch'], bases))
+            where = branch_lines(name['branch'], bases)
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
