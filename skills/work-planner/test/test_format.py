@@ -154,6 +154,72 @@ class OneRow(unittest.TestCase):
         self.assertFalse(any('cited by' in item or item.startswith('W01: delivers') for item in r.decide))
 
 
+
+def initiative_with(criteria: tuple[int, ...], references: tuple[int, ...] = (1,)) -> Review:
+    """An initiative whose rows cover the labelled criteria, the first row the first and the second the rest."""
+    labels = [f'AC{n}' for n in criteria]
+    text = ('## Overview\n\nWhy.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n## Proposal\n\n- **Move.**\n  Design.\n\n'
+            '## Work Breakdown\n\n| Epic | Description | Coverage | Depends on | Done |\n'
+            '| --- | --- | --- | --- | --- |\n'
+            f'| [E00](https://github.com/o/r/issues/2) | Ledger Record | {labels[0]} | | |\n'
+            f'| [E01](https://github.com/o/r/issues/3) | Ledger Read | {", ".join(labels[1:])} | | |\n\n'
+            '## Acceptance Criteria\n\n'
+            + ''.join(f'- [ ] **{label}.** The ledger holds, as its check shows.\n' for label in labels)
+            + '\n## Non-Goals\n\n- It leaves the runtime alone.\n\n## References\n\n'
+            + ''.join(f'- **R{n}.** [Source](https://example.com/{n}) — background.\n' for n in references))
+    r = Review(issue(1, '[I01] Ledger Work: The Source Named', body=text,
+                     labels=('type:initiative', 'theme:mechanical')))
+    r.run()
+    return r
+
+
+class CriterionLabels(unittest.TestCase):
+    def test_labels_ascending_with_a_gap_stand(self):
+        r = initiative_with((1, 3, 4))
+        self.assertFalse(any('labels' in item for item in r.decide))
+
+    def test_labels_starting_past_one_stand(self):
+        r = initiative_with((2, 3))
+        self.assertFalse(any('labels' in item for item in r.decide))
+
+    def test_a_repeated_label_is_left_to_decide(self):
+        r = initiative_with((1, 2, 2))
+        self.assertIn('AC labels partly missing or out of sequence', r.decide)
+
+    def test_a_descending_label_is_left_to_decide(self):
+        r = initiative_with((1, 3, 2))
+        self.assertIn('AC labels partly missing or out of sequence', r.decide)
+
+    def test_a_reference_gap_is_left_to_decide(self):
+        r = initiative_with((1, 2), references=(1, 3))
+        self.assertIn('R labels partly missing or out of sequence', r.decide)
+
+
+INITIATIVE_GUIDE = SCRIPTS.parent / 'artifacts' / 'initiative-issue-body.md'
+
+
+def initiative_section(heading: str) -> str:
+    """One Fields subsection of the initiative guide, up to the next heading of its level."""
+    return INITIATIVE_GUIDE.read_text().split(f'\n### {heading}\n', 1)[1].split('\n### ', 1)[0]
+
+
+class NotPlannedEpic(unittest.TestCase):
+    def test_its_row_leaves_with_the_criteria_only_it_covers(self):
+        rule = next(line for line in initiative_section('Work Breakdown').splitlines()
+                    if 'closed as not planned' in line)
+        self.assertIn('leaves the table', rule)
+        self.assertIn('Each criterion only that row covers leaves with it', rule)
+        self.assertIn('another row also covers stays', rule)
+        self.assertIn('issue-body.md#criterion-labels', rule)
+
+    def test_references_name_where_its_work_went(self):
+        self.assertTrue(any("not-planned epic's row" in line and 'takes' in line
+                            for line in initiative_section('References').splitlines()))
+
+    def test_the_label_rule_has_its_heading(self):
+        self.assertIn('\n#### Criterion Labels\n', (SCRIPTS.parent / 'artifacts' / 'issue-body.md').read_text())
+
+
 def proposal_body() -> str:
     return ('## Overview\n\nThe problem.\n\n## Problem\n\n- **Gap.**\n  Evidence.\n\n'
             '## Goal\n\n- The bad key is rejected.\n\n'
