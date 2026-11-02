@@ -81,7 +81,7 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 - An open hot-fix is Backlog while it is out of the hot-fix format: checked as a hot-fix, its title, labels or body leave a [format finding](issue-body.md#format-findings) to apply or decide.
 - An open hot-fix in that format is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it.
 - A hot-fix never stands In Review: one in the format found there moves to In Progress.
-- A hot-fix closed as completed is Done, and one closed any other way leaves the board.
+- A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
 
 ### Delivery Unit
