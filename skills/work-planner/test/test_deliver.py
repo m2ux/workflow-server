@@ -804,3 +804,18 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('  merge #951 F04: base main', out)
         for number in (952, 953, 954):
             self.assertNotIn(f'merge #{number}', out)
+
+    def test_a_hot_fix_a_pull_request_links_is_running(self):
+        for state, merged in (('open', None), ('closed', '2026-11-01T00:00:00Z')):
+            with self.subTest(state=state):
+                out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
+                             [pr(951, '[F04] Reject Bad Keys', base='main', state=state, merged=merged),
+                              pr(952, '[F05] Reject Bad Keys', base='main', state=state, merged=merged)],
+                             '--default', 'o/r=main', held=(links(951, 4), links(952, 5)))
+                self.assertNotIn('unit F04', out)
+                self.assertNotIn('hold F05', out)
+
+    def test_a_pull_request_closed_unmerged_leaves_the_hot_fix_free(self):
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')],
+                     '--default', 'o/r=main', held=(links(951, 4),))
+        self.assertIn('unit F04 #4', out)

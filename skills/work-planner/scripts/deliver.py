@@ -52,8 +52,9 @@ its session writes the work item after dispatch, so its unit works on every epic
 An open hot-fix, titled [F00], Ready on the board is a unit of its own whatever any epic's state,
 as Hot-fix Units in artifacts/delivery-plan.md states: its coverage is every criterion it carries,
 its record folder and branch come from its prefix and its title's name, and its base is its
-repository's default branch, which --default gives as owner/repo=branch, once for each repository. A hot-fix In Progress is held by its dispatch
-and printed on a hold line. A hot-fix whose repository's default branch is not given is printed
+repository's default branch, which --default gives as owner/repo=branch, once for each repository. A hot-fix an open or merged pull request links
+is running, and is neither offered nor held. Otherwise a hot-fix In Progress is held by its
+dispatch and printed on a hold line. A hot-fix whose repository's default branch is not given is printed
 unresolved.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
@@ -87,7 +88,7 @@ from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, HOTFIX, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections)
-from sync import (Unreadable, attach_links, long_lived_names, plan_rows, pr_repo,
+from sync import (Unreadable, attach_links, links_issue, long_lived_names, plan_rows, pr_repo,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -268,10 +269,10 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
-def hotfix_units(issues: dict, status: dict, defaults: dict[str, str], home: str, when: str,
-                 unresolved: list[str]) -> tuple[list[str], int, int]:
-    """The unit and hold lines of each open hot-fix Ready or In Progress, as Hot-fix Units in
-    artifacts/delivery-plan.md states, with the count of each."""
+def hotfix_units(issues: dict, status: dict, prs: list[dict], defaults: dict[str, str], home: str,
+                 when: str, unresolved: list[str]) -> tuple[list[str], int, int]:
+    """The unit and hold lines of each open hot-fix Ready or In Progress that no open or merged pull
+    request links, as Hot-fix Units in artifacts/delivery-plan.md states, with the count of each."""
     lines, available, held = [], 0, 0
     for key in sorted(issues):
         issue = issues[key]
@@ -279,6 +280,8 @@ def hotfix_units(issues: dict, status: dict, defaults: dict[str, str], home: str
         if not matched or issue['state'] != 'open' or status.get(key) not in STARTED:
             continue
         tag, where = matched[1], f'{matched[1]} {label(key, home)}'
+        if any(links_issue(p, key) and (p.get('merged_at') or (p.get('state') or 'open') == 'open') for p in prs):
+            continue
         if status[key] == 'In Progress':
             lines.append(f'  hold {where}: In Progress')
             held += 1
@@ -441,7 +444,7 @@ def survey(args: argparse.Namespace) -> int:
         if not repo or not branch:
             sys.exit(f'--default {given}: expected owner/repo=branch')
         defaults[repo.lower()] = branch
-    lines, found, holding = hotfix_units(issues, status, defaults, home, when, board.unresolved)
+    lines, found, holding = hotfix_units(issues, status, prs, defaults, home, when, board.unresolved)
     for line in lines:
         print(line)
     available += found

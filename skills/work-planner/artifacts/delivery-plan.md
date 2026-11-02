@@ -11,6 +11,7 @@ Read these files first.
 - [Work Item](work-item.md)
 - [Hot-fix Body](hotfix-body.md)
 - [Board](board.md)
+- [Issue](issue.md)
 
 ## Operations
 
@@ -30,8 +31,10 @@ A held hot-fix returned to the work the plan offers.
 
 **Inputs:** Board identity and the held hot-fix's issue identity.
 
-1. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready, as [Hot-fix Units](#hot-fix-units) states.
-2. Return the saved item and its Status to the caller.
+1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
+   - Refuse the release while an open or merged pull request links it, which marks it running as [Hot-fix Units](#hot-fix-units) states, and return that pull request to the caller.
+2. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready.
+3. Return the saved item and its Status to the caller.
 
 ## Fields
 
@@ -41,13 +44,13 @@ A unit is one task row or tasks that name each other in Joins, as [Work Breakdow
 
 ### Hot-fix Units
 
-An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. Its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it.
+An open [hot-fix](hotfix-body.md) Ready in the supplied board items is a unit of its own, whatever any epic's state. Its issue is the unit's task issue and it has no row. Its Coverage is every criterion it carries, its record folder takes its prefix and title name as a task id and Description, and its branch, base and worktree are as [Task Branches](delivery-branches.md#task-branches) names them for a hot-fix. A hot-fix an open or merged pull request links is running: the plan neither offers nor holds it. Otherwise its In Progress status is its hold: a dispatch sets it, and a return to Ready releases it while no pull request links it.
 
 ### Report Lines
 
 - A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base main, worktree .worktrees/f00-key-validation`.
 - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero.
-- A `hold` line names a row a session holds and the record it links, or a hot-fix In Progress.
+- A `hold` line names a row a session holds and the record it links, or a hot-fix In Progress that no pull request links.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
 - An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.
 - An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.
