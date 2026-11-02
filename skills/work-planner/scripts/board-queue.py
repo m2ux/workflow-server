@@ -28,12 +28,11 @@ from collections import Counter
 from pathlib import Path
 
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
-from format import cell, id_cell, row_id
+from format import HOTFIX, cell, id_cell, row_id
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
 from sync import Unreadable, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-HOTFIX = re.compile(r'^\[F\d\d\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
 PULL_HOME = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 

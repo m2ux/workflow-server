@@ -109,7 +109,7 @@ BODY_ARTIFACTS = {
 }
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
-HOTFIX = re.compile(r'^\[F\d\d\]')
+HOTFIX = re.compile(r'^\[(F\d\d)\]')
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8

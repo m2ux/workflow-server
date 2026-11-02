@@ -92,10 +92,9 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from format import Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
+from format import HOTFIX, Review, Template, AC, LINK, TICK, cell, cells, done_mark, id_cell, join_sections, row, row_id, split_sections
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
-HOTFIX = re.compile(r'^\[(F\d\d)\]')
 SINGLE = ('task', 'hot-fix')
 PR_REF = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 TICKED = re.compile(r'^- \[[xX]\] ')

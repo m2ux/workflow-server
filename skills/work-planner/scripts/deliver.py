@@ -85,14 +85,13 @@ from board import Board, Outputs, Resolution, rows
 from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
-from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
+from format import (HOTFIX, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
                     row_id, split_sections)
 from sync import (Unreadable, attach_links, long_lived_names, plan_rows, pr_repo,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
-HOTFIX = re.compile(r'^\[(F\d\d)\] ([^:]*)')
 CRITERION_LABEL = re.compile(r'^- \[[ xX]\] \*\*(AC\d+)\.\*\*', re.M)
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
 TASK = re.compile(r'W\d\d')
@@ -289,7 +288,7 @@ def hotfix_units(issues: dict, status: dict, defaults: dict[str, str], home: str
         if not base:
             unresolved.append(f'{where}: the default branch of {key[0]} is not given')
             continue
-        name = names(tag, matched[2], key[1], when)
+        name = names(tag, issue['title'][matched.end():].strip().partition(': ')[0], key[1], when)
         coverage = ', '.join(dict.fromkeys(CRITERION_LABEL.findall(issue.get('body') or '')))
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
                      f'branch {name["branch"]}, base {base}, worktree {WORKTREES}/{name["branch"]}')

@@ -31,9 +31,10 @@ import re
 import sys
 from pathlib import Path
 
+from format import HOTFIX
+
 AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
 OPEN_INITIATIVE_OR_EPIC = re.compile(r'^\[I\d\d(?::E\d\d)?\] ')
-HOTFIX = re.compile(r'^\[F\d\d\] ')
 PLANNING = re.compile(r'https://github\.com/[^)\s]*/(?:tree|blob)/[^)\s]*planning/[^)\s]*')
 
 
