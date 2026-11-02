@@ -47,7 +47,7 @@ Fixed in the body written to --fix, keeping the issue's wording:
     indented under the bullet, except a bulleted item with sub-bullets, whose line introducing
     them stays on, or rejoins, its bold statement's line
   - acceptance criteria made checkboxes, labelled **ACn.** when none is labelled; references
-    labelled **Rn.** when none is
+    labelled **Rn.** when none is; plain ACn. or Rn. labels made bold in place, keeping their numbers
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
   - a type:* label that does not match the issue's kind, a theme:* label on a proposal, any type:* label on
@@ -82,7 +82,8 @@ Left to decide, since each needs new content or a judgement:
     a complete row another row depends on, the further task that adopted its criteria
   - a Description cell over eight words or holding a semicolon, whose detail belongs in criteria
   - acceptance criteria partly labelled, or labels that repeat or descend (labels ascending with a
-    gap stand), and references partly labelled or not numbered from R1 without a gap
+    gap stand), and references partly labelled or not numbered from R1 without a gap, whether the
+    labels are bold or plain
   - a References section that links issues or pull requests on the same board
   - no theme:* label on an initiative, epic or hot-fix, a title without "Name: Subtitle" (after the prefix,
     or whole for a standalone issue), or a title whose name is not two or three words or whose
@@ -1055,14 +1056,23 @@ class Review:
                 lines[i] = '- [ ] ' + lines[i][2:]
             if plain:
                 self.fixed.append(f'{len(plain)} {tag} items made checkboxes')
+        box = 6 if checkbox else 2
         label = {'AC': AC, 'R': REF}[tag]
         numbers = [label.match(lines[i]) for i in items]
         if not any(numbers):
-            for n, i in enumerate(items, 1):
-                box = lines[i][:6] if checkbox else '- '
-                lines[i] = f'{box}**{tag}{n}.** ' + lines[i][len(box):]
-            self.fixed.append(f'{len(items)} items labelled {tag}1–{tag}{len(items)}')
-        elif not all(numbers) or not self.in_sequence(tag, [int(m[1]) for m in numbers]):
+            bare = re.compile(rf'{tag}(\d+)\. ')
+            numbers = [bare.match(lines[i], box) for i in items]
+            if not any(numbers):
+                for n, i in enumerate(items, 1):
+                    lines[i] = f'{lines[i][:box]}**{tag}{n}.** ' + lines[i][box:]
+                self.fixed.append(f'{len(items)} items labelled {tag}1–{tag}{len(items)}')
+                return lines
+            if all(numbers) and self.in_sequence(tag, [int(m[1]) for m in numbers]):
+                for i, m in zip(items, numbers):
+                    lines[i] = f'{lines[i][:box]}**{tag}{m[1]}.** ' + lines[i][m.end():]
+                self.fixed.append(f'{len(items)} plain {tag} labels made bold')
+                return lines
+        if not all(numbers) or not self.in_sequence(tag, [int(m[1]) for m in numbers]):
             self.decide.append(f'{tag} labels partly missing or out of sequence')
         return lines
 
