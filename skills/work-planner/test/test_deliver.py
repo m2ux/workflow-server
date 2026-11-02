@@ -795,8 +795,9 @@ class HotFixUnits(unittest.TestCase):
                      pr(952, '[F05] Reject Bad Keys', body=PLAN, base='workspace')]
             out = survey(staged((hotfix(4, target='feature/x'), 'In Progress'),
                                 (hotfix(5, target='workspace'), 'In Progress')),
-                         pulls, *names, held=(links(951, 4), links(952, 5)))
+                         pulls, *names, held=(links(951, 4), links(952, 5)), code=1)
         self.assertNotIn('merge #951', out)
+        self.assertIn('  undeclared F04 #4: its target feature/x is no long-lived branch config/branches declares', out)
         self.assertIn('  merge #952 F05: base workspace', out)
 
     def test_a_hot_fix_of_another_repository_is_unresolved_without_failing_the_run(self):

@@ -56,9 +56,9 @@ artifacts/hotfix.md: a unit line, with every criterion it carries as coverage an
 and branch its prefix and title name give it; a hold line; a draft line naming its draft delivering
 pull requests, whose review cycle is not complete; or an unrecorded line naming its merged
 delivering pull requests. Its base is its target, the branch its Overview's Target: line names. A
-hot-fix that would be a unit while naming no target, or a hot-fix of --project's repository, as
-its origin remote names it, whose target that repository's config/branches does not declare, is
-printed as an undeclared line instead, naming why. A hot-fix of another repository has a target
+hot-fix naming no target, or a hot-fix of --project's repository, as its origin remote names it,
+whose target that repository's config/branches does not declare, is printed as an undeclared line
+naming why, whatever its state, and is offered as no unit and no merge. A hot-fix of another repository has a target
 --project cannot check: it is printed as an unresolved line, offered once a run whose --project
 is a checkout of its repository finds its target declared, and does not fail the run.
 
@@ -300,8 +300,9 @@ def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str)
 
 def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
                  lived: tuple[str, ...], repository: str) -> tuple[list[str], int, int, int, int, int]:
-    """The unit, undeclared, hold, draft and unrecorded line of each open hot-fix, by the state
-    hotfix.unit_state reads, with the count of each."""
+    """The unit, hold, draft and unrecorded line of each open hot-fix, by the state hotfix.unit_state
+    reads, and the undeclared or unresolved line of each whose target target_fault refuses, whatever
+    its state, with the count of each. A refused target offers no unit."""
     lines, available, undeclared, held, drafts, unrecorded = [], 0, 0, 0, 0, 0
     for key in sorted(issues):
         issue = issues[key]
@@ -312,6 +313,12 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
         linking = linking_pulls(prs, key)
         delivering = delivering_pulls(linking, key, issue)
         state = unit_state(issue, status.get(key), linking, delivering)
+        kind, why = target_fault(key, issue, lived, repository)
+        if kind == 'undeclared':
+            lines.append(f'  undeclared {where}: {why}')
+            undeclared += 1
+        elif kind == 'unresolved':
+            lines.append(f'  unresolved: {where}: {why}')
         if state == 'unrecorded':
             numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
             lines.append(f'  unrecorded {where}: {numbers} merged')
@@ -327,15 +334,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
             lines.append(f'  draft {where}: {numbers} awaits its review cycle')
             drafts += 1
             continue
-        if state != 'unit':
-            continue
-        kind, why = target_fault(key, issue, lived, repository)
-        if kind == 'undeclared':
-            lines.append(f'  undeclared {where}: {why}')
-            undeclared += 1
-            continue
-        if kind == 'unresolved':
-            lines.append(f'  unresolved: {where}: {why}')
+        if state != 'unit' or kind:
             continue
         base = target(issue)
         name = names(tag, title_name(issue['title']), key[1], when)
