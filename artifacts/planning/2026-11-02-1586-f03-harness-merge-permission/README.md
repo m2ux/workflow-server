@@ -12,6 +12,8 @@ An agent harness can refuse a merge the skill already authorizes, and the sessio
 
 | Artifact | What it holds |
 | --- | --- |
+| [F03 work item](f03.md) | Component, scope, design and test rows for F03 |
+| [Test results](test-results.md) | The checks run for F03, the revision tested and each result |
 
 ## Links
 
