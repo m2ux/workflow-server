@@ -76,8 +76,8 @@ One hot-fix's board item set where [Board Status](#board-status) places it.
 
 ### Board Status
 
-- An open hot-fix is Ready, whatever any initiative's or epic's priority, and stays In Progress once it holds it. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
-- A hot-fix never stands In Review: one found there moves to In Progress.
+- An open hot-fix stands In Review while a [delivering pull request](#delivering-pull-request) of it is open and ready for review, and In Progress while one is an open draft.
+- Otherwise an open hot-fix is Ready, whatever any initiative's or epic's priority, and In Progress once it holds In Progress or In Review. It reaches the board as its [placement](placement.md#disposition-conditions) orders.
 - A closed hot-fix takes the status [Status Changes](board-delivery.md#status-changes) gives a closed issue.
 - No initiative or epic waits on a hot-fix, and a hot-fix waits on none.
 

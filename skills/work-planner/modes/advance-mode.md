@@ -36,13 +36,13 @@ The main path meets [Outcomes](#outcomes).
    - Run [Read Board Configuration](../artifacts/board.md#read-board-configuration) for the board fields.
    - Run [Read Board Assignee](../artifacts/board.md#read-board-assignee) for the assignee login.
 4. **Plan.**
-   Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the selected board identity, current board items with Status, initiative pull request records, board fields, assignee login and an output directory such as `board/`.
+   Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.
    - Include every resolved off-board issue file and confirmed unplanned initiative identity.
 5. **Resolve missing evidence.**
    For each unresolved issue reference:
    - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) into a file.
      - Add the returned file to the resolved off-board issue files.
-   - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the current board items, initiative pull request records, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.
+   - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the current board items, initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.
    - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 6. **Resolve queue decisions.**
    Decide only from an `order` or `ask` line in [Report Lines](../artifacts/board-queue.md#report-lines), each of which is a re-prioritisation.
@@ -58,14 +58,14 @@ The main path meets [Outcomes](#outcomes).
      - Call [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the priority label each confirmed number names, for every repository holding one of those initiatives.
      - Call [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with each initiative identity and its confirmed priority-label addition.
      - Run [Read Board State](../artifacts/board.md#read-board-state) again.
-     - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records, board fields, assignee login, board identity and output directory, and every resolved off-board issue file and confirmed unplanned initiative identity.
+     - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, and every resolved off-board issue file and confirmed unplanned initiative identity.
    - Resolve any further missing evidence through step 5.
    - Repeat this step while a decision is pending. An unanswered question leaves the queue pending.
    - Return the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
 7. **Write.**
    Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it returned.
    - Run [Read Board State](../artifacts/board.md#read-board-state) again.
-   - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records, board fields, assignee login, board identity and output directory, retaining every resolved off-board issue file and confirmed unplanned initiative identity.
+   - Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved off-board issue file and confirmed unplanned initiative identity.
    - Resolve new missing evidence or decisions through steps 5 and 6.
    - Repeat this step until the refreshed queue is complete and contains no further call.
 8. **Report.**

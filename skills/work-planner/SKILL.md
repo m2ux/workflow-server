@@ -44,7 +44,7 @@ Select the mode as appropriate to fulfill the user request:
   - The theme board brought current with its issues
 - **[Advance](modes/advance-mode.md)**
   - Forward-looking, scoped to one board
-  - Placement of initiatives, epics and hot-fixes as In Progress or as Ready
+  - Placement of initiatives and epics as In Progress or as Ready, and of hot-fixes as their [Board Status](artifacts/hotfix.md#board-status) gives
   - A parallel work map for initiatives with no priority
 - **[Deliver](modes/deliver-mode.md)**
   - Forward-looking, scoped to one board

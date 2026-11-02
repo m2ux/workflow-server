@@ -43,12 +43,17 @@ def hotfix_faults(issue: dict) -> list[str]:
     return faults
 
 
-def board_status(issue: dict, held: str | None) -> str | None:
-    """The status Board Status gives a hot-fix holding held: Done when closed as completed, OFF_BOARD
-    when closed otherwise, In Progress when open and In Progress or In Review, else Ready."""
+def board_status(issue: dict, held: str | None, delivering: list[dict]) -> str | None:
+    """The status Board Status gives a hot-fix holding held, with its delivering pull requests: Done
+    when closed as completed, OFF_BOARD when closed otherwise; when open, In Review while a delivering
+    pull request is open and ready for review, In Progress while one is an open draft or the hot-fix
+    holds In Progress or In Review, else Ready."""
     if issue['state'] == 'closed':
         return 'Done' if issue.get('state_reason') == 'completed' else OFF_BOARD
-    return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
+    pending = [p for p in delivering if (p.get('state') or 'open') == 'open' and not p.get('merged_at')]
+    if any(not p.get('draft') for p in pending):
+        return 'In Review'
+    return 'In Progress' if pending or held in ('In Progress', 'In Review') else 'Ready'
 
 
 def targets(issue: dict) -> list[str]:

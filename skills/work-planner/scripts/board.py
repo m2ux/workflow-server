@@ -41,7 +41,7 @@ epic holds In Progress or In Review keeps the Status it holds, In Review becomin
 and one not yet on the board is added at Backlog: Advance mode places and lowers initiatives.
 An epic that has left the initiative's table is not read.
 
-Only an initiative or an epic stands In Review. A task issue is In Progress while its pull request
+Only an initiative, an epic or a hot-fix stands In Review. A task issue is In Progress while its pull request
 is open, and Done once that pull request merges into the epic base and the issue closes as
 completed. An open initiative is In Review when every acceptance criterion is ticked. An epic also
 requires current published agent review evidence from --agent-reviews; a missing or failing review
