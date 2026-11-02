@@ -30,3 +30,7 @@ Run from skills/work-planner: `python3 -m unittest discover -s test`
 Run in the worktree: `python3 skills/scripts/check_skill_files.py skills/work-planner`
 
 - Result: 52 files checked, 0 findings.
+
+## Merged Base
+
+The merge commit 7b2b72a1c03147b42a8399711b7177ad91077a74 on workspace, from #1612, carries the same tree as the tested revision, so T1 to T4 hold there.
