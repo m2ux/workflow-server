@@ -661,5 +661,45 @@ class UnresolvableGates(unittest.TestCase):
         self.assertEqual(done.returncode, 0)
 
 
+def hotfix(number: int) -> dict:
+    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
+                 labels=('type:hot-fix', 'theme:canon', 'priority: 10'))
+
+
+class HotFixes(unittest.TestCase):
+    def test_an_open_hot_fix_is_ready_whatever_the_priority_sets(self):
+        low = initiative(1, 'Low: Later', (f"[E00]({url('issues', 3)})", ''), priority='')
+        out = queue(staged((low, 'Backlog'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (hotfix(4), 'Backlog'), (hotfix(5), None)))
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: Backlog → Ready', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: no Status → Ready', out)
+        self.assertIn('assign #4', out)
+        self.assertIn('  order:', out)
+
+    def test_a_hot_fix_keeps_in_progress_and_leaves_in_review_for_it(self):
+        out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))
+        self.assertNotIn('[F04]', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: In Review → In Progress', out)
+
+    def test_an_open_hot_fix_left_done_returns_to_ready(self):
+        out = queue(staged((hotfix(6), 'Done')))
+        self.assertIn('[F06] Key Validation: Reject Bad Keys: Done → Ready', out)
+
+    def test_a_closed_hot_fix_is_done_or_leaves_the_board(self):
+        merged, dropped = hotfix(4), hotfix(5)
+        merged['state'] = dropped['state'] = 'closed'
+        merged['state_reason'], dropped['state_reason'] = 'completed', 'not_planned'
+        out = queue(staged((merged, 'In Progress'), (dropped, 'Ready')))
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: In Progress → Done', out)
+        self.assertIn('remove #5 [F05] Key Validation: Reject Bad Keys (closed, not completed)', out)
+
+    def test_a_hot_fix_holds_back_no_epic(self):
+        top = initiative(1, 'Top: Now', (f"[E00]({url('issues', 3)})", ''))
+        out = queue(staged((top, 'In Progress'), (epic(3, '01:E00', ('W01', 'Go', '')), 'Backlog'),
+                           (hotfix(4), 'In Progress')))
+        self.assertIn('Epic 3: Work: Backlog → Ready', out)
+        self.assertNotIn('wait', out)
+
+
 if __name__ == '__main__':
     unittest.main()

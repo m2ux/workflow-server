@@ -760,5 +760,80 @@ class ProducerOutputs(unittest.TestCase):
         self.assertNotIn('output ', output)
 
 
+def hotfix(number: int) -> dict:
+    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
+                 labels=('type:hot-fix', 'theme:canon'),
+                 body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n- [ ] **AC2.** Also holds.\n')
+
+
+class HotFixUnits(unittest.TestCase):
+    def test_a_ready_hot_fix_is_one_unit_cut_from_the_default_branch(self):
+        out = survey(staged((hotfix(4), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')))
+        self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
+                      'branch f04-key-validation, base (default branch), worktree .worktrees/f04-key-validation', out)
+        self.assertNotIn('unresolved', out)
+        self.assertIn('available: 1', out)
+
+    def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
+        out = survey(staged((hotfix(4), 'In Progress')), None)
+        self.assertIn('  hold F04 #4: In Progress', out)
+        self.assertNotIn('  unit ', out)
+
+    def test_a_hot_fix_in_backlog_or_closed_is_not_offered(self):
+        closed = hotfix(5)
+        closed['state'] = 'closed'
+        out = survey(staged((hotfix(4), 'Backlog'), (closed, 'Ready')), None)
+        self.assertNotIn('F04', out)
+        self.assertNotIn('F05', out)
+
+    def test_an_open_pull_request_that_links_without_delivering_still_makes_it_running(self):
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, 'Unrelated Work', base='workspace')], held=(links(951, 4),))
+        self.assertNotIn('unit F04', out)
+
+    def test_a_backlog_or_held_hot_fix_raises_nothing_unresolved(self):
+        out = survey(staged((hotfix(4), 'Backlog'), (hotfix(5), 'In Progress')))
+        self.assertNotIn('unresolved', out)
+        self.assertIn('  hold F05 #5: In Progress', out)
+
+    def test_a_passed_hot_fix_pull_request_into_the_default_branch_is_a_merge_candidate(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='main'),
+                 pr(952, '[F04] Reject Bad Keys', body=PLAN, base='i07/e00/main'),
+                 pr(953, '[F09] Reject Bad Keys', body=PLAN, base='main'),
+                 pr(954, '[F04] Reject Bad Keys', base='main'),
+                 pr(955, '[F04] Reject Bad Keys', body=PLAN, base='main')]
+        out = survey(staged((hotfix(4), 'In Progress')), pulls,
+                     held=tuple(links(n, 4) for n in (951, 952, 953, 954)))
+        self.assertIn('  merge #951 F04: base main', out)
+        for number in (952, 953, 954, 955):
+            self.assertNotIn(f'merge #{number}', out)
+
+    def test_a_hot_fix_an_open_pull_request_links_is_running(self):
+        out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),
+                     [pr(951, '[F04] Reject Bad Keys', base='main'), pr(952, '[F05] Reject Bad Keys', base='main')], held=(links(951, 4), links(952, 5)))
+        self.assertNotIn('unit F04', out)
+        self.assertNotIn('hold F05', out)
+        self.assertNotIn('unrecorded', out.split('available:')[0])
+
+    def test_a_merged_pull_request_that_does_not_deliver_the_hot_fix_leaves_it_recorded(self):
+        merged = '2026-11-01T00:00:00Z'
+        out = survey(staged((hotfix(4), 'Ready')),
+                     [pr(951, '[I07:E00] Other Work', merged, base='i07/e00/main'),
+                      pr(952, '[F04] Reject Bad Keys', merged, base='workspace'),
+                      pr(953, '[F09] Reject Bad Keys', merged, base='main')], held=(links(951, 4), links(952, 4), links(953, 4)))
+        self.assertNotIn('  unrecorded', out)
+        self.assertIn('unit F04 #4', out)
+
+    def test_an_open_hot_fix_a_merged_pull_request_links_is_unrecorded(self):
+        out = survey(staged((hotfix(4), 'In Progress')),
+                     [pr(951, '[F04] Reject Bad Keys', '2026-11-01T00:00:00Z', base='main')], held=(links(951, 4),))
+        self.assertIn('  unrecorded F04 #4: #951 merged', out)
+        self.assertNotIn('hold F04', out)
+        self.assertIn('unrecorded: 1', out)
+
+    def test_a_pull_request_closed_unmerged_leaves_the_hot_fix_free(self):
+        out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')], held=(links(951, 4),))
+        self.assertIn('unit F04 #4', out)
+
+
 if __name__ == '__main__':
     unittest.main()

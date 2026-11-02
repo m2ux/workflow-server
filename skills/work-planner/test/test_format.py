@@ -711,3 +711,41 @@ class CoverageNamesDelivery(unittest.TestCase):
         decide = self.findings('| W01 | Record the ledger | AC1, AC7 | | | ✓ |\n'
                                '| W02 | Read the ledger | AC2 | W01 | | |\n')
         self.assertIn('W01: Coverage cites AC7, which is not a criterion', decide)
+
+
+class HotFixes(unittest.TestCase):
+    """A hot-fix takes the standalone template under an [F00] title, type:hot-fix and a theme."""
+
+    def check(self, title: str, labels: tuple[str, ...], text: str | None = None) -> Review:
+        r = Review(issue(1, title, labels=labels, body=text or body('Gap.', 'Design.')))
+        r.run()
+        return r
+
+    def test_a_titled_and_labelled_hot_fix_passes(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'))
+        self.assertEqual(r.kind, 'hot-fix')
+        self.assertEqual((r.apply, r.decide), ([], []))
+
+    def test_the_prefix_alone_makes_a_hot_fix_that_lacks_its_label(self):
+        r = self.check('[F03] Key Validation: Reject Bad Keys', ('theme:canon', 'priority: 10'))
+        self.assertEqual(r.kind, 'hot-fix')
+        self.assertEqual(r.apply, ['labels: add type:hot-fix'])
+
+    def test_a_hot_fix_carries_priority_ten_alone(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 3'))
+        self.assertEqual(r.apply, ['labels: remove priority: 3, add priority: 10'])
+
+    def test_the_label_without_the_prefix_is_a_finding_on_a_standalone_issue(self):
+        r = self.check('Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'))
+        self.assertEqual(r.kind, 'issue')
+        self.assertIn('type:hot-fix on a title without an [F00] prefix: retitle it as a hot-fix, '
+                      'or remove the label', r.decide)
+
+    def test_a_hot_fix_needs_a_theme(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix',))
+        self.assertIn('no theme:* label', r.decide)
+
+    def test_a_hot_fix_states_its_boundary_in_the_proposal(self):
+        text = body('Gap.', 'Design.') + '\n## Non-Goals\n\n- Nothing else.\n'
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'), text)
+        self.assertIn('Non-Goals: a hot-fix states its boundary in the Proposal', r.decide)

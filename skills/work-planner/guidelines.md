@@ -170,7 +170,7 @@ Read this before adding or changing an artifact.
 - **No procedure in Fields.**
   A field condition does not name a procedure, a step, or a command, and it does not link to one.
 - **Name.**
-  A file that populates a body is named `<subject>-body.md`. Its scope is that population. `issue-body.md` is the shared issue body. A kind file is `proposal-body.md`, `initiative-issue-body.md`, `epic-issue-body.md`, `task-body.md`, or `standalone-body.md`.
+  A file that populates a body is named `<subject>-body.md`. Its scope is that population. `issue-body.md` is the shared issue body. A kind file is `proposal-body.md`, `initiative-issue-body.md`, `epic-issue-body.md`, `task-body.md`, `standalone-body.md`, or `hotfix-body.md`.
 - **Subject names.**
   Name an artifact for its subject and an operation for its action: `board-queue.md` owns Board Queue, and Plan Board Queue is its operation. A computation script can take the subject name, such as `board-queue.py`.
 - **Common file.**

@@ -8,11 +8,12 @@ issues.json is every issue in the repository as `gh api --paginate
 another. Pull requests are skipped.
 
 An agent-engineering issue is one whose title starts with an [Ixx], [Ixx:Eyy] or [Ixx:Eyy:Wzz]
-prefix. A proposal carries a [P00] prefix and type:proposal, and it is not a hoist candidate. A
-throwaway is a test fixture declared by a throwaway:* label, a target a write check changes; it stays
-open and belongs in no initiative, so it is not a hoist candidate either. An open issue without one of
-these prefixes, without type:proposal and without a throwaway:* label, is standalone, and every
-standalone issue is a hoist candidate.
+prefix. A proposal carries a [P00] prefix and type:proposal, and a hot-fix an [F00] prefix; neither
+is a hoist candidate, nor an initiative or epic a candidate could join. A throwaway is a test fixture
+declared by a throwaway:* label, a target a write check changes; it stays open and belongs in no
+initiative, so it is not a hoist candidate either. An open issue without one of these prefixes,
+without an [F00] prefix, without type:proposal and without a throwaway:* label, is standalone, and
+every standalone issue is a hoist candidate.
 An orphan is one that no open agent-engineering issue's body links, by URL or by #n; one that only
 closed agent-engineering issues cite is still an orphan, and the listing names those citers. A cited
 standalone issue is one that open agent-engineering issues link, as a reference or in prose, though
@@ -21,7 +22,7 @@ it sits outside the structure; the listing names the issues citing it.
 Printed: each orphan, then each cited standalone issue, with its labels, the agent-engineering
 issues citing it, and any planning folder its body links (a tree or blob link into a planning folder of markdown
 files), then each open initiative and epic with its theme labels, as the placements a hoist can
-offer. A candidate with planning is subsumed and closed when hoisted. Planning linked only from
+offer. A candidate with planning is subsumed and closed when hoisted into an initiative. Planning linked only from
 comments is not listed.
 """
 import argparse
@@ -29,6 +30,8 @@ import json
 import re
 import sys
 from pathlib import Path
+
+from hotfix import is_hotfix
 
 AGENT_ENGINEERING = re.compile(r'^\[I\d\d(?::E\d\d(?::W\d\d)?)?\] ')
 OPEN_INITIATIVE_OR_EPIC = re.compile(r'^\[I\d\d(?::E\d\d)?\] ')
@@ -82,6 +85,7 @@ def main() -> int:
             into.setdefault(n, []).append(i['number'])
 
     standalone = sorted((i for i in issues if i['state'] == 'open' and not AGENT_ENGINEERING.match(i['title'])
+                         and not is_hotfix(i)
                          and 'type:proposal' not in labels(i) and not throwaway(i)),
                         key=lambda i: i['number'])
     for heading, group, citers, which in (

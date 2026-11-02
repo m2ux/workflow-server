@@ -40,7 +40,7 @@ epic's repository.
   In progress  epics In Progress or In Review and task issues In Progress, each epic with its
                open pull requests that link none of its task issues In Progress, in review when
                ready for review or draft, or else, with no line under it, its next task.
-  Next         epics and task issues Ready, ranked by the priority label of their initiative, then
+  Next         hot-fixes Ready first, then epics and task issues Ready, ranked by the priority label of their initiative, then
                by their epic's own (a larger number first; no label after every number) and then by
                reference, and an epic ahead of any listed epic naming it; the first five,
                and a count of the rest. An epic names its next task.
@@ -48,6 +48,13 @@ An epic's next task is its first undelivered task whose dependencies are deliver
 task issue, if it has one, is on the board and not In Progress. A task is undelivered
 while every pull request its id links is open. A task issue that
 belongs to an epic which names its task as next is not listed again.
+
+A hot-fix ([F00]) belongs to no initiative and follows the epic groups of each section: under
+Completed when Done and closed in the window, with each delivering pull request merged in the
+window; under In progress when In Progress or In Review, with each open delivering pull request;
+under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds; a shown
+hot-fix one of whose linking pull requests carries no base.repo.default_branch is named on stderr.
+--initiative leaves hot-fixes out.
 
 The window opens at the start of --since in local time, by default a week before today.
 --initiative limits the summary to the items working for one initiative; where its number names
@@ -76,7 +83,8 @@ from pathlib import Path
 
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
-from format import LINK, cell, epic_name, id_cell, phrase
+from format import LINK, cell, id_cell, phrase, title_name
+from hotfix import HOTFIX, default_branch, delivering_pulls, hotfix_tag, linking_pulls
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -84,7 +92,7 @@ SHOWN = 5
 DONE, WORKING, REVIEW, DRAFT, READY = '✅', '🔄', '👀', '📝', '▶️'
 MARK = {'In Progress': WORKING, 'In Review': REVIEW}
 ACTIVE = tuple(MARK)
-KEY = ['*Key*', 'I=Initiative, E=Epic, W=Work Item',
+KEY = ['*Key*', 'I=Initiative, E=Epic, W=Work Item, F=Hot-fix',
        f'{DONE} done · {WORKING} in progress · {REVIEW} in review · {DRAFT} draft · {READY} ready']
 BOARD_API = re.compile(r'api\.github\.com/(users|orgs)/([^/]+)/projectsV2/(\d+)')
 Scope = tuple[str, str]  # an initiative: its repository, lowercased, and its number
@@ -114,7 +122,7 @@ def task_name(r: list[str], header: list[str]) -> str:
 
 
 def pr_title(pr: dict) -> str:
-    return PR_REF.sub('', pr['title']).strip()
+    return HOTFIX.sub('', PR_REF.sub('', pr['title'])).strip()
 
 
 def board_link(items: list[dict]) -> str:
@@ -157,6 +165,7 @@ class Section:
         self.issues = issues
         self.mark = mark
         self.groups: dict[tuple[str, str, str, int], list[str]] = {}
+        self.hotfixes: list[str] = []
 
     def group(self, g: tuple[str, str, str, int]) -> list[str]:
         return self.groups.setdefault(g, [])
@@ -165,10 +174,10 @@ class Section:
         out = []
         for (i, e, repo, number), lines in sorted(self.groups.items(), key=lambda kv: (*kv[0][:2], kv[0][2].lower())):
             issue = self.issues.get((repo, number))
-            head = f"*{reference(i, e)} {epic_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
+            head = f"*{reference(i, e)} {title_name(issue['title'])}*" if issue else f'*{repo} {reference(i, e)}*'
             out.append(f"{self.mark((repo, number))} {head}" + (f" — {issue['html_url']}" if issue else ''))
             out.extend(f'    {line}' for line in lines)
-        return out or ['• Nothing']
+        return out + self.hotfixes or ['• Nothing']
 
 
 def main() -> int:
@@ -339,7 +348,7 @@ def main() -> int:
     for k in tagged:
         if k not in tasks:
             continue
-        line = f"W{tasks[k][2]} {epic_name(issues[k]['title'])} — {issues[k]['html_url']}"
+        line = f"W{tasks[k][2]} {title_name(issues[k]['title'])} — {issues[k]['html_url']}"
         if done(k):
             add(completed, k, f'{DONE} {line}')
         elif status.get(k) == 'In Progress':
@@ -386,6 +395,26 @@ def main() -> int:
                 named_next |= task[0]
             ready.append((ek, f'next {task[1]}' if task else ''))
 
+    hot_ready = []
+    hotfixes = {} if only else {k: tag for k, issue in issues.items() if (tag := hotfix_tag(issue))}
+    for k, tag in sorted(hotfixes.items()):
+        head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
+        delivering = delivering_pulls(list(by_url.values()), k, tag)
+        shown = done(k) or status.get(k) in ACTIVE
+        if shown and any(not default_branch(p) for p in linking_pulls(list(by_url.values()), k)):
+            unresolved.append(f"{tag} {issues[k]['html_url']}: a pull request linking it names no default "
+                              'branch in base.repo, so its delivery cannot be tested and it is left out')
+        if done(k):
+            completed.hotfixes.append(f'{DONE} {head}')
+            completed.hotfixes.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"
+                                      for p in delivering if within(p.get('merged_at')))
+        elif status.get(k) in ACTIVE:
+            progress.hotfixes.append(f'{MARK[status[k]]} {head}')
+            progress.hotfixes.extend(f"    {DRAFT if p.get('draft') else REVIEW} {pr_title(p)} — {p['html_url']}"
+                                     for p in delivering if p.get('state') == 'open')
+        elif status.get(k) == 'Ready':
+            hot_ready.append(f'{READY} {head}')
+
     context = []
     for scope in sorted(worked, key=lambda s: (s[1], s[0])):
         if not (k := initiative_issue.get(scope)):
@@ -393,7 +422,7 @@ def main() -> int:
                               'give its issue with --initiatives')
             continue
         title = issues[k]['title']
-        context.append(f"{mark(k)} *{reference(initiatives[k][0])} {epic_name(title)}:* "
+        context.append(f"{mark(k)} *{reference(initiatives[k][0])} {title_name(title)}:* "
                        f"{subtitle(title)} — {issues[k]['html_url']}")
 
     def level(k: Key) -> int:
@@ -436,10 +465,10 @@ def main() -> int:
         for held in waiting.values():
             held.discard(entry[0])
     ready = ordered
-    upcoming = [f"{READY} *{reference(*tagged[k])} {epic_name(issues[k]['title'])}*" + (f', {task}' if task else '')
-                + f" — {issues[k]['html_url']}" for k, task in ready[:SHOWN]]
-    if len(ready) > SHOWN:
-        upcoming.append(f'…and {len(ready) - SHOWN} more ready')
+    upcoming = hot_ready + [f"{READY} *{reference(*tagged[k])} {title_name(issues[k]['title'])}*"
+                            + (f', {task}' if task else '') + f" — {issues[k]['html_url']}" for k, task in ready]
+    if len(upcoming) > SHOWN:
+        upcoming[SHOWN:] = [f'…and {len(upcoming) - SHOWN} more ready']
 
     scope_label = f'{only_repo}:I{only}' if only_repo else f'I{only}' if only else ''
     heading = f"*Progress since {since:%a} {since.day} {since:%b}*" + (f' — {scope_label}' if scope_label else '')

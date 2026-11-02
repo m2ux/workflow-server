@@ -272,7 +272,7 @@ class Window(unittest.TestCase):
     def test_key_to_the_reference_letters_and_marks_ends_the_summary(self):
         out = summary([item(issue(1, '[I01] Idle: All'), 'Backlog')])
         self.assertEqual(out.splitlines()[-4:], [
-            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item',
+            '', '*Key*', 'I=Initiative, E=Epic, W=Work Item, F=Hot-fix',
             '✅ done · 🔄 in progress · 👀 in review · 📝 draft · ▶️ ready'])
 
     def test_heading_names_the_window_and_initiative(self):
@@ -530,6 +530,47 @@ class Repositories(unittest.TestCase):
         self.assertEqual(section(out, 'Next'), [
             f"▶️ *I01:E00 R Epic*, next W01 Queued — {url('issues', 2)}",
             f"▶️ *I01:E00:W01 Other* — {url('issues', 3, 'o/s')}"])
+
+
+class HotFixes(unittest.TestCase):
+    def hotfix(self, number, state='open', closed=None):
+        return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
+                     labels=('type:hot-fix', 'priority: 10'))
+
+    def test_a_hot_fix_done_in_the_window_is_completed_with_its_pull_request(self):
+        out = summary([item(self.hotfix(4, 'closed', IN), 'Done')],
+                      [pr(950, '[F04] Reject Bad Keys', IN, base='main'), pr(951, 'Other Work', IN, base='main')], held=(links(950, 4), links(951, 4)))
+        self.assertEqual(section(out, 'Completed'), [
+            f"✅ *F04 Key Validation* — {url('issues', 4)}",
+            f"    ✅ Reject Bad Keys — {url('pull', 950)}"])
+
+    def test_a_hot_fix_in_progress_shows_its_open_pull_request(self):
+        out = summary([item(self.hotfix(4), 'In Progress')],
+                      [pr(950, '[F04] Reject Bad Keys', draft=True, base='main')],
+                      held=(links(950, 4),))
+        self.assertEqual(section(out, 'In progress'), [
+            f"🔄 *F04 Key Validation* — {url('issues', 4)}",
+            f"    📝 Reject Bad Keys — {url('pull', 950)}"])
+
+    def test_a_linking_pull_request_without_its_base_repository_is_named_on_stderr(self):
+        bare = pr(950, '[F04] Reject Bad Keys', draft=True)
+        done = progress([item(self.hotfix(4), 'In Progress'), item(self.hotfix(5), 'Backlog')], [bare],
+                        '--since', SINCE, held=(links(950, 4, 5),))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertEqual(section(done.stdout, 'In progress'), [f"🔄 *F04 Key Validation* — {url('issues', 4)}"])
+        notices = [line for line in done.stderr.splitlines() if 'names no default branch' in line]
+        self.assertEqual(len(notices), 1)
+        self.assertIn(f"F04 {url('issues', 4)}", notices[0])
+
+    def test_a_ready_hot_fix_leads_next(self):
+        epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Task', '')))
+        out = summary([item(epic, 'Ready'), item(self.hotfix(4), 'Ready')])
+        self.assertEqual(section(out, 'Next')[0], f"▶️ *F04 Key Validation* — {url('issues', 4)}")
+
+    def test_an_initiative_filter_leaves_hot_fixes_out(self):
+        initiative = issue(1, '[I01] Shipped: All', body=initiative_body())
+        out = summary([item(initiative, 'In Progress'), item(self.hotfix(4), 'Ready')], (), '--initiative', 'I01')
+        self.assertNotIn('F04', out)
 
 
 if __name__ == '__main__':

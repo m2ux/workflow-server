@@ -1,6 +1,6 @@
 # Task Body
 
-Populates one task body.
+The body of an existing task issue, and the record of its delivery.
 
 ## Prerequisites
 
@@ -10,18 +10,6 @@ Read these files first.
 - [Epic Issue Body](epic-issue-body.md)
 
 ## Operations
-
-### *Populate* Task Body
-
-One task body within its supplied epic context.
-
-**Inputs:** Task scope, epic context, design, criteria and output path.
-
-- Populate the body from the [Template](#template) at the supplied output path.
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the task [Titles](#titles).
-  - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
-  - Acceptance criteria must meet the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria).
-  - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
 
 ### *Record* Task Delivery
 
@@ -79,7 +67,7 @@ One task body with its confirmed delivery and verified criteria recorded.
 ### Sections
 
 - A task has the [epic issue body](epic-issue-body.md)'s sections without the Work Breakdown table.
-- New task planning follows [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing issue kept as a task.
+- New task planning follows [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
 
 ## Commands
 

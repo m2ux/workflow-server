@@ -1,6 +1,6 @@
 # Board Queue
 
-The queue for one theme board: initiative priority sets, status and assignee changes, pending decisions, waiting work, next epics and epics waiting on a priority.
+The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics and epics waiting on a priority.
 
 ## Prerequisites
 
@@ -9,6 +9,7 @@ Read these files first.
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -20,7 +21,7 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
    - The queue must meet [Fields](#fields).
-   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue. In Review, Done and task issues are outside the write scope.
+   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a closed hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 2. Return the proposed Status and assignee calls, report lines and unresolved issue references to the caller.
    - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
    - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.
@@ -48,6 +49,10 @@ A priority label is `priority:` and a positive integer. A larger number is highe
 - An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as Board Delivery holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.
 - An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.
 - An initiative In Review or Done remains in that state.
+
+### Hot-fix Placement
+
+Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.
 
 ### Epic Status
 
@@ -85,7 +90,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 ### Proposed Changes
 
-The queue contains calls for Status and assignee changes to initiatives and epics. Status changes are between Backlog, Ready and In Progress. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
+The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
 
 ### Report Lines
 
@@ -128,7 +133,7 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 **Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
 
 - `--items` is the board's items with Status.
-- `--prs` is the pull requests that name an initiative.
+- `--prs` is the pull requests that name an initiative or a hot-fix.
 - `--board` is the [board identity](#board-identity).
 - `--fields` is the board's fields.
 - `--out` is the directory the calls are written to.

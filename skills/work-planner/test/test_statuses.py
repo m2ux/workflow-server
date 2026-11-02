@@ -90,6 +90,17 @@ class QueueJurisdiction(unittest.TestCase):
                 place(changes(tmp, QUEUE), TASK, 'Backlog', 'Ready')
         self.assertIn('does not move a task', str(refused.exception))
 
+    def test_done_is_allowed_only_for_a_hot_fix_closed_as_completed(self):
+        completed = issue(4, '[F04] Key Validation: Reject Bad Keys', 'closed')
+        dropped = issue(5, '[F05] Key Validation: Reject Bad Keys', 'closed')
+        dropped['state_reason'] = 'not_planned'
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = changes(tmp, QUEUE)
+            place(plan, completed, 'In Progress', 'Done')
+            with self.assertRaises(Jurisdiction):
+                place(plan, dropped, 'In Progress', 'Done')
+        self.assertIn('In Progress → Done', plan.lines[0])
+
     def test_moving_an_initiative_between_ready_and_backlog_is_allowed(self):
         with tempfile.TemporaryDirectory() as tmp:
             plan = changes(tmp, QUEUE)

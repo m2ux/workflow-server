@@ -1,4 +1,4 @@
-"""Decide which initiatives and epics on a theme board are Ready or In Progress.
+"""Decide which initiatives, epics and hot-fixes on a theme board are Ready or In Progress.
 
 Usage:
   python3 board-queue.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9
@@ -16,6 +16,10 @@ its Report Lines. Activity is read through board.py. The calls are rendered by s
 the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
+
+An open hot-fix, titled [F00], is Ready outside every priority set, keeps In Progress once it
+holds it, and leaves In Review for In Progress; nothing waits on it and it waits on nothing. A closed hot-fix is Done when
+closed as completed, and is removed from the board otherwise.
 """
 import argparse
 import json
@@ -26,6 +30,7 @@ from pathlib import Path
 
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
 from format import cell, id_cell, row_id
+from hotfix import OFF_BOARD, board_status, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
 from sync import Unreadable, pull_requests
 
@@ -106,6 +111,7 @@ class Queue:
         self.board = Board(issues, [], home, prs)
         self.wanted: dict = {}
         self.unresolvable: list[str] = []
+        self.removed: set = set()
         self.notes: list[str] = []
         self.children: dict = {}
         self.parents: dict = {}
@@ -291,7 +297,19 @@ class Queue:
             if self.wanted.get(key, self.status.get(key)) in ('In Progress', 'Ready'):
                 self.shelve(key)
 
+    def hotfixes(self) -> None:
+        """Place each hot-fix on the board where hotfix.board_status puts it."""
+        for key, issue in self.issues.items():
+            if not is_hotfix(issue) or key not in self.status:
+                continue
+            wanted = board_status(issue, self.status.get(key))
+            if wanted == OFF_BOARD:
+                self.removed.add(key)
+            else:
+                self.place(key, wanted)
+
     def decide(self) -> None:
+        self.hotfixes()
         open_initiatives = [key for key, issue in self.issues.items()
                             if is_initiative(issue) and issue['state'] == 'open' and key in self.status]
         for key in open_initiatives:
@@ -369,8 +387,12 @@ def main() -> int:
 
     field = StatusField(args.fields, args.out, PLACED)
     changes = Changes(QUEUE, args.board, field, args.assignee, ' (the queue is current)')
-    governed = [key for key, issue in issues.items() if key in status and (is_initiative(issue) or key in queue.parents)]
+    governed = [key for key, issue in issues.items()
+                if key in status and (is_initiative(issue) or is_hotfix(issue) or key in queue.parents)]
     for key in sorted(governed):
+        if key in queue.removed:
+            changes.place(key, queue.line(key), issues[key], status.get(key), None, item_ids[key], home)
+            continue
         new = queue.wanted.get(key)
         if new is None:
             changes.current += 1

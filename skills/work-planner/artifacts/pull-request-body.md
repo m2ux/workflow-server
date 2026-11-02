@@ -7,6 +7,7 @@ Populates one pull request body from its change, review scope and validation evi
 Read these files first.
 
 - [Issue Body](issue-body.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -97,7 +98,8 @@ One task pull request's test plan aligned to its current table.
 ### Titles
 
 - A pull request's title starts with the epic it works on: `[I07:E00] Purpose`.
-- A pull request working on no epic takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
+- A hot-fix's pull request takes the title its [Delivering Pull Request](hotfix.md#delivering-pull-request) names.
+- A pull request working on neither an epic nor a hot-fix takes `Name: Subtitle`, with no prefix, as a revision of the skill itself does.
 - The prefix is how an epic's pull requests are found, and each one, open or merged, is matched to the tasks it works on from its changes and the tasks' Descriptions.
 - The pull request that merges an epic base carries the same prefix. Its head is the epic base, which tells it from a task pull request.
 - A title carrying an initiative's prefix names one of its epics. An epic sync reports one that names none as `no epic`, and one naming its epic by a task id, `[I07:E00:W01]`, as `retitle`.

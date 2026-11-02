@@ -125,7 +125,7 @@ An initiative carries one `theme:*` label, and each of its epics carries the sam
 
 - A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
 - It is linked to the repository.
-- It holds the theme's initiatives, their epics and their task issues.
+- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
 
 ### Repositories
 
@@ -232,6 +232,22 @@ gh api --method PATCH 'users/<owner>/projectsV2/<board-number>/items/<item-id>' 
 
 ```bash
 gh api --method PATCH 'users/<owner>/projectsV2/13/items/1001' --input status-backlog.json --jq .id
+```
+
+### Remove Board Item
+
+Removes one item from a board, leaving its issue as it stands.
+
+**Inputs:** Board owner and number, and the item id [Read Board State](#read-board-state) returns.
+
+```bash
+gh api --method DELETE 'users/<owner>/projectsV2/<board-number>/items/<item-id>'
+```
+
+**Example:**
+
+```bash
+gh api --method DELETE 'users/<owner>/projectsV2/9/items/1001'
 ```
 
 ### Fetch Board Fields

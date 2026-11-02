@@ -35,7 +35,7 @@ The main path meets [Outcomes](#outcomes).
    - Retain it as a gap if presenting a partial report.
 3. **Fetch.**
    Run [Read Board State](../artifacts/board.md#read-board-state) with the selected board identity.
-   - Run [Fetch All Initiative Pull Requests](../artifacts/pull-request.md#fetch-all-initiative-pull-requests) for the [repositories](../artifacts/board.md#repositories) Read Board State returned.
+   - Run [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) Read Board State returned.
    - Run [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) for those records.
    - Pass the returned snapshots to Compose Standup Report.
 4. **Compose.**

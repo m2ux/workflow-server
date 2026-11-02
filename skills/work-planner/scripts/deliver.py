@@ -37,8 +37,10 @@ linked work item names no long-lived branch with an epic base, naming why; a hol
 reserved row; a blocked line for a free row whose dependencies are not delivered or whose joined
 task is unavailable; an output line for each producer output a row naming another epic's row was
 read for, naming the output, the consumer commit and whether it is available there; a merge line for
-an open pull request that targets the epic base when its test plan has passed; and an unresolved
-line for an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
+an open pull request that targets the epic base when its test plan has passed, or for an open
+pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
+targets its repository's default branch when its test plan has passed; and an unresolved line for
+an issue not given. A run that met an unresolvable entry or an undeclared row exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
@@ -46,6 +48,12 @@ to read; the file's declaration line names the long-lived branch and the path of
   **Component:** workspace:skills/work-planner/scripts/deliver.py
 A unit of an epic with one base works on that base. A free row linking no work item is unplanned:
 its session writes the work item after dispatch, so its unit works on every epic base.
+
+Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
+artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
+and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
+delivering pull requests. Its base is its repository's default branch, printed as
+(default branch); Create Task Worktree in artifacts/delivery-branches.md resolves its name.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -76,8 +84,9 @@ from board import Board, Outputs, Resolution, rows
 from deps import read_components
 from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
-from format import (LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation, row,
-                    row_id, split_sections)
+from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
+                    row, row_id, split_sections, title_name)
+from hotfix import DEFAULT_BASE, delivering_pulls, hotfix_tag, linking_pulls, unit_state
 from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
                   pull_requests, table)
 
@@ -184,6 +193,12 @@ def task_branches(branch: str, bases: list[str]) -> list[tuple[str, str, str]]:
     return found
 
 
+def branch_lines(branch: str, bases: list[str]) -> str:
+    """The branch, base and worktree text of a unit line, one entry for each base."""
+    return '; '.join(f'branch {name}' + (f', base {base}' if base else '') + f', worktree {worktree}'
+                     for name, base, worktree in task_branches(branch, bases))
+
+
 def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
     """The tasks each row names in Joins, by task id."""
     found = {}
@@ -259,6 +274,40 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
+def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str,
+                 when: str) -> tuple[list[str], int, int, int]:
+    """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state reads,
+    with the count of each."""
+    lines, available, held, unrecorded = [], 0, 0, 0
+    for key in sorted(issues):
+        issue = issues[key]
+        tag = hotfix_tag(issue)
+        if not tag or issue['state'] != 'open':
+            continue
+        where = f'{tag} {label(key, home)}'
+        linking = linking_pulls(prs, key)
+        delivering = delivering_pulls(linking, key, tag)
+        state = unit_state(issue, status.get(key), linking, delivering)
+        if state == 'unrecorded':
+            numbers = ', '.join(f"#{p['number']}" for p in delivering if p.get('merged_at'))
+            lines.append(f'  unrecorded {where}: {numbers} merged')
+            unrecorded += 1
+            continue
+        if state == 'hold':
+            lines.append(f'  hold {where}: In Progress')
+            held += 1
+            continue
+        if state != 'unit':
+            continue
+        name = names(tag, title_name(issue['title']), key[1], when)
+        coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
+                                           if (found := AC.match(line))))
+        lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
+                     f'{branch_lines(name["branch"], [DEFAULT_BASE])}')
+        available += 1
+    return lines, available, held, unrecorded
+
+
 def plan_passed(body: str) -> bool:
     """Whether every check's Pass result is a tick, plain or linked to its evidence."""
     rows = plan_rows(body)
@@ -273,15 +322,24 @@ def plan_passed(body: str) -> bool:
 
 
 def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> list[str]:
-    """Open pull requests that target the epic base and whose test plan has passed."""
-    epics = {}
-    for issue in issues.values():
+    """Open pull requests whose test plan has passed: a task's into its epic base, and a hot-fix's
+    into its repository's default branch."""
+    epics, hotfixes = {}, {}
+    for key, issue in issues.items():
         parsed = tags(issue.get('title') or '')
         if parsed and parsed[1] and not parsed[2]:
             epics[(parsed[0], parsed[1])] = issue
+        if (tag := hotfix_tag(issue)) and issue['state'] == 'open':
+            hotfixes[key] = tag
     found = []
     for pull in pulls:
         if pull.get('draft') or pull.get('merged_at') or (pull.get('state') or 'open') != 'open':
+            continue
+        base = (pull.get('base') or {}).get('ref') or ''
+        if tag := hotfix_tag(pull):
+            if (any(delivering_pulls([pull], key, fixed)
+                    for key, fixed in hotfixes.items()) and plan_passed(pull.get('body') or '')):
+                found.append((pull['number'], f"  merge #{pull['number']} {tag}: base {base}"))
             continue
         matched = PR_TITLE.match(pull.get('title') or '')
         if not matched:
@@ -289,7 +347,6 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...]) -> lis
         initiative, epic = matched[1], matched[2]
         if (initiative, epic) not in epics:
             continue
-        base = (pull.get('base') or {}).get('ref') or ''
         segment = re.fullmatch(rf'i{initiative}/e{epic}/([^/]+)', base)
         if not segment or (names and segment[1] not in names):
             continue
@@ -381,12 +438,15 @@ def survey(args: argparse.Namespace) -> int:
             name = names(tag, detail[first]['description'], detail[first]['issue'] or key[1], when)
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
-            where = '; '.join(f'branch {branch}' + (f', base {base}' if base else '')
-                              + f', worktree {worktree}'
-                              for branch, base, worktree in task_branches(name['branch'], bases))
+            where = branch_lines(name['branch'], bases)
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
+    lines, found, holding, unrecorded = hotfix_units(issues, status, prs, home, when)
+    for line in lines:
+        print(line)
+    available += found
+    held += holding
     for line in dict.fromkeys(board.outputs.lines):
         print(f'  output {line}')
     merging = ready_merges(issues, prs, lived)
@@ -395,7 +455,8 @@ def survey(args: argparse.Namespace) -> int:
     for note in dict.fromkeys(board.unresolved):
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
-          f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}')
+          f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}, '
+          f'unrecorded: {unrecorded}')
     return 1 if unreadable or undeclared else 0
 
 

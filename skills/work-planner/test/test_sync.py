@@ -1793,3 +1793,70 @@ class ReviewChanges(unittest.TestCase):
         out = self.run_sync(changes_body('docs/guide.md'), sha='0' * 40)
         self.assertIn(f"unevaluable: i01/e00/main (#980) Changes paths: head {'0' * 40} is not held in", out)
         self.assertNotIn('changes:', out)
+
+
+class IssueWithoutRepository(unittest.TestCase):
+    """An epic, task or initiative sync reads no repository from the issue it is not given one for."""
+
+    def run_sync(self, record: dict, *args: str):
+        del record['repository_url']
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls = root / 'issue.json', root / 'prs.json'
+            body.write_text(json.dumps(record))
+            pulls.write_text(json.dumps(pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')))
+            return run('sync.py', str(body), '--prs', str(pulls), '--links', links_file(root, [links(950, 3)]),
+                       *args)
+
+    def test_an_epic_without_repository_url_syncs(self):
+        done = self.run_sync(issue(2, '[I01:E00] First: Epic', body=epic_body((f"[W01]({url('pull', 950)})", 'Work', ''))))
+        self.assertEqual(done.returncode, 0, done.stderr)
+
+    def test_a_task_without_repository_url_syncs(self):
+        done = self.run_sync(issue(3, '[I01:E00:W01] Work: Task', body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n'),
+                             '--pr', '950')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('linked: W01 delivered by #950', done.stdout)
+
+
+class HotFixDelivery(unittest.TestCase):
+    """A hot-fix is recorded as a task issue whose delivery is the pull request linking it."""
+
+    def run_hotfix(self, pulls: list[dict], held: list[dict], *args: str):
+        record = issue(4, '[F04] Key Validation: Reject Bad Keys', labels=('type:hot-fix',),
+                       body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
+            body.write_text(json.dumps(record))
+            pulls_path.write_text('\n'.join(json.dumps(p) for p in pulls))
+            done = run('sync.py', str(body), '--prs', str(pulls_path), '--links', links_file(root, held),
+                       '--fix', str(fixed), *args)
+            return done, fixed.read_text() if fixed.exists() else ''
+
+    def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):
+        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z', base='main')],
+                                      [links(950, 4)], '--pr', '950', '--tick', 'AC1')
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('#4 hot-fix (open)', done.stdout)
+        self.assertIn('linked: F04 delivered by #950', done.stdout)
+        self.assertIn('closable: yes', done.stdout)
+        self.assertIn('- [x] **AC1.** Holds.', fixed)
+
+    def test_a_pull_request_not_linking_it_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='main')], [links(950, 7)], '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: does not deliver F04: its Development field does not link #4', done.stderr)
+
+    def test_a_linking_pull_request_without_its_prefix_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', base='main')], [links(950, 4)],
+                                  '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: does not deliver F04: its title does not open with [F04]', done.stderr)
+
+    def test_a_linking_pull_request_into_another_branch_is_refused(self):
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='workspace')], [links(950, 4)],
+                                  '--pr', '950')
+        self.assertNotEqual(done.returncode, 0)
+        self.assertIn('--pr 950: does not deliver F04: its base is workspace, not the default branch main',
+                      done.stderr)

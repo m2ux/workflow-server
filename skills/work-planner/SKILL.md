@@ -13,6 +13,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - **Epic**  Lists its tasks in a Work Breakdown table.
 - **Task**  One pull request's worth of work.
 - **Standalone issue**  Work outside any initiative.
+- **[Hot-fix](artifacts/hotfix-body.md)**  A fix to the default branch beside all queued work.
 
 Each theme's project board shows where its items stand. The Proposals board holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 
@@ -43,7 +44,7 @@ Select the mode as appropriate to fulfill the user request:
   - The theme board brought current with its issues
 - **[Advance](modes/advance-mode.md)**
   - Forward-looking, scoped to one board
-  - Placement of initiatives and epics as In Progress or as Ready
+  - Placement of initiatives, epics and hot-fixes as In Progress or as Ready
   - A parallel work map for initiatives with no priority
 - **[Deliver](modes/deliver-mode.md)**
   - Forward-looking, scoped to one board
@@ -58,7 +59,7 @@ Select the mode as appropriate to fulfill the user request:
 - **[Hoist](modes/hoist-mode.md)**
   - Forward-looking, scoped to a repository's orphan issues
   - Discovery of orphan issues
-  - Placements for each in an existing or new initiative, epic or task
+  - Placements for each in an existing or new initiative, epic or task, or as a hot-fix
 - **[Standup](modes/standup-mode.md)**
   - Backward-looking, scoped to one board's reporting window
   - Standup summaries of a theme's board for a Slack channel

@@ -80,7 +80,7 @@ class ModeSummaries(unittest.TestCase):
         held = (
             'Discovery of orphan issues',
             'Closure of complete task issues, epics and initiatives',
-            'Placement of initiatives and epics as In Progress or as Ready',
+            'Placement of initiatives, epics and hot-fixes as In Progress or as Ready',
             'Renumbering of epics and tasks',
             'Authoring definitions and specified changes',
         )
