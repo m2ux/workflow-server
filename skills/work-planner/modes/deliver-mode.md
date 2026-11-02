@@ -131,20 +131,20 @@ The confirmed unit carried from its supplied brief through implementation and de
    - Use its confirmed unit, criteria, tests, each task branch with its base and worktree, planning-folder identity and change allowance.
    - Return missing context before starting.
 2. **Confirm the reservation.**
-   Confirm the supplied reserved folder exists and its rows remain held for this session before changing its worktree.
+   Confirm the supplied reserved folder exists and the unit remains held for this session before changing its worktree: its rows' reservations for a unit of rows, or the hold [Hot-fix Units](../artifacts/delivery-plan.md#hot-fix-units) defines for a hot-fix unit.
 3. **Plan.**
    Call [Populate Work Item](../artifacts/work-item.md#populate-work-item) for each task with its reserved file path, scope, design, component, criteria and test requirements from the confirmed delivery brief, so the component the plan was checked against is the one this file declares.
    - Add any further file the work needs, as [Layout](../artifacts/planning-record.md#layout) describes.
 4. **Link the work items.**
-   Register each returned work-item file through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record). The row retains its folder link while reserved.
+   Register each returned work-item file through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record). A reserved row retains its folder link.
    - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
 5. **Match the tests to the criteria.**
    Check the returned work item's test row against each criterion the unit's Coverage carries and [Test Coverage](../artifacts/pull-request-body.md#test-coverage).
    - Resolve a missing test before implementation.
 6. **Implement.**
    Deliver the work in the worktree, with every test the work item names, as [Tables](../artifacts/issue-body.md#tables) state.
-   - Group the unit's rows by the component each declares, and give each group to the sub-agent dispatch this session provides when the unit has more than one group.
-   - Give each sub-agent the unit's worktree, its group's work items, and the criteria those rows' Coverage names.
+   - Group the unit's work items by the component each declares, and give each group to the sub-agent dispatch this session provides when the unit has more than one group.
+   - Give each sub-agent the unit's worktree, its group's work items, and the criteria those work items cover.
    - A sub-agent writes the files its work items name, runs the tests they name, and commits nothing.
    - A plan change a sub-agent meets returns to this session, which holds the allowance the brief names.
    - Write a file two groups reach — a shared test, an index, a manifest — in this session.
