@@ -1,6 +1,6 @@
 # Deliver Mode
 
-Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, stands a completed epic in review on the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, hoist arising issues, and defer the technical debt its validation finds.
+Starts the work a theme board makes available. It advances the board, merges each open pull request whose test plan has passed, stands a completed epic in review on the board, holds each available unit with a planning record, and dispatches one session per unit to plan, implement, open its pull request, merge it when its test plan has passed, fix the technical debt its validation finds, and hoist arising issues.
 
 **Runs in:** the project checkout.
 
@@ -25,8 +25,6 @@ Read these files first.
 - [Delivery Brief](../artifacts/delivery-brief.md)
 - [Plan Change](../artifacts/plan-change.md)
 - [Hoist Mode](hoist-mode.md)
-- [Initiative Issue Body](../artifacts/initiative-issue-body.md)
-- [Hot-fix Body](../artifacts/hotfix-body.md)
 - [Work Item](../artifacts/work-item.md)
 - [Pull Request Body](../artifacts/pull-request-body.md)
 - [Issue Body](../artifacts/issue-body.md)
@@ -157,23 +155,10 @@ The confirmed unit carried from its supplied brief through implementation and de
    - For a unit of rows:
      - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's task rows, with the project checkout and the fetched epic bases.
      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
-8. **Classify and defer the debt.**
-   Classify the technical debt this unit's validation finds — running its tests, auditing the definitions it changed, reviewing its pull request — which decides where it is fixed.
-   - **Blocking.**
-     - The unit's own criteria cannot be verified without it, so the unit fixes it, whatever its size.
-   - **Trivial.**
-     - It blocks nothing and needs no work item of its own, so the unit fixes it.
-   - **Non-trivial.**
-     - It blocks nothing and would warrant a work item of its own, so the unit defers it and the epic in hand keeps the scope it was planned with.
-     - A hot-fix unit settles it as its [Debt](../artifacts/hotfix-body.md#debt) states.
-   - The session's own classification decides.
-   - For each deferred item:
-     - Create it as a standalone issue through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
-     - Run [Hoist Mode](hoist-mode.md) in the project checkout with that issue identity, the allowance the brief names, and its placement as a new task in this initiative's [deferred-debt epic](../artifacts/initiative-issue-body.md#deferred-debt).
-     - Where the initiative has no such epic, the placement raises it as a new epic, carrying the criterion its initiative row covers.
-     - Run [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with the placement it returns.
-   - Commit each item the unit fixes to its task branch, so the open pull request carries it.
-   - Resume the merge step with each saved placement or reported blocker.
+8. **Fix the debt.**
+   Fix the technical debt this unit's validation finds, as [Debt](../artifacts/delivery-plan.md#debt) states.
+   - Carry each item that Debt leaves outside the unit's change into the arising-issues step.
+   - Resume the merge step.
 9. **Merge.**
    Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
    - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.
@@ -203,7 +188,7 @@ The confirmed unit carried from its supplied brief through implementation and de
 - **One session for each unit.**
   Each confirmed unit has its own session, and a row another session holds is not given a second one.
 - **Delivery that runs unattended.**
-  Once the user has confirmed the units, each session delivers its work, places what arises and defers what it cannot carry, without a further question.
+  Once the user has confirmed the units, each session delivers its work, fixes the debt it finds and places what arises, without a further question.
 - **Plan changes applied and reported.**
   The user reads what delivery changed in the plan, and work needing an initiative is left open for them to decide.
 

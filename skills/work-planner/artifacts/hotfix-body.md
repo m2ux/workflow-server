@@ -10,6 +10,7 @@ Read these files first.
 - [Standalone Body](standalone-body.md)
 - [Board Queue](board-queue.md)
 - [Hot-fix](hotfix.md)
+- [Delivery Plan](delivery-plan.md)
 
 ## Operations
 
@@ -46,7 +47,7 @@ One hot-fix body from a confirmed defect.
 
 ### Debt
 
-- A hot-fix has no deferred-debt epic: debt its delivery finds, whatever its class, is fixed in its own pull request.
+- A hot-fix fixes the debt its delivery finds as a unit's [Debt](delivery-plan.md#debt) states.
 
 ### Sections
 

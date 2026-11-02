@@ -108,7 +108,6 @@ A hot-fix's branch is cut from its repository's default branch, unnamed in its `
 
 - A hot-fix's merge is recorded on its own issue alone: its criteria and delivering pull request, then its closure. It records nothing on an epic or initiative.
 - Its board item follows [Board Status](#board-status) once the issue closes.
-- Debt its session finds is fixed as hot-fix [Debt](hotfix-body.md#debt) states, before the delivering pull request merges.
 
 ## Commands
 

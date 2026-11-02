@@ -8,7 +8,6 @@ Read these files first.
 
 - [Issue Body](issue-body.md)
 - [Requirement Characteristics](../references/requirement-characteristics.md)
-- [Epic Issue Body](epic-issue-body.md)
 - [Initiative](initiative.md)
 
 ## Operations
@@ -187,25 +186,6 @@ A marked source in References is a document the initiative's criteria answer to.
 - A requirement a marked source states that no criterion makes true, and no Non-Goal excludes, is a gap.
 - An epic is aligned against its initiative's marked sources, through the initiative criteria its row covers.
 - A marked source that cannot be read leaves its criteria unaligned until it is read.
-
-### Deferred Debt
-
-A final epic of the initiative holds the debt that initiative's delivery defers. Its title name is `Deferred Debt` and its subtitle names the clear-up it takes; it carries its initiative's theme label and `tech-debt`, and it is raised when the initiative defers its first item. The initiative carries this criterion, which the epic's row covers:
-
-```markdown
-- [ ] **ACn.** The technical debt this initiative's delivery defers is fixed, as the Done column of its final epic's Work Breakdown shows.
-```
-
-- **It is the initiative's last epic.**
-  Its number follows every other epic of the initiative, so the epics in flight are planned and delivered ahead of it and the clear-up competes with none of them.
-- **A deferred item is a task row.**
-  Each row covers the criterion stating what fixing that item makes true, and those statements are the epic's criteria.
-- **It takes the debt its own delivery defers.**
-  Debt a unit of this epic finds in resolving its row becomes a further row of the epic, so the clear-up absorbs what fixing it uncovers.
-- **It delivers like any other epic.**
-  It takes its bases from the long-lived branches its rows change, carries the [required criteria](epic-issue-body.md#required-criteria) its project declares for the paths those rows change on each branch, and remains open until every delivery base has merged and its completion conditions hold.
-- **The initiative stays open while it stands.**
-  Its row is undelivered and its criterion unticked until the epic closes.
 
 ### Breakdown Prose
 

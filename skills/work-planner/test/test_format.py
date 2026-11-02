@@ -384,14 +384,13 @@ def epic_with(criterion: str, title: str = '[I01:E00] First: Epic') -> dict:
 
 
 def required_review(criterion: str, base: str, required: Required | None = AUDIT,
-                    title: str = '[I01:E00] First: Epic', files: tuple[str, ...] | None = (DEFINITION,),
+                    files: tuple[str, ...] | None = (DEFINITION,),
                     more: tuple[dict, ...] = (), more_files: dict[int, list[str]] | None = None) -> Review:
     """An epic whose pull request #950 targets base and changes files, None when they are not supplied,
     reviewed for the criteria its project requires."""
-    prefix = title.split(']')[0] + ']'
     changed = {} if files is None else {950: list(files)}
     changed.update(more_files or {})
-    r = Review(epic_with(criterion, title), prs=[pr(950, f'{prefix} Work', base=base), *more],
+    r = Review(epic_with(criterion), prs=[pr(950, '[I01:E00] Work', base=base), *more],
                required=required, files=changed)
     r.run()
     return r
@@ -404,11 +403,6 @@ class RequiredReach(unittest.TestCase):
         self.assertEqual(len(found), 1)
         self.assertIn('#950 change corpus on workflows', found[0])
         self.assertIn('Canon audit of the changed definitions', found[0])
-
-    def test_a_deferred_debt_epic_reaching_the_branch_states_the_criterion(self):
-        r = required_review('Holds.', 'i01/e09/workflows',
-                            title='[I01:E09] Deferred Debt: The Clear-Up This Initiative Owes')
-        self.assertTrue(any(WANTED in item for item in r.decide))
 
     def test_an_epic_reaching_the_long_lived_branch_states_the_criterion(self):
         r = required_review('Holds.', 'workflows')
