@@ -53,8 +53,9 @@ its session writes the work item after dispatch, so its unit works on every epic
 Each open hot-fix, titled [F00], is printed as hotfix.unit_state reads its Delivery Unit in
 artifacts/hotfix.md: a unit line, with every criterion it carries as coverage and the record folder
 and branch its prefix and title name give it; a hold line; or an unrecorded line naming its merged
-delivering pull requests. Its base is its target, the branch its Overview's Target: line names; a
-hot-fix that would be a unit while naming no target is printed as an undeclared line instead.
+delivering pull requests. Its base is its target, the branch its Overview's Target: line names. A
+hot-fix that would be a unit while naming no target, or one --project's config/branches does not
+declare as a long-lived branch, is printed as an undeclared line instead, naming why.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -275,8 +276,8 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
-def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str,
-                 when: str) -> tuple[list[str], int, int, int, int]:
+def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
+                 lived: tuple[str, ...]) -> tuple[list[str], int, int, int, int]:
     """The unit, undeclared, hold and unrecorded line of each open hot-fix, by the state
     hotfix.unit_state reads, with the count of each."""
     lines, available, undeclared, held, unrecorded = [], 0, 0, 0, 0
@@ -302,6 +303,10 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str,
             continue
         if not (base := target(issue)):
             lines.append(f'  undeclared {where}: its Overview names no target in one Target: line')
+            undeclared += 1
+            continue
+        if lived and base not in lived:
+            lines.append(f'  undeclared {where}: its target {base} is no long-lived branch config/branches declares')
             undeclared += 1
             continue
         name = names(tag, title_name(issue['title']), key[1], when)
@@ -447,7 +452,7 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, unnamed, holding, unrecorded = hotfix_units(issues, status, prs, home, when)
+    lines, found, unnamed, holding, unrecorded = hotfix_units(issues, status, prs, home, when, lived)
     for line in lines:
         print(line)
     available += found

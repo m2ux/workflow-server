@@ -774,6 +774,18 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('  unit F04', out)
         self.assertIn('undeclared: 1', out)
 
+    def test_a_ready_hot_fix_whose_target_is_no_declared_long_lived_branch_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            out = survey(staged((hotfix(4, target='feature/x'), 'Ready'), (hotfix(5, target='workspace'), 'Ready')),
+                         None, *names, code=1)
+        self.assertIn('  undeclared F04 #4: its target feature/x is no long-lived branch config/branches declares',
+                      out)
+        self.assertNotIn('  unit F04', out)
+        self.assertIn('  unit F05 #5:', out)
+        self.assertIn('base workspace', out)
+        self.assertIn('undeclared: 1', out)
+
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
         out = survey(staged((hotfix(4), 'In Progress')), None)
         self.assertIn('  hold F04 #4: In Progress', out)
