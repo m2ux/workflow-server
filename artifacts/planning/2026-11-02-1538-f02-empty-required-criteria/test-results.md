@@ -1,6 +1,6 @@
 # F02 Test Results
 
-> Tested revision: 3a5c48565 on f02-empty-required-criteria
+> Tested revision: 3a5c485659664d23d3536bb8efe1d69d9b72c4dd on f02-empty-required-criteria
 
 ## T1 Nothing Declared Requires Nothing
 
