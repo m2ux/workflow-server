@@ -671,22 +671,6 @@ class HotFixes(unittest.TestCase):
         self.assertIn('assign #4', out)
         self.assertIn('  order:', out)
 
-    def test_an_open_hot_fix_out_of_the_hot_fix_format_does_not_move_to_ready(self):
-        unlabelled = hotfix(6)
-        unlabelled['labels'] = [{'name': 'type:hot-fix'}]
-        out = queue(staged((hotfix(4, target=None), 'Ready'), (unlabelled, 'Backlog'),
-                           (hotfix(7, target=None), None)))
-        self.assertIn('[F04] Key Validation: Reject Bad Keys: Ready → Backlog', out)
-        self.assertIn('[F07] Key Validation: Reject Bad Keys: no Status → Backlog', out)
-        self.assertNotIn('[F06]', out)
-        self.assertNotIn('Ready', out.replace('Ready → Backlog', ''))
-
-    def test_a_held_hot_fix_out_of_the_format_keeps_its_hold(self):
-        out = queue(staged((hotfix(5, target=None), 'In Progress'), (hotfix(6, target=None), 'In Review')))
-        self.assertNotIn('[F05]', out)
-        self.assertIn('[F06] Key Validation: Reject Bad Keys: In Review → In Progress', out)
-        self.assertNotIn('Backlog', out)
-
     def test_a_hot_fix_keeps_in_progress_and_leaves_in_review_for_it(self):
         out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))
         self.assertNotIn('[F04]', out)

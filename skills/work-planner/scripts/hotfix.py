@@ -1,29 +1,16 @@
 """A hot-fix's identity and lifecycle, as artifacts/hotfix-body.md and artifacts/hotfix.md state them.
 
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
-Overview names the long-lived branch it fixes in one Target: line. Its target, its hot-fix format
-faults, its board status, the pull requests that deliver it and the state of its delivery unit are
-read here, and the scripts that place, survey, record, check or report a hot-fix call these
-functions.
-
-Usage:
-  python3 hotfix.py issue-874.json
-
-Run on an issue, it prints each condition of the hot-fix Format the issue fails, as format_faults
-reads it, and exits 1 when there is one. That is the one check of whether a hot-fix may stand Ready.
+Overview names the long-lived branch it fixes in one Target: line. Its target, its board status,
+the pull requests that deliver it and the state of its delivery unit are read here, and the scripts
+that place, survey, record, check or report a hot-fix call these functions.
 """
-import argparse
-import json
 import re
-import sys
-from pathlib import Path
 
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
-TYPE = 'type:hot-fix'
-CODE_SPAN = re.compile(r'(`+).*?\1')
 ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 Key = tuple[str, int]
 
@@ -39,9 +26,9 @@ def is_hotfix(issue: dict) -> bool:
 
 
 def hotfix_faults(issue: dict) -> list[str]:
-    """The conditions of the hot-fix Format that no other kind carries, each the issue fails: one
-    Target: line, no open question, and an Acceptance Criteria section holding a criterion. format.py
-    reports these beside its own checks, which cover the rest of the Format."""
+    """The conditions of a hot-fix body that no other kind carries, each the issue fails: one Target:
+    line, no open question, and an Acceptance Criteria section holding a criterion. format.py reports
+    these beside its own checks."""
     from format import split_sections  # format imports this module
     faults = []
     named = targets(issue)
@@ -56,46 +43,12 @@ def hotfix_faults(issue: dict) -> list[str]:
     return faults
 
 
-def format_faults(issue: dict) -> list[str]:
-    """Each condition of the hot-fix Format in artifacts/hotfix-body.md the issue fails, whatever its
-    wording: the [F00] prefix, the labels its Titles name, the standalone sections with no text before
-    the first, no unfilled {{...}} field in its prose outside code, every acceptance criterion a checkbox labelled **ACn.**, and
-    the conditions hotfix_faults reads."""
-    from format import AC, Template, prose, split_sections  # format imports this module
-    faults = []
-    if not is_hotfix(issue):
-        faults.append('title has no [F00] prefix')
-    labels = [l['name'] if isinstance(l, dict) else l for l in issue.get('labels') or []]
-    faults += [f'no {wanted} label' for wanted in (TYPE, PRIORITY) if wanted not in labels]
-    if not any(l.startswith('theme:') for l in labels):
-        faults.append('no theme:* label')
-    faults += [f'{l} beside {PRIORITY}' for l in labels if l.startswith('priority:') and l != PRIORITY]
-    template = Template('hot-fix')
-    body = (issue.get('body') or '').replace('\r\n', '\n')
-    preamble, sections = split_sections(body)
-    if '\n'.join(preamble).strip():
-        faults.append('text before the first section')
-    if any('{{' in CODE_SPAN.sub('', line) for line in prose(body.split('\n'))):
-        faults.append('an unfilled {{...}} field')
-    headings = [heading for heading, _ in sections]
-    faults += [f'required section missing: {h}' for h in template.headings
-               if h not in headings and h not in template.optional]
-    faults += [f'extra section: {h}' for h in headings if h not in template.headings]
-    lines = next((lines for heading, lines in sections if heading == 'Acceptance Criteria'), [])
-    faults += [f'criterion not a checkbox labelled **ACn.**: {line.strip()}' for line in lines
-               if ITEM.match(line) and not AC.match(line)]
-    return faults + hotfix_faults(issue)
-
-
 def board_status(issue: dict, held: str | None) -> str | None:
     """The status Board Status gives a hot-fix holding held: Done when closed as completed, OFF_BOARD
-    when closed otherwise; when open, In Progress while it holds In Progress or In Review, else Ready
-    once it has no format fault, and Backlog until then."""
+    when closed otherwise, In Progress when open and In Progress or In Review, else Ready."""
     if issue['state'] == 'closed':
         return 'Done' if issue.get('state_reason') == 'completed' else OFF_BOARD
-    if held in ('In Progress', 'In Review'):
-        return 'In Progress'
-    return 'Backlog' if format_faults(issue) else 'Ready'
+    return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
 
 
 def targets(issue: dict) -> list[str]:
@@ -155,17 +108,3 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
 
-
-def main() -> int:
-    parser = argparse.ArgumentParser()
-    parser.add_argument('issue', help='issue JSON as the REST API returns it')
-    issue = json.loads(Path(parser.parse_args().issue).read_text())
-    faults = format_faults(issue)
-    print(f"#{issue.get('number')}: {'out of' if faults else 'in'} the hot-fix format")
-    for fault in faults:
-        print(f'  fault: {fault}')
-    return 1 if faults else 0
-
-
-if __name__ == '__main__':
-    sys.exit(main())

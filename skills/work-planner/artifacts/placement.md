@@ -127,7 +127,8 @@ The work remains tracked by the taking issue.
 
 - **Existing task, new task and new epic.**
   The source is subsumed, its work planned as an ordinary task row.
-- **Hot-fix.**  The source is kept, under the hot-fix layout.
+- **Hot-fix.**
+  The source is kept, under the hot-fix layout. It stands in Backlog until its rewritten body is validated and saved, and only then is set Ready.
 - **New initiative.**
   A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
 - **Existing criterion.**

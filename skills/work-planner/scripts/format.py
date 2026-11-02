@@ -55,9 +55,8 @@ Printed as fixes to apply to the issue itself:
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
-  - each condition of a hot-fix's Format that no other kind carries, as hotfix.hotfix_faults reads
-    it, prefixed "hot-fix:": one Target: line, no open question, and a criterion; the checks
-    above report the rest of its Format
+  - each condition of a hot-fix body that no other kind carries, as hotfix.hotfix_faults reads it,
+    prefixed "hot-fix:": one Target: line, no open question, and a criterion
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
