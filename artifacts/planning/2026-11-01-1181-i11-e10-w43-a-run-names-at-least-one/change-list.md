@@ -2,7 +2,7 @@
 
 ## Applied
 
-- None beyond W43's own row and AC59, which the coordinator added to #1181.
+- **Row W43 on #1181.** Links [#1590](https://github.com/m2ux/workflow-server/pull/1590) and is Done; AC59 stays ticked. Every row and criterion of E10 is now complete.
 
 ## Held
 

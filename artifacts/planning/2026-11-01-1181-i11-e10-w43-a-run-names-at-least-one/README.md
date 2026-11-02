@@ -20,3 +20,4 @@ This record holds the delivery of I11:E10 W43, which has the shared skill check 
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
 | Review | [agent review](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-01-1181-i11-e10-epic-review/review-1589-6b7afb23.json) |
+| Pull request | [#1590](https://github.com/m2ux/workflow-server/pull/1590) |
