@@ -54,3 +54,21 @@ class Throwaways(unittest.TestCase):
         self.assertIn('#4 Cited note', cited_group)
         self.assertNotIn('Write target', done.stdout)
         self.assertNotIn('Spare target', done.stdout)
+
+
+class HotFixes(unittest.TestCase):
+    def test_an_open_hot_fix_is_neither_a_candidate_nor_a_destination(self):
+        issues = [
+            issue(1, '[F00] Key Validation: Reject Bad Keys', labels=('type:hot-fix', 'theme:canon'), body='Fix.'),
+            issue(2, 'Loose note'),
+            issue(3, '[I07] Canon Walk: Definitions Checked', labels=('type:initiative', 'theme:canon'),
+                  body='Reads #1.'),
+        ]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp, 'issues.json')
+            path.write_text(json.dumps(issues))
+            done = run('orphans.py', str(path))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertIn('--- orphans (1)', done.stdout)
+        self.assertIn('--- cited standalone issues (0)', done.stdout)
+        self.assertNotIn('Key Validation', done.stdout)
