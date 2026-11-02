@@ -38,6 +38,8 @@ The main path meets [Outcomes](#outcomes).
    - Use its returned owner and board number for the following steps.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
+   - This step reads the board and each open epic's priority label live, before the run changes any status, assignee or branch. No memory, summary or earlier note stands in for that read.
+   - A status move to Ready or In Progress, an assignment and an epic base come only from the queue this step returned in the same run. An epic that queue leaves in Backlog does not start, whatever this run was asked for.
    - Continue to the fetch step only after it returns a complete applied queue.
    - Report an unavailable dependency, and a queue decision it recorded rather than asked, before dispatch. An incomplete queue means no initiative is under way, so the run has no work to offer.
    - Carry the [change list](../artifacts/plan-change.md#change-list) it returns into the report step.
@@ -84,7 +86,7 @@ The main path meets [Outcomes](#outcomes).
    - Read the component each of the unit's rows declares from the work-item file the planning record that registered it holds, before a reservation replaces the row's link.
    - Add its record with [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record), named as the `unit` line gives it.
    - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
-   - Run [Reserve Task Rows](../artifacts/epic-issue-body.md#reserve-task-rows) for the unit's tasks.
+   - Run [Reserve Task Rows](../artifacts/epic-issue-body.md#reserve-task-rows) for the unit's tasks, with the board items the fetch step read.
    - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the body it writes.
    - Set each task issue of the unit, where one exists, to In Progress and its epic with [Record Dispatch Status](../artifacts/board-delivery.md#record-dispatch-status).
    - Retain the queue decisions returned by the completed advance step.
