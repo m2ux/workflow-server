@@ -105,6 +105,7 @@ The main path meets [Outcomes](#outcomes).
 8. **Dispatch.**
    - Confirm each epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its rows' changes bring, each with the declared row delivering it.
    - Keep each such row a unit of its own, joined to no other row, so it is confirmed and held like any other before a session starts for it.
+   - Confirm the harness grants the [epic-base merge permission](../artifacts/pull-request.md#merge-permission). When it does not, report the setting that is absent and stop before any unit begins.
 
    For each held unit:
    - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) in the project checkout for each branch the `unit` line names, with its base and worktree.
