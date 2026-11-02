@@ -51,7 +51,7 @@ One hot-fix body with its confirmed delivery and verified criteria recorded.
 
 - A hot-fix belongs to no initiative or epic, and names no Depends on or Joins.
 - It sits on its theme's board.
-- Its priority is 10, carried as a [priority label](board-queue.md#priority-sets).
+- It carries priority 10 as a [priority label](board-queue.md#priority-sets). The queue places it by [Hot-fix Status](board-queue.md#hot-fix-status), outside the priority sets, and never ranks it by that number.
 
 ### Debt
 

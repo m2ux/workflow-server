@@ -89,7 +89,7 @@ The selected layout, with the original wording preserved for readers.
    - Pass a hot-fix its supplied number and theme label.
 3. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
    - Resolve findings.
-   - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels.
+   - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's including the priority label its [Membership](hotfix-body.md#membership) names.
    - Return the saved identity to the caller.
 
 ### *Subsume* Orphan Work

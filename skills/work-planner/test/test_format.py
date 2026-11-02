@@ -722,14 +722,18 @@ class HotFixes(unittest.TestCase):
         return r
 
     def test_a_titled_and_labelled_hot_fix_passes(self):
-        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'))
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'))
         self.assertEqual(r.kind, 'hot-fix')
         self.assertEqual((r.apply, r.decide), ([], []))
 
     def test_the_prefix_alone_makes_a_hot_fix_that_lacks_its_label(self):
-        r = self.check('[F03] Key Validation: Reject Bad Keys', ('theme:canon',))
+        r = self.check('[F03] Key Validation: Reject Bad Keys', ('theme:canon', 'priority: 10'))
         self.assertEqual(r.kind, 'hot-fix')
         self.assertEqual(r.apply, ['labels: add type:hot-fix'])
+
+    def test_a_hot_fix_carries_priority_ten_alone(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 3'))
+        self.assertEqual(r.apply, ['labels: remove priority: 3, add priority: 10'])
 
     def test_the_label_alone_makes_a_hot_fix_that_lacks_its_prefix(self):
         r = self.check('Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'))

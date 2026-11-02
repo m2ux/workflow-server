@@ -49,7 +49,8 @@ Fixed in the body written to --fix, keeping the issue's wording:
     labelled **Rn.** when none is
 Printed as fixes to apply to the issue itself:
   - a title prefix that separates levels with spaces, with its colon form
-  - a type:* label that does not match the issue's kind, a theme:* label on a proposal, or any type:* label on a standalone issue
+  - a type:* label that does not match the issue's kind, a theme:* label on a proposal, any type:* label on
+    a standalone issue, or a hot-fix without priority: 10 or with another priority:* label
   - an epic checked with --initiative whose row there does not carry the epic's title name
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
@@ -110,6 +111,7 @@ BODY_ARTIFACTS = {
 PREFIX = re.compile(r'^\[(I\d\d)((?:[: ][EW]\d\d)*)\]')
 PROPOSAL = re.compile(r'^\[P\d\d\]')
 HOTFIX = re.compile(r'^\[(F\d\d)\]')
+HOTFIX_PRIORITY = 'priority: 10'
 KINDS = {0: 'initiative', 1: 'epic', 2: 'task'}
 MAX_CRITERIA = 3
 MAX_DESCRIPTION = 8
@@ -481,14 +483,17 @@ class Review:
 
     def check_labels(self) -> None:
         labels = self.labels()
-        want = f'type:{self.kind}'
+        wanted = [f'type:{self.kind}'] + ([HOTFIX_PRIORITY] if self.kind == 'hot-fix' else [])
         themes = [l for l in labels if l.startswith('theme:')]
-        wrong = [l for l in labels if l.startswith('type:') and l != want]
+        wrong = [l for l in labels if l.startswith('type:') and l not in wanted]
         if self.kind == 'proposal':
             wrong += themes
-        if wrong or want not in labels:
+        if self.kind == 'hot-fix':
+            wrong += [l for l in labels if l.startswith('priority:') and l != HOTFIX_PRIORITY]
+        missing = [l for l in wanted if l not in labels]
+        if wrong or missing:
             self.apply.append('labels: ' + ', '.join([f'remove {l}' for l in wrong] +
-                                                      ([f'add {want}'] if want not in labels else [])))
+                                                      [f'add {l}' for l in missing]))
         if self.kind in ('initiative', 'epic', 'hot-fix') and not themes:
             self.decide.append('no theme:* label')
 
