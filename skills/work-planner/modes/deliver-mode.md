@@ -25,6 +25,7 @@ Read these files first.
 - [Delivery Brief](../artifacts/delivery-brief.md)
 - [Plan Change](../artifacts/plan-change.md)
 - [Hoist Mode](hoist-mode.md)
+- [Agent Review](../artifacts/agent-review.md)
 - [Work Item](../artifacts/work-item.md)
 - [Pull Request Body](../artifacts/pull-request-body.md)
 - [Issue Body](../artifacts/issue-body.md)
@@ -152,23 +153,32 @@ The confirmed unit carried from its supplied brief through implementation and de
    Open the unit's pull request from each task branch its work changes into its base with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), from a body [Populate Pull Request Body](../artifacts/pull-request-body.md#populate-pull-request-body) writes with the unit's change, tasks, criteria and validation evidence, so the title, the base, the Test Plan, and the issue links meet [Titles](../artifacts/pull-request-body.md#titles), [Branches](../artifacts/delivery-branches.md#branches), [Test Coverage](../artifacts/pull-request-body.md#test-coverage), and [Issue Links](../artifacts/pull-request.md#issue-links).
    - Run [Confirm Repository Auto-Close](../artifacts/issue.md#confirm-repository-auto-close) for the repository, where the session holds no confirmed setting.
    - Supply that setting and the unit's task issue, where one exists, so the pull request opens linked to it.
+   - A hot-fix unit's title carries its prefix, so its [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) opens as a draft.
    - For a unit of rows:
      - Run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) for the unit's task rows, with the project checkout and the fetched epic bases.
      - Run [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the returned body.
 8. **Fix the debt.**
    Fix the technical debt this unit's validation finds, as [Debt](../artifacts/delivery-plan.md#debt) states.
    - Carry each item that Debt leaves outside the unit's change into the arising-issues step.
-   - Resume the merge step.
-9. **Merge.**
+   - Continue to the review step for a hot-fix unit, and to the merge step otherwise.
+9. **Review a hot-fix.**
+   For a hot-fix unit, complete the review cycle its draft [delivering pull request](../artifacts/hotfix.md#delivering-pull-request) waits on.
+   - Run [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review) with the pull request's fresh metadata, the unit checkout, its criteria, validation evidence and planning destination.
+   - Register and publish its returned record through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) and [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record).
+   - Link that published record from the pull request body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request).
+   - Run [Ready Hot-fix Pull Request](../artifacts/pull-request.md#ready-hot-fix-pull-request) with the pull request and the published records.
+   - For each returned finding, fix it on the task branch and repeat this step from Produce Agent Review, until Ready Hot-fix Pull Request returns none.
+   - A finding the session cannot fix within its allowance stops it before the merge step. The hot-fix stays held and its pull request a draft, and the session returns each open finding in its result.
+10. **Merge.**
    Record check results with [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), following [Test Plan](../artifacts/pull-request-body.md#test-plan).
    - Follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) for the task pull request, with the project checkout and the unit checkout.
    - On a confirmed merge, run [Task Merge](../protocols/task-merge.md) in the project checkout with that merge result, the unit's current task and epic evidence, and the board identity the brief names.
    - Resume the arising-issues step when recording returns; a merge or recording blocker remains explicit.
-10. **Arising issues.**
+11. **Arising issues.**
     Create each issue that arose during delivery as a standalone issue with [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), with no agent-engineering prefix.
     - Run [Hoist Mode](hoist-mode.md) in the project checkout with those new issue identities and the allowance the brief names, after the pull request is open and epic delivery is recorded.
     - Run [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with each placement it applied and each it held.
-11. **Report the changes.**
+12. **Report the changes.**
     Register the session's [change list](../artifacts/plan-change.md#change-list) in its planning folder through [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record).
     - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
     - Return the list with the delivery session result, so the user reads each plan change this session applied and each it held.

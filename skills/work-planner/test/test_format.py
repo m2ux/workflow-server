@@ -814,12 +814,18 @@ class HotFixes(unittest.TestCase):
     def test_a_hot_fix_names_its_target(self):
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'),
                        hotfix_body(None))
-        self.assertEqual(r.decide, ['Overview: no Target: line naming the branch the hot-fix fixes'])
+        self.assertEqual(r.decide, ['hot-fix: no Target: lines in the Overview; it names one target branch'])
 
     def test_a_hot_fix_names_one_target(self):
         text = hotfix_body().replace('Target: `main`', 'Target: `main`\n\nTarget: `workspace`')
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'), text)
-        self.assertEqual(r.decide, ['Overview: 2 Target: lines; a hot-fix names one target branch'])
+        self.assertEqual(r.decide, ['hot-fix: 2 Target: lines in the Overview; it names one target branch'])
+
+    def test_each_hot_fix_fault_is_reported_once(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix',), hotfix_body(None))
+        self.assertEqual(r.apply, ['labels: add priority: 10'])
+        self.assertEqual(r.decide, ['no theme:* label',
+                                    'hot-fix: no Target: lines in the Overview; it names one target branch'])
 
     def test_a_standalone_issue_needs_no_target(self):
         r = self.check('Key Validation: Reject Bad Keys', (), body('Gap.', 'Design.'))

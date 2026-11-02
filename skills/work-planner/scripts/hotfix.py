@@ -1,9 +1,9 @@
 """A hot-fix's identity and lifecycle, as artifacts/hotfix-body.md and artifacts/hotfix.md state them.
 
 An issue whose title opens with [F00] is a hot-fix, and it carries the priority: 10 label. Its
-Overview names the long-lived branch it fixes in one Target: line. Its target, board status, the pull
-requests that deliver it and the state of its delivery unit are read here, and the scripts that
-place, survey, record, check or report a hot-fix call these functions.
+Overview names the long-lived branch it fixes in one Target: line. Its target, its board status,
+the pull requests that deliver it and the state of its delivery unit are read here, and the scripts
+that place, survey, record, check or report a hot-fix call these functions.
 """
 import re
 
@@ -11,6 +11,7 @@ HOTFIX = re.compile(r'^\[(F\d\d)\]')
 PRIORITY = 'priority: 10'
 OFF_BOARD = 'off the board'
 TARGET = re.compile(r'^Target: `([^`\s]+)`\s*$')
+ITEM = re.compile(r'^(?:[-*+]|\d+[.)])\s')
 Key = tuple[str, int]
 
 
@@ -24,31 +25,37 @@ def is_hotfix(issue: dict) -> bool:
     return hotfix_tag(issue) is not None
 
 
-def formatted(issue: dict) -> bool:
-    """Whether the hot-fix's title, labels and body meet the hot-fix format: format.py's check of it
-    leaves nothing to apply or decide."""
-    from format import Review  # format imports this module
-    review = Review(issue)
-    review.run()
-    return not (review.apply or review.decide)
+def hotfix_faults(issue: dict) -> list[str]:
+    """The conditions of a hot-fix body that no other kind carries, each the issue fails: one Target:
+    line, no open question, and an Acceptance Criteria section holding a criterion. format.py reports
+    these beside its own checks."""
+    from format import split_sections  # format imports this module
+    faults = []
+    named = targets(issue)
+    if len(named) != 1:
+        faults.append(f'{len(named) or "no"} Target: lines in the Overview; it names one target branch')
+    _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
+    if any(line.strip() for heading, lines in sections if heading == 'Open Questions' for line in lines):
+        faults.append('open questions remain')
+    for heading, lines in sections:
+        if heading == 'Acceptance Criteria' and not any(ITEM.match(line) for line in lines):
+            faults.append('no acceptance criterion')
+    return faults
 
 
 def board_status(issue: dict, held: str | None) -> str | None:
     """The status Board Status gives a hot-fix holding held: Done when closed as completed, OFF_BOARD
-    when closed otherwise, Backlog when open and out of the hot-fix format, In Progress when open and
-    In Progress or In Review, else Ready."""
+    when closed otherwise, In Progress when open and In Progress or In Review, else Ready."""
     if issue['state'] == 'closed':
         return 'Done' if issue.get('state_reason') == 'completed' else OFF_BOARD
-    if not formatted(issue):
-        return 'Backlog'
     return 'In Progress' if held in ('In Progress', 'In Review') else 'Ready'
 
 
 def targets(issue: dict) -> list[str]:
-    """The branch each Target: line of the issue's Overview names, in order."""
-    from format import split_sections  # format imports this module
+    """The branch each Target: line of the issue's Overview names, in order, outside fenced code."""
+    from format import prose, split_sections  # format imports this module
     _, sections = split_sections((issue.get('body') or '').replace('\r\n', '\n'))
-    lines = next((lines for heading, lines in sections if heading == 'Overview'), [])
+    lines = prose(next((lines for heading, lines in sections if heading == 'Overview'), []))
     return [found[1] for line in lines if (found := TARGET.match(line))]
 
 
@@ -100,3 +107,4 @@ def unit_state(issue: dict, held: str | None, linking: list[dict], delivering: l
     if any((p.get('state') or 'open') == 'open' and not p.get('merged_at') for p in linking):
         return 'running'
     return {'In Progress': 'hold', 'Ready': 'unit'}.get(held)
+

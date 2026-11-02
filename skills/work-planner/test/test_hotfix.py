@@ -47,6 +47,17 @@ class Target(unittest.TestCase):
         self.assertEqual(targets(twice), ['main', 'workspace'])
         self.assertEqual(target(twice), '')
 
+    def test_a_tilde_fence_hides_its_target_line_and_its_headings(self):
+        fenced = hotfix()
+        fenced['body'] = fenced['body'].replace('Target: `main`', 'Target: `main`\n\n~~~\n## Problem\nTarget: `workspace`\n~~~')
+        self.assertEqual(targets(fenced), ['main'])
+
+    def test_a_target_line_in_fenced_code_names_nothing(self):
+        fenced = hotfix()
+        fenced['body'] = fenced['body'].replace('Target: `main`', 'Target: `main`\n\n```\nTarget: `workspace`\n```')
+        self.assertEqual(targets(fenced), ['main'])
+        self.assertEqual(target(fenced), 'main')
+
     def test_a_target_line_outside_the_overview_names_nothing(self):
         moved = hotfix(aim=None)
         moved['body'] = hotfix_body(None) + '\nTarget: `main`\n'
@@ -59,14 +70,6 @@ class BoardStatus(unittest.TestCase):
                              ('In Progress', 'In Progress'), ('In Review', 'In Progress')):
             with self.subTest(held=held):
                 self.assertEqual(board_status(hotfix(), held), wanted)
-
-    def test_an_open_hot_fix_out_of_the_format_is_backlog_whatever_it_holds(self):
-        unnamed, unlabelled = hotfix(aim=None), hotfix()
-        unlabelled['labels'] = [{'name': 'type:hot-fix'}]
-        for issue_ in (unnamed, unlabelled):
-            for held in (None, 'Backlog', 'Ready', 'In Progress', 'In Review'):
-                with self.subTest(issue=issue_['body'][:40], held=held):
-                    self.assertEqual(board_status(issue_, held), 'Backlog')
 
     def test_a_closed_hot_fix_is_done_or_off_the_board(self):
         self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Progress'), 'Done')
@@ -117,6 +120,12 @@ class UnitState(unittest.TestCase):
         self.assertEqual(unit_state(hotfix(), 'Ready', [], []), 'unit')
         self.assertIsNone(unit_state(hotfix(), 'Backlog', [], []))
         self.assertIsNone(unit_state(hotfix('closed', 'completed'), 'Ready', [], []))
+
+    def test_an_open_draft_delivering_pull_request_makes_it_running(self):
+        draft = pr(951, '[F04] Reject Bad Keys', base='main', draft=True)
+        for held in ('Ready', 'In Progress'):
+            with self.subTest(held=held):
+                self.assertEqual(unit_state(hotfix(), held, [draft], [draft]), 'running')
 
 
 if __name__ == '__main__':

@@ -52,7 +52,9 @@ belongs to an epic which names its task as next is not listed again.
 A hot-fix ([F00]) belongs to no initiative and follows the epic groups of each section: under
 Completed when Done and closed in the window, with each delivering pull request merged in the
 window; under In progress when In Progress or In Review, with each open delivering pull request;
-under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds.
+under Next when Ready. Its delivering pull requests are those hotfix.delivering_pulls finds; a
+hot-fix shown under Completed or In progress whose Overview names no target in one Target: line has
+none, and is named on stderr.
 --initiative leaves hot-fixes out.
 
 The window opens at the start of --since in local time, by default a week before today.
@@ -83,7 +85,7 @@ from pathlib import Path
 from board import Board, PREFIX, PULL_REF, Resolution, linked_issue
 from statuses import Key, key_of, label, pages, status_of
 from format import LINK, cell, id_cell, phrase, title_name
-from hotfix import HOTFIX, delivering_pulls, hotfix_tag
+from hotfix import HOTFIX, delivering_pulls, hotfix_tag, target
 from sync import PR_REF, PULL_URL, Unreadable, attach_links, links_issue, pull_requests
 
 PRIORITY = re.compile(r'^priority: ([1-9]\d*)$')
@@ -399,6 +401,9 @@ def main() -> int:
     for k, tag in sorted(hotfixes.items()):
         head = f"*{tag} {title_name(issues[k]['title'])}* — {issues[k]['html_url']}"
         delivering = delivering_pulls(list(by_url.values()), k, issues[k])
+        if (done(k) or status.get(k) in ACTIVE) and not target(issues[k]):
+            unresolved.append(f"{tag} {issues[k]['html_url']}: its Overview names no target in one Target: line, "
+                              'so no pull request delivers it and none is shown')
         if done(k):
             completed.hotfixes.append(f'{DONE} {head}')
             completed.hotfixes.extend(f"    {DONE} {pr_title(p)} — {p['html_url']}"

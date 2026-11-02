@@ -9,6 +9,7 @@ Read these files first.
 - [Issue](issue.md)
 - [Delivery Branches](delivery-branches.md)
 - [Agent Review](agent-review.md)
+- [Hot-fix](hotfix.md)
 
 ## Operations
 
@@ -118,7 +119,7 @@ One pull request created or updated from supplied content and metadata.
 
 **Inputs:** Repository, optional pull request number, task or epic kind, body file and selected title, head or base changes, and, for a created delivery pull request, its delivery issue identity, the repository setting confirmed for the session and a link-snapshot destination.
 
-1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state.
+1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state. A task pull request titled with a hot-fix prefix always opens as a draft.
    - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).
 2. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields.
 3. Re-read through [Read Pull Request State](#read-pull-request-state).
@@ -195,14 +196,26 @@ The complete epic's pull request made ready for review.
 **Inputs:** Review pull request identity, published agent review records and confirmed readiness showing every task delivered, every criterion verified and ticked, and no unresolved question or delivery discrepancy.
 
 1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state).
-2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with its identity.
+2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names.
 3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge.
+
+### *Ready* Hot-fix Pull Request
+
+A hot-fix's draft delivering pull request made ready for review once its review cycle is complete.
+
+**Inputs:** Delivering pull request identity and its published agent review records.
+
+1. Run [Read Pull Request State](#read-pull-request-state) for its full metadata.
+2. Run [Check Agent Review](agent-review.md#check-agent-review) with that metadata and the published records.
+   - On a finding, return it to the caller; the pull request stays a draft.
+3. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names.
+4. Run Read Pull Request State again and repeat Check Agent Review. Return the confirmed ready state, or the changed revision or finding that leaves it unconfirmed.
 
 ## Fields
 
 ### State
 
-A pull request is open, draft, ready for review, merged or closed without merge. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until every task is delivered, every epic criterion is verified and ticked, and current agent review evidence passes.
+A pull request is open, draft, ready for review, merged or closed without merge. A draft is never merged. A merged result identifies the verified head, target and merge commit. An epic review is draft from the first task merge until every task is delivered, every epic criterion is verified and ticked, and current agent review evidence passes.
 
 ### Scope
 
@@ -263,6 +276,7 @@ Creates a pull request from a unit's branch to its base.
 **Inputs:** Repository, title, task head, base and populated body file.
 
 - Supply the title, the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the complete body file.
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
 
 ```bash
 gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<task-branch>' -f base='<base>' -F 'body=@<body-file>' --jq .html_url
@@ -272,6 +286,12 @@ gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<t
 
 ```bash
 gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[I07:E00] Purpose' -f head='i07/e00/w01-purpose' -f base='i07/e00/main' -F body=@body.md --jq .html_url
+```
+
+**Example:** A hot-fix's delivering pull request.
+
+```bash
+gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[F00] Reject Bad Keys' -f head='f00-key-validation' -f base='workspace' -F body=@body.md -F draft=true --jq .html_url
 ```
 
 ### Open Epic Pull Request
@@ -630,12 +650,20 @@ gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/status?per_page=100' 
 
 ### Mark Review Ready
 
-Marks the supplied epic review pull request ready for review.
+Marks a draft pull request ready for review.
 
-**Inputs:** Repository, pull request number and confirmed epic readiness.
+**Inputs:** The pull request's node id, from its REST record's `node_id`, and a query file.
+
+**REST gap:** REST has no endpoint that marks a draft ready for review.
+
+- The query file holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:
+
+  ```graphql
+  mutation { markPullRequestReadyForReview(input: {pullRequestId: "<pull-request-node-id>"}) { pullRequest { isDraft } } }
+  ```
 
 ```bash
-gh pr ready '<pull-request-number>' --repo '<owner>/<repository>'
+gh api graphql -F query=@'<query-file>' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
 ```
 
 ### Mark Review Draft

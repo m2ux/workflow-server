@@ -11,6 +11,7 @@ Read these files first.
 - [Board Queue](board-queue.md)
 - [Hot-fix](hotfix.md)
 - [Delivery Plan](delivery-plan.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -37,7 +38,7 @@ One hot-fix body from a confirmed defect.
 ### Target
 
 - The Overview names the target in one line of its own, `Target:` and the branch in a code span: ``Target: `workspace` ``.
-- The target is confirmed with the hot-fix's placement.
+- The target is a long-lived branch its project declares, as [Branches](delivery-branches.md#branches) states, confirmed with the hot-fix's placement.
 
 ### Titles
 

@@ -774,6 +774,41 @@ class HotFixUnits(unittest.TestCase):
         self.assertNotIn('  unit F04', out)
         self.assertIn('undeclared: 1', out)
 
+    def test_a_ready_hot_fix_whose_target_is_no_declared_long_lived_branch_is_undeclared(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'git@github.com:o/r.git')
+            out = survey(staged((hotfix(4, target='feature/x'), 'Ready'), (hotfix(5, target='workspace'), 'Ready')),
+                         None, *names, code=1)
+        self.assertIn('  undeclared F04 #4: its target feature/x is no long-lived branch config/branches declares',
+                      out)
+        self.assertNotIn('  unit F04', out)
+        self.assertIn('  unit F05 #5:', out)
+        self.assertIn('base workspace', out)
+        self.assertIn('undeclared: 1', out)
+
+    def test_a_passed_pull_request_into_an_undeclared_target_is_no_merge_candidate(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'git@github.com:o/r.git')
+            pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='feature/x'),
+                     pr(952, '[F05] Reject Bad Keys', body=PLAN, base='workspace')]
+            out = survey(staged((hotfix(4, target='feature/x'), 'In Progress'),
+                                (hotfix(5, target='workspace'), 'In Progress')),
+                         pulls, *names, held=(links(951, 4), links(952, 5)), code=1)
+        self.assertNotIn('merge #951', out)
+        self.assertIn('  undeclared F04 #4: its target feature/x is no long-lived branch config/branches declares', out)
+        self.assertIn('  merge #952 F05: base workspace', out)
+
+    def test_a_hot_fix_of_another_repository_is_unresolved_without_failing_the_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'https://github.com/o/r.git')
+            out = survey(staged((hotfix(4, target='feature/x', repo='o/s'), 'Ready')), None, *names)
+        self.assertIn('  unresolved: F04 #4: its target feature/x is unchecked: config/branches is read in o/r', out)
+        self.assertNotIn('  unit F04', out)
+        self.assertIn('undeclared: 0', out)
+
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
         out = survey(staged((hotfix(4), 'In Progress')), None)
         self.assertIn('  hold F04 #4: In Progress', out)
@@ -806,6 +841,17 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('  merge #951 F04: base workspace', out)
         for number in (952, 953, 954, 955):
             self.assertNotIn(f'merge #{number}', out)
+
+    def test_a_draft_hot_fix_pull_request_is_never_a_merge_candidate(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', body=PLAN, base='workspace', draft=True)]
+        out = survey(staged((hotfix(4, target='workspace'), 'In Progress')), pulls, held=(links(951, 4),))
+        self.assertNotIn('merge #951', out)
+        self.assertIn('merge: 0', out)
+
+    def test_a_ready_hot_fix_with_an_open_draft_is_running_and_not_offered(self):
+        pulls = [pr(951, '[F04] Reject Bad Keys', base='workspace', draft=True)]
+        out = survey(staged((hotfix(4, target='workspace'), 'Ready')), pulls, held=(links(951, 4),))
+        self.assertNotIn('F04', out.split('  available:')[0])
 
     def test_a_hot_fix_an_open_pull_request_links_is_running(self):
         out = survey(staged((hotfix(4), 'Ready'), (hotfix(5), 'In Progress')),

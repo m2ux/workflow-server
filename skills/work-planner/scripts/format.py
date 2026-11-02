@@ -55,7 +55,8 @@ Printed as fixes to apply to the issue itself:
 Left to decide, since each needs new content or a judgement:
   - a type:task issue whose title prefix has no task id, which its row in its epic's Work Breakdown supplies
   - a type:hot-fix label on a title without an [F00] prefix, which is retitled or loses the label
-  - a hot-fix whose Overview does not name its target branch in exactly one Target: line
+  - each condition of a hot-fix body that no other kind carries, as hotfix.hotfix_faults reads it,
+    prefixed "hot-fix:": one Target: line, no open question, and a criterion
   - a body that follows another kind's template
   - a required section missing, an extra section, or text before the first section
   - prose in the Work Breakdown outside its table
@@ -102,7 +103,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from hotfix import HOTFIX, PRIORITY, is_hotfix, targets
+from hotfix import HOTFIX, PRIORITY, hotfix_faults, is_hotfix
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
 BODY_ARTIFACTS = {
@@ -140,6 +141,7 @@ OUTCOMES = re.compile(r'→ (AC\d+(?:, AC\d+)*)')
 COVERAGE = re.compile(r'AC\d+(?:, AC\d+)*')
 TASK_RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
 LINK = re.compile(r'\[([^\]]*)\]\(([^)]*)\)')
+FENCE = re.compile(r'^ {0,3}(?:```|~~~)')
 EPIC_REF = re.compile(r'(?<![\w:])(?:I(\d\d):)?E(\d\d)(?::W\d\d)?(?![\w:])')
 DEPENDENCY = {
     'epic': re.compile(r'W\d\d(?:[–-]W\d\d)?|E\d\d:W\d\d|I\d\d:E\d\d(?::W\d\d)?|#\d+'),
@@ -151,7 +153,7 @@ def split_sections(text: str) -> tuple[list[str], list[list]]:
     """Return the lines before the first H2, and [heading, lines] for each H2 section."""
     preamble, sections, fence = [], [], False
     for line in text.split('\n'):
-        if line.startswith('```'):
+        if FENCE.match(line):
             fence = not fence
         m = None if fence else re.match(r'^## (.+?)\s*$', line)
         if m:
@@ -161,6 +163,17 @@ def split_sections(text: str) -> tuple[list[str], list[list]]:
         else:
             preamble.append(line)
     return preamble, sections
+
+
+def prose(lines: list[str]) -> list[str]:
+    """A section's lines outside fenced code, a fence opening and closing as split_sections reads it."""
+    kept, fence = [], False
+    for line in lines:
+        if FENCE.match(line):
+            fence = not fence
+        elif not fence:
+            kept.append(line)
+    return kept
 
 
 def join_sections(preamble: list[str], sections: list[list]) -> str:
@@ -415,7 +428,7 @@ class Review:
             return self.run_standalone_kind('proposal', PROPOSAL, '[P00]')
         if is_hotfix(self.issue):
             fixed = self.run_standalone_kind('hot-fix', HOTFIX, '[F00]')
-            self.check_target()
+            self.decide.extend(f'hot-fix: {fault}' for fault in hotfix_faults(self.issue))
             return fixed
         m = PREFIX.match(title)
         if not m:
@@ -460,14 +473,6 @@ class Review:
             self.check_title_shape(name, subtitle)
         self.check_labels()
         return self.check_body()
-
-    def check_target(self) -> None:
-        """A hot-fix's Overview names its target branch in one Target: line."""
-        named = targets(self.issue)
-        if not named:
-            self.decide.append('Overview: no Target: line naming the branch the hot-fix fixes')
-        elif len(named) > 1:
-            self.decide.append(f'Overview: {len(named)} Target: lines; a hot-fix names one target branch')
 
     def check_title(self, m: re.Match, parts: list[str]) -> None:
         title = self.issue['title']

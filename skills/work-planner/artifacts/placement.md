@@ -24,7 +24,7 @@ One placement option from the supplied orphan and candidate destinations.
 **Inputs:** Current orphan body, candidate destinations, proposed work and supplied planning-record references.
 
 1. Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
-   - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the repository's default branch unless the orphan's evidence places the defect on another long-lived branch.
+   - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
 2. Record the destination and the work it takes, meeting [Fields](#fields).
 3. Record whether the orphan is kept, subsumed or left, meeting [Disposition Conditions](#disposition-conditions), including the reason and any planning record reference.
 4. Return the placement for the caller to offer and apply. The output is the [Placement](#placement-record), including the draft issue changes.
@@ -66,7 +66,7 @@ One selected destination for an orphan's work.
      - Run [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
      - Publish through [Save Tracker Issue](issue.md#save-tracker-issue).
    - **Hot-fix.**
-     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue and the confirmed theme board.
+     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue.
      - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
    - **Leave.**
      - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
@@ -127,7 +127,8 @@ The work remains tracked by the taking issue.
 
 - **Existing task, new task and new epic.**
   The source is subsumed, its work planned as an ordinary task row.
-- **Hot-fix.**  The source is kept, under the hot-fix layout.
+- **Hot-fix.**
+  The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.
 - **New initiative.**
   A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.
 - **Existing criterion.**

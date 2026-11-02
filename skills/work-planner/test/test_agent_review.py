@@ -27,6 +27,37 @@ def reviewed_pr(tag='07:E00'):
     return pull, record
 
 
+def hotfix_pr():
+    pull, record = reviewed_pr()
+    pull['title'] = '[F04] Reject Bad Keys'
+    record['base_ref'] = pull['base']['ref']
+    return pull, record
+
+
+class HotFixReview(unittest.TestCase):
+    def test_a_record_written_from_the_pull_request_as_produce_says_passes(self):
+        pull, published = hotfix_pr()
+        record = {**{k: published[k] for k in ('pull_request', 'url', 'reviewer', 'reviewed_at', 'scope',
+                                                 'criteria', 'validation', 'findings')},
+                  'head': pull['head']['sha'], 'base': pull['base']['sha'], 'base_ref': pull['base']['ref']}
+        self.assertIsNone(check(pull, [record]))
+
+    def test_every_finding_is_fixed(self):
+        pull, record = hotfix_pr()
+        record['findings'] = [{'description': 'Follow-up', 'severity': 'nonblocking', 'disposition': 'deferred',
+                               'ticket': 'https://github.com/o/r/issues/5'}]
+        self.assertIn('unfixed finding', check(pull, [record]))
+        record['findings'][0].update(disposition='fixed', evidence='https://github.com/o/r/commit/1')
+        self.assertIsNone(check(pull, [record]))
+
+    def test_a_changed_head_or_base_branch_makes_it_stale_and_a_moved_target_does_not(self):
+        pull, record = hotfix_pr()
+        self.assertIsNone(check(pull, [{**record, 'base': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'head': 'c' * 40}]))
+        self.assertIn('stale', check(pull, [{**record, 'base_ref': 'main'}]))
+        self.assertIn('stale', check(pull, [{k: v for k, v in record.items() if k != 'base_ref'}]))
+
+
 class AgentReview(unittest.TestCase):
     def setUp(self):
         self.pr, self.record = reviewed_pr()

@@ -32,10 +32,10 @@ def hotfix_body(target: str | None = 'main', criteria: tuple[str, ...] = ('Holds
 
 
 def hotfix(number: int, state: str = 'open', closed: str | None = None, target: str | None = 'main',
-           labels: tuple[str, ...] = ('type:hot-fix', 'theme:canon', 'priority: 10')) -> dict:
-    """An open or closed hot-fix titled [Fnn] for its number, in the hot-fix format."""
+           labels: tuple[str, ...] = ('type:hot-fix', 'theme:canon', 'priority: 10'), repo: str = REPO) -> dict:
+    """An open or closed hot-fix titled [Fnn] for its number, in the hot-fix layout."""
     return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
-                 hotfix_body(target), labels)
+                 hotfix_body(target), labels, repo)
 
 
 BOARD = 'https://api.github.com/orgs/o/projectsV2/7'

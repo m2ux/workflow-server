@@ -551,6 +551,16 @@ class HotFixes(unittest.TestCase):
             f"🔄 *F04 Key Validation* — {url('issues', 4)}",
             f"    📝 Reject Bad Keys — {url('pull', 950)}"])
 
+    def test_a_shown_hot_fix_naming_no_target_is_named_on_stderr(self):
+        done = progress([item(hotfix(4, target=None), 'In Progress'), item(hotfix(5, target=None), 'Ready')],
+                        [pr(950, '[F04] Reject Bad Keys', draft=True, base='main')], '--since', SINCE,
+                        held=(links(950, 4),))
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertEqual(section(done.stdout, 'In progress'), [f"🔄 *F04 Key Validation* — {url('issues', 4)}"])
+        notices = [line for line in done.stderr.splitlines() if 'names no target' in line]
+        self.assertEqual(len(notices), 1)
+        self.assertIn(f"F04 {url('issues', 4)}", notices[0])
+
     def test_a_ready_hot_fix_leads_next(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Task', '')))
         out = summary([item(epic, 'Ready'), item(self.hotfix(4), 'Ready')])

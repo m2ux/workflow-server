@@ -17,10 +17,8 @@ the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
 
-An open hot-fix, titled [F00], is Backlog while format.py's check of its title, labels and body
-leaves anything to apply or decide. Otherwise it is Ready outside every priority set, keeps In
-Progress once it holds it, and leaves In Review for In Progress; nothing waits on it and it waits on
-nothing. A closed hot-fix is Done when closed as completed, and is removed from the board otherwise.
+An open hot-fix, titled [F00], is Ready outside every priority set, keeps In Progress once it
+holds it, and leaves In Review for In Progress; nothing waits on it and it waits on nothing. A closed hot-fix is Done when closed as completed, and is removed from the board otherwise.
 """
 import argparse
 import json
