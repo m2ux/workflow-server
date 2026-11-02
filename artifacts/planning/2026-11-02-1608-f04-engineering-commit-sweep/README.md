@@ -13,6 +13,7 @@ A folder-scoped commit strands the work of a session that stops before its own c
 | Artifact | What it holds |
 | --- | --- |
 | [F04](f04.md) | The work item: component, design and checks for the sweep |
+| [Test Results](test-results.md) | The evidence for each test-plan row |
 
 ## Links
 

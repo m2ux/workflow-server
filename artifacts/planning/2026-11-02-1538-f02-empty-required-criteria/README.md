@@ -12,6 +12,8 @@ prosiform requires no recurring criterion, and the format check reports every ep
 
 | Artifact | What it holds |
 | --- | --- |
+| [F02 work item](f02.md) | Component, scope, design and test rows for F02 |
+| [Test results](test-results.md) | The checks run for F02, the revision tested and each result |
 
 ## Links
 
