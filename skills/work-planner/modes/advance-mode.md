@@ -1,6 +1,6 @@
 # Advance Mode
 
-Decides which initiatives and epics on a theme board are underway and which are next, from current recorded delivery.
+Decides which initiatives, epics and hot-fixes on a theme board are underway and which are next, from current recorded delivery.
 
 **Runs in:** the project checkout.
 
