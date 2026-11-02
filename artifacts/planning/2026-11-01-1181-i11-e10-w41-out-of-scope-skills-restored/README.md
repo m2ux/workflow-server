@@ -11,9 +11,12 @@ This record holds the delivery of I11:E10 W41, which returns the gitnexus, Workf
 | Artifact | What it holds |
 | --- | --- |
 | [W41 work item](w41.md) | Component, design and test rows for W41 |
+| [Test evidence](test-evidence.md) | The empty diff, the Verify Skills run and the suites |
+| [Change list](change-list.md) | Plan changes this session applied and held |
 
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | [I11:E10](https://github.com/m2ux/workflow-server/issues/1181) |
+| Pull request | [#1587](https://github.com/m2ux/workflow-server/pull/1587) |
