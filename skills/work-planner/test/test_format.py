@@ -11,7 +11,7 @@ import textwrap
 import unittest
 from pathlib import Path
 
-from fixtures import SCRIPTS, issue, pr, run
+from fixtures import SCRIPTS, hotfix_body, issue, pr, run
 
 sys.path.insert(0, str(SCRIPTS))
 from format import DECLARATION, DECLARED_FIELDS, DEPENDENCY, Required, Review, required_criteria  # noqa: E402
@@ -450,14 +450,13 @@ def epic_with(criterion: str, title: str = '[I01:E00] First: Epic') -> dict:
 
 
 def required_review(criterion: str, base: str, required: Required | None = AUDIT,
-                    title: str = '[I01:E00] First: Epic', files: tuple[str, ...] | None = (DEFINITION,),
+                    files: tuple[str, ...] | None = (DEFINITION,),
                     more: tuple[dict, ...] = (), more_files: dict[int, list[str]] | None = None) -> Review:
     """An epic whose pull request #950 targets base and changes files, None when they are not supplied,
     reviewed for the criteria its project requires."""
-    prefix = title.split(']')[0] + ']'
     changed = {} if files is None else {950: list(files)}
     changed.update(more_files or {})
-    r = Review(epic_with(criterion, title), prs=[pr(950, f'{prefix} Work', base=base), *more],
+    r = Review(epic_with(criterion), prs=[pr(950, '[I01:E00] Work', base=base), *more],
                required=required, files=changed)
     r.run()
     return r
@@ -470,11 +469,6 @@ class RequiredReach(unittest.TestCase):
         self.assertEqual(len(found), 1)
         self.assertIn('#950 change corpus on workflows', found[0])
         self.assertIn('Canon audit of the changed definitions', found[0])
-
-    def test_a_deferred_debt_epic_reaching_the_branch_states_the_criterion(self):
-        r = required_review('Holds.', 'i01/e09/workflows',
-                            title='[I01:E09] Deferred Debt: The Clear-Up This Initiative Owes')
-        self.assertTrue(any(WANTED in item for item in r.decide))
 
     def test_an_epic_reaching_the_long_lived_branch_states_the_criterion(self):
         r = required_review('Holds.', 'workflows')
@@ -780,10 +774,11 @@ class CoverageNamesDelivery(unittest.TestCase):
 
 
 class HotFixes(unittest.TestCase):
-    """A hot-fix takes the standalone template under an [F00] title, type:hot-fix and a theme."""
+    """A hot-fix takes the standalone template under an [F00] title, type:hot-fix and a theme, and its
+    Overview names its target branch in one Target: line."""
 
     def check(self, title: str, labels: tuple[str, ...], text: str | None = None) -> Review:
-        r = Review(issue(1, title, labels=labels, body=text or body('Gap.', 'Design.')))
+        r = Review(issue(1, title, labels=labels, body=text or hotfix_body('workspace')))
         r.run()
         return r
 
@@ -812,6 +807,20 @@ class HotFixes(unittest.TestCase):
         self.assertIn('no theme:* label', r.decide)
 
     def test_a_hot_fix_states_its_boundary_in_the_proposal(self):
-        text = body('Gap.', 'Design.') + '\n## Non-Goals\n\n- Nothing else.\n'
+        text = hotfix_body() + '\n## Non-Goals\n\n- Nothing else.\n'
         r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon'), text)
         self.assertIn('Non-Goals: a hot-fix states its boundary in the Proposal', r.decide)
+
+    def test_a_hot_fix_names_its_target(self):
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'),
+                       hotfix_body(None))
+        self.assertEqual(r.decide, ['Overview: no Target: line naming the branch the hot-fix fixes'])
+
+    def test_a_hot_fix_names_one_target(self):
+        text = hotfix_body().replace('Target: `main`', 'Target: `main`\n\nTarget: `workspace`')
+        r = self.check('[F00] Key Validation: Reject Bad Keys', ('type:hot-fix', 'theme:canon', 'priority: 10'), text)
+        self.assertEqual(r.decide, ['Overview: 2 Target: lines; a hot-fix names one target branch'])
+
+    def test_a_standalone_issue_needs_no_target(self):
+        r = self.check('Key Validation: Reject Bad Keys', (), body('Gap.', 'Design.'))
+        self.assertEqual(r.decide, [])

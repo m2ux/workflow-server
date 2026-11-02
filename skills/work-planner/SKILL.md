@@ -13,7 +13,7 @@ Work Planner plans work as GitHub issues and keeps the plan current until the wo
 - **Epic**  Lists its tasks in a Work Breakdown table.
 - **Task**  One pull request's worth of work.
 - **Standalone issue**  Work outside any initiative.
-- **[Hot-fix](artifacts/hotfix-body.md)**  A fix to the default branch beside all queued work.
+- **[Hot-fix](artifacts/hotfix-body.md)**  A fix to a long-lived branch beside all queued work.
 
 Each theme's project board shows where its items stand. The Proposals board holds proposals. A planning record holds what an initiative leaves out: the evidence, the decisions and each review.
 

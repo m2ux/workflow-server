@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import epic_body, initiative_body, issue, item, pr, run, url
+from fixtures import epic_body, hotfix, initiative_body, issue, item, pr, run, url
 
 
 RECORD = 'https://github.com/o/r/tree/engineering/artifacts/planning/2026-11-01-2-i01-e00-w01-go/'
@@ -661,11 +661,6 @@ class UnresolvableGates(unittest.TestCase):
         self.assertEqual(done.returncode, 0)
 
 
-def hotfix(number: int) -> dict:
-    return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
-                 labels=('type:hot-fix', 'theme:canon', 'priority: 10'))
-
-
 class HotFixes(unittest.TestCase):
     def test_an_open_hot_fix_is_ready_whatever_the_priority_sets(self):
         low = initiative(1, 'Low: Later', (f"[E00]({url('issues', 3)})", ''), priority='')
@@ -675,6 +670,17 @@ class HotFixes(unittest.TestCase):
         self.assertIn('[F05] Key Validation: Reject Bad Keys: no Status → Ready', out)
         self.assertIn('assign #4', out)
         self.assertIn('  order:', out)
+
+    def test_an_open_hot_fix_out_of_the_hot_fix_format_goes_to_backlog(self):
+        unlabelled = hotfix(6)
+        unlabelled['labels'] = [{'name': 'type:hot-fix'}]
+        out = queue(staged((hotfix(4, target=None), 'Ready'), (hotfix(5, target=None), 'In Progress'),
+                           (unlabelled, 'In Review'), (hotfix(7, target=None), None)))
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: Ready → Backlog', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: In Progress → Backlog', out)
+        self.assertIn('[F06] Key Validation: Reject Bad Keys: In Review → Backlog', out)
+        self.assertIn('[F07] Key Validation: Reject Bad Keys: no Status → Backlog', out)
+        self.assertNotIn('Ready', out.replace('Ready → Backlog', ''))
 
     def test_a_hot_fix_keeps_in_progress_and_leaves_in_review_for_it(self):
         out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))

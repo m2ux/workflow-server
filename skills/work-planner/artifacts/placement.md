@@ -24,9 +24,9 @@ One placement option from the supplied orphan and candidate destinations.
 **Inputs:** Current orphan body, candidate destinations, proposed work and supplied planning-record references.
 
 1. Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
-   - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins.
+   - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the repository's default branch unless the orphan's evidence places the defect on another long-lived branch.
 2. Record the destination and the work it takes, meeting [Fields](#fields).
-3. Record whether the orphan is kept, subsumed or left, meeting [Disposition Conditions](#disposition-conditions), including the reason, the original-body preservation requirement and any planning record reference.
+3. Record whether the orphan is kept, subsumed or left, meeting [Disposition Conditions](#disposition-conditions), including the reason and any planning record reference.
 4. Return the placement for the caller to offer and apply. The output is the [Placement](#placement-record), including the draft issue changes.
 
 ### *Find* Placement Candidates
@@ -74,20 +74,18 @@ One selected destination for an orphan's work.
 
 ### *Rewrite* Orphan Issue
 
-The selected layout, with the original wording preserved for readers.
+One kept or left orphan rewritten in the layout of its destination kind.
 
-**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label and the number [Apply Issue Placement](#apply-issue-placement) returned.
+**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label, confirmed target and theme board, and the number [Apply Issue Placement](#apply-issue-placement) returned.
 
-1. Fetch the body and discussion live with [Read Tracker Issue](issue.md#read-tracker-issue).
-   - Post the body word for word through [Comment on Issue](issue.md#comment-on-issue), preceded by the line in [Original Body](#original-body) and a blank line.
-   - Skip the comment where the discussion already carries one, since a second hoist of the same issue would otherwise repeat it.
-2. Use the selected [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or [Populate Standalone Body](standalone-body.md#populate-standalone-body) body.
+1. Use the selected [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or [Populate Standalone Body](standalone-body.md#populate-standalone-body) body.
    - Carry evidence into Problem and design into Proposal.
-   - Pass a hot-fix its supplied number and theme label.
-3. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
+   - Pass a hot-fix its supplied number, theme label and target.
+2. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
    - Resolve findings.
    - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
-   - Return the saved identity to the caller.
+3. For a hot-fix, run [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.
+4. Return the saved identity, and a hot-fix's settled board item, to the caller.
 
 ### *Subsume* Orphan Work
 
@@ -113,8 +111,6 @@ The work remains tracked by the taking issue.
   Each proposed body meets its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
 - **Links.**
   An initiative row identifies its epic issue. A task issue has its delivery link through Development.
-- **Preservation.**
-  A kept or left issue has the complete original-body comment ready before its rewrite. A subsumed issue retains its body.
 
 ### Placement Record
 
@@ -124,12 +120,8 @@ The work remains tracked by the taking issue.
 | New task | A row in an existing epic, with its criteria | Subsumed |
 | New epic | An epic in an existing initiative, with a task row carrying the work | Subsumed |
 | New initiative | An initiative | Kept or subsumed |
-| Hot-fix | A [hot-fix](hotfix-body.md#definition) on its theme board | Kept |
+| Hot-fix | A [hot-fix](hotfix-body.md#definition) on its theme board, with its target | Kept |
 | Leave | Work outside the initiative structure | Left open |
-
-### Original Body
-
-The comment starts with `The body before this issue took the [F00] layout:` for a kept issue, naming the prefix its new title carries, or `The body before this issue took the standalone layout:` for one left in place. A blank line separates that lead from the complete original body.
 
 ### Disposition Conditions
 

@@ -8,7 +8,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import (commit_branches, declared, epic_body, git, initiative_body, issue, links, pr,
+from fixtures import (commit_branches, declared, epic_body, git, hotfix, initiative_body, issue, links, pr,
                       repository, run, url)
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / 'scripts'))
@@ -544,11 +544,6 @@ class InitiativeClose(unittest.TestCase):
     def test_an_open_epic_blocks_even_with_ticked_initiative_criteria(self):
         out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed'),
                              issue(3, '[I01:E01] Second: Epic')])
-        self.assertIn('closable: no (undelivered E01)', out)
-
-    def test_an_open_deferred_debt_epic_leaves_the_initiative_unclosable(self):
-        out = self.run_sync([issue(2, '[I01:E00] First: Epic', 'closed'),
-                             issue(3, '[I01:E01] Deferred Debt: The Clear-Up This Initiative Owes')])
         self.assertIn('closable: no (undelivered E01)', out)
 
     def test_a_cancelled_epic_does_not_deliver_the_initiative(self):
@@ -1823,8 +1818,7 @@ class HotFixDelivery(unittest.TestCase):
     """A hot-fix is recorded as a task issue whose delivery is the pull request linking it."""
 
     def run_hotfix(self, pulls: list[dict], held: list[dict], *args: str):
-        record = issue(4, '[F04] Key Validation: Reject Bad Keys', labels=('type:hot-fix',),
-                       body='## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        record = hotfix(4, target='workspace')
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             body, pulls_path, fixed = root / 'issue.json', root / 'prs.json', root / 'fixed.md'
@@ -1835,8 +1829,8 @@ class HotFixDelivery(unittest.TestCase):
             return done, fixed.read_text() if fixed.exists() else ''
 
     def test_a_merged_linking_pull_request_delivers_and_ticks_it(self):
-        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z', base='main')],
-                                      [links(950, 4)], '--pr', '950', '--tick', 'AC1')
+        done, fixed = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', merged='2026-11-01T00:00:00Z', base='workspace')],
+                                      [links(950, 4)], '--pr', '950', '--tick', 'AC1,AC2')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('#4 hot-fix (open)', done.stdout)
         self.assertIn('linked: F04 delivered by #950', done.stdout)
@@ -1844,19 +1838,19 @@ class HotFixDelivery(unittest.TestCase):
         self.assertIn('- [x] **AC1.** Holds.', fixed)
 
     def test_a_pull_request_not_linking_it_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='main')], [links(950, 7)], '--pr', '950')
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='workspace')], [links(950, 7)], '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: does not deliver F04: its Development field does not link #4', done.stderr)
 
     def test_a_linking_pull_request_without_its_prefix_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', base='main')], [links(950, 4)],
+        done, _ = self.run_hotfix([pr(950, 'Key Validation: Reject Bad Keys', base='workspace')], [links(950, 4)],
                                   '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: does not deliver F04: its title does not open with [F04]', done.stderr)
 
     def test_a_linking_pull_request_into_another_branch_is_refused(self):
-        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='workspace')], [links(950, 4)],
+        done, _ = self.run_hotfix([pr(950, '[F04] Reject Bad Keys', base='main')], [links(950, 4)],
                                   '--pr', '950')
         self.assertNotEqual(done.returncode, 0)
-        self.assertIn('--pr 950: does not deliver F04: its base is workspace, not the default branch main',
+        self.assertIn('--pr 950: does not deliver F04: its base is main, not the target workspace',
                       done.stderr)
