@@ -777,6 +777,7 @@ class HotFixUnits(unittest.TestCase):
     def test_a_ready_hot_fix_whose_target_is_no_declared_long_lived_branch_is_undeclared(self):
         with tempfile.TemporaryDirectory() as tmp:
             names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'git@github.com:o/r.git')
             out = survey(staged((hotfix(4, target='feature/x'), 'Ready'), (hotfix(5, target='workspace'), 'Ready')),
                          None, *names, code=1)
         self.assertIn('  undeclared F04 #4: its target feature/x is no long-lived branch config/branches declares',
@@ -785,6 +786,15 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('  unit F05 #5:', out)
         self.assertIn('base workspace', out)
         self.assertIn('undeclared: 1', out)
+
+    def test_a_hot_fix_of_another_repository_is_unresolved_without_failing_the_run(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            names = declared(Path(tmp), 'main', 'workspace')
+            git(Path(names[1]), 'remote', 'add', 'origin', 'https://github.com/o/r.git')
+            out = survey(staged((hotfix(4, target='feature/x', repo='o/s'), 'Ready')), None, *names)
+        self.assertIn('  unresolved: F04 #4: its target feature/x is unchecked: config/branches is read in o/r', out)
+        self.assertNotIn('  unit F04', out)
+        self.assertIn('undeclared: 0', out)
 
     def test_a_hot_fix_in_progress_is_held_by_its_dispatch(self):
         out = survey(staged((hotfix(4), 'In Progress')), None)

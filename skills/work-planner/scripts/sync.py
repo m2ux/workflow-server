@@ -823,6 +823,14 @@ def git(project: str, *args: str) -> subprocess.CompletedProcess:
     return subprocess.run(['git', '-C', project, *args], capture_output=True, text=True)
 
 
+def origin_repository(project: str) -> str:
+    """The owner/name of the GitHub repository the checkout's origin remote names, or '' when it
+    names none."""
+    url = git(project, 'remote', 'get-url', 'origin').stdout.strip()
+    found = re.search(r'github\.com[:/]([^/\s]+/[^/\s]+?)(?:\.git)?/?$', url)
+    return found[1] if found else ''
+
+
 def read_branches(project: str, revision: str) -> Branches:
     """The long-lived branches config/branches states at the commit revision resolves to.
 

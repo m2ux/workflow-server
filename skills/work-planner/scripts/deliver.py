@@ -55,8 +55,11 @@ artifacts/hotfix.md: a unit line, with every criterion it carries as coverage an
 and branch its prefix and title name give it; a hold line; a draft line naming its draft delivering
 pull requests, whose review cycle is not complete; or an unrecorded line naming its merged
 delivering pull requests. Its base is its target, the branch its Overview's Target: line names. A
-hot-fix that would be a unit while naming no target, or one --project's config/branches does not
-declare as a long-lived branch, is printed as an undeclared line instead, naming why.
+hot-fix that would be a unit while naming no target, or a hot-fix of --project's repository, as
+its origin remote names it, whose target that repository's config/branches does not declare, is
+printed as an undeclared line instead, naming why. A hot-fix of another repository has a target
+--project cannot check: it is printed as an unresolved line, offered once a run whose --project
+is a checkout of its repository finds its target declared, and does not fail the run.
 
 --progress and --review name the issues a dispatch settles: the In Progress a held row and its epic
 take, and the In Review a completed epic with current published agent review evidence takes. --prs
@@ -85,12 +88,12 @@ from pathlib import Path
 
 from board import Board, Outputs, Resolution, rows
 from deps import read_components
-from statuses import (DISPATCH, STATUSES, Changes, StatusField, board_items,
+from statuses import (DISPATCH, Key, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
                     row, row_id, split_sections, title_name)
 from hotfix import delivering_pulls, hotfix_tag, linking_pulls, target, unit_state
-from sync import (Unreadable, attach_links, long_lived_names, plan_rows,
+from sync import (Unreadable, attach_links, long_lived_names, origin_repository, plan_rows,
                   pull_requests, table)
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
@@ -277,8 +280,25 @@ def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, i
     return header, body, state, detail
 
 
+def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
+    """Why a hot-fix's target cannot be delivered to, as the line kind and its text, or ('', '') when
+    it can: undeclared when it names no target, or when --project, a checkout of its repository,
+    declares no such long-lived branch; unresolved when --project is a checkout of another
+    repository. With no --project the target goes unchecked."""
+    if not (base := target(issue)):
+        return 'undeclared', 'its Overview names no target in one Target: line'
+    if not lived:
+        return '', ''
+    if key[0].lower() != repository.lower():
+        return 'unresolved', (f'its target {base} is unchecked: config/branches is read in '
+                              f'{repository or "a checkout whose origin names no GitHub repository"}')
+    if base not in lived:
+        return 'undeclared', f'its target {base} is no long-lived branch config/branches declares'
+    return '', ''
+
+
 def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
-                 lived: tuple[str, ...]) -> tuple[list[str], int, int, int, int, int]:
+                 lived: tuple[str, ...], repository: str) -> tuple[list[str], int, int, int, int, int]:
     """The unit, undeclared, hold, draft and unrecorded line of each open hot-fix, by the state
     hotfix.unit_state reads, with the count of each."""
     lines, available, undeclared, held, drafts, unrecorded = [], 0, 0, 0, 0, 0
@@ -307,14 +327,15 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
             continue
         if state != 'unit':
             continue
-        if not (base := target(issue)):
-            lines.append(f'  undeclared {where}: its Overview names no target in one Target: line')
+        kind, why = target_fault(key, issue, lived, repository)
+        if kind == 'undeclared':
+            lines.append(f'  undeclared {where}: {why}')
             undeclared += 1
             continue
-        if lived and base not in lived:
-            lines.append(f'  undeclared {where}: its target {base} is no long-lived branch config/branches declares')
-            undeclared += 1
+        if kind == 'unresolved':
+            lines.append(f'  unresolved: {where}: {why}')
             continue
+        base = target(issue)
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
@@ -393,6 +414,7 @@ def survey(args: argparse.Namespace) -> int:
         sys.exit('--project and --revision go together')
     declared = long_lived_names(args.project, args.revision) if args.project else None
     lived = declared.names if declared else ()
+    repository = origin_repository(args.project) if declared else ''
     if declared:
         print(f'source: {declared.source}')
     given = [ref.strip() for ref in (args.bases or '').split(',') if ref.strip()]
@@ -458,7 +480,7 @@ def survey(args: argparse.Namespace) -> int:
             print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
-    lines, found, unnamed, holding, drafts, unrecorded = hotfix_units(issues, status, prs, home, when, lived)
+    lines, found, unnamed, holding, drafts, unrecorded = hotfix_units(issues, status, prs, home, when, lived, repository)
     for line in lines:
         print(line)
     available += found
