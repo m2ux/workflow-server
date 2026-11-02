@@ -65,16 +65,29 @@ class Target(unittest.TestCase):
 
 
 class BoardStatus(unittest.TestCase):
-    def test_an_open_hot_fix_is_ready_unless_in_progress(self):
+    def test_an_open_hot_fix_with_no_open_delivery_is_ready_unless_in_progress(self):
+        merged = [pr(951, '[F04] Reject Bad Keys', MERGED, base='main')]
         for held, wanted in ((None, 'Ready'), ('Backlog', 'Ready'), ('Done', 'Ready'), ('Ready', 'Ready'),
                              ('In Progress', 'In Progress'), ('In Review', 'In Progress')):
+            for delivering in ([], merged):
+                with self.subTest(held=held, merged=bool(delivering)):
+                    self.assertEqual(board_status(hotfix(), held, delivering), wanted)
+
+    def test_a_ready_delivering_pull_request_stands_it_in_review_and_a_draft_in_progress(self):
+        ready = pr(951, '[F04] Reject Bad Keys', base='main')
+        draft = pr(952, '[F04] Reject Bad Keys', base='main', draft=True)
+        for held in (None, 'Ready', 'In Progress', 'In Review'):
             with self.subTest(held=held):
-                self.assertEqual(board_status(hotfix(), held), wanted)
+                self.assertEqual(board_status(hotfix(), held, [ready]), 'In Review')
+                self.assertEqual(board_status(hotfix(), held, [draft]), 'In Progress')
+                self.assertEqual(board_status(hotfix(), held, [draft, ready]), 'In Review')
 
     def test_a_closed_hot_fix_is_done_or_off_the_board(self):
-        self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Progress'), 'Done')
-        self.assertEqual(board_status(hotfix('closed', 'not_planned'), 'Ready'), OFF_BOARD)
-        self.assertEqual(board_status(hotfix('closed', 'completed', aim=None), 'Ready'), 'Done')
+        ready = [pr(951, '[F04] Reject Bad Keys', base='main')]
+        self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Progress', []), 'Done')
+        self.assertEqual(board_status(hotfix('closed', 'completed'), 'In Review', ready), 'Done')
+        self.assertEqual(board_status(hotfix('closed', 'not_planned'), 'Ready', ready), OFF_BOARD)
+        self.assertEqual(board_status(hotfix('closed', 'completed', aim=None), 'Ready', []), 'Done')
 
 
 class DeliveringPulls(unittest.TestCase):

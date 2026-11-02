@@ -1,12 +1,14 @@
-"""Decide which initiatives, epics and hot-fixes on a theme board are Ready or In Progress.
+"""Decide which initiatives and epics on a theme board are Ready or In Progress, and where each
+hot-fix stands.
 
 Usage:
-  python3 board-queue.py --items items.json --prs prs.json --board users/{owner}/projectsV2/9
-      --fields fields.json --out board/ --assignee m2ux [--others issue-750.json ...]
+  python3 board-queue.py --items items.json --prs prs.json --links links.json
+      --board users/{owner}/projectsV2/9 --fields fields.json --out board/ --assignee m2ux [--others issue-750.json ...]
       [--unplanned 12 ...]
 
 items.json is the board's items with the Status field, as board.py reads them. prs.json is as
-sync.py reads it. fields.json is the board's fields. An issue the rows depend on that is not on
+sync.py reads it, and links.json the closing issue references those pull requests hold, as Fetch
+Pull Request Issue Links writes them. fields.json is the board's fields. An issue the rows depend on that is not on
 the board is given with --others.
 
 --unplanned names an initiative the user left with no priority.
@@ -17,8 +19,8 @@ the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change
 and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
 a row.
 
-An open hot-fix, titled [F00], is Ready outside every priority set, keeps In Progress once it
-holds it, and leaves In Review for In Progress; nothing waits on it and it waits on nothing. A closed hot-fix is Done when closed as completed, and is removed from the board otherwise.
+A hot-fix, titled [F00], stands where hotfix.board_status places it, outside every priority set;
+nothing waits on it and it waits on nothing.
 """
 import argparse
 import json
@@ -29,9 +31,9 @@ from pathlib import Path
 
 from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
 from format import cell, id_cell, row_id
-from hotfix import OFF_BOARD, board_status, is_hotfix
+from hotfix import OFF_BOARD, board_status, delivering_pulls, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
-from sync import Unreadable, pull_requests
+from sync import Unreadable, attach_links, pull_requests
 
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 RANK = re.compile(r'^priority: ([1-9]\d*)$')
@@ -301,7 +303,7 @@ class Queue:
         for key, issue in self.issues.items():
             if not is_hotfix(issue) or key not in self.status:
                 continue
-            wanted = board_status(issue, self.status.get(key))
+            wanted = board_status(issue, self.status.get(key), delivering_pulls(self.prs, key, issue))
             if wanted == OFF_BOARD:
                 self.removed.add(key)
             else:
@@ -359,6 +361,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument('--items')
     parser.add_argument('--prs')
+    parser.add_argument('--links')
     parser.add_argument('--board')
     parser.add_argument('--fields')
     parser.add_argument('--out')
@@ -366,7 +369,7 @@ def main() -> int:
     parser.add_argument('--others', nargs='*', default=[])
     parser.add_argument('--unplanned', action='append', default=[])
     args = parser.parse_args()
-    for name in ('items', 'prs', 'board', 'fields', 'out', 'assignee'):
+    for name in ('items', 'prs', 'links', 'board', 'fields', 'out', 'assignee'):
         if not getattr(args, name):
             sys.exit(f'--{name} is required')
 
@@ -380,7 +383,9 @@ def main() -> int:
         status[key] = held
         item_ids[key] = item_id
     home = Counter(key[0] for key in issues).most_common(1)[0][0] if issues else ''
-    queue = Queue(issues, status, pull_requests(args.prs), home,
+    prs = pull_requests(args.prs)
+    attach_links(prs, args.links)
+    queue = Queue(issues, status, prs, home,
                   named_keys(args.unplanned, issues, status, 'unplanned'))
     queue.decide()
 
@@ -392,7 +397,7 @@ def main() -> int:
         if key in queue.removed:
             changes.place(key, queue.line(key), issues[key], status.get(key), None, item_ids[key], home)
             continue
-        new = queue.wanted.get(key)
+        new = field.settle(queue.wanted.get(key))
         if new is None:
             changes.current += 1
             continue

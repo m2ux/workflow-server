@@ -41,22 +41,35 @@ def epic(number: int, which: str, *tasks: tuple[str, str, str], repo: str = 'o/r
                  labels=(priority,) if priority else (), repo=repo)
 
 
-def queue_run(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = ()):
+def delivering(number: int, fixed: int, draft: bool = False) -> dict:
+    """An open pull request delivering hot-fix fixed into its target, main, linked by its Development field."""
+    record = pr(number, f'[F{fixed:02d}] Reject Bad Keys', draft=draft, base='main')
+    record['closingIssuesReferences'] = [{'repo': 'o/r', 'number': fixed}]
+    return record
+
+
+def queue_run(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
+              fields: list[dict] = FIELDS):
     """The complete queue run, for a test reading its exit status as well as its output."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
-        items_path, prs_path, fields = root / 'items.json', root / 'prs.json', root / 'fields.json'
+        items_path, prs_path, fields_path = root / 'items.json', root / 'prs.json', root / 'fields.json'
+        links_path = root / 'links.json'
         items_path.write_text(json.dumps(items))
         prs_path.write_text(''.join(json.dumps(row) + '\n' for row in prs or []))
-        fields.write_text(json.dumps(FIELDS))
+        links_path.write_text(json.dumps([{'repo': 'o/r', 'number': row['number'],
+                                           'closingIssuesReferences': row['closingIssuesReferences']}
+                                          for row in prs or [] if row.get('closingIssuesReferences')]))
+        fields_path.write_text(json.dumps(fields))
         extra = [arg for spec in unplanned for arg in ('--unplanned', spec)]
-        return run('board-queue.py', '--items', str(items_path), '--prs', str(prs_path),
-                   '--board', 'users/o/projectsV2/9', '--fields', str(fields),
+        return run('board-queue.py', '--items', str(items_path), '--prs', str(prs_path), '--links', str(links_path),
+                   '--board', 'users/o/projectsV2/9', '--fields', str(fields_path),
                    '--out', str(root / 'out'), '--assignee', 'me', *extra)
 
 
-def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = ()) -> str:
-    done = queue_run(items, prs, unplanned)
+def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str, ...] = (),
+          fields: list[dict] = FIELDS) -> str:
+    done = queue_run(items, prs, unplanned, fields)
     if done.returncode != 0:
         raise AssertionError(done.stderr or done.stdout)
     return done.stdout
@@ -671,10 +684,28 @@ class HotFixes(unittest.TestCase):
         self.assertIn('assign #4', out)
         self.assertIn('  order:', out)
 
-    def test_a_hot_fix_keeps_in_progress_and_leaves_in_review_for_it(self):
+    def test_a_hot_fix_with_no_open_delivery_keeps_in_progress_and_leaves_in_review_for_it(self):
         out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'In Review')))
         self.assertNotIn('[F04]', out)
         self.assertIn('[F05] Key Validation: Reject Bad Keys: In Review → In Progress', out)
+
+    def test_a_ready_delivering_pull_request_stands_it_in_review_and_a_draft_in_progress(self):
+        ready = delivering(951, 4)
+        draft = delivering(952, 5, draft=True)
+        out = queue(staged((hotfix(4), 'In Progress'), (hotfix(5), 'Ready')), [ready, draft])
+        self.assertIn('[F04] Key Validation: Reject Bad Keys: In Progress → In Review', out)
+        self.assertIn('[F05] Key Validation: Reject Bad Keys: Ready → In Progress', out)
+
+    def test_a_hot_fix_in_review_with_a_ready_delivering_pull_request_keeps_it(self):
+        out = queue(staged((hotfix(4), 'In Review')), [delivering(951, 4)])
+        self.assertNotIn('[F04]', out)
+        self.assertIn('current: 1, to do: 0', out)
+
+    def test_a_board_without_in_review_holds_it_in_progress(self):
+        fields = [{'id': 7, 'name': 'Status', 'options': [
+            {'name': name, 'id': n} for n, name in enumerate(('Backlog', 'Ready', 'In Progress', 'Done'), start=1)]}]
+        out = queue(staged((hotfix(4), 'In Progress')), [delivering(951, 4)], fields=fields)
+        self.assertNotIn('→', out)
 
     def test_an_open_hot_fix_left_done_returns_to_ready(self):
         out = queue(staged((hotfix(6), 'Done')))

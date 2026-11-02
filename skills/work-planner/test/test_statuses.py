@@ -101,6 +101,16 @@ class QueueJurisdiction(unittest.TestCase):
                 place(plan, dropped, 'In Progress', 'Done')
         self.assertIn('In Progress → Done', plan.lines[0])
 
+    def test_in_review_is_allowed_only_for_an_open_hot_fix(self):
+        awaiting = issue(4, '[F04] Key Validation: Reject Bad Keys')
+        closed = issue(5, '[F05] Key Validation: Reject Bad Keys', 'closed')
+        with tempfile.TemporaryDirectory() as tmp:
+            plan = changes(tmp, QUEUE)
+            place(plan, awaiting, 'In Progress', 'In Review')
+            with self.assertRaises(Jurisdiction):
+                place(plan, closed, 'In Progress', 'In Review')
+        self.assertIn('In Progress → In Review', plan.lines[0])
+
     def test_moving_an_initiative_between_ready_and_backlog_is_allowed(self):
         with tempfile.TemporaryDirectory() as tmp:
             plan = changes(tmp, QUEUE)

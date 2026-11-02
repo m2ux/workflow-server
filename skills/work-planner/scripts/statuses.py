@@ -2,15 +2,16 @@
 
 Three modes decide a board's Status, and each owns a part of it. Sync mode decides what delivery
 settles: Done, In Review, In Progress, and the Ready a task's dependencies earn. Advance mode
-decides the queue: which initiatives, epics and hot-fixes are Backlog, Ready or In Progress. Deliver mode
-decides what a dispatch settles: the In Progress a held row and its epic take, and the In Review a
-completed epic takes. Each plans its own statuses and hands them here, which reads the board's
-items, writes the option body files, renders the gh call for every change, and refuses a change the
-calling mode does not own.
+decides the queue: which initiatives and epics are Backlog, Ready or In Progress, and where each
+hot-fix stands. Deliver mode decides what a dispatch settles: the In Progress a held row and its
+epic take, and the In Review a completed epic takes. Each plans its own statuses and hands them
+here, which reads the board's items, writes the option body files, renders the gh call for every
+change, and refuses a change the calling mode does not own.
 
-Every jurisdiction refuses a task set In Review: only an initiative or an epic stands there.
+Every jurisdiction refuses a task set In Review: only an initiative, an epic or a hot-fix stands there.
 DELIVERY refuses moving an initiative or an epic between Ready and Backlog.
-QUEUE refuses In Review, Done and any task, but for the Done of a hot-fix closed as completed.
+QUEUE refuses In Review, Done and any task, but for the In Review of an open hot-fix and the Done of
+a hot-fix closed as completed.
 DISPATCH refuses every Status but In Progress and In Review, and a removal.
 
 A Status write sends the body file written under the out directory.
@@ -20,7 +21,7 @@ import re
 import sys
 from pathlib import Path
 
-from hotfix import board_status, is_hotfix
+from hotfix import is_hotfix
 
 DELIVERY, QUEUE, DISPATCH = 'delivery', 'queue', 'dispatch'
 STATUSES = ('Backlog', 'Ready', 'In Progress', 'Done')
@@ -137,7 +138,9 @@ class Changes:
         if task and wanted == 'In Review':
             raise Jurisdiction(f'{name}: a task does not stand In Review')
         if self.scope == QUEUE:
-            settled = is_hotfix(issue) and board_status(issue, held) == wanted
+            opened = issue['state'] == 'open'
+            settled = is_hotfix(issue) and (opened if wanted == 'In Review'
+                                            else not opened and issue.get('state_reason') == 'completed')
             if wanted in DECIDED and not settled:
                 raise Jurisdiction(f'{name}: the queue does not set {wanted}')
             if task:
