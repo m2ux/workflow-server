@@ -661,10 +661,6 @@ class UnresolvableGates(unittest.TestCase):
         self.assertEqual(done.returncode, 0)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 def hotfix(number: int) -> dict:
     return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
                  labels=('type:hot-fix', 'theme:canon', 'priority: 10'))
@@ -703,3 +699,7 @@ class HotFixes(unittest.TestCase):
                            (hotfix(4), 'In Progress')))
         self.assertIn('Epic 3: Work: Backlog → Ready', out)
         self.assertNotIn('wait', out)
+
+
+if __name__ == '__main__':
+    unittest.main()

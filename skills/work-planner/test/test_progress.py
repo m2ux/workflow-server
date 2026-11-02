@@ -532,10 +532,6 @@ class Repositories(unittest.TestCase):
             f"▶️ *I01:E00:W01 Other* — {url('issues', 3, 'o/s')}"])
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class HotFixes(unittest.TestCase):
     def hotfix(self, number, state='open', closed=None):
         return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys', state, closed,
@@ -564,3 +560,7 @@ class HotFixes(unittest.TestCase):
         initiative = issue(1, '[I01] Shipped: All', body=initiative_body())
         out = summary([item(initiative, 'In Progress'), item(self.hotfix(4), 'Ready')], (), '--initiative', 'I01')
         self.assertNotIn('F04', out)
+
+
+if __name__ == '__main__':
+    unittest.main()

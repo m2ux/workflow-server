@@ -760,10 +760,6 @@ class ProducerOutputs(unittest.TestCase):
         self.assertNotIn('output ', output)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 def hotfix(number: int) -> dict:
     return issue(number, f'[F{number:02d}] Key Validation: Reject Bad Keys',
                  labels=('type:hot-fix', 'theme:canon'),
@@ -836,3 +832,7 @@ class HotFixUnits(unittest.TestCase):
         out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')],
                      '--default', 'o/r=main', held=(links(951, 4),))
         self.assertIn('unit F04 #4', out)
+
+
+if __name__ == '__main__':
+    unittest.main()
