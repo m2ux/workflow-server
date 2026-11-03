@@ -76,3 +76,4 @@ Planning decisions:
 - **Labels.** `type:epic`, `theme:planning`, `bot:ai-assisted` and `priority: 7`, as E02 carries. No `type:hot-fix`.
 - **Priority.** The dependency check proposes 2 for E00, E02 and E03 and 1 for E01, matching the live labels' order, with E03 alongside E02. E02's rows declare no components yet, so contention between E02 and E03 is unchecked; both edit the same artifacts and modes, which is put to the user.
 - **I17 admits a feature.** Its Proposal gains a bullet admitting a feature the skill must carry, and AC1 reads "fix and feature".
+- **Board.** E03 stands on board 17 at Ready, assigned to the user: I17 is In Progress and E03, with no prerequisite epic, carries the highest number among I17's epics that can start, beside E02.
