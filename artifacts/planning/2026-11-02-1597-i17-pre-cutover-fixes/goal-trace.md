@@ -18,3 +18,9 @@ No requirement source is marked; the criteria come from the confirmed goal.
 - **Readers of what the plan changes.** Every workspace that installs the skill from `workspace` (md-composer, prosiform) takes the fixes on its next update; none depends on a planning branch, a discussion pull request or the title-prefix fetch.
 - **Fail-closed paths.** The format check's label check keeps asking to decide a missing, repeated or descending label, so accepting gaps hides no other fault.
 - **Instrument independence.** `git merge-base --is-ancestor` reads git history, independent of the skill it measures.
+
+## E03 Delivery Lanes
+
+| Goal clause | Initiative criteria | Epics | Epic criteria | Source requirement |
+| --- | --- | --- | --- | --- |
+| Each change found before the cutover is delivered in workflow-server, the lanes feature included | AC1 | E03 | AC1–AC10, one per row | The user's E03 decision 1 |

@@ -55,3 +55,24 @@ The user's decisions:
 Planning decisions:
 
 - **Numbering.** E02 runs before E01 but keeps the next free number, since E01 was already published.
+
+## E03 Delivery Lanes, 3 November 2026
+
+The user's decisions:
+
+1. **Epic, not a hot-fix.** The lanes feature raised as hot-fix F08 is too big for a hot-fix. Lanes join I17 as E03 so they land before the extraction. [#1625](https://github.com/m2ux/workflow-server/issues/1625) itself becomes [I17:E03](https://github.com/m2ux/workflow-server/issues/1625); F08 stays unused.
+2. **Design.** The Proposal bullets of the epic are the interview's decisions: an optional `**Lane:** <id>` work-item line beside Component, an opaque board-wide index stating no reason; the run names its lane in its request and nothing is stored per session; a run naming no lane takes only unlaned rows; a laned run takes its own lane's rows and unlaned rows, never another lane's, by priority alone; Plan mode asks whether an initiative uses lanes and proposes each row's lane; joined rows in different lanes are a Plan and Align finding and the dependency check refuses such a unit; Advance and the board queue report each Ready unit's lane.
+3. **The queue filter ships first.** The rows that let a laned Deliver run skip other lanes' rows depend on none of the Plan, Align or report rows, since prosiform's I10 waits on that filter to run two sessions.
+
+Planning decisions:
+
+- **One component per row.** Ten rows, one file each. The queue filter is W01 to W06: the work-item declaration, the delivery plan's lane rule, the joined-lane rule, the dependency check's lane reader, the survey's lane filter and Deliver mode's lane. W07 to W10 are Plan mode and the board-queue report.
+- **Each rule and its script ship together.** W02 joins W05, W03 joins W04 and W08 joins W09: each artifact describes the command its script row implements, so one pull request lands both.
+- **One lane reader.** The dependency check reads the Lane line beside Component, and the survey and the board queue import that reader, as they import its component reader.
+- **Align needs no row.** Plan and Align both run Check Dependencies and Numbering, so the joined-lane rule lives in the dependency graph alone and both modes report it from the check. Plan mode's row adds only the lanes question.
+- **Hot-fix units are unlaned.** A hot-fix has no work item, so every run is offered it.
+- **Board queue reads the engineering worktree.** Its `next` report names each Ready unit's lane, read from the work items there. It reads files and runs no git.
+- **Criteria per row.** #1625's five criteria spanned several rows each; they are split into one criterion per row, AC1 to AC10, keeping every one of the original conditions.
+- **Labels.** `type:epic`, `theme:planning`, `bot:ai-assisted` and `priority: 7`, as E02 carries. No `type:hot-fix`.
+- **Priority.** The dependency check proposes 2 for E00, E02 and E03 and 1 for E01, matching the live labels' order, with E03 alongside E02. E02's rows declare no components yet, so contention between E02 and E03 is unchecked; both edit the same artifacts and modes, which is put to the user.
+- **I17 admits a feature.** Its Proposal gains a bullet admitting a feature the skill must carry, and AC1 reads "fix and feature".

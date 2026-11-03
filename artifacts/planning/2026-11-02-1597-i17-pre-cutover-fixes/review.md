@@ -21,3 +21,15 @@
 
 - **Problem.** I16 E00 W00 named no prerequisite.
   **Resolution.** Its Depends on cell names `[I17:E00](https://github.com/m2ux/workflow-server/issues/1598)`. The saved body passed the format check against I16's initiative and the dependency check.
+
+## E03 Delivery Lanes
+
+- **Problem.** E03:W07 named W01, already implied through W03.
+  **Resolution.** Dropped; the check reports no E03 problem. The report is [dependencies.txt](dependencies.txt).
+- **Problem.** The source issue's criteria were each delivered by several rows.
+  **Resolution.** Split into one criterion per row, AC1 to AC10.
+- **Problem.** E01:W01 names epic E02 and depends on a later epic's rows.
+  **Resolution.** Left as E01's recorded decision 7; outside E03's scope.
+- **Problem.** Contention between E02 and E03 is unchecked, since E02 has no work items.
+  **Resolution.** Put to the user with E03's priority.
+- **Format.** The epic and the initiative, checked with every epic, report nothing to fix, apply or decide.
