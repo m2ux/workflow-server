@@ -13,9 +13,9 @@ The session verifies both artifact contracts, exercises the table with supplied 
 - [x] Integrate the artifacts and current-schema consumers.
 - [x] Verify the committed unit and publish criterion evidence.
 - [x] Publish the task PR and record both task links.
-- [ ] Merge the passing task PR into its epic base. **In progress.**
-- [ ] Record AC11/AC12 and task completion, update draft integration and verify board state.
-- [ ] Publish final change and arising-issue dispositions.
+- [x] Merge the passing task PR into its epic base.
+- [x] Record AC11/AC12 and task completion, update draft integration and verify board state.
+- [x] Publish final change and arising-issue dispositions.
 
 ## Existing Evidence Disposition
 
@@ -57,3 +57,18 @@ The target branch's user edit removes the italicized-verb guideline. Its rule ma
 ## Task Pull Request
 
 Task PR #1628 targets i17/e03/workspace at the verified task head. Its body matches the published body file, and W02 and W03 both link it. Its Development relation is empty because these rows have no task issue. The epic integration remains #1627.
+
+
+## Delivered Revision
+
+PR #1628 is merged into i17/e03/workspace at `74e19867e905523b85d2da84c7b1cb35b2b60b53`, from verified task head `f5c2ce46ed6e1203e9e1cdc7360c9e400649af3d`. A diff confirms the merged skill tree is identical to the fully tested task tree. The actual-template lane specimens and component-only contract inspection also pass directly in the merged epic-base checkout.
+
+The saved epic body records AC11 and AC12 and marks W02 and W03 Done, both linked to #1628. Its body matches the published canonical planning body. The actual installed format checker reports zero findings on that saved body.
+
+## Integration and Board
+
+Draft integration #1627 describes the task-table lane contract and cites both merged task PRs, #1626 and #1628. Its saved body matches the supplied review body; the final delivery match reports no missing integration references or absent Changes paths.
+
+Project 17 item 291913055 is individually confirmed In Progress. The epic is open because W04–W13 remain undelivered. The only coverage disagreement is the documented historical #1626 W01/AC1 retirement from the user's plan revision; no old criterion is restored.
+
+The fresh survey offers only W04+W05+W06 next, covering AC3, AC4, AC13 and AC14. It reports zero held rows, unresolvable references, undeclared units or merge candidates. No later unit is reserved or started. Ready-unit reporting remains deferred before W11 as the existing plan states.

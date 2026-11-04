@@ -29,4 +29,4 @@ W02 defines the epic-table contract and its population input, covering AC11. W03
 
 | Delivery | Link |
 | --- | --- |
-| Task pull request | [#1628](https://github.com/m2ux/workflow-server/pull/1628) |
+| Task pull request | [#1628, merged](https://github.com/m2ux/workflow-server/pull/1628) |
