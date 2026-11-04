@@ -16,12 +16,11 @@ Read these files first.
 
 One task's local implementation plan.
 
-**Inputs:** Task id, task scope, epic context, design, the component the implementation extends, optional lane, supplied criteria and test requirements, and output file.
+**Inputs:** Task id, task scope, epic context, design, the component the implementation extends, supplied criteria and test requirements, and output file.
 
 - Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
   - Its name and content must meet [Identity](#identity) and [Sections](#sections).
   - The supplied component must meet [Component](#component).
-  - Write a supplied lane using [Lane](#lane).
   - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
 
 ## Fields
@@ -30,7 +29,6 @@ One task's local implementation plan.
 
 ````markdown
 **Component:** {{The long-lived branch and path of the one component this task's implementation extends}}
-**Lane:** {{Optional lane id; omit this line when no lane is supplied}}
 
 ## Overview
 
@@ -61,23 +59,16 @@ One file per task, named for its id in lowercase, such as `w01.md`: the name the
 
 ### Component
 
-A declaration line ahead of the first heading, naming the single component the Implementation part extends as `<long-lived branch>:<path>`: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py`.
+One declaration line ahead of the first heading, naming the single component the Implementation part extends as `<long-lived branch>:<path>`: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py`.
 
 - A task that creates the component names the path it creates.
 - The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.
 - A task whose implementation extends more than one component is split into a task for each.
 - A component is one file, never a directory, since the dependency check groups an epic's rows into candidate units by it.
 
-### Lane
-
-An optional `**Lane:** <id>` declaration beside Component ahead of the first heading. A work item without it is unlaned.
-
-The id is an opaque, board-wide index identifying the lane that delivers the work. The work item states no reason for its lane.
-
 ### Sections
 
 - Component names the component the Implementation part extends, meeting [Component](#component).
-- Lane identifies the delivery lane when supplied, meeting [Lane](#lane).
 - Overview states what the task delivers and why.
 - Problem and Proposal meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
 - Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.

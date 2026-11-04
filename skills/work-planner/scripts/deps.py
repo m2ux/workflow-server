@@ -13,9 +13,9 @@ leading ./, so two spellings of one path are one component. A value still carryi
 naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
-  | Task | Description | Coverage | Depends on | Joins | Done |
+  | Task | Description | Coverage | Depends on | Joins | Lane | Done |
 A task's id links each pull request associated with it, open or merged:
-  | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | |
+  | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | | |
 A row is the task its Task cell opens with, however many deliveries that id links.
 A task id is a W and two digits, and the run names one in a Task cell that departs from it.
 Cells are read by column name, so the column order does not matter.
