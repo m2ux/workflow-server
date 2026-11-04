@@ -45,4 +45,8 @@ The user deferred Ready-unit lane reporting until before that work starts. The a
 - [x] Update criteria, work items, row numbers, dependencies and joins.
 - [x] Review the goal trace, source ownership and outside consumers.
 - [x] Validate dependencies and the explicitly proposed table model.
-- [ ] Publish the revised planning artifacts and tracker body. **In progress.**
+- [x] Publish the revised planning artifacts and tracker body.
+
+## Publication
+
+The revised planning artifacts are published on engineering at `b10908084`. A fresh read of issue #1625 matches the committed body and title byte for byte, including Lane after Joins and before Done, 13 task rows and the preserved W01 delivery. No later implementation session is started.
