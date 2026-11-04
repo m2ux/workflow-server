@@ -24,6 +24,8 @@ The unit also proves that valid and empty Lane values stay attached to their tas
 | [Priority recursion](priority-recursion.json) | Pinned pre-existing unsupported-input reproduction |
 | [Arising issue body](priority-cycle-issue.md) | Validated source issue and reproduction scope |
 | [Arising placement](arising-placement.md) | Future task placement, disposition and numbering advisory |
+| [Merged criterion results](merged-criterion-tests.log) | Criterion checks at the exact epic-base merge revision |
+| [Next work](next-work.txt) | Available and blocked units after delivery, with no further dispatch |
 
 ## Links
 
@@ -34,3 +36,8 @@ The unit also proves that valid and empty Lane values stay attached to their tas
 | Plan | [Task-table lane plan](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes) |
 | Prior unit | [Merged #1628](https://github.com/m2ux/workflow-server/pull/1628) |
 | Draft integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+
+| Delivery | Link |
+| --- | --- |
+| Task PR | [#1629, merged](https://github.com/m2ux/workflow-server/pull/1629) |
+| Arising source | [#1630, tracked by E03 W14](https://github.com/m2ux/workflow-server/issues/1630) |

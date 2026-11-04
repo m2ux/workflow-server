@@ -1,0 +1,9 @@
+source: config/branches at d0a62b8037bb1b8fdafac5bf0e0035ada8c64486 in /home/mike1/projects/dev/workflow-server/.git
+#1625 In Progress: [I17:E03]
+  unit I17:E03:W07+W08: coverage AC2, AC5, record 2026-11-04-1625-i17-e03-w07-delivery-plan-admits-units, branch i17/e03/w07-delivery-plan-admits-units, base i17/e03/workspace, worktree .worktrees/i17/e03/w07-delivery-plan-admits-units
+  blocked I17:E03:W09: depends on W07
+  unit I17:E03:W10: coverage AC7, record 2026-11-04-1625-i17-e03-w10-plan-mode-writes-task, branch i17/e03/w10-plan-mode-writes-task, base i17/e03/workspace, worktree .worktrees/i17/e03/w10-plan-mode-writes-task
+  blocked I17:E03:W11+W12: depends on W07
+  blocked I17:E03:W13: depends on W11
+  unit I17:E03:W14: coverage AC15, record 2026-11-04-1625-i17-e03-w14-cross-epic-joins-receive, branch i17/e03/w14-cross-epic-joins-receive, base i17/e03/workspace, worktree .worktrees/i17/e03/w14-cross-epic-joins-receive
+  available: 3, held: 0, blocked: 3, unresolvable: 0, undeclared: 0, merge: 0, unrecorded: 0
