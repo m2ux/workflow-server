@@ -46,4 +46,4 @@ The user confirmed W01. Its planning record is published, its row reservation is
 - [x] Survey concrete units and reservations.
 - [x] Confirm the dispatch unit.
 - [x] Publish the unit record, reserve its row and confirm In Progress.
-- [ ] Create the task worktree and dispatch its delivery session. **In progress.**
+- [x] Create the task worktree and dispatch its delivery session.

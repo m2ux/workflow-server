@@ -13,6 +13,7 @@ The user confirmed this unit on 4 November. Its task branch is `i17/e03/w01-work
 | Artifact | What it holds |
 | --- | --- |
 | [W01](w01.md) | Component, design and validation scope for the lane declaration |
+| [Delivery Evidence](delivery.md) | Execution checklist, criterion inspection and validation results |
 
 ## Links
 
