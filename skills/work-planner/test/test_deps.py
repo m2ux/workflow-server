@@ -15,7 +15,7 @@ from fixtures import SCRIPTS, epic_body, initiative_body, work_item
 
 sys.path.insert(0, str(SCRIPTS))
 from deps import (check_initiative, contention, epic_dependencies, epic_priority,  # noqa: E402
-                  is_directory, main, normalise)
+                  is_directory, main, normalise, read_lanes)
 
 
 def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
@@ -72,6 +72,104 @@ def check(body: str, components: dict[str, str], *records: str) -> tuple[int, st
         with redirect_stdout(output):
             code = main(args)
     return code, output.getvalue()
+
+
+class TaskLanes(unittest.TestCase):
+    """The raw task-table cell supplies each row's lane, including rows without work items."""
+
+    @staticmethod
+    def table(*rows: tuple[str, str, str]) -> str:
+        return ('## Work Breakdown\n\n'
+                '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+                '| --- | --- | --- | --- | --- | --- | --- |\n'
+                + ''.join(f'| {task} | Work | AC1 | | {joins} | {lane} | |\n'
+                          for task, joins, lane in rows))
+
+    def test_reader_retains_indices_and_empty_cells_by_row(self):
+        body = self.table(('W01', '', ' 02 '), ('[W02](https://example.test/pull/1)', '', ''),
+                          ('W03', '', '0'))
+        self.assertEqual(read_lanes(body), ({'W01': '02', 'W02': None, 'W03': '0'}, []))
+
+    def test_reader_uses_column_names_and_ignores_non_task_rows(self):
+        body = ('| Lane | Task | Description |\n| --- | --- | --- |\n'
+                '| 7 | W01 | Work |\n| prose | Notes | Guidance |\n')
+        self.assertEqual(read_lanes(body), ({'W01': '7'}, []))
+
+    def test_reader_keeps_lane_data_inside_its_task_table(self):
+        body = self.table(('W01', '', '2')) + '\n| Task | Notes |\n| --- | --- |\n| W02 | 9 |\n'
+        self.assertEqual(read_lanes(body), ({'W01': '2'}, []))
+
+    def test_reader_reports_malformed_cells_without_an_empty_value(self):
+        for lane in ('`2`', '**2**', '[2](https://example.test/lane)', 'lane 2', '2 lanes', '-2', '2.0'):
+            with self.subTest(lane=lane):
+                lanes, problems = read_lanes(self.table(('W01', '', lane), ('W02', '', '')))
+                self.assertEqual(lanes, {'W02': None})
+                self.assertEqual(len(problems), 1)
+                self.assertIn('W01: Lane must be a bare decimal index or empty', problems[0])
+                self.assertIn(repr(lane), problems[0])
+
+    def test_a_missing_cell_is_not_an_empty_lane(self):
+        body = self.table() + '| W01 | Work | AC1 | | |\n'
+        self.assertEqual(read_lanes(body), ({}, ['W01: missing Lane cell']))
+
+    def test_equal_indexed_joined_rows_pass_without_work_items(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '2')))])
+        self.assertEqual(code, 0, text)
+        self.assertIn('--- problems\nnone', text)
+        self.assertIn('not checked, no component read: E06:W01, E06:W02', text)
+
+    def test_all_empty_joined_rows_pass(self):
+        code, text = run([('E06', self.table(('W01', 'W02', ''), ('W02', 'W01', '')))])
+        self.assertEqual(code, 0, text)
+
+    def test_different_indexed_joined_rows_fail_and_name_each_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '3')))])
+        self.assertEqual(code, 1)
+        self.assertIn('joined unit has different Lane cells: E06:W01 = 2; E06:W02 = 3', text)
+        self.assertIn('move a lane or unjoin the rows', text)
+
+    def test_indexed_and_empty_joined_rows_fail_and_name_each_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01 = 2; E06:W02 = empty', text)
+
+    def test_transitive_join_names_every_member_once(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01, W03', '2'),
+                                           ('W03', 'W02', '3')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01 = 2; E06:W02 = 2; E06:W03 = 3', text)
+        self.assertEqual(text.count('joined unit has different Lane cells'), 1)
+
+    def test_joined_rows_in_different_epics_compare_their_table_lanes(self):
+        code, text = run([('E05', self.table(('W01', 'E06:W01', '2'), ('W02', '', ''))),
+                          ('E06', self.table(('W01', 'E05:W01', '3'), ('W02', '', '')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E05:W01 = 2; E06:W01 = 3', text)
+
+    def test_a_malformed_joined_cell_is_reported_without_a_fake_empty_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '`2`')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W02: Lane must be a bare decimal index or empty', text)
+        self.assertNotIn('joined unit has different Lane cells', text)
+
+    def test_independent_rows_can_have_different_lanes(self):
+        code, text = run([('E06', self.table(('W01', '', '2'), ('W02', '', '3'), ('W03', '', '')))])
+        self.assertEqual(code, 0, text)
+
+    def test_a_malformed_lane_fails_even_without_joins_or_work_item_links(self):
+        for lane in ('`2`', '[2](https://example.test/lane)', 'lane 2', '2 lanes'):
+            with self.subTest(lane=lane):
+                code, text = run([('E06', self.table(('W01', '', lane)))])
+                self.assertEqual(code, 1)
+                self.assertIn('E06:W01: Lane must be a bare decimal index or empty', text)
+
+    def test_work_item_lane_prose_supplies_no_lane_data(self):
+        body = self.table(('W01', 'W02', ''), ('W02', 'W01', ''))
+        code, text = run([('E06', body),
+                          ('E06:W01', work_item('a.py') + '**Lane:** 2\n'),
+                          ('E06:W02', work_item('b.py') + '**Lane:** 3\n')])
+        self.assertEqual(code, 0, text)
+        self.assertNotIn('not checked, no component read', text)
 
 
 class CandidateUnits(unittest.TestCase):

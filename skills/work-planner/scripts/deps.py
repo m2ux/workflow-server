@@ -19,6 +19,8 @@ A task's id links each pull request associated with it, open or merged:
 A row is the task its Task cell opens with, however many deliveries that id links.
 A task id is a W and two digits, and the run names one in a Task cell that departs from it.
 Cells are read by column name, so the column order does not matter.
+A Lane cell holds a bare decimal index or is empty. Each joined unit carries one index
+across all its rows or has every Lane cell empty; each malformed or differing cell is a problem.
 
 A dependency is one of:
   W03             a task in the same epic
@@ -78,6 +80,42 @@ UNIT_BOUND = 6
 
 def cells(line: str) -> list[str]:
     return [c.strip() for c in LINK.sub(r'\1', line).strip().strip('|').split('|')]
+
+
+def read_lanes(body: str) -> tuple[dict[str, str | None], list[str]]:
+    """Raw task-table Lane values keyed by Wnn; only valid empty cells yield None.
+
+    Malformed cells yield a row-specific problem and no value. Tables without a Lane column
+    supply no lane data; issue-format validation checks the table's required columns.
+    """
+    lanes: dict[str, str | None] = {}
+    problems = []
+    header: list[str] = []
+    for line in body.splitlines():
+        if not line.startswith('|'):
+            header = []
+            continue
+        raw = [cell.strip() for cell in line.strip().removeprefix('|').removesuffix('|').split('|')]
+        if not header and 'Task' in raw:
+            header = raw
+            continue
+        if not header or 'Lane' not in header:
+            continue
+        row = dict(zip(header, raw))
+        task = LINK.sub(r'\1', row.get('Task', ''))
+        ids = WID_SHAPED.findall(task)
+        if not ids or not task.startswith(ids[0]) or not WID.fullmatch(ids[0]):
+            continue
+        wid = ids[0]
+        if 'Lane' not in row:
+            problems.append(f'{wid}: missing Lane cell')
+            continue
+        lane = row['Lane']
+        if lane and not re.fullmatch(r'[0-9]+', lane):
+            problems.append(f'{wid}: Lane must be a bare decimal index or empty; got {lane!r}')
+            continue
+        lanes[wid] = lane or None
+    return lanes, problems
 
 
 def parse(epics: dict[str, Path]) -> tuple[dict, list[str], dict[str, set[str]], dict[str, set[str]],
@@ -394,6 +432,18 @@ def main(argv: list[str]) -> int:
         else:
             epics[name] = Path(path)
     tasks, problems, expanded, criteria, delivered = parse(epics)
+    lanes: dict[str, str | None] = {}
+    for epic, path in epics.items():
+        values, malformed = read_lanes(path.read_text())
+        lanes.update({f'{epic}:{wid}': value for wid, value in values.items()})
+        problems += [f'{epic}:{problem}' for problem in malformed]
+    units = joined_units(tasks)
+    for unit in sorted({u for u in units.values() if len(u) > 1}, key=sorted):
+        if unit <= lanes.keys() and len({lanes[row] for row in unit}) > 1:
+            values = '; '.join(f'{row} = {lanes[row] if lanes[row] is not None else "empty"}'
+                               for row in sorted(unit))
+            problems.append(f'joined unit has different Lane cells: {values}; '
+                            'move a lane or unjoin the rows')
     recorded, unreadable = recorded_units(records)
     problems += unreadable
     components, missing = read_components(items)
@@ -456,7 +506,6 @@ def main(argv: list[str]) -> int:
                 by = next((o for o in listed if o != d and d in ancestors(o)), None)
                 if by and d not in expanded[key]:
                     problems.append(f'{key}: {d} is already implied by {by}')
-        units = joined_units(tasks)
         for key, (_, _, acc) in tasks.items():
             for a in acc:
                 if a not in tasks:
