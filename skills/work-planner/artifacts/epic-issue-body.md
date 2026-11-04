@@ -19,7 +19,7 @@ Read these files first.
 
 One epic body and its local validation findings.
 
-**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows, available pull request records, project checkout, evaluated revision and output path.
+**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows with optional lane indices, available pull request records, project checkout, evaluated revision and output path.
 
 1. Populate the body from the [Template](#template) at the supplied output path.
    - Every section must meet [Fields](#fields).
@@ -27,6 +27,7 @@ One epic body and its local validation findings.
 2. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
 3. Fill the epic-specific cells.
    - Each row must meet [Work Breakdown](#work-breakdown).
+   - Write each row's supplied index into its [Lane](#lane) cell, leaving the cell empty when none is supplied.
 4. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
 5. Pass that snapshot, initiative context, available pull request records, project checkout, evaluated revision and output file to [Validate Epic Body](#validate-epic-body).
 6. Identify unresolved publication links separately; they remain pending until tracker identities exist.
@@ -91,7 +92,7 @@ One epic body with confirmed task-grain and coverage corrections.
 **Inputs:** Epic body, confirmed row changes, field findings, supplied dependency references and output path.
 
 1. Apply the confirmed row changes through [Populate Epic Issue Body](#populate-epic-issue-body), preserving unrelated content.
-   - Description, Coverage, Depends on, Joins and task grain must meet [Work Breakdown](#work-breakdown).
+   - Description, Coverage, Depends on, Joins, Lane and task grain must meet [Work Breakdown](#work-breakdown).
    - Split a task exceeding the allowed criterion grain into the confirmed tasks.
 2. Return the revised body and any cross-body numbering or dependency changes for the caller.
 
@@ -133,9 +134,9 @@ The agreed disposition of criteria a delivered row left unmet.
 
 ## Work Breakdown
 
-| Task | Description | Coverage | Depends on | Joins | Done |
-| --- | --- | --- | --- | --- | --- |
-| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | |
+| Task | Description | Coverage | Depends on | Joins | Lane | Done |
+| --- | --- | --- | --- | --- | --- | --- |
+| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | {{Lane index, or empty}} | |
 
 ## Acceptance Criteria
 
@@ -165,7 +166,7 @@ The agreed disposition of criteria a delivered row left unmet.
 
 New tasks exist as epic rows with their details, discussion and evidence in the epic and planning record. Planning creates no separate task issues. Existing issues hoisted into an epic retain their records and row links when new tasks are planned.
 
-The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
+The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Done`.
 
 - **Done.**
   A task row is complete when it is delivered, and every criterion its Coverage names is ticked.
@@ -195,10 +196,16 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
   - A joined unit covers at most six criteria, two full rows' worth, so it stays one pull request's worth.
   - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
   - An empty cell is a task that shares no pull request.
+- **Lane.**
+  The row's delivery lane meets [Lane](#lane).
 - **Numbering.**
   Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**
   A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03](…/issues/937)`. Prose uses a space (`E01 W03`).
+
+### Lane
+
+The cell holds a bare decimal index such as `2`, or is empty for an unlaned task. The index is opaque and board-wide: the same index identifies one delivery lane across the theme board. A populated cell's complete content is the index.
 
 ### Test Evidence
 
