@@ -19,9 +19,9 @@ PLAN = ('## Test Plan\n\n'
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:
     """An epic body whose rows are (task id, description, depends on, joins)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
-    lines += [f'| {task} | {description} | AC1 | {depends} | {joins} | |'
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | {description} | AC1 | {depends} | {joins} | | |'
               for task, description, depends, joins in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 

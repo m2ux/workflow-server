@@ -45,9 +45,9 @@ OPEN = 'or name exactly these rows on one record line with why they stay split'
 
 def breakdown(*rows: tuple[str, str, str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task, coverage, depends on, joins, done)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
-    lines += [f'| {task} | Work | {coverage} | {depends} | {joins} | {done} |'
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | Work | {coverage} | {depends} | {joins} | | {done} |'
               for task, coverage, depends, joins, done in rows]
     return '\n'.join(lines + [''])
 

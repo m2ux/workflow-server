@@ -31,7 +31,7 @@ class ArtifactTemplates(unittest.TestCase):
                                  {'Open Questions'} if kind == 'epic' else
                                  {'References'} if kind == 'proposal' else set())
                 columns = (['Epic', 'Description', 'Coverage', 'Depends on', 'Done'] if kind == 'initiative'
-                           else ['Task', 'Description', 'Coverage', 'Depends on', 'Joins', 'Done']
+                           else ['Task', 'Description', 'Coverage', 'Depends on', 'Joins', 'Lane', 'Done']
                            if kind == 'epic' else None)
                 self.assertEqual(template.columns, columns)
         self.assertFalse((SCRIPTS.parent / 'templates').exists())
