@@ -881,5 +881,50 @@ class HotFixUnits(unittest.TestCase):
         self.assertIn('unit F04 #4', out)
 
 
+class LaneCellPreservation(unittest.TestCase):
+    def assert_lane_rows(self, body, expected):
+        lines = [line for line in body.splitlines() if line.startswith('|')]
+        header = [value.strip() for value in lines[0].strip('|').split('|')]
+        self.assertEqual(header[-3:], ['Joins', 'Lane', 'Done'])
+        actual = {}
+        for line in lines[2:]:
+            values = [value.strip() for value in line.strip('|').split('|')]
+            ident = values[0].split(']')[0].lstrip('[')
+            actual[ident] = (values[-2], values[-1])
+        self.assertEqual(actual, expected)
+
+    def test_reserve_and_release_keep_lanes_attached_to_each_row(self):
+        source = epic(943, ('W01', 'Queue plan', '', ''), ('W02', 'Dispatch', '', ''))
+        source['body'] = source['body'].replace(
+            '| W01 | Queue plan | AC1 |  |  | | |',
+            '| W01 | Queue plan | AC1 | | | 2 | |')
+        self.assert_lane_rows(source['body'], {'W01': ('2', ''), 'W02': ('', '')})
+        report, reserved, code = edit(source, '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(reserved, {'W01': ('2', ''), 'W02': ('', '')})
+        source['body'] = reserved
+        folders = {f'{TODAY}-943-i07-e00-w01-queue-plan': record('W01'),
+                   f'{TODAY}-943-i07-e00-w02-dispatch': record('W02')}
+        report, released, code = edit(source, '--release', 'W01,W02', records=folders)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('', '')})
+        self.assertIn('/w01.md)', released)
+        self.assertIn('/w02.md)', released)
+
+    def test_a_joined_reservation_and_release_keep_both_lane_cells(self):
+        source = epic(943, ('W01', 'Queue plan', '', 'W02'), ('W02', 'Dispatch', '', 'W01'))
+        source['body'] = source['body'].replace('| W02 | | |', '| W02 | 2 | |').replace(
+            '| W01 | | |', '| W01 | 2 | |')
+        report, reserved, code = edit(source, '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(reserved, {'W01': ('2', ''), 'W02': ('2', '')})
+        source['body'] = reserved
+        folder = f'{TODAY}-943-i07-e00-w01-queue-plan'
+        report, released, code = edit(source, '--release', 'W01,W02',
+                                      records={folder: record('W01', 'W02')})
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('2', '')})
+
+
 if __name__ == '__main__':
     unittest.main()

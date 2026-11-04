@@ -1937,3 +1937,55 @@ class HotFixDelivery(unittest.TestCase):
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: does not deliver F04: its base is main, not the target workspace',
                       done.stderr)
+
+
+class LaneCellRecording(unittest.TestCase):
+    def assert_lane_rows(self, body, expected):
+        lines = [line for line in body.splitlines() if line.startswith('|')]
+        header = [value.strip() for value in lines[0].strip('|').split('|')]
+        self.assertEqual(header[-3:], ['Joins', 'Lane', 'Done'])
+        actual = {}
+        for line in lines[2:]:
+            values = [value.strip() for value in line.strip('|').split('|')]
+            ident = values[0].split(']')[0].lstrip('[')
+            actual[ident] = (values[-2], values[-1])
+        self.assertEqual(actual, expected)
+
+    def test_pr_linking_and_completion_preserve_indexed_and_empty_lanes(self):
+        source = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            ('W01', 'Indexed row', ''), ('W02', 'Unlaned row', '')))
+        source['body'] = source['body'].replace(
+            '| W01 | Indexed row | AC1 |  | | | |',
+            '| W01 | Indexed row | AC1 | | | 2 | |')
+        self.assert_lane_rows(source['body'], {'W01': ('2', ''), 'W02': ('', '')})
+        pulls = [pr(950, '[I01:E00] Indexed row', base='i01/e00/main'),
+                 pr(951, '[I01:E00] Unlaned row', base='i01/e00/main')]
+        linked = synced(source, pulls, '--link', 'W01=950,W02=951')
+        self.assert_lane_rows(linked, {'W01': ('2', ''), 'W02': ('', '')})
+        self.assertIn(url('pull', 950), linked)
+        self.assertIn(url('pull', 951), linked)
+        source['body'] = linked
+        for pull in pulls:
+            pull['merged_at'] = '2026-11-04T00:00:00Z'
+            pull['state'] = 'closed'
+        complete = synced(source, pulls, '--tick', 'AC1')
+        self.assert_lane_rows(complete, {'W01': ('2', '✓'), 'W02': ('', '✓')})
+        self.assertIn('- [x] **AC1.**', complete)
+
+    def test_closed_epic_normalization_preserves_lane_and_done(self):
+        source = issue(2, '[I01:E00] First: Epic', state='closed', body=epic_body(
+            ('W01', 'Indexed row', ''), ('W02', 'Unlaned row', '')))
+        source['body'] = source['body'].replace(
+            '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+            '| Task | Description | Coverage | Depends on | Joins | Done | Lane |').replace(
+            '| W01 | Indexed row | AC1 |  | | | |',
+            '| W01 | Indexed row | AC1 | | | ✓ | 2 |').replace(
+            '| W02 | Unlaned row | AC1 |  | | | |',
+            '| W02 | Unlaned row | AC1 | | | ✓ | |').replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        source['body'] = source['body'].replace('W01 | Indexed',
+            f"[W01]({url('pull', 950)}) | Indexed").replace('W02 | Unlaned',
+            f"[W02]({url('pull', 951)}) | Unlaned")
+        pulls = [pr(950, '[I01:E00] Indexed row', merged='2026-11-04T00:00:00Z', base='i01/e00/main'),
+                 pr(951, '[I01:E00] Unlaned row', merged='2026-11-04T00:00:00Z', base='i01/e00/main')]
+        normalized = synced(source, pulls)
+        self.assert_lane_rows(normalized, {'W01': ('2', '✓'), 'W02': ('', '✓')})
