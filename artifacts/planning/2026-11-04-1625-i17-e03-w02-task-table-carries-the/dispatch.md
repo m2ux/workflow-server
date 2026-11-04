@@ -20,5 +20,5 @@ The user requested delivery of Project 17 after reviewing the published revised 
 - [x] Apply the current queue and identify the joined unit.
 - [x] Update the epic base with the current target guidelines.
 - [x] Publish the unit's work items and dispatch context.
-- [ ] Reserve W02+W03 and confirm In Progress. **In progress.**
-- [ ] Create the isolated worktree and dispatch the delivery session.
+- [x] Reserve W02+W03 and confirm In Progress.
+- [ ] Create the isolated worktree and dispatch the delivery session. **In progress.**
