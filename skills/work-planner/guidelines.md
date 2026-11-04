@@ -10,10 +10,6 @@ The rules this skill's files follow alongside the [shared skill guidelines](../g
   - Each part of a hyphenated word is capitalized.
 - **Action titles.**
   Operation, command and mode procedure titles name the action and subject directly, without articles such as a, an or the. Use meaningful subject words to meet the procedure title length.
-- **Italicised verb.**
-  An artifact operation's title italicises its leading verb, and nothing else: `### *Apply* Issue Placement`. The emphasis leaves the heading's anchor unchanged, so a link to it keeps its plain text and fragment.
-  - The verb separates from the subject, so the anchors one procedure reaches read together as its input and output contract: `*Read*` and `*Fetch*` take evidence in, `*Populate*`, `*Record*` and `*Save*` put state out, `*Check*` and `*Validate*` assert against what they are given.
-  - A title whose leading word does not carry that sense is the wrong title; name the action first.
 
 ## Procedure
 
