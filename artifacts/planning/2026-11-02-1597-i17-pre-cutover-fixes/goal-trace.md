@@ -38,3 +38,8 @@ No requirement source is marked; the criteria come from the confirmed goal.
 | Ready-unit lanes are reported from issue snapshots | AC1 | AC8, AC9, AC10 | E03 W11–W13 | Existing reporting scope, decision held before W11 |
 
 The initiative goal and criterion are unchanged. No marked external requirement source is added. The updated epic retains lane admission, joined-unit consistency and per-request routing while placing the assignment in the task table.
+
+
+## E03 Arising Input Trace, 4 November 2026
+
+The known pre-cutover input fault in #1630 traces to initiative AC1 through E03 AC15 and W14. It enforces the existing within-epic delivery shape and adds no cross-epic delivery capability.

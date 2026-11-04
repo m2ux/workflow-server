@@ -37,9 +37,11 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E03 W11](e03/w11.md) | Board queue reports Ready units' lanes |
 | [E03 W12](e03/w12.md) | Board-queue script prints Ready unit lanes |
 | [E03 W13](e03/w13.md) | Advance mode reports Ready unit lanes |
+| [E03 W14](e03/w14.md) | Cross-epic joins receive bounded diagnostics |
 | [Lane-column review](e03-lane-column-review.md) | Confirmed storage contract, goal trace, dependency review and publication checks |
 | [Lane-column dependencies](e03-lane-column-dependencies.txt) | Dependency and join checks of the revised E03 rows |
 | [Lane-column row map](e03-lane-column-renumbering.json) | Preserved delivery, undelivered-row numbering and criterion disposition |
+| [Arising-task dependencies](e03-arising-dependencies.txt) | Current E03 graph including the bounded cross-epic-join diagnostic task |
 
 ## Links
 

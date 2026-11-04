@@ -99,3 +99,12 @@ Planning decisions:
 - **Numbering.** Only undelivered rows are renumbered, as the [row map](e03-lane-column-renumbering.json) records. No task beyond W01 has a delivering pull request or reservation.
 - **Priority.** E03 retains its confirmed priority 8, ahead of E02 at 7 and E01 at 6. The storage correction adds no cross-epic edge or contention requiring another priority decision.
 - **Scope.** This request revises the published plan and its work items. Source implementation and the draft integration remain at the delivered declaration revision. The new table contract is implemented by W02+W03.
+
+
+## E03 Arising Join Input, 4 November 2026
+
+- **Source.** #1630 records priority recursion on a qualified cross-epic joined shape at baseline 74e19867e905523b85d2da84c7b1cb35b2b60b53. Delivery units belong to one epic and its bases; qualified parser acceptance supplies no cross-epic delivery contract.
+- **Placement.** The session's task-creation and folded-work allowance places the bounded-diagnostic fix in E03 W14, covering AC15. It remains future work and is not dispatched by the W04–W06 session.
+- **Input.** W14 consumes the early parsed-unit stage W05 establishes. It reports invalid joined scope before priority evaluation.
+- **Numbering.** W14 is appended to preserve the existing published row identities and record links. Its lower dependency level is an explicit numbering advisory. The dependency check's no-cycle and join checks remain binding.
+- **Priority.** E03 retains priority 8 and its sibling order. No cross-epic dependency or parallel component contention is added.

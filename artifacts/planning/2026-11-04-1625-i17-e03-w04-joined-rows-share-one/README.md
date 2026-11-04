@@ -22,6 +22,8 @@ The unit also proves that valid and empty Lane values stay attached to their tas
 | [Shared results](shared-tests.log) | Shared checker suite output |
 | [Criterion results](criterion-tests.log) | Exact-revision detached criterion run |
 | [Priority recursion](priority-recursion.json) | Pinned pre-existing unsupported-input reproduction |
+| [Arising issue body](priority-cycle-issue.md) | Validated source issue and reproduction scope |
+| [Arising placement](arising-placement.md) | Future task placement, disposition and numbering advisory |
 
 ## Links
 

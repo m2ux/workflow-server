@@ -12,7 +12,7 @@ E01:W01: depends on later epic E02:W07
 none
 
 --- advisory: numbering against start order
-none
+E03:W14 (level 2) is numbered after E03:W13 (level 3)
 
 --- levels (0 = can start now)
 0 E00:W01 - Planning commits directly to engineering
@@ -38,6 +38,7 @@ none
 2 E03:W10 - Plan mode writes task row lanes
 2 E03:W11 - Board queue reports Ready units' lanes
 2 E03:W12 - Board-queue script prints Ready unit lanes
+2 E03:W14 - Cross-epic joins receive bounded diagnostics
 3 E01:W01 - SOLID guidelines for files and operations
 3 E03:W13 - Advance mode reports Ready unit lanes
 4 E01:W02 - Audit the skill against the guidelines

@@ -38,3 +38,8 @@
 ## E03 Task-Table Lane Review, 4 November 2026
 
 The confirmed storage and column order are implemented in the plan. [Lane-column review](e03-lane-column-review.md) holds the current findings, dispositions, validation and held reporting decision. [Lane-column dependencies](e03-lane-column-dependencies.txt) checks every current E03 row and work-item component.
+
+
+## E03 Arising Input Review, 4 November 2026
+
+The priority recursion is reproduced before W04–W06 and affects unsupported cross-epic Joins. Its fix is a future W14 row consuming W05's early unit stage. Existing row numbers remain, with the appended row's level advisory recorded. This adds no new component contention across epics and retains the approved priorities.
