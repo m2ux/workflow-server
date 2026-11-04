@@ -14,6 +14,7 @@ The user confirmed this unit on 4 November. Its task branch is `i17/e03/w01-work
 | --- | --- |
 | [W01](w01.md) | Component, design and validation scope for the lane declaration |
 | [Delivery Evidence](delivery.md) | Execution checklist, criterion inspection and validation results |
+| [Change List](change-list.md) | Plan-change and arising-issue dispositions |
 
 ## Links
 
@@ -23,3 +24,8 @@ The user confirmed this unit on 4 November. Its task branch is `i17/e03/w01-work
 | Initiative | [I17 Cutover Readiness](https://github.com/m2ux/workflow-server/issues/1597) |
 | Board | [Project 17](https://github.com/users/m2ux/projects/17/views/4) |
 | Delivery survey | [Current queue and unit](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-04-project17-delivery) |
+
+| Delivery | Link |
+| --- | --- |
+| Task pull request | [#1626, merged](https://github.com/m2ux/workflow-server/pull/1626) |
+| Draft epic review | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |

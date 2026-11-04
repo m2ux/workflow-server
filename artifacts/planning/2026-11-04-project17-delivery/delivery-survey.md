@@ -47,3 +47,9 @@ The user confirmed W01. Its planning record is published, its row reservation is
 - [x] Confirm the dispatch unit.
 - [x] Publish the unit record, reserve its row and confirm In Progress.
 - [x] Create the task worktree and dispatch its delivery session.
+
+## Confirmed Unit Result
+
+W01 is delivered by [task PR #1626](https://github.com/m2ux/workflow-server/pull/1626), merged into `i17/e03/workspace` at `6f7370b864d848c2877ae695230e297b1225a36e`. Its row and AC1 are ticked. [Epic review #1627](https://github.com/m2ux/workflow-server/pull/1627) is draft and Development-linked to #1625. The epic is individually confirmed In Progress; its remaining criteria and rows are incomplete.
+
+The final availability survey offers only W03+W04, covering AC3 and AC4. W02+W05 remains blocked by W05's dependency on W04. No subsequent unit is reserved or started. The unit's [delivery evidence](../2026-11-04-1625-i17-e03-w01-work-item-declares-an/delivery.md) holds the committed-revision inspection, passing local checks and complete merge result.
