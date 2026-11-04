@@ -4,7 +4,7 @@
 
 - Board: `users/m2ux/projectsV2/17`, Process: How Work Is Planned and Delivered.
 - I11 and its board items are closed and Done.
-- I17 is In Progress at priority 2. E03 Delivery Lanes is Ready at priority 8; E02 Skill Style is Backlog at priority 7; E01 Skill Separation waits on E02 at priority 6.
+- I17 is In Progress at priority 2. E03 Delivery Lanes is In Progress at priority 8; E02 Skill Style is Backlog at priority 7; E01 Skill Separation waits on E02 at priority 6.
 - I16 is Backlog, without an initiative priority. Its E00 and E01 need epic priorities before they can become Ready.
 - The refreshed board queue reports zero pending changes.
 
@@ -12,7 +12,7 @@
 
 - The board snapshot contains 42 items.
 - The delivery collection contains 346 pull requests, including every Work Breakdown and Development-linked pull request. Capturing their complete Development relations reports 84 links.
-- I17 has no open delivery pull request, task reservation or existing task branch at the survey revision.
+- I17 has no open delivery pull request at the survey revision. W01 is reserved for its confirmed session, and its task worktree is prepared.
 - `config/branches` at `b2844c821ce800ed3d12735bdf339049594e5ec5` declares `docker`, `main`, `workflows` and `workspace`.
 - The E03 issue passes the format check with zero corrections or decisions. Its initiative row names no prerequisite epic, and it has no Open Questions section.
 - The epic base `i17/e03/workspace` is published at that workspace revision, with its own worktree at `/home/mike1/projects/dev/workflow-server/.worktrees/i17/e03/workspace`.
@@ -30,7 +30,7 @@
 | Base | `i17/e03/workspace` |
 | Task worktree | `/home/mike1/projects/dev/workflow-server/.worktrees/i17/e03/w01-work-item-declares-an` |
 
-The task worktree and reservation await the user's dispatch choice. W01 defines the declaration only; the later units implement lane readers, filtering and mode integration.
+The user confirmed W01. Its planning record is published, its row reservation is read back, its task worktree is prepared, and the epic is individually confirmed In Progress. W01 defines the declaration only; the later units implement lane readers, filtering and mode integration.
 
 ## Dependencies and Decisions
 
@@ -44,6 +44,6 @@ The task worktree and reservation await the user's dispatch choice. W01 defines 
 - [x] Reconcile the live priority queue and read back the changed item.
 - [x] Verify prerequisites and prepare the selected epic base.
 - [x] Survey concrete units and reservations.
-- [ ] Confirm the dispatch unit. **In progress.**
-- [ ] Publish the unit record, reserve its row and confirm In Progress.
-- [ ] Create the task worktree and dispatch its delivery session.
+- [x] Confirm the dispatch unit.
+- [x] Publish the unit record, reserve its row and confirm In Progress.
+- [ ] Create the task worktree and dispatch its delivery session. **In progress.**
