@@ -9,6 +9,7 @@ Read these files first.
 - [Issue](issue.md)
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Work Item](work-item.md)
+- [Epic Issue Body](epic-issue-body.md)
 - [Plan Change](plan-change.md)
 - [Delivery Branches](delivery-branches.md)
 
@@ -86,6 +87,8 @@ Two task rows in different epics whose work items declare one [component](work-i
 
 The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
+- **A joined unit has one lane.**
+  Each row's [Lane](epic-issue-body.md#lane) cell carries the same index, or every cell is empty. A split assignment is resolved by changing a row's lane or unjoining the rows.
 - **A candidate is answered once.**
   Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
 - **Both resolutions are stated where the candidate is reported.**
@@ -112,6 +115,7 @@ Checks the task dependency graph across the epics given, and with `I=` the initi
 
 - Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
 - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
 - It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
 - An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.
 - It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
