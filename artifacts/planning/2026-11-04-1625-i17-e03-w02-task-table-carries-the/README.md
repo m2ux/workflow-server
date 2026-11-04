@@ -26,3 +26,7 @@ W02 defines the epic-table contract and its population input, covering AC11. W03
 | Board | [Project 17](https://github.com/users/m2ux/projects/17/views/4) |
 | Revised plan | [Task-table lanes](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes) |
 | Draft integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+
+| Delivery | Link |
+| --- | --- |
+| Task pull request | [#1628](https://github.com/m2ux/workflow-server/pull/1628) |

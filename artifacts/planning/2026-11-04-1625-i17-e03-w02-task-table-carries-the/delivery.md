@@ -12,8 +12,8 @@ The session verifies both artifact contracts, exercises the table with supplied 
 - [x] Dispatch each artifact component to its implementation group.
 - [x] Integrate the artifacts and current-schema consumers.
 - [x] Verify the committed unit and publish criterion evidence.
-- [ ] Publish the task PR and record both task links. **In progress.**
-- [ ] Merge the passing task PR into its epic base.
+- [x] Publish the task PR and record both task links.
+- [ ] Merge the passing task PR into its epic base. **In progress.**
 - [ ] Record AC11/AC12 and task completion, update draft integration and verify board state.
 - [ ] Publish final change and arising-issue dispositions.
 
@@ -53,3 +53,7 @@ The target branch's user edit removes the italicized-verb guideline. Its rule ma
 ## T5
 
 **Shared checker suite — Pass.** `python3 -m unittest discover -s skills/test -q` runs 208 tests and passes. It verifies the shared skill-file checker used by this unit.
+
+## Task Pull Request
+
+Task PR #1628 targets i17/e03/workspace at the verified task head. Its body matches the published body file, and W02 and W03 both link it. Its Development relation is empty because these rows have no task issue. The epic integration remains #1627.
