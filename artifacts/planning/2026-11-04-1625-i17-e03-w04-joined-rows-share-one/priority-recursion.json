@@ -1,0 +1,33 @@
+{
+  "revision": "74e19867e905523b85d2da84c7b1cb35b2b60b53",
+  "source_sha256": "9580b376b948d1f84c62d1b414f4062604fdfb628567f346d0f56087343bbb51",
+  "command": [
+    "/usr/bin/python3",
+    "/tmp/w05-priority-baseline/deps.py",
+    "E05=/tmp/w05-priority-baseline/E05.md",
+    "E06=/tmp/w05-priority-baseline/E06.md"
+  ],
+  "parse_problems": [],
+  "parsed_joins": {
+    "E05:W01": [
+      "E06:W01"
+    ],
+    "E06:W01": [
+      "E05:W01"
+    ]
+  },
+  "derived_epic_dependencies": {
+    "E05": [
+      "E06"
+    ],
+    "E06": [
+      "E05"
+    ]
+  },
+  "exit_code": 1,
+  "last_stderr_line": "RecursionError: maximum recursion depth exceeded",
+  "fixtures": {
+    "E05": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Work | AC1 | | E06:W01 | | |\n",
+    "E06": "## Work Breakdown\n\n| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| W01 | Work | AC1 | | E05:W01 | | |\n"
+  }
+}

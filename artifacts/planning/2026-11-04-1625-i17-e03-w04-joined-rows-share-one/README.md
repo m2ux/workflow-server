@@ -18,6 +18,10 @@ The unit also proves that valid and empty Lane values stay attached to their tas
 | [Dispatch](dispatch.md) | Authorization, live delivery context and execution checklist |
 | [Delivery evidence](delivery.md) | Execution checklist, criterion observations and validation results |
 | [Change list](change-list.md) | Applied and held plan changes |
+| [Planner results](planner-tests.log) | Complete planner suite output |
+| [Shared results](shared-tests.log) | Shared checker suite output |
+| [Criterion results](criterion-tests.log) | Exact-revision detached criterion run |
+| [Priority recursion](priority-recursion.json) | Pinned pre-existing unsupported-input reproduction |
 
 ## Links
 
