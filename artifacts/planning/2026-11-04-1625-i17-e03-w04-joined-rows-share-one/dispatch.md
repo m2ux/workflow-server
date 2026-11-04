@@ -22,5 +22,5 @@ I17 E03 remains the highest-priority eligible epic at 8. E02 and E01 remain in B
 - [x] Refresh board state, delivery PRs, complete Development relations and branch tips.
 - [x] Reconcile completed work, apply the live queue and verify the next unit is free.
 - [x] Publish the joined unit's work items and dispatch context.
-- [ ] Reserve W04+W05+W06 and confirm In Progress. **In progress.**
-- [ ] Create the task worktree and dispatch the delivery session.
+- [x] Reserve W04+W05+W06 and confirm In Progress.
+- [ ] Create the task worktree and dispatch the delivery session. **In progress.**
