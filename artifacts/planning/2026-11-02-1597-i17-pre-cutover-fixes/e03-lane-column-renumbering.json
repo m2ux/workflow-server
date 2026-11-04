@@ -1,0 +1,23 @@
+{
+  "delivered": {
+    "W01": "PR #1626; number and Done preserved"
+  },
+  "existing_rows": {
+    "W01": "W01",
+    "W02": "W07",
+    "W03": "W04",
+    "W04": "W05",
+    "W05": "W08",
+    "W06": "W09",
+    "W07": "W10",
+    "W08": "W11",
+    "W09": "W12",
+    "W10": "W13"
+  },
+  "new_rows": {
+    "W02": "Task-table lane contract",
+    "W03": "Work-item declaration removal",
+    "W06": "Cell validation and preservation"
+  },
+  "criteria": "AC1 retired to W01 delivery evidence; AC2–AC10 retain labels; AC11–AC14 cover the table contract, declaration removal, cell validation and value preservation"
+}

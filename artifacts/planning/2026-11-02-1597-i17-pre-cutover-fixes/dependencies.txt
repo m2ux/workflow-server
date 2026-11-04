@@ -21,22 +21,25 @@ none
 0 E00:W04 - Sync reads every linked pull request
 0 E02:W01 - Per-skill section model and checker
 0 E03:W01 - Work item declares an optional lane
+0 E03:W02 - Task table carries the lane column
 1 E02:W02 - Rules, conventions and configuration files
-1 E03:W02 - Delivery plan admits units by lane
-1 E03:W03 - Joined rows share one lane
-1 E03:W04 - Dependency check reads lanes, refuses split units
+1 E03:W03 - Work item holds its component declaration
+1 E03:W04 - Joined rows share one lane
+1 E03:W05 - Dependency check reads task table lanes
+1 E03:W06 - Lane cells validate and survive table writes
+1 E03:W07 - Delivery plan admits units by lane
 2 E02:W03 - Modes in the new style
 2 E02:W04 - Protocols in the new style
 2 E02:W05 - Issue and body artifacts in the new style
 2 E02:W06 - Board, queue, planning and review artifacts restyled
 2 E02:W07 - Delivery, branch and pull-request artifacts restyled
-2 E03:W05 - Available-work survey filters units by lane
-2 E03:W06 - Deliver mode passes the requested lane
-2 E03:W07 - Plan mode proposes each row's lane
-2 E03:W08 - Board queue reports Ready units' lanes
-2 E03:W09 - Board-queue script prints Ready unit lanes
+2 E03:W08 - Available-work survey filters units by lane
+2 E03:W09 - Deliver mode passes the requested lane
+2 E03:W10 - Plan mode writes task row lanes
+2 E03:W11 - Board queue reports Ready units' lanes
+2 E03:W12 - Board-queue script prints Ready unit lanes
 3 E01:W01 - SOLID guidelines for files and operations
-3 E03:W10 - Advance mode reports Ready units' lanes
+3 E03:W13 - Advance mode reports Ready unit lanes
 4 E01:W02 - Audit the skill against the guidelines
 5 E01:W03 - Generic prose in general artifacts and modes
 5 E01:W04 - Generic interfaces in general scripts

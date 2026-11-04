@@ -33,3 +33,8 @@
 - **Problem.** Contention between E02 and E03 is unchecked, since E02 has no work items.
   **Resolution.** Put to the user with E03's priority.
 - **Format.** The epic and the initiative, checked with every epic, report nothing to fix, apply or decide.
+
+
+## E03 Task-Table Lane Review, 4 November 2026
+
+The confirmed storage and column order are implemented in the plan. [Lane-column review](e03-lane-column-review.md) holds the current findings, dispositions, validation and held reporting decision. [Lane-column dependencies](e03-lane-column-dependencies.txt) checks every current E03 row and work-item component.

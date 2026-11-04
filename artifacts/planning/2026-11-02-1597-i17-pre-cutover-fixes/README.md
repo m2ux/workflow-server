@@ -25,15 +25,21 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E01 SOLID guidelines](e01/solid-guidelines.md) | The SOLID guidelines draft E01 W01 lands |
 | [E03 body](bodies/e03.md) | The Delivery Lanes epic body as saved |
 | [E03 W01](e03/w01.md) | Work item declares an optional lane |
-| [E03 W02](e03/w02.md) | Delivery plan admits units by lane |
-| [E03 W03](e03/w03.md) | Joined rows share one lane |
-| [E03 W04](e03/w04.md) | Dependency check reads lanes, refuses split units |
-| [E03 W05](e03/w05.md) | Available-work survey filters units by lane |
-| [E03 W06](e03/w06.md) | Deliver mode passes the requested lane |
-| [E03 W07](e03/w07.md) | Plan mode proposes each row's lane |
-| [E03 W08](e03/w08.md) | Board queue reports Ready units' lanes |
-| [E03 W09](e03/w09.md) | Board-queue script prints Ready unit lanes |
-| [E03 W10](e03/w10.md) | Advance mode reports Ready units' lanes |
+| [E03 W02](e03/w02.md) | Task table carries the lane column |
+| [E03 W03](e03/w03.md) | Work item holds its component declaration |
+| [E03 W04](e03/w04.md) | Joined rows share one lane |
+| [E03 W05](e03/w05.md) | Dependency check reads task table lanes |
+| [E03 W06](e03/w06.md) | Lane cells validate and survive table writes |
+| [E03 W07](e03/w07.md) | Delivery plan admits units by lane |
+| [E03 W08](e03/w08.md) | Available-work survey filters units by lane |
+| [E03 W09](e03/w09.md) | Deliver mode passes the requested lane |
+| [E03 W10](e03/w10.md) | Plan mode writes task row lanes |
+| [E03 W11](e03/w11.md) | Board queue reports Ready units' lanes |
+| [E03 W12](e03/w12.md) | Board-queue script prints Ready unit lanes |
+| [E03 W13](e03/w13.md) | Advance mode reports Ready unit lanes |
+| [Lane-column review](e03-lane-column-review.md) | Confirmed storage contract, goal trace, dependency review and publication checks |
+| [Lane-column dependencies](e03-lane-column-dependencies.txt) | Dependency and join checks of the revised E03 rows |
+| [Lane-column row map](e03-lane-column-renumbering.json) | Preserved delivery, undelivered-row numbering and criterion disposition |
 
 ## Links
 

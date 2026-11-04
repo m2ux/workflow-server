@@ -1,0 +1,33 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one component
+none
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E03:W01 - Work item declares an optional lane
+0 E03:W02 - Task table carries the lane column
+1 E03:W03 - Work item holds its component declaration
+1 E03:W04 - Joined rows share one lane
+1 E03:W05 - Dependency check reads task table lanes
+1 E03:W06 - Lane cells validate and survive table writes
+1 E03:W07 - Delivery plan admits units by lane
+2 E03:W08 - Available-work survey filters units by lane
+2 E03:W09 - Deliver mode passes the requested lane
+2 E03:W10 - Plan mode writes task row lanes
+2 E03:W11 - Board queue reports Ready units' lanes
+2 E03:W12 - Board-queue script prints Ready unit lanes
+3 E03:W13 - Advance mode reports Ready unit lanes
+
+--- component contention: rows of different epics extending one component
+none
+
+--- epic priority (epics sharing a number start together)
+1 E03
+
+--- longest chains: 1, each of 4 steps
+on every chain: E03:W02, E03:W07, E03:W11, E03:W13
+E03:W02 -> E03:W07 -> E03:W11 -> E03:W13

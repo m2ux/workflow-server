@@ -56,7 +56,7 @@ Planning decisions:
 
 - **Numbering.** E02 runs before E01 but keeps the next free number, since E01 was already published.
 
-## E03 Delivery Lanes, 3 November 2026
+## E03 Delivery Lanes, 3 November 2026 — Decision History
 
 The user's decisions:
 
@@ -79,3 +79,23 @@ Planning decisions:
 - **Board.** E03 stands on board 17 at Ready, assigned to the user: I17 is In Progress and E03, with no prerequisite epic, carries the highest number among I17's epics that can start, beside E02.
 - **E03 lands before E02.** (User, 2026-11-03.) E03 takes `priority: 8` above E02's 7, so the lane rules land first and E02 restyles their text with the rest. This supersedes `priority: 7` above.
 - **The queue report is deferred.** (User, 2026-11-03.) Whether the board queue and Advance report each Ready unit's lane (W08 to W10, which teach the queue units and a read of the engineering worktree) is held for the user; it is settled before W08 starts. W01 to W07 are unaffected.
+
+
+## E03 Task-Table Lanes, 4 November 2026
+
+The user's confirmed design:
+
+1. **Storage.** A lane is a new Work Breakdown column, not a work-item declaration.
+2. **Position.** The exact epic table columns are Task, Description, Coverage, Depends on, Joins, Lane, Done.
+3. **Cell.** Lane holds a bare index such as 2, or an empty value for an unlaned row. The index remains opaque and board-wide.
+
+Planning decisions:
+
+- **Historical delivery.** W01 and PR #1626 keep their number, merge and Done tick. Its original declaration criterion is retained in its delivery evidence and retired as AC1 from the current epic. The epic's current criteria are AC2–AC14.
+- **One data home.** W02 owns the task-table contract (AC11) and W03 removes the work-item declaration path (AC12). They join so the schema and declaration removal ship together.
+- **Reader and validation.** W04–W06 join the dependency rule, its shared row-lane reader, and format validation/preservation (AC3, AC4, AC13, AC14). The reader takes raw Lane cells from the epic body; work-item files supply components. Malformed populated cells are reported, not treated as empty lanes.
+- **Filter next.** W07+W08 deliver admission rules and the survey filter. A row's lane remains available when it has no work-item link. W09 integrates the requested lane into Deliver; W10 writes confirmed values through Populate Epic Issue Body.
+- **Reporting.** W11+W12 and W13 read the Lane cells already supplied in issue snapshots. They introduce no engineering-worktree input for lane data. The existing reporting decision remains held until before W11 starts; this renumbers the previously held W08–W10 scope.
+- **Numbering.** Only undelivered rows are renumbered, as the [row map](e03-lane-column-renumbering.json) records. No task beyond W01 has a delivering pull request or reservation.
+- **Priority.** E03 retains its confirmed priority 8, ahead of E02 at 7 and E01 at 6. The storage correction adds no cross-epic edge or contention requiring another priority decision.
+- **Scope.** This request revises the published plan and its work items. Source implementation and the draft integration remain at the delivered declaration revision. The new table contract is implemented by W02+W03.

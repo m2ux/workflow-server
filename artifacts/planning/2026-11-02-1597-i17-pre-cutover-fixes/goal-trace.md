@@ -23,4 +23,18 @@ No requirement source is marked; the criteria come from the confirmed goal.
 
 | Goal clause | Initiative criteria | Epics | Epic criteria | Source requirement |
 | --- | --- | --- | --- | --- |
-| Each change found before the cutover is delivered in workflow-server, the lanes feature included | AC1 | E03 | AC1–AC10, one per row | The user's E03 decision 1 |
+| Each change found before the cutover is delivered in workflow-server, the lanes feature included | AC1 | E03 | AC2–AC14, covered by the undelivered rows | The user's E03 decision 1 |
+
+
+## E03 Task-Table Lane Trace, 4 November 2026
+
+| Confirmed clause | Initiative criterion | Epic criteria | Delivering rows | Source |
+| --- | --- | --- | --- | --- |
+| Lane is a bare task-table index after Joins and before Done | AC1 | AC11 | E03 W02 | User instruction, 4 November |
+| Table assignment is the lane data home | AC1 | AC12 | E03 W03 | User instruction, 4 November |
+| Joined units share one lane and malformed cells are reported | AC1 | AC3, AC4, AC13, AC14 | E03 W04–W06 | Existing joined-unit design and the confirmed table storage |
+| A run admits its lane and unlaned units from task cells | AC1 | AC2, AC5, AC6 | E03 W07–W09 | Existing admission decisions |
+| Planning writes confirmed indices into task rows | AC1 | AC7 | E03 W10 | Confirmed table storage and existing lane-planning decision |
+| Ready-unit lanes are reported from issue snapshots | AC1 | AC8, AC9, AC10 | E03 W11–W13 | Existing reporting scope, decision held before W11 |
+
+The initiative goal and criterion are unchanged. No marked external requirement source is added. The updated epic retains lane admission, joined-unit consistency and per-request routing while placing the assignment in the task table.
