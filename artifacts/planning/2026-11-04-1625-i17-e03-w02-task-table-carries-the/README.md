@@ -16,6 +16,7 @@ W02 defines the epic-table contract and its population input, covering AC11. W03
 | [W03](w03.md) | Work-item declaration removal, component and verification scope |
 | [Dispatch](dispatch.md) | Authorization, live queue, delivery context and execution checklist |
 | [Delivery Evidence](delivery.md) | Criterion observations, validation, delivery state and execution checklist |
+| [Change List](change-list.md) | Applied scope corrections and arising-issue dispositions |
 
 ## Links
 
