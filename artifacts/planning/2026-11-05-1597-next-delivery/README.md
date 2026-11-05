@@ -90,3 +90,4 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | [Final document result](step-document-check.log) | 13 affected document checks |
 | [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
 | [Epic readback](integration-epic-readback.json) | Saved specification, eight delivered rows and checked criteria |
+| [Human handoff](integration-handoff.json) | Ready PR, exact In Review item, target rules and blocked successor |

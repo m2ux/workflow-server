@@ -24,4 +24,4 @@ The user identifies two peer Apply calls under Board Delivery / Record Epic Revi
 - [x] Inventory 733 bare-prose/metadata candidates in 52 procedure documents.
 - [x] Revise the rule and classify every candidate.
 - [x] Validate, commit and push the owning integration branch.
-- [ ] Publish the current-head integration review and handoff.
+- [x] Publish the current-head integration review and handoff.
