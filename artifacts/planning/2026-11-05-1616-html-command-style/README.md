@@ -9,7 +9,7 @@ Update I17 E02 #1616 to require the user-selected raw HTML command presentation,
 - [x] Read the issue and verify the exact reference at a pinned revision.
 - [x] State the presentation once in Proposal and bind checker/migration acceptance criteria to it.
 - [x] Validate the draft and preserve the canonical planning body.
-- [ ] Publish and verify the issue body. **In progress.**
+- [x] Publish and verify the issue body.
 
 ## Artifacts
 
@@ -20,3 +20,9 @@ Update I17 E02 #1616 to require the user-selected raw HTML command presentation,
 ## Validation
 
 The issue formatter reports zero unresolved or metadata findings; its one mechanical bold-lead correction is applied. All seven task ids, Coverage, Depends on, Joins and Done values remain intact, with empty Lane cells in the confirmed column position. All seven criteria remain unticked. The exact style reference is pinned and its selected invocation verified. R4 identifies the merged migration baseline; stale problem wording is aligned with the live skill. No installed command is changed by this planning update.
+
+## Publication
+
+[Issue #1616](https://github.com/m2ux/workflow-server/issues/1616) reads back byte-for-byte as the canonical E02 body, including Proposal’s HTML command style, checker acceptance/rejection evidence, migration criteria and pinned R5 example. The issue remains open; this is a requirement update, not implementation.
+
+- [Published Snapshot](after.json)
