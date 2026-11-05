@@ -28,6 +28,8 @@ The evidence binds the reviewed source to structural and behavioral checks and s
 | [disclosure-source.patch](disclosure-source.patch) | Frozen walked-source patch |
 | [disclosure-source.tar.gz](disclosure-source.tar.gz) | Inspected immutable disclosure source, input or prompt payload |
 | [disclosure.md](disclosure.md) | Six bounded results and explicit Partial disclosure limits |
+| [head-checks.json](head-checks.json) | Literal-head identities, complete checks and refusal controls |
+| [literal-head-checks.tar.gz](literal-head-checks.tar.gz) | Exact detached check logs and negative controls |
 | [helper-probe-results.json](helper-probe-results.json) | Actual and synthetic reader-boundary outcomes |
 | [interrupted-v3-instrument.tar.gz](interrupted-v3-instrument.tar.gz) | Three interrupted instrument observations, excluded from the final six |
 | [neutral-read.py](neutral-read.py) | Shared-lexer section reader preserving original bytes |

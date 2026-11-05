@@ -6,7 +6,7 @@ The six owned artifacts expose 70 callable operations, linked Inputs/Outputs and
 
 The composed source check covers 58 Work Planner files with zero findings under the temporary selected model. `preservation-ledger.json` accounts for all 273 original operative lines, all callable anchors, all six byte-identical Prerequisites, 72 byte-identical command bodies after stripping only argument-link markup and eight byte-identical data specimens. The initial flush-only count of 78 is corrected to 80 total specimens, including two indented data specimens; original baseline hashes are preserved. The three type-only duplicates have their single homes in linked Fields contracts, with command flag associations and runtime guards retained.
 
-This precommit evidence describes the unchanged walked source. Clean detached literal-head evidence is recorded after the authorized source commits and remains a prerequisite to merge clearance.
+The clean detached literal head `aed3e1715de513ad7efb620e0d95cd18c79dd8ba`, tree `9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0`, passes the registered six-file criterion instrument. All 231 frozen source-file hashes match the walked snapshot. The instrument and its hash manifest have the registered identities retained in head-checks.json.
 
 ## Behavioral Suites
 
@@ -24,8 +24,8 @@ The literal installed check covers 58 Work Planner files and reports one expecte
 
 ## Publication Inspection
 
-The destination is public `m2ux/workflow-server`, origin `git@github.com:m2ux/workflow-server.git`, branch `engineering`. Both repositories represented by the input captures are verified public. `publication-audit.json` inventories ten scoped evidence archives and 445 regular UTF-8 members, with safe relative paths and no symlinks, Python caches, credential/private-key signature findings or exported system/raw-session payload. File and archive hashes preserve the exact payload inspected before publication.
+The destination is public `m2ux/workflow-server`, origin `git@github.com:m2ux/workflow-server.git`, branch `engineering`. Both repositories represented by the input captures are verified public. `publication-audit.json` inventories eleven scoped evidence archives and 450 regular UTF-8 members, with safe relative paths and no symlinks, Python caches, credential/private-key signature findings or exported system/raw-session payload. File and archive hashes preserve the exact payload inspected before publication.
 
 ## Exact-Head Verification
 
-Pending the authorized source commits. The criterion instrument's dirty-checkout refusal is recorded independently; its positive clean-head result, revision/tree/hash guards, complete detached suites and installed diagnostic are added at that literal head before PR readiness is claimed.
+At `aed3e1715de513ad7efb620e0d95cd18c79dd8ba` / tree `9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0`, the clean detached checkout passes the exact six-file criterion check, the complete Work Planner suite (925 total, 924 pass, one opt-in skip; 114.295 seconds) and the complete shared suite (258 pass). The literal installed check reports only the expected Revise Fields finding. Five controls reject a non-root, wrong revision, wrong tree, wrong source hash and a temporary dirty state; the checkout is clean after them. The registered instrument is loaded from the published record, while its checker is loaded fresh from the supplied detached checkout. `head-checks.json` and `literal-head-checks.tar.gz` retain commands/results, hashes and refusal evidence. Source commits are ecbbae624d3f0a1807cf698631563bcc62ac7ba2 and aed3e1715de513ad7efb620e0d95cd18c79dd8ba. Merge still requires root exact-head clearance.

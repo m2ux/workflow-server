@@ -2311,6 +2311,37 @@
           "sha256": "c79601095be1a8f9e8da73d0c4a2b293739fdb9d16802f4f1a1325d46dccadf3"
         }
       ]
+    },
+    {
+      "archive": "literal-head-checks.tar.gz",
+      "sha256": "3a5b1d1f37da94d510d52fbcb5b7462b82398a0389a5ef16d4eeab91e40bfb79",
+      "members": [
+        {
+          "path": "head-strict.log",
+          "bytes": 2287,
+          "sha256": "2559842c8cd5ffab5b07a0efe03fc3e0b3c6e701ab52abeeb86a13e6068f6ff7"
+        },
+        {
+          "path": "head-work-planner.log",
+          "bytes": 1039,
+          "sha256": "231e53a40d5002a09f3dd63afcec7361bd27da6b7c9a0471d6a62f6cee11847f"
+        },
+        {
+          "path": "head-shared.log",
+          "bytes": 358,
+          "sha256": "a54e357ac076e1851d8aa80c7f923eddd9e1cf1a79a8c49a69a67d1d4d48795e"
+        },
+        {
+          "path": "head-installed.log",
+          "bytes": 252,
+          "sha256": "e7808d2ae242171f4caf59d851abd8d32c7e6d6c6a1dc3ae32e298d64e081208"
+        },
+        {
+          "path": "head-guard-controls.json",
+          "bytes": 3399,
+          "sha256": "33c49718d4f2ae895f4a0f4768fc17853b597d22604c0eb0801c0aa28ff4977e"
+        }
+      ]
     }
   ],
   "findings": []

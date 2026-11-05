@@ -1,0 +1,127 @@
+{
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head",
+  "revision": "aed3e1715de513ad7efb620e0d95cd18c79dd8ba",
+  "tree": "9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0",
+  "frozen_source_digest": "dcd61a116505ff8b681c50064bca2e373807fb481aa959c517017542b8dc69e5",
+  "frozen_source_file_hashes_verified": 231,
+  "strict": {
+    "exit": 0,
+    "converted_files": 6,
+    "findings": [],
+    "instrument_sha256": "9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a",
+    "source_hash_manifest_sha256": "ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e",
+    "checker": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head/skills/scripts/check_skill_files.py"
+  },
+  "work_planner": {
+    "exit": 0,
+    "total": 925,
+    "pass": 924,
+    "skip": 1,
+    "seconds": 114.295
+  },
+  "shared": {
+    "exit": 0,
+    "pass": 258
+  },
+  "installed": {
+    "exit": 1,
+    "files": 58,
+    "findings": 1,
+    "expected": "Revise mode Fields outside installed section set"
+  },
+  "refusal_controls": {
+    "instrument_sha256": "9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a",
+    "source_hash_manifest_sha256": "ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e",
+    "controls": [
+      {
+        "control": "nonroot-refusal",
+        "exit": 2,
+        "expected_reason": "checkout root",
+        "stdout": "{\"checkout\": \"/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head/skills\", \"instrument_sha256\": \"9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a\", \"revision\": \"aed3e1715de513ad7efb620e0d95cd18c79dd8ba\", \"source_hash_manifest_sha256\": \"ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e\", \"tree\": \"9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0\"}\n",
+        "stderr": "The supplied path must be the commit checkout root.\n"
+      },
+      {
+        "control": "revision-mismatch-refusal",
+        "exit": 2,
+        "expected_reason": "expected exact revision",
+        "stdout": "{\"checkout\": \"/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head\", \"instrument_sha256\": \"9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a\", \"revision\": \"aed3e1715de513ad7efb620e0d95cd18c79dd8ba\", \"source_hash_manifest_sha256\": \"ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e\", \"tree\": \"9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0\"}\n",
+        "stderr": "The supplied checkout does not hold the expected exact revision.\n"
+      },
+      {
+        "control": "tree-mismatch-refusal",
+        "exit": 2,
+        "expected_reason": "expected exact tree",
+        "stdout": "{\"checkout\": \"/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head\", \"instrument_sha256\": \"9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a\", \"revision\": \"aed3e1715de513ad7efb620e0d95cd18c79dd8ba\", \"source_hash_manifest_sha256\": \"ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e\", \"tree\": \"9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0\"}\n",
+        "stderr": "The supplied checkout does not hold the expected exact tree.\n"
+      },
+      {
+        "control": "source-hash-mismatch-refusal",
+        "exit": 2,
+        "expected_reason": "source hash differs",
+        "stdout": "{\"checkout\": \"/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head\", \"instrument_sha256\": \"9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a\", \"revision\": \"aed3e1715de513ad7efb620e0d95cd18c79dd8ba\", \"source_hash_manifest_sha256\": \"ae3b8a335bd723e9c95832b66398018791d9d79a4c00d0c10b6d0e5c46cc6e13\", \"tree\": \"9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0\"}\n",
+        "stderr": "The supplied source hash differs: skills/scripts/check_skill_files.py\n"
+      },
+      {
+        "control": "dirty-refusal",
+        "exit": 2,
+        "expected_reason": "uncommitted files",
+        "stdout": "{\"checkout\": \"/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head\", \"instrument_sha256\": \"9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a\", \"revision\": \"aed3e1715de513ad7efb620e0d95cd18c79dd8ba\", \"source_hash_manifest_sha256\": \"ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e\", \"tree\": \"9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0\"}\n",
+        "stderr": "The supplied commit checkout has uncommitted files.\n"
+      }
+    ],
+    "checkout_after": "clean"
+  },
+  "checkout_after": "clean",
+  "disclosure": "Partial; source bytes equal the six-walk v4 snapshot",
+  "commands": [
+    {
+      "check": "strict",
+      "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head",
+      "argv": [
+        "/home/mike1/projects/dev/md-composer/scripts/sbx",
+        "python3",
+        "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-11-05-1616-i17-e01-w07-delivery-branch-and-pull/criterion-check.py",
+        "--expected-revision",
+        "aed3e1715de513ad7efb620e0d95cd18c79dd8ba",
+        "--expected-tree",
+        "9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0"
+      ]
+    },
+    {
+      "check": "work_planner",
+      "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head/skills/work-planner",
+      "argv": [
+        "/home/mike1/projects/dev/md-composer/scripts/sbx",
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test"
+      ]
+    },
+    {
+      "check": "shared",
+      "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head",
+      "argv": [
+        "/home/mike1/projects/dev/md-composer/scripts/sbx",
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/test"
+      ]
+    },
+    {
+      "check": "installed",
+      "cwd": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-verified-head",
+      "argv": [
+        "/home/mike1/projects/dev/md-composer/scripts/sbx",
+        "python3",
+        "skills/scripts/check_skill_files.py",
+        "skills/work-planner"
+      ]
+    }
+  ]
+}

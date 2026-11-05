@@ -24,5 +24,6 @@ Evidence archives contain scoped regular-file payloads inspected against the ver
 - [x] Publish the work item and design before source implementation.
 - [x] Convert the family and necessary readers with a complete preservation ledger.
 - [x] Record the six bounded v4 results, Partial disclosure and separate interrupted v3 observations.
-- [ ] Complete committed-head checks and publish the task pull request.
+- [x] Complete committed-head criterion, complete suites and supplied-checkout refusal controls.
+- [ ] Publish the task pull request with linked exact-head evidence.
 - [ ] Await exact-head merge clearance and complete delivery recording/readback.
