@@ -3,7 +3,7 @@
 A command whose block runs git or GitNexus where it stands acts on whichever
 checkout it runs in: the same merge lands on an epic base or on a unit's task
 branch depending only on the directory. The skill names its checkouts once, in the
-entry point's Conventions, and the tests here hold every call to that
+common Conventions, and the tests here hold every call to that
 vocabulary.
 
 - A command running git or GitNexus in its working directory declares that it acts on
@@ -41,8 +41,8 @@ PROCEDURE_FOLDERS = ('modes', 'protocols')
 
 
 def vocabulary():
-    """The checkout names the entry point's Conventions state."""
-    lines = (ROOT / 'SKILL.md').read_text().splitlines()
+    """The checkout names the common Conventions state."""
+    lines = (ROOT / 'conventions.md').read_text().splitlines()
     names = []
     for position, line in enumerate(lines):
         if not (lead := VOCABULARY_LEAD.match(line)):
@@ -203,10 +203,10 @@ class Corpus:
 
 
 class CheckoutVocabulary(unittest.TestCase):
-    def test_the_entry_point_names_the_checkouts(self):
+    def test_conventions_name_the_checkouts(self):
         """The vocabulary every declaration and call draws from."""
         names = vocabulary()
-        self.assertTrue(names, 'SKILL.md Conventions state no Checkouts')
+        self.assertTrue(names, 'conventions.md states no Checkouts')
         self.assertEqual(len(names), len(set(names)))
 
 

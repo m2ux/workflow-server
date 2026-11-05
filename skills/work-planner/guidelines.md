@@ -212,11 +212,11 @@ Read this before adding or changing a reference.
 ## Entry Point
 
 - **Opening.**  The bulleted list has one item for each issue type.
-- **Section order.**  Rules precedes Dependencies.
+- **Section order.**  The opening, Modes and Dependencies occupy the entry point.
 - **Issue bodies.**
   The skill's prose layout applies to its instructions. Issue bodies follow [Issue Body](artifacts/issue-body.md#fields); pull request bodies follow [Pull Request Body](artifacts/pull-request-body.md#fields).
 - **Common conventions.**
-  The entry point supplies [Conventions](SKILL.md#conventions) before mode selection. Graph-specific setup belongs to [Repository Graph](artifacts/repository-graph.md).
+  The entry point requires [Rules](rules.md) and [Conventions](conventions.md) before mode selection. [Configuration](configuration.md) holds deployed values, reached by their consuming sections. Graph-specific setup belongs to [Repository Graph](artifacts/repository-graph.md).
 
 ## Progressive Disclosure
 

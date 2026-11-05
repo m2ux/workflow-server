@@ -2,6 +2,13 @@
 
 The theme or proposals board, its membership and each item's status.
 
+## Prerequisites
+
+Read these files first.
+
+- For proposals-board selection or creation, read [Proposals Board Configuration](../configuration.md#proposals-board).
+- For theme-board creation, read [Theme Board Configuration](../configuration.md#theme-boards).
+
 ## Operations
 
 ### *Select* Project Board
@@ -20,7 +27,7 @@ A missing theme board, or a missing proposals board.
 
 **Inputs:** Board owner, repository, selected board kind, theme title and originating proposal record when applicable.
 
-1. When no open board is titled `Proposals`, run [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).
+1. When no open board has the [proposals title](../configuration.md#proposals-board), run [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).
 2. When the selected theme board is absent:
    - Run [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.
    - Require the new theme's label and board before an initiative takes that theme.
@@ -31,9 +38,9 @@ A new proposals board linked to the supplied repository.
 
 **Inputs:** Board owner and repository.
 
-1. Run [Find Board Template](#find-board-template) with the owner and the exact title `Proposals Template`.
+1. Run [Find Board Template](#find-board-template) with the owner and the exact [proposals-template title](../configuration.md#proposals-board).
 2. Use the returned number as the copy source.
-3. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title `Proposals`.
+3. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
 4. Retain the new board number. The copy meets [Proposals](#proposals).
 5. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
 6. Return the new board number after linking succeeds.
@@ -45,10 +52,10 @@ A new theme board linked to the supplied repository.
 **Inputs:** Board owner, repository, theme title and originating proposal record when applicable.
 
 1. Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.
-2. Run [Find Board Template](#find-board-template) with the owner and the exact title `Initiative Template`.
+2. Run [Find Board Template](#find-board-template) with the owner and the exact [theme-template title](../configuration.md#theme-boards).
 3. Use the returned number as the copy source.
 4. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
-5. Retain the new board number. The copy carries the template's Status options: Backlog, Ready, In Progress, In Review and Done.
+5. Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
 6. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
 7. Return the new board number after linking succeeds.
 
@@ -107,15 +114,7 @@ The board identity matching a supplied purpose or theme.
 
 Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
 
-- **Example.**  workflow-server's themes.
-
-| Theme | Label | Description |
-| --- | --- | --- |
-| Canon | `theme:canon` | Definitions Checked Against the Design Canon |
-| Language | `theme:language` | The Definition Language and Its Rules |
-| Mechanical | `theme:mechanical` | The Engine That Runs Definitions |
-| Delivery | `theme:delivery` | What Reaches Agents and Hosts |
-| Planning | `theme:planning` | [Project 17 — Process: How Work Is Planned and Delivered](https://github.com/users/m2ux/projects/17) |
+Project examples are in [Themes](../configuration.md#themes).
 
 ### One Theme
 
@@ -141,8 +140,7 @@ A standalone issue sits on no board.
 
 ### Proposals
 
-- The board is titled `Proposals`. It holds proposal issues, the incoming funnel for work that may become an initiative.
-- Its copy source is the open board titled `Proposals Template`. That template carries Priority: High, Medium and Low, and its view is a board grouped by Status.
+- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
 - **Suggested.**
   Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
 - **Considering.**
@@ -190,7 +188,7 @@ gh project link '<board-number>' --owner '<owner>' --repo '<repo>'
 
 ### Find Proposals Board
 
-Prints the number of the open board titled `Proposals`.
+Prints the number of the open [proposals board](../configuration.md#proposals-board).
 
 **Inputs:** Board owner.
 
