@@ -47,3 +47,9 @@ The revision helper removes the temporary checkout after completion. The unit ch
 Task [PR 1644](https://github.com/m2ux/workflow-server/pull/1644) is open and non-draft into `i17/e01/workspace` at the literal verified head `790370ae2eff38a5619ec68c2ca431748c31982a`. Its complete body equals the published source. At capture the merge state is CLEAN and no remote checks are reported; local detached-head evidence is the validation, not remote CI. Complete pull-side Development capture confirms an empty closing relation: this row has no task issue and the PR does not close/link the whole epic. [Metadata](pr-state.json), [checks](pr-checks.json), [relation](pr-links.json).
 
 Record Epic Delivery uses fresh live epic/PR/link inputs and fetched epic-base configuration at `fb9a834c940cbed9742709d7e03594900e31d22f`. Its proposed body changes only W04's reservation link to PR1644. W05/W06/W07 holds, W08, every other row, Done and all criteria remain intact. AC4 and AC8 stay unticked while the task is unmerged. [Input archive](open-delivery-inputs.tar.gz), [output](epic-open-sync.log), [source body](epic-open-body.md). Live publication/readback follows below.
+
+## Open Row Readback
+
+The epic was fetched again immediately before publication and its body matched the snapshot used for Record Epic Delivery. Save Tracker Issue changed only the W04 reservation-to-PR link. The complete saved live body equals the published source, preserving W05/W06/W07 holds, every other row, W08 and unticked AC4/AC8. Epic1616 remains open; PR1641 stays draft. [Live readback](epic-open-readback.json).
+
+The source task checkout is clean at the verified head. The task awaits coordinator exact-head merge clearance; no merge, criterion tick, Done tick, integration-ready or board status write is claimed. Applied and held plan-change lists remain empty. Shared publication ownership returns to the coordinator after this record is pushed.

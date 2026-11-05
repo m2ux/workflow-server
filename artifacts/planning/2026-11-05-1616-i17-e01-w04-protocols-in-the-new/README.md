@@ -51,6 +51,8 @@ The protocol family preserves its complete conditions and required reads while e
 
 | [pr-state.json](pr-state.json) | Task PR and scoped row-publication evidence |
 
+| [epic-open-readback.json](epic-open-readback.json) | Complete live epic proving the scoped W04 link and preserved sibling/adoption state |
+
 ## Links
 
 | Resource | Link |
