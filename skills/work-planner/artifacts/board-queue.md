@@ -43,6 +43,8 @@ The epics of one initiative carry their own sets. Every epic with the same numbe
 
 A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.
 
+Execution order ranks available epic units by initiative priority, then by epic priority within each initiative. Equally ranked initiatives keep repository and issue order, as do equally ranked epics within one initiative; task order breaks remaining ties. An unranked initiative or sibling epic follows ranked items at its own level. An epic's parent is the initiative whose Work Breakdown links its issue, including across repositories; an epic without supplied parent evidence groups with its initiative prefix at unranked initiative priority. Hot-fixes sit outside these sets.
+
 ### Initiative Status
 
 - The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.

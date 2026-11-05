@@ -7,6 +7,7 @@ The available units, held rows and hot-fixes, blocked work and merge candidates 
 Read these files first.
 
 - [Lane](lane.md)
+- [Board Queue](board-queue.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
 - [Work Item](work-item.md)
@@ -59,7 +60,7 @@ The long-lived branch names are the ones [Branches](delivery-branches.md#branche
 
 ### Dispatch Export
 
-The optional JSON export holds exactly the available units in report order. Each entry has a repository-qualified `id`, its `record` folder and its complete `report` line. Joined rows share one entry, such as `o/r#I07:E00:W01+W02`; a hot-fix uses `o/r#F02`. Diagnostic, held and blocked lines remain in the report and create no export entry.
+The optional JSON export holds exactly the available units in report order, following [Priority Sets](board-queue.md#priority-sets). Each entry has a repository-qualified `id`, its `record` folder and its complete `report` line. Joined rows share one entry, such as `o/r#I07:E00:W01+W02`; a hot-fix uses `o/r#F02`. Diagnostic, held and blocked lines remain in the report and create no export entry.
 
 ## Commands
 

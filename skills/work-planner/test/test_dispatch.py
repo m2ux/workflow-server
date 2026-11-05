@@ -5,7 +5,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from fixtures import hotfix, run
+from fixtures import hotfix, run, url
+from test_board_queue import epic as ranked_epic, initiative, queue_run
 from test_deliver import epic, staged
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
@@ -239,6 +240,79 @@ class Refill(unittest.TestCase):
         for identity in ['o/r#I07', 'o/r#I07:E00']:
             with self.subTest(identity=identity), self.assertRaisesRegex(ValueError, 'dispatch unit'):
                 batch(AUTH, [offered(identity)], [], 1, BOARD)
+
+
+class DispatchPriority(unittest.TestCase):
+    def test_a_current_queue_selects_the_higher_priority_epic_for_one_slot(self):
+        parent = initiative(7, 'Dispatch: Work', (f'[E00]({url("issues", 943)})', ''),
+                            (f'[E01]({url("issues", 944)})', ''))
+        low = ranked_epic(943, '07:E00', (f'[W00]({RECORDS}/held)', 'Held', ''),
+                          ('W01', 'Low free work', ''), priority='priority: 1')
+        high = ranked_epic(944, '07:E01', ('W01', 'High free work', ''), priority='priority: 10')
+        items = staged((parent, 'In Progress'), (low, 'In Progress'), (high, 'Ready'))
+        queue = queue_run(items)
+        self.assertEqual(queue.returncode, 0, queue.stderr)
+        self.assertIn('to do: 0 (the queue is current)', queue.stdout)
+        plan, report = exported(items)
+        selected = batch(AUTH, plan, [], 1, BOARD)
+        self.assertEqual([unit['id'] for unit in selected['units']], ['o/r#I07:E01:W01'])
+        self.assertEqual([unit['report'] for unit in plan],
+                         [line.strip() for line in report.splitlines() if line.startswith('  unit ')])
+
+    def test_initiative_priority_precedes_each_initiatives_epic_priority(self):
+        low = initiative(7, 'Low: Work', (f'[E00]({url("issues", 943)})', ''), priority='priority: 1')
+        high = initiative(8, 'High: Work', (f'[E00]({url("issues", 944)})', ''), priority='priority: 10')
+        items = staged((low, 'In Progress'), (high, 'In Progress'),
+                       (ranked_epic(943, '07:E00', ('W01', 'Low parent', ''),
+                                    priority='priority: 100'), 'In Progress'),
+                       (ranked_epic(944, '08:E00', ('W01', 'High parent', ''),
+                                    priority='priority: 1'), 'Ready'))
+        plan, _ = exported(items)
+        selected = batch({**AUTH, 'scope': ['*']}, plan, [], 1, BOARD)
+        self.assertEqual(selected['units'][0]['id'], 'o/r#I08:E00:W01')
+
+    def test_epic_priorities_are_compared_only_within_their_parent(self):
+        first = initiative(7, 'First: Work', (f'[E00]({url("issues", 943)})', ''))
+        second = initiative(8, 'Second: Work', (f'[E00]({url("issues", 944)})', ''))
+        items = staged((second, 'In Progress'), (first, 'In Progress'),
+                       (ranked_epic(944, '08:E00', ('W01', 'Second', ''),
+                                    priority='priority: 100'), 'Ready'),
+                       (ranked_epic(943, '07:E00', ('W01', 'First', ''),
+                                    priority='priority: 1'), 'Ready'))
+        plan, _ = exported(items)
+        self.assertEqual([unit['id'] for unit in plan], ['o/r#I07:E00:W01', 'o/r#I08:E00:W01'])
+
+    def test_parent_priority_follows_cross_repository_issue_links(self):
+        high = initiative(7, 'High: Work', (f'[E00]({url("issues", 943, "z/s")})', ''),
+                          priority='priority: 10')
+        low = initiative(8, 'Low: Work', (f'[E00]({url("issues", 944)})', ''), priority='priority: 1')
+        items = staged((high, 'In Progress'), (low, 'In Progress'),
+                       (ranked_epic(943, '07:E00', ('W01', 'Cross repository', ''), repo='z/s'), 'Ready'),
+                       (ranked_epic(944, '08:E00', ('W01', 'Local', ''), priority='priority: 100'), 'Ready'))
+        plan, _ = exported(items)
+        selected = batch({**AUTH, 'scope': ['*']}, plan, [], 1, BOARD)
+        self.assertEqual(selected['units'][0]['id'], 'z/s#I07:E00:W01')
+
+    def test_the_largest_priority_label_orders_unparented_sibling_epics(self):
+        low = ranked_epic(943, '07:E00', ('W01', 'Low', ''), priority='priority: 3')
+        high = ranked_epic(944, '07:E01', ('W01', 'High', ''), priority='priority: 1')
+        high['labels'].append({'name': 'priority: 10'})
+        plan, _ = exported(staged((low, 'In Progress'), (high, 'Ready')))
+        self.assertEqual(plan[0]['id'], 'o/r#I07:E01:W01')
+
+    def test_priority_preserves_lane_admission_and_joined_units(self):
+        low = epic(943, ('W01', 'Low', '', ''), which='07:E00')
+        high = epic(944, ('W01', 'High', '', 'W02'), ('W02', 'Joined', '', 'W01'), which='07:E01')
+        outside = epic(945, ('W01', 'Other lane', '', ''), which='07:E02')
+        for issue, priority, assignments in [(low, 1, {'W01': '2'}),
+                                              (high, 10, {'W01': '2', 'W02': '2'}),
+                                              (outside, 100, {'W01': '3'})]:
+            issue['labels'] = [{'name': f'priority: {priority}'}]
+            issue['body'] = assign_lanes(issue['body'], assignments)
+        plan, _ = exported(staged((low, 'In Progress'), (high, 'Ready'), (outside, 'Ready')), '--lane', '2')
+        selected = batch({**AUTH, 'lane': '2'}, plan, [], 1, BOARD, '2')
+        self.assertEqual([unit['id'] for unit in selected['units']], ['o/r#I07:E01:W01+W02'])
+        self.assertNotIn('o/r#I07:E02:W01', [unit['id'] for unit in plan])
 
 
 class DispatchBlockers(unittest.TestCase):
