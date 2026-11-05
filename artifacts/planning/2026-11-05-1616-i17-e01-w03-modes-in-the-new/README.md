@@ -36,6 +36,8 @@ The work preserves every operative condition and verifies the proposed structure
 | [epic-open-body.md](epic-open-body.md) | Source epic body replacing only the W03 reservation with its open PR |
 | [epic-open-sync.log](epic-open-sync.log) | Record Epic Delivery output and still-incomplete epic criteria |
 
+| [epic-open-readback.json](epic-open-readback.json) | Saved live epic proving the W03 PR link and preserved sibling/adoption state |
+
 ## Links
 
 | Resource | Link |
