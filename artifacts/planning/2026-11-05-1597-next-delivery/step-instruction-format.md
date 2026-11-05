@@ -1,13 +1,13 @@
 # Instructions Beneath Numbered Steps
 
-The user identifies two peer Apply calls under Board Delivery / Record Epic Review / Read Configuration and Assignee. Each call belongs in a flush bullet. This preference applies throughout Work Planner, including the first instruction of a step.
+The user identifies two peer Apply calls under Board Delivery / Record Epic Review / Read Configuration and Assignee. Each call belongs in a flush bullet. The user clarifies: every contained item is bulleted when a numbered step has multiple items; a single item is plain text.
 
 ## Design
 
-- Numbered headings supply the outer order. Each contained instruction or required condition is a flush bullet, including a single instruction.
-- Plain text introduces a genuinely governed list or branch. It carries scope rather than an executable peer action.
+- Numbered headings supply the outer order. A step with multiple instruction or detail items uses flush bullets for every item; a step with one item uses plain text.
+- Scope introductions follow the same item rule. Existing branch labels remain structural labels; their following instructions follow the step item rule.
 - Inputs, Outputs, Acts on, REST gap and example labels retain their contract roles. Command and template payloads remain byte-identical.
-- The existing Separate Actions rule owns the requirement. List Introductions owns scope; no duplicate family-specific rule is added.
+- The existing Separate Actions rule owns the item-count requirement. List Introductions owns scope and refers to that rule; no duplicate family-specific rule is added.
 - The change belongs on the open E01 integration branch, with no new task branch, dependency, lane or scope.
 
 ## Verification
