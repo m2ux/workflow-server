@@ -111,7 +111,7 @@ sequenceDiagram
         participant E as deliver.epic_state
         participant P as Board.epic_prerequisites_met
         participant T as Board.table
-        participant B as Board.rows
+        participant B as board.rows
         participant F as format.split_sections
     end
     Q->>E: determine task states

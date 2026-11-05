@@ -7,8 +7,8 @@ Head: dbfe21c2bc88d97034c3de8e64e8b490ae54688f. Target: workspace at d0a62b8037b
 - [x] Deliver every published E03 unit and record AC2–AC15 and Done.
 - [x] Update the clean epic base from its remote and current target.
 - [x] Inspect complete integration source/tests and verify current criterion evidence.
-- [ ] Publish measured architecture and exact-head agent review. **In progress.**
-- [ ] Validate published evidence against fresh tips; ready the integration and confirm In Review.
+- [x] Publish measured architecture and exact-head agent review.
+- [ ] Validate published evidence against fresh tips; ready the integration and confirm In Review. **In progress.**
 - [ ] Hand off the verified integration to its required human reviewer.
 
 ## Governance
