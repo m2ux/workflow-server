@@ -26,6 +26,7 @@ import re
 import sys
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -59,12 +60,11 @@ def vocabulary():
 class Document:
     """One markdown file of the skill, with its headings' spans and steps."""
 
-    def __init__(self, path):
+    def __init__(self, path, entry=None):
         self.path = path
         self.lines, self.fenced, self.headings = checker.scan(path)
-        entry = dict(checker.contract(path, {}) or {})
-        entry.update(procedures='Operations' if path.parent.name == 'artifacts' else 'Procedure',
-                     steps='headings')
+        entry = checker.contract(path, {}) if entry is None else entry
+        self.entry = entry or {}
         self.steps = checker.procedure_spans(self.lines, self.fenced, self.headings, entry)
         self.blocks = checker.scan_blocks(self.lines)
         self.spans = {}
@@ -117,6 +117,8 @@ class Document:
 
     def commands(self):
         """Executing HTML operations and their working-directory declarations."""
+        if self.entry.get('commands') != 'inline-html':
+            return
         operations = {}
         for first, last in self.blocks.invocations:
             if first not in self.steps:
@@ -224,6 +226,24 @@ class ExecutingCheckoutEvidence(unittest.TestCase):
         self.assertTrue(any(destination == graph and anchor == 'measure-repository-change'
                             for _, _, destination, anchor in corpus.calls()))
 
+    def test_installed_declaration_selects_execution_steps(self):
+        path = ROOT / 'artifacts/repository-graph.md'
+        self.assertTrue(Document(path).steps)
+        self.assertTrue(list(Document(path).commands()))
+        with mock.patch.object(checker, 'contract', return_value=None):
+            self.assertFalse(Document(path).steps)
+            self.assertFalse(list(Document(path).commands()))
+        installed = checker.contract
+
+        def without_html(path, cache):
+            entry = dict(installed(path, cache) or {})
+            entry.pop('commands', None)
+            return entry
+
+        with mock.patch.object(checker, 'contract', side_effect=without_html):
+            self.assertTrue(Document(path).steps)
+            self.assertFalse(list(Document(path).commands()))
+
     def test_only_executing_html_supplies_command_and_declaration_evidence(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'artifacts/control.md'
@@ -280,7 +300,9 @@ git status
 
 <big><pre>git status</pre></big>
 """)
-            document = Document(path)
+            document = Document(path, {'sections': ['Operations', 'Fields'],
+                                       'procedures': 'Operations', 'steps': 'headings',
+                                       'commands': 'inline-html'})
             commands = {title: (bare, declares) for _, title, bare, declares in document.commands()}
             self.assertEqual(commands, {
                 'Inspect Current Checkout': (True, True),
@@ -318,7 +340,9 @@ Apply [Inspect Literal Target](#literal-target) in the review checkout.
 
 [Unexecuted field](#field-target)
 """)
-            document = Document(path)
+            document = Document(path, {'sections': ['Operations', 'Fields'],
+                                       'procedures': 'Operations', 'steps': 'headings',
+                                       'commands': 'inline-html'})
             self.assertEqual([anchor for _, _, anchor in document.calls()], ['live-target'])
 
 

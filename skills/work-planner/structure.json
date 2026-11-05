@@ -1,17 +1,32 @@
 {
+  "SKILL.md": {
+    "sections": ["Modes", "Dependencies"]
+  },
   "modes": {
-    "sections": ["Prerequisites", "Procedure", "Outcomes", "Guidance", "Operations"],
+    "sections": ["Prerequisites", "Procedure", "Outcomes", "Fields", "Guidance"],
     "required": ["Procedure", "Outcomes"],
-    "specifications": "Operations"
+    "procedures": "Procedure",
+    "steps": "headings",
+    "commands": "inline-html",
+    "preamble": ["../rules.md", "../conventions.md", "#outcomes"],
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"}
   },
   "protocols": {
     "sections": ["Prerequisites", "Procedure", "Guidance"],
-    "required": ["Procedure"]
+    "required": ["Procedure"],
+    "procedures": "Procedure",
+    "steps": "headings",
+    "commands": "inline-html",
+    "preamble": ["../rules.md", "../conventions.md"],
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"}
   },
   "artifacts": {
-    "sections": ["Prerequisites", "Operations", "Fields", "Guidance", "Commands"],
+    "sections": ["Prerequisites", "Operations", "Fields", "Guidance"],
     "required": ["Fields"],
     "procedures": "Operations",
-    "keeps_commands": true
+    "steps": "headings",
+    "commands": "inline-html",
+    "contracts": "Fields",
+    "calls": {"artifacts": "Apply"}
   }
 }
