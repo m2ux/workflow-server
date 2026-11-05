@@ -1,7 +1,5 @@
 """orphans.py keeps a proposal out of the hoist candidates and out of the initiative list, and a
 declared throwaway out of both candidate groups.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import tempfile

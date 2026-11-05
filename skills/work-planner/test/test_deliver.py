@@ -1,6 +1,4 @@
 """The work deliver.py finds available on a theme board, and the rows it reserves and releases.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import tempfile

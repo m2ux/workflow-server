@@ -1,6 +1,4 @@
 """The jurisdiction each mode's Status changes are held to, and the calls they render.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import sys

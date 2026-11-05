@@ -1,6 +1,4 @@
 """The queue board-queue.py sets on a theme board.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import re
