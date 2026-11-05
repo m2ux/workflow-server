@@ -176,13 +176,13 @@ Read this before adding or changing an artifact.
 - **Prerequisites.**
   Prerequisites open with `Read these files first.` They list every file the artifact's Operations or Fields link to. A kind lists `issue-body.md` because it links to it. The common file does not link to a kind.
 - **Operation steps.**
-  Address instructions directly to the agent under each numbered action heading, following the [procedure rules](#procedure).
+  Address instructions directly to the agent, following the [procedure rules](#procedure).
 - **Returned output.**
   The **Outputs:** declaration names the returned contracts; instructions identify the concrete result returned to the caller.
 - **Population conditions.**
   A population step leads with the writing action and its template or owning operation. Mandatory field conditions follow as flush bullets beneath that step, linked to their local or shared definitions. Each condition states what must hold; field rules remain at their linked home.
 - **Command implementation.**
-  Command and access invocations sit in the operation step that runs them, following [Operations](#operations). Named operations expose that execution to callers.
+  Follow [Operations](#operations) for command and access invocation rules.
 - **No spare parts.**
   An artifact does not carry an operation, a field or a command nothing reaches. An operation no procedure cites is surface that drifts from whatever it wraps, and its capability is already reachable through the operation it would call.
 - **A new kind.**
