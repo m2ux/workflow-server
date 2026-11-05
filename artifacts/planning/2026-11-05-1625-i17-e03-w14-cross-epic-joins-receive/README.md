@@ -23,6 +23,7 @@ This unit delivers AC15 through its isolated task branch into i17/e03/workspace.
 | [Combined mode results](combined-modes.log) | Mode-interface checks at the current task head |
 | [Combined document results](combined-documents.log) | Document checks at the current task head |
 | [Combined skill files](combined-skill.log) | File check at the current task head |
+| [Merged criterion results](merged-criterion-tests.log) | CLI checks at the exact epic-base merge revision |
 
 ## Links
 
@@ -31,3 +32,4 @@ This unit delivers AC15 through its isolated task branch into i17/e03/workspace.
 | Epic | [I17 E03](https://github.com/m2ux/workflow-server/issues/1625) |
 | Authorization | [Automatic remaining delivery](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
 | Integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+| Task PR | [#1635, merged](https://github.com/m2ux/workflow-server/pull/1635) |
