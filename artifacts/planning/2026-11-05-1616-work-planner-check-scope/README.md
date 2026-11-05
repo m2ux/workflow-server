@@ -20,6 +20,8 @@ The shared checker retains ordinary regression coverage while the other skills' 
 | [outside-baseline.txt](outside-baseline.txt) | Scope decision and validation evidence |
 | [proposed.json](proposed.json) | Scope decision and validation evidence |
 
+| [Saved epic](after.json) | Exact scope readback verified |
+
 ## Links
 
 | Resource | Link |
