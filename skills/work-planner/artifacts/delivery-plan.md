@@ -15,14 +15,49 @@ Read these files first.
 
 ## Operations
 
-### *Plan* Available Work
+### Plan Available Work
 
 One delivery plan from supplied board and delivery evidence.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index, optional record date and optional dispatch-export path.
+**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot), [Project Checkout](#project-checkout), [Revision](#revision), [Epic-Base Names](#epic-base-names), [Engineering Worktree](#engineering-worktree), [Off-Board Issues](#off-board-issues), [Requested Lane](#requested-lane), [Record Date](#record-date), [Dispatch-Export Path](#dispatch-export-path).
 
-1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
-2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+**Outputs:** [Plan Report](#plan-report), [Dispatch Export](#dispatch-export), [Failure](#failure).
+
+#### 1. Compute Available Units
+
+Apply [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. For each derived free unit, Apply [Determine Lane Admission](lane.md#determine-lane-admission) within the computation, with its epic body, complete ids and the requested index.
+
+#### 2. Return Delivery Plan
+
+Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+
+### Compute Available Work
+
+Computes available work from supplied board and delivery snapshots.
+
+**Inputs:** [Workspace](#workspace), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot), [Project Checkout](#project-checkout), [Revision](#revision), [Epic-Base Names](#epic-base-names), [Engineering Worktree](#engineering-worktree), [Off-Board Issues](#off-board-issues), [Requested Lane](#requested-lane), [Record Date](#record-date), [Dispatch-Export Path](#dispatch-export-path).
+
+**Outputs:** [Plan Report](#plan-report), [Dispatch Export](#dispatch-export), [Failure](#failure).
+
+#### 1. Compute Available Work
+
+- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
+- `--project` is the checkout and `--revision` the evaluated revision; `--bases` receives [Epic-Base Names](#epic-base-names).
+- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
+- `--engineering` is the engineering worktree, where each free row's work-item file is read.
+- `--others` supplies each resolved off-board issue; `--date` selects another record date.
+- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
+- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items)' --prs '[**<pull-request-records-file>**](#pull-request-records)' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot)' --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)' --bases '[**<epic-base-names>**](#epic-base-names)' --engineering '[**<engineering-worktree>**](#engineering-worktree)' --lane '[**<lane-index>**](#requested-lane)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '[**<checkout>**](#project-checkout)' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '[**<checkout>**](#project-checkout)/.engineering' --lane 2
+</pre></big>
 
 ## Fields
 
@@ -61,30 +96,58 @@ The long-lived branch names are the ones [Branches](delivery-branches.md#branche
 
 The optional JSON export holds exactly the available units in report order. Each entry has a repository-qualified `id`, its `record` folder and its complete `report` line. Joined rows share one entry, such as `o/r#I07:E00:W01+W02`; a hot-fix uses `o/r#F02`. Diagnostic, held and blocked lines remain in the report and create no export entry.
 
-## Commands
+### Board Items
 
-### Compute Available Work
+The current board-items snapshot file, including each issue body.
 
-Computes available work from supplied board and delivery snapshots.
+### Pull Request Records
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional requested lane index, optional record date and optional dispatch-export path.
+The current pull request records snapshot file.
 
-- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
-- `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.
-- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
-- `--engineering` is the engineering worktree, where each free row's work-item file is read.
-- `--others` supplies each resolved off-board issue; `--date` selects another record date.
-- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
-- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
+### Issue-Link Snapshot
 
-`<epic-base-names>` is a comma-separated list of full epic-base branch names.
+The complete Development relation snapshot file.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --lane '<lane-index>'
-```
+### Epic-Base Names
 
-**Example:**
+A comma-separated list of full epic-base branch names.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --lane 2
-```
+### Engineering Worktree
+
+The engineering checkout where each free row’s linked work-item file is read.
+
+### Off-Board Issues
+
+Each resolved off-board issue record supplied through `--others`.
+
+### Requested Lane
+
+The optional requested bare decimal lane index; absent when the run names no lane, meeting [Index](lane.md#index).
+
+### Record Date
+
+The optional input selecting the planning-folder day, as [Branch Context](#branch-context) states.
+
+### Dispatch-Export Path
+
+The optional destination file for the dispatch export; absent when no export is requested.
+
+### Plan Report
+
+The report whose units and diagnostic lines meet [Report Lines](#report-lines).
+
+### Workspace
+
+The checkout holding the installed skill, its scripts and tests.
+
+### Project Checkout
+
+The project repository checkout supplied for branch and delivery reads or writes.
+
+### Revision
+
+The fetched commit or revision evaluated by the run.
+
+### Failure
+
+The operation and error, discrepancy or missing evidence that prevents a verified result.

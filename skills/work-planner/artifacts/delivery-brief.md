@@ -11,15 +11,22 @@ Read these files first.
 
 ## Operations
 
-### *Populate* Delivery Brief
+### Populate Delivery Brief
 
 One complete prompt file for a confirmed delivery unit.
 
-**Inputs:** Epic or hot-fix URL, task ids, Descriptions, each task's component, criteria, test obligations, each task branch with its base and worktree, the project checkout, reserved folder, engineering worktree, board identity, change allowance, supplied session procedure and output path.
+**Inputs:** [Work Identity](#work-identity), [Planning Record](#planning-record), [Validation Scope](#validation-scope), [Change Autonomy](#change-autonomy), [Execution Instructions](#execution-instructions), [Output Path](#output-path).
 
-1. Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.
-   - Each part must meet [Fields](#fields).
-2. Return the brief path and any missing context. The caller resolves gaps before dispatch.
+**Outputs:** [Brief Path](#brief-path), [Missing Context](#missing-context).
+
+#### 1. Write Complete Delivery Brief
+
+Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.
+- Each part must meet [Fields](#fields).
+
+#### 2. Return Brief Context
+
+Return the brief path and any missing context. The caller resolves gaps before dispatch.
 
 ## Fields
 
@@ -46,3 +53,15 @@ The brief names the supplied [allowance](plan-change.md#allowance): the plan cha
 ### Execution Instructions
 
 The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller.
+
+### Output Path
+
+The prompt-file destination; absent when Location selects the session scratchpad.
+
+### Brief Path
+
+The completed working prompt file path.
+
+### Missing Context
+
+Any required context missing from the supplied brief inputs.

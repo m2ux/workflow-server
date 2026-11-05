@@ -11,23 +11,71 @@ Read these files first.
 
 ## Operations
 
-### *Plan* Dispatch Batch
+### Plan Dispatch Batch
 
 One batch from current delivery and execution evidence.
 
-**Inputs:** Run authorization, machine-readable delivery plan, the board and requested lane used for that survey, observed session inventory, currently free harness slots and this run's admitted preparations awaiting capacity.
+**Inputs:** [Authorization](#authorization), [Survey Evidence](#survey-evidence), [Survey Board](#survey-board), [Requested Lane](#requested-lane), [Session Inventory](#session-inventory), [Free Slots](#free-slots), [Preparations](#preparations).
 
-1. Run [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.
-2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
+**Outputs:** [Batch](#batch), [Failure](#failure).
 
-### *Validate* Dispatch Start
+#### 1. Compute Admitted Dispatch Batch
+
+Apply [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.
+
+#### 2. Return Batch Continuation
+
+Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
+
+### Validate Dispatch Start
 
 One selected unit's readiness to execute.
 
-**Inputs:** Selected batch, unit identity, publication and reservation evidence, current observed session inventory and currently free harness slots.
+**Inputs:** [Batch](#batch), [Unit Identity](#unit-identity), [Start Evidence](#start-evidence), [Session Inventory](#session-inventory), [Free Slots](#free-slots).
 
-1. Run [Check Dispatch Start](#check-dispatch-start) with the supplied evidence.
-2. Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).
+**Outputs:** [Validated Unit](#validated-unit), [Failure](#failure).
+
+#### 1. Check Immediate Start Evidence
+
+Apply [Check Dispatch Start](#check-dispatch-start) with the supplied evidence.
+
+#### 2. Return Validated Unit
+
+Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).
+
+### Compute Dispatch Batch
+
+Selects the next batch without tracker writes or worker execution.
+
+**Inputs:** [Workspace](#workspace), [Authorization](#authorization), [Survey Evidence](#survey-evidence), [Session Inventory](#session-inventory), [Survey Board](#survey-board), [Requested Lane](#requested-lane), [Free Slots](#free-slots), [Preparations](#preparations).
+
+**Outputs:** [Batch](#batch), [Failure](#failure).
+
+#### 1. Compute Dispatch Batch
+
+- Supply `--lane '<lane-index>'` only when that lane was used by the survey.
+- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.
+- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization)' --plan '[**<dispatch-export-file>**](#survey-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)' --board '[**<survey-board>**](#survey-board)' > '[**<batch-file>**](#batch)'
+</pre></big>
+
+### Check Dispatch Start
+
+Checks one selected unit immediately before execution.
+
+**Inputs:** [Workspace](#workspace), [Batch](#batch), [Unit Identity](#unit-identity), [Start Evidence](#start-evidence), [Session Inventory](#session-inventory), [Free Slots](#free-slots).
+
+**Outputs:** [Validated Unit](#validated-unit), [Failure](#failure).
+
+#### 1. Check Dispatch Start
+
+- Exit 0 returns the selected unit; exit 1 names the blocking condition.
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit '[**<unit-identity>**](#unit-identity)' --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)'
+</pre></big>
 
 ## Fields
 
@@ -67,30 +115,38 @@ The start names one selected unit, has a currently free harness slot and overlap
 {"unit": "o/r#I07:E00:W01", "published_record": "2026-11-05-943-i07-e00-w01-work", "reserved_record": "2026-11-05-943-i07-e00-w01-work", "reservation_verified": true}
 ```
 
-## Commands
+### Survey Board
 
-### Compute Dispatch Batch
+The board identity used by the current survey.
 
-Selects the next batch without tracker writes or worker execution.
+### Requested Lane
 
-**Inputs:** Authorization, dispatch export and session-inventory JSON files, current survey board, optional requested lane, free-slot count and optional admitted-preparations JSON file.
+The optional lane used by the current survey, meeting [Index](lane.md#index); represented as `null` when none is requested.
 
-- Supply `--lane '<lane-index>'` only when that lane was used by the survey.
-- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.
-- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
+### Free Slots
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '<authorization-file>' --plan '<dispatch-export-file>' --sessions '<session-inventory-file>' --capacity '<free-slot-count>' --board '<survey-board>' > '<batch-file>'
-```
+The harness-supplied current worker-slot count, governed by [Session Inventory](#session-inventory).
 
-### Check Dispatch Start
+### Batch
 
-Checks one selected unit immediately before execution.
+The selected units and continuation defined by [Selection](#selection), stored in the supplied batch file.
 
-**Inputs:** Batch JSON, repository-qualified unit identity, start-evidence JSON, current session-inventory JSON and free-slot count.
+### Unit Identity
 
-- Exit 0 returns the selected unit; exit 1 names the blocking condition.
+The repository-qualified identity of one selected unit.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '<batch-file>' --unit '<unit-identity>' --evidence '<start-evidence-file>' --sessions '<session-inventory-file>' --capacity '<free-slot-count>'
-```
+### Start Evidence
+
+The planning publication and reservation evidence for the selected unit, as [Start Readiness](#start-readiness) describes.
+
+### Validated Unit
+
+The selected unit returned when its immediate start check succeeds.
+
+### Workspace
+
+The checkout holding the installed skill, its scripts and tests.
+
+### Failure
+
+The operation and error, discrepancy or missing evidence that prevents a verified result.
