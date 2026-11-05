@@ -60,6 +60,7 @@ class DocumentInterfaces(unittest.TestCase):
     def test_artifact_operations_expose_inputs_and_consecutive_steps(self):
         for path in sorted((ROOT / 'artifacts').glob('*.md')):
             lines, fenced, headings = checker.scan(path)
+            payload = checker.scan_blocks(lines).html_lines
             section = None
             for position, (start, level, title) in enumerate(headings):
                 if level == 2:
@@ -68,15 +69,29 @@ class DocumentInterfaces(unittest.TestCase):
                     continue
                 with self.subTest(file=path.name, operation=title):
                     end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
-                    body = lines[start + 1:end]
-                    self.assertGreaterEqual(len(title.split()), 3)
-                    self.assertTrue(any(line.startswith('**Inputs:**') for line in body))
+                    body = [lines[i] for i in range(start + 1, end)
+                            if not fenced[i] and i not in payload]
+                    steps = [(i, name) for i, depth, name in headings
+                             if start < i < end and depth == 4 and checker.HEADING_STEP.match(name)]
+                    self.assertGreaterEqual(len(title.split()), 2 if steps else 3)
+                    self.assertEqual(sum(line.startswith('**Inputs:**') for line in body), 1)
                     numbers = [int(m[1]) for line in body if (m := re.match(r'^(\d+)\. ', line))]
-                    if numbers:
+                    if steps:
+                        self.assertFalse(numbers)
+                        numbers = [int(checker.HEADING_STEP.match(name)[1]) for _, name in steps]
+                        lead = body[:body.index(lines[steps[0][0]])]
+                        for label in ('Inputs', 'Outputs'):
+                            declarations = [line for line in lead if line.startswith(f'**{label}:**')]
+                            self.assertEqual(len(declarations), 1)
+                            targets = checker.LINK.findall(declarations[0])
+                            self.assertTrue(targets)
+                            self.assertTrue(all(checker.field_contract(path, target, 'Fields') for target in targets))
+                    elif numbers:
                         self.assertGreater(len(numbers), 1)
-                        self.assertEqual(numbers, list(range(1, len(numbers) + 1)))
                     else:
                         self.assertEqual(len([line for line in body if line.startswith('- ')]), 1)
+                    if numbers:
+                        self.assertEqual(numbers, list(range(1, len(numbers) + 1)))
                     self.assertFalse(any(re.match(r'^(?:\d+\. |\- )\*\*', line) for line in body))
                     self.assertFalse(any(line.startswith(('Result:', '**Result:')) for line in body))
 
@@ -135,20 +150,53 @@ class DocumentInterfaces(unittest.TestCase):
                 self.assertIn(name, files)
 
     def test_every_script_is_run_by_a_cited_command(self):
-        """A script exists because a procedure runs it. It is run where a
-        command specification names it and a procedure cites that
-        specification, or where a script so run imports it."""
+        """Scripts are invoked by cited executable sections or imported by
+        scripts invoked there. Literal specimens supply no executable reach."""
         paths = sorted(ROOT.rglob('*.md'))
-        _, called = checker.citations(paths)
+        # Citation reach uses exact-file heading declarations for numbered procedures.
+        structures = {}
+        for path in paths:
+            _, _, headings = checker.scan(path)
+            section = None
+            for _, level, title in headings:
+                if level == 2:
+                    section = title
+                if level > 2 and section in ('Procedure', 'Operations') and checker.HEADING_STEP.match(title):
+                    selected = dict(checker.contract(path, {}))
+                    selected.update(procedures=section, steps='headings')
+                    checker.validate_structure_entry(ROOT / 'structure.json', path.name, selected)
+                    if path.parent not in structures:
+                        structures[path.parent] = dict(checker.structure_at(path.parent, {}))
+                    structures[path.parent][path.name] = selected
+                    break
+        _, called = checker.citations(paths, structures)
         run = set()
         for path in paths:
             lines, fenced, headings = checker.scan(path)
-            for start, title in checker.specifications(headings):
+            blocks = checker.scan_blocks(lines)
+            payload = blocks.html_lines
+            executable = set(payload)
+            for start, language in blocks.openings:
+                if language in checker.SHELL:
+                    end = next((i for i in range(start + 1, len(lines))
+                                if fenced[i] and checker.FENCE.match(lines[i])), len(lines))
+                    executable.update(range(start + 1, end))
+            sections = list(checker.specifications(headings))
+            current = None
+            for position, (start, level, title) in enumerate(headings):
+                if level == 2:
+                    current = title
+                if current == 'Operations' and level == 3:
+                    end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
+                    if any(start < i < end for i in payload):
+                        sections.append((start, title))
+            for start, title in sections:
                 if not called.get(path, {}).get(checker.anchor_of(title)):
                     continue
                 end = next((i for i, level, _ in headings if i > start and level <= 3), len(lines))
-                for line in lines[start:end]:
-                    run |= set(re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', line))
+                for i in range(start + 1, end):
+                    if i in executable:
+                        run |= set(re.findall(r'skills/work-planner/scripts/([\w-]+)\.py', lines[i]))
         scripts = {path.stem: path.read_text() for path in (ROOT / 'scripts').glob('*.py')}
         grown = True
         while grown:
@@ -205,8 +253,18 @@ class EpicDeliveryCallers(unittest.TestCase):
                 self.assertIn('epic bases', line)
 
     def test_record_epic_delivery_takes_the_epic_bases(self):
-        text = (ROOT / 'artifacts' / 'epic-issue-body.md').read_text()
-        section = text.split('### *Record* Epic Delivery', 1)[1].split('\n### ', 1)[0]
+        path = ROOT / 'artifacts' / 'epic-issue-body.md'
+        lines, _, headings = checker.scan(path)
+        start = next(i for i, level, title in headings
+                     if level == 3 and checker.anchor_of(title) == 'record-epic-delivery')
+        end = checker.heading_end(headings, start, 3, len(lines))
+        section = '\n'.join(lines[start + 1:end])
+        for target in checker.LINK.findall(section):
+            if target.startswith('#') and checker.field_contract(path, target, 'Fields'):
+                contract_start = next(i for i, level, title in headings
+                                      if level == 3 and checker.anchor_of(title) == target[1:])
+                contract_end = checker.heading_end(headings, contract_start, 3, len(lines))
+                section += '\n' + '\n'.join(lines[contract_start + 1:contract_end])
         self.assertIn('fetched epic bases', section)
         self.assertIn('`--revision`', section)
 

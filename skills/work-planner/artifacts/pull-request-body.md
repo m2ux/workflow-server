@@ -11,56 +11,123 @@ Read these files first.
 
 ## Operations
 
-### *Populate* Pull Request Body
+### Populate Pull Request Body
 
 One pull request body from supplied change and validation evidence.
 
-**Inputs:** Change summary, supplied delivery scope, validation evidence, optional current body and output path.
+**Inputs:** [Change Evidence](#change-evidence), [Current Body](#current-body), [Output Body](#output-body).
 
-1. Populate the body from the [Template](#template) using the change and its evidence, using [Populate Review Body](#populate-review-body) for an epic review.
-   - All populated fields must meet [Fields](#fields).
-2. Verify each result link against [Test Plan](#test-plan) before publishing the body.
-3. Return the complete body file and any unresolved evidence links to the caller for publication.
+**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence).
 
-### *Populate* Review Body
+#### 1. Populate Change Body
+
+Populate the body from the [Template](#template) using the change and its evidence. For an epic review, Apply [Populate Review Body](#populate-review-body).
+- All populated fields must meet [Fields](#fields).
+
+#### 2. Verify Evidence Links
+
+Verify each result link against [Test Plan](#test-plan) before publishing the body.
+
+#### 3. Return Complete Body
+
+Return the complete body file and any unresolved evidence links to the caller for publication.
+
+### Populate Review Body
 
 The current change carried by one epic base.
 
-**Inputs:** Current base change, supplied task-merge evidence and optional existing review body.
+**Inputs:** [Change Evidence](#change-evidence), [Current Body](#current-body), [Output Body](#output-body).
 
-1. Populate the review body from the [Template](#template) using the actual task merges into the base.
-   - All populated fields must meet [Fields](#fields).
-2. For a later task merge:
-   - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
-   - Add its functional change under the corresponding area.
-   - Cite the merged task pull request as the next reference.
-3. Return the complete updated body file to the caller.
+**Outputs:** [Output Body](#output-body).
 
-### *Link* Architecture Overview
+#### 1. Populate Base Review
+
+Populate the review body from the [Template](#template) using the actual task merges into the base.
+- All populated fields must meet [Fields](#fields).
+
+#### 2. Account for Task Merge
+
+For a later task merge:
+- Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
+- Add its functional change under the corresponding area.
+- Cite the merged task pull request as the next reference.
+
+#### 3. Return Updated Body
+
+Return the complete updated body file to the caller.
+
+### Link Architecture Overview
 
 One pull request body referencing its published overview.
 
-**Inputs:** Current body, published overview URL on the engineering branch and output body path.
+**Inputs:** [Current Body](#current-body), [Overview URL](#overview-url), [Output Body](#output-body).
 
-1. Add the Architecture Overview reference to the body's References section, creating that section in its [Template](#template) position when absent.
-2. Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record.
+**Outputs:** [Output Body](#output-body).
 
-      ```markdown
-      - **R1.** [Architecture Overview](https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning/2026-10-08-950-queue-placement/architecture-overview.md) — the change's structure, its flows, and the order to read the diff.
-      ```
+#### 1. Add Published Reference
 
-3. Return the complete updated body file for publication.
+Add the Architecture Overview reference to the body's References section, creating that section in its [Template](#template) position when absent.
 
-### *Repair* Test Plan
+#### 2. Preserve Existing Reference
+
+Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record.
+
+```markdown
+- **R1.** [Architecture Overview](https://github.com/{owner}/{repo}/tree/engineering/artifacts/planning/2026-10-08-950-queue-placement/architecture-overview.md) — the change's structure, its flows, and the order to read the diff.
+```
+
+#### 3. Return Linked Overview Body
+
+Return the complete updated body file for publication.
+
+### Repair Test Plan
 
 One task pull request's test plan aligned to its current table.
 
-**Inputs:** Current pull request JSON and output body path.
+**Inputs:** [Pull Request Record](#pull-request-record), [Output Body](#output-body).
 
-1. Run [Convert Test Plan](#convert-test-plan) with the supplied record and output path.
-2. Inspect the diff. A checked list and Test/Criteria table convert only when their ids agree and every line is accounted for; descriptions and coverage are preserved.
-3. Verify retained result links against [Test Plan](#test-plan). A checked entry without linked result evidence remains pending; restore its Pass result only from verified published evidence.
-4. Return the body, the converted pull request identity and unresolved findings. The caller publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence).
+
+#### 1. Convert Current Plan
+
+Apply [Convert Test Plan](#convert-test-plan) with the supplied record and output path.
+
+#### 2. Inspect Preserved Coverage
+
+Inspect the diff. A checked list and Test/Criteria table convert only when their ids agree and every line is accounted for; descriptions and coverage are preserved.
+
+#### 3. Verify Retained Evidence
+
+Verify retained result links against [Test Plan](#test-plan). A checked entry without linked result evidence remains pending; restore its Pass result only from verified published evidence.
+
+#### 4. Return Plan Findings
+
+Return the body, the converted pull request identity and unresolved findings. The caller publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+
+### Convert Test Plan
+
+Convert an unambiguous checked list and Test/Criteria table to the current plan table.
+
+**Inputs:** [Pull Request Record](#pull-request-record), [Output Body](#output-body).
+
+**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence).
+
+#### 1. Convert Test Plan
+
+Run this command from the workspace checkout with the supplied inputs.
+
+- Input is a current REST pull request record; output is the complete body. Existing current tables are unchanged.
+- A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py plan '[**&lt;pull-request-json-file&gt;**](#pull-request-record)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
+</pre></big>
 
 ## Fields
 
@@ -139,15 +206,30 @@ A task pull request carries a Test Plan.
 - An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion.
 - One row per check, in execution order, followed by any unobserved criteria. Every criterion in the unit's Coverage appears in at least one row.
 
-## Commands
+### Change Evidence
 
-### Convert Test Plan
+The supplied current change summary and delivery scope, with validation evidence, and task-merge evidence for an epic review body.
 
-Convert an unambiguous checked list and Test/Criteria table to the current plan table.
+### Current Body
 
-- Input is a current REST pull request record; output is the complete body. Existing current tables are unchanged.
-- A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.
+The optional existing complete pull request body.
 
-```bash
-<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py plan pr-950.json --fix fixed-950.md
-```
+### Pull Request Record
+
+The supplied current REST pull request JSON.
+
+### Overview URL
+
+The published architecture overview URL on the engineering branch.
+
+### Output Body
+
+The supplied local destination for the complete body.
+
+### Unresolved Evidence
+
+The unresolved evidence links and test-plan findings, with the identities and missing evidence of unsupported results.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.

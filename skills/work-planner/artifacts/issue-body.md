@@ -11,91 +11,263 @@ Read these files first.
 
 ## Operations
 
-### *Write* Issue Table
+### Write Issue Table
 
 The shared table, before a kind fills its cells.
 
-**Inputs:** Current body, the kind's table columns and supplied row data.
+**Inputs:** [Body Evidence](#body-evidence), [Kind Conditions](#kind-conditions), [Row Data](#row-data).
 
-1. Populate the shared Done, Coverage and Depends on cells from the supplied row data.
-   - The columns must match the kind's table.
-   - The shared cells must meet [Tables](#tables).
-2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form).
+**Outputs:** [Body Evidence](#body-evidence).
 
-### *Check* Round of Edits
+#### 1. Populate Shared Cells
+
+Populate the shared Done, Coverage and Depends on cells from the supplied row data.
+- The columns must match the kind's table.
+- The shared cells must meet [Tables](#tables).
+
+#### 2. Check Finished Table
+
+Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form).
+
+### Check Round of Edits
 
 The shared check after a round of edits.
 
-**Inputs:** Changed issue bodies, their kind's field conditions and format inputs.
+**Inputs:** [Changed Bodies](#changed-bodies), [Kind Conditions](#kind-conditions), [Output Files](#output-files).
 
-1. Check each section of the issue against the field conditions for its kind and against [Fields](#fields) in this file.
-2. Run [Check Body Format](#check-body-format) on every issue the round changed.
+**Outputs:** [Format Findings](#format-findings).
 
-### *Validate* Issue Body
+#### 1. Check Kind Conditions
+
+Check each section of the issue against the field conditions for its kind and against [Fields](#fields) in this file.
+
+#### 2. Run Body Format
+
+Apply [Check Body Format](#check-body-format) on every issue the round changed.
+
+### Validate Issue Body
 
 One body checked against its supplied kind and template.
 
-**Inputs:** Issue JSON, kind field conditions, required related evidence and output body file.
+**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).
 
-1. Run [Check Body Format](#check-body-format) with the supplied issue JSON, kind inputs and output file as `--fix`.
-2. Review the body against the supplied field conditions.
-3. Return the [Format Findings](#format-findings).
+**Outputs:** [Format Findings](#format-findings).
 
-### *Apply* Body Corrections
+#### 1. Run Body Format
+
+Apply [Check Body Format](#check-body-format) with the supplied issue JSON, kind inputs and output file as `--fix`.
+
+#### 2. Review Supplied Conditions
+
+Review the body against the supplied field conditions.
+
+#### 3. Return Format Findings
+
+Return the [Format Findings](#format-findings).
+
+### Apply Body Corrections
 
 One body rewritten from confirmed local findings.
 
-**Inputs:** Current body, selected kind template and field conditions, related context, confirmed resolutions and output path.
+**Inputs:** [Body Evidence](#body-evidence), [Kind Conditions](#kind-conditions), [Confirmed Corrections](#confirmed-corrections), [Output Files](#output-files).
 
-1. Populate missing sections from the supplied issue and related context.
-2. Apply each confirmed decision to keep, fold or remove an extra section, and rewrite a wrong-kind body in the selected template.
-3. Record a required tracker-kind change for the caller.
-4. Restate historical narration as the current design.
-5. Apply confirmed criterion changes.
-   - The body must meet [Body](#body), [Shared Acceptance Criteria](#shared-acceptance-criteria) and the supplied kind conditions.
-6. Validate the body through [Validate Issue Body](#validate-issue-body).
-7. Return the corrected file, validation findings and any required cross-body or metadata changes for the caller.
+**Outputs:** [Body Evidence](#body-evidence), [Format Findings](#format-findings).
 
-### *Build* Body Snapshot
+#### 1. Populate Missing Sections
+
+Populate missing sections from the supplied issue and related context.
+
+#### 2. Apply Confirmed Decisions
+
+Apply each confirmed decision to keep, fold or remove an extra section, and rewrite a wrong-kind body in the selected template.
+
+#### 3. Record Kind Changes
+
+Record a required tracker-kind change for the caller.
+
+#### 4. State Current Design
+
+Restate historical narration as the current design.
+
+#### 5. Apply Criterion Changes
+
+Apply confirmed criterion changes.
+- The body must meet [Body](#body), [Shared Acceptance Criteria](#shared-acceptance-criteria) and the supplied kind conditions.
+
+#### 6. Validate Corrected Body
+
+Apply [Validate Issue Body](#validate-issue-body) with the corrected body and supplied validation inputs.
+
+#### 7. Return Corrected File
+
+Return the corrected file, validation findings and any required cross-body or metadata changes for the caller.
+
+### Build Body Snapshot
 
 A local issue-shaped record for body validation.
 
-**Inputs:** Current body file, title, labels, optional existing issue JSON and destination JSON path.
+**Inputs:** [Body Evidence](#body-evidence), [Snapshot Metadata](#snapshot-metadata), [Output Files](#output-files).
 
-1. Write the body's exact text, title and labels to the destination as JSON.
-2. Preserve the existing issue's identity and state when supplied.
-3. For an unpublished draft, use `number: null` and `state: "open"`; labels are strings or objects with a name.
-4. Return the JSON path for validation. No tracker issue is created by this operation.
+**Outputs:** [Body Snapshot](#body-snapshot).
 
-### *Repair* Issue Format
+#### 1. Write Body Snapshot
+
+Write the supplied body, title, labels and optional existing issue evidence to the destination in the [Body Snapshot](#body-snapshot) shape.
+
+#### 2. Return Snapshot Path
+
+Return the JSON path for validation. No tracker issue is created by this operation.
+
+### Repair Issue Format
 
 The saved format corrections for one issue and any unresolved content findings.
 
-**Inputs:** Issue identity, current JSON, kind template and field conditions, required related evidence and output body path.
+**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).
 
-1. Run [Validate Issue Body](#validate-issue-body) with the supplied JSON, kind conditions, related evidence and output path.
-   - Return an unreadable source as a blocker before editing.
-2. Review the returned diff.
-   - Publish wording-preserving format, title and label corrections through [Save Tracker Issue](issue.md#save-tracker-issue), without asking.
-   - Retain content decisions and cross-body findings separately; do not publish them as mechanical fixes.
-3. Resolve a non-mechanical finding confined to this body.
-   - Obtain the user's decision.
-   - Run [Apply Body Corrections](#apply-body-corrections) with the current body, kind template and conditions, related context, confirmed resolution and output path.
-   - Publish through Save Tracker Issue. An unanswered decision or a finding requiring changes to other issues returns to the caller as a blocker.
-4. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
-   - Repeat Validate Issue Body with the saved JSON and the same kind conditions, context and output path.
-   - Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
+**Outputs:** [Body Evidence](#body-evidence), [Format Findings](#format-findings).
 
-### *Check* Reference Visibility
+#### 1. Validate Current Body
+
+Apply [Validate Issue Body](#validate-issue-body) with the supplied JSON, kind conditions, related evidence and output path.
+- Return an unreadable source as a blocker before editing.
+
+#### 2. Review Mechanical Changes
+
+Review the returned diff.
+- For wording-preserving format, title and label corrections, Apply [Save Tracker Issue](issue.md#save-tracker-issue) without asking.
+- Retain content decisions and cross-body findings separately; do not publish them as mechanical fixes.
+
+#### 3. Resolve Local Content
+
+Resolve a non-mechanical finding confined to this body.
+- Obtain the user's decision.
+- Apply [Apply Body Corrections](#apply-body-corrections) with the current body, kind template and conditions, related context, confirmed resolution and output path.
+- Publish through Save Tracker Issue. An unanswered decision or a finding requiring changes to other issues returns to the caller as a blocker.
+
+#### 4. Validate Saved Body
+
+Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
+- Apply [Validate Issue Body](#validate-issue-body) again with the saved JSON and the same kind conditions, context and output path.
+- Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
+
+### Check Reference Visibility
 
 Repository visibility for the destination issue and its References entries.
 
-**Inputs:** Current issue JSON and a repository-snapshot output path.
+**Inputs:** [Body Record](#body-record), [Output Files](#output-files).
 
-1. Run [List Reference Repositories](#list-reference-repositories) to identify the destination and cited repositories.
-2. Run [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.
-3. Run [Validate Reference Visibility](#validate-reference-visibility) with that snapshot and the issue record.
-4. Return each private reference on a public issue and each unavailable visibility as a finding. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the caller.
+**Outputs:** [Visibility Findings](#visibility-findings).
+
+#### 1. Identify Reference Repositories
+
+Apply [List Reference Repositories](#list-reference-repositories) to identify the destination and cited repositories.
+
+#### 2. Fetch Repository Visibility
+
+Apply [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.
+
+#### 3. Validate Reference Snapshot
+
+Apply [Validate Reference Visibility](#validate-reference-visibility) with that snapshot and the issue record.
+
+#### 4. Return Visibility Findings
+
+Return each private reference on a public issue and each unavailable visibility as a finding. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the caller.
+
+### Check Body Format
+
+Checks one issue against its template, and with `--fix` writes the body with the mechanical fixes made.
+
+**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).
+
+**Outputs:** [Format Findings](#format-findings).
+
+#### 1. Check Body Format
+
+Run this command from the workspace checkout with the supplied inputs.
+
+- The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
+- The input is one issue JSON. `--fix` names the output body file for mechanical fixes. Further inputs are specified by the calling body procedure.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record)' --fix '[**&lt;output-body-file&gt;**](#output-files)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json --fix fixed.md
+</pre></big>
+
+### List Reference Repositories
+
+List repository names from the issue destination and References section.
+
+**Inputs:** [Body Record](#body-record).
+
+**Outputs:** [Reference Repositories](#reference-repositories).
+
+#### 1. List Reference Repositories
+
+Run this command from the workspace checkout with the supplied inputs.
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py repositories '[**&lt;issue-json-file&gt;**](#body-record)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py repositories issue-943.json
+</pre></big>
+
+### Fetch Reference Repository
+
+Read one listed repository's visibility with the authenticated repository API.
+
+**Inputs:** [Reference Repositories](#reference-repositories), [Output Files](#output-files).
+
+**Outputs:** [Repository Snapshot](#repository-snapshot).
+
+#### 1. Fetch Reference Repository
+
+Run this command from the repository checkout with the supplied inputs.
+
+- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
+
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#reference-repositories)/[**&lt;repo&gt;**](#reference-repositories)' > '[**&lt;repository-json-file&gt;**](#output-files)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+gh api repos/{owner}/{repo} > repository.json
+</pre></big>
+
+### Validate Reference Visibility
+
+Report private repository references on a public issue and unresolved repository visibility.
+
+**Inputs:** [Body Record](#body-record), [Repository Snapshot](#repository-snapshot).
+
+**Outputs:** [Visibility Findings](#visibility-findings).
+
+#### 1. Validate Reference Visibility
+
+Run this command from the workspace checkout with the supplied inputs.
+
+- The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py references '[**&lt;issue-json-file&gt;**](#body-record)' --repositories '[**&lt;repositories-json-file&gt;**](#repository-snapshot)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+[**&lt;workspace&gt;**](#workspace)/scripts/sbx python3 [**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
+</pre></big>
 
 ## Fields
 
@@ -215,51 +387,54 @@ An issue's References section does not link issues or pull requests on the same 
 - **Apply.** Title or label changes for the caller to publish on the issue.
 - **Decide.** Missing content or a judgement for the caller to resolve.
 
-## Commands
+### Body Evidence
 
-### Check Body Format
+The supplied complete current issue body, held as text or at a local body-file path.
 
-Checks one issue against its template, and with `--fix` writes the body with the mechanical fixes made.
+### Kind Conditions
 
-**Inputs:** Issue JSON, local output body file and the additional format inputs supplied by the kind.
+The supplied kind template, table columns, field conditions and additional format inputs. Related evidence required by that kind accompanies the body.
 
-- The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
-- The input is one issue JSON. `--fix` names the output body file for mechanical fixes. Further inputs are specified by the calling body procedure.
+### Row Data
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/format.py '<issue-json-file>' --fix '<output-body-file>'
-```
+The supplied row data for the kind's shared table cells.
 
-**Example:**
+### Changed Bodies
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/format.py issue.json --fix fixed.md
-```
+Every changed body's issue-shaped JSON record, with its kind conditions and format inputs.
 
-### List Reference Repositories
+### Confirmed Corrections
 
-List repository names from the issue destination and References section.
+The confirmed local resolutions, criterion changes and selected decisions to keep, fold or remove extra sections, with the related context needed to populate them.
 
-```bash
-<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py repositories issue-943.json
-```
+### Output Files
 
-### Fetch Reference Repository
+The supplied local destinations for a corrected complete body, a body-snapshot JSON record or repository visibility evidence.
 
-Read one listed repository's visibility with the authenticated repository API.
+### Body Snapshot
 
-- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
+A local issue-shaped JSON record retaining the body's exact text, title and labels, plus the existing issue's identity and state when supplied. An unpublished draft uses `number: null` and `state: "open"`; labels are strings or objects with a name.
 
-```bash
-gh api repos/{owner}/{repo} > repository.json
-```
+### Reference Repositories
 
-### Validate Reference Visibility
+The destination repository and the repositories cited in References, identified by owner and name.
 
-Report private repository references on a public issue and unresolved repository visibility.
+### Repository Snapshot
 
-- The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
+The supplied JSON array of fetched repository objects, each retaining full_name and private.
 
-```bash
-<workspace>/scripts/sbx python3 <workspace>/skills/work-planner/scripts/align.py references issue-943.json --repositories repositories.json
-```
+### Visibility Findings
+
+Findings carrying the issue identity, cited repository identities and their observed visibility or missing evidence.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
+
+### Body Record
+
+The complete current issue-shaped JSON record: a saved tracker issue record, or a local [Body Snapshot](#body-snapshot) for an unpublished draft.
+
+### Snapshot Metadata
+
+The supplied title and labels for the body, with the existing issue JSON when its identity and state are available.

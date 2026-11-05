@@ -10,25 +10,36 @@ Read these files first.
 
 ## Operations
 
-### *Populate* Proposal Body
+### Populate Proposal Body
 
 One proposal body from a confirmed problem and goal.
 
-**Inputs:** Confirmed problem, evidence, goal clauses, boundary and output path.
+**Inputs:** [Proposal Context](#proposal-context), [Output Body](#output-body).
 
-- Populate the body from the [Template](#template) at the supplied output path.
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
-  - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
-  - All populated fields must meet [Fields](#fields).
+**Outputs:** [Output Body](#output-body).
 
-### *Validate* Proposal Body
+#### 1. Populate Proposal Template
+
+Populate the body from the [Template](#template) at the supplied output path.
+- The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
+- The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
+- All populated fields must meet [Fields](#fields).
+
+### Validate Proposal Body
 
 The body's local format and field findings.
 
-**Inputs:** Proposal issue JSON and output file.
+**Inputs:** [Proposal Record](#proposal-record), [Output Body](#output-body).
 
-1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, using the proposal field conditions and required title and label metadata.
-2. Return the corrected body, mechanical diff and unresolved findings for the caller.
+**Outputs:** [Output Body](#output-body), [Validation Findings](#validation-findings).
+
+#### 1. Validate Kind Conditions
+
+Apply [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, using the proposal field conditions and required title and label metadata.
+
+#### 2. Return Local Findings
+
+Return the corrected body, mechanical diff and unresolved findings for the caller.
 
 ## Fields
 
@@ -82,3 +93,19 @@ The body's local format and field findings.
 ### Sections
 
 - Overview, Problem, Goal and Non-Goals are present in that order. References follows when it has content.
+
+### Proposal Context
+
+The confirmed problem, evidence, goal clauses and boundary supplied for this proposal.
+
+### Proposal Record
+
+The supplied current proposal issue JSON.
+
+### Output Body
+
+The supplied local destination for the complete body.
+
+### Validation Findings
+
+The corrected body, mechanical diff and unresolved format or field findings.

@@ -12,30 +12,76 @@ Read these files first.
 
 ## Operations
 
-### *Verify* Selected Criteria
+### Verify Selected Criteria
 
 The verification evidence for a supplied set of criteria whose delivery is ready.
 
-**Inputs:** Criterion ids, current issue body, delivery findings, delivery revisions, named instruments and the project checkout to run them in.
+**Inputs:** [Criterion Selection](#criterion-selection), [Issue Body](#issue-body), [Delivery Evidence](#delivery-evidence), [Instrument](#instrument), [Project Checkout](#project-checkout).
 
-1. Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
-   - Return evidence that fails Readiness as a blocker for that criterion.
-2. Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
-   - Run [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
-   - Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
-3. Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
-   - Leave body publication and further planning to the caller.
+**Outputs:** [Verification Evidence](#verification-evidence).
 
-### *Tick* Verified Criteria
+#### 1. Confirm Criterion Readiness
+
+Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
+- Return evidence that fails Readiness as a blocker for that criterion.
+
+#### 2. Run Named Instruments
+
+Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+- Apply [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
+- Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
+
+#### 3. Return Criterion Evidence
+
+Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
+- Leave body publication and further planning to the caller.
+
+### Tick Verified Criteria
 
 The confirmed criteria and completed rows recorded in an epic or initiative body.
 
-**Inputs:** Issue JSON, verified criterion ids, output body file, and the pull request records with the complete issue-link snapshot for an epic or every linked epic record for an initiative.
+**Inputs:** [Issue Evidence](#issue-evidence), [Criterion Selection](#criterion-selection), [Output Body](#output-body).
 
-1. Record the criteria, meeting [Tick State](#tick-state).
-   - For an epic, run [Record Epic Criteria](epic-issue-body.md#record-epic-criteria) with the issue JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
-   - For an initiative, run [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria) with the issue JSON, every linked epic record, verified criterion ids and output body file.
-2. Return the resulting body and any refused criteria to the caller for publication.
+**Outputs:** [Tick State](#tick-state), [Output Body](#output-body).
+
+#### 1. Record Verified Criteria
+
+Record the criteria, meeting [Tick State](#tick-state).
+- For an epic, Apply [Record Epic Criteria](epic-issue-body.md#record-epic-criteria) with the issue JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
+- For an initiative, Apply [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria) with the issue JSON, every linked epic record, verified criterion ids and output body file.
+
+#### 2. Return Body Disposition
+
+Return the resulting body and any refused criteria to the caller for publication.
+
+### Run at Revision
+
+Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.
+
+**Inputs:** [Project Checkout](#project-checkout), [Revision](#revision), [Instrument](#instrument).
+
+**Outputs:** [Instrument Result](#instrument-result).
+
+#### 1. Run at Revision
+
+Run this command from the workspace checkout with the supplied inputs.
+
+- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The instrument follows `--` and runs at the checkout's top level.
+- The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
+- The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
+- Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
+- Worktrees the run did not create are left as they are.
+- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/revision-check.py --project '[**&lt;checkout&gt;**](#project-checkout)' --revision '[**&lt;revision&gt;**](#revision)' -- [**&lt;instrument-command&gt;**](#instrument)
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 -m pytest skills/work-planner/test -q
+</pre></big>
 
 ## Fields
 
@@ -60,27 +106,42 @@ A criterion is verified only on a passing run of its named instrument, recorded 
 
 A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it follows [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is returned unticked with what it is missing.
 
-## Commands
+### Criterion Selection
 
-### Run at Revision
+The supplied criterion ids selected for verification or confirmed as verified for recording.
 
-Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.
+### Issue Evidence
 
-**Inputs:** Project checkout, revision and instrument command.
+The complete current issue JSON. For an epic it includes the complete issue-link snapshot and pull request records; for an initiative it includes every linked epic record.
 
-- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The instrument follows `--` and runs at the checkout's top level.
-- The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
-- The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
-- Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
-- Worktrees the run did not create are left as they are.
-- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
+### Delivery Evidence
 
-```bash
-cd "<workspace>" && python3 skills/work-planner/scripts/revision-check.py --project '<checkout>' --revision '<revision>' -- <instrument-command>
-```
+The supplied delivery findings and delivering revisions for the selected criteria.
 
-**Example:**
+### Instrument
 
-```bash
-cd "<workspace>" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- "<workspace>/scripts/sbx" python3 -m pytest skills/work-planner/test -q
-```
+Each selected criterion's named command, test or check, with its command arguments.
+
+### Project Checkout
+
+The supplied checkout of the project in which the instrument is run.
+
+### Revision
+
+The branch, tag or commit supplied for verification.
+
+### Verification Evidence
+
+The selected criterion ids, their instrument results and tested revisions, with each unresolved criterion and its missing evidence.
+
+### Output Body
+
+The supplied local destination for the resulting body.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner helper.
+
+### Issue Body
+
+The supplied complete current issue body text containing the selected criteria.
