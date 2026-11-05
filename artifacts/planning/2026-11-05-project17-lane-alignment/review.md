@@ -20,7 +20,7 @@ No acceptance criterion is changed or ticked. Current criteria name inspection, 
 
 Evidence: m2ux--workflow-server--1615.md:40: | W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | | |
 
-**Resolved — user confirmed.** I16 E05 W01 and W02 share one pull request. The reciprocal joins remove the internal dependency and preserve E02 W01 and W02 as the unit's prerequisite set. The initiative's E05 row takes the derived E02 gate. Both members remain unlaned, and the full I16 graph has no unaccounted candidate unit. The evidence below is the captured pre-decision finding.
+**Resolved — user confirmed and exact publication readback verified.** I16 E05 W01 and W02 share one pull request. The reciprocal joins remove the internal dependency and preserve E02 W01 and W02 as the unit's prerequisite set. The initiative's E05 row takes the derived E02 gate. Both members remain unlaned, and the full I16 graph has no unaccounted candidate unit. The evidence below is the captured pre-decision finding.
 
 Evidence: `I16-dependencies.txt` names “E05:W01, E05:W02 extend main:guidelines.md”; both registered work-item declarations match, and the pair is absent from the supplied `joins.md`.
 
