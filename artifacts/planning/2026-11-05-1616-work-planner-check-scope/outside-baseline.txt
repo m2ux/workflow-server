@@ -1,0 +1,69 @@
+skills/gitnexus/gitnexus-cli/SKILL.md:12: command specification in the entry point — analyze — Build or refresh the index
+skills/gitnexus/gitnexus-cli/SKILL.md:27: command specification in the entry point — status — Check index freshness
+skills/gitnexus/gitnexus-cli/SKILL.md:35: command specification in the entry point — clean — Delete the index
+skills/gitnexus/gitnexus-cli/SKILL.md:48: command specification in the entry point — wiki — Generate documentation from the graph
+skills/gitnexus/gitnexus-cli/SKILL.md:65: command specification in the entry point — list — Show all indexed repos
+skills/gitnexus/gitnexus-cli/SKILL.md:10: section outside the set — Commands
+skills/gitnexus/gitnexus-cli/SKILL.md:73: section outside the set — After Indexing
+skills/gitnexus/gitnexus-cli/SKILL.md:78: section outside the set — Troubleshooting
+skills/gitnexus/gitnexus-cli/SKILL.md:82: inline bold lead too wide — 119 characters, limit 100
+skills/gitnexus/gitnexus-debugging/SKILL.md:8: section outside the set — When to Use
+skills/gitnexus/gitnexus-debugging/SKILL.md:16: section outside the set — Workflow
+skills/gitnexus/gitnexus-debugging/SKILL.md:27: section outside the set — Checklist
+skills/gitnexus/gitnexus-debugging/SKILL.md:39: section outside the set — Debugging Patterns
+skills/gitnexus/gitnexus-debugging/SKILL.md:49: section outside the set — Tools
+skills/gitnexus/gitnexus-debugging/SKILL.md:75: section outside the set — Example: "Payment endpoint returns 500 intermittently"
+skills/gitnexus/gitnexus-exploring/SKILL.md:8: section outside the set — When to Use
+skills/gitnexus/gitnexus-exploring/SKILL.md:16: section outside the set — Workflow
+skills/gitnexus/gitnexus-exploring/SKILL.md:28: section outside the set — Checklist
+skills/gitnexus/gitnexus-exploring/SKILL.md:39: section outside the set — Resources
+skills/gitnexus/gitnexus-exploring/SKILL.md:48: section outside the set — Tools
+skills/gitnexus/gitnexus-exploring/SKILL.md:67: section outside the set — Example: "How does payment processing work?"
+skills/gitnexus/gitnexus-guide/SKILL.md:10: section outside the set — Always Start Here
+skills/gitnexus/gitnexus-guide/SKILL.md:20: section outside the set — Skills
+skills/gitnexus/gitnexus-guide/SKILL.md:31: section outside the set — Tools Reference
+skills/gitnexus/gitnexus-guide/SKILL.md:43: section outside the set — Resources Reference
+skills/gitnexus/gitnexus-guide/SKILL.md:56: section outside the set — Graph Schema
+skills/gitnexus/gitnexus-guide/SKILL.md:58: hard-wrapped line — **Nodes:** File, Function, Class, Interface, Method, Communi
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:8: section outside the set — When to Use
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:17: section outside the set — Workflow
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:28: section outside the set — Checklist
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:39: section outside the set — Understanding Output
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:47: section outside the set — Risk Assessment
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:56: section outside the set — Tools
+skills/gitnexus/gitnexus-impact-analysis/SKILL.md:86: section outside the set — Example: "What breaks if I change validateUser?"
+skills/gitnexus/gitnexus-refactoring/SKILL.md:8: section outside the set — When to Use
+skills/gitnexus/gitnexus-refactoring/SKILL.md:16: section outside the set — Workflow
+skills/gitnexus/gitnexus-refactoring/SKILL.md:27: section outside the set — Checklists
+skills/gitnexus/gitnexus-refactoring/SKILL.md:62: section outside the set — Tools
+skills/gitnexus/gitnexus-refactoring/SKILL.md:97: section outside the set — Risk Rules
+skills/gitnexus/gitnexus-refactoring/SKILL.md:106: section outside the set — Example: Rename `validateUser` to `authenticateUser`
+skills/server-in-the-loop/SKILL.md:21: section outside the set — Typical flow
+skills/server-in-the-loop/SKILL.md:32: section outside the set — Fixed pairing
+skills/server-in-the-loop/SKILL.md:47: section outside the set — Trees under test
+skills/server-in-the-loop/SKILL.md:58: section outside the set — Specimens
+skills/server-in-the-loop/SKILL.md:72: section outside the set — Bring the sidecar up
+skills/server-in-the-loop/SKILL.md:95: section outside the set — Reach the instance through MCP
+skills/server-in-the-loop/SKILL.md:99: section outside the set — Walk
+skills/server-in-the-loop/SKILL.md:105: section outside the set — Iterate
+skills/workflow-canon/references/change-surface.md:133: command specification nothing cites — Render Audit Surface
+skills/workflow-canon/references/change-surface.md:183: command specification nothing cites — Run Audit Script Tests
+skills/workflow-canon/references/coverage.md:100: parallel section in another mood — Workflows Coverage directs, Main Coverage states
+skills/workflow-canon/references/coverage.md:115: parallel section in another mood — Docker Coverage directs, Main Coverage states
+skills/workflow-canon/references/guidelines.md:7: house rule no operation decides — identity/purpose-and-modes
+skills/workflow-canon/references/guidelines.md:12: house rule no operation decides — skillmd-structure/section-order
+skills/workflow-canon/references/guidelines.md:16: house rule no operation decides — mode-files/opening
+skills/workflow-canon/references/guidelines.md:17: house rule no operation decides — mode-files/sections
+skills/workflow-canon/references/guidelines.md:19: house rule no operation decides — mode-files/rules
+skills/workflow-canon/references/guidelines.md:25: house rule no operation decides — progressive-disclosure/author
+skills/workflow-canon/references/guidelines.md:27: house rule no operation decides — progressive-disclosure/audit
+skills/workflow-canon/references/guidelines.md:29: house rule no operation decides — progressive-disclosure/review
+skills/workflow-canon/references/guidelines.md:31: house rule no operation decides — progressive-disclosure/revise
+skills/workflow-canon/references/guidelines.md:33: house rule no operation decides — progressive-disclosure/command-routing
+skills/workflow-canon/references/guidelines.md:38: house rule no operation decides — titles/title-case
+skills/workflow-canon/references/guidelines.md:43: house rule no operation decides — reference-ownership/ownership
+skills/workflow-canon/references/guidelines.md:45: house rule no operation decides — reference-ownership/currency
+skills/workflow-canon/references/guidelines.md:47: house rule no operation decides — reference-ownership/separation
+skills/workflow-canon/references/guidelines.md:52: house rule no operation decides — shared-planning/location
+skills/workflow-canon/references/guidelines.md:57: house rule no operation decides — complete-audits/authority
+81 files checked, 68 findings
