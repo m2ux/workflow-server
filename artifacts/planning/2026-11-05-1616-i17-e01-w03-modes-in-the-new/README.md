@@ -23,6 +23,13 @@ The work preserves every operative condition and verifies the proposed structure
 | [walk-manifest.json](walk-manifest.json) | Frozen candidate identity and archived evidence checksums |
 | [changes.md](changes.md) | Applied and held plan changes |
 
+| [head-mode-model.json](head-mode-model.json) | Literal-head strict/installed checker results, preservation and negative controls |
+| [head-planner-suite.json](head-planner-suite.json) | Literal-head complete Work Planner suite command and output |
+| [head-shared-suite.json](head-shared-suite.json) | Literal-head complete shared suite command and output |
+| [run-head-checks.py](run-head-checks.py) | Detached current-checkout suite runner |
+| [head-revision.log](head-revision.log) | Exact helper revision, temporary checkout and completed check exits |
+| [pull-request-body.md](pull-request-body.md) | Source for the task pull request body |
+
 ## Links
 
 | Resource | Link |
