@@ -6,6 +6,7 @@ Usage:
       [--others issue-750.json ...]
       [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
       [--engineering .engineering] [--date 2026-10-06]
+      [--dispatch-plan available.json]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL]
@@ -298,7 +299,8 @@ def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str)
 
 
 def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: str,
-                 lived: tuple[str, ...], repository: str) -> tuple[list[str], int, int, int, int, int]:
+                 lived: tuple[str, ...], repository: str,
+                 offers: list[dict] | None = None) -> tuple[list[str], int, int, int, int]:
     """The unit, hold and unrecorded line of each open hot-fix, by the state hotfix.unit_state
     reads, and the undeclared or unresolved line of each whose target target_fault refuses, whatever
     its state, with the count of each. A refused target offers no unit."""
@@ -335,6 +337,9 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
                                            if (found := AC.match(line))))
         lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
                      f'{branch_lines(name["branch"], [base])}')
+        if offers is not None:
+            offers.append({'id': f'{key[0]}#{tag}', 'record': name['folder'],
+                           'report': lines[-1].strip()})
         available += 1
     return lines, available, undeclared, held, unrecorded
 
@@ -388,6 +393,9 @@ def ready_merges(issues: dict, pulls: list[dict], names: tuple[str, ...], reposi
 
 
 def survey(args: argparse.Namespace) -> int:
+    offers = []
+    if args.dispatch_plan:
+        Path(args.dispatch_plan).unlink(missing_ok=True)
     issues = {}
     for path in args.others:
         given = json.loads(Path(path).read_text())
@@ -471,10 +479,14 @@ def survey(args: argparse.Namespace) -> int:
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
             where = branch_lines(name['branch'], bases)
-            print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
-                  f'record {name["folder"]}, {where}')
+            report = (f'unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
+                      f'record {name["folder"]}, {where}')
+            print(f'  {report}')
+            offers.append({'id': f'{key[0]}#I{initiative}:E{epic}:{ids}',
+                           'record': name['folder'], 'report': report})
             available += 1
-    lines, found, unnamed, holding, unrecorded = hotfix_units(issues, status, prs, home, when, lived, repository)
+    lines, found, unnamed, holding, unrecorded = hotfix_units(
+        issues, status, prs, home, when, lived, repository, offers)
     for line in lines:
         print(line)
     available += found
@@ -490,6 +502,8 @@ def survey(args: argparse.Namespace) -> int:
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
           f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}, '
           f'unrecorded: {unrecorded}')
+    if args.dispatch_plan:
+        Path(args.dispatch_plan).write_text(json.dumps(offers, indent=2) + '\n')
     return 1 if unreadable or undeclared else 0
 
 
@@ -651,6 +665,7 @@ def main() -> int:
     parser.add_argument('--out', help='directory for the Status body files')
     parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     parser.add_argument('--fix', help='write the body here')
+    parser.add_argument('--dispatch-plan', help='write the admitted units as JSON for dispatch batching')
     args = parser.parse_args()
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:

@@ -1,7 +1,6 @@
 {
   "titles/title-case": ["review"],
   "titles/action-titles": ["review"],
-  "titles/italicised-verb": ["review"],
   "procedure/explicit-execution": ["review"],
   "procedure/subsection-titles": ["review"],
   "procedure/numbered-steps": ["review"],
