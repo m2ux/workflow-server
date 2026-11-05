@@ -1,0 +1,30 @@
+--- a/skills/work-planner/modes/align-mode.md
++++ b/skills/work-planner/modes/align-mode.md
+@@ -175,7 +175,7 @@
+ - For each open epic, Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
+ - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
+ - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) to point an open task pull request at its epic base.
+-- When that pull request is not mergeable, Apply [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) with the epic base, task branch and unit checkout holding it. A conflict is reported and the pull request stays open.
++- When that pull request is not mergeable, Apply [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) with the epic base, task branch and the unit checkout holding it. A conflict is reported and the pull request stays open.
+ - An open pull request whose head is an epic base targets its corresponding long-lived branch.
+ - A merged pull request is left as merged.
+ - A base that is none of these is put to the user.
+--- a/skills/work-planner/protocols/change-overview.md
++++ b/skills/work-planner/protocols/change-overview.md
+@@ -28,14 +28,14 @@
+ 
+ On a changed-head finding:
+ - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again for the same pull request.
+-- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again using its new verified head.
++- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again with the project checkout, same pull request number and new verified head.
+ 
+ #### Matching Head
+ 
+ - Continue to measurement only when the worktree matches that head.
+ - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its changed paths.
+ - Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with the review checkout it returns, head and base.
+-- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) again after its index update.
++- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) again with the review checkout, head and base after its index update.
+ 
+ #### Changed Revision
+ 

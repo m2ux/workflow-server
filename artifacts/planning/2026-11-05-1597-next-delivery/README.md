@@ -42,3 +42,7 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 | [Selection session inventory](tail-selection-sessions.json) | W03 complete, W04/W05 retained |
 | [Parent family review](family-parent-review.md) | Composed-source review, DRY corrections and pending evidence gates |
 | [Validation boundaries](validation-boundaries.md) | Completed reader review, instrument correction and final activation checks |
+| [Checkout call review](checkout-call-review.md) | Integration-owned caller corrections and preserved reader assertions |
+| [Checkout call patch](checkout-call-fixes.patch) | Exact three-line caller correction |
+| [Checkout proof](checkout-call-proof.log) | Ten passing focused tests in the combined candidate |
+| [Checkout proof identity](checkout-call-proof.json) | Combined-source and caller-patch identities |

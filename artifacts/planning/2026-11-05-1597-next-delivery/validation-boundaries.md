@@ -27,6 +27,8 @@ The installed Work Planner model is the final authority after W08 activates it. 
 
 These checks belong to activation, while the conversions still use their approved staged instruments. They introduce no additional criterion or outside-skill migration.
 
+The W06 checkout-reader adaptation also selects heading execution regions explicitly during staging. Its real-corpus model selection is part of the same final-activation audit; synthetic parser controls retain explicit fixture declarations where needed.
+
 ## Graph Capability Preparation
 
 Installed GitNexus 1.6.12 exposes index-only analysis, external index storage and status --json. Its CLI detect-changes formatter displays at most 15 changed symbols even when the backend returns more. The same installed LocalBackend.callTool interface used by the CLI returns the structured result, preserving the full returned list. Public type declarations state that a current index omits the optional staleness payload; absence alone cannot prove freshness. Final overview evidence must retain the requested/indexed commits and actual freshness result, and must not treat the formatted subset as complete.

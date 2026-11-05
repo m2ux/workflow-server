@@ -1,0 +1,10 @@
+{
+  "probe": "/tmp/i17-e01-w06/actual-composition/checkouts-combined-proof",
+  "caller_patch": "/tmp/project17-checkout-call-fixes.patch",
+  "caller_patch_sha256": "51c8589c4ec34d1a5b326b8aa5f9eb4668b1edfb07a512ab7131fa62d36eaa53",
+  "product_callers_unchanged": {
+    "skills/work-planner/modes/align-mode.md": "a6eb7427acadb655ddd91a191edbca8a4c82230aff8b48797f660974b341eafb",
+    "skills/work-planner/protocols/change-overview.md": "3b8da3ab5a14bee40dafca4017737ed65262b9f45b3c0aed6a39398ecdcb3c5d"
+  },
+  "reader_sha256": "354ac2b38985dde20dd90ede6098d181180939e0ffd3e1b33d3db8e3c5316386"
+}
