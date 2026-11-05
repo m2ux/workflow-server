@@ -31,6 +31,7 @@ The extraction preserves the live skill's instructions and updates the readers t
 | [section-comparison.txt](section-comparison.txt) | Complete section comparison against the exact final source tree. |
 | [changes.md](changes.md) | Applied and held plan changes for the delivery session. |
 | [revision-check.log](revision-check.log) | AC2 named instrument at the literal published task commit. |
+| [epic-body.md](epic-body.md) | Current epic body used by the session’s tracker publications. |
 
 ## Links
 
@@ -39,3 +40,4 @@ The extraction preserves the live skill's instructions and updates the readers t
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Preceding delivery | https://github.com/m2ux/workflow-server/pull/1640 |
 | Epic integration | https://github.com/m2ux/workflow-server/pull/1641 |
+| Task delivery | https://github.com/m2ux/workflow-server/pull/1642 |
