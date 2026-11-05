@@ -28,7 +28,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
    - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
    - Read tasks for implied consumption edges.
    - Answer every open candidate unit as [Joins](#joins) states.
-   - Account for every contending pair as [Component Contention](#component-contention) states: the proposed map separates the two epics by a number, or the contending rows move into one epic.
+   - Account for every contending pair through [Component Contention](#component-contention).
    - Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.
 3. Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
    - For a confirmed epic map, run [Renumber Epics](#renumber-epics) with current pull request records and every affected body.

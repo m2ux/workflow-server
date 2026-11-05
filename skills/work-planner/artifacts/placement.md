@@ -25,9 +25,8 @@ One placement option from the supplied orphan and candidate destinations.
 
 1. Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
    - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
-2. Record the destination and the work it takes, meeting [Fields](#fields).
-3. Record whether the orphan is kept, subsumed or left, meeting [Disposition Conditions](#disposition-conditions), including the reason and any planning record reference.
-4. Return the placement for the caller to offer and apply. The output is the [Placement](#placement-record), including the draft issue changes.
+2. Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions).
+3. Return the placement for the caller to offer and apply.
 
 ### *Find* Placement Candidates
 

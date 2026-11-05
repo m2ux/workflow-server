@@ -25,9 +25,8 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
    - The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.
    - The queue must meet [Fields](#fields).
    - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
-2. Return the proposed Status and assignee calls, report lines including [Ready Unit Lanes](#ready-unit-lanes), and unresolved issue references to the caller.
+2. Return the queue to the caller.
    - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
-   - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.
    - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
 
 ## Fields

@@ -110,7 +110,7 @@ One current pull request and its requested supporting records.
 
 **Inputs:** Repository, pull request number, output paths and requested records: metadata, changed paths or reviews.
 
-1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) for full REST metadata, including URL, body and both revision SHAs, replacing the supplied destination with one JSON object on every refresh.
+1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) with the pull request identity and destination JSON path.
 2. Run [Fetch Pull Request Files](#fetch-pull-request-files) or [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when the caller requests those records.
 3. Return the snapshots or missing evidence.
 

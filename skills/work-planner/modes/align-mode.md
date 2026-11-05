@@ -89,7 +89,7 @@ The main path meets [Outcomes](#outcomes).
    - Take each task row's work-item file from the planning record that registered it, which holds one per task whatever that row currently links, so contention is measured rather than reported as unchecked.
    - Follow [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) with those bodies, those work-item files, current pull request records, confirmed maps when any, and explicitly authorized outside-initiative files.
    - Resume this alignment with its checked bodies or unresolved findings.
-   - Put each problem it reports to the user. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
+   - Put each problem it reports to the user.
 9. **Coverage.**
    For a pull request explicitly selected for alignment, run [Repair Test Plan](../artifacts/pull-request-body.md#repair-test-plan), publish a converted body through [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request), and report its URL. When no initiative or epic is selected, continue at step 13, Re-run.
    - For initiative or epic scope, run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON.

@@ -78,7 +78,7 @@ The main path meets [Outcomes](#outcomes).
      - Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its merged pull request.
      - Run [Task Merge](../protocols/task-merge.md) with that merge result and the selected board identity.
 6. **Confirm.**
-   Show each `unit` line, with its tasks, lane or unlaned designation, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
+   Show each `unit` and `hold` in [Report Lines](../artifacts/delivery-plan.md#report-lines), adding whether each holding session is still running.
    - Confirm the units to dispatch and the holds to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a hold the user leaves stays held.
    - For each released hold:

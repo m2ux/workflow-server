@@ -22,7 +22,7 @@ One delivery plan from supplied board and delivery evidence.
 **Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index and optional record date.
 
 1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
-2. Return the units admitted by [Admission](lane.md#admission), holds, blockers, invalid lane assignments, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 

@@ -34,7 +34,7 @@ Read these files first.
    - Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for a confirmed unplaced task.
    - Repeat Record Epic Delivery with the refreshed epic JSON and the same pull request records, complete issue-link snapshot, task issue records, confirmed task-to-pull-request matches, project checkout, fetched epic bases, and output body file.
 4. **Coverage agreement.**
-   Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings), including each pull request and row.
+   Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings).
    - Continue recording links, verified criteria and Done.
 5. **Criteria and bodies.**
    Use the epic body returned by Record Epic Delivery.

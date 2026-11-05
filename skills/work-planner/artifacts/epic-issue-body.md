@@ -51,7 +51,7 @@ Verified criteria and completed rows in one epic body.
 **Inputs:** Epic JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
 
 1. Run [Tick Epic Criteria](#tick-epic-criteria) with the epic JSON, records as `--prs`, snapshot as `--links`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
-2. Return the body and refused criteria. Complete rows receive Done ticks.
+2. Return the body and refused criteria.
 
 ### *Reserve* Task Rows
 
@@ -61,7 +61,7 @@ Task rows held for one confirmed delivery session.
 
 1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
 2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, the board items as `--items`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
-3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).
+3. Return the reserved body meeting [Task Delivery](#task-delivery).
 
 ### *Release* Task Rows
 
@@ -71,7 +71,7 @@ Held task rows returned to their work-item links.
 
 1. Require the supplied release decision and refuse any row that is not held.
 2. Run [Release Row](#release-row) with the epic as `--epic`, every id of each released unit as `--release`, the engineering worktree as `--engineering` and output as `--fix`.
-3. Return the body with each task id linked to its lowercase work-item file inside the reserved folder, meeting [Task Delivery](#task-delivery).
+3. Return the released body meeting [Task Delivery](#task-delivery).
 
 ### *Validate* Epic Body
 
@@ -114,7 +114,7 @@ The agreed disposition of criteria a delivered row left unmet.
    - Return an unanswered draft as pending without continuing to the reconcile step.
 3. Run [Record Epic Delivery](#record-epic-delivery) with the revised epic, the supplied delivery evidence, the project checkout and the fetched epic bases.
    - Publish the returned body through [Save Tracker Issue](issue.md#save-tracker-issue).
-   - Return the saved row and criterion disposition to the caller. Done follows [Tables](issue-body.md#tables).
+   - Return the saved row and criterion disposition to the caller.
 
 ## Fields
 

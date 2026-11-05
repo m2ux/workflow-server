@@ -38,7 +38,6 @@ The main path meets [Outcomes](#outcomes).
 4. **Plan.**
    Call [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.
    - Include every resolved off-board issue file and confirmed unplanned initiative identity.
-   - Retain the returned [Ready Unit Lanes](../artifacts/board-queue.md#ready-unit-lanes) report from the supplied issue bodies with the queue’s other report lines.
 5. **Resolve missing evidence.**
    For each unresolved issue reference:
    - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) into a file.
@@ -70,7 +69,7 @@ The main path meets [Outcomes](#outcomes).
    - Resolve new missing evidence or decisions through steps 5 and 6.
    - Repeat this step until the refreshed queue is complete and contains no further call.
 8. **Report.**
-   Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines), including each Ready unit and its lane index or unlaned state returned by the queue.
+   Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines).
 
 ## Outcomes
 

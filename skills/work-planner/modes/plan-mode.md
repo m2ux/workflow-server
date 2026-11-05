@@ -38,7 +38,7 @@ The main path meets [Outcomes](#outcomes).
      - Resume this selection step with its published proposal; an unresolved proposal blocks initiative drafting.
 2. **Prepare the planning record.**
    - For an initiative, epic or complex plan, call [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) with the record identity, folder and supplied evidence files.
-   - The record's folder holds every draft body and work item this plan writes, as [Layout](../artifacts/planning-record.md#layout) states.
+   - Use [Layout](../artifacts/planning-record.md#layout) for draft paths.
    - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
 3. **Draft each initiative body.**
    - For a new initiative, obtain its proposed prefix through [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the initiative prefix letter.

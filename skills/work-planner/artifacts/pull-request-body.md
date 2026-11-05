@@ -29,7 +29,7 @@ The current change carried by one epic base.
 **Inputs:** Current base change, supplied task-merge evidence and optional existing review body.
 
 1. Populate the review body from the [Template](#template) using the actual task merges into the base.
-   - All populated fields must meet [Fields](#fields), including the review-specific requirements in [Review Body](#review-body).
+   - All populated fields must meet [Fields](#fields).
 2. For a later task merge:
    - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
    - Add its functional change under the corresponding area.

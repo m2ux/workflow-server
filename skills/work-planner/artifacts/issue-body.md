@@ -20,7 +20,7 @@ The shared table, before a kind fills its cells.
 1. Populate the shared Done, Coverage and Depends on cells from the supplied row data.
    - The columns must match the kind's table.
    - The shared cells must meet [Tables](#tables).
-2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form). A Depends on cell that holds prose fails [Tables](#tables). Numbering that does not follow start order is advisory, as [Numbering](#numbering) states.
+2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form).
 
 ### *Check* Round of Edits
 
@@ -39,7 +39,7 @@ One body checked against its supplied kind and template.
 
 1. Run [Check Body Format](#check-body-format) with the supplied issue JSON, kind inputs and output file as `--fix`.
 2. Review the body against the supplied field conditions.
-3. Return the [Format Findings](#format-findings), mechanical diff and field findings, including missing sections, extra sections, wrong-kind layout, historical narration and criteria that fail their named instrument. A mechanical correction preserves wording; new content and scope decisions require caller-supplied resolutions.
+3. Return the [Format Findings](#format-findings).
 
 ### *Apply* Body Corrections
 

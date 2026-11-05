@@ -89,7 +89,7 @@ How a skill's own files are written: SKILL.md, the references, the templates, an
 - **Succinct.**  Plain words, and no sentence that another already carries.
 - **One home per rule.**
   - Each rule is stated once: in SKILL.md, the mode that owns it, or the guide the modes share.
-  - Every other file cites it by link, never restates it.
+  - Every other file cites it by link, never restates it. A caller passes inputs and routes results without repeating the linked operation’s description, output fields or guarantees.
   - A skill's guide states no rule under the label and section title of a rule in this file.
 - **Deciding operation.**
   - Each labelled rule a guide states names the operations that decide it, in `rules.json` beside that guide, keyed `<section-anchor>/<label-anchor>`.
