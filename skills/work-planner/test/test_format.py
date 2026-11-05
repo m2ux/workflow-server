@@ -352,6 +352,76 @@ class TaskRowDependencies(unittest.TestCase):
                 self.assertTrue(DEPENDENCY['initiative'].fullmatch(value))
 
 
+class TaskRowLanes(unittest.TestCase):
+    @staticmethod
+    def review(table: str) -> tuple[Review, str]:
+        body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
+                f'## Work Breakdown\n\n{table}\n\n'
+                '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n- [ ] **AC2.** Also holds.\n')
+        r = Review(issue(2, '[I01:E00] Lane Checks: Validate Row Assignments', body=body,
+                         labels=('type:epic', 'theme:mechanical')))
+        return r, r.run()
+
+    def test_bare_indices_and_empty_cells_are_valid(self):
+        table = ('| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+                 '| --- | --- | --- | --- | --- | --- | --- |\n'
+                 '| W01 | First work | AC1 | | | 2048 | |\n'
+                 '| W02 | Other work | AC2 | | | | |')
+        r, fixed = self.review(table)
+        self.assertFalse(any('Lane' in item for item in r.decide), r.decide)
+        self.assertIn(table, fixed)
+
+    def test_malformed_populated_cells_name_their_row_and_keep_the_value(self):
+        for lane in ('`2`', '[2](https://example.com/lane)', '**2**', 'lane 2', 'two', '-2', '2.0'):
+            with self.subTest(lane=lane):
+                table = ('| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+                         '| --- | --- | --- | --- | --- | --- | --- |\n'
+                         f'| W01 | First work | AC1 | | | {lane} | |\n'
+                         '| W02 | Other work | AC2 | | | | |')
+                r, fixed = self.review(table)
+                findings = [item for item in r.decide if 'Lane' in item]
+                self.assertEqual(len(findings), 1, r.decide)
+                self.assertTrue(findings[0].startswith('W01:'), findings)
+                self.assertIn('bare decimal index', findings[0])
+                self.assertIn(f'| {lane} |', fixed)
+
+    def test_normalization_preserves_lanes_by_task_with_done_last(self):
+        table = ('| Done | Lane | Task | Joins | Depends on | Coverage | Description |\n'
+                 '| --- | --- | --- | --- | --- | --- | --- |\n'
+                 '| [x] | 12 | [W01](https://github.com/o/r/pull/950) | | | AC1 | First work |\n'
+                 '| [ ] | | W02 | | | AC2 | Other work |')
+        r, fixed = self.review(table)
+        self.assertFalse(any('Lane' in item for item in r.decide), r.decide)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Lane | Done |', fixed)
+        self.assertIn('| [W01](https://github.com/o/r/pull/950) | First work | AC1 | | | 12 | ✓ |', fixed)
+        self.assertIn('| W02 | Other work | AC2 | | | | |', fixed)
+        second = Review(issue(2, '[I01:E00] Lane Checks: Validate Row Assignments', body=fixed,
+                              labels=('type:epic', 'theme:mechanical')))
+        self.assertEqual(second.run(), fixed)
+        self.assertFalse(second.fixed, second.fixed)
+
+    def test_missing_lane_column_is_added_empty(self):
+        table = ('| Task | Description | Coverage | Depends on | Joins | Done |\n'
+                 '| --- | --- | --- | --- | --- | --- |\n'
+                 '| W01 | First work | AC1 | | | ✓ |\n'
+                 '| W02 | Other work | AC2 | | | |')
+        r, fixed = self.review(table)
+        self.assertIn('Work Breakdown columns added: Lane', r.fixed)
+        self.assertFalse(any('Lane' in item for item in r.decide), r.decide)
+        self.assertIn('| W01 | First work | AC1 | | | | ✓ |', fixed)
+        self.assertIn('| W02 | Other work | AC2 | | | | |', fixed)
+
+    def test_malformed_cell_survives_table_normalization(self):
+        table = ('| Done | Task | Lane | Description | Coverage | Depends on | Joins |\n'
+                 '| --- | --- | --- | --- | --- | --- | --- |\n'
+                 '| [x] | [W01](https://github.com/o/r/pull/950) | [2](https://example.com/lane) | First work | AC1 | | |\n'
+                 '| | W02 | | Other work | AC2 | | |')
+        r, fixed = self.review(table)
+        self.assertTrue(any(item.startswith('W01: Lane') for item in r.decide), r.decide)
+        self.assertIn('| [W01](https://github.com/o/r/pull/950) | First work | AC1 | | | '
+                      '[2](https://example.com/lane) | ✓ |', fixed)
+
+
 class References(unittest.TestCase):
     def test_a_reference_naming_own_initiative_is_a_finding(self):
         body = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'

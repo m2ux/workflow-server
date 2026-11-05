@@ -1,13 +1,15 @@
 # Board Queue
 
-The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics and epics waiting on a priority.
+The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.
 
 ## Prerequisites
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
+- [Dependency Graph](dependency-graph.md)
 - [Delivery Branches](delivery-branches.md)
 - [Hot-fix](hotfix.md)
 
@@ -20,11 +22,11 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 **Inputs:** Board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login, output directory, resolved off-board issue files and confirmed unplanned initiative identities. The caller supplies the delivery state.
 
 1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
+   - The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.
    - The queue must meet [Fields](#fields).
    - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
-2. Return the proposed Status and assignee calls, report lines and unresolved issue references to the caller.
+2. Return the queue to the caller.
    - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
-   - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.
    - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
 
 ## Fields
@@ -88,6 +90,10 @@ An open epic whose acceptance criteria are all ticked is handed off. Board Deliv
 
 A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state.
 
+### Ready Units
+
+A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member is free, undelivered and meets [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.
+
 ### Proposed Changes
 
 The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.
@@ -101,6 +107,8 @@ The queue contains calls for Status and assignee changes to initiatives, epics a
 | `wait` | An initiative is held In Progress by an epic it lists that is active, handed off or In Review | That initiative, the open delivery pull requests, and each epic In Review, awaiting review or held by a session |
 | `reconcile` | An initiative would return to Backlog while an epic of it is active, handed off or In Review | That initiative and each such epic, for the user to finish or release |
 | `next` | An initiative is Ready or In Progress and has epics that are Ready | Those epics |
+| `unit` | A unit meets [Ready Units](#ready-units) and [Unit Consistency](lane.md#unit-consistency) | Its initiative, epic and task ids followed by its [Report Label](lane.md#report-label), for example `unit I01:E00:W01+W02: lane 2` |
+| `invalid` | A task has an [assignment finding](lane.md#assignments), or a free unit fails [Unit Consistency](lane.md#unit-consistency) | Its affected rows and values; the invalid unit is not reported as Ready, and the run exits nonzero |
 | `rank` | An open initiative has an open epic with no priority label that is not [handed off](#epic-handoff) | That initiative and each such epic, for the user to rank |
 
 ### Recommended Decisions
@@ -122,13 +130,15 @@ A `Depends on` entry that names no row and links no issue, names an issue the ru
 
 An `order` or `ask` line means a decision is pending. An unresolved issue reference means dependency evidence is missing. Either leaves the queue incomplete.
 
+Invalid lane assignments leave the unit report incomplete and the run exits nonzero. They do not supply placement or assignee inputs.
+
 A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.
 
 ## Commands
 
 ### Compute Board Queue
 
-Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
 
 **Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
 

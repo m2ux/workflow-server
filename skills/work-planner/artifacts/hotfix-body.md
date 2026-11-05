@@ -26,7 +26,7 @@ One hot-fix body from a confirmed defect.
   - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
   - The Overview must name the confirmed target as [Target](#target) states.
   - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
-  - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
+  - All populated fields must meet [Fields](#fields).
 
 ## Fields
 

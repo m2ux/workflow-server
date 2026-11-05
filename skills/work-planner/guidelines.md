@@ -145,7 +145,7 @@ Read this before adding or changing a protocol.
 Read this before adding or changing an artifact.
 
 - **One shape.**
-  An artifact owns one shape and the transformations that produce it. It changes when that shape changes. Locate a procedure by the object and state it produces. A caller or a shared command does not determine ownership.
+  An artifact owns one subject’s state, invariants and operations. Its shape and the transformations that produce it share that home, with shared executable operations in a subject module. It changes when that subject changes. Locate a procedure by the object and state it produces. A caller or a shared command does not determine ownership.
 - **Virtual artifacts.**
   A derived artifact owns its output shape even when it has no persisted document. Fields defines that shape; its operations consume supplied evidence.
 - **Descriptions.**

@@ -13,7 +13,7 @@ One architecture overview from supplied measurements.
 1. Take the graph measurements supplied by the caller and check the proposed diagrams.
    - The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
 2. Populate the overview from the [Template](#template) at the supplied output path.
-   - All populated fields must meet [Fields](#fields), including the required [Sections](#sections).
+   - All populated fields must meet [Fields](#fields).
 3. Pin each code reference.
    - Each reference must meet [Code References](#code-references).
 4. Return the file for the caller to register in its planning record.

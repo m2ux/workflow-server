@@ -6,6 +6,7 @@ The task edges an initiative's epics declare, and the row numbers that graph per
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Issue](issue.md)
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Work Item](work-item.md)
@@ -22,12 +23,12 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 1. Use the supplied local drafts when reviewing unpublished work.
    - For published issues, fetch the initiative and each epic body with [Read Tracker Issue](issue.md#read-tracker-issue).
-   - Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file.
+   - Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation applies [Check Unit Lanes](lane.md#check-unit-lanes) to the units it derives, using their epic bodies and complete ids.
 2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.
    - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
    - Read tasks for implied consumption edges.
    - Answer every open candidate unit as [Joins](#joins) states.
-   - Account for every contending pair as [Component Contention](#component-contention) states: the proposed map separates the two epics by a number, or the contending rows move into one epic.
+   - Account for every contending pair through [Component Contention](#component-contention).
    - Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.
 3. Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
    - For a confirmed epic map, run [Renumber Epics](#renumber-epics) with current pull request records and every affected body.
@@ -86,6 +87,8 @@ Two task rows in different epics whose work items declare one [component](work-i
 
 The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
+- **A joined unit has one lane.**
+  Joined rows meet [Unit Consistency](lane.md#unit-consistency).
 - **A candidate is answered once.**
   Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
 - **Both resolutions are stated where the candidate is reported.**
@@ -112,6 +115,7 @@ Checks the task dependency graph across the epics given, and with `I=` the initi
 
 - Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
 - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
 - It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
 - An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.
 - It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.

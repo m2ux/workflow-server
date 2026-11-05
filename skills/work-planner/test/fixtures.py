@@ -48,9 +48,9 @@ def item(content: dict | None, status: str | None) -> dict:
 
 def epic_body(*rows: tuple[str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task id, description, depends on)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
-    lines += [f'| {task} | {description} | AC1 | {depends} | | |' for task, description, depends in rows]
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | {description} | AC1 | {depends} | | | |' for task, description, depends in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
 
@@ -152,3 +152,11 @@ def declared(root: Path, *names: str) -> list[str]:
     checkout = root / 'checkout'
     repository(checkout, *names)
     return ['--project', str(checkout), '--revision', 'HEAD']
+
+
+def lane_table(*rows: tuple[str, str, str]) -> str:
+    return ('## Work Breakdown\n\n'
+            '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+            '| --- | --- | --- | --- | --- | --- | --- |\n'
+            + ''.join(f'| {task} | Work | AC1 | | {joins} | {lane} | |\n'
+                      for task, joins, lane in rows))

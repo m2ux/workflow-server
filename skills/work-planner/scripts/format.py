@@ -72,6 +72,7 @@ Left to decide, since each needs new content or a judgement:
     or a number word) that is not its own target
   - any other acceptance criterion that may state several invariants (a semicolon in its statement)
   - a Depends on cell holding anything but references, or, in an initiative, anything but epics
+  - a populated Lane cell holding anything but a bare decimal index
   - a non-goal of more than one sentence, or one naming an initiative, epic, task or issue; a
     Non-Goals section in an epic or task, since non-goals belong to the initiative, or in a
     standalone issue, whose Proposal states its boundary
@@ -105,6 +106,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
+from lane import read_lanes
 from hotfix import HOTFIX, PRIORITY, hotfix_faults, is_hotfix
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'
@@ -553,7 +555,11 @@ class Review:
             h = section[0]
             if h == 'Work Breakdown' and template.columns:
                 self.check_prose(section[1])
-                section[1] = self.fix_names(self.fix_references(self.fix_table(section[1], template.columns)))
+                section[1] = self.fix_table(section[1], template.columns)
+                if self.kind == 'epic':
+                    _, problems = read_lanes('\n'.join(section[1]))
+                    self.decide.extend(problems)
+                section[1] = self.fix_names(self.fix_references(section[1]))
                 self.check_dependencies(section[1])
                 self.check_shared(section[1])
             elif h in ('Problem', 'Proposal'):

@@ -18,6 +18,8 @@ import re
 import sys
 from pathlib import Path
 
+from lane import is_index
+
 IDENTITY = re.compile(r'[^/#\s]+/[^/#\s]+#(?:I\d\d(?::E\d\d(?::W\d\d(?:\+W\d\d)*)?)?|F\d\d)')
 STATES = {'preparing', 'running', 'review', 'blocked', 'completed'}
 
@@ -71,7 +73,7 @@ def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity:
     """An ordered batch bounded by one authorization and actual free worker capacity."""
     if capacity < 0:
         raise ValueError('capacity must be a nonnegative count of currently free harness slots')
-    if lane is not None and not re.fullmatch(r'[0-9]+', lane):
+    if lane is not None and not is_index(lane):
         raise ValueError('lane must be a bare decimal index')
     if board != authorization['board'] or lane != authorization['lane']:
         raise ValueError('survey board and requested lane must match the authorization')

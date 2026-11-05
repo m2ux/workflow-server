@@ -8,6 +8,7 @@ Keeps an authorized theme-board scope moving through delivery while eligible wor
 
 Read these files first.
 
+- [Lane](../artifacts/lane.md)
 - [Board](../artifacts/board.md)
 - [Advance Mode](advance-mode.md)
 - [Pull Request](../artifacts/pull-request.md)
@@ -40,6 +41,7 @@ The main path meets [Outcomes](#outcomes).
    - Use its returned owner and board number throughout this run.
 2. **Establish the authorization.**
    Record the user's requested board, initiative, epic or unit boundary and requested lane as the [run authorization](../artifacts/dispatch-batch.md#authorization).
+   - Take the optional lane index afresh from this request, following [Admission](../artifacts/lane.md#admission); a request naming none supplies none.
    - An explicit delivery request supplies that authorization; retain any narrower scope already established in this session.
    - Resolve a missing scope decision through the [Interview](../guidelines.md#modes) before starting work.
    - Authorization covers successive eligible units within that boundary. Expanding it requires a new user decision.
@@ -49,7 +51,7 @@ The main path meets [Outcomes](#outcomes).
    Run [Refill Delivery Capacity](#refill-delivery-capacity) with the authorization, project checkout, engineering worktree, run allowance and [Run Delivery Session](#run-delivery-session) as the supplied worker procedure.
    - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
 4. **Report.**
-   Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, with its record, branches, worktrees and observed session.
+   Report each merged pull request, unresolved conflict, epic in review, review pull request update and running or finished unit, using [Report Lines](../artifacts/delivery-plan.md#report-lines) for survey results and [Session Inventory](../artifacts/dispatch-batch.md#session-inventory) for execution state.
    - Include each held or blocked unit, what it waits on and any unavailable execution capacity.
    - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, including applied and held changes.
 
@@ -73,7 +75,7 @@ The continuing coordinator for one authorized delivery scope.
    Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each authorized epic the queue places Ready or In Progress, with current initiative, epic, prerequisite and base-merge records.
    - Pass each confirmed result and the project checkout to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
    - Run [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout for the project and each epic, at the revision [Branches](../artifacts/delivery-branches.md#branches) names.
-   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with current items, pull requests, complete issue links, project checkout, evaluated revision, epic bases, engineering worktree, resolved off-board issues and selected record date, requesting its dispatch export.
+   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with current items, pull requests, complete issue links, project checkout, evaluated revision, epic bases, engineering worktree, resolved off-board issues, the authorization's optional requested lane index and selected record date, requesting its dispatch export.
      - Retain the authorized requested lane on every survey; a survey unable to apply that lane returns an evidence blocker.
      - Resolve each missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) and repeat the survey with that record and the other current inputs.
        - Retain an unavailable row dependency as that unit's blocker and continue with independently verified units.

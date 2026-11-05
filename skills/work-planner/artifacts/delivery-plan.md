@@ -6,6 +6,7 @@ The available units, held rows and hot-fixes, blocked work and merge candidates 
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Delivery Branches](delivery-branches.md)
 - [Work Item](work-item.md)
@@ -18,10 +19,10 @@ Read these files first.
 
 One delivery plan from supplied board and delivery evidence.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional record date and optional dispatch-export path.
+**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index, optional record date and optional dispatch-export path.
 
-1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter.
-2. Return the units, holds, blockers, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
+2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 
@@ -40,7 +41,8 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 ### Report Lines
 
-- A `unit` line names one session's tasks, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base workspace, worktree .worktrees/f00-key-validation`.
+- A `unit` line names one session's tasks, its lane as `lane 2` or `unlaned`, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: unlaned, coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base workspace, worktree .worktrees/f00-key-validation`.
+- An `invalid` line names a malformed task-table Lane cell or a joined unit with different Lane values. The unit is not offered and the run exits nonzero; the summary counts invalid units.
 - An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero. It also names an open hot-fix, whatever its state, whose body names no [target](hotfix-body.md#target), or one of the project checkout's repository whose target the evaluated revision's [Branches](delivery-branches.md#branches) does not declare. It is offered as no unit and no merge until its target is one.
 - A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds.
 - A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.
@@ -65,23 +67,24 @@ The optional JSON export holds exactly the available units in report order. Each
 
 Computes available work from supplied board and delivery snapshots.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional record date and optional dispatch-export path.
+**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional requested lane index, optional record date and optional dispatch-export path.
 
 - `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
 - `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.
 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
+- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
 - `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
 
 `<epic-base-names>` is a comma-separated list of full epic-base branch names.
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --lane '<lane-index>'
 ```
 
 **Example:**
 
 ```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering'
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --lane 2
 ```

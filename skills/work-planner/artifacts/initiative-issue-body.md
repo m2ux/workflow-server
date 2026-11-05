@@ -58,7 +58,7 @@ Verified criteria and completed rows in one initiative body.
 **Inputs:** Initiative JSON, every linked epic's current JSON, verified criterion ids and output body file.
 
 1. Run [Tick Initiative Criteria](#tick-initiative-criteria) with the initiative, linked epics as `--epics`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
-2. Return the body and refused criteria. Complete rows receive Done ticks.
+2. Return the body and refused criteria.
 
 ### *Validate* Initiative Body
 

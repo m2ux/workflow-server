@@ -13,12 +13,14 @@ leading ./, so two spellings of one path are one component. A value still carryi
 naming a directory under the working directory declares a directory, which is a problem.
 
 Each remaining file is an epic issue body holding the agent-engineering Work Breakdown table:
-  | Task | Description | Coverage | Depends on | Joins | Done |
+  | Task | Description | Coverage | Depends on | Joins | Lane | Done |
 A task's id links each pull request associated with it, open or merged:
-  | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | |
+  | [W01](https://…/pull/950), [W01](https://…/pull/960) | … | AC1 | | | | |
 A row is the task its Task cell opens with, however many deliveries that id links.
 A task id is a W and two digits, and the run names one in a Task cell that departs from it.
 Cells are read by column name, so the column order does not matter.
+A Lane cell holds a bare decimal index or is empty. Each joined unit carries one index
+across all its rows or has every Lane cell empty; each malformed or differing cell is a problem.
 
 A dependency is one of:
   W03             a task in the same epic
@@ -35,7 +37,7 @@ a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A named epic still reaches the rows it stands for, so one body
 carrying the retired form is reported once rather than taking its initiative's gates down with it.
-Joins problems: a task joining one that does not join it back, two joined tasks where one depends
+Joins problems: a task joining a row outside its epic, one that does not join it back, two joined tasks where one depends
 on the other, a joined task needing another through a task outside their unit, and a joined unit
 whose rows cover more than six criteria.
 Also printed: each candidate unit, the undelivered rows of one epic whose work items declare one
@@ -59,6 +61,8 @@ its dependants following it down.
 import re
 import sys
 from pathlib import Path
+
+from lane import check_unit, read_lanes
 
 LINK = re.compile(r'\[([^\]]*)\]\([^)]*\)')
 RANGE = re.compile(r'W(\d\d)[–-]W(\d\d)')
@@ -394,6 +398,19 @@ def main(argv: list[str]) -> int:
         else:
             epics[name] = Path(path)
     tasks, problems, expanded, criteria, delivered = parse(epics)
+    lanes: dict[str, str | None] = {}
+    malformed_rows = set()
+    for epic, path in epics.items():
+        values, malformed = read_lanes(path.read_text())
+        lanes.update({f'{epic}:{wid}': value for wid, value in values.items()})
+        problems += [f'{epic}:{problem}' for problem in malformed]
+        malformed_rows.update(f'{epic}:{problem.partition(":")[0]}' for problem in malformed)
+    units = joined_units(tasks)
+    for unit in sorted({u for u in units.values() if len(u) > 1}, key=sorted):
+        if not unit.intersection(malformed_rows):
+            _, finding = check_unit(unit, lanes)
+            if finding:
+                problems.append(finding)
     recorded, unreadable = recorded_units(records)
     problems += unreadable
     components, missing = read_components(items)
@@ -403,6 +420,7 @@ def main(argv: list[str]) -> int:
             problems.append(f'{key}: work item names no row in the epics given')
     components = {key: value for key, value in components.items() if key in tasks}
     advisory = []
+    unsupported_joins = False
 
     for key, (_, deps, acc) in tasks.items():
         epic, wid = key.split(':')
@@ -416,6 +434,9 @@ def main(argv: list[str]) -> int:
             if de > epic:
                 problems.append(f'{key}: depends on later epic {d}')
         for a in acc:
+            if a.split(':')[0] != epic:
+                problems.append(f'{key}: Joins names {a} outside its epic; a joined unit belongs to one epic')
+                unsupported_joins = True
             if a not in tasks:
                 problems.append(f'{key}: Joins names unknown task {a}')
 
@@ -456,7 +477,6 @@ def main(argv: list[str]) -> int:
                 by = next((o for o in listed if o != d and d in ancestors(o)), None)
                 if by and d not in expanded[key]:
                     problems.append(f'{key}: {d} is already implied by {by}')
-        units = joined_units(tasks)
         for key, (_, _, acc) in tasks.items():
             for a in acc:
                 if a not in tasks:
@@ -475,11 +495,11 @@ def main(argv: list[str]) -> int:
                 problems.append(f'{", ".join(sorted(unit))}: joined unit covers {count} criteria, '
                                 f'more than the bound of {UNIT_BOUND}')
         joins = candidate_units(tasks, components, criteria, delivered, ancestors, recorded)
-        if initiative:
+        if initiative and not unsupported_joins:
             problems += check_initiative(initiative, tasks)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
-    if cyclic:
+    if cyclic or unsupported_joins:
         return 1
     print('\n--- joins: candidate units, rows of one epic extending one component')
     print('\n'.join(joins) if joins else 'none')

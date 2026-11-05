@@ -10,6 +10,7 @@ from test_deliver import epic, staged
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 from dispatch import batch, check_start
+from lane import assign_lanes
 
 BOARD = 'users/o/projectsV2/7'
 AUTH = {'board': BOARD, 'scope': ['o/r#I07'], 'lane': None}
@@ -30,7 +31,7 @@ def evidence(unit: dict) -> dict:
             'reserved_record': unit['record'], 'reservation_verified': True}
 
 
-def exported(items: list[dict]) -> tuple[list[dict], str]:
+def exported(items: list[dict], *args: str, code: int = 0) -> tuple[list[dict], str]:
     """The actual survey's admitted units and its diagnostic report."""
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
@@ -39,8 +40,8 @@ def exported(items: list[dict]) -> tuple[list[dict], str]:
         (root / 'links.json').write_text('[]')
         result = run('deliver.py', '--items', str(root / 'items.json'),
                      '--prs', str(root / 'prs.json'), '--links', str(root / 'links.json'),
-                     '--dispatch-plan', str(root / 'available.json'), '--date', '2026-11-05')
-        assert result.returncode == 0, result.stdout + result.stderr
+                     '--dispatch-plan', str(root / 'available.json'), '--date', '2026-11-05', *args)
+        assert result.returncode == code, result.stdout + result.stderr
         return json.loads((root / 'available.json').read_text()), result.stdout
 
 
@@ -91,6 +92,46 @@ class Refill(unittest.TestCase):
                                  'o/r#I07:E00:W02', 'o/r#I07:E00:W03'])
         self.assertEqual(len(starts), len(set(starts)))
         self.assertEqual(authorization, AUTH)
+
+    def test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes(self):
+        content = epic(943, ('W01', 'Indexed', '', ''), ('W02', 'Other lane', '', ''),
+                       ('W03', 'Unlaned', '', ''))
+        content['body'] = assign_lanes(content['body'], {'W01': '02', 'W02': '2', 'W03': None})
+        items = staged((content, 'Ready'), (hotfix(2), 'Ready'))
+        for requested, tasks in [(None, ['W03']), ('02', ['W01', 'W03'])]:
+            with self.subTest(requested=requested):
+                args = () if requested is None else ('--lane', requested)
+                plan, report = exported(items, *args)
+                expected = [f'o/r#I07:E00:{task}' for task in tasks] + ['o/r#F02']
+                self.assertEqual([unit['id'] for unit in plan], expected)
+                self.assertEqual([unit['report'] for unit in plan],
+                                 [line.strip() for line in report.splitlines() if line.startswith('  unit ')])
+                authorization = {**AUTH, 'scope': ['*'], 'lane': requested}
+                selected = batch(authorization, plan, [], 3, BOARD, requested)
+                self.assertEqual(selected['units'], plan)
+                self.assertIn('unlaned, coverage', plan[-1]['report'])
+                if requested is not None:
+                    self.assertIn('lane 02, coverage', plan[0]['report'])
+
+    def test_invalid_lane_units_leave_independent_export_and_refill_available(self):
+        content = epic(943)
+        content['body'] = ('## Work Breakdown\n\n'
+            '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+            '| --- | --- | --- | --- | --- | --- | --- |\n'
+            '| W01 | One | AC1 | | W02 | 02 | |\n'
+            '| W02 | Two | AC1 | | W01 | | |\n'
+            '| W03 | Healthy | AC1 | | | 02 | |\n'
+            '| W04 | Malformed | AC1 | | | `02` | |\n'
+            '| W05 | Unlaned | AC1 | | | | |\n'
+            '\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        plan, report = exported(staged((content, 'Ready')), '--lane', '02', code=1)
+        self.assertEqual([unit['id'] for unit in plan], ['o/r#I07:E00:W03', 'o/r#I07:E00:W05'])
+        self.assertIn('invalid I07:E00:W01+W02', report)
+        self.assertIn('invalid I07:E00:W04', report)
+        self.assertIn('invalid: 2', report)
+        selected = batch({**AUTH, 'lane': '02'}, plan, [], 1, BOARD, '02')
+        self.assertEqual([unit['id'] for unit in selected['units']], ['o/r#I07:E00:W03'])
+        self.assertEqual(selected['pending'], 1)
 
     def test_capacity_event_refills_without_a_worker_completion(self):
         plan = [offered('o/r#I07:E00:W01'), offered('o/r#I07:E00:W02')]

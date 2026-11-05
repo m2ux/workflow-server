@@ -19,9 +19,9 @@ PLAN = ('## Test Plan\n\n'
 
 def epic_body(*rows: tuple[str, str, str, str]) -> str:
     """An epic body whose rows are (task id, description, depends on, joins)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
-    lines += [f'| {task} | {description} | AC1 | {depends} | {joins} | |'
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | {description} | AC1 | {depends} | {joins} | | |'
               for task, description, depends, joins in rows]
     return '\n'.join(lines + ['', '## Acceptance Criteria', '', '- [ ] **AC1.** Holds.', ''])
 
@@ -114,7 +114,7 @@ def record(*tasks: str) -> dict[str, str]:
 class Survey(unittest.TestCase):
     def test_free_row_of_a_started_epic_is_a_unit(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', '')), 'In Progress')))
-        self.assertIn('unit I07:E00:W01: coverage AC1, '
+        self.assertIn('unit I07:E00:W01: unlaned, coverage AC1, '
                       f'record {TODAY}-943-i07-e00-w01-queue-plan, '
                       'branch i07/e00/w01-queue-plan, worktree .worktrees/i07/e00/w01-queue-plan', output)
         self.assertIn('available: 1, held: 0, blocked: 0', output)
@@ -323,7 +323,7 @@ class Survey(unittest.TestCase):
     def test_joined_tasks_are_one_unit(self):
         output = survey(staged((epic(943, ('W01', 'Queue plan', '', 'W02'),
                                      ('W02', 'Dispatch', '', 'W01')), 'In Progress')))
-        self.assertIn('unit I07:E00:W01+W02: coverage AC1, '
+        self.assertIn('unit I07:E00:W01+W02: unlaned, coverage AC1, '
                       f'record {TODAY}-943-i07-e00-w01-queue-plan', output)
         self.assertIn('available: 1,', output)
 
@@ -532,7 +532,7 @@ class JoinedReservation(unittest.TestCase):
 
     def test_joined_rows_are_held_with_the_folder_the_survey_names(self):
         output = survey(staged((self.pair(), 'In Progress')))
-        self.assertIn(f'unit I07:E00:W01+W02: coverage AC1, record {self.FOLDER},', output)
+        self.assertIn(f'unit I07:E00:W01+W02: unlaned, coverage AC1, record {self.FOLDER},', output)
         report, body, code = edit(self.pair(), '--reserve', 'W01,W02', '--records', RECORDS)
         self.assertEqual(code, 0, report)
         self.assertIn(f'| [W01]({RECORDS}/{self.FOLDER}/) |', body)
@@ -763,7 +763,7 @@ class ProducerOutputs(unittest.TestCase):
 class HotFixUnits(unittest.TestCase):
     def test_a_ready_hot_fix_is_one_unit_cut_from_its_target(self):
         out = survey(staged((hotfix(4, target='workspace'), 'Ready'), (epic(9, ('W01', 'Go', '', '')), 'Backlog')))
-        self.assertIn('  unit F04 #4: coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
+        self.assertIn('  unit F04 #4: unlaned, coverage AC1, AC2, record 2026-10-06-4-f04-key-validation, '
                       'branch f04-key-validation, base workspace, worktree .worktrees/f04-key-validation', out)
         self.assertNotIn('unresolved', out)
         self.assertIn('available: 1', out)
@@ -879,6 +879,174 @@ class HotFixUnits(unittest.TestCase):
     def test_a_pull_request_closed_unmerged_leaves_the_hot_fix_free(self):
         out = survey(staged((hotfix(4), 'Ready')), [pr(951, '[F04] Reject Bad Keys', base='main', state='closed')], held=(links(951, 4),))
         self.assertIn('unit F04 #4', out)
+
+
+class LaneAdmission(unittest.TestCase):
+    @staticmethod
+    def laned(content, **lanes):
+        lines = content['body'].splitlines()
+        for position, line in enumerate(lines):
+            if not line.startswith('|'):
+                continue
+            values = [value.strip() for value in line.strip('|').split('|')]
+            task_id = values[0].split(']')[0].lstrip('[')
+            if task_id in lanes:
+                values[-2] = lanes[task_id]
+                lines[position] = '| ' + ' | '.join(values) + ' |'
+        content['body'] = '\n'.join(lines)
+        return content
+
+    @staticmethod
+    def offered(output):
+        return [line.strip() for line in output.splitlines()
+                if line.startswith('  unit ')]
+
+    def test_requested_lane_admits_itself_and_unlaned_rows_in_existing_order(self):
+        content = self.laned(epic(943, ('W01', 'First', '', ''), ('W02', 'Second', '', ''),
+                                  ('W03', 'Third', '', '')), W01='2', W02='1')
+        entries = staged((content, 'Ready'))
+        cases = [((), ['W03: unlaned']),
+                 (('--lane', '1'), ['W02: lane 1', 'W03: unlaned']),
+                 (('--lane', '2'), ['W01: lane 2', 'W03: unlaned'])]
+        for args, expected in cases:
+            with self.subTest(args=args):
+                output = survey(entries, None, *args)
+                found = [line.split('I07:E00:')[1].split(', coverage')[0]
+                         for line in self.offered(output)]
+                self.assertEqual(found, expected)
+                self.assertIn(f'available: {len(expected)}', output)
+
+    def test_lane_is_board_wide_and_preserves_opaque_spelling(self):
+        first = self.laned(epic(943, ('W01', 'First', '', ''), which='07:E00'), W01='02')
+        second = self.laned(epic(944, ('W01', 'Second', '', ''), which='07:E01'), W01='02')
+        entries = staged((first, 'Ready'), (second, 'In Progress'))
+        self.assertEqual(len(self.offered(survey(entries, None, '--lane', '02'))), 2)
+        self.assertEqual(self.offered(survey(entries, None, '--lane', '2')), [])
+
+    def test_table_lane_applies_to_linked_and_unplanned_rows(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            engineering, ids = planned(root, ('W01', 'workspace:skills/plan.py'))
+            content = self.laned(epic(943, (ids['W01'], 'Planned', '', ''),
+                                      ('W02', 'Unplanned', '', '')), W01='1', W02='2')
+            entries = staged((content, 'Ready'))
+            first = survey(entries, None, *engineering, '--lane', '1')
+            second = survey(entries, None, *engineering, '--lane', '2')
+        self.assertIn('unit I07:E00:W01: lane 1,', first)
+        self.assertNotIn('unit I07:E00:W02:', first)
+        self.assertIn('unit I07:E00:W02: lane 2,', second)
+        self.assertNotIn('unit I07:E00:W01:', second)
+
+    def test_joined_units_admit_equal_lanes_and_all_empty_cells(self):
+        for lane, requested in [('2', ('--lane', '2')), ('', ())]:
+            with self.subTest(lane=lane):
+                content = self.laned(epic(943, ('W01', 'One', '', 'W02'),
+                                          ('W02', 'Two', '', 'W01')), W01=lane, W02=lane)
+                output = survey(staged((content, 'Ready')), None, *requested)
+                self.assertIn('unit I07:E00:W01+W02:', output)
+                self.assertIn('available: 1', output)
+
+    def test_split_joined_lanes_fail_even_outside_the_requested_lane(self):
+        for second in ['2', '']:
+            with self.subTest(second=second):
+                content = self.laned(epic(943, ('W01', 'One', '', 'W02'),
+                                          ('W02', 'Two', '', 'W01')), W01='1', W02=second)
+                output = survey(staged((content, 'Ready')), None, '--lane', '3', code=1)
+                self.assertIn('invalid I07:E00:W01+W02: joined unit has different Lane cells', output)
+                self.assertIn('W01 = 1', output)
+                self.assertIn(f'W02 = {second or "empty"}', output)
+                self.assertIn('move a lane or unjoin', output)
+                self.assertEqual(self.offered(output), [])
+                self.assertIn('invalid: 1', output)
+
+    def test_raw_malformed_lanes_fail_without_becoming_unlaned(self):
+        for bad in ['[2](https://example.test)', '`2`', 'lane 2', '-2', '2.5']:
+            with self.subTest(bad=bad):
+                content = self.laned(epic(943, ('W01', 'One', '', ''),
+                                          ('W02', 'Two', '', '')), W01=bad)
+                output = survey(staged((content, 'Ready')), None, '--lane', '3', code=1)
+                self.assertIn('invalid I07:E00:W01: Lane must be a bare decimal index', output)
+                self.assertNotIn('unit I07:E00:W01:', output)
+                self.assertIn('unit I07:E00:W02: unlaned,', output)
+                self.assertIn('invalid: 1', output)
+
+    def test_two_malformed_joined_rows_count_as_one_invalid_unit(self):
+        content = self.laned(epic(943, ('W01', 'One', '', 'W02'),
+                                  ('W02', 'Two', '', 'W01')), W01='`1`', W02='`2`')
+        output = survey(staged((content, 'Ready')), code=1)
+        self.assertIn('invalid I07:E00:W01:', output)
+        self.assertIn('invalid I07:E00:W02:', output)
+        self.assertIn('invalid: 1', output)
+
+    def test_holds_blockers_and_merge_candidates_remain_visible_across_lanes(self):
+        content = self.laned(epic(943, (f'[W01]({RECORDS}/held/)', 'Held', '', ''),
+                                  ('W02', 'Blocked', 'W01', ''),
+                                  ('W03', 'Missing', 'W99', '')), W01='2', W02='2', W03='2')
+        pull = pr(951, '[I07:E00] Passing Work', body=PLAN, base='i07/e00/main')
+        output = survey(staged((content, 'Ready')), [pull], '--lane', '1', code=1)
+        self.assertIn('hold I07:E00:W01:', output)
+        self.assertIn('blocked I07:E00:W02: depends on W01', output)
+        self.assertIn('unresolvable I07:E00:W03: W99 cannot resolve', output)
+        self.assertIn('merge #951', output)
+        self.assertEqual(self.offered(output), [])
+
+    def test_unlaned_hot_fixes_are_admitted_with_or_without_a_lane(self):
+        for args in [(), ('--lane', '1')]:
+            with self.subTest(args=args):
+                output = survey(staged((hotfix(4, target='workspace'), 'Ready')), None, *args)
+                self.assertIn('unit F04 #4: unlaned, coverage AC1, AC2,', output)
+
+    def test_cli_refuses_non_index_lane_arguments(self):
+        for lane in ['', '-1', '1.5', 'lane 1', '`1`', '١']:
+            with self.subTest(lane=lane):
+                done = run('deliver.py', '--lane', lane)
+                self.assertEqual(done.returncode, 2, done.stdout + done.stderr)
+                self.assertIn('--lane must be a bare decimal index', done.stderr)
+
+
+class LaneCellPreservation(unittest.TestCase):
+    def assert_lane_rows(self, body, expected):
+        lines = [line for line in body.splitlines() if line.startswith('|')]
+        header = [value.strip() for value in lines[0].strip('|').split('|')]
+        self.assertEqual(header[-3:], ['Joins', 'Lane', 'Done'])
+        actual = {}
+        for line in lines[2:]:
+            values = [value.strip() for value in line.strip('|').split('|')]
+            ident = values[0].split(']')[0].lstrip('[')
+            actual[ident] = (values[-2], values[-1])
+        self.assertEqual(actual, expected)
+
+    def test_reserve_and_release_keep_lanes_attached_to_each_row(self):
+        source = epic(943, ('W01', 'Queue plan', '', ''), ('W02', 'Dispatch', '', ''))
+        source['body'] = source['body'].replace(
+            '| W01 | Queue plan | AC1 |  |  | | |',
+            '| W01 | Queue plan | AC1 | | | 2 | |')
+        self.assert_lane_rows(source['body'], {'W01': ('2', ''), 'W02': ('', '')})
+        report, reserved, code = edit(source, '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(reserved, {'W01': ('2', ''), 'W02': ('', '')})
+        source['body'] = reserved
+        folders = {f'{TODAY}-943-i07-e00-w01-queue-plan': record('W01'),
+                   f'{TODAY}-943-i07-e00-w02-dispatch': record('W02')}
+        report, released, code = edit(source, '--release', 'W01,W02', records=folders)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('', '')})
+        self.assertIn('/w01.md)', released)
+        self.assertIn('/w02.md)', released)
+
+    def test_a_joined_reservation_and_release_keep_both_lane_cells(self):
+        source = epic(943, ('W01', 'Queue plan', '', 'W02'), ('W02', 'Dispatch', '', 'W01'))
+        source['body'] = source['body'].replace('| W02 | | |', '| W02 | 2 | |').replace(
+            '| W01 | | |', '| W01 | 2 | |')
+        report, reserved, code = edit(source, '--reserve', 'W01,W02', '--records', RECORDS)
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(reserved, {'W01': ('2', ''), 'W02': ('2', '')})
+        source['body'] = reserved
+        folder = f'{TODAY}-943-i07-e00-w01-queue-plan'
+        report, released, code = edit(source, '--release', 'W01,W02',
+                                      records={folder: record('W01', 'W02')})
+        self.assertEqual(code, 0, report)
+        self.assert_lane_rows(released, {'W01': ('2', ''), 'W02': ('2', '')})
 
 
 if __name__ == '__main__':

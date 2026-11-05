@@ -6,6 +6,7 @@ The admitted units selected for the currently free worker slots of one authorize
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Delivery Plan](delivery-plan.md)
 
 ## Operations
@@ -32,7 +33,7 @@ One selected unit's readiness to execute.
 
 ### Authorization
 
-One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. A lane is its opaque decimal string, or `null` when none is requested.
+One run records its board identity, scope selectors and requested lane in a JSON object. The scope is the selected board (`["*"]`), or a list of repository-qualified initiative, epic, task or hot-fix identities, such as `o/r#I07`, `o/r#I07:E00`, `o/r#I07:E00:W01` or `o/r#F02`. Every row of a joined unit must fall within that scope. An explicit joined selector, `o/r#I07:E00:W01+W02`, authorizes both rows. The requested lane meets [Index](lane.md#index), represented as `null` when none is requested.
 
 ```json
 {"board": "users/o/projectsV2/7", "scope": ["o/r#I07"], "lane": null}

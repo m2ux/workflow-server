@@ -156,7 +156,7 @@ The main path meets [Outcomes](#outcomes).
     - Re-run [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the refreshed records, the same project checkout and the same epic bases.
     - [Issue Closure](../protocols/issue-closure.md) each epic the re-run reports closable.
 11. **Sync the initiative.**
-    Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.
+    Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery) with the epic JSON fetched after closing.
     - For returned criteria ready to verify:
       - Run [Verify Selected Criteria](../artifacts/acceptance-criteria.md#verify-selected-criteria) with their ids, current initiative body, delivery findings, delivery revisions, named instruments and the project checkout.
       - Pass returned verified ids to [Tick Verified Criteria](../artifacts/acceptance-criteria.md#tick-verified-criteria) with the initiative JSON, every linked epic record and output body file.

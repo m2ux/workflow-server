@@ -6,6 +6,7 @@ Populates one epic body. The body states one slice of the design and lists the t
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Issue Body](issue-body.md)
 - [Pull Request](pull-request.md)
 - [Epic](epic.md)
@@ -19,7 +20,7 @@ Read these files first.
 
 One epic body and its local validation findings.
 
-**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows, available pull request records, project checkout, evaluated revision and output path.
+**Inputs:** Initiative context, epic scope, draft title and labels, criteria, proposed task rows with optional lane indices, available pull request records, project checkout, evaluated revision and output path.
 
 1. Populate the body from the [Template](#template) at the supplied output path.
    - Every section must meet [Fields](#fields).
@@ -27,6 +28,7 @@ One epic body and its local validation findings.
 2. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
 3. Fill the epic-specific cells.
    - Each row must meet [Work Breakdown](#work-breakdown).
+   - Call [Assign Task Lanes](lane.md#assign-task-lanes) with the populated body, confirmed task-to-index map and output path.
 4. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
 5. Pass that snapshot, initiative context, available pull request records, project checkout, evaluated revision and output file to [Validate Epic Body](#validate-epic-body).
 6. Identify unresolved publication links separately; they remain pending until tracker identities exist.
@@ -49,7 +51,7 @@ Verified criteria and completed rows in one epic body.
 **Inputs:** Epic JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
 
 1. Run [Tick Epic Criteria](#tick-epic-criteria) with the epic JSON, records as `--prs`, snapshot as `--links`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
-2. Return the body and refused criteria. Complete rows receive Done ticks.
+2. Return the body and refused criteria.
 
 ### *Reserve* Task Rows
 
@@ -59,7 +61,7 @@ Task rows held for one confirmed delivery session.
 
 1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
 2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, the board items as `--items`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
-3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).
+3. Return the reserved body meeting [Task Delivery](#task-delivery).
 
 ### *Release* Task Rows
 
@@ -69,7 +71,7 @@ Held task rows returned to their work-item links.
 
 1. Require the supplied release decision and refuse any row that is not held.
 2. Run [Release Row](#release-row) with the epic as `--epic`, every id of each released unit as `--release`, the engineering worktree as `--engineering` and output as `--fix`.
-3. Return the body with each task id linked to its lowercase work-item file inside the reserved folder, meeting [Task Delivery](#task-delivery).
+3. Return the released body meeting [Task Delivery](#task-delivery).
 
 ### *Validate* Epic Body
 
@@ -91,7 +93,7 @@ One epic body with confirmed task-grain and coverage corrections.
 **Inputs:** Epic body, confirmed row changes, field findings, supplied dependency references and output path.
 
 1. Apply the confirmed row changes through [Populate Epic Issue Body](#populate-epic-issue-body), preserving unrelated content.
-   - Description, Coverage, Depends on, Joins and task grain must meet [Work Breakdown](#work-breakdown).
+   - Description, Coverage, Depends on, Joins, Lane and task grain must meet [Work Breakdown](#work-breakdown).
    - Split a task exceeding the allowed criterion grain into the confirmed tasks.
 2. Return the revised body and any cross-body numbering or dependency changes for the caller.
 
@@ -112,7 +114,7 @@ The agreed disposition of criteria a delivered row left unmet.
    - Return an unanswered draft as pending without continuing to the reconcile step.
 3. Run [Record Epic Delivery](#record-epic-delivery) with the revised epic, the supplied delivery evidence, the project checkout and the fetched epic bases.
    - Publish the returned body through [Save Tracker Issue](issue.md#save-tracker-issue).
-   - Return the saved row and criterion disposition to the caller. Done follows [Tables](issue-body.md#tables).
+   - Return the saved row and criterion disposition to the caller.
 
 ## Fields
 
@@ -133,9 +135,9 @@ The agreed disposition of criteria a delivered row left unmet.
 
 ## Work Breakdown
 
-| Task | Description | Coverage | Depends on | Joins | Done |
-| --- | --- | --- | --- | --- | --- |
-| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | |
+| Task | Description | Coverage | Depends on | Joins | Lane | Done |
+| --- | --- | --- | --- | --- | --- | --- |
+| W01 | {{What the task delivers, at most eight words}} | AC{{n}}, AC{{m}} | {{Earlier task in this epic, [Exx:Wyy](…) or [Exx](…) in an earlier epic, or #issue}} | {{Tasks that can land in the same pull request}} | {{Lane index, or empty}} | |
 
 ## Acceptance Criteria
 
@@ -165,7 +167,7 @@ The agreed disposition of criteria a delivered row left unmet.
 
 New tasks exist as epic rows with their details, discussion and evidence in the epic and planning record. Planning creates no separate task issues. Existing issues hoisted into an epic retain their records and row links when new tasks are planned.
 
-The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
+The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Done`.
 
 - **Done.**
   A task row is complete when it is delivered, and every criterion its Coverage names is ticked.
@@ -195,6 +197,8 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Done`.
   - A joined unit covers at most six criteria, two full rows' worth, so it stays one pull request's worth.
   - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
   - An empty cell is a task that shares no pull request.
+- **Lane.**
+  The row's delivery lane meets [Assignments](lane.md#assignments).
 - **Numbering.**
   Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**

@@ -8,6 +8,7 @@ Scopes the solution: the design, the criteria, and the breakdown of an initiativ
 
 Read these files first.
 
+- [Lane](../artifacts/lane.md)
 - [Propose Mode](propose-mode.md)
 - [Guidelines](../guidelines.md)
 - [Planning Record](../artifacts/planning-record.md)
@@ -37,13 +38,15 @@ The main path meets [Outcomes](#outcomes).
      - Resume this selection step with its published proposal; an unresolved proposal blocks initiative drafting.
 2. **Prepare the planning record.**
    - For an initiative, epic or complex plan, call [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) with the record identity, folder and supplied evidence files.
-   - The record's folder holds every draft body and work item this plan writes, as [Layout](../artifacts/planning-record.md#layout) states.
+   - Use [Layout](../artifacts/planning-record.md#layout) for draft paths.
    - Run [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder.
 3. **Draft each initiative body.**
    - For a new initiative, obtain its proposed prefix through [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the initiative prefix letter.
    - Run [Draft Initiative Issue Body](../artifacts/initiative-issue-body.md#draft-initiative-issue-body) for each initiative with the scoped proposal, confirmed goal clauses, requirement sources, epic summaries and an output path in the record's folder. The epics' acceptance criteria carry the detail that makes the initiative's criteria true.
 4. **Populate the epics.**
-   Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for each epic and each new task row, with an output path in the record's folder.
+   - Ask once per initiative whether it uses lanes as an [Interview](../guidelines.md#modes), recommending a choice from its proposed parallel delivery. Reuse the initiative's recorded decision when it has one.
+   - For an initiative using lanes, propose each task row's [Lane](../artifacts/lane.md#index) index as a map for the user to confirm, assigning joined rows together as [Unit Consistency](../artifacts/lane.md#unit-consistency) requires. Record the confirmed map in the planning record. For an initiative without lanes, leave the row lanes empty.
+   - Run [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) for each epic and each new task row, passing each confirmed optional lane index with the row and an output path in the record's folder.
    - Call [Populate Work Item](../artifacts/work-item.md#populate-work-item) for each task with its scope, design, the component its implementation extends, criteria, test requirements and an output file in the record's folder.
    - Register each draft body and returned work-item file in the planning record.
    - Resolve Open Questions before work starts.

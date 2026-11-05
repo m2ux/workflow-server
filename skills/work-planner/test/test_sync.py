@@ -56,20 +56,20 @@ class Done(unittest.TestCase):
         plan = 'https://github.com/o/r/blob/engineering/artifacts/planning/x/w01.md'
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | | |", fixed)
         self.assertNotIn('w01.md', fixed)
 
     def test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')], '--link', 'W01=950')
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | | |", fixed)
         self.assertNotIn('| ✓ |', fixed)
 
     def test_done_ticks_when_every_cited_criterion_is_ticked(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         fixed = synced(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')],
                         '--link', 'W01=950', '--tick', 'AC1')
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | | ✓ |", fixed)
         self.assertIn('- [x] **AC1.**', fixed)
 
     def test_a_further_pull_request_on_the_same_branch_requires_another_task(self):
@@ -84,7 +84,7 @@ class Done(unittest.TestCase):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z', base='i01/e00/main'),
                  pr(951, '[I01:E00] Corpus', merged='2026-09-02T00:00:00Z', base='i01/e00/workflows')]
         fixed = synced(epic, pulls, '--link', 'W01=951')
-        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | | |", fixed)
 
     @staticmethod
     def per_base():
@@ -97,7 +97,7 @@ class Done(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((f'[W01]({plan})', 'Work', '')))
         fixed = synced(epic, self.per_base(), '--link', 'W01=950,W01=951,W01=952')
         self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
-                      "| Work | AC1 | | | |", fixed)
+                      "| Work | AC1 | | | | |", fixed)
         self.assertNotIn('w01.md', fixed)
 
     def test_a_repeated_run_leaves_the_row_unchanged(self):
@@ -105,14 +105,14 @@ class Done(unittest.TestCase):
         once = synced(epic, self.per_base(), '--link', 'W01=950,W01=951')
         again = synced(issue(2, '[I01:E00] First: Epic', body=once), self.per_base(), '--link', 'W01=950,W01=951')
         self.assertEqual(once, again)
-        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | |", again)
+        self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}) | Work | AC1 | | | | |", again)
 
     def test_a_run_naming_a_linked_pull_request_keeps_the_row_order(self):
         ident = f"[W01]({url('pull', 950)}), [W01]({url('pull', 951)})"
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body((ident, 'Work', '')))
         fixed = synced(epic, self.per_base(), '--link', 'W01=951,W01=952,W01=951')
         self.assertIn(f"| [W01]({url('pull', 950)}), [W01]({url('pull', 951)}), [W01]({url('pull', 952)}) "
-                      "| Work | AC1 | | | |", fixed)
+                      "| Work | AC1 | | | | |", fixed)
 
     def test_two_named_pull_requests_on_one_branch_are_refused(self):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
@@ -178,7 +178,7 @@ class PassedEvidence(unittest.TestCase):
     def test_passed_check_ticks_criterion_and_done(self):
         fixed = synced(self.epic(), [self.pull()])
         self.assertIn('- [x] **AC1.**', fixed)
-        self.assertIn('| AC1 | | | ✓ |', fixed)
+        self.assertIn('| AC1 | | | | ✓ |', fixed)
 
     def test_all_supported_pass_marks_tick(self):
         for mark in ('[✓](https://example.com/evidence#test)', '[✓](http://example.com/result)'):
@@ -320,7 +320,7 @@ class TaskLinks(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=epic_body(('W01', 'Work', '')))
         done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')], '--link', 'W01=950')
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | | |", fixed)
         self.assertNotIn('| ✓ |', fixed)
         self.assertNotIn('ready to verify', done.stdout)
         self.assertNotIn('in flight:', done.stdout)
@@ -414,7 +414,7 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('conflict: W01 links #439, whose title does not name this epic', done.stdout)
         self.assertNotIn('ticked early', done.stdout)
-        self.assertIn(f"| [W01]({url('pull', 439)}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 439)}) | Work | AC1 | | | | ✓ |", fixed)
         self.assertIn('closable: yes', done.stdout)
 
     def test_a_foreign_merged_pull_request_with_an_unticked_criterion_is_unmet(self):
@@ -440,7 +440,7 @@ class TaskLinks(unittest.TestCase):
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         done, fixed = self.run_sync(epic, [])
         self.assertEqual(done.returncode, 0, done.stderr)
-        self.assertIn(f"| [W01]({commit}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({commit}) | Work | AC1 | | | | ✓ |", fixed)
         self.assertIn('closable: yes', done.stdout)
 
     def test_done_ticks_once_the_row_no_longer_names_the_unmet_criterion(self):
@@ -450,10 +450,10 @@ class TaskLinks(unittest.TestCase):
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('done: W01', done.stdout)
         self.assertNotIn('unmet:', done.stdout)
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | | | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | | | | | ✓ |", fixed)
 
     def test_a_tick_clears_while_a_cited_criterion_is_unticked(self):
-        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | |', '| | ✓ |', 1)
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | | |', '| | | ✓ |', 1)
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(done.returncode, 0, done.stderr)
@@ -462,7 +462,7 @@ class TaskLinks(unittest.TestCase):
         self.assertNotIn('| ✓ |', fixed)
 
     def test_a_tick_clears_when_the_pull_request_is_open(self):
-        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | |', '| | ✓ |', 1)
+        body = epic_body((f"[W01]({url('pull', 950)})", 'Work', '')).replace('| | | |', '| | | ✓ |', 1)
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         done, fixed = self.run_sync(epic, [pr(950, '[I01:E00] Work')])
         self.assertEqual(done.returncode, 0, done.stderr)
@@ -490,7 +490,7 @@ class TaskLinks(unittest.TestCase):
 
     def test_a_ticked_row_whose_task_issue_is_not_given_keeps_its_tick(self):
         body = (epic_body((f"[W01]({url('issues', 3)})", 'Work', ''))
-                .replace('| | |', '| | ✓ |', 1).replace('- [ ] **AC1.**', '- [x] **AC1.**'))
+                .replace('| | | |', '| | | ✓ |', 1).replace('- [ ] **AC1.**', '- [x] **AC1.**'))
         epic = issue(2, '[I01:E00] First: Epic', body=body)
         done, fixed = self.run_sync(epic, [])
         self.assertEqual(done.returncode, 0, done.stderr)
@@ -498,7 +498,7 @@ class TaskLinks(unittest.TestCase):
         self.assertNotIn('cleared:', done.stdout)
         self.assertNotIn('ticked early:', done.stdout)
         self.assertIn('closable: no (unchecked W01', done.stdout)
-        self.assertIn(f"| [W01]({url('issues', 3)}) | Work | AC1 |  | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({url('issues', 3)}) | Work | AC1 |  | | | ✓ |", fixed)
 
 
 class DoneColumn(unittest.TestCase):
@@ -509,10 +509,10 @@ class DoneColumn(unittest.TestCase):
                  '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         review = Review(issue(2, '[I01:E00] First: Epic', body=table))
         fixed = review.run()
-        self.assertIn('Work Breakdown columns added: Coverage, Done', review.fixed)
+        self.assertIn('Work Breakdown columns added: Coverage, Lane, Done', review.fixed)
         self.assertIn('Coverage filled from the Description', review.fixed)
-        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Done |', fixed)
-        self.assertIn('| W01 | Work | AC1 | | | |', fixed)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Lane | Done |', fixed)
+        self.assertIn('| W01 | Work | AC1 | | | | |', fixed)
 
     def test_a_leading_done_column_moves_to_the_end(self):
         epic = ('## Overview\n\nWhy.\n\n## Problem\n\nGap.\n\n## Proposal\n\nMove.\n\n'
@@ -528,7 +528,7 @@ class DoneColumn(unittest.TestCase):
                       '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         epic_fixed = Review(issue(2, '[I01:E00] First: Epic', body=epic)).run()
         initiative_fixed = Review(issue(1, '[I01] First: Initiative', body=initiative)).run()
-        self.assertIn('| W01 | Work | AC1 | | | ✓ |', epic_fixed)
+        self.assertIn('| W01 | Work | AC1 | | | | ✓ |', epic_fixed)
         self.assertIn('| [E00](https://github.com/o/r/issues/3) | Work | AC1 | | ✓ |', initiative_fixed)
 
     def test_a_note_after_the_criteria_stays_on_the_description(self):
@@ -539,7 +539,7 @@ class DoneColumn(unittest.TestCase):
                  '## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n\n'
                  '## References\n\n- **R1.** [Plan](https://example.com) — the plan.\n')
         fixed = Review(issue(2, '[I01:E00] First: Epic', body=table)).run()
-        self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | ✓ |', fixed)
+        self.assertIn('| W01 | Reads count ([#1053](https://github.com/o/r/pull/1053)) | AC1 | | | | ✓ |', fixed)
 
 
 class InitiativeClose(unittest.TestCase):
@@ -1156,11 +1156,11 @@ class SeveralEpicBases(unittest.TestCase):
 def epic_rows(*rows: tuple[str, str, str]) -> str:
     """An epic body. Each row is the task id, its Coverage, and its Joins."""
     lines = ['## Work Breakdown', '',
-             '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
+             '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
     named: list[str] = []
     for task, coverage, joins in rows:
-        lines.append(f'| {task} | Work | {coverage} | | {joins} | |')
+        lines.append(f'| {task} | Work | {coverage} | | {joins} | | |')
         for token in (part.strip() for part in coverage.split(',')):
             if len(token) > 2 and token.startswith('AC') and token[2:].isdigit() and token not in named:
                 named.append(token)
@@ -1257,7 +1257,7 @@ class TestPlanAgreement(unittest.TestCase):
         done, fixed = self.run_sync(epic, pulls, '--link', 'W01=950', '--tick', 'AC1')
         self.assertEqual(done.returncode, 0, done.stderr)
         self.assertIn('disagreement: #950 W01: AC3 named, which the row does not cover', done.stdout)
-        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | ✓ |", fixed)
+        self.assertIn(f"| [W01]({url('pull', 950)}) | Work | AC1 | | | | ✓ |", fixed)
         self.assertIn('- [x] **AC1.**', fixed)
 
     def test_a_statement_that_assigns_a_criterion_to_the_wrong_row_is_reported(self):
@@ -1475,8 +1475,8 @@ class HistoricalDelivery(unittest.TestCase):
         pulls = [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')]
         result, fixed = self.inspect(record, pulls)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Done |', fixed)
-        self.assertIn(f'| [W01]({url("pull", 950)}) | Work | AC2 | | | ✓ |', fixed)
+        self.assertIn('| Task | Description | Coverage | Depends on | Joins | Lane | Done |', fixed)
+        self.assertIn(f'| [W01]({url("pull", 950)}) | Work | AC2 | | | | ✓ |', fixed)
         self.assertIn('normalized:', result.stdout)
         self.assertNotIn('AC1', fixed)
         record['body'] = fixed
@@ -1486,8 +1486,8 @@ class HistoricalDelivery(unittest.TestCase):
 
     def test_closed_table_preserves_existing_coverage_and_dependencies(self):
         body = epic_body((f'[W01]({url("pull", 950)})', 'Work', 'E01:W01'))
-        body = body.replace('| Joins | Done |', '| Done |').replace('| --- | --- | --- | --- | --- | --- |', '| --- | --- | --- | --- | --- |')
-        body = body.replace('| E01:W01 | | |', '| E01:W01 | |')
+        body = body.replace('| Joins | Lane | Done |', '| Lane | Done |').replace('| --- | --- | --- | --- | --- | --- | --- |', '| --- | --- | --- | --- | --- | --- |')
+        body = body.replace('| E01:W01 | | | |', '| E01:W01 | | |')
         result, fixed = self.inspect(issue(2, '[I01:E00] First: Epic', 'closed', body=body),
                                      [pr(950, '[I01:E00] Work', merged='2026-09-01T00:00:00Z')])
         self.assertEqual(result.returncode, 0, result.stderr)
@@ -1937,3 +1937,55 @@ class HotFixDelivery(unittest.TestCase):
         self.assertNotEqual(done.returncode, 0)
         self.assertIn('--pr 950: does not deliver F04: its base is main, not the target workspace',
                       done.stderr)
+
+
+class LaneCellRecording(unittest.TestCase):
+    def assert_lane_rows(self, body, expected):
+        lines = [line for line in body.splitlines() if line.startswith('|')]
+        header = [value.strip() for value in lines[0].strip('|').split('|')]
+        self.assertEqual(header[-3:], ['Joins', 'Lane', 'Done'])
+        actual = {}
+        for line in lines[2:]:
+            values = [value.strip() for value in line.strip('|').split('|')]
+            ident = values[0].split(']')[0].lstrip('[')
+            actual[ident] = (values[-2], values[-1])
+        self.assertEqual(actual, expected)
+
+    def test_pr_linking_and_completion_preserve_indexed_and_empty_lanes(self):
+        source = issue(2, '[I01:E00] First: Epic', body=epic_body(
+            ('W01', 'Indexed row', ''), ('W02', 'Unlaned row', '')))
+        source['body'] = source['body'].replace(
+            '| W01 | Indexed row | AC1 |  | | | |',
+            '| W01 | Indexed row | AC1 | | | 2 | |')
+        self.assert_lane_rows(source['body'], {'W01': ('2', ''), 'W02': ('', '')})
+        pulls = [pr(950, '[I01:E00] Indexed row', base='i01/e00/main'),
+                 pr(951, '[I01:E00] Unlaned row', base='i01/e00/main')]
+        linked = synced(source, pulls, '--link', 'W01=950,W02=951')
+        self.assert_lane_rows(linked, {'W01': ('2', ''), 'W02': ('', '')})
+        self.assertIn(url('pull', 950), linked)
+        self.assertIn(url('pull', 951), linked)
+        source['body'] = linked
+        for pull in pulls:
+            pull['merged_at'] = '2026-11-04T00:00:00Z'
+            pull['state'] = 'closed'
+        complete = synced(source, pulls, '--tick', 'AC1')
+        self.assert_lane_rows(complete, {'W01': ('2', '✓'), 'W02': ('', '✓')})
+        self.assertIn('- [x] **AC1.**', complete)
+
+    def test_closed_epic_normalization_preserves_lane_and_done(self):
+        source = issue(2, '[I01:E00] First: Epic', state='closed', body=epic_body(
+            ('W01', 'Indexed row', ''), ('W02', 'Unlaned row', '')))
+        source['body'] = source['body'].replace(
+            '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+            '| Task | Description | Coverage | Depends on | Joins | Done | Lane |').replace(
+            '| W01 | Indexed row | AC1 |  | | | |',
+            '| W01 | Indexed row | AC1 | | | ✓ | 2 |').replace(
+            '| W02 | Unlaned row | AC1 |  | | | |',
+            '| W02 | Unlaned row | AC1 | | | ✓ | |').replace('- [ ] **AC1.**', '- [x] **AC1.**')
+        source['body'] = source['body'].replace('W01 | Indexed',
+            f"[W01]({url('pull', 950)}) | Indexed").replace('W02 | Unlaned',
+            f"[W02]({url('pull', 951)}) | Unlaned")
+        pulls = [pr(950, '[I01:E00] Indexed row', merged='2026-11-04T00:00:00Z', base='i01/e00/main'),
+                 pr(951, '[I01:E00] Unlaned row', merged='2026-11-04T00:00:00Z', base='i01/e00/main')]
+        normalized = synced(source, pulls)
+        self.assert_lane_rows(normalized, {'W01': ('2', '✓'), 'W02': ('', '✓')})

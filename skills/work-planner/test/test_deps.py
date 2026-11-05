@@ -4,6 +4,7 @@ Run from the skill directory: python3 -m unittest discover -s test
 """
 import io
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -11,7 +12,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from pathlib import Path
 
-from fixtures import SCRIPTS, epic_body, initiative_body, work_item
+from fixtures import SCRIPTS, epic_body, initiative_body, lane_table, work_item
 
 sys.path.insert(0, str(SCRIPTS))
 from deps import (check_initiative, contention, epic_dependencies, epic_priority,  # noqa: E402
@@ -45,9 +46,9 @@ OPEN = 'or name exactly these rows on one record line with why they stay split'
 
 def breakdown(*rows: tuple[str, str, str, str, str]) -> str:
     """An epic body whose Work Breakdown holds rows of (task, coverage, depends on, joins, done)."""
-    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Done |',
-             '| --- | --- | --- | --- | --- | --- |']
-    lines += [f'| {task} | Work | {coverage} | {depends} | {joins} | {done} |'
+    lines = ['## Work Breakdown', '', '| Task | Description | Coverage | Depends on | Joins | Lane | Done |',
+             '| --- | --- | --- | --- | --- | --- | --- |']
+    lines += [f'| {task} | Work | {coverage} | {depends} | {joins} | | {done} |'
               for task, coverage, depends, joins, done in rows]
     return '\n'.join(lines + [''])
 
@@ -72,6 +73,148 @@ def check(body: str, components: dict[str, str], *records: str) -> tuple[int, st
         with redirect_stdout(output):
             code = main(args)
     return code, output.getvalue()
+
+
+class TaskLanes(unittest.TestCase):
+    """The raw task-table cell supplies each row's lane, including rows without work items."""
+
+    table = staticmethod(lane_table)
+
+    def test_joined_rows_require_lane_data_in_standalone_check(self):
+        body = '| Task | Description | Coverage | Depends on | Joins | Done |\n| --- | --- | --- | --- | --- | --- |\n| W01 | One | AC1 | | W02 | |\n| W02 | Two | AC2 | | W01 | |\n'
+        code, text = run([('E06', body)])
+        self.assertEqual(code, 1, text)
+        self.assertIn('missing Lane data: E06:W01, E06:W02', text)
+
+    def test_equal_indexed_joined_rows_pass_without_work_items(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '2')))])
+        self.assertEqual(code, 0, text)
+        self.assertIn('--- problems\nnone', text)
+        self.assertIn('not checked, no component read: E06:W01, E06:W02', text)
+
+    def test_all_empty_joined_rows_pass(self):
+        code, text = run([('E06', self.table(('W01', 'W02', ''), ('W02', 'W01', '')))])
+        self.assertEqual(code, 0, text)
+
+    def test_different_indexed_joined_rows_fail_and_name_each_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '3')))])
+        self.assertEqual(code, 1)
+        self.assertIn('joined unit has different Lane cells: E06:W01 = 2; E06:W02 = 3', text)
+        self.assertIn('move a lane or unjoin the rows', text)
+
+    def test_indexed_and_empty_joined_rows_fail_and_name_each_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01 = 2; E06:W02 = empty', text)
+
+    def test_transitive_join_names_every_member_once(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01, W03', '2'),
+                                           ('W03', 'W02', '3')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W01 = 2; E06:W02 = 2; E06:W03 = 3', text)
+        self.assertEqual(text.count('joined unit has different Lane cells'), 1)
+
+    def test_joined_rows_in_different_epics_compare_their_table_lanes(self):
+        code, text = run([('E05', self.table(('W01', 'E06:W01', '2'), ('W02', '', ''))),
+                          ('E06', self.table(('W01', 'E05:W01', '3'), ('W02', '', '')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E05:W01 = 2; E06:W01 = 3', text)
+
+    def test_a_malformed_joined_cell_is_reported_without_a_fake_empty_lane(self):
+        code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '`2`')))])
+        self.assertEqual(code, 1)
+        self.assertIn('E06:W02: Lane must be a bare decimal index or empty', text)
+        self.assertNotIn('joined unit has different Lane cells', text)
+
+    def test_independent_rows_can_have_different_lanes(self):
+        code, text = run([('E06', self.table(('W01', '', '2'), ('W02', '', '3'), ('W03', '', '')))])
+        self.assertEqual(code, 0, text)
+
+    def test_a_malformed_lane_fails_even_without_joins_or_work_item_links(self):
+        for lane in ('`2`', '[2](https://example.test/lane)', 'lane 2', '2 lanes'):
+            with self.subTest(lane=lane):
+                code, text = run([('E06', self.table(('W01', '', lane)))])
+                self.assertEqual(code, 1)
+                self.assertIn('E06:W01: Lane must be a bare decimal index or empty', text)
+
+    def test_work_item_lane_prose_supplies_no_lane_data(self):
+        body = self.table(('W01', 'W02', ''), ('W02', 'W01', ''))
+        code, text = run([('E06', body),
+                          ('E06:W01', work_item('a.py') + '**Lane:** 2\n'),
+                          ('E06:W02', work_item('b.py') + '**Lane:** 3\n')])
+        self.assertEqual(code, 0, text)
+        self.assertNotIn('not checked, no component read', text)
+
+
+class JoinedEpicScope(unittest.TestCase):
+    """The CLI refuses joins outside one epic before deriving epic priorities."""
+
+    @staticmethod
+    def cli(*bodies: tuple[str, str]) -> subprocess.CompletedProcess:
+        with tempfile.TemporaryDirectory() as directory:
+            args = []
+            for name, body in bodies:
+                path = Path(directory) / f'{name}.md'
+                path.write_text(body)
+                args.append(f'{name}={path}')
+            return subprocess.run([sys.executable, str(SCRIPTS / 'deps.py'), *args],
+                                  capture_output=True, text=True, timeout=10)
+
+    def test_pinned_reciprocal_cross_epic_joins_exit_before_priorities(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC1', '', 'E05:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertIn('E06:W01: Joins names E05:W01 outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_cross_epic_joins_with_initiative_skip_whole_epic_derivation(self):
+        initiative = ('| Epic | Description | Depends on | Done |\n'
+                      '| --- | --- | --- | --- |\n| E05 | One | | |\n| E06 | Two | | |\n')
+        result = self.cli(('I', initiative),
+                          ('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC1', '', 'E05:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertNotIn('initiative E05:', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_one_way_cross_epic_join_names_owner_and_target(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC2', '', '', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_unknown_cross_epic_join_retains_unknown_row_diagnostic(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertIn('E05:W01: Joins names unknown task E06:W01', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_same_epic_qualified_and_local_joins_keep_priority_output(self):
+        for left, right in [('W02', 'W01'), ('E05:W02', 'E05:W01')]:
+            with self.subTest(left=left, right=right):
+                result = self.cli(('E05', breakdown(('W01', 'AC1', '', left, ''),
+                                                    ('W02', 'AC2', '', right, ''))))
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('--- problems\nnone', result.stdout)
+                self.assertIn('--- epic priority', result.stdout)
+                self.assertEqual(result.stderr, '')
+
+    def test_same_epic_lane_and_dependency_diagnostics_remain(self):
+        body = TaskLanes.table(('W01', 'W02', '2'), ('W02', 'W01', '3'))
+        body = body.replace('| W02 | Work | AC1 | | W01', '| W02 | Work | AC1 | W09 | W01')
+        result = self.cli(('E05', body))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('joined unit has different Lane cells', result.stdout)
+        self.assertIn('E05:W02: cannot resolve E05:W09', result.stdout)
+        self.assertIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
 
 
 class CandidateUnits(unittest.TestCase):
@@ -279,12 +422,12 @@ class TaskCells(unittest.TestCase):
 
     SPELLINGS = (
         '## Work Breakdown\n\n'
-        '| Task | Description | Coverage | Depends on | Joins | Done |\n'
-        '| --- | --- | --- | --- | --- | --- |\n'
+        '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+        '| --- | --- | --- | --- | --- | --- | --- |\n'
         '| [W01](https://example.test/pull/950), [W01](https://example.test/pull/960)'
-        ' | Server and corpus | AC1 | | | ✓ |\n'
-        '| [W02](https://example.test/pull/970) | One tree | AC2 | W01 | W03 | |\n'
-        '| W03 | Not yet open | AC3 | W01 | W02 | |\n'
+        ' | Server and corpus | AC1 | | | | ✓ |\n'
+        '| [W02](https://example.test/pull/970) | One tree | AC2 | W01 | W03 | | |\n'
+        '| W03 | Not yet open | AC3 | W01 | W02 | | |\n'
     )
 
     def test_every_spelling_names_one_row(self):

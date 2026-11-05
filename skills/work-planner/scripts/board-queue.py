@@ -16,8 +16,9 @@ the board is given with --others.
 The moves and printed lines are the Fields of artifacts/board-queue.md, and each line is one row of
 its Report Lines. Activity is read through board.py. The calls are rendered by statuses.py within
 the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
-and each unresolved issue reference. It exits 1 where an unresolvable dependency stopped it placing
-a row.
+and each unresolved issue reference. Ready units carry their task-table lane, read from the supplied
+issue bodies through lane.read_lanes. Lane reports leave placement and assignee calls independent.
+It exits 1 for invalid lane assignments or where an unresolvable dependency stopped it placing a row.
 
 A hot-fix, titled [F00], stands where hotfix.board_status places it, outside every priority set;
 nothing waits on it and it waits on nothing.
@@ -29,7 +30,9 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
+from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state,
+                   linked_issue, rows, units)
+from lane import check_unit, label as lane_label, read_lanes
 from format import cell, id_cell, row_id
 from hotfix import OFF_BOARD, board_status, delivering_pulls, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
@@ -116,6 +119,7 @@ class Queue:
         self.notes: list[str] = []
         self.children: dict = {}
         self.parents: dict = {}
+        self.invalid_lanes = False
 
     def line(self, key: tuple[str, int]) -> str:
         return f"{label(key, self.home)} {self.issues[key]['title']}"
@@ -274,6 +278,40 @@ class Queue:
         body = ', '.join(self.line(key) for key in sorted(found)) or 'none'
         self.notes.append(f'  order: {body}')
 
+    def ready_units(self) -> None:
+        """Report free joined units and their raw task-table lanes after queue placement."""
+        for key, parent in sorted(self.parents.items()):
+            if self.wanted.get(key, self.status.get(key)) not in ('Ready', 'In Progress'):
+                continue
+            issue = self.issues[key]
+            parsed = tags(issue['title'])
+            if issue['state'] != 'open' or not parsed or not parsed[1]:
+                continue
+            _, epics = self.load(parent)
+            try:
+                header, body, state, _ = epic_state(self.board, key, epics)
+            except Unreadable as exc:
+                self.board.unresolved.append(str(exc))
+                continue
+            lanes, problems = read_lanes(issue.get('body') or '')
+            malformed = {problem.partition(':')[0] for problem in problems}
+            prefix = f'I{parsed[0]}:E{parsed[1]}'
+            for problem in problems:
+                self.notes.append(f'  invalid {prefix}:{problem}')
+                self.invalid_lanes = True
+            for unit in units(header, body, state):
+                if not unit or any(state[task] != 'free' for task in unit):
+                    continue
+                if malformed.intersection(unit):
+                    continue
+                lane, finding = check_unit(unit, lanes)
+                if finding:
+                    self.notes.append(f'  invalid {prefix}:{"+".join(unit)}: {finding}')
+                    self.invalid_lanes = True
+                    continue
+                lane_name = lane_label(lane)
+                self.notes.append(f'  unit {prefix}:{"+".join(unit)}: {lane_name}')
+
     def place_sets(self, keys: list[tuple[str, int]]) -> None:
         """The highest number runs together. The next number waits in Ready together."""
         labelled = [key for key in keys if rank(self.issues[key]) is not None
@@ -388,6 +426,7 @@ def main() -> int:
     queue = Queue(issues, status, prs, home,
                   named_keys(args.unplanned, issues, status, 'unplanned'))
     queue.decide()
+    queue.ready_units()
 
     field = StatusField(args.fields, args.out, PLACED)
     changes = Changes(QUEUE, args.board, field, args.assignee, ' (the queue is current)')
@@ -405,7 +444,7 @@ def main() -> int:
     asking = any(note.strip().startswith(('order', 'ask')) for note in queue.notes)
     printed = changes.report(notes=queue.notes, unresolved=queue.board.unresolved,
                              asking=asking or bool(queue.unresolvable))
-    return 1 if queue.unresolvable else printed
+    return 1 if queue.unresolvable or queue.invalid_lanes else printed
 
 
 if __name__ == '__main__':
