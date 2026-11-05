@@ -65,7 +65,9 @@ def summary(name: str) -> str:
 
 
 def test_count(name: str) -> str:
-    return str(len(re.findall(r'^\s*def test_', (HERE / name).read_text(), re.M)))
+    """The module's own test methods. Indentation alone identifies one, since a
+    helper whose name opens with `test_` stands at the left margin."""
+    return str(len(re.findall(r'^[ \t]+def test_', (HERE / name).read_text(), re.M)))
 
 
 def without_extension(text: str) -> str:
