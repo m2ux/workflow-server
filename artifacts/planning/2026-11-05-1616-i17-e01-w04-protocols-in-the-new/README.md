@@ -53,6 +53,36 @@ The protocol family preserves its complete conditions and required reads while e
 
 | [epic-open-readback.json](epic-open-readback.json) | Complete live epic proving the scoped W04 link and preserved sibling/adoption state |
 
+| [board-after-merge.json](board-after-merge.json) | Literal merge verification and scoped completion evidence |
+
+| [epic-complete-body.md](epic-complete-body.md) | Literal merge verification and scoped completion evidence |
+
+| [epic-completion-sync.log](epic-completion-sync.log) | Literal merge verification and scoped completion evidence |
+
+| [epic-delivery-draft.md](epic-delivery-draft.md) | Literal merge verification and scoped completion evidence |
+
+| [integration-body.md](integration-body.md) | Literal merge verification and scoped completion evidence |
+
+| [merge-readiness.json](merge-readiness.json) | Literal merge verification and scoped completion evidence |
+
+| [merge-result.json](merge-result.json) | Literal merge verification and scoped completion evidence |
+
+| [merged-delivery-draft.log](merged-delivery-draft.log) | Literal merge verification and scoped completion evidence |
+
+| [merged-delivery-inputs.tar.gz](merged-delivery-inputs.tar.gz) | Literal merge verification and scoped completion evidence |
+
+| [merged-planner-suite.json](merged-planner-suite.json) | Literal merge verification and scoped completion evidence |
+
+| [merged-protocol-model.json](merged-protocol-model.json) | Literal merge verification and scoped completion evidence |
+
+| [merged-revision-initial.log](merged-revision-initial.log) | Literal merge verification and scoped completion evidence |
+
+| [merged-revision.log](merged-revision.log) | Literal merge verification and scoped completion evidence |
+
+| [merged-shared-suite.json](merged-shared-suite.json) | Literal merge verification and scoped completion evidence |
+
+| [pr-merged.json](pr-merged.json) | Literal merge verification and scoped completion evidence |
+
 ## Links
 
 | Resource | Link |
