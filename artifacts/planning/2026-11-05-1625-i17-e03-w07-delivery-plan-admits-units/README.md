@@ -30,3 +30,4 @@ The Delivery Plan defines that admission rule and deliver.py applies it to the t
 | Automatic authorization | [Remaining E03 delivery](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
 | Prior unit | [Merged #1629](https://github.com/m2ux/workflow-server/pull/1629) |
 | Draft integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+| Task PR | [#1632](https://github.com/m2ux/workflow-server/pull/1632) |
