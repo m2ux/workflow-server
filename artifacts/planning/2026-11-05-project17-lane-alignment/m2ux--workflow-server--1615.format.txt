@@ -1,0 +1,25 @@
+#1615 epic (open): 1 fixed, 0 to apply, 1 to decide
+  fixed: Work Breakdown columns added: Lane
+  decide: W01: Depends on holds more than references: E02
+--- body
++++ /tmp/project17-align/m2ux--workflow-server--1615.fixed.md
+@@ -37,9 +37,9 @@
+ 
+-| Task | Description | Coverage | Depends on | Joins | Done |
+-| --- | --- | --- | --- | --- | --- |
+-| W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | |
+-| W02 | Audit the skill against the guidelines | AC2 | W01 | | |
+-| W03 | Generic prose in general artifacts and modes | AC3 | W02 | | |
+-| W04 | Generic interfaces in general scripts | AC4 | W02 | | |
+-| W05 | Each audited rule in one home | AC5 | W02 | | |
++| Task | Description | Coverage | Depends on | Joins | Lane | Done |
++| --- | --- | --- | --- | --- | --- | --- |
++| W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | | |
++| W02 | Audit the skill against the guidelines | AC2 | W01 | | | |
++| W03 | Generic prose in general artifacts and modes | AC3 | W02 | | | |
++| W04 | Generic interfaces in general scripts | AC4 | W02 | | | |
++| W05 | Each audited rule in one home | AC5 | W02 | | | |
+ 
+@@ -59,2 +59 @@
+ - **R4.** [Work Planner at the planned revision](https://github.com/m2ux/workflow-server/tree/9d71790c2668debbc03a2ba1d00509e8bea3bff6/skills/work-planner) — the skill the review audits.
+-
