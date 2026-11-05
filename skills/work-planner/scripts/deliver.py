@@ -5,7 +5,7 @@ Usage:
   python3 deliver.py --items items.json --prs prs.json --links links.json
       [--others issue-750.json ...]
       [--project . --revision origin/workspace] [--bases i07/e00/main,i07/e00/workflows]
-      [--engineering .engineering] [--date 2026-10-06]
+      [--engineering .engineering] [--lane 2] [--date 2026-10-06]
   python3 deliver.py --items items.json --board users/{owner}/projectsV2/9 --fields fields.json
       --out board/ --assignee m2ux [--progress 637,943] [--review 944]
   python3 deliver.py --epic issue-943.json --reserve W01 --items items.json [--records URL]
@@ -29,8 +29,14 @@ each output it delivered is available at this epic's base in the repository --pr
 board.Outputs reads it; that epic's other rows and its closure gate nothing. Tasks that name each
 other in Joins are one unit, and a unit is one session's work.
 
-Printed: a unit line for each available unit, with the record folder its ids and Description give it
-and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
+A unit's lane comes from the raw Lane cells of its epic task table, read by deps.read_lanes.
+--lane names one opaque decimal index and admits that lane and unlaned units. Without --lane,
+only unlaned units are offered. The filter preserves the admitted units' order. A hot-fix is
+unlaned. Malformed cells and joined units with different lanes produce invalid lines and exit 1;
+holds, blocked work and delivery evidence remain visible for every lane.
+
+Printed: a unit line for each admitted available unit, naming its lane or unlaned, the record folder
+its ids and Description give it, and a branch and worktree for each epic base it changes, suffixed with the base's long-lived name
 when there are several; an unresolvable line for a row gated on a dependency entry nothing can
 resolve, naming the entry; an undeclared line for a row of a unit in an epic of several bases whose
 linked work item names no long-lived branch with an epic base, naming why; a hold line for each
@@ -41,8 +47,8 @@ an open pull request, never a draft, that targets the epic base when its test pl
 pull request titled with an open hot-fix's [F00], whose Development field links that hot-fix, that
 targets the hot-fix's target when its test plan has passed and that target is one a unit line could
 name; and an unresolved line for
-an issue not given. A run that met an unresolvable entry, an undeclared row or an undeclared hot-fix
-exits 1.
+an issue not given. A run that met an unresolvable entry, an undeclared row or hot-fix,
+or an invalid lane unit exits 1.
 
 The epic bases a unit changes are those whose long-lived branch its rows' work items name. A free
 row links its work-item file, which --engineering, the checkout holding the planning records, gives
@@ -87,7 +93,7 @@ from datetime import date as day
 from pathlib import Path
 
 from board import Board, Outputs, Resolution, rows
-from deps import read_components
+from deps import read_components, read_lanes
 from statuses import (DISPATCH, Key, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
@@ -333,7 +339,7 @@ def hotfix_units(issues: dict, status: dict, prs: list[dict], home: str, when: s
         name = names(tag, title_name(issue['title']), key[1], when)
         coverage = ', '.join(dict.fromkeys(f'AC{found[1]}' for line in (issue.get('body') or '').splitlines()
                                            if (found := AC.match(line))))
-        lines.append(f'  unit {where}: coverage {coverage or "none"}, record {name["folder"]}, '
+        lines.append(f'  unit {where}: unlaned, coverage {coverage or "none"}, record {name["folder"]}, '
                      f'{branch_lines(name["branch"], [base])}')
         available += 1
     return lines, available, undeclared, held, unrecorded
@@ -420,7 +426,7 @@ def survey(args: argparse.Namespace) -> int:
             epics.setdefault(parsed[0], {})[f'E{parsed[1]}'] = key
 
     when = args.date or day.today().isoformat()
-    available = held = waiting = unreadable = undeclared = 0
+    available = held = waiting = unreadable = undeclared = invalid = 0
     for key in sorted(issues):
         issue = issues[key]
         if not is_epic(issue) or status.get(key) not in STARTED:
@@ -432,11 +438,24 @@ def survey(args: argparse.Namespace) -> int:
             board.unresolved.append(str(exc))
             continue
         print(f'{label(key, home)} {status[key]}: [I{initiative}:E{epic}]')
+        lanes, problems = read_lanes(issue.get('body') or '')
+        malformed = {problem.partition(':')[0] for problem in problems}
+        for problem in problems:
+            print(f'  invalid I{initiative}:E{epic}:{problem}')
         for unit in units(header, body, state):
             states = {state[task] for task in unit}
             first = unit[0]
             tag = ident_tag(initiative, epic, first)
             ids = '+'.join(unit)
+            lane_values = {lanes.get(task) for task in unit}
+            invalid_lane = bool(malformed.intersection(unit))
+            if not invalid_lane and len(lane_values) > 1:
+                values = '; '.join(f'{task} = {lanes[task] if lanes.get(task) is not None else "empty"}'
+                                   for task in unit)
+                print(f'  invalid I{initiative}:E{epic}:{ids}: joined unit has different Lane cells: '
+                      f'{values}; move a lane or unjoin the rows')
+                invalid_lane = True
+            invalid += invalid_lane
             if states <= {'done', 'running'}:
                 continue
             if 'unresolvable' in states:
@@ -459,6 +478,11 @@ def survey(args: argparse.Namespace) -> int:
                 print(f'  blocked I{initiative}:E{epic}:{ids}: {reason}')
                 waiting += 1
                 continue
+            if invalid_lane:
+                continue
+            lane = lanes.get(first)
+            if lane is not None and lane != args.lane:
+                continue
             refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
             bases, missing = changed_bases(unit, detail, epic_bases(refs, initiative, epic, lived),
                                            args.engineering)
@@ -471,7 +495,8 @@ def survey(args: argparse.Namespace) -> int:
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
             where = branch_lines(name['branch'], bases)
-            print(f'  unit I{initiative}:E{epic}:{ids}: coverage {coverage or "none"}, '
+            lane_name = f'lane {lane}' if lane is not None else 'unlaned'
+            print(f'  unit I{initiative}:E{epic}:{ids}: {lane_name}, coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
     lines, found, unnamed, holding, unrecorded = hotfix_units(issues, status, prs, home, when, lived, repository)
@@ -489,8 +514,8 @@ def survey(args: argparse.Namespace) -> int:
         print(f'  unresolved: {note}')
     print(f'  available: {available}, held: {held}, blocked: {waiting}, '
           f'unresolvable: {unreadable}, undeclared: {undeclared}, merge: {len(merging)}, '
-          f'unrecorded: {unrecorded}')
-    return 1 if unreadable or undeclared else 0
+          f'unrecorded: {unrecorded}, invalid: {invalid}')
+    return 1 if unreadable or undeclared or invalid else 0
 
 
 def place(args: argparse.Namespace) -> int:
@@ -638,6 +663,7 @@ def main() -> int:
     parser.add_argument('--reserve', help='task ids to hold, e.g. W01,W02')
     parser.add_argument('--release', help='task ids to free, e.g. W01')
     parser.add_argument('--records', help='the URL of the planning records folder')
+    parser.add_argument('--lane', help='the requested bare decimal lane index; omission admits only unlaned units')
     parser.add_argument('--date', help='the day the record is opened, today by default')
     parser.add_argument('--project', default='', help='any checkout of the repository whose config/branches states the long-lived branches')
     parser.add_argument('--revision', default='', help='the commit config/branches is read at, e.g. origin/workspace')
@@ -652,6 +678,8 @@ def main() -> int:
     parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
+    if args.lane is not None and not re.fullmatch(r'[0-9]+', args.lane):
+        parser.error('--lane must be a bare decimal index')
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:
         sys.exit('--reserve and --release are one at a time')
