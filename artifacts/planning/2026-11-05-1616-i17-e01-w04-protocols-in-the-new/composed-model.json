@@ -1,0 +1,152 @@
+{
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w04-protocols-in-the-new",
+  "revision": "fb9a834c940cbed9742709d7e03594900e31d22f",
+  "tree": "96924656d6f331ad480615db0b76d6c3a2296d20",
+  "source_clean": false,
+  "baseline": "238b652aaa52057f66c86c9651c379296a7ba5b2",
+  "walk_source_manifest": "fd0ad01dcc101d42d6eab4c32192f4140805d52c06db9db06834bd7be09e400c",
+  "preservation": [
+    {
+      "file": "skills/work-planner/protocols/change-overview.md",
+      "steps": 4,
+      "baseline_links": 16,
+      "retry_links_added": 4,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "3b8da3ab5a14bee40dafca4017737ed65262b9f45b3c0aed6a39398ecdcb3c5d"
+    },
+    {
+      "file": "skills/work-planner/protocols/epic-integration.md",
+      "steps": 4,
+      "baseline_links": 23,
+      "retry_links_added": 8,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "63d75c45b31f764e456328588e3e5aa0c062ee14f65025193f8e699f2a5f6586"
+    },
+    {
+      "file": "skills/work-planner/protocols/issue-closure.md",
+      "steps": 4,
+      "baseline_links": 16,
+      "retry_links_added": 0,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "b08c38fb09d9751b4351c366880752273aa8aa617d5fe7fe6ae686e87623275e"
+    },
+    {
+      "file": "skills/work-planner/protocols/issue-delivery.md",
+      "steps": 5,
+      "baseline_links": 19,
+      "retry_links_added": 1,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "6be22c83fbff82cee6ec8eee3c259d2cab9283936dde94579e7b00591c0a33e8"
+    },
+    {
+      "file": "skills/work-planner/protocols/review-pull-request.md",
+      "steps": 5,
+      "baseline_links": 16,
+      "retry_links_added": 0,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "7b00982bbc35fe75a2e1f8b27cd1a0c79a61f090fdec897329cf1fbb17999b02"
+    },
+    {
+      "file": "skills/work-planner/protocols/task-merge.md",
+      "steps": 5,
+      "baseline_links": 21,
+      "retry_links_added": 0,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "082f18fb4a2621e59ac83f179b0c9ed70939f0f9958d1e61fcb1f5f863ecf18a"
+    },
+    {
+      "file": "skills/work-planner/protocols/unit-dispatch.md",
+      "steps": 5,
+      "baseline_links": 28,
+      "retry_links_added": 0,
+      "unique_targets": "identical",
+      "prerequisites": "byte-identical",
+      "runs_in": "byte-identical",
+      "literal_spans": "preserved",
+      "commands_and_literal_blocks": 0,
+      "walked_sha256": "4946037b6ec81920996cbe468461ef28dfb0e03073fb729b0eb4e5ac6c5c666f"
+    }
+  ],
+  "installed_model": {
+    "files": 58,
+    "findings": [
+      [
+        "skills/work-planner/modes/revise-mode.md",
+        128,
+        "section outside the set",
+        "Fields"
+      ]
+    ],
+    "qualification": "inherited Revise Fields mismatch; W08 adopts installed declarations"
+  },
+  "target_model": {
+    "protocols": 7,
+    "findings": [],
+    "declaration": {
+      "sections": [
+        "Prerequisites",
+        "Procedure",
+        "Guidance"
+      ],
+      "required": [
+        "Procedure"
+      ],
+      "procedures": "Procedure",
+      "steps": "headings",
+      "commands": "inline-html",
+      "preamble": [
+        "../rules.md",
+        "../conventions.md"
+      ],
+      "calls": {
+        "artifacts": "Apply",
+        "modes": "Follow",
+        "protocols": "Follow"
+      }
+    }
+  },
+  "remaining_installed_families": {
+    "files": 51,
+    "findings": [
+      [
+        "skills/work-planner/modes/revise-mode.md",
+        128,
+        "section outside the set",
+        "Fields"
+      ]
+    ],
+    "unexplained_findings": []
+  },
+  "negative_controls": [
+    "missing common preamble rejected",
+    "incorrect call verb rejected",
+    "incorrect step sequence rejected",
+    "restored source passes with fresh cache"
+  ],
+  "source_bytes": "unchanged",
+  "source_manifest_sha256": "d81193a24194b0a2d460f5e0c252d40cc566bd452e9f70cf1f7c5f4d44e89dea"
+}

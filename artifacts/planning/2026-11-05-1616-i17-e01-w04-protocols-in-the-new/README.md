@@ -16,6 +16,21 @@ The protocol family preserves its complete conditions and required reads while e
 | [Work item](w04.md) | Protocol-family implementation plan and required checks |
 | [Design](design.md) | Presentation, preservation accounting, reader ownership and validation |
 
+| [validation.md](validation.md) | Acceptance boundary, source composition and exact-revision results |
+| [preservation.md](preservation.md) | Per-protocol conditions, inputs, literals and routing ledger |
+| [verify-protocols.py](verify-protocols.py) | Reproducible supplied-checkout protocol criterion instrument |
+| [disclosure.md](disclosure.md) | Prominent Partial observations and six repeated reading accounts |
+| [retry-delta.md](retry-delta.md) | Earlier-candidate to linked-retry presentation delta |
+| [walk-evidence.tar.gz](walk-evidence.tar.gz) | All raw read receipts, commands, accounts and local products |
+| [walk-inputs.tar.gz](walk-inputs.tar.gz) | Historical captured inputs, neutral prompts and frozen identities |
+| [walk-manifest.json](walk-manifest.json) | Walked protocol hashes, receipt audit and archive checksums |
+| [changes.md](changes.md) | Empty applied and held plan-change lists |
+| [composed-planner-suite.txt](composed-planner-suite.txt) | Complete Work Planner suite on actual composed working branch |
+| [composed-shared-suite.txt](composed-shared-suite.txt) | Complete shared suite on actual composed working branch |
+
+| [composed-model.json](composed-model.json) | Actual working-branch strict and installed findings, preservation and negative controls |
+| [run-checks.py](run-checks.py) | Detached current-checkout criterion and complete-suite runner |
+
 ## Links
 
 | Resource | Link |

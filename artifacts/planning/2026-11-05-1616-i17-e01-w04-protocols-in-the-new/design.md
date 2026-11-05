@@ -9,7 +9,7 @@
 
 ## Presentation
 
-Each protocol opens with its existing purpose and checkout declaration plus one line: `Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).` Existing prerequisites remain below the opening. Each outer numbered step becomes a numbered title-case level-three heading. Instructions lose only the list's outer indentation; nested branch relationships remain intact. Artifact operation invocations use Apply; protocol invocations use Follow. Repeated operation names and existing inputs remain explicit.
+Each protocol opens with its existing purpose and checkout declaration plus one line: `Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md).` Existing prerequisites remain below the opening. Each outer numbered step becomes a numbered title-case level-three heading. Instructions lose only the list's outer indentation; branch relationships remain explicit through scoped child headings and flush conditions. Artifact operation invocations use Apply; protocol invocations use Follow. Repeated operation names and existing inputs remain explicit.
 
 ## Preservation Ledger
 

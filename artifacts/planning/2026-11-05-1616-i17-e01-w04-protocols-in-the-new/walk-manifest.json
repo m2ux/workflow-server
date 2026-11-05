@@ -1,0 +1,56 @@
+{
+  "linked_source_manifest_sha256": "fd0ad01dcc101d42d6eab4c32192f4140805d52c06db9db06834bd7be09e400c",
+  "walk_source_base": "238b652aaa52057f66c86c9651c379296a7ba5b2",
+  "actual_composition_base": "fb9a834c940cbed9742709d7e03594900e31d22f",
+  "protocol_sha256": {
+    "change-overview.md": "3b8da3ab5a14bee40dafca4017737ed65262b9f45b3c0aed6a39398ecdcb3c5d",
+    "epic-integration.md": "63d75c45b31f764e456328588e3e5aa0c062ee14f65025193f8e699f2a5f6586",
+    "issue-closure.md": "b08c38fb09d9751b4351c366880752273aa8aa617d5fe7fe6ae686e87623275e",
+    "issue-delivery.md": "6be22c83fbff82cee6ec8eee3c259d2cab9283936dde94579e7b00591c0a33e8",
+    "review-pull-request.md": "7b00982bbc35fe75a2e1f8b27cd1a0c79a61f090fdec897329cf1fbb17999b02",
+    "task-merge.md": "082f18fb4a2621e59ac83f179b0c9ed70939f0f9958d1e61fcb1f5f863ecf18a",
+    "unit-dispatch.md": "4946037b6ec81920996cbe468461ef28dfb0e03073fb729b0eb4e5ac6c5c666f"
+  },
+  "walks": {
+    "w04-linked-deliver-walk1": {
+      "successful_emissions": 42,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    },
+    "w04-linked-deliver-walk2": {
+      "successful_emissions": 48,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    },
+    "w04-linked-sync-walk1": {
+      "successful_emissions": 36,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    },
+    "w04-linked-sync-walk2": {
+      "successful_emissions": 44,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    },
+    "w04-linked-understand-walk1": {
+      "successful_emissions": 21,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    },
+    "w04-linked-understand-walk2": {
+      "successful_emissions": 21,
+      "receipt_storage": "exact selected source bytes verified",
+      "receipt_limit": "stored emissions do not prove complete model receipt"
+    }
+  },
+  "archives": {
+    "walk-evidence.tar.gz": {
+      "sha256": "cdd278354161f60e494430cd6195ac91d4d0ddb996ffdee4c4e083afc212d7d5",
+      "bytes": 728715
+    },
+    "walk-inputs.tar.gz": {
+      "sha256": "103a47734965da3d476278356a3d7748a6c321a4ccde36df2514b120f0e3cff5",
+      "bytes": 28854
+    }
+  }
+}
