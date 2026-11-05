@@ -1977,6 +1977,29 @@ Keep the refreshed inventory.
                      "cmd --literal '<workspace>' \\\n  --input `[**limit**](#limit)` --json '{\"key\": \"value\"}'")
         self.assertEqual(self.findings(), [])
 
+    def test_literal_brackets_before_argument_links_keep_their_contracts(self):
+        for redirection in ('>', '>>'):
+            with self.subTest(redirection=redirection):
+                command = ('gh api --paginate "repos/o/r/pulls?state=all&per_page=100" '
+                           '--jq \'.[] | select(.title | startswith("[I") or startswith("[F"))\' '
+                           + redirection + " '[**limit**](#limit)'")
+                self.inventory.write_text(self.INVENTORY.replace(
+                    'inventory_fetch { [**limit**](#limit), offset }', command))
+                self.assertEqual(self.findings(), [])
+
+    def test_literal_brackets_do_not_hide_unbold_contract_links(self):
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
+                     "cmd --filter '[I' --output '[**limit**](#limit)' --input '[limit](#limit)'")
+        self.assertIn('invocation argument contract', self.kinds())
+
+    def test_literal_brackets_do_not_hide_broken_argument_targets(self):
+        for target in ('#absent', '#read-inventory'):
+            with self.subTest(target=target):
+                self.inventory.write_text(self.INVENTORY.replace(
+                    'inventory_fetch { [**limit**](#limit), offset }',
+                    "cmd --filter '[I' --output '[**limit**](" + target + ")'"))
+                self.assertIn('invocation argument contract', self.kinds())
+
     def test_a_missing_argument_anchor_is_reported(self):
         self.replace(self.inventory, '[**limit**](#limit)', '[**limit**](#absent)')
         self.assertIn('unresolved anchor', self.kinds())

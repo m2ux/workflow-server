@@ -571,12 +571,12 @@ def inline_commands(path, lines, fenced, entry, steps):
         if not payload.strip():
             yield start, 'malformed HTML invocation', 'invocation is empty'
         for index in range(start, end + 1):
-            linked = {match[0] for match in ARGUMENT_LINK.finditer(lines[index])}
             for match in ARGUMENT_LINK.finditer(lines[index]):
                 if not field_contract(path, match[2], entry.get('contracts', 'Fields')):
                     yield index, 'invocation argument contract', match[2]
-            for match in LINK.finditer(lines[index]):
-                if match[0] not in linked and field_contract(path, match[1], entry.get('contracts', 'Fields')):
+            ordinary = ARGUMENT_LINK.sub('', lines[index])
+            for match in LINK.finditer(ordinary):
+                if field_contract(path, match[1], entry.get('contracts', 'Fields')):
                     yield index, 'invocation argument contract', 'contract-backed arguments use bold links'
 
 
