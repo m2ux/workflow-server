@@ -16,7 +16,6 @@ This record binds the combined criterion audit, measured architecture and agent 
 | [Criterion results](criterion-tests.log) | Exact integration-head regression checks |
 | [Document results](document-tests.log) | Exact integration-head documentation interface checks |
 | [Integration checklist](integration.md) | Review preparation, readiness and human gate |
-
 | [Architecture overview](architecture-overview.md) | Measured structure, flows and reading order |
 | [Agent review](agent-review.json) | Exact-head and target review with completed findings |
 | [Graph method](graph-method.md) | Capture procedure, trace identity and coverage boundaries |
@@ -34,7 +33,6 @@ This record binds the combined criterion audit, measured architecture and agent 
 | [graph-lane-queue-trace.json](graph-lane-queue-trace.json) | Complete graph measurement evidence and provenance |
 | [graph-measure.mjs](graph-measure.mjs) | Complete graph measurement evidence and provenance |
 | [graph-details.mjs](graph-details.mjs) | Complete graph measurement evidence and provenance |
-
 | [delivery-sync.log](delivery-sync.log) | Final handoff state and current delivery evidence |
 | [pull-request.json](pull-request.json) | Final handoff state and current delivery evidence |
 | [board-item.json](board-item.json) | Final handoff state and current delivery evidence |

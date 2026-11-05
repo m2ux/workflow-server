@@ -17,7 +17,7 @@ The coordinator refreshed live queue/holds and automatically dispatched each new
 
 All fourteen E03 rows are Done and active criteria AC2–AC15 are verified/ticked. [Integration #1627](https://github.com/m2ux/workflow-server/pull/1627) is ready for review at dbfe21c2bc88d97034c3de8e64e8b490ae54688f against workspace d0a62b8037bb1b8fdafac5bf0e0035ada8c64486. The exact Project 17 epic item reads In Review. The final availability survey has zero units or holds.
 
-The complete tree passed895 planner tests with one opt-in live skip,208 shared tests and52 skill-file checks with zero findings. The exact integration head passed56 criterion and11 document-interface checks. Current measured architecture includes156 changed-symbol contexts and40 exact affected-flow traces. Published agent review passes against both current tips with no unresolved findings.
+The complete tree passed 895 planner tests with one opt-in live skip, 208 shared tests and 52 skill-file checks with zero findings. The exact integration head passed 56 criterion and 11 document-interface checks. Current measured architecture includes 156 changed-symbol contexts and 40 exact affected-flow traces. Published agent review passes against both current tips with no unresolved findings.
 
 The [integration evidence](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1627-delivery-lanes-review) contains the criterion matrix, overview, current agent review, raw measurements and live handoff records. The historical W01/AC1 disagreement retains its accepted retirement disposition and original evidence.
 

@@ -14,7 +14,6 @@ For the active I17 E03 epic, automatic delivery carries each remaining unit thro
 | --- | --- |
 | [Upstream issue](upstream-issue.md) | Requested automatic-dispatch behavior and observing criteria |
 | [Automatic delivery](automatic-delivery.md) | Authorized remaining units, coordination and stop conditions |
-
 | [Delivery outcome](progress.md) | Automatically completed units, final evidence and human-review gate |
 
 ## Links

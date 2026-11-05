@@ -30,7 +30,7 @@ Continue Task Merge through Epic Integration with all active AC2–AC15 and rows
 
 ## Merged Unit
 
-Task PR #1638 merged at dbfe21c2bc88d97034c3de8e64e8b490ae54688f from full-suite-tested a6d025d3025f08ad4b0a027d9762ccd0096a780b; trees are identical. Exact merged criterion56 and document11 checks pass. Live AC10 and W13 Done are recorded; all current rows and criteria now hold. The task-base target had no classic protection or active rules, no required review/check and no outstanding head status; the SHA-pinned native merge succeeded normally. Final integration preparation continues in the linked integration review record.
+Task PR #1638 merged at dbfe21c2bc88d97034c3de8e64e8b490ae54688f from full-suite-tested a6d025d3025f08ad4b0a027d9762ccd0096a780b; trees are identical. Exact merged 56 criterion and 11 document checks pass. Live AC10 and W13 Done are recorded; all current rows and criteria now hold. The task-base target had no classic protection or active rules, no required review/check and no outstanding head status; the SHA-pinned native merge succeeded normally. Final integration preparation continues in the linked integration review record.
 
 ## Final Outcome
 
