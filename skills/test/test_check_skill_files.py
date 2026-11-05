@@ -1755,7 +1755,7 @@ An inventory page from supplied evidence.
 Fetch the requested page.
 
 <big><pre>
-gitnexus_list_repos { [**limit**](#limit), offset }
+inventory_fetch { [**limit**](#limit), offset }
 </pre></big>
 
 ## Fields
@@ -1960,11 +1960,11 @@ Keep the refreshed inventory.
         self.assertIn('malformed HTML invocation', self.kinds())
 
     def test_an_empty_html_invocation_is_reported(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', '')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', '')
         self.assertIn('malformed HTML invocation', self.kinds())
 
     def test_an_html_invocation_belongs_to_its_executing_step(self):
-        command = '<big><pre>\ngitnexus_list_repos { [**limit**](#limit), offset }\n</pre></big>\n\n'
+        command = '<big><pre>\ninventory_fetch { [**limit**](#limit), offset }\n</pre></big>\n\n'
         self.replace(self.inventory, command, '')
         self.replace(self.inventory, '## Fields', command + '## Fields')
         # It is still in the step until its next ancestor heading.
@@ -1973,7 +1973,7 @@ Keep the refreshed inventory.
         self.assertIn('invocation outside execution step', self.kinds())
 
     def test_argument_links_resolve_even_among_shell_quoting(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }',
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
                      "cmd --literal '<workspace>' \\\n  --input `[**limit**](#limit)` --json '{\"key\": \"value\"}'")
         self.assertEqual(self.findings(), [])
 
@@ -1996,7 +1996,7 @@ Keep the refreshed inventory.
 
     def test_literal_headings_and_fences_in_html_do_not_change_markdown_state(self):
         payload = '### Literal Heading\n' + FENCE + 'bash\n1. literal command text\n- **Literal label**\n' + FENCE
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', payload)
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', payload)
         lines, fenced, headings = checker.scan(self.inventory)
         self.assertEqual(lines, self.inventory.read_text().splitlines())
         self.assertNotIn('Literal Heading', [title for _, _, title in headings])
@@ -2028,23 +2028,23 @@ Keep the refreshed inventory.
         self.assertEqual(self.findings(), [])
 
     def test_html_graphql_needs_its_own_step_rest_gap(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
         self.assertIn('GraphQL without a REST gap', self.kinds())
         self.replace(self.inventory, 'Fetch the requested page.', 'Fetch the requested page.\n\n**REST gap:** REST exposes no relation write.')
         self.assertNotIn('GraphQL without a REST gap', self.kinds())
 
     def test_another_steps_rest_gap_cannot_cover_an_invocation(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api graphql -F query=@query.graphql')
         self.replace(self.inventory, '## Fields', '#### 2. Retain Evidence\n\n**REST gap:** REST exposes no relation write.\n\n## Fields')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
     def test_html_script_access_retains_interface_validation(self):
         self.write('scripts/read.py', "COMMAND = 'gh api graphql'\n")
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', 'python3 scripts/read.py')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'python3 scripts/read.py')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
     def test_html_commands_still_reject_projects_classic(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }', 'gh api projects/123/columns')
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }', 'gh api projects/123/columns')
         self.assertIn('Projects classic interface', self.kinds())
 
     def test_declarations_are_applied_from_each_supported_cli_root(self):
@@ -2074,7 +2074,7 @@ Keep the refreshed inventory.
         self.assertIn('operation contract links', self.kinds())
 
     def test_literal_rest_gap_text_in_payload_is_not_evidence(self):
-        self.replace(self.inventory, 'gitnexus_list_repos { [**limit**](#limit), offset }',
+        self.replace(self.inventory, 'inventory_fetch { [**limit**](#limit), offset }',
                      'gh api graphql -F query=@query.graphql\n**REST gap:** A literal payload line.')
         self.assertIn('GraphQL without a REST gap', self.kinds())
 
