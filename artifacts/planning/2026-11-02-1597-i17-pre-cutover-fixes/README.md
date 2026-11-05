@@ -23,6 +23,7 @@ It matters because I16 moves the skill with its content unchanged, and workflow-
 | [E00 W03](e00/w03.md) | Board sync removes uncited not-planned items |
 | [E00 W04](e00/w04.md) | Sync reads every linked pull request |
 | [E01 SOLID guidelines](e01/solid-guidelines.md) | The SOLID guidelines draft E01 W01 lands |
+| [E02 body](bodies/e02.md) | Skill Style scope, command presentation and checker/migration criteria |
 | [E03 body](bodies/e03.md) | The Delivery Lanes epic body as saved |
 | [E03 W01](e03/w01.md) | Work item declares an optional lane |
 | [E03 W02](e03/w02.md) | Task table carries the lane column |

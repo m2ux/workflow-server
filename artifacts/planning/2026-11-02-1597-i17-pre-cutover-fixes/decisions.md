@@ -55,6 +55,8 @@ The user's decisions:
 Planning decisions:
 
 - **Numbering.** E02 runs before E01 but keeps the next free number, since E01 was already published.
+8. **Command presentation.** (User, 2026-11-05.) The migration follows the command presentation defined in [E02 Proposal](https://github.com/m2ux/workflow-server/issues/1616#proposal), using the specific Graph Index step referenced there. The proposal is the requirement’s home; the example supplies presentation only.
+
 
 ## E03 Delivery Lanes, 3 November 2026 — Decision History
 
