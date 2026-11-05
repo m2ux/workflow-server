@@ -21,3 +21,4 @@ The implementation starts from the current workspace branch, including the merge
 | Resource | Link |
 | --- | --- |
 | Reviewed change | [PR #1636](https://github.com/m2ux/workflow-server/pull/1636) |
+| Fixes | [PR #1645](https://github.com/m2ux/workflow-server/pull/1645) |

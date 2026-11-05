@@ -26,4 +26,4 @@ Full Work Planner and shared checker suites, skill-file validation, final diff r
 - [x] Implement and verify retained-worktree validation.
 - [x] Implement and verify stable dispatch blockers.
 - [x] Implement and verify priority ordering.
-- [ ] Complete regression checks, commit and push, and open the separate fixes PR.
+- [x] Complete regression checks, commit and push, and open the separate fixes PR.

@@ -4,6 +4,8 @@
 
 The three reviewed defects are corrected on `skill/1636-dispatch-review-fixes`, based on workspace `03d353300ca4804194fd50d316d73e3bf1270d1d`, after PR #1636 and the lane integration merged. The new PR targets workspace. Existing disclosure cleanup remains outside these fixes.
 
+The final pushed head is `7d7247529525eda7f799eea4b2dec779fea36909`, published in [PR #1645](https://github.com/m2ux/workflow-server/pull/1645). The three fixes occupy separate commits and the worktree is clean. The target requires one approving human review.
+
 ## Retained Worktrees
 
 Eight real-Git tests exercise the Delivery Branches validation command. A prepared checkout can be validated repeatedly without recreating its branch. Foreign ownership, branch or revision mismatch, detached HEAD and tracked or untracked changes are rejected with the checkout preserved. A full recorded preparation revision is required.
@@ -34,6 +36,10 @@ The final focused suite contains 31 orchestration tests; the retained-worktree s
 - Document and checkout contract checks: 18 tests, OK.
 - Skill-file checker: 55 files, zero findings.
 - Diff whitespace check: no findings.
+
+## Section Accounting
+
+The base-to-head comparison reports 431 sections at the base and 436 at the final head: five added and ten differing sections, with none removed. Changed and added bodies were inspected against their owning artifacts and callers. The worker's Run Delivery Session remains intact. The comparison exits 1 for the expected added/differing sections; structural validation separately reports zero findings.
 
 ## Disclosure Verification
 
