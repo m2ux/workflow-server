@@ -15,6 +15,8 @@ The Delivery Plan defines that admission rule and deliver.py applies it to the t
 | [W07](w07.md) | Delivery Plan admission rule and document verification |
 | [W08](w08.md) | Available-work filter and observing fixtures |
 | [Dispatch](dispatch.md) | Automatic authorization, current queue and checklist |
+| [Delivery evidence](delivery.md) | Execution checklist and observing checks |
+| [Change list](change-list.md) | Applied and held plan changes |
 
 ## Links
 

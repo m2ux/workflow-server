@@ -22,5 +22,4 @@ For the active I17 E03 epic, automatic delivery carries each remaining unit thro
 | Active epic | [I17 E03 Delivery Lanes](https://github.com/m2ux/workflow-server/issues/1625) |
 | Board | [Project 17](https://github.com/users/m2ux/projects/17/views/4) |
 | Existing plan | [I17 planning record](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes) |
-
 | Upstream report | [#1631 Automatic Dispatch](https://github.com/m2ux/workflow-server/issues/1631) |

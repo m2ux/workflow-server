@@ -32,4 +32,4 @@ Finish the epic's current criterion verification and agent review and publish it
 - [x] Capture the user's automatic-delivery and upstream-report requests.
 - [x] Publish and read back the upstream issue.
 - [x] Publish this authorization and resolve the reporting deferral in the planning record.
-- [ ] Start the continuous delivery coordinator and verify its first unit is running. **In progress.**
+- [x] Start the continuous delivery coordinator and verify its first unit is running.

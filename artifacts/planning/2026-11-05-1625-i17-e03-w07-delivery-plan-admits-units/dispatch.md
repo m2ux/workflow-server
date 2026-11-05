@@ -11,4 +11,4 @@ The existing historical #1626 W01 AC1 coverage disagreement remains evidence; AC
 - [x] Refresh live queue, delivery evidence, remote branches and actual holds.
 - [x] Publish W07+W08 work items and their record.
 - [x] Reserve both rows and verify In Progress.
-- [ ] Create the task worktree and start its delivery session. **In progress.**
+- [x] Create the task worktree and start its delivery session.
