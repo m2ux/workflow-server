@@ -6,6 +6,7 @@ A board progress report for a selected window, formatted for pasting into Slack.
 
 Read these files first.
 
+- When no window start is supplied, read [Standup Configuration](../configuration.md#standup).
 - [Hot-fix Body](hotfix-body.md)
 - [Hot-fix](hotfix.md)
 
@@ -30,7 +31,7 @@ The copyable report and any missing-evidence findings.
 
 ### Scope
 
-The default window opens a week before today. A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
+When no start date is supplied, the window follows [Standup Configuration](../configuration.md#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.
 
 Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's.
 
@@ -71,7 +72,7 @@ Prints the standup from supplied board items, pull request records and their iss
 **Inputs:** Board items, pull request records and link snapshot; optional window start, initiative filter, off-board initiative records and management paragraph file.
 
 - `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.
-- `--since` opens the window on another date than a week before today.
+- `--since` supplies an explicit start for the [window](#scope).
 - `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.
 - `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
 - `--summary` gives the paragraph for management.

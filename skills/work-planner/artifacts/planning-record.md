@@ -2,6 +2,12 @@
 
 A planning record is a folder. README.md is its entry point: it answers what the work is, and links to every other artifact the plan produces. Each artifact is the home of its own content. The progress of the work is the theme's project board.
 
+## Prerequisites
+
+Read these files first.
+
+- [Planning Records Configuration](../configuration.md#planning-records)
+
 ## Operations
 
 ### *Populate* Planning Record
@@ -136,7 +142,7 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 
 **Inputs:** Engineering worktree and planning-folder path composed from the date, optional issue or pull request number, and slug.
 
-- `<planning-folder-path>` is `artifacts/planning/<yyyy-mm-dd>[-<ref>]-<slug>/`. The date is the day the record is opened.
+- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
 - `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
 - The slug is lowercase words separated by hyphens, a short name of the work.
 - The folder's files are the [planning layout](planning-record.md#layout).
