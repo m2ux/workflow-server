@@ -22,6 +22,6 @@ The user identifies two peer Apply calls under Board Delivery / Record Epic Revi
 
 - [x] Clarify the user example and locate the opening-instruction exemption.
 - [x] Inventory 733 bare-prose/metadata candidates in 52 procedure documents.
-- [ ] Revise the rule and classify every candidate.
-- [ ] Validate, commit and push the owning integration branch.
+- [x] Revise the rule and classify every candidate.
+- [x] Validate, commit and push the owning integration branch.
 - [ ] Publish the current-head integration review and handoff.

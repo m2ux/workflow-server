@@ -71,3 +71,22 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | Artifact | What it holds |
 | --- | --- |
 | [Step instruction format](step-instruction-format.md) | User clarification, single-home rule and verification plan |
+
+## Current Integration Evidence
+
+| Artifact | What it holds |
+| --- | --- |
+| [Integration verification](integration-validation.md) | Current-head checks, criterion observations and evidence limits |
+| [Agent review](integration-agent-review.json) | Exact head and target, scope and finding dispositions |
+| [Measured flow atlas](integration-flow-atlas.md) | One sequence for each reported affected process |
+| [Native graph measurements](integration-graph.tar.gz) | Complete contexts, raw relationships, ordered flows and instruments |
+| [Measurement manifest](integration-graph-manifest.json) | Archive members and hashes |
+| [Graph audit](integration-graph-audit.json) | Context identities, ordered flow completeness and freshness |
+| [Step item inventory](step-item-audit.json) | Every step and exact bullet-prefix correction |
+| [Step preservation](step-preservation.json) | Exact procedure text, payload and route preservation |
+| [Work Planner result](integration-work-planner.log) | Frozen-head 933-test run with one opt-in skip |
+| [Shared checker result](integration-shared-checker.log) | Frozen-head 258-test run |
+| [Installed model result](integration-installed-check.log) | 58 files and zero findings |
+| [Final document result](step-document-check.log) | 13 affected document checks |
+| [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
+| [Epic readback](integration-epic-readback.json) | Saved specification, eight delivered rows and checked criteria |
