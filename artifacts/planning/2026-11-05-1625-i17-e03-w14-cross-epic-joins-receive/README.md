@@ -14,6 +14,15 @@ This unit delivers AC15 through its isolated task branch into i17/e03/workspace.
 | --- | --- |
 | [W14](w14.md) | Component plan and observing tests |
 | [Dispatch](dispatch.md) | Authorization, current availability and checklist |
+| [Delivery evidence](delivery.md) | Criterion observations, exact heads and validation results |
+| [Change list](change-list.md) | Applied and held plan changes |
+| [Planner results](planner-tests.log) | Complete planner-suite output |
+| [Shared results](shared-tests.log) | Shared checker-suite output |
+| [Skill files](skill-files.log) | File and link validation output |
+| [Combined dependency results](combined-deps.log) | Dependency checks at the current task head |
+| [Combined mode results](combined-modes.log) | Mode-interface checks at the current task head |
+| [Combined document results](combined-documents.log) | Document checks at the current task head |
+| [Combined skill files](combined-skill.log) | File check at the current task head |
 
 ## Links
 
