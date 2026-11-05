@@ -4,344 +4,533 @@ A tracker issue: its identity, saved body, metadata, discussion and closure stat
 
 ## Operations
 
-### *Read* Tracker Issue
+### Read Tracker Issue
 
 The current issue, its saved body and discussion.
 
-**Inputs:** Repository, issue number and output files; whether discussion is needed.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files), [Discussion Selection](#discussion-selection).
 
-1. Run [Fetch Tracker Issue](#fetch-tracker-issue) for the complete JSON, or [Fetch Issue Body](#fetch-issue-body) for its body, with the issue number and destination file.
-2. Run [Fetch Issue Comments](#fetch-issue-comments) when the request depends on the discussion.
+**Outputs:** [Issue Record](#issue-record) for a complete response or [Issue Body](#issue-body) for a body-only response, with [Discussion](#discussion) when requested.
 
-### *Save* Tracker Issue
+#### 1. Select Issue Response
+
+Apply [Fetch Tracker Issue](#fetch-tracker-issue) for the complete JSON, or Apply [Fetch Issue Body](#fetch-issue-body) for its body, with the issue number and destination file.
+
+#### 2. Read Requested Discussion
+
+Apply [Fetch Issue Comments](#fetch-issue-comments) when the request depends on the discussion.
+
+### Save Tracker Issue
 
 One populated body and its metadata, written to the tracker.
 
-**Inputs:** Repository, optional existing issue number, populated body file, title and existing labels for creation; selected body or metadata changes for an existing issue. Optional comment file.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes), [Comment](#comment).
 
-1. Take the supplied body and metadata, preserving each field the caller does not change for an existing issue.
-2. Return a missing-label result when an assignment names a label the repository does not contain.
-3. For a new issue, run [Create Tracker Issue](#create-tracker-issue) with the body's file, title and labels.
-4. For an existing issue, run [Patch Issue Body](#patch-issue-body), [Retitle Tracker Issue](#retitle-tracker-issue), [Add Issue Labels](#add-issue-labels) or [Remove Issue Label](#remove-issue-label) for the fields being changed.
-5. Run [Comment on Issue](#comment-on-issue) for an answer the caller requires, with the issue number and comment file.
-6. Re-read with [Fetch Tracker Issue](#fetch-tracker-issue).
-7. Compare the saved fields with the intended body and metadata.
+**Outputs:** [Issue Record](#issue-record).
 
-### *Close* Tracker Issue
+#### 1. Take Supplied Changes
+
+Take the supplied body and metadata, preserving each field the caller does not change for an existing issue.
+
+#### 2. Check Assigned Labels
+
+Check the assignments against [Label Names](#label-names); return a missing-label result for any unavailable name.
+
+#### 3. Create New Issue
+
+For a new issue, Apply [Create Tracker Issue](#create-tracker-issue) with the body's file, title and labels.
+
+#### 4. Change Existing Fields
+
+For an existing issue, Apply [Patch Issue Body](#patch-issue-body), Apply [Retitle Tracker Issue](#retitle-tracker-issue), Apply [Add Issue Labels](#add-issue-labels) or Apply [Remove Issue Label](#remove-issue-label) for the fields being changed.
+
+#### 5. Publish Required Comment
+
+Apply [Comment on Issue](#comment-on-issue) for an answer the caller requires, with the issue number and comment file.
+
+#### 6. Read Saved Issue
+
+Apply [Fetch Tracker Issue](#fetch-tracker-issue).
+
+#### 7. Compare Saved Fields
+
+Compare the saved fields with the intended body and metadata.
+
+### Close Tracker Issue
 
 Verified completion of an issue and its linked delivery.
 
-**Inputs:** Issue identity and successful normal delivery result.
+**Inputs:** [Identity](#identity), [Delivery Evidence](#delivery-evidence), [Output Files](#output-files).
 
-1. Run [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
-   - The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no pull request requirement.
-2. Run [Check Issue Closure](#check-issue-closure) with those two files.
-3. Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
-   - Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
-   - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
-4. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write.
+**Outputs:** [State](#state), [Closure Findings](#closure-findings).
 
-### *Close* Transferred Work
+#### 1. Capture Current Development
+
+Apply [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
+- The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no pull request requirement.
+
+#### 2. Check Closure Evidence
+
+Apply [Check Issue Closure](#check-issue-closure) with those two files.
+
+#### 3. Require Completed Delivery
+
+Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
+- Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
+- Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
+
+#### 4. Close Verified Issue
+
+Apply [Close as Completed](#close-as-completed), which repeats the gate immediately before the write.
+
+### Close Transferred Work
 
 An issue whose work is tracked by another issue.
 
-**Inputs:** Issue identity, confirmed destination evidence and comment file.
+**Inputs:** [Identity](#identity), [Transfer Evidence](#transfer-evidence), [Comment](#comment).
 
-1. Confirm the supplied destination contains the work and cites its source issue.
-2. Run [Comment on Issue](#comment-on-issue) with the destination reference and supplied comment file.
-3. Run [Close as Not Planned](#close-as-not-planned), retaining the issue's body.
-4. Re-read it with [Fetch Tracker Issue](#fetch-tracker-issue) to confirm its state and reason.
+**Outputs:** [State](#state).
 
-### *Comment* on Issue
+#### 1. Confirm Destination Evidence
+
+Confirm the supplied destination contains the work and cites its source issue.
+
+#### 2. Comment With Destination
+
+Apply [Comment on Issue](#comment-on-issue) with the destination reference and supplied comment file.
+
+#### 3. Close Transferred Issue
+
+Apply [Close as Not Planned](#close-as-not-planned), retaining the issue's body.
+
+#### 4. Confirm Saved State
+
+Apply [Fetch Tracker Issue](#fetch-tracker-issue) to confirm its state and reason.
+
+### Comment on Issue
 
 The supplied discussion text saved on one issue.
 
-**Inputs:** Repository, issue number and exact comment text or file; reviewer identity and addressed feedback when replying to a review.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).
 
-1. When replying to feedback already folded into the body, compose a precise, factual reply addressing each point and mentioning the reviewer, with no thanks or filler. Name what the body now says, by criterion id where one carries it, or the issue that takes the point.
-2. Publish the supplied comment:
-   - For a one-line comment, run [Post Inline Comment](#post-inline-comment) with the exact text.
-   - For a longer comment, run [Post Comment File](#post-comment-file) with the complete file.
-3. Return the saved comment URL.
+**Outputs:** [Comment](#comment).
 
-### *Close* as Completed
+#### 1. Prepare Feedback Reply
+
+When replying to feedback already folded into the body, compose a precise, factual reply addressing each point and mentioning the reviewer, with no thanks or filler. Name what the body now says, by criterion id where one carries it, or the issue that takes the point.
+
+#### 2. Publish Supplied Comment
+
+Publish the supplied comment:
+- For a one-line comment, Apply [Post Inline Comment](#post-inline-comment) with the exact text.
+- For a longer comment, Apply [Post Comment File](#post-comment-file) with the complete file.
+
+#### 3. Return Comment URL
+
+Return the saved comment URL.
+
+### Close as Completed
 
 An issue closed after its final evidence check.
 
-**Inputs:** Repository, issue number, authenticated access, passing normal delivery checks and absolute paths for the issue and Development evidence.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Authenticated Access](#authenticated-access), [Delivery Evidence](#delivery-evidence), [Closure Evidence Paths](#closure-evidence-paths).
 
-1. Run [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access and evidence paths.
-2. Run [Check Issue Closure](#check-issue-closure) with the issue and Development files it wrote, using absolute evidence paths when changing directory.
-3. Require exit 0 and passing normal delivery checks; a sync report of closable does not permit skipping this gate.
-4. Immediately after the gate passes, run [Set Completed State](#set-completed-state) with the issue's repository and number and the passing evidence.
-5. Return the saved state or failure.
+**Outputs:** [State](#state), [Closure Findings](#closure-findings).
 
-### *Capture* Issue Development
+#### 1. Capture Fresh Development
+
+Apply [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access and evidence paths.
+
+#### 2. Run Fresh Closure Gate
+
+Apply [Check Issue Closure](#check-issue-closure) with the issue and Development files it wrote, using absolute evidence paths when changing directory.
+
+#### 3. Require Passing Evidence
+
+Require exit 0 and passing normal delivery checks; a sync report of closable does not permit skipping this gate.
+
+#### 4. Set Completed State
+
+Immediately after the gate passes, Apply [Set Completed State](#set-completed-state) with the issue's repository and number and the passing evidence.
+
+#### 5. Return Saved State
+
+Return the saved state or failure.
+
+### Capture Issue Development
 
 The issue's current content and its Development pull requests, as GitHub exposes them.
 
-**Inputs:** Issue identity, authenticated access and issue and Development output paths.
+**Inputs:** [Identity](#identity), [Authenticated Access](#authenticated-access), [Output Files](#output-files).
 
-1. Run [Fetch Tracker Issue](#fetch-tracker-issue) into `issue-943.json` or the supplied path.
-2. Run [Read Issue Development](#read-issue-development) with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
-3. Return both files, or the unreadable relation.
+**Outputs:** [Issue Record](#issue-record), [Development Snapshot](#development-snapshot).
 
-### *Read* Issue Development
+#### 1. Fetch Current Issue
+
+Apply [Fetch Tracker Issue](#fetch-tracker-issue) into `issue-943.json` or the supplied path.
+
+#### 2. Read Development Links
+
+Apply [Read Issue Development](#read-issue-development) with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
+
+#### 3. Return Captured Files
+
+Return both files, or the unreadable relation.
+
+### Read Issue Development
 
 The Development pull requests of one issue, or of every issue in one repository, keyed by issue number.
 
-**Inputs:** One issue's JSON or one repository's issue collection, authenticated access and destination file.
+**Inputs:** [Issue Collection](#issue-collection), [Authenticated Access](#authenticated-access), [Output Files](#output-files).
 
-1. Run [Capture Issue Links](#capture-issue-links) with the supplied issues and destination.
-2. Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
+**Outputs:** [Development Snapshot](#development-snapshot).
 
-### *Audit* Closure Evidence
+#### 1. Capture Supplied Relations
+
+Apply [Capture Issue Links](#capture-issue-links) with the supplied issues and destination.
+
+#### 2. Return Complete Relations
+
+Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
+
+### Audit Closure Evidence
 
 Each closed issue in one repository whose criteria or Development links do not support its closure, with the reason it was closed.
 
-**Inputs:** Repository, authenticated access, the issue numbers to audit or every closed issue, and destination files for the issue collection and its issue-links file.
+**Inputs:** [Repository](#repository), [Authenticated Access](#authenticated-access), [Audit Selection](#audit-selection), [Output Files](#output-files).
 
-1. Fetch the closed issues alone:
-   - For named issues, run [Fetch Selected Closed Issues](#fetch-selected-closed-issues) with their numbers.
-   - For the whole repository, run [Fetch Closed Issues](#fetch-closed-issues).
-   - An empty collection means none of the named issues is closed; return nothing listed.
-2. Run [Read Issue Development](#read-issue-development) with that collection; an unreadable relation is returned as a blocker and the sweep does not run.
-3. Run [Sweep Closure Evidence](#sweep-closure-evidence) with the collection and the issue-links file.
-4. Return each unsupported issue with its state reason and findings, and each unevaluable issue as missing evidence, as findings. Return the not-planned closures apart, as listed for reference. The audit changes no issue.
+**Outputs:** [Closure Findings](#closure-findings).
 
-### *Confirm* Repository Auto-Close
+#### 1. Fetch Selected Closed Issues
+
+Fetch the closed issues alone:
+- For named issues, Apply [Fetch Selected Closed Issues](#fetch-selected-closed-issues) with their numbers.
+- For the whole repository, Apply [Fetch Closed Issues](#fetch-closed-issues).
+- An empty collection means none of the named issues is closed; return nothing listed.
+
+#### 2. Read Complete Development
+
+Apply [Read Issue Development](#read-issue-development) with that collection; an unreadable relation is returned as a blocker and the sweep does not run.
+
+#### 3. Run Closure Sweep
+
+Apply [Sweep Closure Evidence](#sweep-closure-evidence) with the collection and the issue-links file.
+
+#### 4. Return Audit Findings
+
+Return each unsupported issue with its state reason and findings, and each unevaluable issue as missing evidence, as findings. Return the not-planned closures apart, as listed for reference. The audit changes no issue.
+
+### Confirm Repository Auto-Close
 
 Whether the repository auto-closes issues whose linked pull requests merge, established for this session.
 
-**Inputs:** Repository and authenticated access.
+**Inputs:** [Repository](#repository), [Authenticated Access](#authenticated-access).
 
-1. Read the setting where the authenticated API exposes it, and take a read value as the answer.
-2. Where no API field carries it, put the setting to the user and take their explicit answer, meeting [Auto-Close Setting](#auto-close-setting).
-3. Return the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+**Outputs:** [Auto-Close Setting](#auto-close-setting).
 
-### *Read* Repository Issues
+#### 1. Read Exposed Setting
+
+Read the setting where the authenticated API exposes it, and take a read value as the answer.
+
+#### 2. Confirm Unexposed Setting
+
+Where no API field carries it, put the setting to the user and take their explicit answer, meeting [Auto-Close Setting](#auto-close-setting).
+
+#### 3. Return Confirmed Setting
+
+Return the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+
+### Read Repository Issues
 
 The issue collection used for repository-wide selection.
 
-**Inputs:** Repository and destination JSON file.
+**Inputs:** [Repository](#repository), [Output Files](#output-files).
 
-1. Run [Fetch All Issues](#fetch-all-issues), saving the complete collection.
-2. Return it with pull requests distinguishable from issues.
+**Outputs:** [Issue Collection](#issue-collection).
 
-### *Locate* Initiative Issue
+#### 1. Fetch Repository Issues
+
+Apply [Fetch All Issues](#fetch-all-issues), saving the complete collection.
+
+#### 2. Return Issue Collection
+
+Return it with pull requests distinguishable from issues.
+
+### Locate Initiative Issue
 
 The tracker identity matching one initiative prefix.
 
-**Inputs:** Repository and initiative prefix.
+**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).
 
-1. Run [Find Initiative Issue](#find-initiative-issue) with the supplied repository and prefix.
-2. Return its issue number or an unresolved identity.
+**Outputs:** [Identity](#identity), [Tracker Number](#tracker-number).
 
-### *Select* Tracker Number
+#### 1. Find Supplied Prefix
+
+Apply [Find Initiative Issue](#find-initiative-issue) with the supplied repository and prefix.
+
+#### 2. Return Resolved Identity
+
+Return its issue number or an unresolved identity.
+
+### Select Tracker Number
 
 The next unused number for one prefixed issue kind in the repository.
 
-**Inputs:** Repository, the kind's prefix letter and its existing titles.
+**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).
 
-1. Run [List Prefixed Titles](#list-prefixed-titles) for the supplied repository and prefix letter, covering all issue states.
-2. Read the highest prefix carrying that letter.
-3. Confirm the following number, or `00` when there is no prefix, remains unused before creation.
-4. Return the confirmed number.
+**Outputs:** [Tracker Number](#tracker-number).
 
-## Fields
+#### 1. Read Existing Titles
 
-- **Identity.** The issue has its repository, number and URL.
-- **Content.** The saved title, body and labels equal the supplied values.
-- **Discussion.** A saved comment preserves the supplied text.
-- **State.**
-  The issue is open or closed with its recorded completion reason. Completed work satisfies its criteria and delivery checks; transferred work identifies the issue tracking it.
+Apply [List Prefixed Titles](#list-prefixed-titles) for the supplied repository and prefix letter, covering all issue states.
 
-### Auto-Close Setting
+#### 2. Read Highest Prefix
 
-GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
+Read the highest prefix carrying that letter.
 
-- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
-- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
-- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
-- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
+#### 3. Confirm Unused Number
 
-## Commands
+Confirm the following number, or `00` when there is no prefix, remains unused before creation.
+
+#### 4. Return Confirmed Number
+
+Return the confirmed number.
 
 ### Create Tracker Issue
 
 Creates an issue from a body file, with its title and labels, and prints its number.
 
-**Inputs:** Repository, populated body file, title and existing label names.
+**Inputs:** [Repository](#repository), [Issue Changes](#issue-changes), [Label Names](#label-names).
+
+**Outputs:** [Identity](#identity).
+
+#### 1. Create Tracker Issue
+
+Run this command from the repository checkout with the supplied inputs.
 
 Repeat `-f 'labels[]=<label>'` for each supplied label.
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues' -f title='<title>' -F 'body=@<body-file>' -f 'labels[]=<label>' --jq .number
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues' -f title='[**&lt;title&gt;**](#issue-changes)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues' -f title='<title>' -F body=@body.md -f 'labels[]=<label>' --jq .number
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues' -f title='[**&lt;title&gt;**](#issue-changes)' -F body=@body.md -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
+</pre></big>
 
 ### Patch Issue Body
 
 Replaces an issue's body from a file.
 
-**Inputs:** Repository, issue number and complete populated body file.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes).
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/<issue-number>' -F 'body=@<body-file>' --jq .number
-```
+**Outputs:** [Identity](#identity), [Content](#content).
+
+#### 1. Patch Issue Body
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' --jq .number
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/943' -F body=@body.md --jq .number
-```
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -F body=@body.md --jq .number
+</pre></big>
 
 ### Fetch Issue Body
 
 Saves an issue's body alone.
 
-**Inputs:** Repository, issue number and destination file.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files).
 
-```bash
-gh api 'repos/<owner>/<repo>/issues/<issue-number>' --jq .body > '<output-body-file>'
-```
+**Outputs:** [Issue Body](#issue-body).
+
+#### 1. Fetch Issue Body
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' --jq .body > '[**&lt;output-body-file&gt;**](#output-files)'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api 'repos/<owner>/<repo>/issues/943' --jq .body > live-943.md
-```
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' --jq .body > live-943.md
+</pre></big>
 
 ### Retitle Tracker Issue
 
 Replaces an issue's title.
 
-**Inputs:** Repository, issue number and complete title.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes).
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/<issue-number>' -f title='<title>' --jq .title
-```
+**Outputs:** [Content](#content).
+
+#### 1. Retitle Tracker Issue
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/943' -f title='<title>' --jq .title
-```
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -f title='[**&lt;title&gt;**](#issue-changes)' --jq .title
+</pre></big>
 
 ### Add Issue Labels
 
 Adds labels to an issue.
 
-**Inputs:** Repository, issue number and existing label names.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Label Names](#label-names).
+
+**Outputs:** [Label Names](#label-names).
+
+#### 1. Add Issue Labels
+
+Run this command from the repository checkout with the supplied inputs.
 
 Repeat `-f 'labels[]=<label>'` for each supplied label.
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/<issue-number>/labels' -f 'labels[]=<label>' --jq '.[].name'
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/943/labels' -f 'labels[]=<label>' --jq '.[].name'
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+</pre></big>
 
 ### Remove Issue Label
 
 Removes one label from an issue.
 
-**Inputs:** Repository, issue number and label name.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Label Names](#label-names).
 
-```bash
-gh api --method DELETE 'repos/<owner>/<repo>/issues/<issue-number>/labels/<label>' --jq '.[].name'
-```
+**Outputs:** [Label Names](#label-names).
+
+#### 1. Remove Issue Label
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels/[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method DELETE 'repos/<owner>/<repo>/issues/943/labels/<label>' --jq '.[].name'
-```
+<big><pre>
+gh api --method DELETE 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943/labels/[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
+</pre></big>
 
 ### Fetch Issue Comments
 
 Prints an issue's comments.
 
-**Inputs:** Repository and issue number.
+**Inputs:** [Repository](#repository), [Identity](#identity).
 
-```bash
-gh api --paginate 'repos/<owner>/<repo>/issues/<issue-number>/comments'
-```
+**Outputs:** [Discussion](#discussion).
+
+#### 1. Fetch Issue Comments
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --paginate 'repos/<owner>/<repo>/issues/874/comments'
-```
+<big><pre>
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments'
+</pre></big>
 
 ### Fetch Tracker Issue
 
 Saves an issue whole, as JSON, for the scripts that read issues.
 
-**Inputs:** Repository, issue number and destination JSON file.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files).
 
-```bash
-gh api 'repos/<owner>/<repo>/issues/<issue-number>' > '<issue-json-file>'
-```
+**Outputs:** [Issue Record](#issue-record).
+
+#### 1. Fetch Tracker Issue
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' > '[**&lt;issue-json-file&gt;**](#issue-record)'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api 'repos/<owner>/<repo>/issues/943' > issue-943.json
-```
+<big><pre>
+gh api 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' > issue-943.json
+</pre></big>
 
 ### Check Issue Closure
 
 Checks the issue's criteria and the state of every pull request its Development field holds.
 
-**Inputs:** The issue, as [Fetch Tracker Issue](#fetch-tracker-issue) saves it, and the snapshot [Capture Issue Links](#capture-issue-links) wrote from it.
+**Inputs:** [Issue Record](#issue-record), [Development Snapshot](#development-snapshot).
+
+**Outputs:** [Closure Findings](#closure-findings).
+
+#### 1. Check Issue Closure
+
+Run this command from the workspace checkout with the supplied inputs.
 
 - The gate reads only those two files, each a field GitHub exposes.
 - An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
 - Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue '<issue-json-file>' --development '<issue-links-file>'
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue '[**&lt;issue-json-file&gt;**](#issue-record)' --development '[**&lt;issue-links-file&gt;**](#development-snapshot)'
+</pre></big>
 
 **Example:**
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development links-943.json
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/closure.py --issue issue-943.json --development links-943.json
+</pre></big>
 
 ### Sweep Closure Evidence
 
 Lists each closed issue whose acceptance criteria are missing or unticked, or whose Development field holds a pull request that has not merged, with the issue's state reason.
 
-**Inputs:** One repository's closed issues, as [Fetch Closed Issues](#fetch-closed-issues) or [Fetch Selected Closed Issues](#fetch-selected-closed-issues) saves them, and the issue-links file [Capture Issue Links](#capture-issue-links) wrote from them.
+**Inputs:** [Issue Collection](#issue-collection), [Development Snapshot](#development-snapshot).
 
-- The sweep audits every closed issue in the collection, so the collection sets its scope. Each issue is judged as [Check Issue Closure](#check-issue-closure) judges it. Open issues and pull requests in the collection are skipped.
+**Outputs:** [Closure Findings](#closure-findings).
+
+#### 1. Sweep Closure Evidence
+
+Run this command from the workspace checkout with the supplied inputs.
+
+- The sweep audits every closed issue in the collection, so the collection sets its scope. Apply [Check Issue Closure](#check-issue-closure) to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
 - Each line names the issue, its state reason (`completed`, `not_planned`, or `unknown` when none is recorded) and its findings, under one of three labels:
-  - `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
-  - `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
-  - `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.
+- `unsupported:` for an issue closed for any reason but `not_planned` whose evidence does not support it.
+- `unevaluable:` for a closed issue the file holds no link list for, which is missing evidence rather than an empty link set.
+- `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.
 - The last line counts each label. Exit 0 means no issue is unsupported or unevaluable. Exit 1 means at least one is, or the evidence is unreadable. The command performs no network calls or writes.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues '<issues-json-file>' --issue-links '<issue-links-file>'
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues '[**&lt;issues-json-file&gt;**](#issue-collection)' --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot)'
+</pre></big>
 
 **Example:**
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues closed-issues.json --issue-links issue-links.json
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py --issues closed-issues.json --issue-links issue-links.json
+</pre></big>
 
 **Example output:**
 
@@ -356,71 +545,101 @@ not planned: owner/repo#945 closed as not_planned: acceptance criteria are missi
 
 Closes an issue whose work another issue tracks.
 
-**Inputs:** Issue identity and confirmed evidence that the work is tracked by its recorded destination.
+**Inputs:** [Identity](#identity), [Transfer Evidence](#transfer-evidence).
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/<issue-number>' -f state=closed -f state_reason=not_planned --jq .state
-```
+**Outputs:** [State](#state).
+
+#### 1. Close as Not Planned
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f state=closed -f state_reason=not_planned --jq .state
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/874' -f state=closed -f state_reason=not_planned --jq .state
-```
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874' -f state=closed -f state_reason=not_planned --jq .state
+</pre></big>
 
 ### Post Inline Comment
 
 Posts one line of exact comment text and returns its URL.
 
-**Inputs:** Repository, issue number and one-line comment text.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/<issue-number>/comments' -f body='<comment-text>' --jq .html_url
-```
+**Outputs:** [Comment](#comment).
+
+#### 1. Post Inline Comment
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments' -f body='[**&lt;comment-text&gt;**](#comment)' --jq .html_url
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/637/comments' -f body='Delivered by #950.' --jq .html_url
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/637/comments' -f body='Delivered by #950.' --jq .html_url
+</pre></big>
 
 ### Post Comment File
 
 Posts a complete comment file and returns its URL.
 
-**Inputs:** Repository, issue number and exact comment file.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/<issue-number>/comments' -F 'body=@<comment-file>' --jq .html_url
-```
+**Outputs:** [Comment](#comment).
+
+#### 1. Post Comment File
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/comments' -F 'body=@[**&lt;comment-file&gt;**](#comment)' --jq .html_url
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method POST 'repos/<owner>/<repo>/issues/874/comments' -F body=@comment-874.md --jq .html_url
-```
+<big><pre>
+gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/874/comments' -F body=@comment-874.md --jq .html_url
+</pre></big>
 
 ### Set Completed State
 
 Sets an issue to closed with the completed reason and returns its state.
 
-**Inputs:** Repository, issue number, passing normal delivery checks and an immediately preceding successful closure gate on current evidence.
+**Inputs:** [Repository](#repository), [Identity](#identity), [Delivery Evidence](#delivery-evidence), [Closure Findings](#closure-findings).
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/<issue-number>' -f state=closed -f state_reason=completed --jq .state
-```
+**Outputs:** [State](#state).
+
+#### 1. Set Completed State
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)' -f state=closed -f state_reason=completed --jq .state
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --method PATCH 'repos/<owner>/<repo>/issues/943' -f state=closed -f state_reason=completed --jq .state
-```
+<big><pre>
+gh api --method PATCH 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/943' -f state=closed -f state_reason=completed --jq .state
+</pre></big>
 
 ### Capture Issue Links
 
 Writes each issue's Development pull requests, read from the issue end of the relation, keyed by issue number.
 
-**Inputs:** One issue's JSON or one repository's issue collection, as [Fetch Tracker Issue](#fetch-tracker-issue) or [Fetch All Issues](#fetch-all-issues) saves it, and destination file.
+**Inputs:** [Issue Collection](#issue-collection), [Authenticated Access](#authenticated-access), [Output Files](#output-files).
+
+**Outputs:** [Development Snapshot](#development-snapshot).
+
+#### 1. Capture Issue Links
+
+Run this command from the repository checkout with the supplied inputs.
 
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
 
@@ -430,15 +649,15 @@ Writes each issue's Development pull requests, read from the issue end of the re
 - Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.
 - A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
-```bash
-cd "<workspace>" && python3 skills/work-planner/scripts/links-by-issue.py --issues '<issues-json-file>' --out '<issue-links-file>'
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/links-by-issue.py --issues '[**&lt;issues-json-file&gt;**](#issue-collection)' --out '[**&lt;issue-links-file&gt;**](#development-snapshot)'
+</pre></big>
 
 **Example:**
 
-```bash
-cd "<workspace>" && python3 skills/work-planner/scripts/links-by-issue.py --issues issue-943.json --out links-943.json
-```
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/links-by-issue.py --issues issue-943.json --out links-943.json
+</pre></big>
 
 **Example payload:**
 
@@ -452,80 +671,213 @@ cd "<workspace>" && python3 skills/work-planner/scripts/links-by-issue.py --issu
 
 Saves every issue in the repository; the scripts skip the pull requests among them.
 
-**Inputs:** Repository and destination JSON file.
+**Inputs:** [Repository](#repository), [Output Files](#output-files).
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=all&per_page=100" > '<issues-json-file>'
-```
+**Outputs:** [Issue Collection](#issue-collection).
+
+#### 1. Fetch All Issues
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection)'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=all&per_page=100" > issues.json
-```
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100" > issues.json
+</pre></big>
 
 ### Fetch Closed Issues
 
 Saves every closed issue in the repository; the scripts skip the pull requests among them.
 
-**Inputs:** Repository and destination JSON file.
+**Inputs:** [Repository](#repository), [Output Files](#output-files).
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=closed&per_page=100" > '<issues-json-file>'
-```
+**Outputs:** [Issue Collection](#issue-collection).
+
+#### 1. Fetch Closed Issues
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100" > '[**&lt;issues-json-file&gt;**](#issue-collection)'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=closed&per_page=100" > closed-issues.json
-```
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100" > closed-issues.json
+</pre></big>
 
 ### Fetch Selected Closed Issues
 
 Saves the named issues that are closed, one per line; an issue that is open or absent is left out.
 
-**Inputs:** Repository, issue numbers separated by commas, and destination JSON file.
+**Inputs:** [Repository](#repository), [Audit Selection](#audit-selection), [Output Files](#output-files).
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=closed&per_page=100" --jq '.[] | select([.number] | inside([<issue-numbers>]))' > '<issues-json-file>'
-```
+**Outputs:** [Issue Collection](#issue-collection).
+
+#### 1. Fetch Named Closed Records
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100" --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;[**&lt;issue-numbers&gt;**](#audit-selection)&#93;))' > '[**&lt;issues-json-file&gt;**](#issue-collection)'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=closed&per_page=100" --jq '.[] | select([.number] | inside([637, 943, 946]))' > closed-issues.json
-```
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=closed&per_page=100" --jq '.&#91;&#93; | select(&#91;.number&#93; | inside(&#91;637, 943, 946&#93;))' > closed-issues.json
+</pre></big>
 
 ### Find Initiative Issue
 
 Prints an initiative's issue number, found by its title's prefix.
 
-**Inputs:** Repository and initiative prefix.
+**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).
+
+**Outputs:** [Identity](#identity), [Tracker Number](#tracker-number).
+
+#### 1. Find Initiative Issue
+
+Run this command from the repository checkout with the supplied inputs.
 
 `<initiative-prefix>` includes the initiative id and its enclosing brackets.
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("<initiative-prefix>")) | .number'
-```
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100" --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#tracker-prefix)")) | .number'
+</pre></big>
 
 **Example:**
 
-```bash
-gh api --paginate "repos/<owner>/<repo>/issues?state=all&per_page=100" --jq '.[] | select(.pull_request == null) | select(.title | startswith("[I08]")) | .number'
-```
+<big><pre>
+gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100" --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("&#91;I08&#93;")) | .number'
+</pre></big>
 
 ### List Prefixed Titles
 
 Lists titles carrying one kind's prefix letter, across all states.
 
-**Inputs:** Repository owner and name, and the kind's prefix letter.
+**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).
 
-```bash
-gh api --paginate 'repos/<owner>/<repository>/issues?state=all&per_page=100' --jq '.[] | select(.title | test("^\\[<prefix-letter>[0-9]{2}\\]")) | .title'
-```
+**Outputs:** [Tracker Prefix](#tracker-prefix).
+
+#### 1. List Prefixed Titles
+
+Run this command from the repository checkout with the supplied inputs.
+
+<big><pre>
+gh api --paginate 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repository&gt;**](#repository)/issues?state=all&per_page=100' --jq '.&#91;&#93; | select(.title | test("^\\&#91;[**&lt;prefix-letter&gt;**](#tracker-prefix)&#91;0-9&#93;{2}\\&#93;")) | .title'
+</pre></big>
 
 **Example:** Initiatives in one repository.
 
-```bash
-gh api --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' --jq '.[] | select(.title | test("^\\[I[0-9]{2}\\]")) | .title'
-```
+<big><pre>
+gh api --paginate 'repos/m2ux/workflow-server/issues?state=all&per_page=100' --jq '.&#91;&#93; | select(.title | test("^\\&#91;I&#91;0-9&#93;{2}\\&#93;")) | .title'
+</pre></big>
+
+## Fields
+
+### Identity
+
+The issue has its repository, number and URL. A new issue has its repository before creation supplies its number and URL.
+
+### Content
+
+The saved title, body and labels equal the supplied values.
+
+### Discussion
+
+The issue's comments, in saved order. A saved comment preserves the supplied text.
+
+### State
+
+The issue is open or closed with its recorded completion reason. Completed work satisfies its criteria and delivery checks; transferred work identifies the issue tracking it.
+
+### Auto-Close Setting
+
+GitHub's **Auto-close issues with merged linked pull requests** repository setting, which must be disabled before a delivery pull request is linked or merged, so that closure follows the criteria rather than the merge.
+
+- The setting is confirmed per repository and holds for the session; it is not inferred from an issue that stayed open.
+- No REST field and no GraphQL field of `gh` 2.46 carries it, so on such a host the user's explicit answer is the only source.
+- An enabled or unconfirmed setting blocks delivery links and merges until the setting is confirmed disabled. Changing the setting requires the user's explicit authorization.
+- The setting gates the links and merges that precede closure; the closure gate takes no input from it.
+
+### Repository
+
+The tracker repository owner and name. Commands use these supplied values as owner and repo, or repository.
+
+### Issue Record
+
+The complete current tracker issue JSON at the supplied local path, carrying its [Identity](#identity), [Content](#content) and [State](#state).
+
+### Output Files
+
+The supplied local destinations for the requested issue, body, discussion, collection or Development evidence.
+
+### Closure Evidence Paths
+
+The absolute local destinations for the current issue JSON and complete Development snapshot.
+
+### Discussion Selection
+
+Whether the supplied request needs the issue discussion.
+
+### Issue Changes
+
+The supplied complete body file, title and labels for creation, or the selected body and metadata changes for an existing issue, with an optional comment file.
+
+### Label Names
+
+The supplied repository label names for creation, addition or removal. An assignment names an existing repository label.
+
+### Comment
+
+The supplied exact comment text, as one line or a complete local file, with the reviewer identity and addressed feedback for a reply. A posted comment also has its saved URL.
+
+### Delivery Evidence
+
+The normal delivery result supplied by the caller, with its check results, criterion evidence and linked delivery records.
+
+### Transfer Evidence
+
+The supplied destination issue record, its destination reference and accompanying comment file.
+
+### Authenticated Access
+
+Authenticated access to the repository and its issue Development relations.
+
+### Development Snapshot
+
+A complete issue-links file, keyed by issue number and carrying its repository identity. Each issue maps to all Development pull requests across repositories and states, or an empty array after a complete empty read.
+
+### Issue Collection
+
+One supplied tracker issue JSON or a collection of issue records. Pull request entries carry a pull_request field.
+
+### Audit Selection
+
+The supplied issue numbers to audit, separated by commas, or the selection of every closed issue in the repository.
+
+### Closure Findings
+
+The closure gate verdict or the sweep results, retaining each issue identity, state reason and finding, with execution failures identified.
+
+### Tracker Prefix
+
+The supplied kind prefix letter, initiative prefix or existing prefixed titles. An initiative prefix includes the initiative id and its enclosing brackets.
+
+### Tracker Number
+
+The resolved two-digit tracker number, or an unresolved identity when lookup fails.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
+
+### Issue Body
+
+The current issue body as text, saved at the supplied local Markdown path when requested without the surrounding issue record.

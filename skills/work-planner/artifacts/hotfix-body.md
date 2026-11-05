@@ -15,18 +15,22 @@ Read these files first.
 
 ## Operations
 
-### *Populate* Hot-fix Body
+### Populate Hot-fix Body
 
 One hot-fix body from a confirmed defect.
 
-**Inputs:** Hot-fix number, confirmed target, problem, design, criteria, theme label and output path.
+**Inputs:** [Hot-fix Identity](#hot-fix-identity), [Target](#target), [Defect Evidence](#defect-evidence), [Output Body](#output-body).
 
-- Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
-  - The work must meet [Definition](#definition).
-  - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
-  - The Overview must name the confirmed target as [Target](#target) states.
-  - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
-  - All populated fields must meet [Fields](#fields).
+**Outputs:** [Output Body](#output-body).
+
+#### 1. Populate Hot-fix Template
+
+Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
+- The work must meet [Definition](#definition).
+- The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
+- The Overview must name the confirmed target as [Target](#target) states.
+- The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+- All populated fields must meet [Fields](#fields).
 
 ## Fields
 
@@ -59,3 +63,15 @@ One hot-fix body from a confirmed defect.
 ### Sections
 
 - A hot-fix has the [standalone body](standalone-body.md)'s sections.
+
+### Defect Evidence
+
+The confirmed problem, design and criteria for this hot-fix.
+
+### Hot-fix Identity
+
+The supplied hot-fix number and theme label.
+
+### Output Body
+
+The supplied local destination for the complete hot-fix body.

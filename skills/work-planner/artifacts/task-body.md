@@ -11,14 +11,47 @@ Read these files first.
 
 ## Operations
 
-### *Record* Task Delivery
+### Record Task Delivery
 
 One task body with its confirmed delivery and verified criteria recorded.
 
-**Inputs:** Task JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output body file.
+**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).
 
-1. Run [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
-2. Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings).
+
+#### 1. Record Verified Delivery
+
+Apply [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+
+#### 2. Return Delivery Findings
+
+Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+
+### Sync Task Issue
+
+Records the pull request that delivers a task issue, open or merged, ticks verified criteria, and reports whether it is closable.
+
+An open pull request supplies verification evidence; completion requires its merge.
+
+**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).
+
+**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings).
+
+#### 1. Sync Task Issue
+
+Run this command from the workspace checkout with the supplied inputs.
+
+`<criterion-ids>` is a comma-separated list of verified criterion ids.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --pr '[**&lt;pull-request-number&gt;**](#delivery-selection)' --tick '[**&lt;criterion-ids&gt;**](#delivery-selection)' --fix '[**&lt;output-body-file&gt;**](#output-body)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md
+</pre></big>
 
 ## Fields
 
@@ -69,24 +102,30 @@ One task body with its confirmed delivery and verified criteria recorded.
 - A task has the [epic issue body](epic-issue-body.md)'s sections without the Work Breakdown table.
 - New task planning follows [Work Breakdown](epic-issue-body.md#work-breakdown). This body describes an existing task issue.
 
-## Commands
+### Task Record
 
-### Sync Task Issue
+The supplied current task issue JSON.
 
-Records the pull request that delivers a task issue, open or merged, ticks verified criteria, and reports whether it is closable.
+### Pull Request Records
 
-An open pull request supplies verification evidence; completion requires its merge.
+The supplied current pull request records.
 
-**Inputs:** Task JSON, pull request records, complete issue-link snapshot, delivering pull request number, verified criterion ids and output file.
+### Issue Links
 
-`<criterion-ids>` is a comma-separated list of verified criterion ids.
+The complete supplied issue-link snapshot.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py '<task-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --pr '<pull-request-number>' --tick '<criterion-ids>' --fix '<output-body-file>'
-```
+### Delivery Selection
 
-**Example:**
+The supplied delivering pull request number and verified criterion ids.
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md
-```
+### Output Body
+
+The supplied local destination for the complete returned body.
+
+### Delivery Findings
+
+The resulting body and eligibility findings for the supplied task delivery.
+
+### Workspace
+
+The absolute checkout holding the installed Work Planner scripts and sandbox helper.
