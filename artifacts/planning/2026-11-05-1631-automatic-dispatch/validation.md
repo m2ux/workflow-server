@@ -2,11 +2,13 @@
 
 ## Tested Change
 
-The implementation is based on `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486` on `workspace`. The source, observing fixtures, artifact operations and delivery instructions are verified together in the issue's isolated worktree. The full suite is followed by focused document and checkout checks after the final protocol edits.
+The implementation is based on `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486` on `workspace`. The source, observing fixtures, artifact operations and delivery instructions are verified together in the issue's isolated worktree. Full-suite verification is followed by the final 17 orchestration fixtures and focused document and checkout checks for the final refinements.
 
 ## Orchestration Fixtures
 
-The 15 tests in `test_dispatch.py` exercise the production batch selector and start validator. Integration fixtures obtain their admitted units from the actual `deliver.py` survey and its JSON export. The successive-completion fixture keeps one authorization through W01/W04, W02 and W03, with capacity checked before each start. Additional fixtures exercise a capacity event without completion, held and blocked rows, Backlog and out-of-scope epics, joined-unit scope, repository identity, hot-fixes, stale offers, malformed observations and removal of an old export after a failed survey.
+The 17 tests in `test_dispatch.py` exercise the production batch selector and start validator. Integration fixtures obtain their admitted units from the actual `deliver.py` survey and its JSON export. The successive-completion fixture keeps one authorization through W01/W04, W02 and W03, with capacity checked before each start. Additional fixtures exercise a capacity event without completion, held and blocked rows, Backlog and out-of-scope epics, joined-unit scope, repository identity, hot-fixes, stale offers, malformed observations and removal of an old export after a failed survey.
+
+The capacity-recovery fixture withholds the execution slot after record publication and reservation, retains the preparation while the live survey offers no free unit, and resumes the same batch when a slot returns. A stale offer overlapping that preparation starts no duplicate. An out-of-scope preparation keeps no run active. The CLI fixture also observes preparation-based waiting.
 
 Lane fixtures bind an admitted export to the authorized survey board and requested lane and reject another lane's survey context. They observe the orchestration boundary; lane parsing and admission are delivered separately by I17 E03. The coordinator requires a survey that actually applies the requested lane and blocks when that evidence is unavailable.
 
@@ -18,7 +20,7 @@ Coverage: AC1, AC2, AC3 and AC4.
 
 Command: the worktree's absolute `scripts/sbx` launcher with `python3 -m unittest discover -s test`, from `skills/work-planner`.
 
-Result: 863 tests, OK, with one opt-in live Development-link test skipped because no live test issue and draft pull request were supplied. [Complete output](planner-tests.txt).
+Result: 865 tests, OK, with one opt-in live Development-link test skipped because no live test issue and draft pull request were supplied. [Complete output](planner-tests.txt).
 
 ## Shared Checks
 
@@ -34,7 +36,11 @@ The base branch's rule index named the absent `titles/italicised-verb` guideline
 
 Fresh-context dry runs trace a scoped refill after successive completions and a joined-unit start beside required review. Both identify the fixed authorization, current queue and survey, batch selection, whole Unit Dispatch protocol, ordered start gate and return to the live queue. The protocol's second reservation refreshes the board and epic body; contributor workers count toward the same actual capacity.
 
-The observed reads also expose an inherited disclosure limitation: whole-file Deliver prerequisites load unrelated issue, pull-request, hot-fix and Hoist guidance. The initial revised mode requires 22 direct documents totaling 4,131 lines, as measured by the independent readers. Some oversized aggregate reads were truncated and recovered with smaller reads; one reader reports incomplete consumption of eight transitive support documents. These traces are not a passing claim for exclusion of unrelated context, consistent retrieval, token savings or live GitHub worker execution. The inherited breadth and prerequisite cycles are outside the dispatch-behavior change.
+The observed reads also expose an inherited disclosure limitation: whole-file Deliver prerequisites load unrelated issue, pull-request, hot-fix and Hoist guidance. The initial revised mode requires 22 direct documents totaling 4,131 lines; the repeated trace at `de60ebf439408cbcc282efd7419832150c44fb86` measures 4,135, as reported by the independent readers. Some oversized aggregate reads were truncated and recovered with smaller reads; one reader reports incomplete consumption of eight transitive support documents. These traces are not a passing claim for exclusion of unrelated context, consistent retrieval, token savings or live GitHub worker execution. The inherited breadth and prerequisite cycles are outside the dispatch-behavior change. The trace also notes inherited underspecification of direct board selection and board-wide maintenance inside Advance when delivery starts are scoped.
+
+## Section Accounting
+
+The base-to-head section comparison preserves the delivery plan's existing eligibility definitions. The coordinator's initial selection, survey, merge and reporting responsibilities occupy its main path and refill procedure; publication, reservation, preparation and start occupy Unit Dispatch. All twelve worker-delivery steps remain in Run Delivery Session. Modified and added sections were read against their guidelines and call inputs. The comparison's nonzero exit reports expected added and differing sections, not a broken validation command.
 
 ## Delivery Boundary
 

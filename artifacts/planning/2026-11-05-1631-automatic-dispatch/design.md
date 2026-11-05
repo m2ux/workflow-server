@@ -21,6 +21,8 @@ After a unit returns, the coordinator records its delivery result, releases the 
 
 Each rule has one home. The mode calls the dispatch protocol, the protocol calls artifact operations, and artifact operations do not manage other artifacts. Refill and start selection share the batch artifact's supplied-evidence contract without duplicating eligibility or tracker writes.
 
+A unit whose last free slot is consumed during preparation remains a preparation of this run in Dispatch Batch. The coordinator retains its selected batch, captured component context, record, confirmed hold, worktrees and brief. It resumes the whole Unit Dispatch protocol with current evidence when capacity returns. Preparations prevent stale offers from creating duplicate starts and keep the coordinator waiting while their admitted work can progress.
+
 ## Verification
 
 | Test | Observation | Coverage |
@@ -36,5 +38,6 @@ The fixtures observe the coordinator's supplied-evidence boundary; live GitHub w
 ## Checklist
 
 - [x] Inspect the issue, existing planning evidence, repository and current branches.
-- [ ] Implement and verify continuous coordination and its observing fixtures.
-- [ ] Publish validation evidence, push the change and open its pull request.
+- [x] Implement and verify continuous coordination and its observing fixtures.
+- [x] Publish validation evidence, push the change and open its pull request.
+- [ ] Confirm the repository auto-close prerequisite and verify the delivery issue link.

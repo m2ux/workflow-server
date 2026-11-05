@@ -21,4 +21,5 @@ The change keeps eligibility with the delivery survey and keeps record publicati
 | Resource | Link |
 | --- | --- |
 | Delivery issue | [#1631 Automatic Dispatch](https://github.com/m2ux/workflow-server/issues/1631) |
+| Implementation | [#1636 Automatic Dispatch](https://github.com/m2ux/workflow-server/pull/1636) |
 | Request provenance | [Automatic free-work dispatch](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
