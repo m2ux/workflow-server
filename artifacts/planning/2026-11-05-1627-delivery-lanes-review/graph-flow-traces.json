@@ -1,0 +1,2282 @@
+[
+  {
+    "flow": {
+      "id": "proc_1_main",
+      "name": "Main → Prose",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:target",
+        "name": "target",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 66,
+        "endLine": 69,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:targets",
+        "name": "targets",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 58,
+        "endLine": 63,
+        "step_index": 7
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:prose",
+        "name": "prose",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 171,
+        "endLine": 179,
+        "step_index": 8
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_2_main",
+      "name": "Main → Split_sections",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:target",
+        "name": "target",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 66,
+        "endLine": 69,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:targets",
+        "name": "targets",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 58,
+        "endLine": 63,
+        "step_index": 7
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:split_sections",
+        "name": "split_sections",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 155,
+        "endLine": 168,
+        "step_index": 8
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_6_main",
+      "name": "Main → Phrase",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_names#1",
+        "name": "fix_names",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 917,
+        "endLine": 941,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:description",
+        "name": "description",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 278,
+        "endLine": 280,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:phrase",
+        "name": "phrase",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 289,
+        "endLine": 291,
+        "step_index": 7
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_7_main",
+      "name": "Main → Cells",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_table#2",
+        "name": "fix_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 795,
+        "endLine": 801,
+        "step_index": 5
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.rewrite_table#2",
+        "name": "rewrite_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 803,
+        "endLine": 894,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cells",
+        "name": "cells",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 190,
+        "endLine": 191,
+        "step_index": 7
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_8_main",
+      "name": "Main → Done_mark",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_table#2",
+        "name": "fix_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 795,
+        "endLine": 801,
+        "step_index": 5
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.rewrite_table#2",
+        "name": "rewrite_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 803,
+        "endLine": 894,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:done_mark",
+        "name": "done_mark",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 294,
+        "endLine": 298,
+        "step_index": 7
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_17_main",
+      "name": "Main → Hotfix_tag",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:hotfix_tag",
+        "name": "hotfix_tag",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 17,
+        "endLine": 20,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_18_main",
+      "name": "Main → Links_issue",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:links_issue",
+        "name": "links_issue",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 125,
+        "endLine": 130,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_19_main",
+      "name": "Main → Pr_repo",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:pr_repo",
+        "name": "pr_repo",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 333,
+        "endLine": 335,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_44_main",
+      "name": "Main → Check_prose",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_prose#1",
+        "name": "check_prose",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 896,
+        "endLine": 900,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_45_main",
+      "name": "Main → Reorder",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.reorder#2",
+        "name": "reorder",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 778,
+        "endLine": 793,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_60_main",
+      "name": "Main → Board_status",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:board_status",
+        "name": "board_status",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 45,
+        "endLine": 55,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_61_main",
+      "name": "Main → Place",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.hotfixes#0",
+        "name": "hotfixes",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 341,
+        "endLine": 350,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.place#2",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 126,
+        "endLine": 128,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_62_main",
+      "name": "Main → Pages",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:board_items",
+        "name": "board_items",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 72,
+        "endLine": 77,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:pages",
+        "name": "pages",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 40,
+        "endLine": 49,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_63_main",
+      "name": "Main → Assignee_calls",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.place#7",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 155,
+        "endLine": 175,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:assignee_calls",
+        "name": "assignee_calls",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 80,
+        "endLine": 90,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_72_run_standalone_kind",
+      "name": "Run_standalone_kind → Row",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 2
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_names#1",
+        "name": "fix_names",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 917,
+        "endLine": 941,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:row",
+        "name": "row",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 194,
+        "endLine": 195,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_90_main",
+      "name": "Main → Tags",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:edit",
+        "name": "edit",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 589,
+        "endLine": 652,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:tags",
+        "name": "tags",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 117,
+        "endLine": 119,
+        "step_index": 3
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_91_main",
+      "name": "Main → Report",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.report#3",
+        "name": "report",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 177,
+        "endLine": 188,
+        "step_index": 3
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_92_main",
+      "name": "Main → Settle",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:StatusField.settle#1",
+        "name": "settle",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 113,
+        "endLine": 115,
+        "step_index": 3
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_96_main",
+      "name": "Main → Cells",
+      "process_type": "cross_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deps.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deps.py",
+        "startLine": 421,
+        "endLine": 585,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deps.py:parse",
+        "name": "parse",
+        "filePath": "skills/work-planner/scripts/deps.py",
+        "startLine": 120,
+        "endLine": 186,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deps.py:cells",
+        "name": "cells",
+        "filePath": "skills/work-planner/scripts/deps.py",
+        "startLine": 80,
+        "endLine": 81,
+        "step_index": 3
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_112_main",
+      "name": "Main → Cell",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_table#2",
+        "name": "fix_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 795,
+        "endLine": 801,
+        "step_index": 5
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.rewrite_table#2",
+        "name": "rewrite_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 803,
+        "endLine": 894,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:id_cell",
+        "name": "id_cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 301,
+        "endLine": 304,
+        "step_index": 7
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cell",
+        "name": "cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 283,
+        "endLine": 286,
+        "step_index": 8
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_113_hotfix_units",
+      "name": "Hotfix_units → Prose",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+        "name": "hotfix_units",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 305,
+        "endLine": 344,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:target",
+        "name": "target",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 66,
+        "endLine": 69,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:targets",
+        "name": "targets",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 58,
+        "endLine": 63,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:prose",
+        "name": "prose",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 171,
+        "endLine": 179,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_115_main",
+      "name": "Main → Row_id",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 1092,
+        "endLine": 1137,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_table#2",
+        "name": "fix_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 795,
+        "endLine": 801,
+        "step_index": 5
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.rewrite_table#2",
+        "name": "rewrite_table",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 803,
+        "endLine": 894,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:row_id",
+        "name": "row_id",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 307,
+        "endLine": 310,
+        "step_index": 7
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_118_run",
+      "name": "Run → Cells",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 3
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 429,
+        "endLine": 464,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 466,
+        "endLine": 479,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 526,
+        "endLine": 589,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/format.py:Review.fix_names#1",
+        "name": "fix_names",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 917,
+        "endLine": 941,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:description",
+        "name": "description",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 278,
+        "endLine": 280,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cells",
+        "name": "cells",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 190,
+        "endLine": 191,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_126_main",
+      "name": "Main → Hotfix_tag",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.place#7",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 155,
+        "endLine": 175,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.owns#5",
+        "name": "owns",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 133,
+        "endLine": 153,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:is_hotfix",
+        "name": "is_hotfix",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 23,
+        "endLine": 24,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:hotfix_tag",
+        "name": "hotfix_tag",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 17,
+        "endLine": 20,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_127_hotfix_units",
+      "name": "Hotfix_units → Links_issue",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+        "name": "hotfix_units",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 305,
+        "endLine": 344,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:links_issue",
+        "name": "links_issue",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 125,
+        "endLine": 130,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_128_hotfix_units",
+      "name": "Hotfix_units → Pr_repo",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+        "name": "hotfix_units",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 305,
+        "endLine": 344,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:pr_repo",
+        "name": "pr_repo",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 333,
+        "endLine": 335,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_153_survey",
+      "name": "Survey → Option_name",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "survey",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:survey",
+        "name": "survey",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 395,
+        "endLine": 517,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:status_of",
+        "name": "status_of",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 66,
+        "endLine": 69,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:option_name",
+        "name": "option_name",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 61,
+        "endLine": 63,
+        "step_index": 3
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_166_ready_units",
+      "name": "Ready_units → Issue_url",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 280,
+        "endLine": 315,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.load#1",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 130,
+        "endLine": 146,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:epic_rows",
+        "name": "epic_rows",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 79,
+        "endLine": 87,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board.py:linked_issue",
+        "name": "linked_issue",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 134,
+        "endLine": 136,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board.py:issue_url",
+        "name": "issue_url",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 129,
+        "endLine": 131,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_170_hotfix_units",
+      "name": "Hotfix_units → Hotfix_tag",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+        "name": "hotfix_units",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 305,
+        "endLine": 344,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:hotfix_tag",
+        "name": "hotfix_tag",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 17,
+        "endLine": 20,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_189_main",
+      "name": "Main → Cells",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:edit",
+        "name": "edit",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 589,
+        "endLine": 652,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:table",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 931,
+        "endLine": 950,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cells",
+        "name": "cells",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 190,
+        "endLine": 191,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_193_main",
+      "name": "Main → Label",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 400,
+        "endLine": 449,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.decide#0",
+        "name": "decide",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 352,
+        "endLine": 379,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.load#1",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 130,
+        "endLine": 146,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.line#1",
+        "name": "line",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 123,
+        "endLine": 124,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:label",
+        "name": "label",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 57,
+        "endLine": 58,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_206_main",
+      "name": "Main → Label",
+      "process_type": "intra_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:place",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 520,
+        "endLine": 544,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.place#7",
+        "name": "place",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 155,
+        "endLine": 175,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/statuses.py:Changes.owns#5",
+        "name": "owns",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 133,
+        "endLine": 153,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:label",
+        "name": "label",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 57,
+        "endLine": 58,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_209_ready_units",
+      "name": "Ready_units → Cell",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 280,
+        "endLine": 315,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.load#1",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 130,
+        "endLine": 146,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:epic_rows",
+        "name": "epic_rows",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 79,
+        "endLine": 87,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board.py:rows",
+        "name": "rows",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 117,
+        "endLine": 120,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board.py:Board.table#1",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 267,
+        "endLine": 272,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:id_cell",
+        "name": "id_cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 301,
+        "endLine": 304,
+        "step_index": 6
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cell",
+        "name": "cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 283,
+        "endLine": 286,
+        "step_index": 7
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_210_hotfix_units",
+      "name": "Hotfix_units → Split_sections",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+        "name": "hotfix_units",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 305,
+        "endLine": 344,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivering_pulls",
+        "name": "delivering_pulls",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 98,
+        "endLine": 100,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:delivery_fault",
+        "name": "delivery_fault",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 78,
+        "endLine": 95,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:target",
+        "name": "target",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 66,
+        "endLine": 69,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/hotfix.py:targets",
+        "name": "targets",
+        "filePath": "skills/work-planner/scripts/hotfix.py",
+        "startLine": 58,
+        "endLine": 63,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:split_sections",
+        "name": "split_sections",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 155,
+        "endLine": 168,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_219_ready_units",
+      "name": "Ready_units → Row_id",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 280,
+        "endLine": 315,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.load#1",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 130,
+        "endLine": 146,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board-queue.py:epic_rows",
+        "name": "epic_rows",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 79,
+        "endLine": 87,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board.py:rows",
+        "name": "rows",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 117,
+        "endLine": 120,
+        "step_index": 4
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board.py:Board.table#1",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 267,
+        "endLine": 272,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:row_id",
+        "name": "row_id",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 307,
+        "endLine": 310,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_236_ready_units",
+      "name": "Ready_units → Label",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 280,
+        "endLine": 315,
+        "step_index": 1
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.load#1",
+        "name": "load",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 130,
+        "endLine": 146,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.line#1",
+        "name": "line",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 123,
+        "endLine": 124,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/statuses.py:label",
+        "name": "label",
+        "filePath": "skills/work-planner/scripts/statuses.py",
+        "startLine": 57,
+        "endLine": 58,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_238_ready_units",
+      "name": "Ready_units → Split_sections",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "startLine": 280,
+        "endLine": 315,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:epic_state",
+        "name": "epic_state",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 244,
+        "endLine": 285,
+        "step_index": 2
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board.py:Board.epic_prerequisites_met#3",
+        "name": "epic_prerequisites_met",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 378,
+        "endLine": 390,
+        "step_index": 3
+      },
+      {
+        "id": "Method:skills/work-planner/scripts/board.py:Board.table#1",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 267,
+        "endLine": 272,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/board.py:rows",
+        "name": "rows",
+        "filePath": "skills/work-planner/scripts/board.py",
+        "startLine": 117,
+        "endLine": 120,
+        "step_index": 5
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:split_sections",
+        "name": "split_sections",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 155,
+        "endLine": 168,
+        "step_index": 6
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_242_main",
+      "name": "Main → Cell",
+      "process_type": "intra_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:edit",
+        "name": "edit",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 589,
+        "endLine": 652,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:table",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 931,
+        "endLine": 950,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:id_cell",
+        "name": "id_cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 301,
+        "endLine": 304,
+        "step_index": 4
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:cell",
+        "name": "cell",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 283,
+        "endLine": 286,
+        "step_index": 5
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_244_main",
+      "name": "Main → Row_id",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:edit",
+        "name": "edit",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 589,
+        "endLine": 652,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/sync.py:table",
+        "name": "table",
+        "filePath": "skills/work-planner/scripts/sync.py",
+        "startLine": 931,
+        "endLine": 950,
+        "step_index": 3
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:row_id",
+        "name": "row_id",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 307,
+        "endLine": 310,
+        "step_index": 4
+      }
+    ]
+  },
+  {
+    "flow": {
+      "id": "proc_273_main",
+      "name": "Main → Split_sections",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    "process_symbols": [
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 655,
+        "endLine": 698,
+        "step_index": 1
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/deliver.py:edit",
+        "name": "edit",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "startLine": 589,
+        "endLine": 652,
+        "step_index": 2
+      },
+      {
+        "id": "Function:skills/work-planner/scripts/format.py:split_sections",
+        "name": "split_sections",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "startLine": 155,
+        "endLine": 168,
+        "step_index": 3
+      }
+    ]
+  }
+]

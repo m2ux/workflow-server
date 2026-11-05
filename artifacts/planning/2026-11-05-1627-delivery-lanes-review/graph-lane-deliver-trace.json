@@ -1,0 +1,32 @@
+{
+  "status": "ok",
+  "from": {
+    "name": "survey",
+    "filePath": "skills/work-planner/scripts/deliver.py",
+    "startLine": 395
+  },
+  "to": {
+    "name": "read_lanes",
+    "filePath": "skills/work-planner/scripts/deps.py",
+    "startLine": 84
+  },
+  "hopCount": 1,
+  "hops": [
+    {
+      "name": "survey",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "startLine": 395
+    },
+    {
+      "name": "read_lanes",
+      "filePath": "skills/work-planner/scripts/deps.py",
+      "startLine": 84
+    }
+  ],
+  "edges": [
+    {
+      "relType": "CALLS",
+      "confidence": 0.85
+    }
+  ]
+}

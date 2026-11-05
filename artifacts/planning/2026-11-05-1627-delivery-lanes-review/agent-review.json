@@ -1,0 +1,14 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1627",
+    "head": "dbfe21c2bc88d97034c3de8e64e8b490ae54688f",
+    "base": "d0a62b8037bb1b8fdafac5bf0e0035ada8c64486",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1627-delivery-lanes-review/agent-review.json",
+    "reviewer": "Codex I17 E03 final delivery review",
+    "reviewed_at": "2026-11-05T04:54:27.070015+00:00",
+    "scope": "Complete integration diff against the current workspace target: all19 changed paths, all affected artifact/mode contracts, raw lane reader and dependency/format/delivery/queue consumers, shared eligibility and table-operation callers, all changed test fixtures and metadata. All156 measured changed-symbol contexts, forty affected flow traces and four exact raw-reader call paths inspected; graph inference limits retained in the overview.",
+    "criteria": "AC2\u2013AC15 verified at the current integration tree by the published criterion matrix and observing fixtures/document inspection; all14 task rows delivered/Done. Historical W01 AC1 was retired by the accepted plan and its original evidence is preserved, with the Sync disagreement explicitly accounted for. No open question or unresolved delivery discrepancy.",
+    "validation": "Integration tree equals full-suite-tested a6d025d3025f08ad4b0a027d9762ccd0096a780b:895 planner passed,1 opt-in live skip;208 shared passed;52 skill files zero findings. At exact integration head,56 criterion and11 document-interface tests passed. Source review confirms raw markup validation, opaque lane identity, whole-unit lane checks, absent/requested lane admission, snapshot-only queue eligibility and identical placement calls, row-data preservation and bounded unsupported-join diagnostics. Fresh current graph resource/index and exact target comparison are published.",
+    "findings": []
+  }
+]

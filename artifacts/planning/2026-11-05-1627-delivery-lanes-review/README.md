@@ -17,6 +17,24 @@ This record binds the combined criterion audit, measured architecture and agent 
 | [Document results](document-tests.log) | Exact integration-head documentation interface checks |
 | [Integration checklist](integration.md) | Review preparation, readiness and human gate |
 
+| [Architecture overview](architecture-overview.md) | Measured structure, flows and reading order |
+| [Agent review](agent-review.json) | Exact-head and target review with completed findings |
+| [Graph method](graph-method.md) | Capture procedure, trace identity and coverage boundaries |
+| [graph-analysis.log](graph-analysis.log) | Complete graph measurement evidence and provenance |
+| [graph-status.log](graph-status.log) | Complete graph measurement evidence and provenance |
+| [graph-repository-context.yaml](graph-repository-context.yaml) | Complete graph measurement evidence and provenance |
+| [graph-changes-full.json](graph-changes-full.json) | Complete graph measurement evidence and provenance |
+| [graph-contexts.json](graph-contexts.json) | Complete graph measurement evidence and provenance |
+| [graph-flow-queries.json](graph-flow-queries.json) | Complete graph measurement evidence and provenance |
+| [graph-flow-traces.json](graph-flow-traces.json) | Complete graph measurement evidence and provenance |
+| [graph-context-after.yaml](graph-context-after.yaml) | Complete graph measurement evidence and provenance |
+| [graph-lane-deps-trace.json](graph-lane-deps-trace.json) | Complete graph measurement evidence and provenance |
+| [graph-lane-format-trace.json](graph-lane-format-trace.json) | Complete graph measurement evidence and provenance |
+| [graph-lane-deliver-trace.json](graph-lane-deliver-trace.json) | Complete graph measurement evidence and provenance |
+| [graph-lane-queue-trace.json](graph-lane-queue-trace.json) | Complete graph measurement evidence and provenance |
+| [graph-measure.mjs](graph-measure.mjs) | Complete graph measurement evidence and provenance |
+| [graph-details.mjs](graph-details.mjs) | Complete graph measurement evidence and provenance |
+
 ## Links
 
 | Resource | Link |
