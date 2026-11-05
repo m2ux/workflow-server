@@ -12,6 +12,8 @@ The extraction preserves the live skill's instructions and updates the readers t
 
 | Artifact | What it holds |
 | --- | --- |
+| [w02.md](w02.md) | The implementation plan and test obligations. |
+| [preservation.md](preservation.md) | Source-to-home ledger, boundaries and progress. |
 
 ## Links
 
