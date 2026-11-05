@@ -29,7 +29,7 @@ each output it delivered is available at this epic's base in the repository --pr
 board.Outputs reads it; that epic's other rows and its closure gate nothing. Tasks that name each
 other in Joins are one unit, and a unit is one session's work.
 
-A unit's lane comes from the raw Lane cells of its epic task table, read by deps.read_lanes.
+A unit's lane comes from the raw Lane cells of its epic task table, read by lane.read_lanes.
 --lane names one opaque decimal index and admits that lane and unlaned units. Without --lane,
 only unlaned units are offered. The filter preserves the admitted units' order. A hot-fix is
 unlaned. Malformed cells and joined units with different lanes produce invalid lines and exit 1;
@@ -92,8 +92,9 @@ from collections import Counter
 from datetime import date as day
 from pathlib import Path
 
-from board import Board, Outputs, Resolution, rows
-from deps import read_components, read_lanes
+from board import Board, Outputs, epic_state, in_flight, units
+from deps import read_components
+from lane import admits, check_unit, is_index, label as lane_label, read_lanes
 from statuses import (DISPATCH, Key, STATUSES, Changes, StatusField, board_items,
                       key_of, label, pages, status_of)
 from format import (AC, LINK, TICK, cell, done_mark, hrefs, id_cell, join_sections, reservation,
@@ -105,10 +106,8 @@ from sync import (Unreadable, attach_links, long_lived_names, origin_repository,
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PR_TITLE = re.compile(r'^\[I(\d\d):E(\d\d)\]')
 RECORD = re.compile(r'^(.*/artifacts/planning/)[^/]+/?$')
-TASK = re.compile(r'W\d\d')
 CRITERION = re.compile(r'AC\d+')
 ISSUE_URL = re.compile(r'/issues/(\d+)$')
-WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
 FOLDER = re.compile(r'/(?:tree|blob)/[^/]+/(.+?)/?$')
 ON_BRANCH = re.compile(r'([^:/\s]+):\S')
 STARTED = ('Ready', 'In Progress')
@@ -123,11 +122,6 @@ def tags(title: str) -> tuple[str, str, str] | None:
 def is_epic(issue: dict) -> bool:
     parsed = tags(issue.get('title') or '')
     return bool(parsed) and bool(parsed[1]) and not parsed[2]
-
-
-def in_flight(ident: str) -> bool:
-    """Whether the id links a pull request or a commit, which is work already under way."""
-    return any('/pull/' in href or '/commit/' in href for href in hrefs(ident))
 
 
 def slug(text: str, words: int = 4) -> str:
@@ -209,81 +203,6 @@ def branch_lines(branch: str, bases: list[str]) -> str:
     """The branch, base and worktree text of a unit line, one entry for each base."""
     return '; '.join(f'branch {name}' + (f', base {base}' if base else '') + f', worktree {worktree}'
                      for name, base, worktree in task_branches(branch, bases))
-
-
-def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
-    """The tasks each row names in Joins, by task id."""
-    found = {}
-    for r in body:
-        ident = id_cell(header, r)
-        task = row_id(ident)
-        if task:
-            found[task] = set(TASK.findall(cell(header, r, 'Joins')))
-    return found
-
-
-def units(header: list[str], body: list[list[str]], state: dict[str, str]) -> list[list[str]]:
-    """The rows grouped into units: tasks that name each other in Joins are one unit."""
-    links = joined(header, body)
-    seen, found = set(), []
-    for task in links:
-        if task in seen:
-            continue
-        unit, queue = [], [task]
-        while queue:
-            current = queue.pop(0)
-            if current in seen or current not in state:
-                continue
-            seen.add(current)
-            unit.append(current)
-            queue += sorted(other for other in links.get(current, ())
-                            if current in links.get(other, set()))
-        found.append(sorted(unit))
-    return found
-
-
-def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, int]]) -> tuple:
-    """Each row's state, its Description, its Coverage, and the issue its id links."""
-    header, body = rows(board.issues[key])
-    if not header:
-        raise Unreadable(f'{label(key, board.home)} has no Work Breakdown table')
-    state, detail = {}, {}
-    prerequisites = board.epic_prerequisites_met(key, epics, label(key, board.home))
-    for r in body:
-        ident = id_cell(header, r)
-        task = row_id(ident)
-        if not task:
-            continue
-        held = reservation(ident)
-        cause = ''
-        if done_mark(cell(header, r, 'Done')) == TICK:
-            state[task] = 'done'
-        elif in_flight(ident):
-            state[task] = 'running'
-        elif held:
-            state[task] = 'held'
-        elif prerequisites is Resolution.UNRESOLVABLE:
-            state[task] = 'unresolvable'
-            cause = "its epic's prerequisite"
-        elif (answer := board.met(cell(header, r, 'Depends on'), key, epics,
-                                  f'{label(key, board.home)} {task}')) is Resolution.UNRESOLVABLE:
-            state[task] = 'unresolvable'
-            cause = cell(header, r, 'Depends on')
-        elif prerequisites is Resolution.UNMET:
-            state[task] = 'prerequisite'
-        elif answer is Resolution.UNMET:
-            state[task] = 'blocked'
-        else:
-            state[task] = 'free'
-        found = ISSUE_URL.search(next((href for href in hrefs(ident) if ISSUE_URL.search(href)), ''))
-        item = WORK_ITEM.search(next((href for href in hrefs(ident) if WORK_ITEM.search(href)), ''))
-        detail[task] = {'description': cell(header, r, 'Description').split(' →', 1)[0].strip(),
-                        'coverage': cell(header, r, 'Coverage'), 'held': held,
-                        'issue': int(found[1]) if found else None,
-                        'item': item[1] if item else '',
-                        'cause': cause,
-                        'depends': cell(header, r, 'Depends on')}
-    return header, body, state, detail
 
 
 def target_fault(key: Key, issue: dict, lived: tuple[str, ...], repository: str) -> tuple[str, str]:
@@ -447,13 +366,10 @@ def survey(args: argparse.Namespace) -> int:
             first = unit[0]
             tag = ident_tag(initiative, epic, first)
             ids = '+'.join(unit)
-            lane_values = {lanes.get(task) for task in unit}
+            lane, finding = check_unit(unit, lanes)
             invalid_lane = bool(malformed.intersection(unit))
-            if not invalid_lane and len(lane_values) > 1:
-                values = '; '.join(f'{task} = {lanes[task] if lanes.get(task) is not None else "empty"}'
-                                   for task in unit)
-                print(f'  invalid I{initiative}:E{epic}:{ids}: joined unit has different Lane cells: '
-                      f'{values}; move a lane or unjoin the rows')
+            if not invalid_lane and finding:
+                print(f'  invalid I{initiative}:E{epic}:{ids}: {finding}')
                 invalid_lane = True
             invalid += invalid_lane
             if states <= {'done', 'running'}:
@@ -480,8 +396,7 @@ def survey(args: argparse.Namespace) -> int:
                 continue
             if invalid_lane:
                 continue
-            lane = lanes.get(first)
-            if lane is not None and lane != args.lane:
+            if not admits(lane, args.lane):
                 continue
             refs = [((p.get('base') or {}).get('ref') or '') for p in prs] + given
             bases, missing = changed_bases(unit, detail, epic_bases(refs, initiative, epic, lived),
@@ -495,7 +410,7 @@ def survey(args: argparse.Namespace) -> int:
             coverage = ', '.join(dict.fromkeys(c for task in unit
                                                for c in CRITERION.findall(detail[task]['coverage'])))
             where = branch_lines(name['branch'], bases)
-            lane_name = f'lane {lane}' if lane is not None else 'unlaned'
+            lane_name = lane_label(lane)
             print(f'  unit I{initiative}:E{epic}:{ids}: {lane_name}, coverage {coverage or "none"}, '
                   f'record {name["folder"]}, {where}')
             available += 1
@@ -678,7 +593,7 @@ def main() -> int:
     parser.add_argument('--assignee', help='the user assigned to every issue from Ready on')
     parser.add_argument('--fix', help='write the body here')
     args = parser.parse_args()
-    if args.lane is not None and not re.fullmatch(r'[0-9]+', args.lane):
+    if args.lane is not None and not is_index(args.lane):
         parser.error('--lane must be a bare decimal index')
     actions = [name for name in ('reserve', 'release') if getattr(args, name)]
     if len(actions) > 1:

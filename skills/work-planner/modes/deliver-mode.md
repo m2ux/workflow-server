@@ -8,6 +8,7 @@ Starts the work a theme board makes available. It advances the board, merges eac
 
 Read these files first.
 
+- [Lane](../artifacts/lane.md)
 - [Board](../artifacts/board.md)
 - [Board Delivery](../artifacts/board-delivery.md)
 - [Advance Mode](advance-mode.md)
@@ -37,7 +38,7 @@ The main path meets [Outcomes](#outcomes).
 1. **Select.**
    Run [Select Project Board](../artifacts/board.md#select-project-board) with the requested theme or board identity.
    - Use its returned owner and board number for the following steps.
-   - Take the optional lane index from this request, following [Lane Admission](../artifacts/delivery-plan.md#lane-admission). Each run takes its lane afresh from its request; a request naming none supplies none, and session state carries no lane.
+   - Take the optional lane index from this request, following [Admission](../artifacts/lane.md#admission). Each run takes its lane afresh from its request; a request naming none supplies none, and session state carries no lane.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
    - An epic starts only when the queue this step returns in this run places it Ready or In Progress. Its assignment comes from that queue, and an epic base is prepared only for such an epic. An epic that queue leaves in Backlog does not start, whatever the run was asked for.

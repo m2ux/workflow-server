@@ -6,6 +6,7 @@ The queue for one theme board: initiative priority sets, hot-fix status, status 
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Board](board.md)
 - [Epic Issue Body](epic-issue-body.md)
 - [Dependency Graph](dependency-graph.md)
@@ -21,6 +22,7 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 **Inputs:** Board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login, output directory, resolved off-board issue files and confirmed unplanned initiative identities. The caller supplies the delivery state.
 
 1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
+   - The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.
    - The queue must meet [Fields](#fields).
    - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 2. Return the proposed Status and assignee calls, report lines including [Ready Unit Lanes](#ready-unit-lanes), and unresolved issue references to the caller.
@@ -93,7 +95,7 @@ A task is Ready only when its epic is Ready or In Progress and every row its Dep
 
 A Ready unit consists of free, undelivered task rows joined through [Joins](dependency-graph.md#joins), or one unjoined row. Every member meets [Task Eligibility](#task-eligibility) under its epic's proposed Ready or In Progress status. A reservation or an open delivery pull request holds its rows, as [Task Delivery](epic-issue-body.md#task-delivery) states.
 
-Each unit's lane comes from the raw task-table [Lane](epic-issue-body.md#lane) cells in the supplied epic issue bodies, through the shared lane-cell reader. Joined rows carry one common index or all have empty cells. Report the index as `lane 2`, or empty cells as `unlaned`, including rows with no linked work item. Priority and delivery state determine the Status and assignee calls; lanes annotate the unit report.
+Each unit meets [Unit Consistency](lane.md#unit-consistency) and carries its [Report Label](lane.md#report-label), including rows with no linked work item. Priority and delivery state determine the Status and assignee calls; lanes annotate the unit report.
 
 ### Proposed Changes
 

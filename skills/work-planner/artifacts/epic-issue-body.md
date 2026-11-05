@@ -6,6 +6,7 @@ Populates one epic body. The body states one slice of the design and lists the t
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Issue Body](issue-body.md)
 - [Pull Request](pull-request.md)
 - [Epic](epic.md)
@@ -27,7 +28,7 @@ One epic body and its local validation findings.
 2. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
 3. Fill the epic-specific cells.
    - Each row must meet [Work Breakdown](#work-breakdown).
-   - Write each row's supplied index into its [Lane](#lane) cell, leaving the cell empty when none is supplied.
+   - Call [Assign Task Lanes](lane.md#assign-task-lanes) with the populated body, confirmed task-to-index map and output path.
 4. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
 5. Pass that snapshot, initiative context, available pull request records, project checkout, evaluated revision and output file to [Validate Epic Body](#validate-epic-body).
 6. Identify unresolved publication links separately; they remain pending until tracker identities exist.
@@ -197,15 +198,11 @@ The columns are `Task | Description | Coverage | Depends on | Joins | Lane | Don
   - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states.
   - An empty cell is a task that shares no pull request.
 - **Lane.**
-  The row's delivery lane meets [Lane](#lane).
+  The row's delivery lane meets [Assignments](lane.md#assignments).
 - **Numbering.**
   Task numbering meets [Numbering](issue-body.md#numbering); a row whose id links a pull request is fixed.
 - **Reference form.**
   A table reference uses colons (`E01:W03`, `I05:E00:W02`), and every epic reference links to that epic's issue: `[E01:W03](…/issues/937)`. Prose uses a space (`E01 W03`).
-
-### Lane
-
-The cell holds a bare decimal index such as `2`, or is empty for an unlaned task. The index is opaque and board-wide: the same index identifies one delivery lane across the theme board. A populated cell's complete content is the index.
 
 ### Test Evidence
 

@@ -17,7 +17,7 @@ The moves and printed lines are the Fields of artifacts/board-queue.md, and each
 its Report Lines. Activity is read through board.py. The calls are rendered by statuses.py within
 the QUEUE jurisdiction. Printed: the gh call for each Status and assignee change, each report line,
 and each unresolved issue reference. Ready units carry their task-table lane, read from the supplied
-issue bodies through deps.read_lanes. Lane reports leave placement and assignee calls independent.
+issue bodies through lane.read_lanes. Lane reports leave placement and assignee calls independent.
 It exits 1 for invalid lane assignments or where an unresolvable dependency stopped it placing a row.
 
 A hot-fix, titled [F00], stands where hotfix.board_status places it, outside every priority set;
@@ -30,9 +30,9 @@ import sys
 from collections import Counter
 from pathlib import Path
 
-from board import READY_UNDER, Board, Resolution, criteria_met, delivers, linked_issue, rows
-from deliver import epic_state, units
-from deps import read_lanes
+from board import (READY_UNDER, Board, Resolution, criteria_met, delivers, epic_state,
+                   linked_issue, rows, units)
+from lane import check_unit, label as lane_label, read_lanes
 from format import cell, id_cell, row_id
 from hotfix import OFF_BOARD, board_status, delivering_pulls, is_hotfix
 from statuses import PLACED, QUEUE, Changes, Jurisdiction, StatusField, board_items, key_of, label
@@ -304,15 +304,12 @@ class Queue:
                     continue
                 if malformed.intersection(unit):
                     continue
-                values = {lanes.get(task) for task in unit}
-                if len(values) > 1:
-                    named = '; '.join(f'{task} = {lanes.get(task) or "empty"}' for task in unit)
-                    self.notes.append(f'  invalid {prefix}:{"+".join(unit)}: joined unit has different '
-                                      f'Lane cells: {named}; move a lane or unjoin the rows')
+                lane, finding = check_unit(unit, lanes)
+                if finding:
+                    self.notes.append(f'  invalid {prefix}:{"+".join(unit)}: {finding}')
                     self.invalid_lanes = True
                     continue
-                lane = lanes.get(unit[0])
-                lane_name = f'lane {lane}' if lane is not None else 'unlaned'
+                lane_name = lane_label(lane)
                 self.notes.append(f'  unit {prefix}:{"+".join(unit)}: {lane_name}')
 
     def place_sets(self, keys: list[tuple[str, int]]) -> None:

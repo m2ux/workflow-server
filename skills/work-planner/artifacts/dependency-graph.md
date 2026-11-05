@@ -6,10 +6,10 @@ The task edges an initiative's epics declare, and the row numbers that graph per
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Issue](issue.md)
 - [Initiative Issue Body](initiative-issue-body.md)
 - [Work Item](work-item.md)
-- [Epic Issue Body](epic-issue-body.md)
 - [Plan Change](plan-change.md)
 - [Delivery Branches](delivery-branches.md)
 
@@ -23,7 +23,7 @@ The task graph and the row numbers it permits, checked and renumbered across the
 
 1. Use the supplied local drafts when reviewing unpublished work.
    - For published issues, fetch the initiative and each epic body with [Read Tracker Issue](issue.md#read-tracker-issue).
-   - Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file.
+   - Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation applies [Check Unit Lanes](lane.md#check-unit-lanes) to the units it derives, using their epic bodies and complete ids.
 2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.
    - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
    - Read tasks for implied consumption edges.
@@ -88,7 +88,7 @@ Two task rows in different epics whose work items declare one [component](work-i
 The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.
 
 - **A joined unit has one lane.**
-  Each row's [Lane](epic-issue-body.md#lane) cell carries the same index, or every cell is empty. A split assignment is resolved by changing a row's lane or unjoining the rows.
+  Joined rows meet [Unit Consistency](lane.md#unit-consistency).
 - **A candidate is answered once.**
   Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.
 - **Both resolutions are stated where the candidate is reported.**

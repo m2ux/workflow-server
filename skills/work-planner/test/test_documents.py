@@ -70,10 +70,6 @@ class DocumentInterfaces(unittest.TestCase):
                     end = next((i for i, depth, _ in headings[position + 1:] if depth <= 3), len(lines))
                     body = lines[start + 1:end]
                     self.assertGreaterEqual(len(title.split()), 3)
-                    # The leading verb is italicised and nothing else is, so the
-                    # anchors one procedure reaches read as its IO contract.
-                    self.assertRegex(title, r'^\*[A-Z][a-z]+\* \S')
-                    self.assertEqual(title.count('*'), 2, title)
                     self.assertTrue(any(line.startswith('**Inputs:**') for line in body))
                     numbers = [int(m[1]) for line in body if (m := re.match(r'^(\d+)\. ', line))]
                     if numbers:

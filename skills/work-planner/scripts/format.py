@@ -106,7 +106,7 @@ import sys
 from pathlib import Path
 from typing import NamedTuple
 
-from deps import read_lanes
+from lane import read_lanes
 from hotfix import HOTFIX, PRIORITY, hotfix_faults, is_hotfix
 
 ARTIFACTS = Path(__file__).resolve().parent.parent / 'artifacts'

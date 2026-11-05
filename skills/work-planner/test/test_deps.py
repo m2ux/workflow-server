@@ -12,11 +12,11 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from pathlib import Path
 
-from fixtures import SCRIPTS, epic_body, initiative_body, work_item
+from fixtures import SCRIPTS, epic_body, initiative_body, lane_table, work_item
 
 sys.path.insert(0, str(SCRIPTS))
 from deps import (check_initiative, contention, epic_dependencies, epic_priority,  # noqa: E402
-                  is_directory, main, normalise, read_lanes)
+                  is_directory, main, normalise)
 
 
 def run(bodies: list[tuple[str, str]]) -> tuple[int, str]:
@@ -78,40 +78,13 @@ def check(body: str, components: dict[str, str], *records: str) -> tuple[int, st
 class TaskLanes(unittest.TestCase):
     """The raw task-table cell supplies each row's lane, including rows without work items."""
 
-    @staticmethod
-    def table(*rows: tuple[str, str, str]) -> str:
-        return ('## Work Breakdown\n\n'
-                '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
-                '| --- | --- | --- | --- | --- | --- | --- |\n'
-                + ''.join(f'| {task} | Work | AC1 | | {joins} | {lane} | |\n'
-                          for task, joins, lane in rows))
+    table = staticmethod(lane_table)
 
-    def test_reader_retains_indices_and_empty_cells_by_row(self):
-        body = self.table(('W01', '', ' 02 '), ('[W02](https://example.test/pull/1)', '', ''),
-                          ('W03', '', '0'))
-        self.assertEqual(read_lanes(body), ({'W01': '02', 'W02': None, 'W03': '0'}, []))
-
-    def test_reader_uses_column_names_and_ignores_non_task_rows(self):
-        body = ('| Lane | Task | Description |\n| --- | --- | --- |\n'
-                '| 7 | W01 | Work |\n| prose | Notes | Guidance |\n')
-        self.assertEqual(read_lanes(body), ({'W01': '7'}, []))
-
-    def test_reader_keeps_lane_data_inside_its_task_table(self):
-        body = self.table(('W01', '', '2')) + '\n| Task | Notes |\n| --- | --- |\n| W02 | 9 |\n'
-        self.assertEqual(read_lanes(body), ({'W01': '2'}, []))
-
-    def test_reader_reports_malformed_cells_without_an_empty_value(self):
-        for lane in ('`2`', '**2**', '[2](https://example.test/lane)', 'lane 2', '2 lanes', '-2', '2.0'):
-            with self.subTest(lane=lane):
-                lanes, problems = read_lanes(self.table(('W01', '', lane), ('W02', '', '')))
-                self.assertEqual(lanes, {'W02': None})
-                self.assertEqual(len(problems), 1)
-                self.assertIn('W01: Lane must be a bare decimal index or empty', problems[0])
-                self.assertIn(repr(lane), problems[0])
-
-    def test_a_missing_cell_is_not_an_empty_lane(self):
-        body = self.table() + '| W01 | Work | AC1 | | |\n'
-        self.assertEqual(read_lanes(body), ({}, ['W01: missing Lane cell']))
+    def test_joined_rows_require_lane_data_in_standalone_check(self):
+        body = '| Task | Description | Coverage | Depends on | Joins | Done |\n| --- | --- | --- | --- | --- | --- |\n| W01 | One | AC1 | | W02 | |\n| W02 | Two | AC2 | | W01 | |\n'
+        code, text = run([('E06', body)])
+        self.assertEqual(code, 1, text)
+        self.assertIn('missing Lane data: E06:W01, E06:W02', text)
 
     def test_equal_indexed_joined_rows_pass_without_work_items(self):
         code, text = run([('E06', self.table(('W01', 'W02', '2'), ('W02', 'W01', '2')))])
@@ -449,12 +422,12 @@ class TaskCells(unittest.TestCase):
 
     SPELLINGS = (
         '## Work Breakdown\n\n'
-        '| Task | Description | Coverage | Depends on | Joins | Done |\n'
-        '| --- | --- | --- | --- | --- | --- |\n'
+        '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+        '| --- | --- | --- | --- | --- | --- | --- |\n'
         '| [W01](https://example.test/pull/950), [W01](https://example.test/pull/960)'
-        ' | Server and corpus | AC1 | | | ✓ |\n'
-        '| [W02](https://example.test/pull/970) | One tree | AC2 | W01 | W03 | |\n'
-        '| W03 | Not yet open | AC3 | W01 | W02 | |\n'
+        ' | Server and corpus | AC1 | | | | ✓ |\n'
+        '| [W02](https://example.test/pull/970) | One tree | AC2 | W01 | W03 | | |\n'
+        '| W03 | Not yet open | AC3 | W01 | W02 | | |\n'
     )
 
     def test_every_spelling_names_one_row(self):

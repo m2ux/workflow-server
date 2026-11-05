@@ -6,8 +6,8 @@ The available units, held rows and hot-fixes, blocked work and merge candidates 
 
 Read these files first.
 
+- [Lane](lane.md)
 - [Epic Issue Body](epic-issue-body.md)
-- [Dependency Graph](dependency-graph.md)
 - [Delivery Branches](delivery-branches.md)
 - [Work Item](work-item.md)
 - [Hot-fix](hotfix.md)
@@ -21,20 +21,14 @@ One delivery plan from supplied board and delivery evidence.
 
 **Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index and optional record date.
 
-1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter.
-2. Return the units admitted by [Lane Admission](#lane-admission), holds, blockers, invalid lane assignments, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
+2. Return the units admitted by [Admission](lane.md#admission), holds, blockers, invalid lane assignments, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
 
 ## Fields
 
 ### Work Units
 
 A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit of rows comes only from an epic that is Ready or In Progress in the supplied board items: the plan offers no other row, and none other is held. A [hot-fix unit](#hot-fix-units) has no row. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows.
-
-### Lane Admission
-
-A unit's lane comes from its task-table [Lane](epic-issue-body.md#lane) cells in the supplied epic body. Joined rows carry the same index or all have empty cells, as [Joins](dependency-graph.md#joins) requires. The shared task-table reader validates the raw cells. A row's lane is available even when the row links no work item; work-item files supply its component.
-
-A run naming an opaque board-wide decimal index is offered the available units in that lane and unlaned units. A run naming no lane is offered only unlaned units. The lane filters free units; priority orders the admitted units. Holds, dependencies and delivery evidence determine availability, and their report lines remain visible for every lane. A hot-fix unit is unlaned.
 
 ### Hot-fix Units
 
@@ -76,7 +70,7 @@ Computes available work from supplied board and delivery snapshots.
 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
-- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Lane Admission](#lane-admission).
+- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
 
 `<epic-base-names>` is a comma-separated list of full epic-base branch names.
 

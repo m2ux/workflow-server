@@ -76,11 +76,14 @@ from enum import Enum
 from pathlib import Path
 from typing import NamedTuple
 
-from format import AC, LINK, cell, id_cell, reservation, row_id, split_sections
+from format import AC, LINK, TICK, cell, done_mark, hrefs, id_cell, reservation, row_id, split_sections
 from statuses import (DELIVERY, STATUSES, Changes, Jurisdiction, Key, StatusField, board_items,
                       key_of, label)
 from sync import PR_REF, TICKED, Unreadable, attach_links, git, links_issue, pull_requests, table
 
+TASK = re.compile(r'W\d\d')
+ISSUE_URL = re.compile(r'/issues/(\d+)$')
+WORK_ITEM = re.compile(r'/blob/[^/]+/(.+\.md)$')
 PREFIX = re.compile(r'^\[I(\d\d)(?::E(\d\d))?(?::W(\d\d))?\]')
 PULL_REF = re.compile(r'github\.com/([^/]+/[^/]+)/pull/\d+')
 ISSUE_REF = re.compile(r'github\.com/([^/]+/[^/]+)/issues/(\d+)$')
@@ -460,6 +463,86 @@ class Board:
                     answer = self.issue_delivered(key, why)
             answers.append(answer)
         return weakest(answers)
+
+
+
+def in_flight(ident: str) -> bool:
+    """Whether the id links a pull request or a commit, which is work already under way."""
+    return any('/pull/' in href or '/commit/' in href for href in hrefs(ident))
+
+def joined(header: list[str], body: list[list[str]]) -> dict[str, set[str]]:
+    """The tasks each row names in Joins, by task id."""
+    found = {}
+    for r in body:
+        ident = id_cell(header, r)
+        task = row_id(ident)
+        if task:
+            found[task] = set(TASK.findall(cell(header, r, 'Joins')))
+    return found
+
+
+def units(header: list[str], body: list[list[str]], state: dict[str, str]) -> list[list[str]]:
+    """The rows grouped into units: tasks that name each other in Joins are one unit."""
+    links = joined(header, body)
+    seen, found = set(), []
+    for task in links:
+        if task in seen:
+            continue
+        unit, queue = [], [task]
+        while queue:
+            current = queue.pop(0)
+            if current in seen or current not in state:
+                continue
+            seen.add(current)
+            unit.append(current)
+            queue += sorted(other for other in links.get(current, ())
+                            if current in links.get(other, set()))
+        found.append(sorted(unit))
+    return found
+
+
+def epic_state(board: Board, key: tuple[str, int], epics: dict[str, tuple[str, int]]) -> tuple:
+    """Each row's state, its Description, its Coverage, and the issue its id links."""
+    header, body = rows(board.issues[key])
+    if not header:
+        raise Unreadable(f'{label(key, board.home)} has no Work Breakdown table')
+    state, detail = {}, {}
+    prerequisites = board.epic_prerequisites_met(key, epics, label(key, board.home))
+    for r in body:
+        ident = id_cell(header, r)
+        task = row_id(ident)
+        if not task:
+            continue
+        held = reservation(ident)
+        cause = ''
+        if done_mark(cell(header, r, 'Done')) == TICK:
+            state[task] = 'done'
+        elif in_flight(ident):
+            state[task] = 'running'
+        elif held:
+            state[task] = 'held'
+        elif prerequisites is Resolution.UNRESOLVABLE:
+            state[task] = 'unresolvable'
+            cause = "its epic's prerequisite"
+        elif (answer := board.met(cell(header, r, 'Depends on'), key, epics,
+                                  f'{label(key, board.home)} {task}')) is Resolution.UNRESOLVABLE:
+            state[task] = 'unresolvable'
+            cause = cell(header, r, 'Depends on')
+        elif prerequisites is Resolution.UNMET:
+            state[task] = 'prerequisite'
+        elif answer is Resolution.UNMET:
+            state[task] = 'blocked'
+        else:
+            state[task] = 'free'
+        found = ISSUE_URL.search(next((href for href in hrefs(ident) if ISSUE_URL.search(href)), ''))
+        item = WORK_ITEM.search(next((href for href in hrefs(ident) if WORK_ITEM.search(href)), ''))
+        detail[task] = {'description': cell(header, r, 'Description').split(' →', 1)[0].strip(),
+                        'coverage': cell(header, r, 'Coverage'), 'held': held,
+                        'issue': int(found[1]) if found else None,
+                        'item': item[1] if item else '',
+                        'cause': cause,
+                        'depends': cell(header, r, 'Depends on')}
+    return header, body, state, detail
 
 
 def main() -> int:
