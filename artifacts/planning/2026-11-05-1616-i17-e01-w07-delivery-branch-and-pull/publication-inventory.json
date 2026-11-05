@@ -2,12 +2,16 @@
   "destination": "public m2ux/workflow-server engineering",
   "files": {
     "README.md": {
-      "bytes": 4826,
-      "sha256": "d1712f096ee0fa8ba0124ad2f3612934534be1c2a59d49ba5e0848f62424c9d0"
+      "bytes": 5338,
+      "sha256": "8834bcd2b2837795ad55dbab416155137b629b766bcb360c28215d7a73df811b"
     },
     "change-list.json": {
       "bytes": 216,
       "sha256": "72f019d4911a7b1d66cde4b10c4deaf3f69cc0e4e069b30f6f35041352a658eb"
+    },
+    "closeout-evidence.tar.gz": {
+      "bytes": 109292,
+      "sha256": "e065eb7ae51ed039addbc81d28db3744ae5f289672b6c6dae26e42f2c3fb396b"
     },
     "composed-model-checks.json": {
       "bytes": 541,
@@ -29,9 +33,13 @@
       "bytes": 1189,
       "sha256": "ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e"
     },
+    "delivery.md": {
+      "bytes": 3190,
+      "sha256": "b49d067a610d4123b90d46117c116371e6b50ddb3e114b205aa41be7ef9c7bda"
+    },
     "design.md": {
-      "bytes": 3358,
-      "sha256": "d29a1ffbec4885865ee62621aa24eab55e9ac25f9a2ea56fdb89c7e748ccddc8"
+      "bytes": 3378,
+      "sha256": "83a43673590610adfbf617d193e1f1e156bd750f2e0115a8dd0a88b23dbe54e3"
     },
     "disclosure-capture-manifest.json": {
       "bytes": 4177,
@@ -62,8 +70,8 @@
       "sha256": "9b73dc8688e4e64f8a0513d5cbf46a2479c161697456181db4b2fd4853964f8d"
     },
     "disclosure.md": {
-      "bytes": 6493,
-      "sha256": "a93d18b6e9ec800b469bb4586fdfa621d1a0c0d50e4e5ffe578b6139adaf77fd"
+      "bytes": 6536,
+      "sha256": "b6befe856b05c66cd239456336b680e087dfe7cb756a79db66a79af23f9dee74"
     },
     "head-checks.json": {
       "bytes": 6220,
@@ -81,6 +89,14 @@
       "bytes": 1784,
       "sha256": "3a5b1d1f37da94d510d52fbcb5b7462b82398a0389a5ef16d4eeab91e40bfb79"
     },
+    "merged-checks.json": {
+      "bytes": 2648,
+      "sha256": "e5c529aa79bbffe08b452a2b69b8d42abbfd1654c93100db9149c4e820da859f"
+    },
+    "merged-revision-evidence.tar.gz": {
+      "bytes": 2930,
+      "sha256": "d807dc77eab2d21237383ec68b6dd3e0ef6ea1f496fba201d7cf285032f24b1c"
+    },
     "neutral-read.py": {
       "bytes": 1703,
       "sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202"
@@ -94,16 +110,16 @@
       "sha256": "bec5d43b14bf459bc9133fb58008d46e80c9999885bde32acd4d4bdf926c6fb0"
     },
     "publication-audit.json": {
-      "bytes": 87452,
-      "sha256": "00da5c1903e190f51cebe48fed452281504faea6472623e6c2dfd71407191393"
+      "bytes": 97380,
+      "sha256": "e5f88bfc1a91119baf5ded9a7694294d3ba342a0dec53b3bdde6eb2200dbab25"
     },
     "shared-checker.log": {
       "bytes": 358,
       "sha256": "8b65a132875f4dca900762e2f054cf2f5878ac45ccb53aeb5620c7027783c645"
     },
     "validation.md": {
-      "bytes": 4825,
-      "sha256": "540db3d8f79d19bca39c861afe387f9ee74ccf75efc10a403d1256c390cfc00b"
+      "bytes": 5412,
+      "sha256": "d59e3fbca20177db1bdac2d6087809b5c2c6884439157e7fe5a83150bc2f4084"
     },
     "w07.md": {
       "bytes": 2088,
@@ -138,5 +154,5 @@
       "sha256": "efe31dc0cd9abac527c4b75611a3555395311b363c7c8b22ed94f8f2a9d4b5b6"
     }
   },
-  "inspection": "Previously inspected archives retain their recorded hashes; the added archive holds only exact scoped test logs and refusal-control results. All archive paths are safe regular UTF-8 files."
+  "inspection": "All published archives are inspected safe regular UTF-8 scoped evidence; no credentials, private keys, unsafe paths, symlinks, caches or raw/system sessions are included."
 }

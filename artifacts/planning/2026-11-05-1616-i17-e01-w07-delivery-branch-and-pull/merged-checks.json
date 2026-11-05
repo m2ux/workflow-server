@@ -1,0 +1,94 @@
+{
+  "revision": "652ef07ea5b8553d3bdb73542c3a393ac20e6ea9",
+  "tree": "9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0",
+  "checkout": "/tmp/revision-check-lyosb1m5/652ef07ea5b8",
+  "checkout_after": "clean",
+  "frozen_source_file_hashes_verified": 231,
+  "source_digest": "dcd61a116505ff8b681c50064bca2e373807fb481aa959c517017542b8dc69e5",
+  "commands": [
+    {
+      "check": "strict",
+      "argv": [
+        "/usr/bin/python3",
+        "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-11-05-1616-i17-e01-w07-delivery-branch-and-pull/criterion-check.py",
+        "--expected-revision",
+        "652ef07ea5b8553d3bdb73542c3a393ac20e6ea9",
+        "--expected-tree",
+        "9a517bcc9640caa2fa69b6bce0ffbed94fc16bd0"
+      ],
+      "cwd": "/tmp/revision-check-lyosb1m5/652ef07ea5b8",
+      "exit": 0,
+      "sha256": "e2b8608737352d0d9aaf94eb94899188fdc93c53c3434cea3fbe262c30969821"
+    },
+    {
+      "check": "work-planner",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test"
+      ],
+      "cwd": "/tmp/revision-check-lyosb1m5/652ef07ea5b8/skills/work-planner",
+      "exit": 0,
+      "sha256": "da00e67a76e5220aa76f13398c571c8adbde3e9dd22ec7bd09162bc7803b752e"
+    },
+    {
+      "check": "shared",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "skills/test"
+      ],
+      "cwd": "/tmp/revision-check-lyosb1m5/652ef07ea5b8",
+      "exit": 0,
+      "sha256": "781659a3df187a74f98d5183389eaf6b7f7f066bb4edf7bd228f4508b77ee57b"
+    },
+    {
+      "check": "installed",
+      "argv": [
+        "/usr/bin/python3",
+        "skills/scripts/check_skill_files.py",
+        "skills/work-planner"
+      ],
+      "cwd": "/tmp/revision-check-lyosb1m5/652ef07ea5b8",
+      "exit": 1,
+      "sha256": "c955e092880a601474c04862ada66e41ab8c74d82b0461b211ba6160cc31264a"
+    }
+  ],
+  "work_planner": {
+    "total": 925,
+    "pass": 924,
+    "skip": 1
+  },
+  "shared": {
+    "pass": 258
+  },
+  "strict": {
+    "files": 6,
+    "findings": 0
+  },
+  "installed": {
+    "files": 58,
+    "findings": 1,
+    "expected": "Revise Fields"
+  },
+  "disclosure": "Partial; unchanged walked source",
+  "revision_check_checkout_removed": true,
+  "wrapper_command": [
+    "python3",
+    "skills/work-planner/scripts/revision-check.py",
+    "--project",
+    "/home/mike1/projects/dev/workflow-server",
+    "--revision",
+    "652ef07ea5b8553d3bdb73542c3a393ac20e6ea9",
+    "--",
+    "/home/mike1/projects/dev/md-composer/scripts/sbx",
+    "python3",
+    "/tmp/i17-e01-w07/merged-check-runner.py"
+  ]
+}

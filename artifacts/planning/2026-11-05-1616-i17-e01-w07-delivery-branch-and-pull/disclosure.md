@@ -35,4 +35,4 @@ The parent postwalk audit reports 257 frozen manifest files with zero drift and 
 
 ## Acceptance Boundary
 
-AC7's exact six-file structural acceptance, preservation ledger and behavioral suites are separate from these reading observations. The original Prerequisites remain intact; inherited ordering, fanout and live-tool limits are recorded rather than silently restructured. The separate dispatch-review work owns retained-worktree/dispatch behavior changes; no such behavior is introduced here. Merge and criterion recording require later exact-head clearance.
+AC7's exact six-file structural acceptance, preservation ledger and behavioral suites are separate from these reading observations. The original Prerequisites remain intact; inherited ordering, fanout and live-tool limits are recorded rather than silently restructured. The separate dispatch-review work owns retained-worktree/dispatch behavior changes; no such behavior is introduced here. Merge and criterion recording use the separately recorded exact-head clearance and merged-revision evidence.
