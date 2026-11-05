@@ -23,9 +23,11 @@ Read these files first.
 
 1. **Check execution prerequisites.**
    Take the selected batch and unit, current board and delivery evidence, project and engineering checkouts, run allowance, supplied session procedure and any [preparation](../artifacts/dispatch-batch.md#preparations) this run retains for the unit.
-   - Confirm the harness provides sub-agent dispatch and the [epic-base merge permission](../artifacts/pull-request.md#merge-permission); return the absent capability before holding work.
+   - Return an unsuccessful artifact operation as a unit blocker, retaining any acquired hold.
+   - Confirm the harness provides sub-agent dispatch and the [epic-base merge permission](../artifacts/pull-request.md#merge-permission); return an absent capability as a [run blocker](../artifacts/dispatch-batch.md#blockers) before holding work.
    - For a unit of rows, confirm the epic carries every [Required Criteria](../artifacts/epic-issue-body.md#required-criteria) criterion its changes bring, with its declared delivering row.
      - Keep each such row a unit of its own, joined to no other row.
+     - Return an unmet criterion condition as a unit blocker.
 2. **Publish the record.**
    For a new unit of rows, read each component from the work-item file its free row links, before reservation replaces that link.
    - For a retained preparation, use its captured components and selected record, confirming this run owns that preparation.
@@ -47,7 +49,7 @@ Read these files first.
      - For a new unit, run [Hold Hot-fix Unit](../artifacts/hotfix.md#hold-hot-fix-unit) with that issue, board identity and refreshed board items.
      - For a retained preparation, require its current board hold to remain confirmed.
      - Retain the confirmed hold for this record.
-   - Return a competing hold or failed readback without starting a worker.
+   - Return a competing hold or failed readback as a unit blocker.
 4. **Prepare the session.**
    Prepare each selected branch's unit checkout.
    - **New unit.**
@@ -55,11 +57,11 @@ Read these files first.
    - **Retained preparation.**
      - Run [Validate Task Worktree](../artifacts/delivery-branches.md#validate-task-worktree) in the project checkout with its retained worktree path, branch and preparation head.
    - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the selected unit, its components, reserved folder, worktrees and selected bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.
-   - Return a missing-context finding before execution, retaining the hold.
+   - Return missing context as a unit blocker, retaining the hold.
 5. **Start the worker.**
-   Run [Validate Dispatch Start](../artifacts/dispatch-batch.md#validate-dispatch-start) with the selected batch and unit, gathered start evidence, current observed sessions and actual free slots.
+   Run [Validate Dispatch Start](../artifacts/dispatch-batch.md#validate-dispatch-start) with the selected batch and unit, gathered start evidence, current observed sessions, actual free slots and recorded blockers.
    - Return a capacity-only wait with the unit's preparation for the coordinator to retain and resume.
    - Start the unit through this session's sub-agent dispatch only after validation succeeds.
    - Supply the complete brief and its unit and engineering checkouts to the worker.
    - Return its observed session identity to the coordinator, which records it before selecting another batch.
-   - Return a failed start as a held unit with its record and error; a hold is released only through the caller's explicit release decision.
+   - Return another failed start as a unit blocker with its held record and observed error.

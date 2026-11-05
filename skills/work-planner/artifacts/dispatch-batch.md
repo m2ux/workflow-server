@@ -16,7 +16,7 @@ Read these files first.
 
 One batch from current delivery and execution evidence.
 
-**Inputs:** Run authorization, machine-readable delivery plan, the board and requested lane used for that survey, observed session inventory, currently free harness slots and this run's admitted preparations awaiting capacity.
+**Inputs:** Run authorization, machine-readable delivery plan, the board and requested lane used for that survey, observed session inventory, currently free harness slots, admitted preparations awaiting capacity and recorded dispatch blockers.
 
 1. Run [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.
 2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
@@ -25,7 +25,7 @@ One batch from current delivery and execution evidence.
 
 One selected unit's readiness to execute.
 
-**Inputs:** Selected batch, unit identity, publication and reservation evidence, current observed session inventory and currently free harness slots.
+**Inputs:** Selected batch, unit identity, publication and reservation evidence, current observed session inventory, currently free harness slots and recorded dispatch blockers.
 
 1. Run [Check Dispatch Start](#check-dispatch-start) with the supplied evidence.
 2. Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).
@@ -54,7 +54,15 @@ The harness supplies each observed session's `unit`, `session` identity and `sta
 
 ### Selection
 
-The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+The batch retains authorized, unoccupied units in survey order, bounded by free capacity and [Blockers](#blockers). Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains or a run blocker stands. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+
+### Blockers
+
+A dispatch blocker records its observed `reason` and `scope`. Scope `run` prevents every start. Scope `unit` names a repository-qualified `id` and excludes every joined row it names, including a retained preparation. A blocker survives queue and survey refreshes until new evidence resolves its recorded cause; elapsed time supplies no resolution. The start gate applies the current blockers to a selected batch.
+
+```json
+[{"scope": "run", "reason": "Sub-agent dispatch is unavailable"}, {"scope": "unit", "id": "o/r#I07:E00:W01", "reason": "Required criterion has no delivering row"}]
+```
 
 ### Preparations
 
@@ -74,10 +82,11 @@ The start names one selected unit, has a currently free harness slot and overlap
 
 Selects the next batch without tracker writes or worker execution.
 
-**Inputs:** Authorization, dispatch export and session-inventory JSON files, current survey board, optional requested lane, free-slot count and optional admitted-preparations JSON file.
+**Inputs:** Authorization, dispatch export and session-inventory JSON files, current survey board, optional requested lane, free-slot count, optional admitted-preparations JSON file and optional blocker JSON file.
 
 - Supply `--lane '<lane-index>'` only when that lane was used by the survey.
 - Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.
+- Supply `--blockers '<blockers-file>'` for its recorded dispatch blockers.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 ```bash
@@ -88,9 +97,10 @@ cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/script
 
 Checks one selected unit immediately before execution.
 
-**Inputs:** Batch JSON, repository-qualified unit identity, start-evidence JSON, current session-inventory JSON and free-slot count.
+**Inputs:** Batch JSON, repository-qualified unit identity, start-evidence JSON, current session-inventory JSON, free-slot count and optional blocker JSON file.
 
 - Exit 0 returns the selected unit; exit 1 names the blocking condition.
+- Supply `--blockers '<blockers-file>'` for its recorded dispatch blockers.
 
 ```bash
 cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '<batch-file>' --unit '<unit-identity>' --evidence '<start-evidence-file>' --sessions '<session-inventory-file>' --capacity '<free-slot-count>'

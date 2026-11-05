@@ -241,6 +241,66 @@ class Refill(unittest.TestCase):
                 batch(AUTH, [offered(identity)], [], 1, BOARD)
 
 
+class DispatchBlockers(unittest.TestCase):
+    def test_a_prehold_capability_failure_stops_successive_refills(self):
+        plan, _ = exported(chain(set(), set()))
+        selected = batch(AUTH, plan, [], 1, BOARD)
+        self.assertEqual(selected['action'], 'dispatch')
+        blockers = [{'scope': 'run', 'reason': 'Sub-agent dispatch is unavailable'}]
+        for _ in range(3):
+            refreshed, _ = exported(chain(set(), set()))
+            self.assertEqual(batch(AUTH, refreshed, [], 1, BOARD, blockers=blockers),
+                             {'action': 'stop', 'units': [], 'pending': 0})
+        unit = selected['units'][0]
+        with self.assertRaisesRegex(ValueError, 'dispatch blocker'):
+            check_start(selected, unit['id'], evidence(unit), [], 1, blockers)
+
+    def test_a_prehold_unit_failure_allows_independent_work(self):
+        plan, _ = exported(chain(set(), set()))
+        blockers = [{'scope': 'unit', 'id': 'o/r#I07:E00:W01',
+                     'reason': 'Required criterion has no delivering row'}]
+        for _ in range(3):
+            selected = batch(AUTH, plan, [], 1, BOARD, blockers=blockers)
+            self.assertEqual([unit['id'] for unit in selected['units']], ['o/r#I07:E00:W04'])
+        self.assertEqual(batch(AUTH, [plan[0]], [], 1, BOARD, blockers=blockers)['action'], 'stop')
+        self.assertEqual(batch(AUTH, plan, [], 1, BOARD)['units'][0]['id'], 'o/r#I07:E00:W01')
+
+    def test_a_unit_blocker_covers_joined_rows_and_preparations(self):
+        unit = offered('o/r#I07:E00:W01+W02')
+        selected = batch(AUTH, [unit], [], 1, BOARD)
+        blockers = [{'scope': 'unit', 'id': 'o/r#I07:E00:W02', 'reason': 'Worktree changed'}]
+        result = batch(AUTH, [unit], [], 1, BOARD, preparations=[unit], blockers=blockers)
+        self.assertEqual(result['action'], 'stop')
+        with self.assertRaisesRegex(ValueError, 'dispatch blocker'):
+            check_start(selected, unit['id'], evidence(unit), [], 1, blockers)
+
+    def test_a_unit_blocker_does_not_stop_a_running_sibling(self):
+        blockers = [{'scope': 'unit', 'id': 'o/r#I07:E00:W01', 'reason': 'Missing context'}]
+        result = batch(AUTH, [offered('o/r#I07:E00:W01')],
+                       [worker('o/r#I07:E00:W04')], 0, BOARD, blockers=blockers)
+        self.assertEqual(result['action'], 'wait')
+
+    def test_blockers_have_explicit_scope_and_reason(self):
+        for blocker in [{'scope': 'unknown', 'reason': 'Failure'},
+                        {'scope': 'run', 'reason': ''},
+                        {'scope': 'unit', 'id': 'o/r#I07', 'reason': 'Failure'}]:
+            with self.subTest(blocker=blocker), self.assertRaises(ValueError):
+                batch(AUTH, [], [], 1, BOARD, blockers=[blocker])
+
+    def test_cli_applies_recorded_blockers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            unit = offered('o/r#I07:E00:W01')
+            for name, value in [('auth', AUTH), ('plan', [unit]), ('sessions', []),
+                                ('blockers', [{'scope': 'run', 'reason': 'Merge capability absent'}])]:
+                (root / f'{name}.json').write_text(json.dumps(value))
+            result = run('dispatch.py', 'batch', '--authorization', str(root / 'auth.json'),
+                         '--plan', str(root / 'plan.json'), '--sessions', str(root / 'sessions.json'),
+                         '--blockers', str(root / 'blockers.json'), '--capacity', '1', '--board', BOARD)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)['action'], 'stop')
+
+
 class Start(unittest.TestCase):
     def test_ordered_evidence_precedes_execution(self):
         unit = offered('o/r#I07:E00:W01')

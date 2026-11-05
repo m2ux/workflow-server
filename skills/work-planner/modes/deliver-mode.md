@@ -46,7 +46,7 @@ The main path meets [Outcomes](#outcomes).
    - Resolve a missing scope decision through the [Interview](../guidelines.md#modes) before starting work.
    - Authorization covers successive eligible units within that boundary. Expanding it requires a new user decision.
    - Run [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each plan change with this run's allowance, retaining its applied or held result for the change list.
-   - Retain the run's authorization, session inventory and [preparations](../artifacts/dispatch-batch.md#preparations) in working files outside the repository for every refill round.
+   - Retain the run's authorization, session inventory, [preparations](../artifacts/dispatch-batch.md#preparations) and [blockers](../artifacts/dispatch-batch.md#blockers) in working files outside the repository for every refill round.
 3. **Coordinate delivery.**
    Run [Refill Delivery Capacity](#refill-delivery-capacity) with the authorization, project checkout, engineering worktree, run allowance and [Run Delivery Session](#run-delivery-session) as the supplied worker procedure.
    - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
@@ -85,6 +85,7 @@ The continuing coordinator for one authorized delivery scope.
      - Run [Release Task Rows](../artifacts/epic-issue-body.md#release-task-rows) with the engineering worktree and publish through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue), or run [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold) for a hot-fix.
      - Repeat the survey with refreshed items and delivery evidence after a release.
    - Retain held, blocked, undeclared and unresolved findings for the report.
+   - Reconcile recorded dispatch blockers against the refreshed evidence, retaining unresolved causes.
 4. **Record merge results.**
    For each authorized `merge` line, follow [Merge Task Pull Requests](../artifacts/pull-request.md#merge-task-pull-requests) with the project checkout and its unit checkout.
    - Run [Task Merge](../protocols/task-merge.md) with each confirmed merge and selected board identity.
@@ -92,25 +93,46 @@ The continuing coordinator for one authorized delivery scope.
    - Return to advance after a recorded merge; its queue, dependencies and available units require fresh evidence.
    - Retain a merge or required-review blocker with its unit and continue with independent work.
 5. **Select the batch.**
-   Resume each retained preparation still admitted by current delivery evidence through [Unit Dispatch](../protocols/unit-dispatch.md), with its selected batch, current evidence, retained context, project and engineering checkouts, run allowance and supplied worker procedure, while free slots permit it.
-   - Retain its returned continuation or observed session, removing a started preparation from the pending set.
-   - Observe current harness sessions and free capacity, then run [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch) with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots and admitted preparations awaiting capacity.
+   Run [Dispatch Delivery Units](#dispatch-delivery-units) for retained preparations still admitted by current delivery evidence, with their selected batches, current evidence, retained context, project and engineering checkouts, run allowance, supplied worker procedure and current blockers, while free slots permit it.
+   - Return a run blocker to the caller.
+   - Observe current harness sessions and free capacity, then run [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch) with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots, admitted preparations awaiting capacity and recorded blockers.
    - Report an evidence error and return without dispatching from that batch.
    - For `dispatch`, continue to start units.
    - For `wait`, continue to await progress.
    - For `stop`, return the delivery results and remaining holds, blockers and review boundaries.
 6. **Start units.**
-   Follow [Unit Dispatch](../protocols/unit-dispatch.md) for each selected unit with the batch, current evidence, project and engineering checkouts, run allowance and supplied worker procedure.
-   - Retain every returned session identity in the observed inventory before another selection.
-   - Retain a capacity-only continuation as this run's preparation for the next refill round.
-   - Return to advance after a failed start, with its held record and blocker retained.
-   - Coordinate issue-body writes, engineering publications and epic-base updates serially across the coordinator and workers, refreshing their affected records before each write.
+   Run [Dispatch Delivery Units](#dispatch-delivery-units) with the selected batch and units, current evidence, project and engineering checkouts, run allowance, supplied worker procedure and current blockers.
+   - Return a run blocker to the caller.
+   - Return to advance when new unit blockers are recorded, carrying the updated blockers.
 7. **Await progress.**
    Keep the coordinator active while scoped workers execute or admitted work awaits a capacity event.
    - Wait for a worker result, a harness capacity event or user steering, while providing progress updates.
    - On a worker result, retain its actual delivery, validation, merge and plan-change evidence; a session finishing does not establish delivery by itself.
    - Reconcile the session's observed state and actual free slots.
    - Return to advance with the same authorization and fresh delivery evidence, refilling without another unit confirmation.
+
+### Dispatch Delivery Units
+
+The selected units' observed execution results for one coordinator round.
+
+1. **Check current blockers.**
+   Take the supplied units and selected batches, any retained preparations, current evidence, project and engineering checkouts, run allowance, supplied worker procedure and recorded [blockers](../artifacts/dispatch-batch.md#blockers).
+   - Return an unresolved run blocker immediately.
+   - Exclude units with unresolved unit blockers.
+2. **Dispatch each unit.**
+   Follow [Unit Dispatch](../protocols/unit-dispatch.md) for each remaining unit with its supplied context and current blockers.
+   - Coordinate issue-body writes, engineering publications and epic-base updates serially across the coordinator and workers, refreshing their affected records before each write.
+   - Record each returned result before continuing to another unit:
+     - **Started session.**
+       - Retain its observed session identity and remove its retained preparation from the pending set.
+     - **Capacity wait.**
+       - Retain its preparation for the next refill round.
+     - **Run blocker.**
+       - Retain the returned blocker and return it to the caller immediately.
+     - **Unit blocker.**
+       - Retain the returned blocker and continue with independent units.
+3. **Return the round.**
+   Return the updated session inventory, preparations and blockers to the calling refill step.
 
 ### Run Delivery Session
 
