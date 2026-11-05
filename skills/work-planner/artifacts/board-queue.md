@@ -19,20 +19,16 @@ Read these files first.
 
 Derives the queue from supplied board and delivery snapshots and confirmed decisions.
 
-**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives).
-
-**Outputs:** [Queue Result](#queue-result).
-
 #### 1. Compute Queue Calls
 
-- Apply [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
-- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes) with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes) with each complete free unit derived after queue placement.
+- Apply [Compute Board Queue](#compute-board-queue "operation") for the [Board Identity](#board-identity "input") with [Board Items](#board-items "input"), [Pull Request Records](#pull-request-records "input"), the [Issue Link Snapshot](#issue-link-snapshot "input") and [Board Fields](#board-fields "input"), using [Assignee Login](#assignee-login "input") and [Output Directory](#output-directory "input"), and including [Resolved Issues](#resolved-issues "input") and [Unplanned Initiatives](#unplanned-initiatives "input").
+- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes "operation") with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes "operation") with each complete free unit derived after queue placement.
 - The queue must meet [Fields](#fields).
 - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 
-#### 2. Return Queue Evidence
+#### 2. Provide Queue Evidence
 
-- Return the queue to the caller.
+- Provide the [Queue Result](#queue-result "output") to the requester.
 - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
 - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
 
@@ -40,23 +36,19 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
 
-**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives), [Status Scope](#status-scope).
-
-**Outputs:** [Queue Result](#queue-result).
-
 #### 1. Compute Board Queue
 
-- Run the following command with the supplied inputs.
+- Run the following command using [Board Items](#board-items "input"), [Board Fields](#board-fields "input"), [Output Directory](#output-directory "input"), [Resolved Issues](#resolved-issues "input"), [Status Scope](#status-scope "input"), [Workspace](#workspace "input").
 
 - `--items` is the board's items with Status.
-- `--prs` is the pull requests that name an initiative or a hot-fix.
-- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.
-- `--board` is the [board identity](#board-identity).
+- `--prs` is the [pull requests](#pull-request-records "input") that name an initiative or a hot-fix.
+- `--links` is the [issue-link snapshot](#issue-link-snapshot "input") of those pull requests, where the hot-fix each one delivers is read.
+- `--board` is the [board identity](#board-identity "input").
 - `--fields` is the board's fields.
 - `--out` is the directory the calls are written to.
-- `--assignee` is the login assigned to work from Ready.
+- `--assignee` is the [login](#assignee-login "input") assigned to work from Ready.
 - `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
-- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives). Repeatable.
+- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives "input"). Repeatable.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
@@ -67,6 +59,10 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
 </pre></big>
+
+#### 2. Provide Computed Board Queue
+
+Provide [Queue Result](#queue-result "output") to the requester.
 
 ## Fields
 
@@ -162,7 +158,7 @@ The answer a caller applies where it resolves an `order` or `ask` line on its ow
 A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed.
 
 - The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero.
-- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not returned to Backlog on an entry nobody can read.
+- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not provided to Backlog on an entry nobody can read.
 - Every entry of a cell is read, so a cell carrying two names both.
 
 ### Completeness

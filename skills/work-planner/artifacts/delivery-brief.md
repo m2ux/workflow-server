@@ -15,18 +15,14 @@ Read these files first.
 
 One complete prompt file for a confirmed delivery unit.
 
-**Inputs:** [Work Identity](#work-identity), [Planning Record](#planning-record), [Validation Scope](#validation-scope), [Change Autonomy](#change-autonomy), [Execution Instructions](#execution-instructions), [Output Path](#output-path).
-
-**Outputs:** [Brief Path](#brief-path), [Missing Context](#missing-context).
-
 #### 1. Write Complete Delivery Brief
 
-- Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.
+- Write the [Work Identity](#work-identity "input") and [Planning Record](#planning-record "input") context, [Validation Scope](#validation-scope "input"), [Change Autonomy](#change-autonomy "input") and [Execution Instructions](#execution-instructions "input") into the prompt file at [Output Path](#output-path "input") or where [Location](#location) puts it.
 - Each part must meet [Fields](#fields).
 
-#### 2. Return Brief Context
+#### 2. Provide Brief Context
 
-Return the brief path and any missing context. The caller resolves gaps before dispatch.
+Provide the [brief path](#brief-path "output") and any [missing context](#missing-context "output"). The caller resolves gaps before dispatch.
 
 ## Fields
 
@@ -52,7 +48,7 @@ The brief names the supplied [allowance](plan-change.md#allowance): the plan cha
 
 ### Execution Instructions
 
-The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding returned to the caller.
+The caller supplies the session procedure and its invocation context. The brief includes that procedure with its planning, publication, merge, debt and arising-issue obligations, plus the confirmed decisions and evidence needed to execute it. A missing instruction or prerequisite is a finding provided to the caller.
 
 ### Output Path
 

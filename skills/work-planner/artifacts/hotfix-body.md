@@ -19,18 +19,18 @@ Read these files first.
 
 One hot-fix body from a confirmed defect.
 
-**Inputs:** [Hot-fix Identity](#hot-fix-identity), [Target](#target), [Defect Evidence](#defect-evidence), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body).
-
 #### 1. Populate Hot-fix Template
 
-- Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
+- Populate the standalone [Template](standalone-body.md#template) for [Hot-fix Identity](#hot-fix-identity "input") at the destination in [Output Body](#output-body "input").
 - The work must meet [Definition](#definition).
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
-- The Overview must name the confirmed target as [Target](#target) states.
-- The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+- Name the confirmed [Target](#target "input") in the Overview.
+- Populate the Problem and Proposal from [Defect Evidence](#defect-evidence "input"), meeting [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).
+
+#### 2. Provide Populated Hot-fix Body
+
+Provide the populated [Output Body](#output-body "output") for publication.
 
 ## Fields
 

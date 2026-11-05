@@ -15,33 +15,29 @@ Read these files first.
 
 The pull requests and issue links that establish current delivery.
 
-**Inputs:** [Selected Repositories](#selected-repositories), [Initiative Prefix](#initiative-prefix), [Issue Records](#issue-records), [Authenticated Access](#authenticated-access), [Snapshot Paths](#snapshot-paths).
-
-**Outputs:** [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot), [Delivery Findings](#delivery-findings), [Failure](#failure).
-
 #### 1. Fetch Delivery Evidence
 
-- Fetch the pull requests and their links.
-- Apply [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests) with the fetched issue files.
-- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links).
-- Apply [Access Development Links](pull-request.md#access-development-links) for the actual complete link sets.
+- Fetch the pull requests and links from [Selected Repositories](#selected-repositories "input") using [Authenticated Access](#authenticated-access "input"), saving them at [Snapshot Paths](#snapshot-paths "input").
+- Apply [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests "operation") with the fetched issue files.
+- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links "operation").
+- Apply [Access Development Links](pull-request.md#access-development-links "operation") for the actual complete link sets.
 
 #### 2. Inspect Epic Delivery
 
-- Apply [Inspect Epic Delivery](epic.md#inspect-epic-delivery) with the epic JSON, pull request records and complete issue-link snapshot.
-- Route the returned [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions.
+- Apply [Inspect Epic Delivery](epic.md#inspect-epic-delivery "operation") with the epic JSON, pull request records and complete issue-link snapshot.
+- Route the provided [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions.
 
 #### 3. Repair Missing Delivery Prefix
 
 - Repair each reported missing-prefix title of a merged pull request linked directly by an epic task row, meeting [Named Delivery](#named-delivery).
 - For a title with no prefix or only a matching initiative or task prefix, preserve its purpose and set the row’s owning epic prefix without another confirmation.
 - A correct title requires no repair; a title naming another epic remains a conflict requiring reconciliation.
-- Apply [Publish Pull Request](pull-request.md#publish-pull-request) with the confirmed epic prefix and purpose.
-- Apply [Read Delivery Evidence](#read-delivery-evidence) again with the same repositories, initiative prefix, issue records, access and destinations after saving the title; return its refreshed evidence and findings.
+- Apply [Publish Pull Request](pull-request.md#publish-pull-request "operation") with the confirmed epic prefix and purpose.
+- Apply [Read Delivery Evidence](#read-delivery-evidence "operation") again with the same repositories, [initiative prefix](#initiative-prefix "input"), [issue records](#issue-records "input"), access and destinations after saving the title; provide its refreshed evidence and findings.
 
-#### 4. Return Complete Evidence
+#### 4. Provide Complete Evidence
 
-Return the current pull request records, complete issue-link snapshot and per-epic findings to the caller, reporting incomplete evidence as a blocker.
+Provide the current [Pull Request Records](#pull-request-records "output"), [Issue-Link Snapshot](#issue-link-snapshot "output") and [Delivery Findings](#delivery-findings "output") to the requester, reporting incomplete evidence as [Failure](#failure "output").
 
 ## Fields
 

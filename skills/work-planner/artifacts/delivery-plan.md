@@ -19,35 +19,30 @@ Read these files first.
 
 One delivery plan from supplied board and delivery evidence.
 
-**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot), [Project Checkout](#project-checkout), [Revision](#revision), [Epic-Base Names](#epic-base-names), [Engineering Worktree](#engineering-worktree), [Off-Board Issues](#off-board-issues), [Requested Lane](#requested-lane), [Record Date](#record-date), [Dispatch-Export Path](#dispatch-export-path).
-
-**Outputs:** [Plan Report](#plan-report), [Dispatch Export](#dispatch-export), [Failure](#failure).
-
 #### 1. Compute Available Units
 
-Apply [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. For each derived free unit, Apply [Determine Lane Admission](lane.md#determine-lane-admission) within the computation, with its epic body, complete ids and the requested index.
+- Apply [Compute Available Work](#compute-available-work "operation") with [Board Items](#board-items "input"), [Pull Request Records](#pull-request-records "input") and [Issue-Link Snapshot](#issue-link-snapshot "input"), reading [Revision](#revision "input") in the [Project Checkout](#project-checkout "input") against [Epic-Base Names](#epic-base-names "input") and planning records in the [Engineering Worktree](#engineering-worktree "input"). Include [Off-Board Issues](#off-board-issues "input"), select the [Requested Lane](#requested-lane "input") and [Record Date](#record-date "input"), and write the dispatch data at [Dispatch-Export Path](#dispatch-export-path "input").
+- For each derived free unit, Apply [Determine Lane Admission](lane.md#determine-lane-admission "operation") within the computation, with its epic body, complete ids and the requested index.
 
-#### 2. Return Delivery Plan
+#### 2. Provide Delivery Plan
 
-Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
+Provide [Plan Report](#plan-report "output") and [Dispatch Export](#dispatch-export "output"), meeting [Fields](#fields), or [Failure](#failure "output") for incomplete evidence. The requester decides holds and dispatch, and supplies missing evidence for another pass.
 
 ### Compute Available Work
 
 Computes available work from supplied board and delivery snapshots.
 
-**Inputs:** [Workspace](#workspace), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue-Link Snapshot](#issue-link-snapshot), [Project Checkout](#project-checkout), [Revision](#revision), [Epic-Base Names](#epic-base-names), [Engineering Worktree](#engineering-worktree), [Off-Board Issues](#off-board-issues), [Requested Lane](#requested-lane), [Record Date](#record-date), [Dispatch-Export Path](#dispatch-export-path).
-
-**Outputs:** [Plan Report](#plan-report), [Dispatch Export](#dispatch-export), [Failure](#failure).
-
 #### 1. Compute Available Work
 
+- Run the command using [Workspace](#workspace "input"), [Board Items](#board-items "input"), [Pull Request Records](#pull-request-records "input"), [Issue-Link Snapshot](#issue-link-snapshot "input"), [Off-Board Issues](#off-board-issues "input"), [Requested Lane](#requested-lane "input"), [Dispatch-Export Path](#dispatch-export-path "input").
+
 - `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
-- `--project` is the checkout and `--revision` the evaluated revision; `--bases` receives [Epic-Base Names](#epic-base-names).
+- `--project` is the [checkout](#project-checkout "input") and `--revision` the evaluated [revision](#revision "input"); `--bases` receives [Epic-Base Names](#epic-base-names "input").
 - `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.
-- `--engineering` is the engineering worktree, where each free row's work-item file is read.
-- `--others` supplies each resolved off-board issue; `--date` selects another record date.
+- `--engineering` is the [engineering worktree](#engineering-worktree "input"), where each free row's work-item file is read.
+- `--others` supplies each resolved off-board issue; `--date` selects another [record date](#record-date "input").
 - `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
-- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
+- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export "output").
 
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**<board-items-file>**](#board-items)' --prs '[**<pull-request-records-file>**](#pull-request-records)' --links '[**<issue-link-snapshot-file>**](#issue-link-snapshot)' --project '[**<checkout>**](#project-checkout)' --revision '[**<revision>**](#revision)' --bases '[**<epic-base-names>**](#epic-base-names)' --engineering '[**<engineering-worktree>**](#engineering-worktree)' --lane '[**<lane-index>**](#requested-lane)'
@@ -58,6 +53,10 @@ cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '[**<checkout>**](#project-checkout)' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '[**<checkout>**](#project-checkout)/.engineering' --lane 2
 </pre></big>
+
+#### 2. Provide Computed Available Work
+
+Provide [Plan Report](#plan-report "output"), [Dispatch Export](#dispatch-export "output") to the requester, or [Failure](#failure "output") if the operation fails.
 
 ## Fields
 

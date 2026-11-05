@@ -15,67 +15,63 @@ Read these files first.
 
 One batch from current delivery and execution evidence.
 
-**Inputs:** [Authorization](#authorization), [Survey Evidence](#survey-evidence), [Survey Board](#survey-board), [Requested Lane](#requested-lane), [Session Inventory](#session-inventory), [Free Slots](#free-slots), [Preparations](#preparations).
-
-**Outputs:** [Batch](#batch), [Failure](#failure).
-
 #### 1. Compute Admitted Dispatch Batch
 
-Apply [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.
+Apply [Compute Dispatch Batch](#compute-dispatch-batch "operation") to [Survey Evidence](#survey-evidence "input") and [Survey Board](#survey-board "input") within [Authorization](#authorization "input"), selecting [Requested Lane](#requested-lane "input") against [Session Inventory](#session-inventory "input"), [Free Slots](#free-slots "input") and retained [Preparations](#preparations "input").
 
-#### 2. Return Batch Continuation
+#### 2. Provide Batch Continuation
 
-Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
+Provide its [Batch](#batch "output") and continuation, meeting [Selection](#selection), or [Failure](#failure "output") with the named evidence error.
 
 ### Validate Dispatch Start
 
 One selected unit's readiness to execute.
 
-**Inputs:** [Batch](#batch), [Unit Identity](#unit-identity), [Start Evidence](#start-evidence), [Session Inventory](#session-inventory), [Free Slots](#free-slots).
-
-**Outputs:** [Validated Unit](#validated-unit), [Failure](#failure).
-
 #### 1. Check Immediate Start Evidence
 
-Apply [Check Dispatch Start](#check-dispatch-start) with the supplied evidence.
+Apply [Check Dispatch Start](#check-dispatch-start "operation") for [Unit Identity](#unit-identity "input") in [Batch](#batch "input") with [Start Evidence](#start-evidence "input"), the actual [Session Inventory](#session-inventory "input") and [Free Slots](#free-slots "input").
 
-#### 2. Return Validated Unit
+#### 2. Provide Validated Unit
 
-Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).
+Provide the [validated unit](#validated-unit "output") or the named [blocker](#failure "output"), meeting [Start Readiness](#start-readiness).
 
 ### Compute Dispatch Batch
 
 Selects the next batch without tracker writes or worker execution.
 
-**Inputs:** [Workspace](#workspace), [Authorization](#authorization), [Survey Evidence](#survey-evidence), [Session Inventory](#session-inventory), [Survey Board](#survey-board), [Requested Lane](#requested-lane), [Free Slots](#free-slots), [Preparations](#preparations).
-
-**Outputs:** [Batch](#batch), [Failure](#failure).
-
 #### 1. Compute Dispatch Batch
 
+- Run the command using [Workspace](#workspace "input"), [Authorization](#authorization "input"), [Survey Evidence](#survey-evidence "input"), [Session Inventory](#session-inventory "input"), [Survey Board](#survey-board "input"), [Requested Lane](#requested-lane "input"), [Free Slots](#free-slots "input"), [Batch](#batch "input").
+
 - Supply `--lane '<lane-index>'` only when that lane was used by the survey.
-- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.
+- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "input") awaiting capacity.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch --authorization '[**<authorization-file>**](#authorization)' --plan '[**<dispatch-export-file>**](#survey-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)' --board '[**<survey-board>**](#survey-board)' > '[**<batch-file>**](#batch)'
 </pre></big>
 
+#### 2. Provide Computed Dispatch Batch
+
+Provide [Batch](#batch "output") to the requester, or [Failure](#failure "output") if the operation fails.
+
 ### Check Dispatch Start
 
 Checks one selected unit immediately before execution.
 
-**Inputs:** [Workspace](#workspace), [Batch](#batch), [Unit Identity](#unit-identity), [Start Evidence](#start-evidence), [Session Inventory](#session-inventory), [Free Slots](#free-slots).
-
-**Outputs:** [Validated Unit](#validated-unit), [Failure](#failure).
-
 #### 1. Check Dispatch Start
 
-Exit 0 returns the selected unit; exit 1 names the blocking condition.
+- Run the command using [Workspace](#workspace "input"), [Batch](#batch "input"), [Unit Identity](#unit-identity "input"), [Start Evidence](#start-evidence "input"), [Session Inventory](#session-inventory "input"), [Free Slots](#free-slots "input").
+
+- Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit '[**<unit-identity>**](#unit-identity)' --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)'
 </pre></big>
+
+#### 2. Provide Checked Dispatch Start
+
+Provide [Validated Unit](#validated-unit "output") to the requester, or [Failure](#failure "output") if the operation fails.
 
 ## Fields
 
@@ -101,7 +97,7 @@ The harness supplies each observed session's `unit`, `session` identity and `sta
 
 ### Selection
 
-The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence provided alongside the batch.
 
 ### Preparations
 
@@ -141,7 +137,7 @@ The planning publication and reservation evidence for the selected unit, as [Sta
 
 ### Validated Unit
 
-The selected unit returned when its immediate start check succeeds.
+The selected unit provided when its immediate start check succeeds.
 
 ### Workspace
 

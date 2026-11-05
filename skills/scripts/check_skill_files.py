@@ -54,7 +54,8 @@ entry; an entry point's section set takes only its explicit file entry. A
 file no entry covers takes the shared set. Heading-based entries declare
 `steps: "headings"` and their `procedures` section. `commands: "inline-html"`
 selects HTML invocations inside those steps. `contracts: "Fields"` selects
-linked Inputs and Outputs whose targets are third-level Fields contracts.
+contextual input/output links whose targets are third-level Fields contracts.
+`link_roles: true` checks input, output and operation link titles.
 `preamble` lists required intro link targets; `calls` maps target directory
 names to Apply or Follow. Malformed and unknown options fail declaration
 validation before a partial model can run.
@@ -106,7 +107,7 @@ from pathlib import Path
 FENCE = re.compile(r'^\s*(`{3,}|~{3,})')
 RULE = re.compile(r'^\s*(-{3,}|\*{3,}|_{3,})\s*$')
 HEADING = re.compile(r'^(#{1,6})\s+(.*)$')
-LINK = re.compile(r'\[[^\]]*\]\(([^)]+)\)')
+LINK = re.compile(r'\[[^\]]*\]\(([^)]+?)(?:\s+"(?:\\.|[^"\\])*")?\)')
 CODE_SPAN = re.compile(r'`[^`]*`')
 PLACEHOLDER = re.compile(r'\{\{.*\}\}|\{[a-z_]+\}|^[.…\s]*$')
 PREREQUISITE = re.compile(r'Read ((?:\[[^\]]+\]\([^)]+\)(?:,\s*)?)+) first\.')
@@ -170,7 +171,7 @@ KINDS = (
     'mode without a trigger phrase', 'hard-wrapped line',
     'list step in heading model', 'indented detail in heading model',
     'heading step sequence', 'procedure without heading steps', 'procedure preamble missing',
-    'operation contract links', 'fenced invocation in HTML model', 'malformed HTML invocation',
+    'operation contract links', 'operation link role', 'fenced invocation in HTML model', 'malformed HTML invocation',
     'invocation outside execution step', 'invocation argument contract', 'operation call verb',
 )
 OPERATIONS = KINDS + ('review',)
@@ -319,7 +320,7 @@ def validate_structure_entry(path, key, entry):
     if not isinstance(entry, dict) or not entry.get('sections'):
         raise ValueError(f'{path}: {key} states no sections')
     allowed = {'sections', 'required', 'procedures', 'specifications', 'keeps_commands',
-               'steps', 'commands', 'contracts', 'preamble', 'calls'}
+               'steps', 'commands', 'contracts', 'preamble', 'calls', 'link_roles'}
     unknown = set(entry) - allowed
     if unknown:
         raise ValueError(f'{path}: {key} has unknown options: {", ".join(sorted(unknown))}')
@@ -338,6 +339,8 @@ def validate_structure_entry(path, key, entry):
     for field in ('procedures', 'specifications', 'contracts'):
         if field in entry and (not isinstance(entry[field], str) or entry[field] not in sections):
             raise ValueError(f'{path}: {key} {field} must name a declared section')
+    if 'link_roles' in entry and not isinstance(entry['link_roles'], bool):
+        raise ValueError(f'{path}: {key} link_roles must be boolean')
     if 'keeps_commands' in entry and not isinstance(entry['keeps_commands'], bool):
         raise ValueError(f'{path}: {key} keeps_commands must be boolean')
     for field, value in (('steps', 'headings'), ('commands', 'inline-html')):
@@ -446,7 +449,6 @@ def citations(paths, structures=None):
 
 HEADING_STEP = re.compile(r'^(\d+)\.\s+\S')
 ARGUMENT_LINK = re.compile(r'\[\*\*([^*\]\n]+)\*\*\]\(([^)\n]+)\)')
-CONTRACT_LABEL = re.compile(r'^\*\*(Inputs|Outputs):\*\*\s*(.*)$')
 
 
 def heading_end(headings, start, level, total):
@@ -481,6 +483,50 @@ def field_contract(path, target, section):
         if level == 3 and current == section and anchor_of(title) == anchor_of(fragment):
             return True
     return False
+
+
+def link_role(match):
+    """The optional role title attached to one Markdown link."""
+    title = re.search(r'\s+"((?:\\.|[^"\\])*)"\)$', match[0])
+    return title[1] if title else ''
+
+
+def operation_target(path, target):
+    """Whether a link selects a callable entry point or named procedure."""
+    name, _, fragment = target.partition('#')
+    if '://' in name or name.startswith('mailto:'):
+        return False
+    destination = (path.parent / name).resolve() if name else path
+    if not destination.is_file() or destination.suffix != '.md':
+        return False
+    entry = contract(destination, {}) or {}
+    if not fragment:
+        return entry.get('procedures') == 'Procedure' and entry.get('steps') == 'headings'
+    lines, _, headings = scan(destination)
+    for start, depth, title, end in procedure_headings(lines, headings, entry):
+        if (depth == 3 and not HEADING_STEP.match(title)
+                and anchor_of(title) == anchor_of(fragment)):
+            return True
+    return fragment == 'procedure' and entry.get('procedures') == 'Procedure'
+
+
+def link_roles(path, lines, fenced, entry):
+    """Role titles select Field contracts or callable operations."""
+    if not entry or not (entry.get('link_roles') or entry.get('contracts')):
+        return
+    commands = scan_blocks(lines).html_lines
+    for index, line in enumerate(lines):
+        if fenced[index] or index in commands:
+            continue
+        for match in LINK.finditer(CODE_SPAN.sub('', line)):
+            role = link_role(match)
+            callable_target = operation_target(path, match[1])
+            if entry.get('link_roles') and callable_target and role != 'operation':
+                yield index, 'operation link role', match[0]
+            elif entry.get('link_roles') and role == 'operation' and not callable_target:
+                yield index, 'operation link role', match[0]
+            if role in ('input', 'output') and not field_contract(path, match[1], entry.get('contracts', 'Fields')):
+                yield index, 'operation contract links', match[0]
 
 
 def heading_model(path, lines, fenced, headings, entry):
@@ -534,17 +580,17 @@ def heading_model(path, lines, fenced, headings, entry):
             if level != 3 or HEADING_STEP.match(title):
                 continue
             first_step = next((start for start, _, _, _ in steps if index < start < end), end)
-            labels = [(line, CONTRACT_LABEL.match(lines[line])) for line in range(index + 1, first_step)
-                      if not fenced[line] and line not in commands and CONTRACT_LABEL.match(lines[line])]
-            for label in ('Inputs', 'Outputs'):
-                matching = [(line, match[2]) for line, match in labels if match[1] == label]
-                if len(matching) != 1:
-                    yield index, 'operation contract links', f'{title}: one {label} declaration required'
+            roles = set()
+            for line in range(first_step + 1, end):
+                if fenced[line] or line in commands or HEADING.match(lines[line]):
                     continue
-                line, text = matching[0]
-                targets_here = LINK.findall(text)
-                if not targets_here or not all(field_contract(path, target, section) for target in targets_here):
-                    yield line, 'operation contract links', f'{label} must link {section} contracts'
+                for match in LINK.finditer(CODE_SPAN.sub('', lines[line])):
+                    role = link_role(match)
+                    if role in ('input', 'output'):
+                        roles.add(role)
+            for role in ('input', 'output'):
+                if role not in roles:
+                    yield index, 'operation contract links', f'{title}: contextual {role} link required'
     if entry.get('commands') == 'inline-html':
         yield from inline_commands(path, lines, fenced, entry, steps)
     if entry.get('calls'):
@@ -593,18 +639,7 @@ def operation_calls(path, lines, fenced, entry, inside):
             verb = entry['calls'].get(destination.parent.name)
             if not verb or not destination.is_file():
                 continue
-            _, _, target_headings = scan(destination)
-            target_entry = contract(destination, {}) or {}
-            procedure_sections = ({target_entry['procedures']} if target_entry.get('procedures')
-                                  else {'Procedure', 'Operations'})
-            current = ''
-            callable_target = not fragment and verb == 'Follow'
-            for _, level, title in target_headings:
-                if level == 2:
-                    current = title
-                if fragment and anchor_of(title) == anchor_of(fragment):
-                    callable_target = current in procedure_sections
-            if callable_target and not re.search(r'\b' + re.escape(verb) + r'\s+$', text[:match.start()]):
+            if operation_target(path, match[1]) and not re.search(r'\b' + re.escape(verb) + r'\s+$', text[:match.start()]):
                 yield index, 'operation call verb', f'{verb} {match[0]}'
 
 
@@ -774,6 +809,9 @@ def check(path, root, cache, cited, called, structures=None):
             report(index, 'mode without a trigger phrase', name)
     for index, text in hard_wraps(lines, specimens, headings, skip):
         report(index, 'hard-wrapped line', text)
+    for index, kind, detail in link_roles(path, lines, fenced, entry):
+        report(index, kind, detail)
+
     for index, kind, detail in heading_model(path, lines, fenced, headings, entry):
         report(index, kind, detail)
     return found
@@ -1271,7 +1309,9 @@ def citation_kinds(path, entry=None):
     kinds = []
     for index, target in targets(path, lines, fenced):
         sentences = PREREQUISITE.findall(CODE_SPAN.sub('', lines[index]))
-        if index in commands or ((entry or {}).get('contracts') and CONTRACT_LABEL.match(lines[index])):
+        contextual_contract = any(match[1] == target and link_role(match) in ('input', 'output')
+                                  for match in LINK.finditer(CODE_SPAN.sub('', lines[index])))
+        if index in commands or contextual_contract:
             kind = SPECIFICATION
         elif index in steps:
             kind = STEP

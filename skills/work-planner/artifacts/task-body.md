@@ -15,17 +15,13 @@ Read these files first.
 
 One task body with its confirmed delivery and verified criteria recorded.
 
-**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings).
-
 #### 1. Record Verified Delivery
 
-Apply [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+Apply [Sync Task Issue](#sync-task-issue "operation") to [Task Record](#task-record "input") with [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input") and [Delivery Selection](#delivery-selection "input"), writing to [Output Body](#output-body "input"). Tick only criteria the requester has verified.
 
-#### 2. Return Delivery Findings
+#### 2. Provide Delivery Findings
 
-Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+Provide [Output Body](#output-body "output") and [Delivery Findings](#delivery-findings "output"); the requester publishes comments and closes the tracker issue.
 
 ### Sync Task Issue
 
@@ -33,13 +29,9 @@ Records the pull request that delivers a task issue, open or merged, ticks verif
 
 An open pull request supplies verification evidence; completion requires its merge.
 
-**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings).
-
 #### 1. Sync Task Issue
 
-- Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the [workspace](#workspace "input") checkout using [Task Record](#task-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Delivery Selection](#delivery-selection "input"), [Output Body](#output-body "input").
 
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
@@ -52,6 +44,10 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-637.json --prs prs.json --links links.json --pr 950 --tick AC1 --fix fixed-637.md
 </pre></big>
+
+#### 2. Provide Recorded Task Issue
+
+Provide [Output Body](#output-body "output"), [Delivery Findings](#delivery-findings "output") to the requester.
 
 ## Fields
 
@@ -120,7 +116,7 @@ The supplied delivering pull request number and verified criterion ids.
 
 ### Output Body
 
-The supplied local destination for the complete returned body.
+The supplied local destination for the complete provided body.
 
 ### Delivery Findings
 

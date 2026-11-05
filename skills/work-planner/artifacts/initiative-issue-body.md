@@ -16,39 +16,31 @@ Read these files first.
 
 One initiative body and its local validation findings.
 
-**Inputs:** [Proposal Context](#proposal-context), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Validation Findings](#validation-findings).
-
 #### 1. Draft Scoped Body
 
-Apply [Draft Initiative Issue Body](#draft-initiative-issue-body) with the supplied proposal context and output path.
+Apply [Draft Initiative Issue Body](#draft-initiative-issue-body "operation") with [Proposal Context](#proposal-context "input") and destinations in [Output Files](#output-files "input").
 
 #### 2. Check Current Round
 
-Apply [Check Round of Edits](issue-body.md#check-round-of-edits).
+Apply [Check Round of Edits](issue-body.md#check-round-of-edits "operation").
 
-#### 3. Return Draft Findings
+#### 3. Provide Draft Findings
 
-Return the populated body and its local format findings to the caller.
+Provide [Output Files](#output-files "output") with the populated body and [Validation Findings](#validation-findings "output").
 
 ### Draft Initiative Issue Body
 
 One initiative body, scoped to one proposal.
 
-**Inputs:** [Proposal Context](#proposal-context), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files).
-
 #### 1. Populate Initiative Template
 
-- Populate the body from the [Template](#template) into a local file at the supplied output path.
+- Populate the [Template](#template) into the local destination in [Output Files](#output-files "input").
 - That file must be the source for every later edit.
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Derive Problem and Boundary
 
-- Derive the Problem and Non-Goals from the proposal this initiative is scoped to.
+- Derive the Problem and Non-Goals from [Proposal Context](#proposal-context "input").
 - The Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - Each Non-Goal must meet [Non-Goals](#non-goals).
 
@@ -60,7 +52,7 @@ One initiative body, scoped to one proposal.
 
 #### 4. Populate Shared Table
 
-Apply [Write Issue Table](issue-body.md#write-issue-table) with the supplied row data.
+Apply [Write Issue Table](issue-body.md#write-issue-table "operation") with the supplied row data.
 
 #### 5. Fill Initiative Cells
 
@@ -68,49 +60,41 @@ Apply [Write Issue Table](issue-body.md#write-issue-table) with the supplied row
 - Each row must meet [Work Breakdown](#work-breakdown).
 - An item a test cannot observe must stay named as [Coverage Reports](issue-body.md#coverage-reports) define.
 
+#### 6. Provide Draft Initiative Issue Body
+
+Provide [Output Files](#output-files "output") with the populated initiative body.
+
 ### Record Initiative Delivery
 
 One initiative body with its epic delivery recorded.
 
-**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Delivery Findings](initiative.md#delivery-findings).
-
 #### 1. Record Supplied Epics
 
-Apply [Sync Initiative](#sync-initiative) with the initiative and all linked epic records as `--epics`, supplying `--fix` when an output body is requested.
+Apply [Sync Initiative](#sync-initiative "operation") to [Initiative Record](#initiative-record "input") with all linked [Epic Records](#epic-records "input"), writing to [Output Files](#output-files "input") when an output body is requested.
 
-#### 2. Return Initiative Delivery
+#### 2. Provide Initiative Delivery
 
-Return the body and [Delivery Findings](initiative.md#delivery-findings) from the supplied initiative and epic records. Delivery eligibility follows [Delivery State](initiative.md#delivery-state).
+Provide [Output Files](#output-files "output") with the body and [Delivery Findings](initiative.md#delivery-findings "output"). Delivery eligibility follows [Delivery State](initiative.md#delivery-state).
 
 ### Record Initiative Criteria
 
 Verified criteria and completed rows in one initiative body.
 
-**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Criterion Selection](#criterion-selection), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Criterion Selection](#criterion-selection).
-
 #### 1. Record Verified Criteria
 
-Apply [Tick Initiative Criteria](#tick-initiative-criteria) with the initiative, linked epics as `--epics`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
+Apply [Tick Initiative Criteria](#tick-initiative-criteria "operation") to [Initiative Record](#initiative-record "input") with [Epic Records](#epic-records "input") and verified [Criterion Selection](#criterion-selection "input"), writing to [Output Files](#output-files "input"). Refuse criteria not ready to verify.
 
-#### 2. Return Criterion Disposition
+#### 2. Provide Criterion Disposition
 
-Return the body and refused criteria.
+Provide [Output Files](#output-files "output") with the body and refused [Criterion Selection](#criterion-selection "output").
 
 ### Validate Initiative Body
 
 The body's local format and field findings.
 
-**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Source Evidence](#source-evidence), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Validation Findings](#validation-findings).
-
 #### 1. Validate Kind Conditions
 
-Apply [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying each linked epic as `--epic`.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body "operation") to [Initiative Record](#initiative-record "input") against local [Fields](#fields), [Epic Records](#epic-records "input") and [Source Evidence](#source-evidence "input"), writing to [Output Files](#output-files "input").
 
 #### 2. Retain Current Title
 
@@ -120,25 +104,21 @@ Use its current title for the initiative row.
 
 Include excluded names in Problem and Proposal and criterion/source departures in the findings.
 
-#### 4. Return Local Findings
+#### 4. Provide Local Findings
 
-Return the corrected body, mechanical diff and unresolved findings for the caller.
+Provide [Output Files](#output-files "output") with the corrected body and [Validation Findings](#validation-findings "output") containing the mechanical diff and unresolved findings.
 
 ### Read Requirement Sources
 
 The requirements evidence used to validate an initiative's criteria.
 
-**Inputs:** [Requirement References](#requirement-references), [Source Evidence](#source-evidence), [Output Files](#output-files).
-
-**Outputs:** [Source Evidence](#source-evidence), [Validation Findings](#validation-findings).
-
 #### 1. Read Local Sources
 
-Read each local source at its checkout path.
+Read each local source in [Requirement References](#requirement-references "input") at its checkout path, retaining any supplied [Source Evidence](#source-evidence "input").
 
 #### 2. Fetch Pinned Sources
 
-For a pinned GitHub blob, Apply [Fetch Source](#fetch-source) with its repository, path, pinned revision and output file.
+For a pinned GitHub blob, Apply [Fetch Source](#fetch-source "operation") with its repository, path and pinned revision, saving it at [Output Files](#output-files "input").
 
 #### 3. Fetch Other URLs
 
@@ -148,21 +128,17 @@ Fetch other URLs through the harness's web access.
 
 Record an unreadable or empty source as a [Sources](#sources) finding; its criteria remain unevaluated.
 
-#### 5. Return Source Evidence
+#### 5. Provide Source Evidence
 
-Return each source's contents and identity with those findings.
+Provide [Source Evidence](#source-evidence "output") with each source’s contents and identity, and [Validation Findings](#validation-findings "output") for unreadable or empty sources.
 
 ### Sync Initiative
 
 Reports an initiative's delivery state against its epics, and ticks Done on an epic row whose issue is closed as completed. A row whose epic it is not given keeps its Done cell and is reported unchanged.
 
-**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Delivery Findings](initiative.md#delivery-findings).
-
 #### 1. Sync Initiative
 
-- Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the [workspace](#workspace "input") checkout using [Initiative Record](#initiative-record "input"), [Epic Records](#epic-records "input"), [Output Files](#output-files "input").
 
 - It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
 
@@ -178,19 +154,19 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json
 </pre></big>
 
+#### 2. Provide Recorded Initiative
+
+Provide [Output Files](#output-files "output"), [Delivery Findings](initiative.md#delivery-findings "output") to the requester.
+
 ### Tick Initiative Criteria
 
 Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks completed rows.
 
-**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Criterion Selection](#criterion-selection), [Output Files](#output-files).
-
-**Outputs:** [Output Files](#output-files), [Criterion Selection](#criterion-selection).
-
 #### 1. Tick Initiative Criteria
 
-- Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the [workspace](#workspace "input") checkout using [Initiative Record](#initiative-record "input"), [Epic Records](#epic-records "input"), [Output Files](#output-files "input").
 
-- Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of verified criterion ids.
+- Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of [verified criterion ids](#criterion-selection "input").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tick '[**&lt;criterion-ids&gt;**](#criterion-selection)' --fix '[**&lt;output-body-file&gt;**](#output-files)'
@@ -202,17 +178,17 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-936.json --epics issue-943.json issue-937.json --tick AC2 --fix fixed-936.md
 </pre></big>
 
+#### 2. Provide Ticked Initiative Criteria
+
+Provide [Output Files](#output-files "output"), [Criterion Selection](#criterion-selection "output") to the requester.
+
 ### Fetch Source
 
 Saves one GitHub source at the revision its permalink pins.
 
-**Inputs:** [Source Evidence](#source-evidence), [Output Files](#output-files).
-
-**Outputs:** [Source Evidence](#source-evidence).
-
 #### 1. Fetch Source
 
-Run this command from the repository checkout with the supplied inputs.
+Run this command from the repository checkout using [Source Evidence](#source-evidence "input"), [Output Files](#output-files "input").
 
 <big><pre>
 gh api 'repos/[**&lt;owner&gt;**](#source-evidence)/[**&lt;repository&gt;**](#source-evidence)/contents/[**&lt;source-path&gt;**](#source-evidence)?ref=[**&lt;revision&gt;**](#source-evidence)' --jq .content | base64 -d > '[**&lt;source-file&gt;**](#output-files)'
@@ -223,6 +199,10 @@ gh api 'repos/[**&lt;owner&gt;**](#source-evidence)/[**&lt;repository&gt;**](#so
 <big><pre>
 gh api 'repos/m2ux/workflow-server/contents/docs/spec.md?ref=4a217fe6' --jq .content | base64 -d > source-R1.md
 </pre></big>
+
+#### 2. Provide Fetched Source
+
+Provide [Source Evidence](#source-evidence "output") to the requester.
 
 ## Fields
 

@@ -16,7 +16,7 @@ The rules this skill's files follow alongside the [shared skill guidelines](../g
 These rules apply to mode and protocol procedures and artifact operations.
 
 - **Explicit execution.**
-  State the action, its inputs and any condition that selects it. Name the result used by the next step. Branches state where to continue or stop; retries name the repeated operation and refreshed inputs. Distinguish reading a definition from executing a procedure. Resolve timing, caller responsibility and return points in the instructions.
+  State the action, its inputs and any condition that selects it. Name the result used by the next step. Branches state where to continue or stop; retries name the repeated operation and refreshed inputs. Distinguish reading a definition from executing a procedure. Resolve timing, caller responsibility and continuation points in the instructions.
 
 - **Subsection titles.**
   A named callable procedure or operation title uses at least two words for its action and subject.
@@ -25,18 +25,18 @@ These rules apply to mode and protocol procedures and artifact operations.
 - **Sub-bullets.**
   Detail bullets use sentence case. The first word is capitalized, and a name keeps its own capitals.
 - **Separate actions.**
-  A numbered step with multiple instruction or detail items uses flush bullets for every item; a step with one item uses plain text. Put each sentence that advances the sequence in its own item, splitting comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence. Put a shared condition or iteration above its following actions, preserving order, inputs, validation gates and return points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
+  A numbered step with multiple instruction or detail items uses flush bullets for every item; a step with one item uses plain text. Put each sentence that advances the sequence in its own item, splitting comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence. Put a shared condition or iteration above its following actions, preserving order, inputs, validation gates and continuation points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
 - **List introductions.**
   Within a procedure step, an item that introduces or governs following items uses the step's item format. Determine its scope from the meaning of the instructions. Use bullets for peer actions, alternative branches and sibling groups. Give actions outside an introduction's scope an explicit continuation.
 - **Dependent instructions.**
-  Put instructions that handle an action's specific output immediately after that action, naming the condition and returned value. Keep detail flush beneath the step heading. Name the returned object explicitly when a pronoun would leave its referent unclear.
+  Put instructions that handle an action's specific output immediately after that action, naming the condition and provided value. Keep detail flush beneath the step heading. Name the provided object explicitly when a pronoun would leave its referent unclear.
 - **Branch headers.**
   Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading or a conditional introductory item, with flush content in the step's item format. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
 
 ## Prose
 
-- **Input labels.**
-  Artifact operation and command input declarations start with the bold label **Inputs:**; operation returns start with **Outputs:**. The descriptions use normal text and link their named contracts.
+- **Contextual contracts.**
+  Use [Link Roles](rules.md#link-roles) on every link naming an input, output or callable operation. Name each consumed input and provided output in the operation’s step prose, linked to its corresponding Fields contract at its owning home. Review steps, commands, calls, conditions and result handling for implied values; every one has an explicit contextual contract. Command argument links alone do not establish that prose contract.
 
 - **Rule homes.**
   A rule's [one home](../guidelines.md#prose) is the field or outcome it constrains, the procedure step it binds, or the Modes, Artifacts, or References section below. Operation inputs name the evidence that the caller must supply for those preconditions.
@@ -69,7 +69,7 @@ These rules govern command and access invocations inside executing steps. Proced
 - **Placed paths.**
   A command that creates a worktree or other lasting location takes a path its caller composes. Its executing step cites the field that places that kind and states that the path resolves against the directory the command runs in.
 - **Parameter placeholders.**
-  Command templates use descriptive `<input-name>` placeholders for variable identities, branches, paths, dates, filters and values, aligned with their **Inputs:**. Contract-backed argument names are bold Markdown links, `[**<input-name>**](#input-contract)`, inside the HTML block; literal syntax remains literal. Quote shell arguments containing placeholders and escape substituted values for their shell, URL, query or payload context. Keep required literals, enum values, field names and installed script paths literal. State list separators, mapping syntax and repeated arguments beside the command. JSON templates preserve the required value types.
+  Command templates use descriptive `<input-name>` placeholders for variable identities, branches, paths, dates, filters and values, aligned with their contextual Field references. Contract-backed argument names are bold Markdown links, `[**<input-name>**](#input-contract)`, inside the HTML block; literal syntax remains literal. Quote shell arguments containing placeholders and escape substituted values for their shell, URL, query or payload context. Keep required literals, enum values, field names and installed script paths literal. State list separators, mapping syntax and repeated arguments beside the command. JSON templates preserve the required value types.
 - **Concrete examples.**
   Retain hard-coded values in explicitly labelled examples beside the executing step's generic command or payload template so their shape remains clear. Examples illustrate input values; they do not supply defaults or identify the current target.
 - **Local scripts.**
@@ -82,7 +82,7 @@ These rules govern command and access invocations inside executing steps. Proced
 Read this before adding or changing a mode.
 
 - **Orchestration.**
-  Modes coordinate; artifact operations perform and validate work on their own subject. Mode procedures are lean orchestration wrappers: they select scope, call artifact operations with named inputs, route returned findings and user decisions, and coordinate changes across artifacts. A procedure that manages multiple artifacts belongs in a mode. A mode keeps inline commands only for work spanning artifacts or validating the skill itself.
+  Modes coordinate; artifact operations perform and validate work on their own subject. Mode procedures are lean orchestration wrappers: they select scope, call artifact operations with named inputs, route provided findings and user decisions, and coordinate changes across artifacts. A procedure that manages multiple artifacts belongs in a mode. A mode keeps inline commands only for work spanning artifacts or validating the skill itself.
 - **One goal.**
   A mode is the lifecycle of one user goal. It changes when that lifecycle changes.
 - **Outcomes.**
@@ -94,7 +94,7 @@ Read this before adding or changing a mode.
 - **Prerequisites.**
   Prerequisites open with `Read these files first.` They list every file the mode's Procedure, Outcomes or Fields link to, including another mode that step runs. They do not list a family common the mode does not link to. Reading the body artifact includes the common file, because that artifact lists it. Recalculate the list after changing calls or references: retain direct dependencies, including files owning called subsections; remove entries whose last direct use is gone. Caller attribution and descriptions of another mode's internals do not create dependencies for the callee.
 - **Procedure steps.**
-  Mode procedures follow the [procedure rules](#procedure), identifying required context in their instructions and call sites without a separate Inputs declaration.
+  Mode procedures follow the [procedure rules](#procedure), identifying required context in their instructions and call sites.
 - **Body files.**
   A file that populates a body is named `<subject>-body.md`. The mode owns how many of that subject a request becomes.
 - **Other modes.**
@@ -126,7 +126,7 @@ Read this before adding or changing a protocol.
 - **Entered whole.**
   One file holds one protocol. A caller runs the file; it does not link a step. A sequence worth calling on its own is its own protocol.
 - **Procedure.**
-  The steps follow the [procedure rules](#procedure). Protocols identify required context in their instructions and call sites without a separate Inputs declaration; calls follow the [routing rules](#modes).
+  The steps follow the [procedure rules](#procedure). Protocols identify required context in their instructions and call sites; calls follow the [routing rules](#modes).
 - **No closing summary.**
   What a protocol changes, and what a blocker leaves unchanged, is stated by the step that changes it. A protocol carries no section restating the result; a reader following the procedure and its links has it already, and a summary goes stale against the steps it describes.
 - **Prerequisites.**
@@ -164,7 +164,7 @@ Read this before adding or changing an artifact.
 - **Fields.**
   Fields defines the artifact's shape and the conditions on its elements. Common field conditions hold for the family; a kind supplements them. Fields is a `##` section, with each named field or group under `###`. The kind's template is a subsection of Fields and holds that kind's table. Field conditions do not state user goals. A condition that gates an action sits in the procedure step that performs it.
 - **No procedure in Fields.**
-  A field condition states shape and invariants. Named input and output contracts sit under Fields, and operation Inputs and Outputs link those contracts; execution belongs to Operations.
+  A field condition states shape and invariants. Named input and output contracts sit under Fields; execution belongs to Operations.
 - **Name.**
   A file that populates a body is named `<subject>-body.md`. Its scope is that population. `issue-body.md` is the shared issue body. A kind file is `proposal-body.md`, `initiative-issue-body.md`, `epic-issue-body.md`, `task-body.md`, `standalone-body.md`, or `hotfix-body.md`.
 - **Subject names.**
@@ -172,13 +172,13 @@ Read this before adding or changing an artifact.
 - **Common file.**
   The common file names no kind. A kind's table, its title, and a check that applies only to that kind live on that kind's file. The common file holds the rules every body shares.
 - **Operations.**
-  Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection opens with one line on what it is for, followed by linked **Inputs:** and **Outputs:** declarations and numbered heading steps. The opening line does not restate the steps. A step links to the shape it produces and does not restate it. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
+  Every procedural sequence occupies a named `###` subsection under Operations, including a kind's population path. Operations itself contains no steps; incorporate any overarching sequence into the named operations that perform its constituent work. Omit Operations when the artifact has no operation. Each subsection opens with one line on what it is for, followed by numbered heading steps. The opening line does not restate the steps. A step links to the shape it produces and does not restate it. A kind step links to the common procedure unit it uses and adds only the further population. It does not copy the shared rules.
 - **Prerequisites.**
   Prerequisites open with `Read these files first.` They list every file the artifact's Operations or Fields link to. A kind lists `issue-body.md` because it links to it. The common file does not link to a kind.
 - **Operation steps.**
   Address instructions directly to the agent, following the [procedure rules](#procedure).
-- **Returned output.**
-  The **Outputs:** declaration names the returned contracts; instructions identify the concrete result returned to the caller.
+- **Provided output.**
+  Use Provide to identify the concrete result and its recipient. Add a numbered provision step when no existing step supplies that result.
 - **Population conditions.**
   A population step leads with the writing action and its template or owning operation. Mandatory field conditions follow as flush bullets beneath that step, linked to their local or shared definitions. Each condition states what must hold; field rules remain at their linked home.
 - **Command implementation.**

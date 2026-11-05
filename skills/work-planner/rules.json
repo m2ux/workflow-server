@@ -9,7 +9,6 @@
   "procedure/list-introductions": ["review"],
   "procedure/dependent-instructions": ["review"],
   "procedure/branch-headers": ["review"],
-  "prose/input-labels": ["review"],
   "prose/rule-homes": ["review"],
   "prose/scheme": ["review"],
   "prose/examples": ["review"],
@@ -66,7 +65,6 @@
   "artifacts/operations": ["operation contract links", "review"],
   "artifacts/prerequisites": ["review"],
   "artifacts/operation-steps": ["review"],
-  "artifacts/returned-output": ["review"],
   "artifacts/population-conditions": ["review"],
   "artifacts/command-implementation": ["review"],
   "artifacts/no-spare-parts": ["review"],
@@ -89,5 +87,7 @@
   "progressive-disclosure/revision": ["review"],
   "changes/planning-adoption": ["review"],
   "changes/integrated-implementation": ["review"],
-  "changes/delivery": ["review"]
+  "changes/delivery": ["review"],
+  "prose/contextual-contracts": ["operation contract links", "operation link role", "review"],
+  "artifacts/provided-output": ["review"]
 }

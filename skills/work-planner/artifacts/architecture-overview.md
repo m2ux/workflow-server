@@ -8,28 +8,24 @@ The architecture overview explains one pull request's changes to the engineer wh
 
 One architecture overview from supplied measurements.
 
-**Inputs:** [Measurements](#measurements), [Pull Request Head](#pull-request-head), [Overview File](#overview-file).
-
-**Outputs:** [Overview File](#overview-file).
-
 #### 1. Check Measured Diagrams
 
-- Take the graph measurements supplied by the caller and check the proposed diagrams.
+- Take the graph [measurements](#measurements "input") supplied by the caller and check the proposed diagrams.
 - The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
 
 #### 2. Populate Overview File
 
-- Populate the overview from the [Template](#template) at the supplied output path.
+- Populate the overview from the [Template](#template) at the destination in [Overview File](#overview-file "input").
 - All populated fields must meet [Fields](#fields).
 
 #### 3. Pin Code References
 
-- Pin each code reference.
+- Pin each code reference to the [Pull Request Head](#pull-request-head "input").
 - Each reference must meet [Code References](#code-references).
 
-#### 4. Return Overview File
+#### 4. Provide Overview File
 
-Return the file for the caller to register in its planning record.
+Provide the completed [Overview File](#overview-file "output") for registration in its planning record.
 
 ## Fields
 

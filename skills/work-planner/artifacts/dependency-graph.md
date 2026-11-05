@@ -19,19 +19,15 @@ Read these files first.
 
 The task graph and the row numbers it permits, checked and renumbered across the supplied bodies.
 
-**Inputs:** [Graph Inputs](#graph-inputs).
-
-**Outputs:** [Graph Result](#graph-result).
-
 #### 1. Check Supplied Task Graph
 
-- Use the supplied local drafts when reviewing unpublished work.
-- For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the initiative and each epic body.
-- Apply [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation invokes Apply [Check Unit Lanes](lane.md#check-unit-lanes) internally with each derived unit’s epic body and complete ids.
+- Use local drafts from [Graph Inputs](#graph-inputs "input") when reviewing unpublished work.
+- For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue "operation") for the initiative and each epic body.
+- Apply [Check Dependencies](#check-dependencies "operation") with the initiative body, every epic body and every supplied work-item file. The computation invokes Apply [Check Unit Lanes](lane.md#check-unit-lanes "operation") internally with each derived unit’s epic body and complete ids.
 
 #### 2. Resolve Graph Findings
 
-- For each finding, Apply [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) with the supplied allowance.
+- For each finding, Apply [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy "operation") with the supplied allowance.
 - Take an automatic correction.
 - Settle a held finding as [Held Change](plan-change.md#held-change) states.
 - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
@@ -43,29 +39,25 @@ The task graph and the row numbers it permits, checked and renumbered across the
 #### 3. Apply Confirmed Numbering
 
 - Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
-- For a confirmed epic map, Apply [Renumber Epics](#renumber-epics) with current pull request records and every affected body.
-- For a confirmed task map, Apply [Renumber Tasks](#renumber-tasks) with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
+- For a confirmed epic map, Apply [Renumber Epics](#renumber-epics "operation") with current pull request records and every affected body.
+- For a confirmed task map, Apply [Renumber Tasks](#renumber-tasks "operation") with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
 - Re-sort rewritten tables.
 - Inspect every reported range.
 - Search prose for references the script cannot see.
-- After each edge or numbering change, Apply [Check Dependencies](#check-dependencies) with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
+- After each edge or numbering change, Apply [Check Dependencies](#check-dependencies "operation") with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
 - Record the printed longest chains and each printed contending pair in the planning record.
-- Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering.
+- Provide [Graph Result](#graph-result "output") with the checked bodies, proposed [Epic Priority](#epic-priority) map and unresolved findings; do not publish a failed renumbering.
 
 ### Check Dependencies
 
 Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
 
-**Inputs:** [Dependency Files](#dependency-files).
-
-**Outputs:** [Graph Result](#graph-result).
-
 #### 1. Check Dependencies
 
-- Run the following command with the supplied inputs.
+- Run the following command using [Workspace](#workspace "input").
 
 - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
-- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files) defines them.
+- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files "input") defines them.
 
 - Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
 - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
@@ -89,17 +81,17 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md R=/records/joins.md
 </pre></big>
 
+#### 2. Provide Checked Dependencies
+
+Provide [Graph Result](#graph-result "output") to the requester.
+
 ### Renumber Tasks
 
 Renumbers one epic's tasks by the map given, in the files given.
 
-**Inputs:** [Renumber Inputs](#renumber-inputs).
-
-**Outputs:** [Rewritten Bodies](#rewritten-bodies).
-
 #### 1. Renumber Tasks
 
-- Run the following command with the supplied inputs.
+- Run the following command using [Renumber Inputs](#renumber-inputs "input"), [Workspace](#workspace "input"), [Dependency Files](#dependency-files "input").
 
 - `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
 
@@ -118,17 +110,17 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
 </pre></big>
 
+#### 2. Provide Renumber Tasks
+
+Provide [Rewritten Bodies](#rewritten-bodies "output") to the requester.
+
 ### Renumber Epics
 
 Renumbers an initiative's epics across supplied body files.
 
-**Inputs:** [Renumber Inputs](#renumber-inputs), [Pull Request Records](#pull-request-records).
-
-**Outputs:** [Rewritten Bodies](#rewritten-bodies).
-
 #### 1. Renumber Epics
 
-- Run the following command with the supplied inputs.
+- Run the following command using [Renumber Inputs](#renumber-inputs "input"), [Pull Request Records](#pull-request-records "input"), [Workspace](#workspace "input").
 
 - The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
 - Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
@@ -142,6 +134,10 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-936.md live-943.md
 </pre></big>
+
+#### 2. Provide Renumber Epics
+
+Provide [Rewritten Bodies](#rewritten-bodies "output") to the requester.
 
 ## Fields
 

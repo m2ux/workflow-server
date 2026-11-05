@@ -15,32 +15,28 @@ Read these files first.
 
 One standalone issue body from its supplied scope.
 
-**Inputs:** [Issue Context](#issue-context), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body).
-
 #### 1. Populate Standalone Template
 
-- Populate the body from the [Template](#template) at the supplied output path.
+- Populate the [Template](#template) from [Issue Context](#issue-context "input") at the destination in [Output Body](#output-body "input").
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
 - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).
+
+#### 2. Provide Populated Standalone Body
+
+Provide the populated [Output Body](#output-body "output") for publication.
 
 ### Revise Standalone Body
 
 One standalone body with its confirmed boundary integrated.
 
-**Inputs:** [Current Body](#current-body), [Confirmed Boundary](#confirmed-boundary), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body).
-
 #### 1. Apply Confirmed Boundary
 
-Apply [Populate Standalone Body](#populate-standalone-body) with the confirmed boundary, folding any Non-Goals into Proposal as a closing boundary.
+Apply [Populate Standalone Body](#populate-standalone-body "operation") to [Current Body](#current-body "input") with [Confirmed Boundary](#confirmed-boundary "input"), folding any Non-Goals into Proposal as a closing boundary and writing to [Output Body](#output-body "input").
 
-#### 2. Return Revised Body
+#### 2. Provide Revised Body
 
-Return the revised file for publication.
+Provide the revised [Output Body](#output-body "output") for publication.
 
 ## Fields
 

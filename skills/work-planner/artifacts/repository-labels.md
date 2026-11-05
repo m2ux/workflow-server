@@ -8,57 +8,53 @@ The labels available for issue metadata in one repository.
 
 The required label definitions available for issue publication.
 
-**Inputs:** [Repository](#repository), [Label Identity](#label-identity).
-
-**Outputs:** [Label Identity](#label-identity).
-
 #### 1. Read Repository Labels
 
-Apply [List Labels](#list-labels) for the repository.
+Apply [List Labels](#list-labels "operation") for [Repository](#repository "input").
 
 #### 2. Compare Required Names
 
-Compare the returned labels with the supplied required names.
+Compare the provided labels with the required definitions in [Label Identity](#label-identity "input").
 
 #### 3. Create Missing Labels
 
-Apply [Create Label](#create-label) for each absent required definition.
+Apply [Create Label](#create-label "operation") for each absent required definition.
 
-#### 4. Return Available Labels
+#### 4. Provide Available Labels
 
-Return the available labels; an unknown definition is a finding for the caller to resolve before publication.
+Provide the available [Label Identity](#label-identity "output"); an unknown definition is a finding to resolve before publication.
 
 ### List Labels
 
 Lists the labels that exist in the repository.
 
-**Inputs:** [Repository](#repository).
-
-**Outputs:** [Label Identity](#label-identity).
-
 #### 1. List Labels
 
-Run this command from the repository checkout with the supplied inputs.
+Run this command from the [repository](#repository "input") checkout with the supplied inputs.
 
 <big><pre>
 gh api "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels?per_page=100" --jq '.&#91;&#93;.name'
 </pre></big>
 
+#### 2. Provide Listed Labels
+
+Provide [Label Identity](#label-identity "output") to the requester.
+
 ### Create Label
 
 Creates the label specified by its name, colour and description.
 
-**Inputs:** [Repository](#repository), [Label Identity](#label-identity).
-
-**Outputs:** [Label Identity](#label-identity).
-
 #### 1. Create Label
 
-Run this command from the repository checkout with the supplied inputs.
+Run this command from the [repository](#repository "input") checkout using [Label Identity](#label-identity "input").
 
 <big><pre>
 gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/labels' -f name='[**&lt;label&gt;**](#label-identity)' -f color='[**&lt;hex-colour&gt;**](#label-identity)' -f description='[**&lt;description&gt;**](#label-identity)' --jq .name
 </pre></big>
+
+#### 2. Provide Created Label
+
+Provide [Label Identity](#label-identity "output") to the requester.
 
 ## Fields
 

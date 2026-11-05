@@ -23,49 +23,49 @@ Read [Rules](rules.md) and [Conventions](conventions.md) before selecting a mode
 
 Select the mode as appropriate to fulfill the user request:
 
-- **[Propose](modes/propose-mode.md)**
+- **[Propose](modes/propose-mode.md "operation")**
   - Forward-looking, scoped to one problem
   - Scoping a problem nothing is planned against yet
   - Raising a proposal issue with optional board placement
-- **[Plan](modes/plan-mode.md)**
+- **[Plan](modes/plan-mode.md "operation")**
   - Forward-looking, scoped to one approved proposal
   - Turning an approved proposal into initiatives
   - Raising, breaking down and restructuring initiatives and epics
   - Review passes of a plan against its goal, dependencies included
   - Renumbering of epics and tasks
   - Folding review findings into issues
-- **[Align](modes/align-mode.md)**
+- **[Align](modes/align-mode.md "operation")**
   - Backward-looking, scoped to one epic, initiative or board
   - Checks of existing issues against their templates and the rules that bind them, with fixes
   - Acceptance criteria checked for verifiability and against the sources the initiative marks
   - Epic branch structure and task pull request bases brought to the delivery shape
-- **[Sync](modes/sync-mode.md)**
+- **[Sync](modes/sync-mode.md "operation")**
   - Backward-looking, scoped to one epic, initiative or board
   - Delivery recorded against the issues that planned it
   - Closure of complete task issues, epics and initiatives
   - The theme board brought current with its issues
-- **[Advance](modes/advance-mode.md)**
+- **[Advance](modes/advance-mode.md "operation")**
   - Forward-looking, scoped to one board
   - Placement of initiatives and epics as In Progress or as Ready, and of hot-fixes as their [Board Status](artifacts/hotfix.md#board-status) gives
   - A parallel work map for initiatives with no priority
-- **[Deliver](modes/deliver-mode.md)**
+- **[Deliver](modes/deliver-mode.md "operation")**
   - Forward-looking, scoped to one board
   - Delivery of a theme board's work, each unit planned, implemented and raised as a pull request
   - Dispatch of one session per unit of work
   - Merging task pull requests through the shared delivery procedure
-- **[Understand](modes/understand-mode.md)**
+- **[Understand](modes/understand-mode.md "operation")**
   - Backward-looking, scoped to one pull request
   - An architecture overview of one pull request
   - Structural and functional diagrams of its changes
   - The order to read the diff in
-- **[Hoist](modes/hoist-mode.md)**
+- **[Hoist](modes/hoist-mode.md "operation")**
   - Forward-looking, scoped to a repository's orphan issues
   - Discovery of orphan issues
   - Placements for each in an existing or new initiative, epic or task, or as a hot-fix
-- **[Standup](modes/standup-mode.md)**
+- **[Standup](modes/standup-mode.md "operation")**
   - Backward-looking, scoped to one board's reporting window
   - Standup summaries of a theme's board for a Slack channel
-- **[Revise](modes/revise-mode.md)**
+- **[Revise](modes/revise-mode.md "operation")**
   - Forward-looking, scoped to this skill's own files
   - Changes to SKILL.md, its modes, artifacts, references and scripts
 

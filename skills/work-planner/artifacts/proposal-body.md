@@ -14,32 +14,28 @@ Read these files first.
 
 One proposal body from a confirmed problem and goal.
 
-**Inputs:** [Proposal Context](#proposal-context), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body).
-
 #### 1. Populate Proposal Template
 
-- Populate the body from the [Template](#template) at the supplied output path.
+- Populate the [Template](#template) from [Proposal Context](#proposal-context "input") at the destination in [Output Body](#output-body "input").
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
 - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
 - All populated fields must meet [Fields](#fields).
+
+#### 2. Provide Populated Proposal Body
+
+Provide the populated [Output Body](#output-body "output") for publication.
 
 ### Validate Proposal Body
 
 The body's local format and field findings.
 
-**Inputs:** [Proposal Record](#proposal-record), [Output Body](#output-body).
-
-**Outputs:** [Output Body](#output-body), [Validation Findings](#validation-findings).
-
 #### 1. Validate Kind Conditions
 
-Apply [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, using the proposal field conditions and required title and label metadata.
+Apply [Validate Issue Body](issue-body.md#validate-issue-body "operation") to [Proposal Record](#proposal-record "input") against local [Fields](#fields), using the supplied related evidence and [Output Body](#output-body "input"), proposal field conditions and required title and label metadata.
 
-#### 2. Return Local Findings
+#### 2. Provide Local Findings
 
-Return the corrected body, mechanical diff and unresolved findings for the caller.
+Provide the corrected [Output Body](#output-body "output") and [Validation Findings](#validation-findings "output"), including the mechanical diff and unresolved findings.
 
 ## Fields
 

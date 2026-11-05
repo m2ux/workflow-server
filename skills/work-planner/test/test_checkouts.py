@@ -16,7 +16,7 @@ vocabulary.
   paragraph, and a procedure subsection declares its own only where it
   differs from its file's.
 - A call naming a checkout other than its procedure's passes it: the
-  operation called names that checkout among its Inputs, the protocol or
+  operation called names that checkout in contextual input links, the protocol or
   mode called runs in it, or the command called acts wherever it is run.
 
 The walk reads the citation graph the skill check builds, so a call is a link
@@ -35,7 +35,6 @@ import check_skill_files as checker
 
 ACTS_ON = '**Acts on:** the checkout it runs in.'
 RUNS_IN = re.compile(r'^\*\*Runs in:\*\* the (.+) checkout\.$')
-INPUTS = re.compile(r'^\*\*Inputs:\*\*(.*)$')
 WHERE_IT_STANDS = re.compile(r'^\s*(git (?!-C )|gitnexus )')
 VOCABULARY_LEAD = re.compile(r'^(\s*)- \*\*Checkouts\.\*\*')
 VOCABULARY_ENTRY = re.compile(r'^\s+- `([^`]+)`')
@@ -92,10 +91,26 @@ class Document:
         return None
 
     def inputs(self, start):
-        for line in self.lead(start):
-            if match := INPUTS.match(line.strip()):
-                return match[1]
-        return ''
+        """Input names and owning Field definitions inside this operation's steps."""
+        _, end, _, _ = self.spans[start]
+        contracts = []
+        for index in range(start + 1, end):
+            if index not in self.steps or self.fenced[index] or index in self.blocks.html_lines:
+                continue
+            for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', self.lines[index])):
+                if checker.link_role(match) != 'input':
+                    continue
+                name, _, fragment = match[1].partition('#')
+                destination = (self.path.parent / name).resolve() if name else self.path
+                if not checker.field_contract(self.path, match[1], 'Fields'):
+                    continue
+                lines, _, headings = checker.scan(destination)
+                first, depth, title = next((i, d, t) for i, d, t in headings
+                                          if checker.anchor_of(t) == fragment)
+                last = checker.heading_end(headings, first, depth, len(lines))
+                contracts.append(title + '\n' + '\n'.join(lines[first + 1:last]))
+        return '\n'.join(contracts)
+
 
     def enclosing(self, index):
         """The headings holding a line, innermost first."""
@@ -138,8 +153,8 @@ class Document:
 
     def calls(self):
         """Each link a procedure step carries, with its destination."""
-        for index, target in checker.targets(self.path, self.lines, self.fenced):
-            if index not in self.steps:
+        for index, target, kind in checker.citation_kinds(self.path, self.entry):
+            if index not in self.steps or kind != checker.STEP:
                 continue
             name, _, fragment = target.partition('#')
             destination = (self.path.parent / name).resolve() if name else self.path
@@ -153,7 +168,8 @@ def documents():
 
 def named(line, names):
     """The vocabulary checkouts a line names, as `the <name> checkout`."""
-    return {name for name in names if f'the {name} checkout' in line}
+    visible = checker.LINK.sub(lambda match: match[0][1:match[0].index(']')], line).lower()
+    return {name for name in names if f'the {name} checkout' in visible}
 
 
 class Corpus:
@@ -199,7 +215,7 @@ class Corpus:
 
     def accepts(self, destination, anchor, checkout):
         """Whether a section called with a checkout takes it: a command acts
-        wherever it is run, an operation names it among its Inputs, and a
+        wherever it is run, an operation names it in contextual input links, and a
         procedure runs in it."""
         if (destination, anchor) in self.commands:
             return True
@@ -309,6 +325,30 @@ git status
                 'Inspect Explicit Checkout': (False, False),
                 'Inspect Undeclared Checkout': (True, False),
             })
+
+    def test_inputs_require_contextual_step_prose(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'artifacts/control.md'
+            path.parent.mkdir()
+            content = '\n'.join([
+                '# Contextual Input', '', '## Operations', '', '### Inspect Supplied State', '',
+                '[Review Checkout](#review-checkout "input")', '', '#### 1. Inspect Checkout', '',
+                'Inspect the supplied state.', '',
+                '```markdown', 'Use [Review Checkout](#review-checkout "input").', '```', '',
+                '<big><pre>[Review Checkout](#review-checkout "input")</pre></big>', '',
+                'Provide [Review Checkout](#review-checkout "output").', '',
+                '## Fields', '', '### Review Checkout', '', 'The review checkout holding the change.', '',
+            ])
+            entry = {'sections': ['Operations', 'Fields'], 'procedures': 'Operations',
+                     'steps': 'headings', 'commands': 'inline-html'}
+            path.write_text(content)
+            document = Document(path, entry)
+            start = document.anchors['inspect-supplied-state']
+            self.assertEqual(document.inputs(start), '')
+            path.write_text(content.replace('Inspect the supplied state.',
+                                            'Inspect [Review Checkout](#review-checkout "input").'))
+            document = Document(path, entry)
+            self.assertIn('review checkout', document.inputs(start).lower())
 
     def test_calls_follow_heading_steps_and_exclude_literal_and_lead_links(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -424,7 +464,7 @@ class ProceduresDeclaringTheirCheckout(unittest.TestCase):
 class CallsIntoAnotherCheckout(unittest.TestCase):
     def test_a_call_into_another_checkout_passes_it(self):
         """A call naming a checkout other than its procedure's hands it over:
-        the operation takes it among its Inputs, the procedure runs in it, or
+        the operation takes it in contextual input links, the procedure runs in it, or
         the command acts wherever it is run. A call to a procedure running
         elsewhere names that checkout."""
         corpus = Corpus()

@@ -1,6 +1,7 @@
 {
   "SKILL.md": {
-    "sections": ["Modes", "Dependencies"]
+    "sections": ["Modes", "Dependencies"],
+    "link_roles": true
   },
   "modes": {
     "sections": ["Prerequisites", "Procedure", "Outcomes", "Fields", "Guidance"],
@@ -9,7 +10,8 @@
     "steps": "headings",
     "commands": "inline-html",
     "preamble": ["../rules.md", "../conventions.md", "#outcomes"],
-    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"}
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
+    "link_roles": true
   },
   "protocols": {
     "sections": ["Prerequisites", "Procedure", "Guidance"],
@@ -18,7 +20,8 @@
     "steps": "headings",
     "commands": "inline-html",
     "preamble": ["../rules.md", "../conventions.md"],
-    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"}
+    "calls": {"artifacts": "Apply", "modes": "Follow", "protocols": "Follow"},
+    "link_roles": true
   },
   "artifacts": {
     "sections": ["Prerequisites", "Operations", "Fields", "Guidance"],
@@ -27,6 +30,7 @@
     "steps": "headings",
     "commands": "inline-html",
     "contracts": "Fields",
-    "calls": {"artifacts": "Apply"}
+    "calls": {"artifacts": "Apply"},
+    "link_roles": true
   }
 }

@@ -8,47 +8,39 @@ One evidenced problem and its proposed solution.
 
 One finding verified against its supplied source.
 
-**Inputs:** [Finding Evidence](#finding-evidence).
-
-**Outputs:** [Finding Result](#finding-result).
-
 #### 1. Verify Supplied Problem
 
-Verify the problem against the supplied source.
+Verify the problem against the source in [Finding Evidence](#finding-evidence "input").
 
-#### 2. Return Evidence Gaps
+#### 2. Provide Evidence Gaps
 
-If evidence is missing or contradictory, return that finding for the caller to resolve.
+If evidence is missing or contradictory, provide that finding for the caller to resolve.
 
 #### 3. Populate Verified Finding
 
 - Populate the finding with its source quotation.
 - It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
 
-#### 4. Return Finding Decision
+#### 4. Provide Finding Decision
 
-Return the finding and any pending decision.
+Provide [Finding Result](#finding-result "output") with the finding and any pending decision.
 
 ### Report Review Finding
 
 The verified findings presented for resolution.
 
-**Inputs:** [Finding Set](#finding-set).
-
-**Outputs:** [Finding Result](#finding-result).
-
 #### 1. Populate Verified Findings
 
-- Apply [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.
+- Apply [Populate Review Finding](#populate-review-finding "operation") for each item in [Finding Set](#finding-set "input") with its area, severity, problem, solution and source evidence.
 - Resolve any evidence gap before reporting it.
-- Group the returned findings by area.
+- Group the provided findings by area.
 
 #### 2. Resolve Pending Decisions
 
 - Put each pending decision to the user, one question at a time.
 - Wait for the answer.
 - Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
-- Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.
+- Provide [Finding Result](#finding-result "output") with each confirmed resolution for application to its selected issue kind. A pending decision is provided without applying a change.
 
 ## Fields
 

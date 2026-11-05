@@ -97,7 +97,7 @@ class DraftsInTheRecord(unittest.TestCase):
                     self.assertIn(IN_RECORD, line)
 
     def test_the_record_registers_each_draft(self):
-        self.assertIn('Register each draft body and returned work-item file in the planning record.',
+        self.assertIn('Register each draft body and provided work-item file in the planning record.',
                       steps()['populate the epics'])
 
     def test_the_record_layout_holds_the_drafts(self):
@@ -124,7 +124,7 @@ class PublishedOnEngineering(unittest.TestCase):
     def test_publishing_commits_and_pushes_the_engineering_branch(self):
         text = (ROOT / 'artifacts' / 'planning-record.md').read_text()
         publish = section(text, '### Publish Planning Record')
-        self.assertIn('[Commit Planning Record](#commit-planning-record)', publish)
+        self.assertIn('#commit-planning-record', checker.LINK.findall(publish))
         self.assertIn("cd '<engineering-worktree>' && git add -A && "
                       "(git diff --cached --quiet || git commit -F '<message-file>') && "
                       "git fetch origin engineering && git rebase origin/engineering && git push",

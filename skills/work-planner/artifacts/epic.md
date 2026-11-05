@@ -15,13 +15,9 @@ Read these files first.
 
 The evidence required before starting an epic's work.
 
-**Inputs:** [Initiative Evidence](#initiative-evidence), [Epic Body](#epic-body), [Prerequisite Records](#prerequisite-records).
-
-**Outputs:** [Prerequisite Evidence](#prerequisite-evidence).
-
 #### 1. Identify Named Prerequisites
 
-Identify each prerequisite the supplied initiative row names.
+Identify each prerequisite the initiative row in [Initiative Evidence](#initiative-evidence "input") names for [Epic Body](#epic-body "input").
 
 #### 2. Apply Whole-Epic Dependency
 
@@ -29,61 +25,49 @@ Apply the initiative's [whole-epic dependency rule](initiative-issue-body.md#wor
 
 #### 3. Confirm Prerequisite Delivery
 
-Confirm each prerequisite epic is closed as completed and every one of its bases has merged. Missing records leave the prerequisite unconfirmed.
+Confirm from [Prerequisite Records](#prerequisite-records "input") that each prerequisite epic is closed as completed and every one of its bases has merged. Missing records leave the prerequisite unconfirmed.
 
-#### 4. Return Prerequisite Evidence
+#### 4. Provide Prerequisite Evidence
 
-Return the [Prerequisite Evidence](#prerequisite-evidence), identifying each confirmed prerequisite and missing condition. Only a confirmed result permits an unstarted epic's bases to be created or its task to be dispatched.
+Provide the [Prerequisite Evidence](#prerequisite-evidence "output"), identifying each confirmed prerequisite and missing condition. Only a confirmed result permits an unstarted epic's bases to be created or its task to be dispatched.
 
 ### Inspect Epic Delivery
 
 The delivery findings for one epic from supplied evidence.
 
-**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Output Body](#output-body).
-
-**Outputs:** [Delivery Findings](#delivery-findings).
-
 #### 1. Match Supplied Delivery
 
-- Apply [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying a local scratch output body as `--fix`.
+- Apply [Match Pull Requests](#match-pull-requests "operation") with the [epic JSON](#epic-record "input"), [pull request records](#pull-request-records "input") as `--prs` and [link snapshot](#issue-links "input") as `--links`, supplying a local scratch [output body](#output-body "input") as `--fix`.
 - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
-- For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
+- For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue "operation"), fetch the saved epic and repeat the match before returning its evidence.
 
-#### 2. Return Delivery Findings
+#### 2. Provide Delivery Findings
 
-Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply.
+Provide the [Delivery Findings](#delivery-findings "output"); missing linked pull requests are missing evidence for the caller to supply.
 
 ### Check Epic Readiness
 
 The epic's eligibility for integration from current delivery and criterion evidence.
 
-**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Verification Evidence](#verification-evidence).
-
-**Outputs:** [Delivery State](#delivery-state).
-
 #### 1. Inspect Current Delivery
 
-Apply [Inspect Epic Delivery](#inspect-epic-delivery) with the supplied epic JSON, pull request records and complete issue-link snapshot.
+Apply [Inspect Epic Delivery](#inspect-epic-delivery "operation") with the supplied [epic JSON](#epic-record "input"), [pull request records](#pull-request-records "input") and [complete issue-link snapshot](#issue-links "input").
 
 #### 2. Confirm Integration Conditions
 
-Confirm every task is delivered, every epic criterion is verified and ticked, and no open question or unresolved delivery discrepancy remains. An unmerged epic base awaiting integration is expected at this stage. Missing or stale verification leaves readiness unconfirmed.
+Confirm every task is delivered, every epic criterion has current [Verification Evidence](#verification-evidence "input") and is ticked, and no open question or unresolved delivery discrepancy remains. An unmerged epic base awaiting integration is expected at this stage. Missing or stale verification leaves readiness unconfirmed.
 
-#### 3. Return Integration Readiness
+#### 3. Provide Integration Readiness
 
-Return the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge.
+Provide the integration readiness in [Delivery State](#delivery-state "output"), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge.
 
 ### Check Epic Completion
 
 The epic's normal delivery result before tracker closure.
 
-**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Verification Evidence](#verification-evidence), [Base Merges](#base-merges).
-
-**Outputs:** [Delivery State](#delivery-state).
-
 #### 1. Check Current Readiness
 
-Apply [Check Epic Readiness](#check-epic-readiness) with the current epic, pull request records, issue-link snapshot and criterion verification evidence.
+Apply [Check Epic Readiness](#check-epic-readiness "operation") for [Epic Record](#epic-record "input") with [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input") and [Verification Evidence](#verification-evidence "input").
 
 #### 2. Reconcile Expected Bases
 
@@ -91,25 +75,21 @@ Reconcile the expected bases with the task delivery targets.
 
 #### 3. Confirm Base Merges
 
-Confirm every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked.
+Confirm from [Base Merges](#base-merges "input") that every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked.
 
-#### 4. Return Completion Result
+#### 4. Provide Completion Result
 
-Return the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+Provide the completion result in [Delivery State](#delivery-state "output"), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
 
 ### Match Pull Requests
 
 Reports an epic's delivery state against the pull requests that name it.
 
-**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Output Body](#output-body).
-
-**Outputs:** [Delivery Findings](#delivery-findings).
-
 #### 1. Match Pull Requests
 
-- Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the [workspace](#workspace "input") checkout using [Epic Record](#epic-record "input"), [Pull Request Records](#pull-request-records "input"), [Issue Links](#issue-links "input"), [Output Body](#output-body "input").
 
-- Results follow [Delivery Findings](#delivery-findings).
+- Results follow [Delivery Findings](#delivery-findings "output").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links)' --fix '[**&lt;epic-body-file&gt;**](#output-body)'
@@ -120,6 +100,10 @@ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py issue-943.json --prs prs.json --links links.json --fix epic-body.md
 </pre></big>
+
+#### 2. Provide Match Pull Requests
+
+Provide [Delivery Findings](#delivery-findings "output") to the requester.
 
 ## Fields
 

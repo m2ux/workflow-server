@@ -8,39 +8,31 @@ One change to the plan that a run makes as it works, and whether the run applies
 
 One pending change assessed against the run's allowance.
 
-**Inputs:** [Pending Change](#pending-change), [Allowance](#allowance).
-
-**Outputs:** [Autonomy Result](#autonomy-result).
-
 #### 1. Classify Pending Change
 
-Match the change to one kind in [Change Kinds](#change-kinds).
+Match [Pending Change](#pending-change "input") to one kind in [Change Kinds](#change-kinds).
 
-#### 2. Return Allowed Change
+#### 2. Provide Allowed Change
 
-Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.
+Provide [Autonomy Result](#autonomy-result "output") as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the requester applies.
 
-#### 3. Return Held Change
+#### 3. Provide Held Change
 
-- Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
+- Provide it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
 - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
-- An absent allowance holds every change, so a run the user drives decides nothing on their behalf.
+- An absent [allowance](#allowance "input") holds every change, so a run the user drives decides nothing on their behalf.
 
 ### Record Plan Change
 
 One entry in the run's list, for a change it applied or held.
 
-**Inputs:** [Change Details](#change-details), [Change List](#change-list).
-
-**Outputs:** [Change List](#change-list).
-
 #### 1. Record Applied or Held Entry
 
-Add one entry meeting [Entry](#entry) to the supplied [Change List](#change-list), marked applied or held.
+Add [Change Details](#change-details "input") as one entry meeting [Entry](#entry) to the supplied [Change List](#change-list "input"), marked applied or held.
 
-#### 2. Return Updated List
+#### 2. Provide Updated List
 
-Return the updated list for the caller to publish and report.
+Provide the updated [Change List](#change-list "output") for publication and reporting.
 
 ## Fields
 

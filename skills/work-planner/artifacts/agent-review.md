@@ -8,62 +8,54 @@ Published evidence of an agent's review of one integration diff, an epic's revie
 
 A review record for the exact integration revision.
 
-**Inputs:** [Review Inputs](#review-inputs).
-
-**Outputs:** [Review Record](#review-record).
-
 #### 1. Review Complete Integration Diff
 
-Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
+Read the complete target-to-head diff, affected definitions and callers, and every criterion’s verification evidence using the [Review Inputs](#review-inputs "input"). Inspect behavior and failure paths; test counts alone do not establish review completion.
 
 #### 2. Resolve Review Findings
 
 - Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
 
-- When the findings require fixes under [Review Record](#review-record):
+- When the findings require fixes under [Review Record](#review-record "output"):
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
-- Apply [Produce Agent Review](#produce-agent-review) with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and return that review’s record.
+- Apply [Produce Agent Review](#produce-agent-review "operation") with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and provide that review’s record.
 
 #### 3. Write Revision Review Record
 
-Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
+Write a JSON list containing the [Review Record](#review-record "output"), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
 
-#### 4. Return Review Evidence
+#### 4. Provide Review Evidence
 
-Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
+Provide the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
 
 ### Check Agent Review
 
 The current review's handoff eligibility.
 
-**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).
-
-**Outputs:** [Review Eligibility](#review-eligibility).
-
 #### 1. Validate Published Review Evidence
 
-Apply [Validate Agent Review](#validate-agent-review) with those files. Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
+Apply [Validate Agent Review](#validate-agent-review "operation") with the [Pull Request Record](#pull-request-record "input") and [Published Reviews](#published-reviews "input"). Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
 
-#### 2. Return Checked Revision
+#### 2. Provide Checked Revision
 
-Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that invalidates the record under [Review Record](#review-record) requires another review.
+Provide [Review Eligibility](#review-eligibility "output") and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that invalidates the record under [Review Record](#review-record) requires another review.
 
 ### Validate Agent Review
 
 Checks published review evidence against a freshly fetched integration pull request.
 
-**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).
-
-**Outputs:** [Review Eligibility](#review-eligibility).
-
 #### 1. Validate Agent Review
 
-Run the following command with the supplied inputs.
+Run the following command using [Pull Request Record](#pull-request-record "input"), [Published Reviews](#published-reviews "input"), [Workspace](#workspace "input").
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
 </pre></big>
+
+#### 2. Provide Validated Agent Review
+
+Provide [Review Eligibility](#review-eligibility "output") to the requester.
 
 ## Fields
 

@@ -16,57 +16,45 @@ Read these files first.
 
 The verification evidence for a supplied set of criteria whose delivery is ready.
 
-**Inputs:** [Criterion Selection](#criterion-selection), [Issue Body](#issue-body), [Delivery Evidence](#delivery-evidence), [Instrument](#instrument), [Project Checkout](#project-checkout).
-
-**Outputs:** [Verification Evidence](#verification-evidence).
-
 #### 1. Confirm Criterion Readiness
 
-- Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
-- Return evidence that fails Readiness as a blocker for that criterion.
+- Confirm [Delivery Evidence](#delivery-evidence "input") establishes [Readiness](#readiness) for the [Criterion Selection](#criterion-selection "input") in the [Issue Body](#issue-body "input").
+- Provide evidence that fails Readiness as a blocker for that criterion.
 
 #### 2. Run Named Instruments
 
-- Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
-- Apply [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
+- Run each criterion's named [instrument](#instrument "input") at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+- Apply [Run at Revision](#run-at-revision "operation") with the [project checkout](#project-checkout "input"), that revision and the instrument.
 - Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
 
-#### 3. Return Criterion Evidence
+#### 3. Provide Criterion Evidence
 
-- Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
+- Provide [Verification Evidence](#verification-evidence "output") identifying verified criterion ids with their evidence and each unresolved criterion with what is missing.
 - Leave body publication and further planning to the caller.
 
 ### Tick Verified Criteria
 
 The confirmed criteria and completed rows recorded in an epic or initiative body.
 
-**Inputs:** [Issue Evidence](#issue-evidence), [Criterion Selection](#criterion-selection), [Output Body](#output-body).
-
-**Outputs:** [Tick State](#tick-state), [Output Body](#output-body).
-
 #### 1. Record Verified Criteria
 
-- Record the criteria, meeting [Tick State](#tick-state).
-- For an epic, Apply [Record Epic Criteria](epic-issue-body.md#record-epic-criteria) with the issue JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
-- For an initiative, Apply [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria) with the issue JSON, every linked epic record, verified criterion ids and output body file.
+- Record the criteria from [Issue Evidence](#issue-evidence "input"), meeting [Tick State](#tick-state "output").
+- For an epic, Apply [Record Epic Criteria](epic-issue-body.md#record-epic-criteria "operation") with the issue JSON, pull request records, complete issue-link snapshot, [verified criterion ids](#criterion-selection "input") and [output body file](#output-body "input").
+- For an initiative, Apply [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria "operation") with the issue JSON, every linked epic record, verified criterion ids and output body file.
 
-#### 2. Return Body Disposition
+#### 2. Provide Body Disposition
 
-Return the resulting body and any refused criteria to the caller for publication.
+Provide the [resulting body](#output-body "output") and any refused criteria to the caller for publication.
 
 ### Run at Revision
 
 Runs one instrument at the commit a branch, tag or commit resolves to, in a detached checkout the run creates and removes.
 
-**Inputs:** [Project Checkout](#project-checkout), [Revision](#revision), [Instrument](#instrument).
-
-**Outputs:** [Instrument Result](#instrument-result).
-
 #### 1. Run at Revision
 
-- Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the [workspace](#workspace "input") [checkout](#project-checkout "input") using [Revision](#revision "input").
 
-- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The instrument follows `--` and runs at the checkout's top level.
+- `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The [instrument](#instrument "input") follows `--` and runs at the checkout's top level.
 - The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
 - The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
 - Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
@@ -82,6 +70,10 @@ cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && python3 skills/work-planner/scripts/revision-check.py --project /projects/workflow-server --revision i11/e16/workspace -- "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 -m pytest skills/work-planner/test -q
 </pre></big>
+
+#### 2. Provide Executed at Revision
+
+Provide [Instrument Result](#instrument-result "output") to the requester.
 
 ## Fields
 
@@ -104,7 +96,7 @@ A criterion is verified only on a passing run of its named instrument, recorded 
 
 ### Tick State
 
-A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it follows [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is returned unticked with what it is missing.
+A ticked criterion carries verification evidence. Epic criteria can derive that evidence from passed checks under [Test Evidence](epic-issue-body.md#test-evidence). Done on the row or table that cites it follows [Tables](issue-body.md#tables) and [Work Breakdown](epic-issue-body.md#work-breakdown). A criterion refused as not ready to verify is provided unticked with what it is missing.
 
 ### Criterion Selection
 

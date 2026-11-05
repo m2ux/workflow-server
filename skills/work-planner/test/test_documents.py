@@ -81,7 +81,7 @@ class DocumentInterfaces(unittest.TestCase):
                     with self.subTest(file=path.name, target=target):
                         self.assertIn(destination.parent.name, reachable)
 
-    def test_artifact_operations_expose_inputs_and_consecutive_steps(self):
+    def test_artifact_operations_bind_argument_inputs_in_prose_and_consecutive_steps(self):
         for path in sorted((ROOT / 'artifacts').glob('*.md')):
             lines, fenced, headings = checker.scan(path)
             payload = checker.scan_blocks(lines).html_lines
@@ -100,18 +100,20 @@ class DocumentInterfaces(unittest.TestCase):
                     steps = [(i, name) for i, depth, name in headings
                              if start < i < end and depth == 4 and checker.HEADING_STEP.match(name)]
                     self.assertGreaterEqual(len(title.split()), 2)
-                    self.assertEqual(sum(line.startswith('**Inputs:**') for line in body), 1)
                     self.assertTrue(steps, 'operation exposes no heading steps')
                     numbers = [int(checker.HEADING_STEP.match(name)[1]) for _, name in steps]
                     self.assertEqual(numbers, list(range(1, len(numbers) + 1)))
                     self.assertFalse(any(re.match(r'^\d+\. ', line) for line in body))
-                    lead = body[:body.index(lines[steps[0][0]])]
-                    for label in ('Inputs', 'Outputs'):
-                        declarations = [line for line in lead if line.startswith(f'**{label}:**')]
-                        self.assertEqual(len(declarations), 1)
-                        targets = checker.LINK.findall(declarations[0])
-                        self.assertTrue(targets)
-                        self.assertTrue(all(checker.field_contract(path, target, 'Fields') for target in targets))
+                    self.assertFalse(any(re.match(r'^\*\*(?:Inputs|Outputs):', line) for line in body))
+                    prose_inputs = {match[1] for line in body
+                                    for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', line))
+                                    if checker.link_role(match) == 'input'}
+                    argument_inputs = {match[2] for i in range(start + 1, end) if i in payload
+                                       for match in checker.ARGUMENT_LINK.finditer(lines[i])}
+                    self.assertLessEqual(argument_inputs, prose_inputs,
+                                         'an executable argument has no contextual input contract')
+                    self.assertTrue(any(checker.link_role(match) == 'output' for line in body
+                                        for match in checker.LINK.finditer(checker.CODE_SPAN.sub('', line))))
                     self.assertFalse(any(re.match(r'^(?:\d+\. |\- )\*\*', line) for line in body))
                     self.assertFalse(any(line.startswith(('Result:', '**Result:')) for line in body))
 
@@ -148,10 +150,10 @@ class DocumentInterfaces(unittest.TestCase):
         folders = ('modes', 'artifacts', 'protocols', 'references')
         cited, operations, protocols = set(), {}, set()
         for name in ('SKILL.md', 'guidelines.md'):
-            cited |= set(re.findall(r'\]\(([^)\s]+)\)', (ROOT / name).read_text()))
+            cited |= set(checker.LINK.findall((ROOT / name).read_text()))
         for folder in folders:
             for path in sorted((ROOT / folder).glob('*.md')):
-                cited |= set(re.findall(r'\]\(([^)\s]+)\)', path.read_text()))
+                cited |= set(checker.LINK.findall(path.read_text()))
                 if folder == 'protocols':
                     protocols.add(path.name)
                 section = None
@@ -277,7 +279,7 @@ class EpicDeliveryCallers(unittest.TestCase):
                          'artifacts/epic-issue-body.md'} <= callers)
         for where, line in calls:
             with self.subTest(call=where):
-                self.assertIn('epic bases', line)
+                self.assertIn('epic bases', checker.LINK.sub(lambda match: match[0][1:match[0].index(']')], line).lower())
 
     def test_record_epic_delivery_takes_the_epic_bases(self):
         path = ROOT / 'artifacts' / 'epic-issue-body.md'
