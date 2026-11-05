@@ -1,0 +1,27 @@
+[
+  {
+    "unit": "m2ux/workflow-server#I17:E01:W01",
+    "session": "/root/i17_e01_w01",
+    "state": "completed"
+  },
+  {
+    "unit": "m2ux/workflow-server#I17:E01:W02",
+    "session": "/root/i17_e01_w02",
+    "state": "completed"
+  },
+  {
+    "unit": "m2ux/workflow-server#I17:E01:W03",
+    "session": "/root/i17_e01_w03",
+    "state": "running"
+  },
+  {
+    "unit": "m2ux/workflow-server#I17:E01:W04",
+    "session": "/root/i17_e01_w04",
+    "state": "running"
+  },
+  {
+    "unit": "m2ux/workflow-server#I17:E01:W05",
+    "session": "/root/i17_e01_w05",
+    "state": "running"
+  }
+]

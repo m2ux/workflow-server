@@ -31,3 +31,6 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 | --- | --- |
 | [Family batch](family-batch.json) | Three selected units and two awaiting capacity |
 | [Family survey export](family-survey-export.json) | All five eligible unit identities |
+
+| [Family progress](family-progress.md) | Current tasks, validation model, reader ownership and capacity |
+| [Family sessions](family-sessions.json) | Observed worker identities for the held units |
