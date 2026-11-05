@@ -14,7 +14,6 @@ This unit delivers AC7 through its isolated task branch into i17/e03/workspace. 
 | --- | --- |
 | [W10](w10.md) | Component plan and observing tests |
 | [Dispatch](dispatch.md) | Authorization, current availability and checklist |
-
 | [Delivery evidence](delivery.md) | Criterion observation, exact revisions and check results |
 | [Planner results](planner-tests.log) | Initial complete planner suite |
 | [Shared results](shared-tests.log) | Initial shared checker suite |
