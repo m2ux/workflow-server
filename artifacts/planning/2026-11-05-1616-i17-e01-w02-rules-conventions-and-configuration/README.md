@@ -32,6 +32,7 @@ The extraction preserves the live skill's instructions and updates the readers t
 | [changes.md](changes.md) | Applied and held plan changes for the delivery session. |
 | [revision-check.log](revision-check.log) | AC2 named instrument at the literal published task commit. |
 | [epic-body.md](epic-body.md) | Current epic body used by the session’s tracker publications. |
+| [merged-revision-check.log](merged-revision-check.log) | AC2 named instrument at the confirmed merged delivery revision. |
 
 ## Links
 

@@ -28,3 +28,5 @@ The entry point owns selection and links common context before a mode. Rules own
 ## Revision Evidence
 
 The final source tree is f2ad2ec1c50469133dd11fb3994a0e795b2ab0c8. Compare Section Bodies reports 422 identical sections, nine differing configuration-consumer sections and two added configuration sections; all differences are reviewed against their source-to-home ledger. Its exit 1 denotes the expected reported differences, not an unexplained preservation failure. Published task head 83ac545a0c9f37cf545fd17ce945c27dd6a0ddd2 has exactly this tree. AC2’s named checker runs through revision-check.py in a detached checkout of that literal commit and reports 58 files, zero findings; the helper removes its checkout. [Exact-revision output](revision-check.log) records the commit and result.
+
+Merged delivery revision 238b652aaa52057f66c86c9651c379296a7ba5b2 also passes the detached exact-revision checker: 58 files, zero findings. [Merged-revision output](merged-revision-check.log) records the literal commit before AC2 is ticked.
