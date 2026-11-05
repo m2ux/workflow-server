@@ -7,8 +7,8 @@ W13 covers AC10. Advance mode carries Ready-unit lanes from the Board Queue repo
 ## Execution Checklist
 
 - [x] Confirm live reservation, criterion, component and published plan.
-- [ ] Implement and inspect report wiring; run focused and complete checks. **In progress.**
-- [ ] Publish task PR, merge verified work and record AC10 and Done.
+- [x] Implement and inspect report wiring; run focused and complete checks.
+- [ ] Publish task PR, merge verified work and record AC10 and Done. **In progress.**
 - [ ] Complete the epic integration audit, measured overview and agent review.
 - [ ] Publish current integration evidence and required human-review handoff.
 
@@ -16,9 +16,13 @@ W13 covers AC10. Advance mode carries Ready-unit lanes from the Board Queue repo
 
 Coverage: AC10. Inspect Advance mode's Plan Board Queue return and Report step for carrying each Ready unit's lane or unlaned state from the returned lines. All repeated queue calls retain the existing snapshot inputs, with no engineering-worktree lane input. Run mode/document checks and the skill-file checker.
 
+The operative Plan step retains Ready Unit Lanes from supplied issue bodies and the Report step carries each returned Ready unit’s index or unlaned state. All repeated queue calls retain the existing snapshots. The owning Board Queue field supplies semantics; Advance adds no lane-data input. Four mode and eleven document-interface checks pass.
+
 ## T2: Combined Validation
 
 Run the complete planner and shared-checker suites; record exact tested heads and distinguish opt-in skips from passes. Verify the merged tree and exact merged mode/document checks before criterion recording.
+
+At exact committed/pushed task head a6d025d3025f08ad4b0a027d9762ccd0096a780b, the planner suite ran 896 tests: 895 passed and one opt-in live Development-link test skipped. Shared checks passed 208 tests and the skill-file checker inspected 52 files with zero findings. The task checkout is clean and pushed; independent parent review found no defect in the operative mode wiring.
 
 ## Final Integration
 

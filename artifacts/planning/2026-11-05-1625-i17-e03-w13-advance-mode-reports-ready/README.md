@@ -18,6 +18,10 @@ This unit delivers AC10 through its isolated task branch into i17/e03/workspace.
 | [Delivery evidence](delivery.md) | Criterion observations, checks and integration checklist |
 | [Change list](change-list.md) | Applied and held plan changes |
 
+| [Planner tests](planner-tests.log) | Full exact-head planner suite output |
+| [Shared tests](shared-tests.log) | Shared checker suite output |
+| [Skill files](skill-files.log) | Complete skill-file check output |
+
 ## Links
 
 | Resource | Link |
