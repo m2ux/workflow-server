@@ -47,6 +47,12 @@ This record carries the user-approved Work Planner style conversion for W05. The
 | [exact-head-shared.log](exact-head-shared.log) | Complete255-test shared suite at the literal task head |
 | [exact-head-installed.log](exact-head-installed.log) | Literal-head installed-model diagnostic recorded separately |
 
+| [pull-request.json](pull-request.json) | Fresh task PR identity, exact head/tree and target |
+| [pull-request.md](pull-request.md) | Published task PR body and linked Test Plan |
+| [head-checks.json](head-checks.json) | Literal-head GitHub check-run snapshot at PR handoff |
+| [head-status.json](head-status.json) | Literal-head GitHub combined-status snapshot at PR handoff |
+| [issue-links.json](issue-links.json) | Readback showing no closure link from the row-only task PR to the whole epic |
+
 ## Links
 
 | Resource | Link |
@@ -54,3 +60,5 @@ This record carries the user-approved Work Planner style conversion for W05. The
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Prerequisite delivery | https://github.com/m2ux/workflow-server/pull/1642 |
 | Epic integration | https://github.com/m2ux/workflow-server/pull/1641 |
+
+| Task pull request | https://github.com/m2ux/workflow-server/pull/1646 |
