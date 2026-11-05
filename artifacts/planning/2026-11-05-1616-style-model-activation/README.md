@@ -25,6 +25,14 @@ The sequence keeps live validation available while the first task builds the new
 | [issue-1616.proposed.json](issue-1616.proposed.json) | Confirmed activation plan and evidence |
 | [progress.md](progress.md) | Confirmed activation plan and evidence |
 
+| [issue-1615.after.json](issue-1615.after.json) | Saved-state verification |
+| [issue-1616.after.json](issue-1616.after.json) | Saved-state verification |
+| [verification.json](verification.json) | Saved-state verification |
+
+| [queue-final.txt](queue-final.txt) | Final queue and reservation verification |
+
+| [survey-final.txt](survey-final.txt) | Final queue and reservation verification |
+
 ## Links
 
 | Resource | Link |

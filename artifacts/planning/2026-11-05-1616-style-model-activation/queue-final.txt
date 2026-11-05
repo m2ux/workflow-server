@@ -1,0 +1,3 @@
+users/m2ux/projectsV2/17: Status field 422017304
+  rank m2ux/prosiform-skills#1 [I16] Work Planner Home: The Skill in a Repository of Its Own: E00, E01
+  current: 23, to do: 0 (the queue is current)

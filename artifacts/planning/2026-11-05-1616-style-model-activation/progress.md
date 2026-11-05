@@ -1,5 +1,5 @@
 - [x] Refresh the current plan, reserved task and delivery records.
 - [x] Separate checker capability from installed adoption; add the final producer and update its consumer.
 - [x] Validate issue format, criterion ownership and the full I17 graph.
-- [ ] Publish and verify the epic bodies (in progress).
-- [ ] Finish alignment readback and resume the retained W01 dispatch.
+- [x] Publish and verify the epic bodies.
+- [ ] Refresh the live queue and resume the retained W01 dispatch (in progress).

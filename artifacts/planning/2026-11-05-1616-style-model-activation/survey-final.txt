@@ -1,0 +1,11 @@
+source: config/branches at 03d353300ca4804194fd50d316d73e3bf1270d1d in /home/mike1/projects/dev/workflow-server/.git
+#1616 In Progress: [I17:E01]
+  hold I17:E01:W01: https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w01-per-skill-style-model/
+  blocked I17:E01:W02: depends on W01
+  blocked I17:E01:W03: depends on W02
+  blocked I17:E01:W04: depends on W02
+  blocked I17:E01:W05: depends on W02
+  blocked I17:E01:W06: depends on W02
+  blocked I17:E01:W07: depends on W02
+  blocked I17:E01:W08: depends on W03, W04, W05, W06, W07
+  available: 0, held: 1, blocked: 7, unresolvable: 0, undeclared: 0, merge: 0, unrecorded: 0, invalid: 0
