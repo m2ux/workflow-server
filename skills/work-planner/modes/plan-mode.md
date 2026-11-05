@@ -35,7 +35,7 @@ Read these files first.
 - When the user names a proposal, its associated issue body defines the problem scope.
 - When the user names an initiative that already exists, Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for its body. That body defines the problem scope, and no proposal is raised for work it already carries.
 
-When neither a proposal nor an existing initiative is named:
+- When neither a proposal nor an existing initiative is named:
 
 - Follow [Propose Mode](propose-mode.md) with the user's goal.
 - Resume this selection step with its published proposal; an unresolved proposal blocks initiative drafting.
@@ -64,32 +64,32 @@ When neither a proposal nor an existing initiative is named:
 
 ### 5. Review the Drafts
 
-Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal).
+- Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal).
 
 - Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding) for each returned finding, with its scope, evidence and proposed resolution.
 
-Apply each confirmed resolution to the drafts:
+- Apply each confirmed resolution to the drafts:
 
 - For a local epic finding, Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) with the confirmed Proposal, row and criterion changes, including every new or renumbered criterion in Coverage, retaining the same output path in the record's folder.
 
-For a confirmed distinct concern:
+- For a confirmed distinct concern:
 
 - Draft its own epic and initiative row.
 - Repeat ordering review for the new epic and initiative row.
 
-Record the finding, resolution and decision in the planning record.
+- Record the finding, resolution and decision in the planning record.
 
 - Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal) again with the revised initiative and epic bodies and retained goal clauses and sources. No issue is created while a content or structural finding remains. Unresolved links to unpublished issues are recorded with their intended row identities and resolved during publication; no other finding is deferred.
 - An acceptance criterion is created only once it meets [Initiative Acceptance Criteria](../artifacts/initiative-issue-body.md#initiative-acceptance-criteria).
 
 ### 6. Publish
 
-Put the proposed [Epic Priority](../artifacts/dependency-graph.md#epic-priority) map for the reviewed epics to the user as an [Interview](../guidelines.md#modes), the proposal the recommended answer.
+- Put the proposed [Epic Priority](../artifacts/dependency-graph.md#epic-priority) map for the reviewed epics to the user as an [Interview](../guidelines.md#modes), the proposal the recommended answer.
 
 - Take the positive integer the user confirms for each epic.
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the required definitions, the priority label each confirmed number names among them, before saving the issues.
 
-For a new initiative:
+- For a new initiative:
 
 - Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the initiative prefix letter.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) for it, using temporary epic-row links until issue identities exist.
@@ -97,7 +97,7 @@ For a new initiative:
 - Replace every temporary link in the initiative and epic bodies with the saved issue identity.
 - Confirm no unresolved epic placeholder remains.
 
-Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body) with the saved initiative context.
+- Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body) with the saved initiative context.
 
 - Apply [Validate Initiative Body](../artifacts/initiative-issue-body.md#validate-initiative-body) with every saved epic.
 - Resolve findings.
@@ -107,7 +107,7 @@ Apply [Validate Epic Body](../artifacts/epic-issue-body.md#validate-epic-body) w
 
 ### 7. Keep the Goal Current
 
-When the goal, a criterion, a Problem, a Proposal or an epic changes:
+- When the goal, a criterion, a Problem, a Proposal or an epic changes:
 
 - Apply [Review Initiative Goal](../artifacts/goal-trace.md#review-initiative-goal) again with the revised bodies and current sources.
 - Apply [Report Review Finding](../artifacts/review-finding.md#report-review-finding) for each finding.
@@ -115,12 +115,12 @@ When the goal, a criterion, a Problem, a Proposal or an epic changes:
 - Repeat that review until clear.
 - After each round, Apply [Check Round of Edits](../artifacts/issue-body.md#check-round-of-edits) on affected bodies.
 
-Whenever tasks, edges or a work item's component change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) again.
+- Whenever tasks, edges or a work item's component change, Apply [Check Dependencies and Numbering](../artifacts/dependency-graph.md#check-dependencies-and-numbering) again.
 
 - Put the proposed Epic Priority map to the user again where the edges or the contention moved an epic's number.
 - Save each confirmed change as that epic's priority label.
 
-Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with affected bodies, matching titles to current numbers and Coverage to current criteria.
+- Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with affected bodies, matching titles to current numbers and Coverage to current criteria.
 
 - Keep the record's body files as the source for the next pass.
 - Update work-item files and the README inventory for added, renamed or removed tasks.
@@ -129,7 +129,7 @@ Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with affect
 
 ### 8. Prepare Epic Delivery
 
-Before any task starts:
+- Before any task starts:
 
 - Resolve every Open Question with the user.
 - Record the answer.
@@ -143,17 +143,17 @@ Before any task starts:
 
 ### 9. Record Delivered Work
 
-When work has landed:
+- When work has landed:
 
 - Follow [Sync Mode](sync-mode.md) for the affected initiative.
 
-For an unplaced task issue:
+- For an unplaced task issue:
 
 - Apply [Populate Epic Issue Body](../artifacts/epic-issue-body.md#populate-epic-issue-body) with its new row and the output path in the record's folder.
 - Save that body.
 - Follow [Sync Mode](sync-mode.md) again with the refreshed epic.
 
-Return the saved delivery state or blockers.
+- Return the saved delivery state or blockers.
 
 ## Outcomes
 

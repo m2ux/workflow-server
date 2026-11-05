@@ -23,7 +23,7 @@ One task or epic pull request's merge result, or its handoff for human approval.
 
 #### 1. Read Target Review Requirements
 
-Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
+- Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.
 - Report the pull request as ready for approval, naming what was verified.
 - Stop merge attempts. This handoff is a finished outcome.
 - Keep approval with that reviewer. Another account, an administrative bypass or a setting change cannot supply it. Changing repository protection requires the user's explicit authorization, asked for separately.
@@ -31,7 +31,7 @@ Read the supplied target branch's current required reviews and checks alongside 
 
 #### 2. Merge Approved Delivery
 
-When approval permits the agent to merge:
+- When approval permits the agent to merge:
 - Apply [Merge Pull Request](#merge-pull-request) for a task or Apply [Merge Epic Pull Request](#merge-epic-pull-request) for an epic, passing the verified readiness evidence and authorization result. For an epic, also supply the target requirements and exact verified head SHA.
 - If GitHub refuses the merge, return the refusal to the caller for fresh verification.
 - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.
@@ -50,17 +50,17 @@ The observed or updated Development relation for a pull request.
 
 #### 1. Read Complete Development Relation
 
-For a read-only request:
+- For a read-only request:
 - Apply [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by.
 - Apply [Capture Pull Request Links](#capture-pull-request-links) with that record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.
 
 #### 2. Edit Authorized Development Relation
 
-For a link edit:
+- For a link edit:
 - Take the supplied repository prerequisite from [Repository Prerequisite](#repository-prerequisite); an unconfirmed setting blocks the edit.
 - For an addition, Apply [Set Development Link](#set-development-link) with the pull request and issue identities.
 
-For removal of an abandoned or incorrect link:
+- For removal of an abandoned or incorrect link:
 - Require the supplied user decision.
 - Apply [Remove Development Link](#remove-development-link) with those identities.
 
@@ -226,7 +226,7 @@ One pull request created or updated from supplied content and metadata.
 
 #### 1. Create Delivery Pull Request
 
-For creation, Apply [Open Task Pull Request](#open-task-pull-request) or Apply [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base.
+- For creation, Apply [Open Task Pull Request](#open-task-pull-request) or Apply [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base.
 - For a task or epic pull request with a delivery issue, Apply [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).
 
 #### 2. Update Selected Pull Fields
@@ -291,20 +291,20 @@ Apply [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) fo
 
 #### 2. Merge Verified Task Pull
 
-Merge the task pull request.
+- Merge the task pull request.
 - Where its base is an epic base, Apply [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and that base.
 - Apply [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.
 - Apply [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.
 - Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller.
 
-If GitHub refuses the merge:
+- If GitHub refuses the merge:
 - Apply [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its base.
 - Apply [Fetch Merge Readiness](#fetch-merge-readiness) again for the updated task head.
 - Apply [Merge Delivery Pull Request](#merge-delivery-pull-request) once more with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.
 
 #### 3. Confirm Task Merge Result
 
-Apply [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
+- Apply [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.
 - Return that result to the caller.
 
 ### Fetch Merge Readiness
@@ -317,23 +317,23 @@ The current pull request's readiness against its target requirements and head ch
 
 #### 1. Read Current Pull Head
 
-Apply [Read Pull Request State](#read-pull-request-state) with the pull request identity and destination `epic-pr.json`.
+- Apply [Read Pull Request State](#read-pull-request-state) with the pull request identity and destination `epic-pr.json`.
 - Retain the literal head SHA and target branch for the evidence calls.
 
 #### 2. Read Current Target Requirements
 
-Apply [Read Target Requirements](delivery-branches.md#read-target-requirements) with the repository, target and protection/rules output paths.
+- Apply [Read Target Requirements](delivery-branches.md#read-target-requirements) with the repository, target and protection/rules output paths.
 - Carry any unresolved requirement into the readiness result.
 
 #### 3. Read Literal Head Evidence
 
-Read the head evidence.
+- Read the head evidence.
 - Apply [Read Head Evidence](#read-head-evidence) with the exact head SHA and check/status output paths.
 - Apply [Read Pull Request State](#read-pull-request-state) for reviews with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.
 
 #### 4. Confirm Stable Pull Head
 
-Apply [Read Pull Request State](#read-pull-request-state) again with the same identity and destination.
+- Apply [Read Pull Request State](#read-pull-request-state) again with the same identity and destination.
 - Compare its head with the retained SHA; a changed head requires fresh evidence.
 - Return the verified head, target requirements and readiness result, including unresolved conditions.
 
@@ -387,7 +387,7 @@ Apply [Read Pull Request State](#read-pull-request-state) for its full metadata.
 
 #### 2. Check Published Hot-Fix Review
 
-Apply [Check Agent Review](agent-review.md#check-agent-review) with that metadata and the published records.
+- Apply [Check Agent Review](agent-review.md#check-agent-review) with that metadata and the published records.
 - On a finding, return it to the caller; the pull request stays a draft.
 
 #### 3. Mark Verified Hot-Fix Ready
@@ -523,7 +523,7 @@ Replaces a pull request's body.
 
 #### 1. Patch Pull Request Body
 
-- The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
+The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.
 
 <big><pre>
 gh api --method PATCH 'repos/[**<owner>**](#repository)/[**<repo>**](#repository)/pulls/[**<pull-request-number>**](#identity)' -F 'body=@[**<body-file>**](#body-file)' --jq .html_url
@@ -903,7 +903,7 @@ Marks a draft pull request ready for review.
 
 **REST gap:** REST has no endpoint that marks a draft ready for review.
 
-- The query file holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:
+The query file holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:
 
   ```graphql
   mutation { markPullRequestReadyForReview(input: {pullRequestId: "<pull-request-node-id>"}) { pullRequest { isDraft } } }

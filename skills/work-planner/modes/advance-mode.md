@@ -23,14 +23,14 @@ Read these files first.
 
 ### 1. Select the Board
 
-Apply [Select Project Board](../artifacts/board.md#select-project-board) with the requested theme or board identity.
+- Apply [Select Project Board](../artifacts/board.md#select-project-board) with the requested theme or board identity.
 
 - Use the returned owner and board number for the sync and fetch steps.
 - Resolve a pending theme selection before continuing.
 
 ### 2. Sync
 
-Follow [Sync Mode](sync-mode.md) for each open initiative on the selected board, with the allowance the caller supplied.
+- Follow [Sync Mode](sync-mode.md) for each open initiative on the selected board, with the allowance the caller supplied.
 
 - Wait for its saved delivery results before the fetch step.
 - Return any blocker that prevents current delivery from being established.
@@ -45,54 +45,54 @@ Follow [Sync Mode](sync-mode.md) for each open initiative on the selected board,
 
 ### 4. Plan
 
-Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.
+- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the selected board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login and an output directory such as `board/`.
 
 - Include every resolved off-board issue file and confirmed unplanned initiative identity.
 
 ### 5. Resolve Missing Evidence
 
-For each unresolved issue reference:
+- For each unresolved issue reference:
 
-Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) into a file.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) into a file.
 
 - Add the returned file to the resolved off-board issue files.
 
-Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the current board items, initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.
+- Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the current board items, initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved issue file and confirmed unplanned initiative identity.
 
 - Repeat while references remain unresolved; an unavailable issue leaves the queue pending.
 
 ### 6. Resolve Queue Decisions
 
-Decide only from an `order` or `ask` line in [Report Lines](../artifacts/board-queue.md#report-lines), each of which is a re-prioritisation.
+- Decide only from an `order` or `ask` line in [Report Lines](../artifacts/board-queue.md#report-lines), each of which is a re-prioritisation.
 
-Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each line, with the allowance the caller supplied.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each line, with the allowance the caller supplied.
 
 - For an automatic line, take its [recommended decision](../artifacts/board-queue.md#recommended-decisions) and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with that decision.
 - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user.
 - A line this mode records rather than asks leaves the queue pending, which the write step reads as incomplete.
 
-For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
+- For `order`, the answer is the [parallel work map](../artifacts/board-queue.md#priority-sets): a positive integer on each listed initiative, or none left unordered.
 
-For `ask`:
+- For `ask`:
 
 - The answer is a positive integer or none.
 - Record the initiative's identity as confirmed unplanned when the answer is none.
 
-After an answer:
+- After an answer:
 
 - Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the priority label each confirmed number names, for every repository holding one of those initiatives.
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with each initiative identity and its confirmed priority-label addition.
 - Apply [Read Board State](../artifacts/board.md#read-board-state) again.
 - Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, and every resolved off-board issue file and confirmed unplanned initiative identity.
 
-Resolve any further missing evidence through step 5.
+- Resolve any further missing evidence through step 5.
 
 - Repeat this step while a decision is pending. An unanswered question leaves the queue pending.
 - Return the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held.
 
 ### 7. Write
 
-Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it returned.
+- Once the queue is [complete](../artifacts/board-queue.md#completeness), run each proposed Status and assignee call it returned.
 
 - Apply [Read Board State](../artifacts/board.md#read-board-state) again.
 - Apply [Plan Board Queue](../artifacts/board-queue.md#plan-board-queue) with the refreshed board items, the same initiative pull request records and their issue-link snapshot, board fields, assignee login, board identity and output directory, retaining every resolved off-board issue file and confirmed unplanned initiative identity.

@@ -20,7 +20,7 @@ One proposal body from a confirmed problem and goal.
 
 #### 1. Populate Proposal Template
 
-Populate the body from the [Template](#template) at the supplied output path.
+- Populate the body from the [Template](#template) at the supplied output path.
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
 - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
 - All populated fields must meet [Fields](#fields).

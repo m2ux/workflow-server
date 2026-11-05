@@ -23,7 +23,7 @@ Read these files first.
 
 ### 1. Record a Hot-Fix
 
-For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
+- For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:
 - Follow [Issue Delivery](issue-delivery.md) for the hot-fix, with the merge result and the complete issue-link snapshot as its evidence.
 - Follow [Issue Closure](issue-closure.md) for the hot-fix issue when eligible.
 - Apply [Settle Hot-fix Board Status](../artifacts/hotfix.md#settle-hot-fix-board-status) with the supplied board and the hot-fix issue.
@@ -31,7 +31,7 @@ For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery 
 
 ### 2. Read and Record
 
-Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON.
+- Apply [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON.
 - Follow [Issue Delivery](issue-delivery.md) for the delivered unit.
 - Follow [Issue Closure](issue-closure.md) for an eligible task issue.
 
@@ -41,12 +41,12 @@ Follow [Review Pull Request](review-pull-request.md) for the affected epic base,
 
 ### 4. Complete When Ready
 
-When every task and criterion is complete:
+- When every task and criterion is complete:
 - Follow [Epic Integration](epic-integration.md) with the epic identity and body, review identity, project checkout, current delivery records, complete issue-link snapshot, criterion verification evidence and supplied board identity. An unmet delivery or merge condition stays pending.
 
 ### 5. Close the Epic
 
-After every epic base has merged:
+- After every epic base has merged:
 - Refresh the evidence.
 - Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the epic JSON, pull request records, complete issue-link snapshot, task issue records, project checkout, fetched epic bases, and output body file.
 - Follow [Issue Closure](issue-closure.md) when eligible.

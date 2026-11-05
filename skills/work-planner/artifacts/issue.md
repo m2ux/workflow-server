@@ -66,7 +66,7 @@ Verified completion of an issue and its linked delivery.
 
 #### 1. Capture Current Development
 
-Apply [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
+- Apply [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
 - The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no pull request requirement.
 
 #### 2. Check Closure Evidence
@@ -75,7 +75,7 @@ Apply [Check Issue Closure](#check-issue-closure) with those two files.
 
 #### 3. Require Completed Delivery
 
-Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
+- Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
 - Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
 - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
 
@@ -121,7 +121,7 @@ When replying to feedback already folded into the body, compose a precise, factu
 
 #### 2. Publish Supplied Comment
 
-Publish the supplied comment:
+- Publish the supplied comment:
 - For a one-line comment, Apply [Post Inline Comment](#post-inline-comment) with the exact text.
 - For a longer comment, Apply [Post Comment File](#post-comment-file) with the complete file.
 
@@ -203,7 +203,7 @@ Each closed issue in one repository whose criteria or Development links do not s
 
 #### 1. Fetch Selected Closed Issues
 
-Fetch the closed issues alone:
+- Fetch the closed issues alone:
 - For named issues, Apply [Fetch Selected Closed Issues](#fetch-selected-closed-issues) with their numbers.
 - For the whole repository, Apply [Fetch Closed Issues](#fetch-closed-issues).
 - An empty collection means none of the named issues is closed; return nothing listed.
@@ -306,9 +306,9 @@ Creates an issue from a body file, with its title and labels, and prints its num
 
 #### 1. Create Tracker Issue
 
-Run this command from the repository checkout with the supplied inputs.
+- Run this command from the repository checkout with the supplied inputs.
 
-Repeat `-f 'labels[]=<label>'` for each supplied label.
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 <big><pre>
 gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues' -f title='[**&lt;title&gt;**](#issue-changes)' -F 'body=@[**&lt;body-file&gt;**](#issue-changes)' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq .number
@@ -396,9 +396,9 @@ Adds labels to an issue.
 
 #### 1. Add Issue Labels
 
-Run this command from the repository checkout with the supplied inputs.
+- Run this command from the repository checkout with the supplied inputs.
 
-Repeat `-f 'labels[]=<label>'` for each supplied label.
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 <big><pre>
 gh api --method POST 'repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues/[**&lt;issue-number&gt;**](#identity)/labels' -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names)' --jq '.&#91;&#93;.name'
@@ -486,7 +486,7 @@ Checks the issue's criteria and the state of every pull request its Development 
 
 #### 1. Check Issue Closure
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - The gate reads only those two files, each a field GitHub exposes.
 - An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
@@ -512,7 +512,7 @@ Lists each closed issue whose acceptance criteria are missing or unticked, or wh
 
 #### 1. Sweep Closure Evidence
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - The sweep audits every closed issue in the collection, so the collection sets its scope. Apply [Check Issue Closure](#check-issue-closure) to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
@@ -639,7 +639,7 @@ Writes each issue's Development pull requests, read from the issue end of the re
 
 #### 1. Capture Issue Links
 
-Run this command from the repository checkout with the supplied inputs.
+- Run this command from the repository checkout with the supplied inputs.
 
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
 
@@ -743,9 +743,9 @@ Prints an initiative's issue number, found by its title's prefix.
 
 #### 1. Find Initiative Issue
 
-Run this command from the repository checkout with the supplied inputs.
+- Run this command from the repository checkout with the supplied inputs.
 
-`<initiative-prefix>` includes the initiative id and its enclosing brackets.
+- `<initiative-prefix>` includes the initiative id and its enclosing brackets.
 
 <big><pre>
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository)/[**&lt;repo&gt;**](#repository)/issues?state=all&per_page=100" --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#tracker-prefix)")) | .number'

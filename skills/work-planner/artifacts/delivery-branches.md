@@ -29,7 +29,7 @@ Apply [List Epic Bases](#list-epic-bases) in the project checkout for the epic.
 
 #### 3. Resolve Missing Branch Configuration
 
-If `config/branches` is missing or empty at that revision, or does not name the changed branch:
+- If `config/branches` is missing or empty at that revision, or does not name the changed branch:
 - Report the names as unevaluable at that revision.
 - Obtain the project's branch names before creating delivery branches.
 
@@ -59,7 +59,7 @@ Apply [Fetch Remote Branch](#fetch-remote-branch) in the project checkout with t
 
 #### 3. Publish Missing Epic Base
 
-After a successful fetch:
+- After a successful fetch:
 - Apply [Publish Epic Base](#publish-epic-base) in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).
 - Return the created branch or the failure.
 
@@ -93,7 +93,7 @@ Apply [Merge Remote Branch](#merge-remote-branch) in the epic base checkout with
 
 #### 6. Publish Updated Epic Base
 
-After a successful merge:
+- After a successful merge:
 - Apply [Push Epic Base](#push-epic-base) in the epic base checkout.
 - Return the updated branch or the failure.
 
@@ -119,7 +119,7 @@ Apply [Merge Remote Branch](#merge-remote-branch) in the unit checkout with the 
 
 #### 4. Publish Updated Task Branch
 
-After a successful merge:
+- After a successful merge:
 - Apply [Push Task Branch](#push-task-branch) in the unit checkout with the task branch as destination.
 - Return the updated branch or the failure.
 
@@ -145,9 +145,9 @@ Apply [Add Task Worktree](#add-task-worktree) in the project checkout with the s
 
 #### 4. Return Unit Checkout
 
-Return the worktree path, branch and base, or the failure.
+- Return the worktree path, branch and base, or the failure.
 
-A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
+- A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
 
 ### Create Pull Request Worktree
 
@@ -175,7 +175,7 @@ Take the worktree path from the pull request number, meeting [Review Worktrees](
 
 #### 5. Check Existing Review Worktree
 
-If that worktree already exists:
+- If that worktree already exists:
 - Apply [Read Checkout Revision](#read-checkout-revision) in that review checkout for `HEAD`.
 - Apply [Read Checkout Status](#read-checkout-status) there.
 - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.
@@ -382,7 +382,7 @@ Creates a task branch and worktree at the fetched base.
 
 **Acts on:** the checkout it runs in.
 
-- The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
+The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
 
 <big><pre>
 git worktree add '[**<worktree-path>**](#worktree-path)' -b '[**<task-branch>**](#task-branch)' 'origin/[**<base>**](#base-branch)'
@@ -428,7 +428,7 @@ Creates the worktree for an existing epic base.
 
 **Acts on:** the checkout it runs in.
 
-- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
+The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
 
 <big><pre>
 git worktree add '[**<worktree-path>**](#worktree-path)' '[**<epic-base>**](#epic-base-name)'
@@ -452,7 +452,7 @@ Creates a detached worktree at the fetched review head.
 
 **Acts on:** the checkout it runs in.
 
-- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
+The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 
 <big><pre>
 git worktree add --detach '[**<worktree-path>**](#worktree-path)' '[**<head-commit>**](#verified-head)'

@@ -22,7 +22,7 @@ Read these files first.
 
 ### 1. Select the Scope
 
-Apply [Select Project Board](../artifacts/board.md#select-project-board) for the requested board, each requested board when the scope is all, or the theme board of the named initiative.
+- Apply [Select Project Board](../artifacts/board.md#select-project-board) for the requested board, each requested board when the scope is all, or the theme board of the named initiative.
 
 - Retain the selected window and initiative filter.
 - Complete steps 2–6 separately for each selected board.
@@ -33,14 +33,14 @@ Apply [Select Project Board](../artifacts/board.md#select-project-board) for the
 
 #### Missing Checkpoint
 
-If the checkpoint is absent:
+- If the checkpoint is absent:
 
 - Apply [Read Board State](../artifacts/board.md#read-board-state) for the board.
 - Treat each selected initiative's delivery state as needing refresh.
 
 #### Refresh Selected Initiatives
 
-For initiatives with known delivery changes or unknown freshness, Follow [Sync Mode](sync-mode.md) for the affected initiatives on that board.
+- For initiatives with known delivery changes or unknown freshness, Follow [Sync Mode](sync-mode.md) for the affected initiatives on that board.
 
 - Resume the fetch step after their delivery results are saved.
 - Report a blocker that prevents a current summary.
@@ -48,7 +48,7 @@ For initiatives with known delivery changes or unknown freshness, Follow [Sync M
 
 ### 3. Fetch
 
-Apply [Read Board State](../artifacts/board.md#read-board-state) with the selected board identity.
+- Apply [Read Board State](../artifacts/board.md#read-board-state) with the selected board identity.
 
 - Apply [Fetch All Delivery Pull Requests](../artifacts/pull-request.md#fetch-all-delivery-pull-requests) for the [repositories](../artifacts/board.md#repositories) and items Read Board State returned.
 - Apply [Fetch Pull Request Issue Links](../artifacts/pull-request.md#fetch-pull-request-issue-links) for those records.
@@ -60,7 +60,7 @@ Apply [Compose Standup Report](../artifacts/standup-report.md#compose-standup-re
 
 ### 5. Resolve Evidence
 
-For each unresolved initiative:
+- For each unresolved initiative:
 
 - Apply [Locate Initiative Issue](../artifacts/issue.md#locate-initiative-issue).
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for its current JSON.
@@ -68,11 +68,11 @@ For each unresolved initiative:
 
 ### 6. Report
 
-Present the returned report verbatim in a fenced block for copying.
+- Present the returned report verbatim in a fenced block for copying.
 
 - Put unresolved findings beneath it.
 
-For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
+- For an epic the preceding Compose Standup Report call returns with an unreadable Work Breakdown:
 
 - Apply [Repair Issue Format](../artifacts/issue-body.md#repair-issue-format) with the epic identity, current JSON, [epic template and field conditions](../artifacts/epic-issue-body.md#fields), required related evidence and output body path.
 - If it confirms a saved correction, repeat steps 3–6 with refreshed records, retaining the selected board, window and initiative filter.

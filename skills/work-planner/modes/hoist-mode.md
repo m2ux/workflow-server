@@ -26,34 +26,34 @@ Apply [Read Repository Issues](../artifacts/issue.md#read-repository-issues) for
 
 ### 2. List Candidates
 
-Apply [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates) with the complete issue collection.
+- Apply [Find Placement Candidates](../artifacts/placement.md#find-placement-candidates) with the complete issue collection.
 
 - Use its candidates and available destinations for triage.
 
 ### 3. Triage
 
-Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
+- Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each candidate's body and discussion, with the initiative and epic bodies whose themes or criteria it touches.
 
 - Apply [Draft Issue Placement](../artifacts/placement.md#draft-issue-placement) for each option with that evidence and planning-record references.
 - Order the returned options best first, with Leave last.
 
 ### 4. Decide Each Placement
 
-Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each orphan's best option that changes the plan, with the allowance the caller supplied.
+- Apply [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each orphan's best option that changes the plan, with the allowance the caller supplied.
 
 - Confirm an automatic option as it stands, and Apply [Record Plan Change](../artifacts/plan-change.md#record-plan-change) with that option.
 - A held option is settled as [Held Change](../artifacts/plan-change.md#held-change) states, leaving the orphan where it is.
 
-An option put to the user is offered as an [Interview](../guidelines.md#modes). The grounding paragraph says what the orphan asks and where it fits.
+- An option put to the user is offered as an [Interview](../guidelines.md#modes). The grounding paragraph says what the orphan asks and where it fits.
 
 - Leave is last.
 - Placing an orphan in another initiative's issue needs that answer as its approval.
 
-A caller naming the placement, settled with the user before the hoist, has it applied rather than offered again.
+- A caller naming the placement, settled with the user before the hoist, has it applied rather than offered again.
 
 ### 5. Apply
 
-Apply [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement) with each confirmed placement and its current source and destination records.
+- Apply [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement) with each confirmed placement and its current source and destination records.
 
 - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records, including a new task's row id: Apply [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or Apply [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue.
 - Resume review.
@@ -71,7 +71,7 @@ Apply [Apply Issue Placement](../artifacts/placement.md#apply-issue-placement) w
 
 ### 7. Report
 
-Report each orphan's placement, the issues changed, created or closed, and the orphans left.
+- Report each orphan's placement, the issues changed, created or closed, and the orphans left.
 
 - Return the [change list](../artifacts/plan-change.md#change-list) with it, so the caller reports each placement this mode made and each it held.
 

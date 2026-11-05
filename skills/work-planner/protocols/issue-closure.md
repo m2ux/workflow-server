@@ -25,7 +25,7 @@ Read these files first.
 
 ### 2. Pull Requests
 
-Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for every captured link, across repositories and all states.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for every captured link, across repositories and all states.
 - Use a fresh destination file so an earlier snapshot cannot supply membership.
 
 ### 3. Check Delivery Completion
@@ -34,38 +34,38 @@ Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-s
 
 #### Epic Completion
 
-For an epic:
+- For an epic:
 - Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout for the complete expected bases, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for their merge evidence.
 - Apply [Check Epic Completion](../artifacts/epic.md#check-epic-completion) with the current epic JSON, delivery records, complete issue-link snapshot, criterion verification evidence and those base records.
 
 #### Initiative Completion
 
-For an initiative:
+- For an initiative:
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for every linked epic.
 - Apply [Check Initiative Completion](../artifacts/initiative.md#check-initiative-completion) with the current initiative JSON, all linked epic records, criterion verification evidence and captured Development-link and pull-request records.
 
 #### Completion Result
 
-Return any incomplete or failed result before closure.
+- Return any incomplete or failed result before closure.
 
 ### 4. Close
 
-Apply [Close Tracker Issue](../artifacts/issue.md#close-tracker-issue) with the issue identity and the successful normal delivery result.
+- Apply [Close Tracker Issue](../artifacts/issue.md#close-tracker-issue) with the issue identity and the successful normal delivery result.
 
 #### Missing Evidence
 
-If the operation reports missing evidence:
+- If the operation reports missing evidence:
 - Refresh those inputs.
 - Repeat the completion check before trying again.
 
 #### Incorrect Link
 
-If the operation returns an abandoned or incorrect link:
+- If the operation returns an abandoned or incorrect link:
 - Obtain the user's decision on removing it.
 - On a decision to remove, Apply [Access Development Links](../artifacts/pull-request.md#access-development-links) with the link's pull request and issue identities, the removal request, that decision and the confirmed repository setting.
 - Repeat from the issue step.
 
 #### Closure Result
 
-Report any unmerged link or unmet criterion.
+- Report any unmerged link or unmet criterion.

@@ -18,7 +18,7 @@ Apply [Index Status](#index-status) in the review checkout. Every graph command 
 
 #### 2. Refresh Absent or Stale Index
 
-If the repository is unindexed or behind the verified head:
+- If the repository is unindexed or behind the verified head:
 - Apply [Index Repository](#index-repository) in the review checkout.
 - Confirm freshness.
 
@@ -36,7 +36,7 @@ For each reported flow, Apply [Flow Trace](#flow-trace) in the review checkout.
 
 #### 6. Check Response Freshness
 
-Inspect the staleness block on every response. When an index is behind, discard its measurements.
+- Inspect the staleness block on every response. When an index is behind, discard its measurements.
 - Apply [Index Repository](#index-repository) in the review checkout for the verified head, and confirm freshness.
 - Apply [Change Surface](#change-surface) again for any discarded surface using the same base branch in the review checkout.
 - Apply [Symbol Context](#symbol-context) again for each affected changed symbol in the review checkout.
@@ -94,7 +94,7 @@ Reports the symbols a pull request's diff touches and the flows they sit in, aga
 
 **Acts on:** the checkout it runs in.
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
 

@@ -20,26 +20,26 @@ One planning directory and its artifact inventory.
 
 #### 1. Prepare Selected Record
 
-Prepare the selected record using the matching branch.
+- Prepare the selected record using the matching branch.
 
 ##### New Record
 
-Apply [Add Planning Record](#add-planning-record) with the engineering checkout and supplied planning-folder path.
+- Apply [Add Planning Record](#add-planning-record) with the engineering checkout and supplied planning-folder path.
 - Populate README.md from the [Template](#template).
 
 ##### Existing Record
 
-Read its README, retaining its creation date, other artifacts and links.
+- Read its README, retaining its creation date, other artifacts and links.
 - Update only the supplied content.
 
 ##### Common Record Conditions
 
-The folder must meet [Layout](#layout).
+- The folder must meet [Layout](#layout).
 - All populated README fields must meet [Fields](#fields).
 
 #### 2. Register Supplied Artifacts
 
-Register the artifact files supplied by the caller, using their chosen names.
+- Register the artifact files supplied by the caller, using their chosen names.
 - Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).
 - File content remains supplied by the caller; this operation does not author that artifact's content.
 
@@ -57,7 +57,7 @@ Apply [Find Engineering Worktree](#find-engineering-worktree) for the path the r
 
 #### 2. Publish Planning Files
 
-Apply [Commit Planning Record](#commit-planning-record).
+- Apply [Commit Planning Record](#commit-planning-record).
 - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
 - Report a rebase that stops on a conflict rather than rewriting the branch.
 
@@ -71,7 +71,7 @@ Prints the checkout holding the engineering branch, which is where every plannin
 
 #### 1. Find Engineering Worktree
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - The engineering branch has one long-lived worktree and takes no further one.
 
@@ -89,7 +89,7 @@ Commits everything pending in the engineering worktree and publishes the branch,
 
 #### 1. Commit Planning Record
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
 - Planning records go straight to the branch; they take no pull request.
@@ -115,7 +115,7 @@ Adds the folder for one planning record on the long-lived engineering worktree.
 
 #### 1. Add Planning Record
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
 - `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.

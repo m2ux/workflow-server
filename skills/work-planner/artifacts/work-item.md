@@ -22,7 +22,7 @@ One task's local implementation plan.
 
 #### 1. Populate Work Item File
 
-Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
+- Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
 - Its name and content must meet [Identity](#identity) and [Sections](#sections).
 - The supplied component must meet [Component](#component).
 - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.

@@ -25,14 +25,14 @@ Derives the queue from supplied board and delivery snapshots and confirmed decis
 
 #### 1. Compute Queue Calls
 
-Apply [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
+- Apply [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
 - The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes) with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes) with each complete free unit derived after queue placement.
 - The queue must meet [Fields](#fields).
 - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
 
 #### 2. Return Queue Evidence
 
-Return the queue to the caller.
+- Return the queue to the caller.
 - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
 - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
 
@@ -46,7 +46,7 @@ Prints proposed Status and assignee calls, [report lines](#report-lines) and unr
 
 #### 1. Compute Board Queue
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - `--items` is the board's items with Status.
 - `--prs` is the pull requests that name an initiative or a hot-fix.

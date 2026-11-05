@@ -21,7 +21,7 @@ The shared table, before a kind fills its cells.
 
 #### 1. Populate Shared Cells
 
-Populate the shared Done, Coverage and Depends on cells from the supplied row data.
+- Populate the shared Done, Coverage and Depends on cells from the supplied row data.
 - The columns must match the kind's table.
 - The shared cells must meet [Tables](#tables).
 
@@ -91,7 +91,7 @@ Restate historical narration as the current design.
 
 #### 5. Apply Criterion Changes
 
-Apply confirmed criterion changes.
+- Apply confirmed criterion changes.
 - The body must meet [Body](#body), [Shared Acceptance Criteria](#shared-acceptance-criteria) and the supplied kind conditions.
 
 #### 6. Validate Corrected Body
@@ -128,25 +128,25 @@ The saved format corrections for one issue and any unresolved content findings.
 
 #### 1. Validate Current Body
 
-Apply [Validate Issue Body](#validate-issue-body) with the supplied JSON, kind conditions, related evidence and output path.
+- Apply [Validate Issue Body](#validate-issue-body) with the supplied JSON, kind conditions, related evidence and output path.
 - Return an unreadable source as a blocker before editing.
 
 #### 2. Review Mechanical Changes
 
-Review the returned diff.
+- Review the returned diff.
 - For wording-preserving format, title and label corrections, Apply [Save Tracker Issue](issue.md#save-tracker-issue) without asking.
 - Retain content decisions and cross-body findings separately; do not publish them as mechanical fixes.
 
 #### 3. Resolve Local Content
 
-Resolve a non-mechanical finding confined to this body.
+- Resolve a non-mechanical finding confined to this body.
 - Obtain the user's decision.
 - Apply [Apply Body Corrections](#apply-body-corrections) with the current body, kind template and conditions, related context, confirmed resolution and output path.
 - Publish through Save Tracker Issue. An unanswered decision or a finding requiring changes to other issues returns to the caller as a blocker.
 
 #### 4. Validate Saved Body
 
-Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
+- Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
 - Apply [Validate Issue Body](#validate-issue-body) again with the saved JSON and the same kind conditions, context and output path.
 - Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
 
@@ -184,7 +184,7 @@ Checks one issue against its template, and with `--fix` writes the body with the
 
 #### 1. Check Body Format
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
 - The input is one issue JSON. `--fix` names the output body file for mechanical fixes. Further inputs are specified by the calling body procedure.
@@ -231,7 +231,7 @@ Read one listed repository's visibility with the authenticated repository API.
 
 #### 1. Fetch Reference Repository
 
-Run this command from the repository checkout with the supplied inputs.
+- Run this command from the repository checkout with the supplied inputs.
 
 - Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
 
@@ -255,7 +255,7 @@ Report private repository references on a public issue and unresolved repository
 
 #### 1. Validate Reference Visibility
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - The snapshot is a JSON array of fetched repository objects. Exit 1 means findings remain.
 

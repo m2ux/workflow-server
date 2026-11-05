@@ -21,12 +21,12 @@ Read these files first.
 
 ### 1. Prepare the Evidence
 
-Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the supplied pull request to obtain its identity, title, base and verified head.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the supplied pull request to obtain its identity, title, base and verified head.
 - Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) with the project checkout, pull request number and verified head.
 
 #### Changed Head
 
-On a changed-head finding:
+- On a changed-head finding:
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again for the same pull request.
 - Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again with the project checkout, same pull request number and new verified head.
 
@@ -39,7 +39,7 @@ On a changed-head finding:
 
 #### Changed Revision
 
-On a changed revision:
+- On a changed revision:
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again.
 - Rebuild the worktree evidence.
 
@@ -49,7 +49,7 @@ On a changed revision:
 
 ### 2. Write the Overview
 
-Locate any existing overview record for this pull request number before creating a record.
+- Locate any existing overview record for this pull request number before creating a record.
 - Reuse its folder identity when one exists; otherwise choose a planning-folder identity whose reference is the pull request number and whose slug comes from its title.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) to prepare that folder.
 - Apply [Populate Architecture Overview](../artifacts/architecture-overview.md#populate-architecture-overview) with the measured structure and flows, verified head, pinned code links and overview path. A repeat replaces its overview while preserving the record's other content.
@@ -60,7 +60,7 @@ Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planni
 
 ### 4. Publish and Link
 
-Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder, so the overview resolves.
+- Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record) for the record's folder, so the overview resolves.
 - Apply [Link Architecture Overview](../artifacts/pull-request-body.md#link-architecture-overview) with the current body and published overview URL.
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) with the returned file.
 - Return the pull request, record folder, published overview, diagrams and References row to the caller.

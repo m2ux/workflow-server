@@ -26,7 +26,7 @@ A task table with confirmed lane assignments.
 
 #### 1. Write Confirmed Lane Map
 
-Apply [Write Lane Assignments](#write-lane-assignments) with the body, confirmed map and output path.
+- Apply [Write Lane Assignments](#write-lane-assignments) with the body, confirmed map and output path.
 - Refuse unknown task ids or malformed resulting cells.
 
 #### 2. Return Updated Body
@@ -115,9 +115,9 @@ Reports whether the request admits a valid unit.
 
 #### 1. Evaluate Lane Admission
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
-Omit the lane option when the request supplies none.
+- Omit the lane option when the request supplies none.
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" admit '[**&lt;epic-body-file&gt;**](#epic-body-file)' --unit '[**&lt;task-ids&gt;**](#unit-task-ids)' --lane '[**&lt;lane-index&gt;**](#requested-index)'

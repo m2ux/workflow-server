@@ -16,7 +16,7 @@ Read these files first.
 
 ### 1. Select the Change
 
-Require the pull request number or URL.
+- Require the pull request number or URL.
 
 - Ask and stop when none is supplied. Do not infer it from the current branch.
 - For several supplied pull requests, complete one overview per pull request. An initiative has no overview of its own.

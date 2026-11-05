@@ -21,7 +21,7 @@ One pull request body from supplied change and validation evidence.
 
 #### 1. Populate Change Body
 
-Populate the body from the [Template](#template) using the change and its evidence. For an epic review, Apply [Populate Review Body](#populate-review-body).
+- Populate the body from the [Template](#template) using the change and its evidence. For an epic review, Apply [Populate Review Body](#populate-review-body).
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Verify Evidence Links
@@ -42,12 +42,12 @@ The current change carried by one epic base.
 
 #### 1. Populate Base Review
 
-Populate the review body from the [Template](#template) using the actual task merges into the base.
+- Populate the review body from the [Template](#template) using the actual task merges into the base.
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Account for Task Merge
 
-For a later task merge:
+- For a later task merge:
 - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
 - Add its functional change under the corresponding area.
 - Cite the merged task pull request as the next reference.
@@ -114,7 +114,7 @@ Convert an unambiguous checked list and Test/Criteria table to the current plan 
 
 #### 1. Convert Test Plan
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - Input is a current REST pull request record; output is the complete body. Existing current tables are unchanged.
 - A conversion prints the pull request identity. Exit 1 means an unreadable plan or missing linked result evidence; inspect the body and findings before publishing.

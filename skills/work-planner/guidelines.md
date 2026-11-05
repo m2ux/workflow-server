@@ -25,13 +25,13 @@ These rules apply to mode and protocol procedures and artifact operations.
 - **Sub-bullets.**
   Detail bullets use sentence case. The first word is capitalized, and a name keeps its own capitals.
 - **Separate actions.**
-  After a step's opening instruction or scope, put each sentence that advances the sequence in its own bullet, including sequences written as a paragraph. Split comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence; use flush bullets for the actions within a step. Put a shared condition or iteration above its following actions, preserving order, inputs, validation gates and return points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
+  A numbered step with multiple instruction or detail items uses flush bullets for every item; a step with one item uses plain text. Put each sentence that advances the sequence in its own item, splitting comma- and semicolon-separated actions the same way. Keep numbered headings as the outer sequence. Put a shared condition or iteration above its following actions, preserving order, inputs, validation gates and return points. Keep an input list, action condition or explanatory sentence with the action it qualifies; these are not separate sequence elements.
 - **List introductions.**
-  Within a procedure step, a line that introduces or governs one list is plain text, with its items as flush bullets directly beneath it. Determine this relationship from the meaning of the instructions. Use bullets for peer actions, alternative branches and sibling groups. Give actions outside an introduction's scope an explicit continuation.
+  Within a procedure step, an item that introduces or governs following items uses the step's item format. Determine its scope from the meaning of the instructions. Use bullets for peer actions, alternative branches and sibling groups. Give actions outside an introduction's scope an explicit continuation.
 - **Dependent instructions.**
   Put instructions that handle an action's specific output immediately after that action, naming the condition and returned value. Keep detail flush beneath the step heading. Name the returned object explicitly when a pronoun would leave its referent unclear.
 - **Branch headers.**
-  Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading or a plain conditional introduction, with flush instructions and bullets. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
+  Named findings and conditional branches follow the action or scope that governs them. Each branch uses a named child heading or a conditional introductory item, with flush content in the step's item format. Mutually exclusive choices share one decision step. Place actions common to all branches after the branch group, with an explicit continuation and any shared return to the caller.
 
 ## Prose
 

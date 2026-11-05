@@ -18,9 +18,9 @@ Read the complete diff from the target to the integration head, the affected def
 
 #### 2. Resolve Review Findings
 
-Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
+- Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
 
-When the findings require fixes under [Review Record](#review-record):
+- When the findings require fixes under [Review Record](#review-record):
 - Fix every required finding on the reviewed branch.
 - Run appropriate regression checks.
 - Apply [Produce Agent Review](#produce-agent-review) with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and return that review’s record.

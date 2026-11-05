@@ -25,7 +25,7 @@ One hot-fix body from a confirmed defect.
 
 #### 1. Populate Hot-fix Template
 
-Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
+- Populate the body from the standalone [Template](standalone-body.md#template) at the supplied output path.
 - The work must meet [Definition](#definition).
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
 - The Overview must name the confirmed target as [Target](#target) states.

@@ -45,7 +45,7 @@ The delivery findings for one epic from supplied evidence.
 
 #### 1. Match Supplied Delivery
 
-Apply [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying a local scratch output body as `--fix`.
+- Apply [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying a local scratch output body as `--fix`.
 - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
 - For reported table normalization, Apply [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
 
@@ -107,7 +107,7 @@ Reports an epic's delivery state against the pull requests that name it.
 
 #### 1. Match Pull Requests
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - Results follow [Delivery Findings](#delivery-findings).
 

@@ -21,19 +21,19 @@ Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](.
 
 ### 2. Understand the Request
 
-Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
+- Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
 
 - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
 
 ### 3. Work in a Worktree
 
-Branch a worktree for the change.
+- Branch a worktree for the change.
 
 - Commit each distinct change as its own commit.
 
 ### 4. Revise
 
-Make the change in the rule's one home.
+- Make the change in the rule's one home.
 
 - Link to it from every other file that needs it.
 - Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
@@ -41,7 +41,7 @@ Make the change in the rule's one home.
 
 ### 5. Check Against the Guidelines
 
-Read every changed file against the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md), checking:
+- Read every changed file against the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md), checking:
 
 - The description, when the skill's reach changed.
 - One line per item, bold leads on their own line, and the declared step and detail structure for each family.
@@ -106,7 +106,7 @@ Compares every third-level section's body between the change's base and its head
 
 #### 1. Compare Changed Sections
 
-Run the following command in the [workspace checkout](#workspace).
+- Run the following command in the [workspace checkout](#workspace).
 
 **Inputs:** [Workspace](#workspace), [Base](#base), [Head](#head) and [Skill Directory](#skill-directory).
 

@@ -42,19 +42,19 @@ One initiative body, scoped to one proposal.
 
 #### 1. Populate Initiative Template
 
-Populate the body from the [Template](#template) into a local file at the supplied output path.
+- Populate the body from the [Template](#template) into a local file at the supplied output path.
 - That file must be the source for every later edit.
 - All populated fields must meet [Fields](#fields).
 
 #### 2. Derive Problem and Boundary
 
-Derive the Problem and Non-Goals from the proposal this initiative is scoped to.
+- Derive the Problem and Non-Goals from the proposal this initiative is scoped to.
 - The Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - Each Non-Goal must meet [Non-Goals](#non-goals).
 
 #### 3. Write Source-Based Criteria
 
-Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
+- Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
 - Each criterion must come from a confirmed clause and meet [Initiative Acceptance Criteria](#initiative-acceptance-criteria).
 - The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone.
 
@@ -64,7 +64,7 @@ Apply [Write Issue Table](issue-body.md#write-issue-table) with the supplied row
 
 #### 5. Fill Initiative Cells
 
-Fill the initiative-specific cells.
+- Fill the initiative-specific cells.
 - Each row must meet [Work Breakdown](#work-breakdown).
 - An item a test cannot observe must stay named as [Coverage Reports](issue-body.md#coverage-reports) define.
 
@@ -162,11 +162,11 @@ Reports an initiative's delivery state against its epics, and ticks Done on an e
 
 #### 1. Sync Initiative
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
 
-Pass every epic JSON file as a separate argument after `--epics`.
+- Pass every epic JSON file as a separate argument after `--epics`.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)'
@@ -188,9 +188,9 @@ Ticks confirmed initiative criteria, refusing any not ready to verify, and ticks
 
 #### 1. Tick Initiative Criteria
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
-Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of verified criterion ids.
+- Pass every epic JSON file as a separate argument after `--epics`. `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tick '[**&lt;criterion-ids&gt;**](#criterion-selection)' --fix '[**&lt;output-body-file&gt;**](#output-files)'

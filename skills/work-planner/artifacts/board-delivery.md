@@ -48,17 +48,17 @@ Apply [Read Board State](board.md#read-board-state) for the supplied board to ob
 
 #### 2. Read Configuration and Assignee
 
-Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
+- Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
 - Apply [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.
 
 #### 3. Locate Epic Item
 
-Match the epic's issue to its board item.
+- Match the epic's issue to its board item.
 - Return an absent item as a finding and stop. The status write below needs it.
 
 #### 4. Write and Confirm Review Status
 
-Apply [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).
+- Apply [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).
 - When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status) with the same review or progress identity and supplied pull request, review and board evidence. Confirm the item through Apply [Read Board Configuration](board.md#read-board-configuration) with the same item identity. The item list can lag a write.
 
 #### 5. Return Confirmed Status
@@ -75,7 +75,7 @@ The board's status and assignees after its issues record delivery.
 
 #### 1. Read Current Delivery Evidence
 
-Read the issues, the board and its delivery records.
+- Read the issues, the board and its delivery records.
 - Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
 - Apply [Read Board State](board.md#read-board-state) for the selected board.
 - Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.
@@ -87,22 +87,22 @@ Read the issues, the board and its delivery records.
 
 #### 2. Plan Delivery Changes
 
-Apply [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
+- Apply [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
 - Fetch each unresolved issue.
 - Apply [Plan Board Changes](#plan-board-changes) again with the same initiative, epic, task, pull request, review, link and board snapshots, output directory and assignee, adding the fetched files as resolved off-board issue files.
 
 #### 3. Apply and Confirm Calls
 
-Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
+- Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
 - Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and changed item identity to confirm its current status.
 
-If that item still shows the preceding status:
+- If that item still shows the preceding status:
 - Repeat its emitted write call.
 - Apply [Read Board Configuration](board.md#read-board-configuration) with the same board identity, output paths and changed item identity. The item list can lag a write.
 
 #### 4. Recompute Refreshed Board
 
-Fetch the issues and items again.
+- Fetch the issues and items again.
 - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
 - Apply [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
 - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
@@ -121,7 +121,7 @@ Apply [Compute Dispatch Status](#compute-dispatch-status) with the supplied iden
 
 #### 2. Apply and Confirm Calls
 
-Run each returned call.
+- Run each returned call.
 - Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and each affected item identity to confirm the write.
 
 #### 3. Return Saved Statuses
@@ -138,14 +138,14 @@ Computes membership, Status and assignee calls from supplied delivery evidence.
 
 #### 1. Compute Board Changes
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete link snapshot. `--agent-reviews` supplies the published review records fetched from the open epic pull requests; absent evidence holds those epics In Progress.
 - `--board`, `--fields` and `--items` identify the current board state.
 - `--out` receives the call files; `--assignee` is the supplied login.
 - `--others` supplies each resolved dependency issue.
 
-Pass each epic or task JSON file as a separate argument after its corresponding flag.
+- Pass each epic or task JSON file as a separate argument after its corresponding flag.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tasks '[**&lt;task-json-file&gt;**](#task-records)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --items '[**&lt;board-items-file&gt;**](#board-items)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'

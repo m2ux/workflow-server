@@ -20,11 +20,11 @@ Read these files first.
 
 ### 1. Find
 
-Use the review number in the supplied delivery findings.
+- Use the review number in the supplied delivery findings.
 
 #### Missing Review Number
 
-When the review number is absent:
+- When the review number is absent:
 - Apply [Locate Review Pull Request](../artifacts/pull-request.md#locate-review-pull-request) with the repository and epic base as head.
 - Use its returned number or absence result.
 
@@ -38,19 +38,19 @@ Apply [Populate Review Body](../artifacts/pull-request-body.md#populate-review-b
 
 ### 3. Publish
 
-When an existing review needs its body updated, the first task merges, a draft is reported or an unmerged base has no review:
+- When an existing review needs its body updated, the first task merges, a draft is reported or an unmerged base has no review:
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) with the returned file, supplying its number for an existing review, and for a new one the epic's issue with the repository setting the caller confirmed. The epic stays open until integration and closure checks pass.
 
 ### 4. Confirm
 
-Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the published review.
+- Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for the published review.
 - Compare its complete body with the published file.
 - Apply [Record Epic Delivery](../artifacts/epic-issue-body.md#record-epic-delivery) with the current epic, refreshed review and task-merge records, the project checkout and the fetched epic bases.
 - Retain its cited-versus-actual merge findings and its Changes path findings with the review identity. The session recording each task merge owns this update.
 
 ### 5. Review the Integration
 
-When the caller requests handoff and supplies confirmed epic readiness:
+- When the caller requests handoff and supplies confirmed epic readiness:
 - Apply [Produce Agent Review](../artifacts/agent-review.md#produce-agent-review) with the fresh review metadata, checkout, epic criteria, validation evidence and planning destination.
 - Apply [Populate Planning Record](../artifacts/planning-record.md#populate-planning-record) with its returned record, and Apply [Publish Planning Record](../artifacts/planning-record.md#publish-planning-record).
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) to link that published record from the review body, preserving its task references and overview.

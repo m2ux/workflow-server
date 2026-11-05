@@ -27,7 +27,7 @@ One placement option from the supplied orphan and candidate destinations.
 
 #### 1. Select Candidate Destination
 
-Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
+- Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
 - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
 
 #### 2. Populate Placement Fields
@@ -64,7 +64,7 @@ One selected destination for an orphan's work.
 
 #### 1. Apply Confirmed Destination
 
-Execute only the branch matching the confirmed destination:
+- Execute only the branch matching the confirmed destination:
 
 ##### Existing Task
 
@@ -117,13 +117,13 @@ One kept or left orphan rewritten in the layout of its destination kind.
 
 #### 1. Populate Selected Body
 
-Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body), selecting the confirmed destination kind and supplied evidence and design.
+- Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body), selecting the confirmed destination kind and supplied evidence and design.
 - Carry evidence into Problem and design into Proposal.
 - Pass a hot-fix its supplied number, theme label and target.
 
 #### 2. Validate and Save Body
 
-Apply [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
+- Apply [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
 - Resolve findings.
 - Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
 
@@ -145,7 +145,7 @@ The work remains tracked by the taking issue.
 
 #### 1. Transfer Tracked Work
 
-Transfer the work to the taking issue.
+- Transfer the work to the taking issue.
 - Make each outcome a criterion of one invariant.
 - Put the design in Proposal.
 - Cite the orphan and any planning record in References.
@@ -156,7 +156,7 @@ Prepare the comment file naming the taking epic and row, or the taking task issu
 
 #### 3. Close Transferred Orphan
 
-Apply [Close Transferred Work](issue.md#close-transferred-work) with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.
+- Apply [Close Transferred Work](issue.md#close-transferred-work) with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.
 - Return the confirmed closure or blocker to the caller.
 
 ### List Orphans

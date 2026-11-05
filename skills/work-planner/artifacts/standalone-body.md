@@ -21,7 +21,7 @@ One standalone issue body from its supplied scope.
 
 #### 1. Populate Standalone Template
 
-Populate the body from the [Template](#template) at the supplied output path.
+- Populate the body from the [Template](#template) at the supplied output path.
 - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
 - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
 - All populated fields must meet [Fields](#fields).

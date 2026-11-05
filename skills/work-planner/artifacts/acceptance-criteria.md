@@ -22,18 +22,18 @@ The verification evidence for a supplied set of criteria whose delivery is ready
 
 #### 1. Confirm Criterion Readiness
 
-Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
+- Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
 - Return evidence that fails Readiness as a blocker for that criterion.
 
 #### 2. Run Named Instruments
 
-Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+- Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
 - Apply [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
 - Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
 
 #### 3. Return Criterion Evidence
 
-Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
+- Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
 - Leave body publication and further planning to the caller.
 
 ### Tick Verified Criteria
@@ -46,7 +46,7 @@ The confirmed criteria and completed rows recorded in an epic or initiative body
 
 #### 1. Record Verified Criteria
 
-Record the criteria, meeting [Tick State](#tick-state).
+- Record the criteria, meeting [Tick State](#tick-state).
 - For an epic, Apply [Record Epic Criteria](epic-issue-body.md#record-epic-criteria) with the issue JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
 - For an initiative, Apply [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria) with the issue JSON, every linked epic record, verified criterion ids and output body file.
 
@@ -64,7 +64,7 @@ Runs one instrument at the commit a branch, tag or commit resolves to, in a deta
 
 #### 1. Run at Revision
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - `--project` is any checkout of the repository; `--revision` is the branch, tag or commit under verification. The instrument follows `--` and runs at the checkout's top level.
 - The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.

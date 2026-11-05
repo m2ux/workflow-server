@@ -26,7 +26,7 @@ Take the goal the user stated and confirmed, as clauses, each an outcome someone
 
 #### 2. Build Goal Trace
 
-Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
+- Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
 - Every goal clause has an initiative criterion that makes it true.
 - Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.
 - Every initiative criterion traces to a goal clause.
@@ -35,7 +35,7 @@ Build the [Trace Table](#trace-table) from those clauses, the initiative criteri
 
 #### 3. Read Marked Requirement Sources
 
-Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources) with the initiative References, checkout, authenticated access and output files.
+- Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources) with the initiative References, checkout, authenticated access and output files.
 - Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.
 
 #### 4. Check Acceptance Criteria
@@ -44,7 +44,7 @@ Check each criterion against the [shared acceptance criteria](issue-body.md#shar
 
 #### 5. Validate Local Drafts
 
-Apply [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.
+- Apply [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.
 - Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.
 - Incorporate its local findings into this review.
 
@@ -54,7 +54,7 @@ Apply [Check Outside Threats](#check-outside-threats) with the current initiativ
 
 #### 7. Return Ranked Gaps
 
-Rank the gaps, meeting [Gaps](#gaps).
+- Rank the gaps, meeting [Gaps](#gaps).
 - Flag the few that most threaten the goal.
 - Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
 - Return the trace and ranked findings to the caller.
@@ -85,7 +85,7 @@ Check for skew between an artifact the plan produces and an implementation that 
 
 #### 5. Return External Threats
 
-Check for a change elsewhere that alters the ground the plan stands on.
+- Check for a change elsewhere that alters the ground the plan stands on.
 - Return the evidenced threats and gaps to the calling goal review.
 
 ## Fields

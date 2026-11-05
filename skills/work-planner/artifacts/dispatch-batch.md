@@ -71,7 +71,7 @@ Checks one selected unit immediately before execution.
 
 #### 1. Check Dispatch Start
 
-- Exit 0 returns the selected unit; exit 1 names the blocking condition.
+Exit 0 returns the selected unit; exit 1 names the blocking condition.
 
 <big><pre>
 cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py start --batch '[**<batch-file>**](#batch)' --unit '[**<unit-identity>**](#unit-identity)' --evidence '[**<start-evidence-file>**](#start-evidence)' --sessions '[**<session-inventory-file>**](#session-inventory)' --capacity '[**<free-slot-count>**](#free-slots)'

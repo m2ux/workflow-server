@@ -22,7 +22,7 @@ If evidence is missing or contradictory, return that finding for the caller to r
 
 #### 3. Populate Verified Finding
 
-Populate the finding with its source quotation.
+- Populate the finding with its source quotation.
 - It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
 
 #### 4. Return Finding Decision
@@ -39,13 +39,13 @@ The verified findings presented for resolution.
 
 #### 1. Populate Verified Findings
 
-Apply [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.
+- Apply [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.
 - Resolve any evidence gap before reporting it.
 - Group the returned findings by area.
 
 #### 2. Resolve Pending Decisions
 
-Put each pending decision to the user, one question at a time.
+- Put each pending decision to the user, one question at a time.
 - Wait for the answer.
 - Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
 - Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.

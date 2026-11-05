@@ -45,7 +45,7 @@ When no open board has the [proposals title](../configuration.md#proposals-board
 
 #### 2. Create Absent Theme Board
 
-When the selected theme board is absent:
+- When the selected theme board is absent:
 - Apply [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.
 - Require the new theme's label and board before an initiative takes that theme.
 
@@ -239,7 +239,7 @@ Copies the supplied template into a new open board with the supplied title and p
 
 #### 1. Copy Board Template
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - The copy's JSON is one project; `.number` identifies the new board.
 
@@ -311,9 +311,9 @@ Sets one board item's Status.
 
 #### 1. Set Item Status
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
-The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
+- The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
 
 **Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
 

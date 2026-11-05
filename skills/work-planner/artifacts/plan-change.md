@@ -22,7 +22,7 @@ Return it as automatic where the supplied allowance names that kind, with the su
 
 #### 3. Return Held Change
 
-Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
+- Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
 - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
 - An absent allowance holds every change, so a run the user drives decides nothing on their behalf.
 

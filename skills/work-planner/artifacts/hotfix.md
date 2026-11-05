@@ -62,7 +62,7 @@ A held hot-fix returned to the work the delivery plan offers.
 
 #### 1. Read Current Development
 
-Apply [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
+- Apply [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
 - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
 
 #### 2. Return Unit to Ready
@@ -107,19 +107,19 @@ Apply [Read Board State](board.md#read-board-state) for its item and Status. A h
 
 #### 3. Apply Required Status
 
-Apply the status [Board Status](#board-status) gives that state and Status:
+- Apply the status [Board Status](#board-status) gives that state and Status:
 
 ##### A Status
 
-Apply [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+- Apply [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
 
 ##### Off the Board, With an Item
 
-Apply [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
+- Apply [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
 
 ##### Off the Board, With No Item
 
-Change nothing; the hot-fix already stands off the board.
+- Change nothing; the hot-fix already stands off the board.
 
 #### 4. Return Settled Board
 
@@ -135,7 +135,7 @@ Records the pull request that delivers a hot-fix, open or merged, ticks verified
 
 #### 1. Sync Hot-fix Issue
 
-Run this command from the workspace checkout with the supplied inputs.
+- Run this command from the workspace checkout with the supplied inputs.
 
 - A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
 - `<criterion-ids>` is a comma-separated list of verified criterion ids.

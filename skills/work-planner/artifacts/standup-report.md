@@ -34,7 +34,7 @@ If initiative references remain unresolved, return them for the caller to supply
 
 #### 4. Write Management Paragraph
 
-Write the management paragraph from the rendered Initiatives and Completed sections.
+- Write the management paragraph from the rendered Initiatives and Completed sections.
 - It must meet [Management Paragraph](#management-paragraph).
 
 #### 5. Render Final Report
@@ -43,7 +43,7 @@ Apply [Summarise Progress](#summarise-progress) with the same inputs and the par
 
 #### 6. Return Report Findings
 
-Return the report and separate unresolved findings.
+- Return the report and separate unresolved findings.
 - The report must meet [Fields](#fields).
 
 ### Summarise Progress
@@ -56,7 +56,7 @@ Prints the standup from supplied board items, pull request records and their iss
 
 #### 1. Summarise Progress
 
-Run the following command with the supplied inputs.
+- Run the following command with the supplied inputs.
 
 - `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.
 - `--since` supplies the window start in [Report Selection](#report-selection), selecting the [window](#scope).
@@ -64,7 +64,7 @@ Run the following command with the supplied inputs.
 - `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
 - `--summary` gives the paragraph for management.
 
-The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
+- The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since '[**&lt;window-start-date&gt;**](#report-selection)' --initiative '[**&lt;initiative-filter&gt;**](#report-selection)' --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'

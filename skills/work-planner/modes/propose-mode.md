@@ -19,7 +19,7 @@ Read these files first.
 
 ### 1. Understand the Problem
 
-Ask the user until the friction and the boundary are clear.
+- Ask the user until the friction and the boundary are clear.
 
 - State the goal back as clauses meeting [Goal](../artifacts/proposal-body.md#goal).
 - Have the user confirm those clauses.
@@ -32,7 +32,7 @@ Ask the user until the friction and the boundary are clear.
 
 ### 3. Draft the Body
 
-Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body) with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.
+- Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-body) with the confirmed problem, evidence, goal clauses, boundary and output body path. The local file is the source for the issue.
 
 - Apply [Select Tracker Number](../artifacts/issue.md#select-tracker-number) with the proposal prefix letter, and carry the returned proposal number in the title.
 - The goal clauses are the clauses the user confirmed. The Non-Goals are the boundary.
@@ -40,7 +40,7 @@ Apply [Populate Proposal Body](../artifacts/proposal-body.md#populate-proposal-b
 
 ### 4. Validate
 
-Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body) with the draft issue JSON and output file.
+- Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-body) with the draft issue JSON and output file.
 
 - Resolve each finding.
 - Update the draft.
@@ -48,13 +48,13 @@ Apply [Validate Proposal Body](../artifacts/proposal-body.md#validate-proposal-b
 
 ### 5. Publish
 
-Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the proposal's required label definitions.
+- Apply [Ensure Repository Labels](../artifacts/repository-labels.md#ensure-repository-labels) with the proposal's required label definitions.
 
 - Apply [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue) with the validated body, title and labels, leaving it unassigned.
 
 ### 6. Confirm Placement
 
-Ask whether to add the issue to the proposals board.
+- Ask whether to add the issue to the proposals board.
 
 - On acceptance, continue to the place step.
 - On a decline, skip placement and continue to the report step with the issue URL.
@@ -62,7 +62,7 @@ Ask whether to add the issue to the proposals board.
 
 ### 7. Place
 
-Apply [Locate Project Board](../artifacts/board.md#locate-project-board) for proposals.
+- Apply [Locate Project Board](../artifacts/board.md#locate-project-board) for proposals.
 
 - For an absent board, Apply [Create Proposals Board](../artifacts/board.md#create-proposals-board).
 - Apply [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for the saved issue id.
