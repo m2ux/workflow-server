@@ -108,3 +108,12 @@ Planning decisions:
 - **Input.** W14 consumes the early parsed-unit stage W05 establishes. It reports invalid joined scope before priority evaluation.
 - **Numbering.** W14 is appended to preserve the existing published row identities and record links. Its lower dependency level is an explicit numbering advisory. The dependency check's no-cycle and join checks remain binding.
 - **Priority.** E03 retains priority 8 and its sibling order. No cross-epic dependency or parallel component contention is added.
+
+
+## Automatic Remaining Delivery, 5 November 2026
+
+- **Authorization.** The user requests automatic starts for the remaining work items. The active delivery scope is E03 W07–W14, retaining the published joins and dependencies.
+- **Reporting.** The instruction covers the remaining published reporting rows W11–W13, resolving the earlier pre-start deferral and retaining their issue-snapshot design.
+- **Coordination.** The coordinator refreshes the live queue after each completed unit and starts the next eligible work within harness capacity, with a published record and verified reservation before each session.
+- **Upstream.** [#1631](https://github.com/m2ux/workflow-server/issues/1631) asks Work Planner to provide this continuous automatic-dispatch behavior. It is reported as future work and is not added to the current delivery scope.
+- **Record.** [Automatic delivery authorization](../2026-11-05-free-work-auto-start/automatic-delivery.md) states the units, coordination and completion boundaries.
