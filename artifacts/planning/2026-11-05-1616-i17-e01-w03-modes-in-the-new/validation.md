@@ -37,3 +37,9 @@ Target model, preservation and source readers pass. Bounded outputs are correct 
 ## Exact-Head Reproduction
 
 The published [run-head-checks.py](run-head-checks.py) runs from the detached current checkout and stores the exact head, command, exit and complete stdout/stderr of each check. [head-revision.log](head-revision.log) records the helper's literal revision and temporary checkout, then each completed result. The task checkout remains clean after source push; the temporary checkout is removed by the helper. For another record destination, use verify-modes.py directly with its supplied checkout and capture output locally. No editable-branch source is read by the model instrument.
+
+## Pull Request Readback
+
+Task PR 1643 targets `i17/e01/workspace`, is non-draft, and reports the exact verified head `c28be9980208c469e2c119e715a5b9b50b9e246e`. At capture its merge state is CLEAN and no remote status checks are reported; the local detached-revision checks are the validation evidence, not a claim of remote CI execution. The complete Development capture confirms this PR has no closing issue reference: the row has no task issue, and the whole epic is not linked as its delivering issue.
+
+Record Epic Delivery produces only the W03 planning-folder-to-PR link change. W04/W05 reservations, all other rows, AC8 and the epic's incomplete state are preserved. AC3 remains unticked until merged-revision verification. Exact-head merge clearance remains with the coordinator.

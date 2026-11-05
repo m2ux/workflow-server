@@ -30,6 +30,12 @@ The work preserves every operative condition and verifies the proposed structure
 | [head-revision.log](head-revision.log) | Exact helper revision, temporary checkout and completed check exits |
 | [pull-request-body.md](pull-request-body.md) | Source for the task pull request body |
 
+| [pr-open.json](pr-open.json) | Saved task PR metadata at its exact source head |
+| [pr-state.json](pr-state.json) | PR base/head/draft/mergeability and reported check state |
+| [pr-links.json](pr-links.json) | Verified empty Development closing relation for this row without a task issue |
+| [epic-open-body.md](epic-open-body.md) | Source epic body replacing only the W03 reservation with its open PR |
+| [epic-open-sync.log](epic-open-sync.log) | Record Epic Delivery output and still-incomplete epic criteria |
+
 ## Links
 
 | Resource | Link |
@@ -37,3 +43,4 @@ The work preserves every operative condition and verifies the proposed structure
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Prerequisite delivery | https://github.com/m2ux/workflow-server/pull/1642 |
 | Epic integration | https://github.com/m2ux/workflow-server/pull/1641 |
+| Task pull request | https://github.com/m2ux/workflow-server/pull/1643 |

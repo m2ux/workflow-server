@@ -1,0 +1,68 @@
+## Overview
+
+The work-planner skill takes the file style its prosiform form will need, laying the groundwork for prosiform compliance before the skill's extraction is cut. The style is the one the example skill under `.project/main/example` shows. That example is an older work-planner and serves as a structural style reference only: no content carries over from it. Command presentation follows the linked Graph Index example in R5. Prerequisites sections stay, and no prosiform metadata is added.
+
+## Problem
+
+- **Steps are list items.**
+  Every procedure is a numbered list with bold leads, so a step has no heading to link and no place for its own detail.
+- **Commands sit apart from the steps that run them.**
+  Artifacts hold a `## Commands` section that their operations reach by link.
+- **Inputs and outputs are prose.**
+  Operations keep their inputs and returned values in prose, without linked input/output contract sections for callers.
+- **SKILL.md carries the rules.**
+  The rules and conventions that bind every mode, and the deployment values, sit in SKILL.md and the guidelines rather than in files of their own.
+- **The style model describes the installed layout.**
+  The current declarations and checks do not define the proposed heading-based steps, linked contracts and HTML command blocks.
+
+## Proposal
+
+- **Per-skill style model.** The skill's own guidelines, `structure.json` and `rules.json` state the new model, and the shared checker reads each skill's declared model.
+  - The shared guidelines and every other skill keep their current shape.
+  - Checker support is proven against specimen skills before document conversion. The final task adopts Work Planner's new guidelines and model declarations once every conversion is complete; the installed declarations govern the live checks until that adoption.
+- **Entry files.** SKILL.md keeps its opening, Modes and Dependencies.
+  - `rules.md` holds the rules that bind every mode, `conventions.md` the conventions, and `configuration.md` the deployment values, each built from the live skill's own text.
+- **Steps as sub-sections.** Each step is a heading of its position and action, with its instruction as a paragraph and flush bullets.
+  - Calls use Apply for an artifact operation and Follow for a mode, protocol or child section.
+  - Each mode and protocol opens with the preamble line that links Rules, Conventions and, for a mode, Outcomes.
+- **Commands in steps.** Each command moves into the step that runs it, with where it runs, the inputs that fill it, and an example. No artifact keeps a `## Commands` section.
+  - Command and tool-access invocations use raw HTML `<big><pre>…</pre></big>` blocks, matching the specific R5 step. Contract-backed input names are bold Markdown links inside the block, using `[**argument**](#argument-contract)`, while literal syntax, argument order, shell quoting and line breaks are preserved.
+  - Checker fixtures accept this HTML command form and its resolving argument links, and reject Markdown-fenced command invocations. The example supplies presentation only; its tool names, graph behavior, content and metadata are outside this migration.
+- **Inputs, outputs and contracts.**
+  Each operation lists its Inputs and Outputs as links to `###` contract sections under Fields.
+- **What does not change.** The skill's behaviour, its Prerequisites sections and its frontmatter stay as they are.
+  - No prosiform metadata, no `pf` instruction and no prosiform link marks, which need its grammar to place.
+  - No file or rule is taken from the example's content.
+
+## Work Breakdown
+
+| Task | Description | Coverage | Depends on | Joins | Lane | Done |
+| --- | --- | --- | --- | --- | --- | --- |
+| [W01](https://github.com/m2ux/workflow-server/pull/1640) | Per-skill style model and checker | AC1 | | | | ✓ |
+| [W02](https://github.com/m2ux/workflow-server/pull/1642) | Rules, conventions and configuration files | AC2 | W01 | | | ✓ |
+| [W03](https://github.com/m2ux/workflow-server/pull/1643) | Modes in the new style | AC3 | W02 | | | |
+| [W04](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w04-protocols-in-the-new/) | Protocols in the new style | AC4 | W02 | | | |
+| [W05](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w05-issue-and-body-artifacts/) | Issue and body artifacts in the new style | AC5 | W02 | | | |
+| W06 | Board, queue, planning and review artifacts restyled | AC6 | W02 | | | |
+| W07 | Delivery, branch and pull-request artifacts restyled | AC7 | W02 | | | |
+| W08 | Activate the Work Planner style model | AC8 | W03, W04, W05, W06, W07 | | | |
+
+## Acceptance Criteria
+
+- [x] **AC1.** `check_skill_files.py` validates specimen declarations of the proposed Work Planner style model, including its command style, as acceptance/rejection fixtures show.
+- [x] **AC2.** SKILL.md holds only its opening, Modes and Dependencies, and `rules.md`, `conventions.md` and `configuration.md` hold what binds every mode, checked by Check Skill Files.
+- [ ] **AC3.** Every mode states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+- [ ] **AC4.** Every protocol states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+- [ ] **AC5.** Every issue and body artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+- [ ] **AC6.** Every board, queue, planning and review artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+- [ ] **AC7.** Every delivery, branch and pull-request artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+
+- [ ] **AC8.** The Work Planner guidelines, `structure.json` and `rules.json` declare the new style model over the converted skill, with zero findings from Check Skill Files over `skills/work-planner`.
+
+## References
+
+- **R1.** [Planning record](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes) — the decisions, the artifact grouping and each task's work item.
+- **R2.** [Example skill](https://github.com/m2ux/md-composer/tree/00f166920ec242f3565376e06a8838de72f8dc34/example/work-planner) — the older work-planner whose file style this epic adopts; style only.
+- **R3.** [Example guidelines](https://github.com/m2ux/md-composer/blob/00f166920ec242f3565376e06a8838de72f8dc34/example/guidelines.md) — the shared guidelines that state that style.
+- **R4.** [Work Planner at the migration baseline](https://github.com/m2ux/workflow-server/tree/03d353300ca4804194fd50d316d73e3bf1270d1d/skills/work-planner) — the skill this epic restyles.
+- **R5.** [HTML command-style example](https://github.com/shieldedtech/midnight-agent-eng/blob/a710a42e82df7f18b27f8a6cfa4b6e9c801df903/skills/finding-classifier/artifacts/graph-index.md#1-fetch-the-first-inventory-page) — the specific command presentation adopted by this migration; style only.
