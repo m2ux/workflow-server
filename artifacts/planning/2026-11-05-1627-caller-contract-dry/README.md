@@ -31,3 +31,6 @@ Review Work Planner’s modes, protocols and artifacts for callers that repeat a
 - [graph-context.yaml](graph-context.yaml)
 - [graph-contexts.json](graph-contexts.json)
 - [pr-current.json](pr-current.json)
+
+- [Final Pull Request](pr-final.json) — exact revisions and readiness.
+- [Final Board Item](board-final.json) — verified In Review readback.
