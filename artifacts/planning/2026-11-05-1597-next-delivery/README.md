@@ -106,3 +106,9 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 - Check the applied skill files against that inventory: every input and output is explicitly named in step prose and linked to its corresponding Field with the notation above. A command placeholder or implied value alone does not establish that prose contract.
 - Resolve every annotated target to its owning Field, add a missing Field at its owning home, and add an explicit Provide step for an output the procedure leaves unstated. Preserve the operation’s conditions and responsibilities.
 - Reconcile every operation against the inventory, including conditional results, and record missing, unannotated or unresolved contracts as failures. Completion requires no input or output carried by implication alone.
+
+## Contextual Contract Migration
+
+| Artifact | What it holds |
+| --- | --- |
+| [Approved migration](context-contract-migration.md) | Ownership, complete IO audit and implementation/verification sequence |
