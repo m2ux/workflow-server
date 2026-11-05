@@ -17,6 +17,10 @@ The Delivery Plan defines that admission rule and deliver.py applies it to the t
 | [Dispatch](dispatch.md) | Automatic authorization, current queue and checklist |
 | [Delivery evidence](delivery.md) | Execution checklist and observing checks |
 | [Change list](change-list.md) | Applied and held plan changes |
+| [Planner results](planner-tests.log) | Complete planner output at the tested tree |
+| [Shared results](shared-tests.log) | Complete shared checker output |
+| [Skill files](skill-files.log) | Installed skill-file validation |
+| [Criterion results](criterion-tests.log) | Detached exact-head lane and document checks |
 
 ## Links
 

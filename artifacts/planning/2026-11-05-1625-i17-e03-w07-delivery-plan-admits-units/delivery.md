@@ -4,9 +4,9 @@
 
 - [x] Confirm live W07+W08 reservations and start the unit session.
 - [x] Match AC2 and AC5 to artifact inspection and CLI fixtures.
-- [ ] Implement and commit component groups. **In progress.**
-- [ ] Verify focused cases, complete suites and skill files at the tested head.
-- [ ] Publish task PR, record its links and merge verified work.
+- [x] Implement and commit component groups.
+- [x] Verify focused cases, complete suites and skill files at the tested head.
+- [ ] Publish task PR, record its links and merge verified work. **In progress.**
 - [ ] Verify merged revision, criteria, Done cells and draft integration.
 - [ ] Publish final evidence and change list.
 
@@ -21,3 +21,26 @@ AC5 is observed by test_deliver.py fixtures executing the real survey over lanes
 ## T3: Combined Validation
 
 Run the complete planner suite, shared checker suite and skill-file check. Record exact tested revision and pass/skip counts separately.
+
+## Tested Revision
+
+The published task head is `2468d37694e795786305d7657afb71ffb29ddf2e`, rooted at epic-base `dffa25a9b1cf35225e5b83a83e9b2e7a8f1204c2`. W07 is committed separately at `5d0f50180`; the script, observing fixtures and invalid-report contract are the following commit.
+
+## Observations
+
+**T1 pass — AC2.** Read the committed Delivery Plan: Lane Admission reads the task-table cells, admits requested-index and unlaned units, admits only unlaned units when omitted, retains priority, and names the lane in each unit line. Inputs and command usage expose the optional request; hot-fixes are unlaned. Its direct links and prerequisites pass all 11 document-interface tests.
+
+**T2 pass — AC5.** The real delivery CLI passes all 96 delivery tests, including 10 LaneAdmission cases. Lanes 1 and 2 admit only matching and unlaned rows in existing order; absence offers only unlaned. A table lane applies to linked work-item and unplanned rows, and the same opaque spelling works across epics while `02` differs from `2`. Equal-lane/all-empty joined units pass. Mixed or different joined lanes and malformed raw links, code spans and prose fail without becoming unlaned. Each malformed joined unit is counted once, with row-specific findings. Other lanes' holds, blockers, unresolved dependencies and passing merge candidates remain visible. Hot-fixes are unlaned; invalid CLI indices are refused.
+
+**T3 pass.** The complete planner suite ran 882 tests: 881 passed and one opt-in live Development-link test was skipped because WORK_PLANNER_LIVE_LINK was not supplied. The shared checker suite passed 208 tests. Check Skill Files checked 52 files with zero findings. git diff --check passed. The 21 combined lane-admission and document-interface tests pass again in a detached checkout at the literal tested head; criterion-tests.log records its SHA and output.
+
+Commands use this task checkout's scripts and templates through the absolute approved sbx launcher:
+
+```text
+python3 -m unittest discover -s skills/work-planner/test -q
+python3 -m unittest discover -s skills/test -q
+python3 skills/scripts/check_skill_files.py skills/work-planner
+python3 skills/work-planner/scripts/revision-check.py --project <project> --revision 2468d37694e795786305d7657afb71ffb29ddf2e -- <sbx> env PYTHONPATH=skills/work-planner/test python3 -m unittest test_deliver.LaneAdmission test_documents -q
+```
+
+No new debt or arising issue was found. The unsupported cross-epic Joins recursion remains the separately planned W14 work; this unit does not claim its repair.
