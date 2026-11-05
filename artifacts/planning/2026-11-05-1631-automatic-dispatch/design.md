@@ -40,4 +40,4 @@ The fixtures observe the coordinator's supplied-evidence boundary; live GitHub w
 - [x] Inspect the issue, existing planning evidence, repository and current branches.
 - [x] Implement and verify continuous coordination and its observing fixtures.
 - [x] Publish validation evidence, push the change and open its pull request.
-- [ ] Confirm the repository auto-close prerequisite and verify the delivery issue link.
+- [x] Confirm the repository auto-close prerequisite and verify the delivery issue link.

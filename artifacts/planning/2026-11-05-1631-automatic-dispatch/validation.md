@@ -2,7 +2,7 @@
 
 ## Tested Change
 
-The implementation is based on `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486` on `workspace`. The source, observing fixtures, artifact operations and delivery instructions are verified together in the issue's isolated worktree. Full-suite verification is followed by the final 17 orchestration fixtures and focused document and checkout checks for the final refinements.
+The implementation is based on `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486` on `workspace`, with final pushed head `117c4da825d25b2b5ca7395dee561885f849fadc`. The source, observing fixtures, artifact operations and delivery instructions are verified together in the issue's isolated worktree. Full-suite verification is followed by the final 17 orchestration fixtures and focused document and checkout checks for the final refinements.
 
 ## Orchestration Fixtures
 
@@ -40,8 +40,8 @@ The observed reads also expose an inherited disclosure limitation: whole-file De
 
 ## Section Accounting
 
-The base-to-head section comparison preserves the delivery plan's existing eligibility definitions. The coordinator's initial selection, survey, merge and reporting responsibilities occupy its main path and refill procedure; publication, reservation, preparation and start occupy Unit Dispatch. All twelve worker-delivery steps remain in Run Delivery Session. Modified and added sections were read against their guidelines and call inputs. The comparison's nonzero exit reports expected added and differing sections, not a broken validation command.
+The base-to-head section comparison reports 405 sections at the base and 417 at `117c4da82`: twelve added sections and three differing sections, with none removed. It preserves the delivery plan's existing eligibility definitions. The coordinator's initial selection, survey, merge and reporting responsibilities occupy its main path and refill procedure; publication, reservation, preparation and start occupy Unit Dispatch. All twelve worker-delivery steps remain in Run Delivery Session. Modified and added sections were read against their guidelines and call inputs. The comparison's nonzero exit reports expected added and differing sections, not a broken validation command.
 
 ## Delivery Boundary
 
-The implementation is published as a pull request into `workspace`. Current repository rules require one approving human review for that target. The API does not expose the issue auto-close setting; linking the delivery issue waits for the user's explicit confirmation that the setting is disabled. The issue remains open while its delivery pull request is unmerged.
+The implementation is published as [PR #1636](https://github.com/m2ux/workflow-server/pull/1636) into `workspace`. Current repository rules require one approving human review for that target. The user explicitly confirmed that issue auto-close is disabled. The Development relation was then added and read back from both ends: issue #1631 holds PR #1636, and PR #1636 holds issue #1631, each once. The final source head is pushed and its worktree is clean. The issue remains open while its delivery pull request is unmerged. No GitHub check runs are present; test results above are local evidence.
