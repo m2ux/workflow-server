@@ -6,7 +6,7 @@
 - [x] Implement Lane ownership and update all consumers.
 - [x] Review the complete integration diff against guidelines and SOLID; fix findings.
 - [x] Run final behavioral suites and section accounting; record partial disclosure walks and their limits.
-- [ ] Publish renewed exact-head evidence and confirm review handoff. **In progress.**
+- [x] Publish renewed exact-head evidence and confirm review handoff.
 
 ## Full Diff Review
 
@@ -27,3 +27,7 @@ Lane has one rule home; Epic Issue Body retains table shape/position and delegat
 ## Final Revision
 
 Source `73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0`, target `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486`. Full integration: 25 changed files. Full source tree: 903 planner passes plus one opt-in skip, 208 shared passes, 53 structural files and no findings. Section comparison intentionally exits 1 for 23 accounted changes, not a validation failure.
+
+## Handoff Readback
+
+PR #1627 is ready, open and unmerged at the recorded head/target. The exact-head agent-review checker passes after readiness and again after the board write. Project 17 item 291913055 reads In Review. The active ruleset requires one approving human review; no approving review is present. No integration merge or epic closure is claimed.

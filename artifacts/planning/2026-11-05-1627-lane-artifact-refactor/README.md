@@ -50,3 +50,6 @@ This revision stays on the existing integration branch and PR. It preserves the 
 - [development-links.json](development-links.json)
 - [pr-current.json](pr-current.json)
 - [epic-current.json](epic-current.json)
+
+- [Final Pull Request Readback](pr-final.json) — ready, unmerged and exact reviewed revisions.
+- [Final Board Readback](board-final.json) — E03 In Review after the confirmed write.
