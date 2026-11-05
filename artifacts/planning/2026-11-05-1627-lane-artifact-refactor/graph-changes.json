@@ -1,0 +1,2116 @@
+{
+  "summary": {
+    "changed_count": 212,
+    "affected_count": 49,
+    "changed_files": 25,
+    "risk_level": "critical"
+  },
+  "changed_symbols": [
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L1:Board Queue",
+      "name": "Board Queue",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L5:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L16:Operations",
+      "name": "Operations",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L18:*Plan* Board Queue",
+      "name": "*Plan* Board Queue",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L33:Fields",
+      "name": "Fields",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L94:Ready Unit Lanes",
+      "name": "Ready Unit Lanes",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L104:Report Lines",
+      "name": "Report Lines",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L132:Completeness",
+      "name": "Completeness",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L140:Commands",
+      "name": "Commands",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/board-queue.md:L142:Compute Board Queue",
+      "name": "Compute Board Queue",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/board-queue.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L1:Delivery Plan",
+      "name": "Delivery Plan",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L5:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L16:Operations",
+      "name": "Operations",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L18:*Plan* Available Work",
+      "name": "*Plan* Available Work",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L27:Fields",
+      "name": "Fields",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L42:Report Lines",
+      "name": "Report Lines",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L60:Commands",
+      "name": "Commands",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/delivery-plan.md:L62:Compute Available Work",
+      "name": "Compute Available Work",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/delivery-plan.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L1:Dependency Graph",
+      "name": "Dependency Graph",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L5:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L16:Operations",
+      "name": "Operations",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L18:*Check* Dependencies and Numbering",
+      "name": "*Check* Dependencies and Numbering",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L43:Fields",
+      "name": "Fields",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L86:Joins",
+      "name": "Joins",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L105:Commands",
+      "name": "Commands",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/dependency-graph.md:L107:Check Dependencies",
+      "name": "Check Dependencies",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/dependency-graph.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L1:Epic Issue Body",
+      "name": "Epic Issue Body",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L5:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L17:Operations",
+      "name": "Operations",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L19:*Populate* Epic Issue Body",
+      "name": "*Populate* Epic Issue Body",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L89:*Revise* Epic Rows",
+      "name": "*Revise* Epic Rows",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L136:Work Breakdown",
+      "name": "Work Breakdown",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L150:References",
+      "name": "References",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/epic-issue-body.md:L166:Work Breakdown",
+      "name": "Work Breakdown",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/epic-issue-body.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L1:Lane",
+      "name": "Lane",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L5:Operations",
+      "name": "Operations",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L7:Read Task Lanes",
+      "name": "Read Task Lanes",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L15:Assign Task Lanes",
+      "name": "Assign Task Lanes",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L25:Check Unit Lanes",
+      "name": "Check Unit Lanes",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L33:Determine Lane Admission",
+      "name": "Determine Lane Admission",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L41:Fields",
+      "name": "Fields",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L43:Index",
+      "name": "Index",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L47:Assignments",
+      "name": "Assignments",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L51:Unit Consistency",
+      "name": "Unit Consistency",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L55:Admission",
+      "name": "Admission",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L59:Report Label",
+      "name": "Report Label",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L63:Commands",
+      "name": "Commands",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L65:Read Lane Assignments",
+      "name": "Read Lane Assignments",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L75:Write Lane Assignments",
+      "name": "Write Lane Assignments",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L87:Validate Lane Unit",
+      "name": "Validate Lane Unit",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/artifacts/lane.md:L99:Evaluate Lane Admission",
+      "name": "Evaluate Lane Admission",
+      "type": "Section",
+      "filePath": "skills/work-planner/artifacts/lane.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/guidelines.md:L1:Guidelines",
+      "name": "Guidelines",
+      "type": "Section",
+      "filePath": "skills/work-planner/guidelines.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/guidelines.md:L143:Artifacts",
+      "name": "Artifacts",
+      "type": "Section",
+      "filePath": "skills/work-planner/guidelines.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/advance-mode.md:L1:Advance Mode",
+      "name": "Advance Mode",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/advance-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/advance-mode.md:L20:Procedure",
+      "name": "Procedure",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/advance-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/deliver-mode.md:L1:Deliver Mode",
+      "name": "Deliver Mode",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/deliver-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/deliver-mode.md:L7:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/deliver-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/deliver-mode.md:L34:Procedure",
+      "name": "Procedure",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/deliver-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/plan-mode.md:L1:Plan Mode",
+      "name": "Plan Mode",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/plan-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/plan-mode.md:L7:Prerequisites",
+      "name": "Prerequisites",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/plan-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Section:skills/work-planner/modes/plan-mode.md:L29:Procedure",
+      "name": "Procedure",
+      "type": "Section",
+      "filePath": "skills/work-planner/modes/plan-mode.md",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/scripts/board-queue.py:Queue",
+      "name": "Queue",
+      "type": "Class",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.__init__#5",
+      "name": "__init__",
+      "type": "Method",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+      "name": "ready_units",
+      "type": "Method",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/board.py:TASK",
+      "name": "TASK",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/board.py:ISSUE_URL",
+      "name": "ISSUE_URL",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/board.py:WORK_ITEM",
+      "name": "WORK_ITEM",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/board.py:in_flight",
+      "name": "in_flight",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/board.py:joined",
+      "name": "joined",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/board.py:units",
+      "name": "units",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/board.py:epic_state",
+      "name": "epic_state",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/deliver.py:RECORD",
+      "name": "RECORD",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/deliver.py:ISSUE_URL",
+      "name": "ISSUE_URL",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+      "name": "hotfix_units",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/deliver.py:survey",
+      "name": "survey",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/deliver.py:main",
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/deps.py:main",
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Property:skills/work-planner/scripts/deps.py:main.lanes@400:4",
+      "name": "lanes",
+      "type": "Property",
+      "filePath": "skills/work-planner/scripts/deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/scripts/format.py:Review",
+      "name": "Review",
+      "type": "Class",
+      "filePath": "skills/work-planner/scripts/format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+      "name": "check_body",
+      "type": "Method",
+      "filePath": "skills/work-planner/scripts/format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/lane.py:LINK",
+      "name": "LINK",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/lane.py:WID",
+      "name": "WID",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/scripts/lane.py:WID_SHAPED",
+      "name": "WID_SHAPED",
+      "type": "Variable",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:is_index",
+      "name": "is_index",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:read_lanes",
+      "name": "read_lanes",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Property:skills/work-planner/scripts/lane.py:read_lanes.lanes@25:4",
+      "name": "lanes",
+      "type": "Property",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Property:skills/work-planner/scripts/lane.py:read_lanes.header@27:4",
+      "name": "header",
+      "type": "Property",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:check_unit",
+      "name": "check_unit",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:admits",
+      "name": "admits",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:label",
+      "name": "label",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:assign_lanes",
+      "name": "assign_lanes",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/scripts/lane.py:main",
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/fixtures.py:epic_body",
+      "name": "epic_body",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/fixtures.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/fixtures.py:lane_table",
+      "name": "lane_table",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/fixtures.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes",
+      "name": "ReadyUnitLanes",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.setup_items",
+      "name": "setup_items",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_lanes_and_unlaned_units_come_from_unlinked_task_rows#0",
+      "name": "test_lanes_and_unlaned_units_come_from_unlinked_task_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_a_joined_unit_has_one_common_lane_report#0",
+      "name": "test_a_joined_unit_has_one_common_lane_report",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_lane_cells_preserve_all_status_and_assignee_calls#0",
+      "name": "test_lane_cells_preserve_all_status_and_assignee_calls",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_in_progress_epics_report_only_whole_free_eligible_units#0",
+      "name": "test_in_progress_epics_report_only_whole_free_eligible_units",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_backlog_and_review_epics_report_no_ready_units#0",
+      "name": "test_backlog_and_review_epics_report_no_ready_units",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_same_repository_producer_outputs_stay_unverified_in_snapshot_report#0",
+      "name": "test_same_repository_producer_outputs_stay_unverified_in_snapshot_report",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_malformed_raw_cells_do_not_become_unlaned_or_indexed_reports#0",
+      "name": "test_malformed_raw_cells_do_not_become_unlaned_or_indexed_reports",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_board_queue.py:ReadyUnitLanes.test_split_joined_lanes_name_both_rows_and_refuse_the_unit#0",
+      "name": "test_split_joined_lanes_name_both_rows_and_refuse_the_unit",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_board_queue.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/test_deliver.py:epic_body",
+      "name": "epic_body",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deliver.py:Survey",
+      "name": "Survey",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:Survey.test_free_row_of_a_started_epic_is_a_unit#0",
+      "name": "test_free_row_of_a_started_epic_is_a_unit",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:Survey.test_joined_tasks_are_one_unit#0",
+      "name": "test_joined_tasks_are_one_unit",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deliver.py:JoinedReservation",
+      "name": "JoinedReservation",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:JoinedReservation.test_joined_rows_are_held_with_the_folder_the_survey_names#0",
+      "name": "test_joined_rows_are_held_with_the_folder_the_survey_names",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deliver.py:HotFixUnits",
+      "name": "HotFixUnits",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:HotFixUnits.test_a_ready_hot_fix_is_one_unit_cut_from_its_target#0",
+      "name": "test_a_ready_hot_fix_is_one_unit_cut_from_its_target",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deliver.py:LaneAdmission",
+      "name": "LaneAdmission",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.laned",
+      "name": "laned",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.offered#1",
+      "name": "offered",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_requested_lane_admits_itself_and_unlaned_rows_in_existing_order#0",
+      "name": "test_requested_lane_admits_itself_and_unlaned_rows_in_existing_order",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_lane_is_board_wide_and_preserves_opaque_spelling#0",
+      "name": "test_lane_is_board_wide_and_preserves_opaque_spelling",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_table_lane_applies_to_linked_and_unplanned_rows#0",
+      "name": "test_table_lane_applies_to_linked_and_unplanned_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_joined_units_admit_equal_lanes_and_all_empty_cells#0",
+      "name": "test_joined_units_admit_equal_lanes_and_all_empty_cells",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_split_joined_lanes_fail_even_outside_the_requested_lane#0",
+      "name": "test_split_joined_lanes_fail_even_outside_the_requested_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_raw_malformed_lanes_fail_without_becoming_unlaned#0",
+      "name": "test_raw_malformed_lanes_fail_without_becoming_unlaned",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_two_malformed_joined_rows_count_as_one_invalid_unit#0",
+      "name": "test_two_malformed_joined_rows_count_as_one_invalid_unit",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_holds_blockers_and_merge_candidates_remain_visible_across_lanes#0",
+      "name": "test_holds_blockers_and_merge_candidates_remain_visible_across_lanes",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_unlaned_hot_fixes_are_admitted_with_or_without_a_lane#0",
+      "name": "test_unlaned_hot_fixes_are_admitted_with_or_without_a_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneAdmission.test_cli_refuses_non_index_lane_arguments#0",
+      "name": "test_cli_refuses_non_index_lane_arguments",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deliver.py:LaneCellPreservation",
+      "name": "LaneCellPreservation",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneCellPreservation.assert_lane_rows#2",
+      "name": "assert_lane_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneCellPreservation.test_reserve_and_release_keep_lanes_attached_to_each_row#0",
+      "name": "test_reserve_and_release_keep_lanes_attached_to_each_row",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deliver.py:LaneCellPreservation.test_a_joined_reservation_and_release_keep_both_lane_cells#0",
+      "name": "test_a_joined_reservation_and_release_keep_both_lane_cells",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deliver.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/test_deps.py:breakdown",
+      "name": "breakdown",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deps.py:TaskLanes",
+      "name": "TaskLanes",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/test/test_deps.py:table",
+      "name": "table",
+      "type": "Variable",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_joined_rows_require_lane_data_in_standalone_check#0",
+      "name": "test_joined_rows_require_lane_data_in_standalone_check",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_equal_indexed_joined_rows_pass_without_work_items#0",
+      "name": "test_equal_indexed_joined_rows_pass_without_work_items",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_all_empty_joined_rows_pass#0",
+      "name": "test_all_empty_joined_rows_pass",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_different_indexed_joined_rows_fail_and_name_each_lane#0",
+      "name": "test_different_indexed_joined_rows_fail_and_name_each_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_indexed_and_empty_joined_rows_fail_and_name_each_lane#0",
+      "name": "test_indexed_and_empty_joined_rows_fail_and_name_each_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_transitive_join_names_every_member_once#0",
+      "name": "test_transitive_join_names_every_member_once",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_joined_rows_in_different_epics_compare_their_table_lanes#0",
+      "name": "test_joined_rows_in_different_epics_compare_their_table_lanes",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_a_malformed_joined_cell_is_reported_without_a_fake_empty_lane#0",
+      "name": "test_a_malformed_joined_cell_is_reported_without_a_fake_empty_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_independent_rows_can_have_different_lanes#0",
+      "name": "test_independent_rows_can_have_different_lanes",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_a_malformed_lane_fails_even_without_joins_or_work_item_links#0",
+      "name": "test_a_malformed_lane_fails_even_without_joins_or_work_item_links",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_work_item_lane_prose_supplies_no_lane_data#0",
+      "name": "test_work_item_lane_prose_supplies_no_lane_data",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deps.py:JoinedEpicScope",
+      "name": "JoinedEpicScope",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.cli",
+      "name": "cli",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_pinned_reciprocal_cross_epic_joins_exit_before_priorities#0",
+      "name": "test_pinned_reciprocal_cross_epic_joins_exit_before_priorities",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_cross_epic_joins_with_initiative_skip_whole_epic_derivation#0",
+      "name": "test_cross_epic_joins_with_initiative_skip_whole_epic_derivation",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_one_way_cross_epic_join_names_owner_and_target#0",
+      "name": "test_one_way_cross_epic_join_names_owner_and_target",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_unknown_cross_epic_join_retains_unknown_row_diagnostic#0",
+      "name": "test_unknown_cross_epic_join_retains_unknown_row_diagnostic",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_same_epic_qualified_and_local_joins_keep_priority_output#0",
+      "name": "test_same_epic_qualified_and_local_joins_keep_priority_output",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_deps.py:JoinedEpicScope.test_same_epic_lane_and_dependency_diagnostics_remain#0",
+      "name": "test_same_epic_lane_and_dependency_diagnostics_remain",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_deps.py:TaskCells",
+      "name": "TaskCells",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/test/test_deps.py:SPELLINGS",
+      "name": "SPELLINGS",
+      "type": "Variable",
+      "filePath": "skills/work-planner/test/test_deps.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_documents.py:DocumentInterfaces",
+      "name": "DocumentInterfaces",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_documents.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_documents.py:DocumentInterfaces.test_artifact_operations_expose_inputs_and_consecutive_steps#0",
+      "name": "test_artifact_operations_expose_inputs_and_consecutive_steps",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_documents.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_format.py:TaskRowLanes",
+      "name": "TaskRowLanes",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.review#1",
+      "name": "review",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.test_bare_indices_and_empty_cells_are_valid#0",
+      "name": "test_bare_indices_and_empty_cells_are_valid",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.test_malformed_populated_cells_name_their_row_and_keep_the_value#0",
+      "name": "test_malformed_populated_cells_name_their_row_and_keep_the_value",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.test_normalization_preserves_lanes_by_task_with_done_last#0",
+      "name": "test_normalization_preserves_lanes_by_task_with_done_last",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.test_missing_lane_column_is_added_empty#0",
+      "name": "test_missing_lane_column_is_added_empty",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_format.py:TaskRowLanes.test_malformed_cell_survives_table_normalization#0",
+      "name": "test_malformed_cell_survives_table_normalization",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_format.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_lane.py:LaneOperations",
+      "name": "LaneOperations",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Variable:skills/work-planner/test/test_lane.py:table",
+      "name": "table",
+      "type": "Variable",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_retains_indices_and_empty_cells_by_row#0",
+      "name": "test_reader_retains_indices_and_empty_cells_by_row",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_uses_column_names_and_ignores_non_task_rows#0",
+      "name": "test_reader_uses_column_names_and_ignores_non_task_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_keeps_lane_data_inside_its_task_table#0",
+      "name": "test_reader_keeps_lane_data_inside_its_task_table",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_reports_malformed_cells_without_an_empty_value#0",
+      "name": "test_reader_reports_malformed_cells_without_an_empty_value",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_a_missing_cell_is_not_an_empty_lane#0",
+      "name": "test_a_missing_cell_is_not_an_empty_lane",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_assignment_preserves_other_content_and_clears_indices#0",
+      "name": "test_assignment_preserves_other_content_and_clears_indices",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_assignment_refuses_unknown_or_malformed_rows#0",
+      "name": "test_assignment_refuses_unknown_or_malformed_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_missing_and_mixed_unit_assignments_are_findings#0",
+      "name": "test_missing_and_mixed_unit_assignments_are_findings",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_request_admission_preserves_index_spelling#0",
+      "name": "test_request_admission_preserves_index_spelling",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_cli_assignment_and_admission#0",
+      "name": "test_cli_assignment_and_admission",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/test_lane.py:LaneOperations.test_cli_assignment_and_admission.run@80:12",
+      "name": "run",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_admission_reports_unrelated_fault_without_rejecting_valid_unit#0",
+      "name": "test_admission_reports_unrelated_fault_without_rejecting_valid_unit",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_writer_accepts_reader_table_forms_and_preserves_line_endings#0",
+      "name": "test_writer_accepts_reader_table_forms_and_preserves_line_endings",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_lane.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:Done",
+      "name": "Done",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_an_open_pull_request_replaces_the_planning_record_link#0",
+      "name": "test_an_open_pull_request_replaces_the_planning_record_link",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked#0",
+      "name": "test_a_merged_pull_request_leaves_done_empty_while_a_criterion_is_unticked",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_done_ticks_when_every_cited_criterion_is_ticked#0",
+      "name": "test_done_ticks_when_every_cited_criterion_is_ticked",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_a_row_links_one_delivery_per_long_lived_branch#0",
+      "name": "test_a_row_links_one_delivery_per_long_lived_branch",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_an_id_named_for_each_pull_request_links_them_all#0",
+      "name": "test_an_id_named_for_each_pull_request_links_them_all",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_a_repeated_run_leaves_the_row_unchanged#0",
+      "name": "test_a_repeated_run_leaves_the_row_unchanged",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:Done.test_a_run_naming_a_linked_pull_request_keeps_the_row_order#0",
+      "name": "test_a_run_naming_a_linked_pull_request_keeps_the_row_order",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:PassedEvidence",
+      "name": "PassedEvidence",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:PassedEvidence.test_passed_check_ticks_criterion_and_done#0",
+      "name": "test_passed_check_ticks_criterion_and_done",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:TaskLinks",
+      "name": "TaskLinks",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_an_open_pull_request_is_linked_and_does_not_deliver#0",
+      "name": "test_an_open_pull_request_is_linked_and_does_not_deliver",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_a_merged_pull_request_from_another_epic_delivers_the_row#0",
+      "name": "test_a_merged_pull_request_from_another_epic_delivers_the_row",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_a_linked_commit_delivers_the_row_when_its_criteria_are_ticked#0",
+      "name": "test_a_linked_commit_delivers_the_row_when_its_criteria_are_ticked",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_done_ticks_once_the_row_no_longer_names_the_unmet_criterion#0",
+      "name": "test_done_ticks_once_the_row_no_longer_names_the_unmet_criterion",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_a_tick_clears_while_a_cited_criterion_is_unticked#0",
+      "name": "test_a_tick_clears_while_a_cited_criterion_is_unticked",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_a_tick_clears_when_the_pull_request_is_open#0",
+      "name": "test_a_tick_clears_when_the_pull_request_is_open",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TaskLinks.test_a_ticked_row_whose_task_issue_is_not_given_keeps_its_tick#0",
+      "name": "test_a_ticked_row_whose_task_issue_is_not_given_keeps_its_tick",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:DoneColumn",
+      "name": "DoneColumn",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:DoneColumn.test_a_missing_done_column_is_added_empty#0",
+      "name": "test_a_missing_done_column_is_added_empty",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:DoneColumn.test_a_leading_done_column_moves_to_the_end#0",
+      "name": "test_a_leading_done_column_moves_to_the_end",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:DoneColumn.test_a_note_after_the_criteria_stays_on_the_description#0",
+      "name": "test_a_note_after_the_criteria_stays_on_the_description",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Function:skills/work-planner/test/test_sync.py:epic_rows",
+      "name": "epic_rows",
+      "type": "Function",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:TestPlanAgreement",
+      "name": "TestPlanAgreement",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:TestPlanAgreement.test_a_disagreement_leaves_linking_and_ticks_unchanged#0",
+      "name": "test_a_disagreement_leaves_linking_and_ticks_unchanged",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:HistoricalDelivery",
+      "name": "HistoricalDelivery",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:HistoricalDelivery.test_closed_table_normalizes_embedded_coverage_before_delivery#0",
+      "name": "test_closed_table_normalizes_embedded_coverage_before_delivery",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:HistoricalDelivery.test_closed_table_preserves_existing_coverage_and_dependencies#0",
+      "name": "test_closed_table_preserves_existing_coverage_and_dependencies",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_sync.py:LaneCellRecording",
+      "name": "LaneCellRecording",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:LaneCellRecording.assert_lane_rows#2",
+      "name": "assert_lane_rows",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:LaneCellRecording.test_pr_linking_and_completion_preserve_indexed_and_empty_lanes#0",
+      "name": "test_pr_linking_and_completion_preserve_indexed_and_empty_lanes",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_sync.py:LaneCellRecording.test_closed_epic_normalization_preserves_lane_and_done#0",
+      "name": "test_closed_epic_normalization_preserves_lane_and_done",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_sync.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Class:skills/work-planner/test/test_templates.py:ArtifactTemplates",
+      "name": "ArtifactTemplates",
+      "type": "Class",
+      "filePath": "skills/work-planner/test/test_templates.py",
+      "change_type": "touched"
+    },
+    {
+      "id": "Method:skills/work-planner/test/test_templates.py:ArtifactTemplates.test_every_issue_kind_reads_only_its_body_sections#0",
+      "name": "test_every_issue_kind_reads_only_its_body_sections",
+      "type": "Method",
+      "filePath": "skills/work-planner/test/test_templates.py",
+      "change_type": "touched"
+    }
+  ],
+  "affected_processes": [
+    {
+      "id": "proc_1_main",
+      "name": "Main → Prose",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_2_main",
+      "name": "Main → Split_sections",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_6_main",
+      "name": "Main → Phrase",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_7_main",
+      "name": "Main → Cells",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_8_main",
+      "name": "Main → Done_mark",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_17_main",
+      "name": "Main → Hotfix_tag",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_18_main",
+      "name": "Main → Links_issue",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_19_main",
+      "name": "Main → Pr_repo",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_20_epic_state",
+      "name": "Epic_state → Completed",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_21_epic_state",
+      "name": "Epic_state → Label",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_44_main",
+      "name": "Main → Check_prose",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_45_main",
+      "name": "Main → Reorder",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_60_main",
+      "name": "Main → Board_status",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_61_main",
+      "name": "Main → Place",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_62_main",
+      "name": "Main → Pages",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_63_main",
+      "name": "Main → Assignee_calls",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_67_main",
+      "name": "Main → Is_index",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        },
+        {
+          "symbol": "assign_lanes",
+          "step": 2
+        },
+        {
+          "symbol": "read_lanes",
+          "step": 3
+        },
+        {
+          "symbol": "is_index",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_73_run_standalone_kind",
+      "name": "Run_standalone_kind → Row",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 2
+        }
+      ]
+    },
+    {
+      "id": "proc_91_main",
+      "name": "Main → Tags",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_92_main",
+      "name": "Main → Report",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_93_main",
+      "name": "Main → Settle",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_97_main",
+      "name": "Main → Cells",
+      "process_type": "cross_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_113_main",
+      "name": "Main → Cell",
+      "process_type": "cross_community",
+      "step_count": 8,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_114_hotfix_units",
+      "name": "Hotfix_units → Prose",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_116_main",
+      "name": "Main → Row_id",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 4
+        }
+      ]
+    },
+    {
+      "id": "proc_119_run",
+      "name": "Run → Cells",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "check_body",
+          "step": 3
+        }
+      ]
+    },
+    {
+      "id": "proc_127_main",
+      "name": "Main → Hotfix_tag",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_128_hotfix_units",
+      "name": "Hotfix_units → Links_issue",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_129_hotfix_units",
+      "name": "Hotfix_units → Pr_repo",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_154_survey",
+      "name": "Survey → Option_name",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "survey",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_155_main",
+      "name": "Main → Is_index",
+      "process_type": "cross_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "read_lanes",
+          "step": 2
+        },
+        {
+          "symbol": "is_index",
+          "step": 3
+        },
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_163_epic_state",
+      "name": "Epic_state → Split_sections",
+      "process_type": "intra_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_168_ready_units",
+      "name": "Ready_units → Issue_url",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_172_hotfix_units",
+      "name": "Hotfix_units → Hotfix_tag",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_185_epic_state",
+      "name": "Epic_state → Cell",
+      "process_type": "intra_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_188_epic_state",
+      "name": "Epic_state → Row_id",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_191_main",
+      "name": "Main → Cells",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_195_main",
+      "name": "Main → Label",
+      "process_type": "cross_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_208_main",
+      "name": "Main → Label",
+      "process_type": "intra_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_211_ready_units",
+      "name": "Ready_units → Cell",
+      "process_type": "cross_community",
+      "step_count": 7,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_212_hotfix_units",
+      "name": "Hotfix_units → Split_sections",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "hotfix_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_221_ready_units",
+      "name": "Ready_units → Row_id",
+      "process_type": "cross_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_238_ready_units",
+      "name": "Ready_units → Label",
+      "process_type": "cross_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_240_ready_units",
+      "name": "Ready_units → Split_sections",
+      "process_type": "intra_community",
+      "step_count": 6,
+      "changed_steps": [
+        {
+          "symbol": "epic_state",
+          "step": 2
+        },
+        {
+          "symbol": "ready_units",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_244_main",
+      "name": "Main → Cell",
+      "process_type": "intra_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_246_main",
+      "name": "Main → Row_id",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    },
+    {
+      "id": "proc_249_whole_units",
+      "name": "Whole_units → Cell",
+      "process_type": "intra_community",
+      "step_count": 5,
+      "changed_steps": [
+        {
+          "symbol": "units",
+          "step": 2
+        },
+        {
+          "symbol": "joined",
+          "step": 3
+        }
+      ]
+    },
+    {
+      "id": "proc_251_whole_units",
+      "name": "Whole_units → Row_id",
+      "process_type": "intra_community",
+      "step_count": 4,
+      "changed_steps": [
+        {
+          "symbol": "units",
+          "step": 2
+        },
+        {
+          "symbol": "joined",
+          "step": 3
+        }
+      ]
+    },
+    {
+      "id": "proc_275_main",
+      "name": "Main → Split_sections",
+      "process_type": "intra_community",
+      "step_count": 3,
+      "changed_steps": [
+        {
+          "symbol": "main",
+          "step": 1
+        }
+      ]
+    }
+  ]
+}

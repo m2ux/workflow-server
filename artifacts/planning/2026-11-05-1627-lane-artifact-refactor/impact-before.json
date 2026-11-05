@@ -1,0 +1,625 @@
+{
+  "target": {
+    "id": "Function:skills/work-planner/scripts/deps.py:read_lanes",
+    "name": "read_lanes",
+    "type": "Function",
+    "filePath": "skills/work-planner/scripts/deps.py"
+  },
+  "direction": "upstream",
+  "impactedCount": 19,
+  "risk": "CRITICAL",
+  "riskSharedAxes": "MEDIUM",
+  "riskScale": {
+    "comparableAcrossKinds": true,
+    "unusedAxes": []
+  },
+  "epistemic": "exact",
+  "summary": {
+    "direct": 9,
+    "processes_affected": 8,
+    "modules_affected": 2
+  },
+  "byDepthCounts": {
+    "1": 9,
+    "2": 10
+  },
+  "affected_processes": [
+    {
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/format.py",
+      "affected_process_count": 9,
+      "total_hits": 25,
+      "earliest_broken_step": 2
+    },
+    {
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "affected_process_count": 11,
+      "total_hits": 11,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "affected_process_count": 8,
+      "total_hits": 8,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "ready_units",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/board-queue.py",
+      "affected_process_count": 5,
+      "total_hits": 5,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "run",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/format.py",
+      "affected_process_count": 1,
+      "total_hits": 3,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "run_standalone_kind",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/format.py",
+      "affected_process_count": 1,
+      "total_hits": 2,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "survey",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "affected_process_count": 1,
+      "total_hits": 1,
+      "earliest_broken_step": 1
+    },
+    {
+      "name": "main",
+      "type": "Function",
+      "filePath": "skills/work-planner/scripts/deps.py",
+      "affected_process_count": 1,
+      "total_hits": 1,
+      "earliest_broken_step": 1
+    }
+  ],
+  "affected_modules": [
+    {
+      "name": "Scripts",
+      "hits": 9,
+      "impact": "direct"
+    },
+    {
+      "name": "Test",
+      "hits": 9,
+      "impact": "direct"
+    }
+  ],
+  "byDepth": {
+    "1": [
+      {
+        "depth": 1,
+        "id": "Function:skills/work-planner/scripts/deliver.py:survey",
+        "name": "survey",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_153_survey",
+            "label": "Survey → Option_name",
+            "processType": "intra_community",
+            "step": 1
+          }
+        ]
+      },
+      {
+        "depth": 1,
+        "id": "Function:skills/work-planner/scripts/deps.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_96_main",
+            "label": "Main → Cells",
+            "processType": "cross_community",
+            "step": 1
+          }
+        ]
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_236_ready_units",
+            "label": "Ready_units → Label",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_238_ready_units",
+            "label": "Ready_units → Split_sections",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_209_ready_units",
+            "label": "Ready_units → Cell",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_219_ready_units",
+            "label": "Ready_units → Row_id",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_166_ready_units",
+            "label": "Ready_units → Issue_url",
+            "processType": "cross_community",
+            "step": 1
+          }
+        ]
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_45_main",
+            "label": "Main → Reorder",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_72_run_standalone_kind",
+            "label": "Run_standalone_kind → Row",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_7_main",
+            "label": "Main → Cells",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_8_main",
+            "label": "Main → Done_mark",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_6_main",
+            "label": "Main → Phrase",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_112_main",
+            "label": "Main → Cell",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_115_main",
+            "label": "Main → Row_id",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_44_main",
+            "label": "Main → Check_prose",
+            "processType": "cross_community",
+            "step": 4
+          },
+          {
+            "id": "proc_118_run",
+            "label": "Run → Cells",
+            "processType": "cross_community",
+            "step": 3
+          }
+        ]
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_a_missing_cell_is_not_an_empty_lane#0",
+        "name": "test_a_missing_cell_is_not_an_empty_lane",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_keeps_lane_data_inside_its_task_table#0",
+        "name": "test_reader_keeps_lane_data_inside_its_task_table",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_reports_malformed_cells_without_an_empty_value#0",
+        "name": "test_reader_reports_malformed_cells_without_an_empty_value",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_retains_indices_and_empty_cells_by_row#0",
+        "name": "test_reader_retains_indices_and_empty_cells_by_row",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 1,
+        "id": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_uses_column_names_and_ignores_non_task_rows#0",
+        "name": "test_reader_uses_column_names_and_ignores_non_task_rows",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      }
+    ],
+    "2": [
+      {
+        "depth": 2,
+        "id": "File:skills/work-planner/scripts/deps.py",
+        "name": "deps.py",
+        "filePath": "skills/work-planner/scripts/deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 2,
+        "id": "Function:skills/work-planner/scripts/board-queue.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/board-queue.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_61_main",
+            "label": "Main → Place",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_193_main",
+            "label": "Main → Label",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_18_main",
+            "label": "Main → Links_issue",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_19_main",
+            "label": "Main → Pr_repo",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_60_main",
+            "label": "Main → Board_status",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_1_main",
+            "label": "Main → Prose",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_17_main",
+            "label": "Main → Hotfix_tag",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_2_main",
+            "label": "Main → Split_sections",
+            "processType": "cross_community",
+            "step": 1
+          }
+        ]
+      },
+      {
+        "depth": 2,
+        "id": "Function:skills/work-planner/scripts/deliver.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deliver.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_244_main",
+            "label": "Main → Row_id",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_91_main",
+            "label": "Main → Report",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_126_main",
+            "label": "Main → Hotfix_tag",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_90_main",
+            "label": "Main → Tags",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_273_main",
+            "label": "Main → Split_sections",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_92_main",
+            "label": "Main → Settle",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_63_main",
+            "label": "Main → Assignee_calls",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_206_main",
+            "label": "Main → Label",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_62_main",
+            "label": "Main → Pages",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_189_main",
+            "label": "Main → Cells",
+            "processType": "intra_community",
+            "step": 1
+          },
+          {
+            "id": "proc_242_main",
+            "label": "Main → Cell",
+            "processType": "intra_community",
+            "step": 1
+          }
+        ]
+      },
+      {
+        "depth": 2,
+        "id": "Function:skills/work-planner/test/test_deps.py:check",
+        "name": "check",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 2,
+        "id": "Function:skills/work-planner/test/test_deps.py:run",
+        "name": "run",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 2,
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run#0",
+        "name": "run",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_7_main",
+            "label": "Main → Cells",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_8_main",
+            "label": "Main → Done_mark",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_45_main",
+            "label": "Main → Reorder",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_46_main",
+            "label": "Main → Labels",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_118_run",
+            "label": "Run → Cells",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_44_main",
+            "label": "Main → Check_prose",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_115_main",
+            "label": "Main → Row_id",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_112_main",
+            "label": "Main → Cell",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_6_main",
+            "label": "Main → Phrase",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_66_main",
+            "label": "Main → Check_title_shape",
+            "processType": "cross_community",
+            "step": 2
+          }
+        ]
+      },
+      {
+        "depth": 2,
+        "id": "Method:skills/work-planner/scripts/format.py:Review.run_standalone_kind#3",
+        "name": "run_standalone_kind",
+        "filePath": "skills/work-planner/scripts/format.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": [
+          {
+            "id": "proc_7_main",
+            "label": "Main → Cells",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_45_main",
+            "label": "Main → Reorder",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_46_main",
+            "label": "Main → Labels",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_8_main",
+            "label": "Main → Done_mark",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_72_run_standalone_kind",
+            "label": "Run_standalone_kind → Row",
+            "processType": "cross_community",
+            "step": 1
+          },
+          {
+            "id": "proc_118_run",
+            "label": "Run → Cells",
+            "processType": "cross_community",
+            "step": 2
+          },
+          {
+            "id": "proc_44_main",
+            "label": "Main → Check_prose",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_112_main",
+            "label": "Main → Cell",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_115_main",
+            "label": "Main → Row_id",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_6_main",
+            "label": "Main → Phrase",
+            "processType": "cross_community",
+            "step": 3
+          },
+          {
+            "id": "proc_66_main",
+            "label": "Main → Check_title_shape",
+            "processType": "cross_community",
+            "step": 3
+          }
+        ]
+      },
+      {
+        "depth": 2,
+        "id": "Method:skills/work-planner/test/test_deps.py:ComponentContention.test_an_unreadable_work_item_is_a_problem#0",
+        "name": "test_an_unreadable_work_item_is_a_problem",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 2,
+        "id": "Method:skills/work-planner/test/test_deps.py:RecordFiles.test_a_record_that_cannot_be_read_is_a_problem#0",
+        "name": "test_a_record_that_cannot_be_read_is_a_problem",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      },
+      {
+        "depth": 2,
+        "id": "Method:skills/work-planner/test/test_deps.py:RecordFiles.test_a_record_that_is_not_text_is_a_problem#0",
+        "name": "test_a_record_that_is_not_text_is_a_problem",
+        "filePath": "skills/work-planner/test/test_deps.py",
+        "relationType": "CALLS",
+        "confidence": 0.85,
+        "processes": []
+      }
+    ]
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "status": "found",
+  "contentAvailability": {
+    "requested": true,
+    "profile": "full",
+    "available": true,
+    "scope": "full"
+  },
+  "symbol": {
+    "uid": "Function:skills/work-planner/scripts/deps.py:read_lanes",
+    "name": "read_lanes",
+    "kind": "Function",
+    "filePath": "skills/work-planner/scripts/deps.py",
+    "startLine": 85,
+    "endLine": 118,
+    "content": "def read_lanes(body: str) -> tuple[dict[str, str | None], list[str]]:     \"\"\"Raw task-table Lane values keyed by Wnn; only valid empty cells yield None.     Malformed cells yield a row-specific problem and no value. Tables without a Lane column     supply no lane data; issue-format validation checks the table's required columns.     \"\"\"     lanes: dict[str, str | None] = {}     problems = []     header: list[str] = []     for line in body.splitlines():         if not line.startswith('|'):             header = []             continue         raw = [cell.strip() for cell in line.strip().removeprefix('|').removesuffix('|').split('|')]         if not header and 'Task' in raw:             header = raw             continue         if not header or 'Lane' not in header:             continue         row = dict(zip(header, raw))         task = LINK.sub(r'\\1', row.get('Task', ''))         ids = WID_SHAPED.findall(task)         if not ids or not task.startswith(ids[0]) or not WID.fullmatch(ids[0]):             continue         wid = ids[0]         if 'Lane' not in row:             problems.append(f'{wid}: missing Lane cell')             continue         lane = row['Lane']         if lane and not re.fullmatch(r'[0-9]+', lane):             problems.append(f'{wid}: Lane must be a bare decimal index or empty; got {lane!r}')             continue         lanes[wid] = lane or None     return lanes, problems"
+  },
+  "epistemic": "exact",
+  "incoming": {
+    "calls": [
+      {
+        "uid": "Function:skills/work-planner/scripts/deliver.py:survey",
+        "name": "survey",
+        "filePath": "skills/work-planner/scripts/deliver.py"
+      },
+      {
+        "uid": "Function:skills/work-planner/scripts/deps.py:main",
+        "name": "main",
+        "filePath": "skills/work-planner/scripts/deps.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+        "name": "ready_units",
+        "filePath": "skills/work-planner/scripts/board-queue.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+        "name": "check_body",
+        "filePath": "skills/work-planner/scripts/format.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_a_missing_cell_is_not_an_empty_lane#0",
+        "name": "test_a_missing_cell_is_not_an_empty_lane",
+        "filePath": "skills/work-planner/test/test_deps.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_keeps_lane_data_inside_its_task_table#0",
+        "name": "test_reader_keeps_lane_data_inside_its_task_table",
+        "filePath": "skills/work-planner/test/test_deps.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_reports_malformed_cells_without_an_empty_value#0",
+        "name": "test_reader_reports_malformed_cells_without_an_empty_value",
+        "filePath": "skills/work-planner/test/test_deps.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_retains_indices_and_empty_cells_by_row#0",
+        "name": "test_reader_retains_indices_and_empty_cells_by_row",
+        "filePath": "skills/work-planner/test/test_deps.py"
+      },
+      {
+        "uid": "Method:skills/work-planner/test/test_deps.py:TaskLanes.test_reader_uses_column_names_and_ignores_non_task_rows#0",
+        "name": "test_reader_uses_column_names_and_ignores_non_task_rows",
+        "filePath": "skills/work-planner/test/test_deps.py"
+      }
+    ]
+  },
+  "outgoing": {},
+  "processes": []
+}

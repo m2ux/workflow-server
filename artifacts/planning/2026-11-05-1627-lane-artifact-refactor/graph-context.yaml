@@ -1,0 +1,39 @@
+project: i17-e03-lane-refactor
+
+index:
+  commit: "73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+  indexed_at: "2026-11-05T05:19:12.446Z"
+  storage_path: "/tmp/project17-lane-artifact/index"
+  content_retention: "full"
+  source_available: true
+  runner_identity: {"schemaVersion":4,"runtime":{"executablePath":"/usr/bin/node","version":"v20.19.4","platform":"linux","architecture":"x64","modulesAbi":"115","libc":"glibc:2.43"},"cliVersion":"1.6.12","invokedArtifact":{"path":"/home/mike1/.nvm/versions/node/v24.21.0/lib/node_modules/gitnexus/dist/cli/index.js","digest":"sha256:e2c96d62b26a1898e536457377f7b73c539b080c7e8c316869ffc6a790003eb4"},"build":{"kind":"distribution","rootPath":"/home/mike1/.nvm/versions/node/v24.21.0/lib/node_modules/gitnexus/dist","canonicalization":"gitnexus-analyzer-build-v2","digest":"sha256:262cf80deec8ff56ec019ac08406b7098bf40ae07756aa02ef8fa42720d3583e"},"dependencyRuntime":{"manifestPath":"/home/mike1/.nvm/versions/node/v24.21.0/lib/node_modules/gitnexus/package.json","lockfilePath":null,"canonicalization":"gitnexus-analyzer-dependency-runtime-v4","packageCount":252,"artifactCount":12309,"digest":"sha256:abf14033ea1622615346448cb10c30fa62a4df17a1f06ccaf88d2dcaf96c29c0"}}
+  incomplete_reasons: []
+  spring_actuator: null
+  asyncapi_spec: null
+  runner_identity_schema_status: "current"
+
+stats:
+  files: 192
+  symbols: 4462
+  processes: 293
+
+tools_available:
+  - query: Process-grouped code intelligence (execution flows related to a concept)
+  - context: 360-degree symbol view (categorized refs, process participation)
+  - impact: Blast radius analysis (what breaks if you change a symbol)
+  - explain: Persisted taint findings — source→sink data flows with per-hop variables (requires analyze --pdg)
+  - detect_changes: Git-diff impact analysis (what do your changes affect)
+  - rename: Multi-file coordinated rename with confidence tags
+  - cypher: Raw graph queries
+  - list_repos: Discover all indexed repositories
+
+re_index: Run `npx gitnexus analyze --index-only` in terminal if data is stale (drop --index-only to also refresh AGENTS.md/CLAUDE.md and skills)
+
+resources_available:
+  - gitnexus://repos: All indexed repositories
+  - gitnexus://repo/i17-e03-lane-refactor/clusters: All functional areas
+  - gitnexus://repo/i17-e03-lane-refactor/processes: All execution flows
+  - gitnexus://repo/i17-e03-lane-refactor/cluster/{name}: Module details
+  - gitnexus://repo/i17-e03-lane-refactor/process/{name}: Process trace
+  - gitnexus://group/{name}/contracts: Group contract registry (optional ?type=&repo=&unmatchedOnly=)
+  - gitnexus://group/{name}/status: Group index / contract staleness — separates a repo absent from the registry (missing, not unresolvable) from one whose entry could not be read (unresolvable + unresolvableReason), and carries unreadableRepos as absent=never recorded / empty=measured none / populated=named

@@ -1,0 +1,15 @@
+
+  GitNexus Analyzer (1.6.12)
+
+  GitNexus Analyzer (1.6.12)
+{"level":40,"time":1793855946972,"name":"gitnexus","msg":"[scope-resolution] 1 property read/write site(s) name a field that IS defined in this workspace, but only in another language, so per-language inference declined to link them. Queries for these fields return an empty result that does NOT mean \"unused\" — it means the definition anchor is in a different language. Affected: path (javascript)"}
+{"level":40,"time":1793855947182,"name":"gitnexus","truncation":{"truncated":true,"entryPointCandidatesDropped":141,"entryPointsUnexplored":0,"walksCutByBudget":21,"tracesDepthCapped":0,"calleesDropped":571,"processesDropped":0},"msg":"[processes] 293 flows reported, but whole flows are MISSING: 141 of 341 candidate entry point(s) never ranked in, 0 ranked entry point(s) never traced, 0 deduplicated flow(s) dropped at maxProcesses, 0 trace(s) cut at maxTraceDepth, 571 callee(s) skipped at maxBranching, 21 walk(s) cut by the per-entry trace budget. An absent flow does NOT mean the code path does not exist."}
+[2KIncremental: changed=2, added=0, deleted=0 (skipping wipe + 190 unchanged file rows preserved)
+[2KIncremental: +1 importer(s) added to writable set (BFS depth ≤ 4)
+[2KParse cache: pruned 2 stale chunk entries
+
+  Repository indexed successfully (10.3s)
+
+  4,462 nodes | 12,881 edges | 185 clusters | 293 flows
+  /home/mike1/projects/dev/workflow-server/.worktrees/i17/e03/workspace
+
