@@ -18,8 +18,8 @@ The preservation ledger, actual integrated strict checker, complete suites and l
 - [x] Publish initial work item and design.
 - [x] Convert assigned artifact family and preservation ledger.
 - [x] Complete required structural/suite validation and record Partial supplementary disclosure.
-- [ ] Publish source PR and request exact-head merge clearance.
-- [ ] Reconcile authorized merge and tracker/board readback.
+- [x] Publish source PR and obtain exact-head merge clearance.
+- [x] Reconcile authorized merge and tracker/board readback.
 
 ## Applied and Held Changes
 

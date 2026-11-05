@@ -213,7 +213,7 @@
     }
   ],
   "goal_review_disposition": "Unapplied bounded plan-proof concerns; no confirmed live defect or I17/I16 change is asserted.",
-  "live_writes": "None. Source, snapshot, walk originals and shared engineering records remain unchanged.",
+  "live_writes": "Walks perform no live writes. Authorized publication records source PR1651 and its confirmed merge, W06/AC6 delivery and the draft integration body; closeout.md records exact readbacks.",
   "disclosure": "disclosure.md",
   "parent_manifest_audit": "parent-manifest-audit.json",
   "package_archive": {

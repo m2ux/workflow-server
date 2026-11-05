@@ -1,0 +1,28 @@
+{
+  "task_pr": 1651,
+  "merged": true,
+  "source_head": "86748050dc69b532a5ac144a5c1a93f2f25b96da",
+  "merge_head": "dfb00380a58ab3346b77b7780424831b2a12fde2",
+  "tree": "ccbdd9884ef1a13a5e47c845d784d3d1c92256fc",
+  "source_and_merge_tree_identical": true,
+  "criterion_exit": 0,
+  "required_checks": [],
+  "active_rules": [],
+  "branch_protection": "404 Branch not protected",
+  "check_runs": [],
+  "statuses": [],
+  "required_reviews": 0,
+  "w06": "| [W06](https://github.com/m2ux/workflow-server/pull/1651) | Board, queue, planning and review artifacts restyled | AC6 | W02 | | | \u2713 |",
+  "w08": "| W08 | Activate the Work Planner style model | AC8 | W03, W04, W05, W06, W07 | | | |",
+  "AC6": true,
+  "AC8": false,
+  "integration_pr": 1641,
+  "integration_draft": true,
+  "board_item": 291152098,
+  "board_status": "In Progress",
+  "plan_changes": {
+    "applied": [],
+    "held": []
+  },
+  "walks": "All six Partial, supplementary and unapplied"
+}
