@@ -3,6 +3,7 @@
 Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -73,6 +74,100 @@ def queue(items: list[dict], prs: list[dict] | None = None, unplanned: tuple[str
     if done.returncode != 0:
         raise AssertionError(done.stderr or done.stdout)
     return done.stdout
+
+
+class ReadyUnitLanes(unittest.TestCase):
+    def setup_items(self, *rows: tuple[str, str, str, str, str], held: str = 'Backlog') -> list[dict]:
+        """Snapshot-only rows: task id, dependency, joins, raw lane and Done."""
+        parent = initiative(1, 'Theme: Work', (f'[E00]({url("issues", 2)})', ''))
+        body = ('## Work Breakdown\n\n'
+                '| Task | Description | Coverage | Depends on | Joins | Lane | Done |\n'
+                '| --- | --- | --- | --- | --- | --- | --- |\n'
+                + ''.join(f'| {task} | Work | AC1 | {depends} | {joins} | {lane} | {done} |\n'
+                          for task, depends, joins, lane, done in rows)
+                + '\n## Acceptance Criteria\n\n- [ ] **AC1.** Holds.\n')
+        child = issue(2, '[I01:E00] Snapshot: Work', body=body, labels=('priority: 1',))
+        return staged((parent, 'In Progress'), (child, held))
+
+    def test_lanes_and_unlaned_units_come_from_unlinked_task_rows(self):
+        out = queue(self.setup_items(('W01', '', '', '2', ''), ('W02', '', '', '', '')))
+        self.assertIn('unit I01:E00:W01: lane 2', out)
+        self.assertIn('unit I01:E00:W02: unlaned', out)
+
+    def test_a_joined_unit_has_one_common_lane_report(self):
+        out = queue(self.setup_items(('W01', '', 'W02', '02', ''),
+                                     ('W02', '', 'W01', '02', '')))
+        self.assertIn('unit I01:E00:W01+W02: lane 02', out)
+        self.assertEqual(sum(line.strip().startswith('unit ') for line in out.splitlines()), 1)
+
+    def test_lane_cells_preserve_all_status_and_assignee_calls(self):
+        outputs = [queue(self.setup_items(('W01', '', '', lane, ''),
+                                         ('W02', '', '', other, '')))
+                   for lane, other in (('', ''), ('1', '2'), ('02', ''))]
+        calls = [[re.sub(r'--input \S*/', '--input <out>/', line)
+                  for line in out.splitlines() if 'gh api' in line] for out in outputs]
+        self.assertTrue(any('set ' in line for line in calls[0]))
+        self.assertTrue(any('assign ' in line for line in calls[0]))
+        self.assertEqual(calls[0], calls[1])
+        self.assertEqual(calls[0], calls[2])
+
+    def test_in_progress_epics_report_only_whole_free_eligible_units(self):
+        rows = ((f'[W01]({RECORD})', '', '', '1', ''),
+                (f'[W02]({url("pull", 9)})', '', '', '1', ''),
+                (f'[W03]({url("pull", 10)})', '', '', '1', '✓'),
+                ('W04', 'W01', '', '1', ''),
+                ('W05', '', '', '', ''),
+                ('W06', '', 'W07', '2', ''),
+                (f'[W07]({RECORD})', '', 'W06', '2', ''),
+                ('W08', 'W03', '', '2', ''))
+        pulls = [pr(9, '[I01:E00] Open: Work'),
+                 pr(10, '[I01:E00] Delivered: Work', merged='2026-01-01T00:00:00Z')]
+        out = queue(self.setup_items(*rows, held='In Progress'), pulls)
+        reports = [line.strip() for line in out.splitlines() if line.strip().startswith('unit ')]
+        self.assertEqual(reports, ['unit I01:E00:W05: unlaned', 'unit I01:E00:W08: lane 2'])
+
+    def test_backlog_and_review_epics_report_no_ready_units(self):
+        for held in ('Backlog', 'In Review'):
+            with self.subTest(held=held):
+                items = self.setup_items(('W01', '', '', '2', ''), held=held)
+                if held == 'Backlog':
+                    items[1]['content']['labels'] = []
+                out = queue(items)
+                self.assertNotIn('unit I01:E00:', out)
+
+    def test_same_repository_producer_outputs_stay_unverified_in_snapshot_report(self):
+        parent = initiative(1, 'Theme: Work', (f'[E00]({url("issues", 2)})', ''),
+                            (f'[E01]({url("issues", 3)})', ''))
+        producer = epic(2, '01:E00', (f'[W01]({url("pull", 9)})', 'Output', ''))
+        producer.update(state='closed', state_reason='completed')
+        consumer = epic(3, '01:E01', ('W01', 'Consumes output', f'[E00:W01]({url("issues", 2)})'),
+                        ('W02', 'Independent', ''))
+        pulls = [pr(9, '[I01:E00] Output: Work', merged='2026-01-01T00:00:00Z',
+                    base='i01/e00/main')]
+        pulls[0]['merge_commit_sha'] = 'a' * 40
+        out = queue(staged((parent, 'In Progress'), (producer, 'Done'), (consumer, 'Backlog')), pulls)
+        self.assertNotIn('unit I01:E01:W01:', out)
+        self.assertIn('unit I01:E01:W02: unlaned', out)
+
+    def test_malformed_raw_cells_do_not_become_unlaned_or_indexed_reports(self):
+        for raw in ('`2`', '[2](https://example.test)', 'lane 2', 'two'):
+            with self.subTest(raw=raw):
+                done = queue_run(self.setup_items(('W01', '', '', raw, '')))
+                self.assertEqual(done.returncode, 1, done.stderr)
+                self.assertIn('invalid I01:E00:W01: Lane must be a bare decimal index', done.stdout)
+                self.assertNotIn('unit I01:E00:W01:', done.stdout)
+
+    def test_split_joined_lanes_name_both_rows_and_refuse_the_unit(self):
+        for other in ('2', ''):
+            with self.subTest(other=other):
+                done = queue_run(self.setup_items(('W01', '', 'W02', '1', ''),
+                                                 ('W02', '', 'W01', other, '')))
+                self.assertEqual(done.returncode, 1, done.stderr)
+                self.assertIn('invalid I01:E00:W01+W02:', done.stdout)
+                self.assertIn('W01 = 1', done.stdout)
+                self.assertIn(f'W02 = {other or "empty"}', done.stdout)
+                self.assertIn('move a lane or unjoin the rows', done.stdout)
+                self.assertNotIn('unit I01:E00:', done.stdout)
 
 
 class Queue(unittest.TestCase):
