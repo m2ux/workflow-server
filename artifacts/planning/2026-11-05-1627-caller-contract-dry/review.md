@@ -23,3 +23,9 @@ Output fields and guarantees retain one artifact owner. Callers bind their actua
 ## Handoff
 
 PR #1627 reads ready and unmerged at head `89efe190ba97d50de1fc8f73a523e992ed3e91b2`, target `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486`. Its published exact-head review passes. Project 17 item 291913055 reads In Review. The integration still awaits its required human approval; this request performs no merge.
+
+## Ready Unit Ownership Checklist
+
+- [ ] Rename the section and route Lane checks/labels through Report Lines. **In progress.**
+- [ ] Verify conditions, anchors and independent contract reading.
+- [ ] Commit, push and refresh exact-head handoff evidence.
