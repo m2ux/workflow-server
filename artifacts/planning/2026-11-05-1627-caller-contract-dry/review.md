@@ -28,6 +28,8 @@ PR #1627 reads ready and unmerged at head `89efe190ba97d50de1fc8f73a523e992ed3e9
 
 - [x] Rename the section and route Lane checks/labels through Report Lines.
 - [x] Verify conditions, anchors and independent contract reading.
-- [ ] Commit, push and refresh exact-head handoff evidence. **In progress.**
+- [x] Commit, push and refresh exact-head handoff evidence.
 
 The follow-up touches only Board Queue. Its intro and section use Ready Units; membership, free/undelivered state, proposed-status eligibility, unplanned-row inclusion and priority-based placement remain local. Report Lines cites Lane Assignments, Unit Consistency and Report Label. Eleven document tests pass; 53 structural files have zero findings; whitespace checks pass. Command/template blocks and runtime/test content are identical to 89efe190b. Integrity is registered in ready-units-integrity.json.
+
+Ready Units follow-up head `50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7` is ready and unmerged; exact-head review passes and Project 17 item 291913055 reads In Review. The target still requires human approval for integration.

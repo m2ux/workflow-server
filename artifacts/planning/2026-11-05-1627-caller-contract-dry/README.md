@@ -36,3 +36,6 @@ Review Work Planner’s modes, protocols and artifacts for callers that repeat a
 - [Final Board Item](board-final.json) — verified In Review readback.
 
 - [Ready Units Integrity](ready-units-integrity.json) — one-file boundary and current validation.
+
+- [Ready Units Pull Request Readback](ready-units-pr-final.json) — current reviewed head and readiness.
+- [Ready Units Board Readback](ready-units-board-final.json) — confirmed In Review.
