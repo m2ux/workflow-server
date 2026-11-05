@@ -1,0 +1,16 @@
+............................................................................................................................................................................F..............................................................................................................................................................................................................s...................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+======================================================================
+FAIL: test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout)
+A call to an acting command, or to an operation reaching one,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w06-board-queue-planning-and/skills/work-planner/test/test_checkouts.py", line 229, in test_each_call_to_an_acting_section_names_a_checkout
+    self.assertTrue(corpus.commands, 'no command acts on its checkout')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: set() is not true : no command acts on its checkout
+
+----------------------------------------------------------------------
+Ran 927 tests in 113.039s
+
+FAILED (failures=1, skipped=1)
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w06-board-queue-planning-and (name more with SBX_EXTRA_ROOTS=dir1:dir2)

@@ -1,0 +1,70 @@
+--- disclosure-v2/artifacts/dependency-graph.md
++++ current/artifacts/dependency-graph.md
+@@ -65,7 +65,7 @@
+ Run the following command with the supplied inputs.
+ 
+ - Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
+-- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it, so pass each one as an absolute path.
++- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files) defines them.
+ 
+ - Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
+ - It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+--- disclosure-v2/artifacts/standup-report.md
++++ current/artifacts/standup-report.md
+@@ -59,14 +59,12 @@
+ Run the following command with the supplied inputs.
+ 
+ - `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.
+-- `--since` supplies an explicit start for the [window](#scope).
+-- `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.
++- `--since` supplies the window start in [Report Selection](#report-selection), selecting the [window](#scope).
++- `--initiative` selects the initiative filter in [Report Selection](#report-selection). **Examples:** `I08`, `owner/repo:I08`.
+ - `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
+ - `--summary` gives the paragraph for management.
+ 
+ The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
+-
+-`<window-start-date>` uses `YYYY-MM-DD`.
+ 
+ <big><pre>
+ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since '[**&lt;window-start-date&gt;**](#report-selection)' --initiative '[**&lt;initiative-filter&gt;**](#report-selection)' --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'
+@@ -116,7 +114,7 @@
+ 
+ ### Report Selection
+ 
+-The optional window start as YYYY-MM-DD and initiative filter: an initiative id, or owner/repo:initiative-id when its number is ambiguous.
++The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories.
+ 
+ ### Initiative Records
+ 
+--- disclosure-v2/artifacts/board-queue.md
++++ current/artifacts/board-queue.md
+@@ -56,7 +56,7 @@
+ - `--out` is the directory the calls are written to.
+ - `--assignee` is the login assigned to work from Ready.
+ - `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
+-- `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.
++- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives). Repeatable.
+ 
+ <big><pre>
+ cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
+@@ -179,7 +179,7 @@
+ 
+ ### Unplanned Initiatives
+ 
+-The confirmed unplanned initiative identities, each an issue number or owner/repo#issue-number.
++The confirmed initiatives left with no priority, each supplied as an issue number or `<owner>/<repo>#<issue-number>`.
+ 
+ ### Status Scope
+ 
+--- disclosure-v2/artifacts/board.md
++++ current/artifacts/board.md
+@@ -281,7 +281,7 @@
+ 
+ ### Add Issue to Board
+ 
+-Adds the caller-supplied issue id to a board and prints the new item's id. The input is the issue id, not its number.
++Adds the caller-supplied issue to a board and prints the new item's id.
+ 
+ **Inputs:** [Board Coordinates](#board-coordinates), [Issue Id](#issue-id).
+ 

@@ -1,0 +1,542 @@
+{
+  "walk": "goal2",
+  "source": "/tmp/w06-walk-final-goal2",
+  "completion_authority": "Root confirms completion and reviews final result/read accounts.",
+  "archive": "completed-walks/goal2.tar.gz",
+  "archive_sha256": "57b1163c099b16eacf608b8b68943363e7489698dcb5a8d77cff1e1ab9344513",
+  "files": {
+    "README.md": {
+      "kind": "file",
+      "sha256": "8900090da3d0cd4d3ad591cff3b77be7aff3dc870de2ba9c2f7efe60496fadce",
+      "bytes": 1193
+    },
+    "build-receipt-index.py": {
+      "kind": "file",
+      "sha256": "7f4d66ad6a7365a0f11c9f726923b1c6a1b2faf2d1af6220c51832e610716369",
+      "bytes": 1796
+    },
+    "commands.md": {
+      "kind": "file",
+      "sha256": "7ba466ba8ca05571b2b0418e4eef9be1984fd130db17359cd29b519f67bf525c",
+      "bytes": 449833
+    },
+    "cutover-2.json": {
+      "kind": "file",
+      "sha256": "994dea22da14a06055cf5584d852ded67af9a4989a6fe7b11295a5daba9837de",
+      "bytes": 13480
+    },
+    "cutover-2.md": {
+      "kind": "file",
+      "sha256": "ac06eee62048451738aacf75ea6f4d9f94289d6d693f9f14b8ae0357916b4332",
+      "bytes": 3892
+    },
+    "epic-1598.json": {
+      "kind": "file",
+      "sha256": "7c98a76de75c4afffe35f374de32fceb536535e18bc560ec2b9489e60b1652c2",
+      "bytes": 18416
+    },
+    "epic-1598.md": {
+      "kind": "file",
+      "sha256": "436b0e4310ff838a68fabef774d5631c4aa469ac44d35a67c79225e8557a1062",
+      "bytes": 5750
+    },
+    "epic-1615.json": {
+      "kind": "file",
+      "sha256": "968d3ad2582130c2641bff2f4a5f391c280bdad9447b20ae41cdb9aa91602d72",
+      "bytes": 15211
+    },
+    "epic-1615.md": {
+      "kind": "file",
+      "sha256": "dc6ef2a29e55765fa0d5f8d3a9b1fe61559279e503cd3974c5fe9fc8c090ef44",
+      "bytes": 4936
+    },
+    "epic-1616.md": {
+      "kind": "file",
+      "sha256": "0ea53bbdbe22bf6f48256ad626aad26eeb2ebbecb498bdd56997f3048f6fa919",
+      "bytes": 7432
+    },
+    "epic-1625.json": {
+      "kind": "file",
+      "sha256": "8232857ce191392beafa2adaf55d97896fbbbab59ab8f2faaf63239664e7119d",
+      "bytes": 20645
+    },
+    "epic-1625.md": {
+      "kind": "file",
+      "sha256": "a80b146d64a14d061d8421357d2a1a7403b6c4d06b7b49aa20f42a524b5832e3",
+      "bytes": 8342
+    },
+    "extraction-initiative-1.md": {
+      "kind": "file",
+      "sha256": "f994051a113d7db96ba08152b4ffaf3e7e49fe23716951e40f4db0099c91db2b",
+      "bytes": 12077
+    },
+    "format-proposed-1597.md": {
+      "kind": "file",
+      "sha256": "59c1f52a79697b26e141781d0b075d94a04a566b4fadb06cab532997619c6381",
+      "bytes": 3674
+    },
+    "format-proposed-1616.md": {
+      "kind": "file",
+      "sha256": "81bc9f2598394b41fe089970d35c63c4dd8c1596c1855fdab58749ec4f379bf4",
+      "bytes": 7431
+    },
+    "goal-trace.md": {
+      "kind": "file",
+      "sha256": "8f236c64e3467ee6ec00d02422709a406cc80c0367f517ad0025e27c479f118f",
+      "bytes": 7445
+    },
+    "initiative-1597.md": {
+      "kind": "file",
+      "sha256": "bd77d361bf97a7446af1a368afcbd0fabe49b2d3e00d8cb1e024fdb9783bb44b",
+      "bytes": 3675
+    },
+    "ranked-findings.md": {
+      "kind": "file",
+      "sha256": "36ac31ba079a99b254a2748770271eab4467b02cf52a202fb43a6e3a7533052f",
+      "bytes": 7175
+    },
+    "read-trace.md": {
+      "kind": "file",
+      "sha256": "e9c7752f45ef1389d8af51bcb0a35b39eafe84f25cf9e673307daf778c6a9e56",
+      "bytes": 8385
+    },
+    "reads/read-kzqc_6lu.txt": {
+      "kind": "file",
+      "sha256": "6b53ac15c6a54acd8a434581506b0b6a80de6b0c1f6742cc4918cde59fc79ecc",
+      "bytes": 101
+    },
+    "reads/reads.jsonl": {
+      "kind": "file",
+      "sha256": "e5bdae85221992b1011245699dc040ec37452b760efec7634bf06a93d98450b0",
+      "bytes": 269
+    },
+    "receipts/003-skill.json": {
+      "kind": "file",
+      "sha256": "f2e172c624c84065bdaac998485510f9161f9561288ba017680d271dc797e9b1",
+      "bytes": 4759
+    },
+    "receipts/004-inventory.json": {
+      "kind": "file",
+      "sha256": "006fe58a367156ce4561d133c92ac08c3a68375a5208b459081600e74eb47949",
+      "bytes": 1719
+    },
+    "receipts/005-rules.json": {
+      "kind": "file",
+      "sha256": "ee13ffd84ab0ed7ca6712ecf154b39c9629cd300fe9c5a0b1fbf14b956b430f1",
+      "bytes": 1736
+    },
+    "receipts/006-conventions.json": {
+      "kind": "file",
+      "sha256": "a2741cb1b7d9f4bf41b2eac48b6d925542be097b387c8a6397644e4f167b9554",
+      "bytes": 2777
+    },
+    "receipts/007-plan.json": {
+      "kind": "file",
+      "sha256": "e476f134e6fdb6933f1cfd74679f472a389d1b422266df11b95986ad401c33da",
+      "bytes": 10816
+    },
+    "receipts/008-input-sizes.json": {
+      "kind": "file",
+      "sha256": "07f305c92801127de5282596d696a9d72563a6b2c82cee0f7704987c851b1205",
+      "bytes": 540
+    },
+    "receipts/009-prerequisite-sizes.json": {
+      "kind": "file",
+      "sha256": "7049fae5bb4be4952e8b103259ec677f5a3ce788fb2d95160ab1c12123e73a75",
+      "bytes": 3235
+    },
+    "receipts/010-goal.json": {
+      "kind": "file",
+      "sha256": "60a19dcd7443641c22ad148b6ac79d904cc9f767086bfa51123166283591055c",
+      "bytes": 5473
+    },
+    "receipts/011-findings.json": {
+      "kind": "file",
+      "sha256": "ff5e6b6714c96e6a41f5b1892d2a06a0f45d65bebe51dd7edea735db73369713",
+      "bytes": 2565
+    },
+    "receipts/012-initiative.json": {
+      "kind": "file",
+      "sha256": "83ac0be533b7d829053888e1f428c1df770e12f9a552792c5faad2b2216657bd",
+      "bytes": 17327
+    },
+    "receipts/013-dependencies.json": {
+      "kind": "file",
+      "sha256": "fa0b115290b1c6049659664236c8e1e94e92b7aa3e97fba311bc989ec35c7af3",
+      "bytes": 16377
+    },
+    "receipts/014-initiative-recovery.json": {
+      "kind": "file",
+      "sha256": "d574bc459330dce14967b0dad6a80082a8db376767e634a85dd013d506ac6772",
+      "bytes": 2732
+    },
+    "receipts/015-initiative-recovery.json": {
+      "kind": "file",
+      "sha256": "30b0e8aaf2db0d8f9669bf3616ecf825b6fa6b8dad823a44182f4bc0697cf5a2",
+      "bytes": 3156
+    },
+    "receipts/016-artifacts-lane.md.json": {
+      "kind": "file",
+      "sha256": "1ae2b6dc7026310f2826406d6c5fda44d69011a64073a87856e09f0a012903af",
+      "bytes": 6633
+    },
+    "receipts/016-artifacts-planning-record.md.json": {
+      "kind": "file",
+      "sha256": "d1886367627b7e11fb31f24d6a28232ca768359a8c37d582cf7b597a619e5bf5",
+      "bytes": 7936
+    },
+    "receipts/016-artifacts-repository-labels.md.json": {
+      "kind": "file",
+      "sha256": "1988b22f951dc3011a80d16afea0101dfc0b91a224cb1207fe739e6713d90e13",
+      "bytes": 2243
+    },
+    "receipts/016-artifacts-review-finding.md.json": {
+      "kind": "file",
+      "sha256": "fbbfec2f989059efba0338a9f37ab59007d74363895bfeafbde34f98f424f943",
+      "bytes": 2564
+    },
+    "receipts/016-artifacts-work-item.md.json": {
+      "kind": "file",
+      "sha256": "526f0738a635d4c85ed2e824b2b499b30d460b29854bd114f8be27dbb5a9ccbe",
+      "bytes": 3674
+    },
+    "receipts/016-modes-propose-mode.md.json": {
+      "kind": "file",
+      "sha256": "4526eb7388537c4ed1e7e9bd5fb9f8a20a032f81d34793c1300e54d1d4a8bc0f",
+      "bytes": 3625
+    },
+    "receipts/017-issue-body.json": {
+      "kind": "file",
+      "sha256": "c86f385ab70d68bc9c1ae1e060a06fba56fa323293ad09b97276f8bb6a6a4509",
+      "bytes": 18362
+    },
+    "receipts/018-initiative-capture.json": {
+      "kind": "file",
+      "sha256": "ecc4bfbd8073292a851977a7234460ecf65ae47710c345edce5548cc55d30bfc",
+      "bytes": 4019
+    },
+    "receipts/019-epic-capture.json": {
+      "kind": "file",
+      "sha256": "e20b44ed0a6e088110b109ec742254dfab5b165f28c8bd3a60fa1a1fcee145cc",
+      "bytes": 7780
+    },
+    "receipts/020-input-files.json": {
+      "kind": "file",
+      "sha256": "9ae2205bc9fc5348ec989d4a178ae37c9d077fc9af61dbf24d97ee4da8ce70fe",
+      "bytes": 923
+    },
+    "receipts/021-guidelines.json": {
+      "kind": "file",
+      "sha256": "ff3275172f92fb353e397d43fb86010f87a28aabafd2bef4268a090175522fc5",
+      "bytes": 23989
+    },
+    "receipts/022-requirements.json": {
+      "kind": "file",
+      "sha256": "13e7c0494908adec32d72846f9e9a62b4fd03fddcd5d249aa0412a222a10dc27",
+      "bytes": 3151
+    },
+    "receipts/023-issue.json": {
+      "kind": "file",
+      "sha256": "b87f8bf6e18353868a031ccb78bbb5d339119cbbfae08ec6483095b2ddd469ff",
+      "bytes": 35223
+    },
+    "receipts/024-epic-body.json": {
+      "kind": "file",
+      "sha256": "5308b7b470ef480806d1298c7c0905966e9921312aa8a52e59197e6744930deb",
+      "bytes": 32993
+    },
+    "receipts/025-delivery-branches.json": {
+      "kind": "file",
+      "sha256": "05c6af14cd7fb5822792c6690b6b156123c4bbcb12c6097336123e51d23697fa",
+      "bytes": 28069
+    },
+    "receipts/026-pr-1.json": {
+      "kind": "file",
+      "sha256": "7fcbd2491e0dba29f90e3eb6e95dc9c23f01510dd00687544edeec4b6908f988",
+      "bytes": 26531
+    },
+    "receipts/027-pr-2.json": {
+      "kind": "file",
+      "sha256": "76c86390224b474c7cf77d03a680f46c48006fc3f97faaba33098b3e995c1044",
+      "bytes": 22958
+    },
+    "receipts/028-epic.json": {
+      "kind": "file",
+      "sha256": "5ce9d97dea5671e0e5bad2a0c68985057816fd07b79363dc3e2097d5c8bb1cb5",
+      "bytes": 12453
+    },
+    "receipts/029-sync.json": {
+      "kind": "file",
+      "sha256": "9c199a481f3911288483edf2c829b682b8d3348bef636dedf4f34b460433da94",
+      "bytes": 17332
+    },
+    "receipts/030-config-read.json": {
+      "kind": "file",
+      "sha256": "ee2e3e4fb4e63dc002ca3c2910d50fc0b14b0839aaaa06799c8fff5b6cd6bf67",
+      "bytes": 873
+    },
+    "receipts/031-config-read-escalated.json": {
+      "kind": "file",
+      "sha256": "8a5db472132c1ce45d473175d0e7d10e43b342e9ad835810e4ebe1913b97af85",
+      "bytes": 543
+    },
+    "receipts/032-initiative-artifact.json": {
+      "kind": "file",
+      "sha256": "1ec9ff717ad28136f106ff2d702158b1f43225816cc314ff83beee732542c8fd",
+      "bytes": 3274
+    },
+    "receipts/033-items-shape.json": {
+      "kind": "file",
+      "sha256": "42f8edea5d6a50e8862070e584ceb341357d778b84f4af085b2cef15585080a8",
+      "bytes": 459
+    },
+    "receipts/034-relevant-prs.json": {
+      "kind": "file",
+      "sha256": "4cac28960d86325ac7cb8829bc029e96b00070714fd9eb2a5fd3d98b7e890e25",
+      "bytes": 9201
+    },
+    "receipts/035-format-options.json": {
+      "kind": "file",
+      "sha256": "e40cdef62ba453450cbe3b01c7a761d64d0ae9413558289c1c65761a540a9987",
+      "bytes": 2211
+    },
+    "receipts/036-items-matching.json": {
+      "kind": "file",
+      "sha256": "f2bc56840e70714d255b04402b0491cd9dd068173f6be51bd0e89a83486d3f7c",
+      "bytes": 16033
+    },
+    "receipts/037-pr-repository-inventory.json": {
+      "kind": "file",
+      "sha256": "f9d146f1cdb44ff5f9906649cd945f19478eac634a48b16af82bc1fb5616454a",
+      "bytes": 355
+    },
+    "receipts/038-format-header.json": {
+      "kind": "file",
+      "sha256": "353949719d45e824de06b49d6b32f7853534d8159a160704f83f19ba087ade8a",
+      "bytes": 5871
+    },
+    "receipts/040-extract-1598.json": {
+      "kind": "file",
+      "sha256": "6a1aee9ef1525cea429719d05bd069a28896085e84b949efbe80c2e58f1f7aa1",
+      "bytes": 347
+    },
+    "receipts/040-extract-1615.json": {
+      "kind": "file",
+      "sha256": "432127c934d402f2f674ee52189faacd30ad8700d2e871ffdbf00b2ab2822991",
+      "bytes": 347
+    },
+    "receipts/040-extract-1625.json": {
+      "kind": "file",
+      "sha256": "cd8e5bd28865aa298aa3c45cbc0e091b93a2e543a4e3cb0d8045bd1a259e38a6",
+      "bytes": 347
+    },
+    "receipts/040-extract-cutover.json": {
+      "kind": "file",
+      "sha256": "f16116459e0fd8f7a5fc2c37b350d433978bc0dc0ef13722774f9973af350f34",
+      "bytes": 303
+    },
+    "receipts/041-body-cutover-2.json": {
+      "kind": "file",
+      "sha256": "5826b4110f11d354b110ec3b3662f0d1c40c12f36dbf9d1d752877bd1f66ec83",
+      "bytes": 234
+    },
+    "receipts/041-body-epic-1598.json": {
+      "kind": "file",
+      "sha256": "8fe9be853e6363f4c20fd676b69b65de4ffd0d089cef822afdccc1ab7908e037",
+      "bytes": 234
+    },
+    "receipts/041-body-epic-1615.json": {
+      "kind": "file",
+      "sha256": "259ad1796364430ebab728b081686174b397d46c159676d044e39a3a19a71994",
+      "bytes": 234
+    },
+    "receipts/041-body-epic-1616.json": {
+      "kind": "file",
+      "sha256": "6115052da675766f2610e7e77f6d0a2e4ea6d97177c521f298023116e8d329c7",
+      "bytes": 246
+    },
+    "receipts/041-body-epic-1625.json": {
+      "kind": "file",
+      "sha256": "91d50c2eecff6df310db4641aa84af0dd0a4860305191c3f313d2477eecb131c",
+      "bytes": 234
+    },
+    "receipts/041-body-initiative-1597.json": {
+      "kind": "file",
+      "sha256": "0bf0d62b71c6618a96b3e0379e97fdc8174d5e3c5b567dfe78197d63fdd86f3f",
+      "bytes": 258
+    },
+    "receipts/042-read-cutover-2.json": {
+      "kind": "file",
+      "sha256": "9bc9a1f8a65d3a831e0ec06df1b450f229a459436ded10fc6ce129d0a26e9dbb",
+      "bytes": 4502
+    },
+    "receipts/042-read-epic-1598.json": {
+      "kind": "file",
+      "sha256": "85e1508f00096b2a230125f35d1fce8aa0034a4e63aa51a7cd28ff71cd0c3830",
+      "bytes": 6441
+    },
+    "receipts/042-read-epic-1615.json": {
+      "kind": "file",
+      "sha256": "e0c204689a26982827373178a71126b18dc42201601bf826eb7c0ff01eaf9d11",
+      "bytes": 5665
+    },
+    "receipts/043-read-epic-1625.json": {
+      "kind": "file",
+      "sha256": "6988a20e9a9882d95603e8a957e2f365d2cb54446764a78d690256f47313516e",
+      "bytes": 9249
+    },
+    "receipts/044-format-initiative.json": {
+      "kind": "file",
+      "sha256": "52db49c2fbe4e0c4b62582aa6271cc92a3fa5bf096958bf9b9d13b9349155c25",
+      "bytes": 704
+    },
+    "receipts/045-git-revisions.json": {
+      "kind": "file",
+      "sha256": "0bfcf765b622a87c2eaec86ec02d7cfe9885ab25d81c1ec0e68c5f5bd7556ff4",
+      "bytes": 418
+    },
+    "receipts/046-git-config.json": {
+      "kind": "file",
+      "sha256": "4863cb7e255fcf8044a98706e2b235f1c9d01e5c93033fa0fc860e3e487b8063",
+      "bytes": 332
+    },
+    "receipts/047-git-required.json": {
+      "kind": "file",
+      "sha256": "112ed729cd52475eafca9d060713a99dd1e7028e63d07732307d7ae6c7fc6a33",
+      "bytes": 685
+    },
+    "receipts/048-state-evidence.json": {
+      "kind": "file",
+      "sha256": "4973d6e93efc5c86ea4bfdd57d0accbe033883d8834f996a492077688f433f8d",
+      "bytes": 1211
+    },
+    "receipts/049-numbered-initiative.json": {
+      "kind": "file",
+      "sha256": "32741a816f7f6f826dcac93799c02f9e664a66d62d06866dd9541d7c16d27752",
+      "bytes": 4300
+    },
+    "receipts/050-local-log.json": {
+      "kind": "file",
+      "sha256": "4d786841796507c818dee12a2331423a511da8e37e5d17f57b56991eb523fcf8",
+      "bytes": 998
+    },
+    "receipts/051-pr-1641-body.json": {
+      "kind": "file",
+      "sha256": "2e582c07d36ddc012d0df5191a9ee85181e352dfb189198164546d6a57822caa",
+      "bytes": 6352
+    },
+    "receipts/052-local-ancestor-E00.json": {
+      "kind": "file",
+      "sha256": "5438517717909bad80364dddc2c02729220b930ee00e1f84a57320c87f3ee4b8",
+      "bytes": 341
+    },
+    "receipts/053-local-ancestor-E03.json": {
+      "kind": "file",
+      "sha256": "2e91177a5cb532aa2b607c9c5d87c83346dc02de320fa9db59ca53b4a27666f8",
+      "bytes": 341
+    },
+    "receipts/054-local-ancestor-W07.json": {
+      "kind": "file",
+      "sha256": "04d789b136d073df46b6d377188b5222042e5a3bc0a5ffe5da374a8d80b5e52c",
+      "bytes": 341
+    },
+    "receipts/055-plan-change.json": {
+      "kind": "file",
+      "sha256": "e84dec5589c0692647a194f3a976850938039b62edd5d424291698c00b3bddc4",
+      "bytes": 3851
+    },
+    "receipts/056-format-epic.json": {
+      "kind": "file",
+      "sha256": "be9a1fb736ada353786489c93968a5e78da36b02fed7b9274775bf23cc3c9508",
+      "bytes": 899
+    },
+    "receipts/057-dependencies.json": {
+      "kind": "file",
+      "sha256": "5ea3ef0da9aa9b2a0552b1848572de5230c30bb8fb409184eddf02c280c94f06",
+      "bytes": 3739
+    },
+    "receipts/058-W07-workspace.json": {
+      "kind": "file",
+      "sha256": "262e9f808fc40154d845badf626e65878f6a7552123d6d5e135efcb1c58032e7",
+      "bytes": 491
+    },
+    "receipts/059-W07-workspace-retry.json": {
+      "kind": "file",
+      "sha256": "278d7afd52b1f138dd97ce66485ee3917bb582314558021f3ec4f45acf99333a",
+      "bytes": 341
+    },
+    "receipts/060-deps-chain-options.json": {
+      "kind": "file",
+      "sha256": "2da2a6b8c8320f2245aa05e4e9d0e4a647526e69d482b1ea430fbefde0bc5fc9",
+      "bytes": 753
+    },
+    "receipts/061-format-diff.json": {
+      "kind": "file",
+      "sha256": "5cda4034e122bb25be038db5b374a0c93793a2fcf64fa56f7cd45b17d4775c87",
+      "bytes": 1021
+    },
+    "receipts/062-numbered-epic.json": {
+      "kind": "file",
+      "sha256": "9515dacf22354319c27453fe585a93ed524808f479f92df7d047d2c7897b967b",
+      "bytes": 8240
+    },
+    "receipts/063-I16-initiative.json": {
+      "kind": "file",
+      "sha256": "27a8561210461701dd7bc627ad1a7a893574ff240d6152af1b77857abcc94bb0",
+      "bytes": 12445
+    },
+    "receipts/064-I16-save.json": {
+      "kind": "file",
+      "sha256": "f227d32c97ba20ac027af616813e16089f1fbe0a38c381ea14ecb56f47750111",
+      "bytes": 318
+    },
+    "receipts/065-deps-chain-read.json": {
+      "kind": "file",
+      "sha256": "6a71de29b0483c24214907596145e7b993cbac0f303e735bc088b695e60b46be",
+      "bytes": 2803
+    },
+    "receipts/066-final-prompt-receipt.json": {
+      "kind": "file",
+      "sha256": "c8e4ec082a972fb8cd883f69880af35dbf83399afa789cca48e4057b3695cfb9",
+      "bytes": 3119
+    },
+    "receipts/067-dependencies-full-chains.json": {
+      "kind": "file",
+      "sha256": "216e4c04ad38800d42736d0f01a972a0dc6ff4281ff0f6e413bc5b4bc317bb69",
+      "bytes": 4206
+    },
+    "receipts/068-index-generation.json": {
+      "kind": "file",
+      "sha256": "70240350a84c32768293c70c8a4c052692534381feabda68b214e084b3d70103",
+      "bytes": 380
+    },
+    "receipts/069-parent-quote-line.json": {
+      "kind": "file",
+      "sha256": "bc156825e9f130e9aef9645dcca7f5593ba597fb9598dd03117a60fa35f45bd3",
+      "bytes": 577
+    },
+    "receipts/070-index-refresh.json": {
+      "kind": "file",
+      "sha256": "e2d47a2d4d7738a599cc7d32005648ce181bee5f5cd4f06d2da1555600aaec11",
+      "bytes": 380
+    },
+    "tool-output-manifest.json": {
+      "kind": "file",
+      "sha256": "1b93490611da2adf98429687992e7574e9a0620000c76bf483df7f1584d996ae",
+      "bytes": 34017
+    }
+  },
+  "primary_results": [
+    "README.md",
+    "goal-trace.md",
+    "ranked-findings.md",
+    "read-trace.md",
+    "commands.md",
+    "tool-output-manifest.json"
+  ],
+  "assessment": "Partial. Original observations and limits retained; unmeasured sketches establish no formal graph claim; goal decisions remain unapplied.",
+  "session": "/root/w06_final_goal2",
+  "status": "Partial",
+  "scenario": "review-goal",
+  "repeat": 2
+}

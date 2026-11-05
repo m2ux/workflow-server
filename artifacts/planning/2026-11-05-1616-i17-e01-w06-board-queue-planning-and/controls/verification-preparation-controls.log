@@ -1,0 +1,90 @@
+{
+  "status": "pass",
+  "controls": [
+    {
+      "control": "clean synthetic default-cwd revision",
+      "result": "pass"
+    },
+    {
+      "control": "explicit supplied checkout from unrelated cwd",
+      "result": "pass"
+    },
+    {
+      "control": "head mismatch refusal",
+      "result": "pass"
+    },
+    {
+      "control": "tree mismatch refusal",
+      "result": "pass"
+    },
+    {
+      "control": "content_sha256 mismatch refusal",
+      "result": "pass"
+    },
+    {
+      "control": "tracked and untracked dirt refusal",
+      "result": "pass"
+    },
+    {
+      "control": "committed command-byte mutation fails preservation",
+      "result": "pass"
+    },
+    {
+      "control": "fresh supplied checker source governs results",
+      "result": "pass"
+    },
+    {
+      "control": "actual held checkout dirty refusal",
+      "result": "pass"
+    },
+    {
+      "control": "shared lexical spans preserve all actual baseline payloads and prerequisites",
+      "result": "pass",
+      "payloads": 58
+    },
+    {
+      "control": "CRLF Unicode nested fences and HTML payload headings",
+      "result": "pass",
+      "returned_bytes": 215
+    },
+    {
+      "control": "whole-file original bytes",
+      "result": "pass",
+      "returned_bytes": 256
+    },
+    {
+      "control": "actual architecture-overview complete literal Template",
+      "result": "pass",
+      "returned_bytes": 1712
+    },
+    {
+      "control": "actual planning-record complete literal Template",
+      "result": "pass",
+      "returned_bytes": 381
+    },
+    {
+      "control": "actual work-item complete literal Template",
+      "result": "pass",
+      "returned_bytes": 637
+    },
+    {
+      "control": "historical raw-regex reader truncation confirmed",
+      "result": "pass",
+      "historical_bytes": 27,
+      "complete_bytes": 1712
+    },
+    {
+      "control": "ambiguous real heading refusal",
+      "result": "pass"
+    },
+    {
+      "control": "literal-only heading refusal",
+      "result": "pass"
+    },
+    {
+      "control": "sixteen owned product paths and dirty status preserved",
+      "result": "pass"
+    }
+  ],
+  "limits": "Disposable synthetic revisions and actual read-only helper controls; no final product revision or disclosure workflow is verified."
+}

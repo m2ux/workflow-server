@@ -1,0 +1,241 @@
+{
+  "walk": "standup2",
+  "source": "/tmp/w06-walk-final-standup2",
+  "completion_authority": "Root explicitly reports this walk complete; no in-flight walk is read or archived.",
+  "archive": "completed-walks/standup2.tar.gz",
+  "archive_sha256": "264e5cde0aca8b16d08538365cbffec34ddec89af912480d872997f0d126d084",
+  "files": {
+    "commands.txt": {
+      "kind": "file",
+      "sha256": "084f5cbc9da594d3f18d61e8ef1221656d92c9a12203ecc5c98aa805e96af12c",
+      "bytes": 8330
+    },
+    "management.txt": {
+      "kind": "file",
+      "sha256": "db07f02f9451344e1550eea094aeb4c41026d700f6c6b8c01cb248cb729465f9",
+      "bytes": 459
+    },
+    "receipt-trace.md": {
+      "kind": "file",
+      "sha256": "3e94001dbb19b2ec10f6a705d42828a60bf4ac1ffd6bd1b3e8e99d1d214d8c8e",
+      "bytes": 5245
+    },
+    "receipts/SKILL.md": {
+      "kind": "file",
+      "sha256": "676574573ea2a735b121d39aaffa08ba60b2cf3e0caa18fb4b9d73a5a2d52cd3",
+      "bytes": 4466
+    },
+    "receipts/board-tail-recovery.txt": {
+      "kind": "file",
+      "sha256": "a57e83c7a3bfc34c8e15b94512588898f18d6be042bbaba0ff000b95a4c7d173",
+      "bytes": 833
+    },
+    "receipts/board.txt": {
+      "kind": "file",
+      "sha256": "f52877c47a938535c56dea8439b48ad4756a2803bcccba474a4718f83525b447",
+      "bytes": 19641
+    },
+    "receipts/conventions.txt": {
+      "kind": "file",
+      "sha256": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609",
+      "bytes": 2531
+    },
+    "receipts/copy-receipts.json": {
+      "kind": "file",
+      "sha256": "277457bd7a0cbc2328d42ec65cb4fc8733927c03c6ef60563035be57a94340ca",
+      "bytes": 469
+    },
+    "receipts/epic-issue-body.txt": {
+      "kind": "file",
+      "sha256": "ea438875b7786d94de1722e5da0d46a973cdbbf1dffe3dd61b32daab3ff262e0",
+      "bytes": 32143
+    },
+    "receipts/epic.txt": {
+      "kind": "file",
+      "sha256": "2e3f6d0d80d7a1795fd47d706632f82f0eaa85ec6d3bafdfb890e5ddbaf3ecf0",
+      "bytes": 12021
+    },
+    "receipts/final-read-0.json": {
+      "kind": "file",
+      "sha256": "8e2ac8273181d8767d59e854626e4b1d778e3c23a5c72aa449e0dfa6831859e7",
+      "bytes": 4225
+    },
+    "receipts/final-read-1.json": {
+      "kind": "file",
+      "sha256": "5eeb448986d6c96d2359a13e47b9372a9ccc16bff358c3435f411af85357e98c",
+      "bytes": 352
+    },
+    "receipts/final-read-2.json": {
+      "kind": "file",
+      "sha256": "3ac938b154c6f86faece1865b72cc02c8af76a25f83dcd5935e1303bd5ff05b8",
+      "bytes": 819
+    },
+    "receipts/final-render-command.json": {
+      "kind": "file",
+      "sha256": "34453f6f604748fb68e895dc28d34074ee6d799e34dbdf0d88c7b00268610615",
+      "bytes": 825
+    },
+    "receipts/hotfix.txt": {
+      "kind": "file",
+      "sha256": "10854384ca3839ca99ab5013911a0433c75008ded28c7c8117a6588cae582828",
+      "bytes": 10109
+    },
+    "receipts/i17-board-selected.jsonl": {
+      "kind": "file",
+      "sha256": "7fd2e76c0535ec039a5f3268e35606397300415532936a1bc61a68ec39d3d23b",
+      "bytes": 34156
+    },
+    "receipts/i17-prs-selected.jsonl": {
+      "kind": "file",
+      "sha256": "c495cd4c4de235062c9da3b83f4dd28495cc54b1d95b7995795fbf42c814b3f0",
+      "bytes": 7046
+    },
+    "receipts/initiative-1597-selected.json": {
+      "kind": "file",
+      "sha256": "c6784b9fab88151e9b035326fdfdfc2d42854cec063784f8527039a5f452ced6",
+      "bytes": 5723
+    },
+    "receipts/inventory.txt": {
+      "kind": "file",
+      "sha256": "4c7e49e9798f5322c5c87cc4e734e54d9c31b2a38b915f4545522bac424eb28c",
+      "bytes": 1520
+    },
+    "receipts/issue-body.txt": {
+      "kind": "file",
+      "sha256": "49f627d14f66009b859639405a6821075670b5f4fb818bdd0e34a440e8b0d9ba",
+      "bytes": 17686
+    },
+    "receipts/issue.txt": {
+      "kind": "file",
+      "sha256": "2498b830c76ab251a5d37d18658155dccff32681c3665148a76aa03a12e59643",
+      "bytes": 34054
+    },
+    "receipts/items-shape.txt": {
+      "kind": "file",
+      "sha256": "9817e76fba3140b61f2b63fb87bcbead4eddd0d5097fd54ec50c263691b1d0cf",
+      "bytes": 168
+    },
+    "receipts/lane.txt": {
+      "kind": "file",
+      "sha256": "bf537ec738d9d7a5f8b6f5642827d7c53a3c2f327da2f55140675443f4512a11",
+      "bytes": 6222
+    },
+    "receipts/namespace-failure.json": {
+      "kind": "file",
+      "sha256": "a318ad3ec445b41af4bf60c7da92ccddb1af6bcd8171a58a4def538ede502d36",
+      "bytes": 561
+    },
+    "receipts/neutral/read-d3uwr8m9.txt": {
+      "kind": "file",
+      "sha256": "8d8295dd90e20622d9613cfba48b6c7a97a047dafcea498ba86c4234c19f3322",
+      "bytes": 2699
+    },
+    "receipts/neutral/reads.jsonl": {
+      "kind": "file",
+      "sha256": "a73a1ba0e1e0e39c643253ea3109d258251060e7f680ec538f78b006f5875b97",
+      "bytes": 279
+    },
+    "receipts/neutral-read-source.py": {
+      "kind": "file",
+      "sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202",
+      "bytes": 1703
+    },
+    "receipts/progress-main.txt": {
+      "kind": "file",
+      "sha256": "d5d7e5f7afbad983a4caa5ccd2bf01f857916a85fc81c669b71cb6caab8157dc",
+      "bytes": 6582
+    },
+    "receipts/prompt.md": {
+      "kind": "file",
+      "sha256": "fd8732798d730f399b0309cc6c517ba64eceb33bd3e47ff3fa1f38d0f08a591c",
+      "bytes": 2642
+    },
+    "receipts/pull-request-boundary-recovery.txt": {
+      "kind": "file",
+      "sha256": "bc58d4e925c58c6fe3ea559f8d02dd9dbfdfd6b0205e8564442a140d770bc415",
+      "bytes": 1915
+    },
+    "receipts/pull-request-recovery.txt": {
+      "kind": "file",
+      "sha256": "9da33f28b6a4c329df12035c6b90cfed36ab8d94430daf9b3e300f478b93e570",
+      "bytes": 11944
+    },
+    "receipts/pull-request.txt": {
+      "kind": "file",
+      "sha256": "bbe23104ae0c3e9662b02e6dbf6f19a30eb0c7ca57fe6da629cceea0d13fc656",
+      "bytes": 47774
+    },
+    "receipts/requirement-characteristics.txt": {
+      "kind": "file",
+      "sha256": "ac9fe4cc179fba843ec711218e0b0704320cb078f3c790b1e08b231d9a7d74ee",
+      "bytes": 2848
+    },
+    "receipts/returned-i17-board.json": {
+      "kind": "file",
+      "sha256": "46013cea2437cefe4c2bf37ea85bdc163964db6defb0f49959577b99b54fd68a",
+      "bytes": 35106
+    },
+    "receipts/rules.txt": {
+      "kind": "file",
+      "sha256": "b850ad56c36799e441dcf54a1d4af969de3f975316bc8efa6ad87573fcc24603",
+      "bytes": 1515
+    },
+    "receipts/standup-mode.txt": {
+      "kind": "file",
+      "sha256": "ef6dce3c9aadc38ce50662e0de04762906eef85d389fa110ced2ba505ecea252",
+      "bytes": 4426
+    },
+    "receipts/standup-report.txt": {
+      "kind": "file",
+      "sha256": "4a15d1d1167ea5c246677d9517e8ae5d7834c5a3b7469ebc9c073ebed7aaa80c",
+      "bytes": 8175
+    },
+    "receipts/sync-mode.txt": {
+      "kind": "file",
+      "sha256": "7cb5f106b1139a9b4897c603d109759599c54748d0b0a71f81c5df1f1710f9cc",
+      "bytes": 16809
+    },
+    "report.initial.txt": {
+      "kind": "file",
+      "sha256": "0f14c7e39f4f7855508703168f1a5c76f00176380096e55fb08d0ec9c37cb135",
+      "bytes": 3585
+    },
+    "report.txt": {
+      "kind": "file",
+      "sha256": "9ad472c55a44fd31738f467729532d949c3381d3c8133a18beb1dd33536695b0",
+      "bytes": 4046
+    },
+    "todos.md": {
+      "kind": "file",
+      "sha256": "61e338823813d562a0fc459c24fb8324e335d8158e4120048e5a0062a7d80724",
+      "bytes": 306
+    },
+    "unresolved.initial.txt": {
+      "kind": "file",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "unresolved.md": {
+      "kind": "file",
+      "sha256": "352a5ab61822a3934c32e277e34f968de04c9da5dec251a722b6b0998e6901c4",
+      "bytes": 1689
+    },
+    "unresolved.renderer.txt": {
+      "kind": "file",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "primary_results": [
+    "report.txt",
+    "management.txt",
+    "unresolved.md",
+    "receipt-trace.md",
+    "commands.txt"
+  ],
+  "assessment": "Original observations, receipts, limitations and pending decisions retained; six-result disclosure review remains root-owned.",
+  "session": "/root/w06_final_standup2",
+  "status": "Partial",
+  "scenario": "standup",
+  "repeat": 2
+}

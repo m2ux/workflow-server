@@ -1,0 +1,62 @@
+[
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before_sha256": "93dafb8e59e863ac3e9f1ae9af01c24951a337a19597bec3026c895a11c9d166",
+    "after_sha256": "69c69f25fedd3c2780cb0abf72e871938014d5b6b35244ea872fc2a29b240215",
+    "replacements": [
+      {
+        "before": "- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it, so pass each one as an absolute path.",
+        "after": "- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files) defines them."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "before_sha256": "790b5b1059a1e223a66ca3520ea77cd3bfb3c84e06ccd15891b69235e573cb0e",
+    "after_sha256": "4a15d1d1167ea5c246677d9517e8ae5d7834c5a3b7469ebc9c073ebed7aaa80c",
+    "replacements": [
+      {
+        "before": "- `--since` supplies an explicit start for the [window](#scope).",
+        "after": "- `--since` supplies the window start in [Report Selection](#report-selection), selecting the [window](#scope)."
+      },
+      {
+        "before": "- `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.",
+        "after": "- `--initiative` selects the initiative filter in [Report Selection](#report-selection). **Examples:** `I08`, `owner/repo:I08`."
+      },
+      {
+        "before": "`<window-start-date>` uses `YYYY-MM-DD`.",
+        "after": ""
+      },
+      {
+        "before": "The optional window start as YYYY-MM-DD and initiative filter: an initiative id, or owner/repo:initiative-id when its number is ambiguous.",
+        "after": "The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before_sha256": "a4a285ec05ac8ed55aed9ca9f324a5f6885f3f349976de08bbc4c20ac13ea415",
+    "after_sha256": "06c0a09a4cdf9e74c15a28169af64e348e1cbf17fb49be2360f03e89091e5add",
+    "replacements": [
+      {
+        "before": "- `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.",
+        "after": "- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives). Repeatable."
+      },
+      {
+        "before": "The confirmed unplanned initiative identities, each an issue number or owner/repo#issue-number.",
+        "after": "The confirmed initiatives left with no priority, each supplied as an issue number or `<owner>/<repo>#<issue-number>`."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "before_sha256": "c1871c2484316faf2e618387c41bde5dbacd2df0130a83da0a27d65fa6826b02",
+    "after_sha256": "f52877c47a938535c56dea8439b48ad4756a2803bcccba474a4718f83525b447",
+    "replacements": [
+      {
+        "before": "Adds the caller-supplied issue id to a board and prints the new item's id. The input is the issue id, not its number.",
+        "after": "Adds the caller-supplied issue to a board and prints the new item's id."
+      }
+    ]
+  }
+]

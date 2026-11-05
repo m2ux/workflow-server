@@ -1,0 +1,153 @@
+{
+  "criterion": "AC6",
+  "status": "pass",
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w06-board-queue-planning-and",
+  "identity": {
+    "head": "86748050dc69b532a5ac144a5c1a93f2f25b96da",
+    "tree": "ccbdd9884ef1a13a5e47c845d784d3d1c92256fc",
+    "content_sha256": "566e41f0e806b8a5d577c7c5bbd45e9e1031ee9cb336afb9be3d72999572a0f0",
+    "tracked_source_files": 190
+  },
+  "baseline": "fb9a834c940cbed9742709d7e03594900e31d22f",
+  "strict": {
+    "markdown_files": 58,
+    "converted_files": 15,
+    "findings": []
+  },
+  "installed": {
+    "markdown_files": 58,
+    "converted_files": 15,
+    "findings": [
+      {
+        "path": "skills/work-planner/modes/revise-mode.md",
+        "line": 128,
+        "kind": "section outside the set",
+        "detail": "Fields"
+      }
+    ]
+  },
+  "installed_unexplained": [],
+  "preservation": [
+    {
+      "file": "skills/work-planner/artifacts/architecture-overview.md",
+      "command_count": 0,
+      "literal_specimens": 1,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/planning-record.md",
+      "command_count": 5,
+      "literal_specimens": 2,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/work-item.md",
+      "command_count": 0,
+      "literal_specimens": 1,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/agent-review.md",
+      "command_count": 1,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/goal-trace.md",
+      "command_count": 0,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/review-finding.md",
+      "command_count": 0,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/placement.md",
+      "command_count": 2,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/repository-graph.md",
+      "command_count": 8,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/lane.md",
+      "command_count": 4,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/dependency-graph.md",
+      "command_count": 6,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/board.md",
+      "command_count": 21,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/standup-report.md",
+      "command_count": 2,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-delivery.md",
+      "command_count": 3,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/plan-change.md",
+      "command_count": 0,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    },
+    {
+      "file": "skills/work-planner/artifacts/board-queue.md",
+      "command_count": 2,
+      "literal_specimens": 0,
+      "command_bytes_and_order": true,
+      "literal_bytes": true,
+      "prerequisites_bytes": true
+    }
+  ],
+  "limits": "Structural and byte preservation checks; semantic review, complete suites and independent disclosure walks are separate evidence."
+}

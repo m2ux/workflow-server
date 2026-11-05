@@ -1,0 +1,9 @@
+{
+  "head": "86748050dc69b532a5ac144a5c1a93f2f25b96da",
+  "tree": "ccbdd9884ef1a13a5e47c845d784d3d1c92256fc",
+  "planner": {"exec_session": 34769, "exit_code": 0, "tests": 930, "skipped": 1, "elapsed_seconds": 130.001},
+  "shared": {"exec_session": 50028, "exit_code": 0, "tests": 258, "elapsed_seconds": 0.821},
+  "criterion": {"exec_session": 45856, "exit_code": 0, "status": "pass"},
+  "installed": {"exit_code": 1, "known_findings": 1, "unexplained_findings": 0},
+  "interrupted_planner_attempt": "No completion footer or exit receipt; excluded from pass evidence."
+}

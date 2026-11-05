@@ -1,0 +1,18 @@
+ skills/work-planner/artifacts/agent-review.md      |  83 ++-
+ .../artifacts/architecture-overview.md             |  43 +-
+ skills/work-planner/artifacts/board-delivery.md    | 271 ++++++---
+ skills/work-planner/artifacts/board-queue.md       | 113 +++-
+ skills/work-planner/artifacts/board.md             | 607 +++++++++++++++------
+ skills/work-planner/artifacts/dependency-graph.md  | 229 +++++---
+ skills/work-planner/artifacts/goal-trace.md        | 114 +++-
+ skills/work-planner/artifacts/lane.md              | 153 ++++--
+ skills/work-planner/artifacts/placement.md         | 268 ++++++---
+ skills/work-planner/artifacts/plan-change.md       |  51 +-
+ skills/work-planner/artifacts/planning-record.md   | 188 ++++---
+ skills/work-planner/artifacts/repository-graph.md  | 181 ++++--
+ skills/work-planner/artifacts/review-finding.md    |  64 ++-
+ skills/work-planner/artifacts/standup-report.md    | 113 +++-
+ skills/work-planner/artifacts/work-item.md         |  24 +-
+ skills/work-planner/test/test_checkouts.py         | 140 ++++-
+ skills/work-planner/test/test_plan_mode.py         |  64 ++-
+ 17 files changed, 1994 insertions(+), 712 deletions(-)

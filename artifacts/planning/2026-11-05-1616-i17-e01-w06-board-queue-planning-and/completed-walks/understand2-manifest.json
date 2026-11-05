@@ -1,0 +1,170 @@
+{
+  "walk": "understand2",
+  "source": "/tmp/w06-walk-final-understand2",
+  "completion_authority": "Root confirms completion and reviews final result/read accounts.",
+  "archive": "completed-walks/understand2.tar.gz",
+  "archive_sha256": "a39ace25a7c1bef0db58ae84badb157a18df9957900c48f146124d6ba8aa4c67",
+  "files": {
+    "checkout-head.txt": {
+      "kind": "file",
+      "sha256": "48f52b0a89921ced98b1fd17add80a0acdfd71c53014f0781422da6d7efb100e",
+      "bytes": 41
+    },
+    "diff-entry-tests.txt": {
+      "kind": "file",
+      "sha256": "0c1f96ca75a96b20645dec7464501400211ddd94f75d17bd563a5ff57507ed18",
+      "bytes": 5570
+    },
+    "diff-revise.txt": {
+      "kind": "file",
+      "sha256": "72507554b3ec5ea9d28a1986734541d126ac8c46d71dc4aa39b3bed0edff8a51",
+      "bytes": 9457
+    },
+    "diff-stat.txt": {
+      "kind": "file",
+      "sha256": "83204b7dc2aa644927f39d82fc154ccb95b56aa45209f8d81179b84e73e802e4",
+      "bytes": 818
+    },
+    "findings.md": {
+      "kind": "file",
+      "sha256": "6998b30de687ad3e0b7415f156d1dcd2a6356edd0b6c7473ec89c48044069d1e",
+      "bytes": 9887
+    },
+    "head-plan.txt": {
+      "kind": "file",
+      "sha256": "1811ac5863b48050b2e946c7af2f1e0121e07fbf5d5b5fb02c2cc34238cc0220",
+      "bytes": 11608
+    },
+    "head-revise.txt": {
+      "kind": "file",
+      "sha256": "59bd37442dbcfd8570fb7b2aec996a377fdf79e96c5a8830bdde320949c2cda4",
+      "bytes": 6377
+    },
+    "head-test-documents-selected.txt": {
+      "kind": "file",
+      "sha256": "a48ba6b0253412a721e2056a5d109bb48d4f9bcd5db342fc2460798579da4ba1",
+      "bytes": 4170
+    },
+    "head-test-plan.txt": {
+      "kind": "file",
+      "sha256": "7c617ce29ee334165f178bd0ae887d2048e72b9ba2d8a29fd24ba707d2a6eb99",
+      "bytes": 4255
+    },
+    "head-understand.txt": {
+      "kind": "file",
+      "sha256": "9baa1d3cb87d67aec172465cf26432ea9e629f07ee22e94ce0080196088d1ded",
+      "bytes": 1676
+    },
+    "measure.py": {
+      "kind": "file",
+      "sha256": "17d1288ed7a3ccf3c85ed5fc2fe8dc817f9ee747c024a81b78e829a901e163c3",
+      "bytes": 1088
+    },
+    "measurements.json": {
+      "kind": "file",
+      "sha256": "c3ac03886910e546a0be4ee197221948f0ad1e93756c756094bb797bd8666b59",
+      "bytes": 685
+    },
+    "merge-base.txt": {
+      "kind": "file",
+      "sha256": "6b4b367b7c742fa8214ac19f836fc628a660667a9fa26cbc2261f8c608bb3bb3",
+      "bytes": 41
+    },
+    "mode-change-selection.txt": {
+      "kind": "file",
+      "sha256": "ec9a3a8048f2658c7c5ba675ad177c1ce6dd1c0924cf0d2fe9def151f1704ac0",
+      "bytes": 44130
+    },
+    "overview.md": {
+      "kind": "file",
+      "sha256": "c6b5590466d7cc1ff6067ecddb304cdb2c4c44bff99c20e46d0b728a40c42470",
+      "bytes": 10359
+    },
+    "pr-selected.json": {
+      "kind": "file",
+      "sha256": "cb65663753c459ffcf7ee477c0f0b99b3dbce2e27379c8a9c67feefbfe93de2b",
+      "bytes": 579
+    },
+    "reads/read-3dubdats.txt": {
+      "kind": "file",
+      "sha256": "13d68f12c201fcb1f89f4d154010b33fb7ce68387f561a5d1cb9e338be260011",
+      "bytes": 1403
+    },
+    "reads/read-3xbw2zif.txt": {
+      "kind": "file",
+      "sha256": "b850ad56c36799e441dcf54a1d4af969de3f975316bc8efa6ad87573fcc24603",
+      "bytes": 1515
+    },
+    "reads/read-4cgftjzs.txt": {
+      "kind": "file",
+      "sha256": "b431ea4de377b0f9eb98f6e1d020a45285934a3f8f77c0652cf22c8fe17d0960",
+      "bytes": 10511
+    },
+    "reads/read-6zi8he7l.txt": {
+      "kind": "file",
+      "sha256": "792e6912c4b208fe2b35b74434f7978a8c980e1b08800a45169af43de601f67f",
+      "bytes": 1772
+    },
+    "reads/read-b24t103t.txt": {
+      "kind": "file",
+      "sha256": "942615aaa37d048350c9fe0069e34aacf9d46e214b008d3261f85a4861869812",
+      "bytes": 3678
+    },
+    "reads/read-czqwrotz.txt": {
+      "kind": "file",
+      "sha256": "325183acb97ed359d114501e1504f1e41bd90f9b45418b84f6210e0656255ff1",
+      "bytes": 5758
+    },
+    "reads/read-h9gow_yo.txt": {
+      "kind": "file",
+      "sha256": "ca150489074115d098ec92631520b9812c799974b248f664dadcf54b2bf4aab1",
+      "bytes": 787
+    },
+    "reads/read-ib6pdhcx.txt": {
+      "kind": "file",
+      "sha256": "46241acf091ef5b4defc9d5edf7111b3388c89813decb1429a037877b744089a",
+      "bytes": 7483
+    },
+    "reads/read-iow_do83.txt": {
+      "kind": "file",
+      "sha256": "86cb6ddac9d07b1e11a0bccb3358e898a55a6db81e736dbb7780cc198af1b609",
+      "bytes": 2531
+    },
+    "reads/read-iza6ield.txt": {
+      "kind": "file",
+      "sha256": "587375687b1d600282663c6bb518fb6f5bd0543ddfbbb3fe609e332728741134",
+      "bytes": 6469
+    },
+    "reads/read-m2i8v84h.txt": {
+      "kind": "file",
+      "sha256": "8169ec085123aa78f4470ef2f09c41c48ef912805ff2150cb87ed93de2501270",
+      "bytes": 27102
+    },
+    "reads/read-rco88bi5.txt": {
+      "kind": "file",
+      "sha256": "bbe23104ae0c3e9662b02e6dbf6f19a30eb0c7ca57fe6da629cceea0d13fc656",
+      "bytes": 47774
+    },
+    "reads/read-yskzy0fo.txt": {
+      "kind": "file",
+      "sha256": "676574573ea2a735b121d39aaffa08ba60b2cf3e0caa18fb4b9d73a5a2d52cd3",
+      "bytes": 4466
+    },
+    "reads/reads.jsonl": {
+      "kind": "file",
+      "sha256": "c4d9d73814aa38a60c7b6ca61e63a6b748e1f4932b20f814590a8614d363baaf",
+      "bytes": 3595
+    }
+  },
+  "primary_results": [
+    "overview.md",
+    "findings.md",
+    "measurements.json",
+    "reads/reads.jsonl"
+  ],
+  "assessment": "Partial. Original observations and limits retained; unmeasured sketches establish no formal graph claim; goal decisions remain unapplied.",
+  "session": "/root/w06_final_understand2",
+  "status": "Partial",
+  "scenario": "understand",
+  "repeat": 2
+}

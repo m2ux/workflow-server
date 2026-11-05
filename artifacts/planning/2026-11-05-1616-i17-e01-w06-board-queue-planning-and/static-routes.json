@@ -1,0 +1,859 @@
+[
+  {
+    "file": "architecture-overview.md",
+    "operation": "Populate Architecture Overview",
+    "anchor": "populate-architecture-overview",
+    "steps": [
+      "1. Check Measured Diagrams",
+      "2. Populate Overview File",
+      "3. Pin Code References",
+      "4. Return Overview File"
+    ],
+    "calls": []
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Populate Planning Record",
+    "anchor": "populate-planning-record",
+    "steps": [
+      "1. Prepare Selected Record",
+      "2. Register Supplied Artifacts"
+    ],
+    "calls": [
+      "Apply [Add Planning Record](#add-planning-record)"
+    ]
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Publish Planning Record",
+    "anchor": "publish-planning-record",
+    "steps": [
+      "1. Find Engineering Checkout",
+      "2. Publish Planning Files"
+    ],
+    "calls": [
+      "Apply [Find Engineering Worktree](#find-engineering-worktree)",
+      "Apply [Commit Planning Record](#commit-planning-record)"
+    ]
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Find Engineering Worktree",
+    "anchor": "find-engineering-worktree",
+    "steps": [
+      "1. Find Engineering Worktree"
+    ],
+    "calls": []
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Commit Planning Record",
+    "anchor": "commit-planning-record",
+    "steps": [
+      "1. Commit Planning Record"
+    ],
+    "calls": []
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Add Planning Record",
+    "anchor": "add-planning-record",
+    "steps": [
+      "1. Add Planning Record"
+    ],
+    "calls": []
+  },
+  {
+    "file": "work-item.md",
+    "operation": "Populate Work Item",
+    "anchor": "populate-work-item",
+    "steps": [
+      "1. Populate Work Item File"
+    ],
+    "calls": []
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Produce Agent Review",
+    "anchor": "produce-agent-review",
+    "steps": [
+      "1. Review Complete Integration Diff",
+      "2. Resolve Review Findings",
+      "3. Write Revision Review Record",
+      "4. Return Review Evidence"
+    ],
+    "calls": [
+      "Apply [Produce Agent Review](#produce-agent-review)"
+    ]
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Check Agent Review",
+    "anchor": "check-agent-review",
+    "steps": [
+      "1. Validate Published Review Evidence",
+      "2. Return Checked Revision"
+    ],
+    "calls": [
+      "Apply [Validate Agent Review](#validate-agent-review)"
+    ]
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Validate Agent Review",
+    "anchor": "validate-agent-review",
+    "steps": [
+      "1. Validate Agent Review"
+    ],
+    "calls": []
+  },
+  {
+    "file": "goal-trace.md",
+    "operation": "Review Initiative Goal",
+    "anchor": "review-initiative-goal",
+    "steps": [
+      "1. Identify Confirmed Goal Clauses",
+      "2. Build Goal Trace",
+      "3. Read Marked Requirement Sources",
+      "4. Check Acceptance Criteria",
+      "5. Validate Local Drafts",
+      "6. Check Outside Threats",
+      "7. Return Ranked Gaps"
+    ],
+    "calls": [
+      "Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources)",
+      "Apply [Build Body Snapshot](issue-body.md#build-body-snapshot)",
+      "Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body)",
+      "Apply [Check Outside Threats](#check-outside-threats)"
+    ]
+  },
+  {
+    "file": "goal-trace.md",
+    "operation": "Check Outside Threats",
+    "anchor": "check-outside-threats",
+    "steps": [
+      "1. Check External Consumers",
+      "2. Check Hidden Violations",
+      "3. Check Completion Instrument",
+      "4. Check Consumer Alignment",
+      "5. Return External Threats"
+    ],
+    "calls": []
+  },
+  {
+    "file": "review-finding.md",
+    "operation": "Populate Review Finding",
+    "anchor": "populate-review-finding",
+    "steps": [
+      "1. Verify Supplied Problem",
+      "2. Return Evidence Gaps",
+      "3. Populate Verified Finding",
+      "4. Return Finding Decision"
+    ],
+    "calls": []
+  },
+  {
+    "file": "review-finding.md",
+    "operation": "Report Review Finding",
+    "anchor": "report-review-finding",
+    "steps": [
+      "1. Populate Verified Findings",
+      "2. Resolve Pending Decisions"
+    ],
+    "calls": [
+      "Apply [Populate Review Finding](#populate-review-finding)"
+    ]
+  },
+  {
+    "file": "placement.md",
+    "operation": "Draft Issue Placement",
+    "anchor": "draft-issue-placement",
+    "steps": [
+      "1. Select Candidate Destination",
+      "2. Populate Placement Fields",
+      "3. Return Placement Option"
+    ],
+    "calls": []
+  },
+  {
+    "file": "placement.md",
+    "operation": "Find Placement Candidates",
+    "anchor": "find-placement-candidates",
+    "steps": [
+      "1. List Repository Candidates",
+      "2. Return Available Destinations"
+    ],
+    "calls": [
+      "Apply [List Orphans](#list-orphans)"
+    ]
+  },
+  {
+    "file": "placement.md",
+    "operation": "Apply Issue Placement",
+    "anchor": "apply-issue-placement",
+    "steps": [
+      "1. Apply Confirmed Destination",
+      "2. Return Saved Placement"
+    ],
+    "calls": [
+      "Apply [Save Tracker Issue](issue.md#save-tracker-issue)",
+      "Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body)",
+      "Apply [Check Dependencies and Numbering](dependency-graph.md#check-dependencies-and-numbering)",
+      "Apply [Save Tracker Issue](issue.md#save-tracker-issue)",
+      "Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body)",
+      "Apply [Draft Initiative Issue Body](initiative-issue-body.md#draft-initiative-issue-body)",
+      "Apply [Save Tracker Issue](issue.md#save-tracker-issue)",
+      "Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body)",
+      "Apply [Save Tracker Issue](issue.md#save-tracker-issue)",
+      "Apply [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue)"
+    ]
+  },
+  {
+    "file": "placement.md",
+    "operation": "Rewrite Orphan Issue",
+    "anchor": "rewrite-orphan-issue",
+    "steps": [
+      "1. Populate Selected Body",
+      "2. Validate and Save Body",
+      "3. Settle Hot-fix Status",
+      "4. Return Saved Identity"
+    ],
+    "calls": [
+      "Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body)",
+      "Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body)",
+      "Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body)",
+      "Apply [Check Round of Edits](issue-body.md#check-round-of-edits)",
+      "Apply [Save Tracker Issue](issue.md#save-tracker-issue)",
+      "Apply [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status)"
+    ]
+  },
+  {
+    "file": "placement.md",
+    "operation": "Subsume Orphan Work",
+    "anchor": "subsume-orphan-work",
+    "steps": [
+      "1. Transfer Tracked Work",
+      "2. Prepare Closure Comment",
+      "3. Close Transferred Orphan"
+    ],
+    "calls": [
+      "Apply [Close Transferred Work](issue.md#close-transferred-work)"
+    ]
+  },
+  {
+    "file": "placement.md",
+    "operation": "List Orphans",
+    "anchor": "list-orphans",
+    "steps": [
+      "1. List Orphans"
+    ],
+    "calls": []
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Measure Repository Change",
+    "anchor": "measure-repository-change",
+    "steps": [
+      "1. Read Index Status",
+      "2. Refresh Absent or Stale Index",
+      "3. Measure Change Surface",
+      "4. Measure Changed Symbols",
+      "5. Measure Reported Flows",
+      "6. Check Response Freshness",
+      "7. Return Current Measurements"
+    ],
+    "calls": [
+      "Apply [Index Status](#index-status)",
+      "Apply [Index Repository](#index-repository)",
+      "Apply [Change Surface](#change-surface)",
+      "Apply [Symbol Context](#symbol-context)",
+      "Apply [Flow Trace](#flow-trace)",
+      "Apply [Index Repository](#index-repository)",
+      "Apply [Change Surface](#change-surface)",
+      "Apply [Symbol Context](#symbol-context)",
+      "Apply [Flow Trace](#flow-trace)"
+    ]
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Index Status",
+    "anchor": "index-status",
+    "steps": [
+      "1. Index Status"
+    ],
+    "calls": []
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Index Repository",
+    "anchor": "index-repository",
+    "steps": [
+      "1. Index Repository"
+    ],
+    "calls": []
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Change Surface",
+    "anchor": "change-surface",
+    "steps": [
+      "1. Change Surface"
+    ],
+    "calls": []
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Symbol Context",
+    "anchor": "symbol-context",
+    "steps": [
+      "1. Symbol Context"
+    ],
+    "calls": []
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Flow Trace",
+    "anchor": "flow-trace",
+    "steps": [
+      "1. Flow Trace"
+    ],
+    "calls": []
+  },
+  {
+    "file": "lane.md",
+    "operation": "Read Task Lanes",
+    "anchor": "read-task-lanes",
+    "steps": [
+      "1. Read Task Lane Cells"
+    ],
+    "calls": [
+      "Apply [Read Lane Assignments](#read-lane-assignments)"
+    ]
+  },
+  {
+    "file": "lane.md",
+    "operation": "Assign Task Lanes",
+    "anchor": "assign-task-lanes",
+    "steps": [
+      "1. Write Confirmed Lane Map",
+      "2. Return Updated Body"
+    ],
+    "calls": [
+      "Apply [Write Lane Assignments](#write-lane-assignments)"
+    ]
+  },
+  {
+    "file": "lane.md",
+    "operation": "Check Unit Lanes",
+    "anchor": "check-unit-lanes",
+    "steps": [
+      "1. Check Complete Unit Lane"
+    ],
+    "calls": [
+      "Apply [Validate Lane Unit](#validate-lane-unit)"
+    ]
+  },
+  {
+    "file": "lane.md",
+    "operation": "Determine Lane Admission",
+    "anchor": "determine-lane-admission",
+    "steps": [
+      "1. Evaluate Requested Lane"
+    ],
+    "calls": [
+      "Apply [Evaluate Lane Admission](#evaluate-lane-admission)"
+    ]
+  },
+  {
+    "file": "lane.md",
+    "operation": "Read Lane Assignments",
+    "anchor": "read-lane-assignments",
+    "steps": [
+      "1. Read Lane Assignments"
+    ],
+    "calls": []
+  },
+  {
+    "file": "lane.md",
+    "operation": "Write Lane Assignments",
+    "anchor": "write-lane-assignments",
+    "steps": [
+      "1. Write Lane Assignments"
+    ],
+    "calls": []
+  },
+  {
+    "file": "lane.md",
+    "operation": "Validate Lane Unit",
+    "anchor": "validate-lane-unit",
+    "steps": [
+      "1. Validate Lane Unit"
+    ],
+    "calls": []
+  },
+  {
+    "file": "lane.md",
+    "operation": "Evaluate Lane Admission",
+    "anchor": "evaluate-lane-admission",
+    "steps": [
+      "1. Evaluate Lane Admission"
+    ],
+    "calls": []
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Check Dependencies and Numbering",
+    "anchor": "check-dependencies-and-numbering",
+    "steps": [
+      "1. Check Supplied Task Graph",
+      "2. Resolve Graph Findings",
+      "3. Apply Confirmed Numbering"
+    ],
+    "calls": [
+      "Apply [Read Tracker Issue](issue.md#read-tracker-issue)",
+      "Apply [Check Dependencies](#check-dependencies)",
+      "Apply [Check Unit Lanes](lane.md#check-unit-lanes)",
+      "Apply [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy)",
+      "Apply [Renumber Epics](#renumber-epics)",
+      "Apply [Renumber Tasks](#renumber-tasks)",
+      "Apply [Check Dependencies](#check-dependencies)"
+    ]
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Check Dependencies",
+    "anchor": "check-dependencies",
+    "steps": [
+      "1. Check Dependencies"
+    ],
+    "calls": []
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Renumber Tasks",
+    "anchor": "renumber-tasks",
+    "steps": [
+      "1. Renumber Tasks"
+    ],
+    "calls": []
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Renumber Epics",
+    "anchor": "renumber-epics",
+    "steps": [
+      "1. Renumber Epics"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Select Project Board",
+    "anchor": "select-project-board",
+    "steps": [
+      "1. Find Requested Board",
+      "2. Return Missing Selection",
+      "3. Return Selected Board"
+    ],
+    "calls": [
+      "Apply [Find Theme Board](#find-theme-board)",
+      "Apply [Find Proposals Board](#find-proposals-board)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Copy Project Board",
+    "anchor": "copy-project-board",
+    "steps": [
+      "1. Create Absent Proposals Board",
+      "2. Create Absent Theme Board"
+    ],
+    "calls": [
+      "Apply [Create Proposals Board](#create-proposals-board)",
+      "Apply [Create Theme Board](#create-theme-board)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Create Proposals Board",
+    "anchor": "create-proposals-board",
+    "steps": [
+      "1. Find Proposals Template",
+      "2. Select Template Source",
+      "3. Copy Proposals Template",
+      "4. Retain New Board Number",
+      "5. Link Copied Board",
+      "6. Return Linked Board"
+    ],
+    "calls": [
+      "Apply [Find Board Template](#find-board-template)",
+      "Apply [Copy Board Template](#copy-board-template)",
+      "Apply [Link Board to Repository](#link-board-to-repository)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Create Theme Board",
+    "anchor": "create-theme-board",
+    "steps": [
+      "1. Check Theme Provenance",
+      "2. Find Theme Template",
+      "3. Select Template Source",
+      "4. Copy Theme Template",
+      "5. Retain New Board Number",
+      "6. Link Copied Board",
+      "7. Return Linked Board"
+    ],
+    "calls": [
+      "Apply [Find Board Template](#find-board-template)",
+      "Apply [Copy Board Template](#copy-board-template)",
+      "Apply [Link Board to Repository](#link-board-to-repository)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Place Issue on Board",
+    "anchor": "place-issue-on-board",
+    "steps": [
+      "1. Read Status Options",
+      "2. Add Supplied Issue",
+      "3. Set Initial Status",
+      "4. Read Saved Item"
+    ],
+    "calls": [
+      "Apply [Fetch Board Fields](#fetch-board-fields)",
+      "Apply [Add Issue to Board](#add-issue-to-board)",
+      "Apply [Set Item Status](#set-item-status)",
+      "Apply [Fetch Board Item](#fetch-board-item)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board State",
+    "anchor": "read-board-state",
+    "steps": [
+      "1. Locate Board Status Field",
+      "2. Fetch Complete Board Items",
+      "3. Return Board State"
+    ],
+    "calls": [
+      "Apply [Find Status Field](#find-status-field)",
+      "Apply [Fetch Board Items with Status](#fetch-board-items-with-status)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board Assignee",
+    "anchor": "read-board-assignee",
+    "steps": [
+      "1. Find Authenticated User",
+      "2. Return Assignment Login"
+    ],
+    "calls": [
+      "Apply [Find User](#find-user)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board Configuration",
+    "anchor": "read-board-configuration",
+    "steps": [
+      "1. Read Board Fields",
+      "2. Read Requested Item",
+      "3. Return Current Configuration"
+    ],
+    "calls": [
+      "Apply [Fetch Board Fields](#fetch-board-fields)",
+      "Apply [Fetch Board Item](#fetch-board-item)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Locate Project Board",
+    "anchor": "locate-project-board",
+    "steps": [
+      "1. Find Requested Purpose",
+      "2. Return Matching Board"
+    ],
+    "calls": [
+      "Apply [Find Proposals Board](#find-proposals-board)",
+      "Apply [Find Theme Board](#find-theme-board)"
+    ]
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Board Template",
+    "anchor": "find-board-template",
+    "steps": [
+      "1. Find Board Template"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Copy Board Template",
+    "anchor": "copy-board-template",
+    "steps": [
+      "1. Copy Board Template"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Link Board to Repository",
+    "anchor": "link-board-to-repository",
+    "steps": [
+      "1. Link Board to Repository"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Proposals Board",
+    "anchor": "find-proposals-board",
+    "steps": [
+      "1. Find Proposals Board"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Add Issue to Board",
+    "anchor": "add-issue-to-board",
+    "steps": [
+      "1. Add Issue to Board"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Set Item Status",
+    "anchor": "set-item-status",
+    "steps": [
+      "1. Set Item Status"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Remove Board Item",
+    "anchor": "remove-board-item",
+    "steps": [
+      "1. Remove Board Item"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Fields",
+    "anchor": "fetch-board-fields",
+    "steps": [
+      "1. Fetch Board Fields"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Theme Board",
+    "anchor": "find-theme-board",
+    "steps": [
+      "1. Find Theme Board"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Status Field",
+    "anchor": "find-status-field",
+    "steps": [
+      "1. Find Status Field"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Items with Status",
+    "anchor": "fetch-board-items-with-status",
+    "steps": [
+      "1. Fetch Board Items with Status"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Item",
+    "anchor": "fetch-board-item",
+    "steps": [
+      "1. Fetch Board Item"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board.md",
+    "operation": "Find User",
+    "anchor": "find-user",
+    "steps": [
+      "1. Find User"
+    ],
+    "calls": []
+  },
+  {
+    "file": "standup-report.md",
+    "operation": "Compose Standup Report",
+    "anchor": "compose-standup-report",
+    "steps": [
+      "1. Require Complete Link Snapshot",
+      "2. Render Window Progress",
+      "3. Return Unresolved Initiatives",
+      "4. Write Management Paragraph",
+      "5. Render Final Report",
+      "6. Return Report Findings"
+    ],
+    "calls": [
+      "Apply [Summarise Progress](#summarise-progress)",
+      "Apply [Summarise Progress](#summarise-progress)"
+    ]
+  },
+  {
+    "file": "standup-report.md",
+    "operation": "Summarise Progress",
+    "anchor": "summarise-progress",
+    "steps": [
+      "1. Summarise Progress"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Plan Board Changes",
+    "anchor": "plan-board-changes",
+    "steps": [
+      "1. Require Complete Link Snapshot",
+      "2. Compute Delivery Calls",
+      "3. Return Proposed Changes"
+    ],
+    "calls": [
+      "Apply [Compute Board Changes](#compute-board-changes)"
+    ]
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Epic Review",
+    "anchor": "record-epic-review",
+    "steps": [
+      "1. Read Board State",
+      "2. Read Configuration and Assignee",
+      "3. Locate Epic Item",
+      "4. Write and Confirm Review Status",
+      "5. Return Confirmed Status"
+    ],
+    "calls": [
+      "Apply [Read Board State](board.md#read-board-state)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)",
+      "Apply [Read Board Assignee](board.md#read-board-assignee)",
+      "Apply [Record Dispatch Status](#record-dispatch-status)",
+      "Apply [Record Dispatch Status](#record-dispatch-status)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)"
+    ]
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Board Delivery",
+    "anchor": "record-board-delivery",
+    "steps": [
+      "1. Read Current Delivery Evidence",
+      "2. Plan Delivery Changes",
+      "3. Apply and Confirm Calls",
+      "4. Recompute Refreshed Board"
+    ],
+    "calls": [
+      "Apply [Read Tracker Issue](issue.md#read-tracker-issue)",
+      "Apply [Read Board State](board.md#read-board-state)",
+      "Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests)",
+      "Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)",
+      "Apply [Read Board Assignee](board.md#read-board-assignee)",
+      "Apply [Plan Board Changes](#plan-board-changes)",
+      "Apply [Plan Board Changes](#plan-board-changes)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)",
+      "Apply [Plan Board Changes](#plan-board-changes)"
+    ]
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Dispatch Status",
+    "anchor": "record-dispatch-status",
+    "steps": [
+      "1. Compute Dispatch Calls",
+      "2. Apply and Confirm Calls",
+      "3. Return Saved Statuses"
+    ],
+    "calls": [
+      "Apply [Compute Dispatch Status](#compute-dispatch-status)",
+      "Apply [Read Board Configuration](board.md#read-board-configuration)"
+    ]
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Compute Board Changes",
+    "anchor": "compute-board-changes",
+    "steps": [
+      "1. Compute Board Changes"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Compute Dispatch Status",
+    "anchor": "compute-dispatch-status",
+    "steps": [
+      "1. Compute Dispatch Status"
+    ],
+    "calls": []
+  },
+  {
+    "file": "plan-change.md",
+    "operation": "Check Plan Change Autonomy",
+    "anchor": "check-plan-change-autonomy",
+    "steps": [
+      "1. Classify Pending Change",
+      "2. Return Allowed Change",
+      "3. Return Held Change"
+    ],
+    "calls": []
+  },
+  {
+    "file": "plan-change.md",
+    "operation": "Record Plan Change",
+    "anchor": "record-plan-change",
+    "steps": [
+      "1. Record Applied or Held Entry",
+      "2. Return Updated List"
+    ],
+    "calls": []
+  },
+  {
+    "file": "board-queue.md",
+    "operation": "Plan Board Queue",
+    "anchor": "plan-board-queue",
+    "steps": [
+      "1. Compute Queue Calls",
+      "2. Return Queue Evidence"
+    ],
+    "calls": [
+      "Apply [Compute Board Queue](#compute-board-queue)",
+      "Apply [Read Task Lanes](lane.md#read-task-lanes)",
+      "Apply [Check Unit Lanes](lane.md#check-unit-lanes)"
+    ]
+  },
+  {
+    "file": "board-queue.md",
+    "operation": "Compute Board Queue",
+    "anchor": "compute-board-queue",
+    "steps": [
+      "1. Compute Board Queue"
+    ],
+    "calls": []
+  }
+]

@@ -1,0 +1,3433 @@
+diff --git a/skills/work-planner/artifacts/agent-review.md b/skills/work-planner/artifacts/agent-review.md
+index a11384343..74868145e 100644
+--- a/skills/work-planner/artifacts/agent-review.md
++++ b/skills/work-planner/artifacts/agent-review.md
+@@ -4,25 +4,66 @@ Published evidence of an agent's review of one integration diff, an epic's revie
+ 
+ ## Operations
+ 
+-### *Produce* Agent Review
++### Produce Agent Review
+ 
+ A review record for the exact integration revision.
+ 
+-**Inputs:** Fresh pull request metadata, checkout, the criteria the pull request delivers, validation evidence and the planning record destination.
++**Inputs:** [Review Inputs](#review-inputs).
+ 
+-1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
+-2. Record findings with severity and disposition. Fix each finding [Review Record](#review-record) requires fixed on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.
+-3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
+-4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
++**Outputs:** [Review Record](#review-record).
+ 
+-### *Check* Agent Review
++#### 1. Review Complete Integration Diff
++
++Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.
++
++#### 2. Resolve Review Findings
++
++Record findings with severity and disposition. A nonblocking deferred finding names its ticket.
++
++When the findings require fixes under [Review Record](#review-record):
++- Fix every required finding on the reviewed branch.
++- Run appropriate regression checks.
++- Apply [Produce Agent Review](#produce-agent-review) with fresh pull request metadata for the resulting head, the same checkout, criteria, updated validation evidence and planning destination, and return that review’s record.
++
++#### 3. Write Revision Review Record
++
++Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.
++
++#### 4. Return Review Evidence
++
++Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.
++
++### Check Agent Review
+ 
+ The current review's handoff eligibility.
+ 
+-**Inputs:** Fresh REST pull request JSON and the published JSON review records fetched from the linked planning record.
++**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).
++
++**Outputs:** [Review Eligibility](#review-eligibility).
++
++#### 1. Validate Published Review Evidence
++
++Apply [Validate Agent Review](#validate-agent-review) with those files. Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
+ 
+-1. Run [Validate Agent Review](#validate-agent-review) with those files. Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
+-2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that leaves the record no longer current, as [Review Record](#review-record) states, requires another review.
++#### 2. Return Checked Revision
++
++Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that invalidates the record under [Review Record](#review-record) requires another review.
++
++### Validate Agent Review
++
++Checks published review evidence against a freshly fetched integration pull request.
++
++**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).
++
++**Outputs:** [Review Eligibility](#review-eligibility).
++
++#### 1. Validate Agent Review
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -32,14 +73,22 @@ Each record contains `pull_request` (the full GitHub URL), `head` and `base` (fu
+ 
+ Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.
+ 
+-## Commands
++### Review Inputs
+ 
+-### Validate Agent Review
++The fresh pull request metadata, checkout, delivered criteria, validation evidence and planning-record destination supplied for review.
+ 
+-Checks published review evidence against a freshly fetched integration pull request.
++### Pull Request Record
++
++One freshly fetched complete REST pull request JSON record, at its supplied local file path.
++
++### Published Reviews
++
++The JSON list of published review records fetched from the linked planning record, at its supplied local path.
++
++### Review Eligibility
++
++The validation result, checked head and target SHAs, and any missing, stale or unresolved evidence.
+ 
+-**Inputs:** REST pull request JSON and a JSON list of published review records.
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py --pr '<pull-request-json-file>' --agent-reviews '<review-records-file>'
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/architecture-overview.md b/skills/work-planner/artifacts/architecture-overview.md
+index 4b255f9c1..f7933d05e 100644
+--- a/skills/work-planner/artifacts/architecture-overview.md
++++ b/skills/work-planner/artifacts/architecture-overview.md
+@@ -4,19 +4,32 @@ The architecture overview explains one pull request's changes to the engineer wh
+ 
+ ## Operations
+ 
+-### *Populate* Architecture Overview
++### Populate Architecture Overview
+ 
+ One architecture overview from supplied measurements.
+ 
+-**Inputs:** Measured structure and flows, pull request head, code permalinks and the output path.
++**Inputs:** [Measurements](#measurements), [Pull Request Head](#pull-request-head), [Overview File](#overview-file).
+ 
+-1. Take the graph measurements supplied by the caller and check the proposed diagrams.
+-   - The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
+-2. Populate the overview from the [Template](#template) at the supplied output path.
+-   - All populated fields must meet [Fields](#fields).
+-3. Pin each code reference.
+-   - Each reference must meet [Code References](#code-references).
+-4. Return the file for the caller to register in its planning record.
++**Outputs:** [Overview File](#overview-file).
++
++#### 1. Check Measured Diagrams
++
++Take the graph measurements supplied by the caller and check the proposed diagrams.
++- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
++
++#### 2. Populate Overview File
++
++Populate the overview from the [Template](#template) at the supplied output path.
++- All populated fields must meet [Fields](#fields).
++
++#### 3. Pin Code References
++
++Pin each code reference.
++- Each reference must meet [Code References](#code-references).
++
++#### 4. Return Overview File
++
++Return the file for the caller to register in its planning record.
+ 
+ ## Fields
+ 
+@@ -163,3 +176,15 @@ About two hundred lines, diagrams counted.
+ ### Sections
+ 
+ Summary, Structure, Behaviour, What Changed and Reading Order are always present. Risks and Watch Points, and References, are deleted when they have nothing to say.
++
++### Measurements
++
++The supplied measured component relationships, symbols and ordered flows for the change.
++
++### Pull Request Head
++
++The supplied full head commit and code permalinks pinned to that commit.
++
++### Overview File
++
++The supplied local output path and the overview contents at that path. The file is absent until populated.
+diff --git a/skills/work-planner/artifacts/board-delivery.md b/skills/work-planner/artifacts/board-delivery.md
+index 5c983a529..138e56105 100644
+--- a/skills/work-planner/artifacts/board-delivery.md
++++ b/skills/work-planner/artifacts/board-delivery.md
+@@ -14,68 +14,164 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Plan* Board Changes
++### Plan Board Changes
+ 
+ The board changes implied by supplied delivery state.
+ 
+-**Inputs:** Initiative JSON, epic and task records, fresh REST pull request records, published agent review records fetched from their linked planning records, complete issue-link snapshot, board identity, fields and items, output directory, assignee login and resolved off-board issue files.
++**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Task Records](#task-records), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Issue Link Snapshot](#issue-link-snapshot), [Board Identity](#board-identity), [Board Fields](#board-fields), [Board Items](#board-items), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues).
+ 
+-1. Require the complete pull-request issue-link snapshot; refuse the computation without it.
+-2. Supply the published agent review records linked from each open epic integration pull request; retain missing records as handoff blockers. Run [Compute Board Changes](#compute-board-changes), mapping the supplied records and board context to its parameters.
+-3. Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state.
++**Outputs:** [Board Changes](#board-changes).
+ 
+-### *Record* Epic Review
++#### 1. Require Complete Link Snapshot
++
++Require the complete pull-request issue-link snapshot; refuse the computation without it.
++
++#### 2. Compute Delivery Calls
++
++Supply the published agent review records linked from each open epic integration pull request; retain missing records as handoff blockers. Apply [Compute Board Changes](#compute-board-changes), mapping the supplied records and board context to its parameters.
++
++#### 3. Return Proposed Changes
++
++Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state.
++
++### Record Epic Review
+ 
+ One epic's review status on its board.
+ 
+-**Inputs:** Epic issue identity, board identity, requested status (In Review or In Progress), fresh pull request records, published agent review records and output paths.
++**Inputs:** [Review Selection](#review-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Output Paths](#output-paths).
++
++**Outputs:** [Confirmed Statuses](#confirmed-statuses).
++
++#### 1. Read Board State
++
++Apply [Read Board State](board.md#read-board-state) for the supplied board to obtain its items and Status field.
++
++#### 2. Read Configuration and Assignee
++
++Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
++- Apply [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.
++
++#### 3. Locate Epic Item
+ 
+-1. Run [Read Board State](board.md#read-board-state) for the supplied board to obtain its items and Status field.
+-2. Run [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.
+-   - Run [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.
+-3. Match the epic's issue to its board item.
+-   - Return an absent item as a finding and stop. The status write below needs it.
+-4. Run [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).
+-   - Repeat the write and read the item again when it still shows the preceding status. The item list can lag a write.
+-5. Return the confirmed status or the discrepancy left for the caller.
++Match the epic's issue to its board item.
++- Return an absent item as a finding and stop. The status write below needs it.
+ 
+-### *Record* Board Delivery
++#### 4. Write and Confirm Review Status
++
++Apply [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).
++- When the item still shows the preceding status, Apply [Record Dispatch Status](#record-dispatch-status) with the same review or progress identity and supplied pull request, review and board evidence. Confirm the item through Apply [Read Board Configuration](board.md#read-board-configuration) with the same item identity. The item list can lag a write.
++
++#### 5. Return Confirmed Status
++
++Return the confirmed status or the discrepancy left for the caller.
++
++### Record Board Delivery
+ 
+ The board's status and assignees after its issues record delivery.
+ 
+-**Inputs:** Saved initiative, epic and task identities, board identity, output directory, and the repositories the board's issues live in.
+-
+-1. Read the issues, the board and its delivery records.
+-   - Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
+-   - Run [Read Board State](board.md#read-board-state) for the selected board.
+-   - Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.
+-   - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
+-   - Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
+-   - Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.
+-   - Run [Read Board Assignee](board.md#read-board-assignee) for the assignment login.
+-   - Pass these returned snapshots to Plan Board Changes.
+-2. Run [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
+-   - Fetch each unresolved issue.
+-   - Pass the fetched files to Plan Board Changes as resolved off-board issue files.
+-3. Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
+-   - Run [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and changed item identity to confirm its current status.
+-   - If that item still shows the preceding status:
+-     - Repeat its write.
+-     - Repeat the same item read. The item list can lag a write.
+-4. Fetch the issues and items again.
+-   - Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
+-   - Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
+-   - Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
+-
+-### *Record* Dispatch Status
++**Inputs:** [Saved Identities](#saved-identities).
++
++**Outputs:** [Confirmed Statuses](#confirmed-statuses).
++
++#### 1. Read Current Delivery Evidence
++
++Read the issues, the board and its delivery records.
++- Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.
++- Apply [Read Board State](board.md#read-board-state) for the selected board.
++- Apply [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.
++- Apply [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.
++- Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.
++- Apply [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.
++- Apply [Read Board Assignee](board.md#read-board-assignee) for the assignment login.
++- Retain these returned snapshots for the following computation.
++
++#### 2. Plan Delivery Changes
++
++Apply [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.
++- Fetch each unresolved issue.
++- Apply [Plan Board Changes](#plan-board-changes) again with the same initiative, epic, task, pull request, review, link and board snapshots, output directory and assignee, adding the fetched files as resolved off-board issue files.
++
++#### 3. Apply and Confirm Calls
++
++Run each emitted call, including the assignee calls, which act on the issue rather than the board item.
++- Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and changed item identity to confirm its current status.
++
++If that item still shows the preceding status:
++- Repeat its emitted write call.
++- Apply [Read Board Configuration](board.md#read-board-configuration) with the same board identity, output paths and changed item identity. The item list can lag a write.
++
++#### 4. Recompute Refreshed Board
++
++Fetch the issues and items again.
++- Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.
++- Apply [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.
++- Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.
++
++### Record Dispatch Status
+ 
+ The task and epic statuses owned by a delivery dispatch.
+ 
+-**Inputs:** Board items, board identity, field definitions, output directory, assignee login, held task and epic issue numbers for In Progress, and complete epic numbers for In Review, fresh pull request records and published agent review records.
++**Inputs:** [Board Items](#board-items), [Board Identity](#board-identity), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Dispatch Selection](#dispatch-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews).
++
++**Outputs:** [Confirmed Statuses](#confirmed-statuses).
++
++#### 1. Compute Dispatch Calls
++
++Apply [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities, board evidence, fresh pull request records and published agent review records. A missing or failing agent review blocks the In Review write.
++
++#### 2. Apply and Confirm Calls
++
++Run each returned call.
++- Apply [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and each affected item identity to confirm the write.
++
++#### 3. Return Saved Statuses
++
++Return the saved statuses or unresolved discrepancies.
++
++### Compute Board Changes
++
++Computes membership, Status and assignee calls from supplied delivery evidence.
++
++**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Task Records](#task-records), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Issue Link Snapshot](#issue-link-snapshot), [Board Identity](#board-identity), [Board Fields](#board-fields), [Board Items](#board-items), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues).
++
++**Outputs:** [Board Changes](#board-changes).
++
++#### 1. Compute Board Changes
++
++Run the following command with the supplied inputs.
++
++- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete link snapshot. `--agent-reviews` supplies the published review records fetched from the open epic pull requests; absent evidence holds those epics In Progress.
++- `--board`, `--fields` and `--items` identify the current board state.
++- `--out` receives the call files; `--assignee` is the supplied login.
++- `--others` supplies each resolved dependency issue.
++
++Pass each epic or task JSON file as a separate argument after its corresponding flag.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record)' --epics '[**&lt;epic-json-file&gt;**](#epic-records)' --tasks '[**&lt;task-json-file&gt;**](#task-records)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --items '[**&lt;board-items-file&gt;**](#board-items)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board 'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9' --fields fields.json --items items.json --out board/ --assignee m2ux
++</pre></big>
++
++### Compute Dispatch Status
++
++Renders board calls within the dispatch jurisdiction.
++
++**Inputs:** [Board Items](#board-items), [Board Identity](#board-identity), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Dispatch Selection](#dispatch-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews).
++
++**Outputs:** [Board Changes](#board-changes).
++
++#### 1. Compute Dispatch Status
+ 
+-1. Run [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities, board evidence, fresh pull request records and published agent review records. A missing or failing agent review blocks the In Review write.
+-2. Apply each returned call and confirm each affected item through [Read Board Configuration](board.md#read-board-configuration).
+-3. Return the saved statuses or unresolved discrepancies.
++Run the following command with the supplied inputs.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '[**&lt;board-items-file&gt;**](#board-items)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)' --progress '[**&lt;held-issue-numbers&gt;**](#dispatch-selection)' --review '[**&lt;complete-epic-numbers&gt;**](#dispatch-selection)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews)'
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -105,37 +201,78 @@ The result contains calls for issues to add, items to remove, Status to set and
+ 
+ Unresolved issue references identify dependency records the caller must supply before a complete result. A newly added issue receives its status on a subsequent pass using refreshed items.
+ 
+-## Commands
++### Resolved Issues
+ 
+-### Compute Board Changes
++The supplied resolved off-board dependency issue records, each at its local file path.
+ 
+-Computes membership, Status and assignee calls from supplied delivery evidence.
++### Review Selection
+ 
+-**Inputs:** Initiative JSON, epic and task JSON records, pull request and complete issue-link snapshots, board identity, board fields and items, output directory, assignee login and resolved off-board issue records.
++The epic issue identity, board identity and requested Status: In Review or In Progress.
+ 
+-- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete link snapshot. `--agent-reviews` supplies the published review records fetched from the open epic pull requests; absent evidence holds those epics In Progress.
+-- `--board`, `--fields` and `--items` identify the current board state.
+-- `--out` receives the call files; `--assignee` is the supplied login.
+-- `--others` supplies each resolved dependency issue.
++### Saved Identities
+ 
+-Pass each epic or task JSON file as a separate argument after its corresponding flag.
++The saved initiative, epic and task identities, board identity, output directory and repositories the board issues live in.
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board.py '<initiative-json-file>' --epics '<epic-json-file>' --tasks '<task-json-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --agent-reviews '<review-records-file>' --board '<board-identity>' --fields '<board-fields-file>' --items '<board-items-file>' --out '<output-directory>' --assignee '<assignee-login>'
+-```
++### Dispatch Selection
+ 
+-**Example:**
++The supplied comma-separated held task and epic issue numbers for In Progress, and complete epic numbers for In Review.
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board.py issue-936.json --epics issue-943.json issue-937.json --tasks issue-637.json --prs prs.json --links links.json --board 'users/<owner>/projectsV2/9' --fields fields.json --items items.json --out board/ --assignee m2ux
+-```
++### Board Changes
+ 
+-### Compute Dispatch Status
++The generated membership, Status and assignee calls and unresolved references.
+ 
+-Renders board calls within the dispatch jurisdiction.
++### Confirmed Statuses
++
++The saved item statuses or unresolved discrepancies returned after item readback.
++
++### Initiative Record
++
++The supplied complete current initiative JSON at its local file path.
++
++### Epic Records
++
++The supplied complete current epic JSON records, each at a separate local file path.
++
++### Task Records
++
++The supplied complete current task issue JSON records, each at a separate local file path.
++
++### Pull Request Records
++
++The supplied freshly fetched complete REST pull request records, one JSON object per nonempty line at the local file path.
++
++### Published Reviews
++
++The JSON list of published agent-review records fetched from their linked planning records, at its local file path.
++
++### Issue Link Snapshot
++
++The supplied complete pull-request issue-link snapshot at its local file path.
++
++### Board Identity
++
++The supplied users/owner/projectsV2/number or orgs/owner/projectsV2/number board identity.
++
++### Board Fields
++
++The supplied board field definitions at their local snapshot path.
++
++### Board Items
++
++The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
++
++### Output Directory
++
++The supplied local directory receiving generated calls.
++
++### Output Paths
++
++The supplied local paths for fetched evidence and generated calls.
++
++### Assignee Login
++
++The supplied login assigned to work from Ready.
+ 
+-**Inputs:** Board items, board identity, fields, output directory, assignee, comma-separated held task and epic numbers, and comma-separated complete epic numbers, fresh pull request records and published agent review records.
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --board '<board-identity>' --fields '<board-fields-file>' --out '<output-directory>' --assignee '<assignee-login>' --progress '<held-issue-numbers>' --review '<complete-epic-numbers>' --prs '<pull-request-records-file>' --agent-reviews '<review-records-file>'
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/board-queue.md b/skills/work-planner/artifacts/board-queue.md
+index 0baad5653..6b4178c20 100644
+--- a/skills/work-planner/artifacts/board-queue.md
++++ b/skills/work-planner/artifacts/board-queue.md
+@@ -15,19 +15,58 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Plan* Board Queue
++### Plan Board Queue
+ 
+ Derives the queue from supplied board and delivery snapshots and confirmed decisions.
+ 
+-**Inputs:** Board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login, output directory, resolved off-board issue files and confirmed unplanned initiative identities. The caller supplies the delivery state.
++**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives).
+ 
+-1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
+-   - The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.
+-   - The queue must meet [Fields](#fields).
+-   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+-2. Return the queue to the caller.
+-   - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
+-   - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
++**Outputs:** [Queue Result](#queue-result).
++
++#### 1. Compute Queue Calls
++
++Apply [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
++- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes) with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes) with each complete free unit derived after queue placement.
++- The queue must meet [Fields](#fields).
++- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
++
++#### 2. Return Queue Evidence
++
++Return the queue to the caller.
++- Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
++- The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
++
++### Compute Board Queue
++
++Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
++
++**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives), [Status Scope](#status-scope).
++
++**Outputs:** [Queue Result](#queue-result).
++
++#### 1. Compute Board Queue
++
++Run the following command with the supplied inputs.
++
++- `--items` is the board's items with Status.
++- `--prs` is the pull requests that name an initiative or a hot-fix.
++- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.
++- `--board` is the [board identity](#board-identity).
++- `--fields` is the board's fields.
++- `--out` is the directory the calls are written to.
++- `--assignee` is the login assigned to work from Ready.
++- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
++- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives). Repeatable.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -134,30 +173,46 @@ Invalid lane assignments leave the unit report incomplete and the run exits nonz
+ 
+ A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.
+ 
+-## Commands
++### Resolved Issues
+ 
+-### Compute Board Queue
++The supplied off-board dependency issue files, each containing its complete issue record.
+ 
+-Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
++### Unplanned Initiatives
+ 
+-**Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
++The confirmed initiatives left with no priority, each supplied as an issue number or `<owner>/<repo>#<issue-number>`.
+ 
+-- `--items` is the board's items with Status.
+-- `--prs` is the pull requests that name an initiative or a hot-fix.
+-- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.
+-- `--board` is the [board identity](#board-identity).
+-- `--fields` is the board's fields.
+-- `--out` is the directory the calls are written to.
+-- `--assignee` is the login assigned to work from Ready.
+-- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
+-- `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.
++### Status Scope
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --board '<board-identity>' --fields '<board-fields-file>' --out '<output-directory>' --assignee '<assignee-login>'
+-```
++The permitted Status scope supplied for queue computation.
+ 
+-**Example:**
++### Queue Result
++
++The proposed calls, report lines and unresolved references, retaining pending decisions, missing evidence and invalid assignments.
++
++### Board Items
++
++The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.
++
++### Pull Request Records
++
++The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.
++
++### Issue Link Snapshot
++
++The complete supplied pull-request issue-link snapshot at its local JSON path.
++
++### Board Fields
++
++The supplied board-field definitions at their local snapshot path.
++
++### Output Directory
++
++The supplied local directory receiving proposed calls.
++
++### Assignee Login
++
++The supplied login assigned to work from Ready.
++
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/<owner>/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/board.md b/skills/work-planner/artifacts/board.md
+index 93612f4c0..8186b267d 100644
+--- a/skills/work-planner/artifacts/board.md
++++ b/skills/work-planner/artifacts/board.md
+@@ -11,329 +11,614 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Select* Project Board
++### Select Project Board
+ 
+ The theme or proposals board the request names.
+ 
+-**Inputs:** Board owner and either a theme name or the proposals-board selection.
++**Inputs:** [Board Owner](#board-owner), [Board Selection](#board-selection).
+ 
+-1. Run [Find Theme Board](#find-theme-board) for the named theme, or [Find Proposals Board](#find-proposals-board) when the request names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
+-2. Return a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
+-3. Return the selected board number, or an absent-board result for [Copy Project Board](#copy-project-board). Work one board at a time.
++**Outputs:** [Selected Board](#selected-board).
+ 
+-### *Copy* Project Board
++#### 1. Find Requested Board
++
++Apply [Find Theme Board](#find-theme-board) for the named theme, or Apply [Find Proposals Board](#find-proposals-board) when the request names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).
++
++#### 2. Return Missing Selection
++
++Return a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.
++
++#### 3. Return Selected Board
++
++Return the selected board number, or an absent-board result for the caller’s creation path. Work one board at a time.
++
++### Copy Project Board
+ 
+ A missing theme board, or a missing proposals board.
+ 
+-**Inputs:** Board owner, repository, selected board kind, theme title and originating proposal record when applicable.
++**Inputs:** [Board Owner](#board-owner), [Repository](#repository), [Selected Kind](#selected-kind).
++
++**Outputs:** [Copied Board](#copied-board).
+ 
+-1. When no open board has the [proposals title](../configuration.md#proposals-board), run [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).
+-2. When the selected theme board is absent:
+-   - Run [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.
+-   - Require the new theme's label and board before an initiative takes that theme.
++#### 1. Create Absent Proposals Board
+ 
+-### *Create* Proposals Board
++When no open board has the [proposals title](../configuration.md#proposals-board), Apply [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).
++
++#### 2. Create Absent Theme Board
++
++When the selected theme board is absent:
++- Apply [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.
++- Require the new theme's label and board before an initiative takes that theme.
++
++### Create Proposals Board
+ 
+ A new proposals board linked to the supplied repository.
+ 
+-**Inputs:** Board owner and repository.
++**Inputs:** [Board Owner](#board-owner), [Repository](#repository).
++
++**Outputs:** [Copied Board](#copied-board).
++
++#### 1. Find Proposals Template
++
++Apply [Find Board Template](#find-board-template) with the owner and the exact [proposals-template title](../configuration.md#proposals-board).
++
++#### 2. Select Template Source
+ 
+-1. Run [Find Board Template](#find-board-template) with the owner and the exact [proposals-template title](../configuration.md#proposals-board).
+-2. Use the returned number as the copy source.
+-3. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
+-4. Retain the new board number. The copy meets [Proposals](#proposals).
+-5. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
+-6. Return the new board number after linking succeeds.
++Use the returned number as the copy source.
+ 
+-### *Create* Theme Board
++#### 3. Copy Proposals Template
++
++Apply [Copy Board Template](#copy-board-template) with that template number, the owner and the [proposals title](../configuration.md#proposals-board).
++
++#### 4. Retain New Board Number
++
++Retain the new board number. The copy meets [Proposals](#proposals).
++
++#### 5. Link Copied Board
++
++Apply [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
++
++#### 6. Return Linked Board
++
++Return the new board number after linking succeeds.
++
++### Create Theme Board
+ 
+ A new theme board linked to the supplied repository.
+ 
+-**Inputs:** Board owner, repository, theme title and originating proposal record when applicable.
++**Inputs:** [Board Owner](#board-owner), [Repository](#repository), [Theme Provenance](#theme-provenance).
++
++**Outputs:** [Copied Board](#copied-board).
++
++#### 1. Check Theme Provenance
++
++Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.
++
++#### 2. Find Theme Template
++
++Apply [Find Board Template](#find-board-template) with the owner and the exact [theme-template title](../configuration.md#theme-boards).
+ 
+-1. Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.
+-2. Run [Find Board Template](#find-board-template) with the owner and the exact [theme-template title](../configuration.md#theme-boards).
+-3. Use the returned number as the copy source.
+-4. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
+-5. Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
+-6. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
+-7. Return the new board number after linking succeeds.
++#### 3. Select Template Source
+ 
+-### *Place* Issue on Board
++Use the returned number as the copy source.
++
++#### 4. Copy Theme Template
++
++Apply [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).
++
++#### 5. Retain New Board Number
++
++Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).
++
++#### 6. Link Copied Board
++
++Apply [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.
++
++#### 7. Return Linked Board
++
++Return the new board number after linking succeeds.
++
++### Place Issue on Board
+ 
+ One issue's membership and initial status.
+ 
+-**Inputs:** Board owner and number, issue id and selected initial status.
++**Inputs:** [Board Coordinates](#board-coordinates), [Issue Id](#issue-id), [Initial Status](#initial-status).
++
++**Outputs:** [Board Configuration](#board-configuration).
++
++#### 1. Read Status Options
++
++Apply [Fetch Board Fields](#fetch-board-fields) for the Status options, using the caller's supplied board and issue identities.
++
++#### 2. Add Supplied Issue
++
++Apply [Add Issue to Board](#add-issue-to-board) with the issue id.
+ 
+-1. Run [Fetch Board Fields](#fetch-board-fields) for the Status options, using the caller's supplied board and issue identities.
+-2. Run [Add Issue to Board](#add-issue-to-board) with the issue id.
+-3. Run [Set Item Status](#set-item-status) with the caller's selected status and the matching field and option ids.
+-4. Run [Fetch Board Item](#fetch-board-item) for the saved item.
++#### 3. Set Initial Status
+ 
+-### *Read* Board State
++Apply [Set Item Status](#set-item-status) with the caller's selected status and the matching field and option ids.
++
++#### 4. Read Saved Item
++
++Apply [Fetch Board Item](#fetch-board-item) for the saved item.
++
++### Read Board State
+ 
+ The selected board's items and status fields.
+ 
+-**Inputs:** Existing board owner and number, as [Select Project Board](#select-project-board) or [Copy Project Board](#copy-project-board) returns them, whether the caller ran that operation or carries its result.
++**Inputs:** [Board Coordinates](#board-coordinates).
+ 
+-1. Run [Find Status Field](#find-status-field) for the board number.
+-2. Run [Fetch Board Items with Status](#fetch-board-items-with-status), passing that field id and board number.
+-3. Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller.
++**Outputs:** [Board State](#board-state).
+ 
+-### *Read* Board Assignee
++#### 1. Locate Board Status Field
+ 
+-The authenticated login available for board assignments.
++Apply [Find Status Field](#find-status-field) for the board number.
+ 
+-**Inputs:** Authenticated repository access.
++#### 2. Fetch Complete Board Items
+ 
+-1. Run [Find User](#find-user).
+-2. Return its login for the caller's assignment decisions.
++Apply [Fetch Board Items with Status](#fetch-board-items-with-status), passing that field id and board number.
+ 
+-### *Read* Board Configuration
++#### 3. Return Board State
+ 
+-One board's field definitions and requested item state.
++Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller.
+ 
+-**Inputs:** Board owner and number, output paths and optional item identity.
++### Read Board Assignee
+ 
+-1. Run [Fetch Board Fields](#fetch-board-fields) for the supplied board.
+-2. When a single item is requested for write confirmation, run [Fetch Board Item](#fetch-board-item). A list snapshot may lag a write.
+-3. Return the field definitions and requested current item.
++The authenticated login available for board assignments.
+ 
+-### *Locate* Project Board
++**Inputs:** [Authenticated Access](#authenticated-access).
+ 
+-The board identity matching a supplied purpose or theme.
++**Outputs:** [Assignee Login](#assignee-login).
+ 
+-**Inputs:** Owner and proposals-board purpose or theme title.
++#### 1. Find Authenticated User
+ 
+-1. Run [Find Proposals Board](#find-proposals-board) for proposals, or [Find Theme Board](#find-theme-board) for a theme.
+-2. Return the identity or an absent-board finding for the caller's selection or creation path.
++Apply [Find User](#find-user).
+ 
+-## Fields
++#### 2. Return Assignment Login
+ 
+-### Themes
++Return its login for the caller's assignment decisions.
+ 
+-Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
++### Read Board Configuration
+ 
+-Project examples are in [Themes](../configuration.md#themes).
++One board's field definitions and requested item state.
+ 
+-### One Theme
++**Inputs:** [Board Coordinates](#board-coordinates), [Output Files](#output-files), [Optional Item](#optional-item).
+ 
+-An initiative carries one `theme:*` label, and each of its epics carries the same one.
++**Outputs:** [Board Configuration](#board-configuration).
+ 
+-### One Board Per Theme
++#### 1. Read Board Fields
+ 
+-- A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
+-- It is linked to the repository.
+-- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
++Apply [Fetch Board Fields](#fetch-board-fields) for the supplied board.
+ 
+-### Repositories
++#### 2. Read Requested Item
+ 
+-A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.
++When a single item is requested for write confirmation, Apply [Fetch Board Item](#fetch-board-item). A list snapshot may lag a write.
+ 
+-### Assignees
++#### 3. Return Current Configuration
+ 
+-An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
++Return the field definitions and requested current item.
+ 
+-### Standalone Issues
++### Locate Project Board
+ 
+-A standalone issue sits on no board.
++The board identity matching a supplied purpose or theme.
+ 
+-### Proposals
++**Inputs:** [Board Owner](#board-owner), [Board Selection](#board-selection).
+ 
+-- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
+-- **Suggested.**
+-  Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
+-- **Considering.**
+-  Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
+-- **Approved.**
+-  Qualified to become an initiative. The assignee is the user.
+-- **Held.**
+-  Not now. It stays on the board, with no assignee.
+-- **Declined.**
+-  It will not become an initiative. It has no assignee.
++**Outputs:** [Selected Board](#selected-board).
++
++#### 1. Find Requested Purpose
++
++Apply [Find Proposals Board](#find-proposals-board) for proposals, or Apply [Find Theme Board](#find-theme-board) for a theme.
++
++#### 2. Return Matching Board
+ 
+-## Commands
++Return the identity or an absent-board finding for the caller's selection or creation path.
+ 
+ ### Find Board Template
+ 
+ Prints the number of the open board with the supplied exact template title.
+ 
+-**Inputs:** Board owner and template title.
++**Inputs:** [Board Owner](#board-owner), [Template Selection](#template-selection).
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "<template-title>") | .number'
+-```
++**Outputs:** [Template Selection](#template-selection).
++
++#### 1. Find Board Template
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "[**&lt;template-title&gt;**](#template-selection)") | .number'
++</pre></big>
+ 
+ ### Copy Board Template
+ 
+ Copies the supplied template into a new open board with the supplied title and prints its number.
+ 
+-**Inputs:** Board owner, template board number and new board title.
++**Inputs:** [Board Owner](#board-owner), [Template Selection](#template-selection), [Copy Title](#copy-title).
++
++**Outputs:** [Copied Board](#copied-board).
++
++#### 1. Copy Board Template
++
++Run the following command with the supplied inputs.
+ 
+ - The copy's JSON is one project; `.number` identifies the new board.
+ 
+-```bash
+-gh project copy '<template-number>' --source-owner '<owner>' --target-owner '<owner>' --title '<board-title>' --format json --jq .number
+-```
++<big><pre>
++gh project copy '[**&lt;template-number&gt;**](#template-selection)' --source-owner '[**&lt;owner&gt;**](#board-owner)' --target-owner '[**&lt;owner&gt;**](#board-owner)' --title '[**&lt;board-title&gt;**](#copy-title)' --format json --jq .number
++</pre></big>
+ 
+ ### Link Board to Repository
+ 
+ Links one board to the supplied repository.
+ 
+-**Inputs:** Board owner, board number and repository.
++**Inputs:** [Board Coordinates](#board-coordinates), [Repository](#repository).
++
++**Outputs:** [Link Result](#link-result).
+ 
+-```bash
+-gh project link '<board-number>' --owner '<owner>' --repo '<repo>'
+-```
++#### 1. Link Board to Repository
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh project link '[**&lt;board-number&gt;**](#board-coordinates)' --owner '[**&lt;owner&gt;**](#board-owner)' --repo '[**&lt;repo&gt;**](#repository)'
++</pre></big>
+ 
+ ### Find Proposals Board
+ 
+ Prints the number of the open [proposals board](../configuration.md#proposals-board).
+ 
+-**Inputs:** Board owner.
++**Inputs:** [Board Owner](#board-owner).
++
++**Outputs:** [Selected Board](#selected-board).
++
++#### 1. Find Proposals Board
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title == "Proposals") | .number'
+-```
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title == "Proposals") | .number'
++</pre></big>
+ 
+ ### Add Issue to Board
+ 
+-Adds the caller-supplied issue id to a board and prints the new item's id. The input is the issue id, not its number.
++Adds the caller-supplied issue to a board and prints the new item's id.
++
++**Inputs:** [Board Coordinates](#board-coordinates), [Issue Id](#issue-id).
++
++**Outputs:** [Membership Result](#membership-result).
+ 
+-**Inputs:** Board owner and number, and issue id.
++#### 1. Add Issue to Board
+ 
+-```bash
+-gh api --method POST 'users/<owner>/projectsV2/<board-number>/items' -f type=Issue -F 'id=<issue-id>' --jq .id
+-```
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items' -f type=Issue -F 'id=[**&lt;issue-id&gt;**](#issue-id)' --jq .id
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --method POST 'users/<owner>/projectsV2/13/items' -f type=Issue -F id=3040123456 --jq .id
+-```
++<big><pre>
++gh api --method POST 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items' -f type=Issue -F id=3040123456 --jq .id
++</pre></big>
+ 
+ ### Set Item Status
+ 
+ Sets one board item's Status.
+ 
+-**Inputs:** Board owner and number, item id, and input file containing the Status field id and selected option id.
++**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates), [Status Input File](#status-input-file).
++
++**Outputs:** [Membership Result](#membership-result).
++
++#### 1. Set Item Status
++
++Run the following command with the supplied inputs.
+ 
+-The input body names the Status field id and option id from [Fetch Board Fields](#fetch-board-fields): `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
++The input body names the Status field id and option id from the fetched board fields: `{"fields":[{"id":<status-field-id>,"value":"<status-option-id>"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.
+ 
+ **Example payload:** `{"fields":[{"id":419167630,"value":"OPTION"}]}`.
+ 
+-```bash
+-gh api --method PATCH 'users/<owner>/projectsV2/<board-number>/items/<item-id>' --input '<status-input-file>' --jq .id
+-```
++<big><pre>
++gh api --method PATCH 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)' --input '[**&lt;status-input-file&gt;**](#status-input-file)' --jq .id
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --method PATCH 'users/<owner>/projectsV2/13/items/1001' --input status-backlog.json --jq .id
+-```
++<big><pre>
++gh api --method PATCH 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/13/items/1001' --input status-backlog.json --jq .id
++</pre></big>
+ 
+ ### Remove Board Item
+ 
+ Removes one item from a board, leaving its issue as it stands.
+ 
+-**Inputs:** Board owner and number, and the item id [Read Board State](#read-board-state) returns.
++**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates).
++
++**Outputs:** [Membership Result](#membership-result).
++
++#### 1. Remove Board Item
++
++Run the following command with the supplied inputs.
+ 
+-```bash
+-gh api --method DELETE 'users/<owner>/projectsV2/<board-number>/items/<item-id>'
+-```
++<big><pre>
++gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --method DELETE 'users/<owner>/projectsV2/9/items/1001'
+-```
++<big><pre>
++gh api --method DELETE 'users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001'
++</pre></big>
+ 
+ ### Fetch Board Fields
+ 
+ Saves a board's fields.
+ 
+-**Inputs:** Board owner, board number and destination file.
++**Inputs:** [Board Coordinates](#board-coordinates), [Board Fields File](#board-fields-file).
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/<board-number>/fields?per_page=100" > '<board-fields-file>'
+-```
++**Outputs:** [Board Configuration](#board-configuration).
++
++#### 1. Fetch Board Fields
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" > '[**&lt;board-fields-file&gt;**](#board-fields-file)'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/9/fields?per_page=100" > fields.json
+-```
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100" > fields.json
++</pre></big>
+ 
+ ### Find Theme Board
+ 
+ Prints the number of the open board for one theme, by its theme name after any proposal designator.
+ 
+-**Inputs:** Board owner and theme name.
++**Inputs:** [Board Owner](#board-owner), [Theme Name](#theme-name).
++
++**Outputs:** [Selected Board](#selected-board).
++
++#### 1. Find Theme Board
++
++Run the following command with the supplied inputs.
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | sub("^\\[P[0-9]+\\] "; "") | startswith("<theme-name>: ")) | .number'
+-```
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("[**&lt;theme-name&gt;**](#theme-name): ")) | .number'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2?per_page=100" --jq '.[] | select(.closed | not) | select(.title | sub("^\\[P[0-9]+\\] "; "") | startswith("Canon: ")) | .number'
+-```
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2?per_page=100" --jq '.&#91;&#93; | select(.closed | not) | select(.title | sub("^\\&#91;P&#91;0-9&#93;+\\&#93; "; "") | startswith("Canon: ")) | .number'
++</pre></big>
+ 
+ ### Find Status Field
+ 
+ Prints the id of a board's Status field.
+ 
+-**Inputs:** Board owner and number.
++**Inputs:** [Board Coordinates](#board-coordinates).
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/<board-number>/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
+-```
++**Outputs:** [Status Field](#status-field).
++
++#### 1. Find Status Field
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/fields?per_page=100" --jq '.&#91;&#93; | select(.name == "Status") | .id'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/9/fields?per_page=100" --jq '.[] | select(.name == "Status") | .id'
+-```
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/fields?per_page=100" --jq '.&#91;&#93; | select(.name == "Status") | .id'
++</pre></big>
+ 
+ ### Fetch Board Items with Status
+ 
+ Saves a board's items with their Status, each carrying its issue whole.
+ 
+-**Inputs:** Board owner and number, Status field id and destination file.
++**Inputs:** [Board Coordinates](#board-coordinates), [Status Field](#status-field), [Board Items File](#board-items-file).
++
++**Outputs:** [Board State](#board-state).
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/<board-number>/items?per_page=100&fields=<status-field-id>" > '<board-items-file>'
+-```
++#### 1. Fetch Board Items with Status
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items?per_page=100&fields=[**&lt;status-field-id&gt;**](#status-field)" > '[**&lt;board-items-file&gt;**](#board-items-file)'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api --paginate "users/<owner>/projectsV2/9/items?per_page=100&fields=419167630" > items.json
+-```
++<big><pre>
++gh api --paginate "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items?per_page=100&fields=419167630" > items.json
++</pre></big>
+ 
+ ### Fetch Board Item
+ 
+ Reads one board item, including its current Status.
+ 
+-**Inputs:** Board owner and number, item id and Status field id.
++**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates), [Status Field](#status-field).
++
++**Outputs:** [Board Configuration](#board-configuration).
+ 
+-```bash
+-gh api "users/<owner>/projectsV2/<board-number>/items/<item-id>?fields=<status-field-id>"
+-```
++#### 1. Fetch Board Item
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/[**&lt;board-number&gt;**](#board-coordinates)/items/[**&lt;item-id&gt;**](#item-coordinates)?fields=[**&lt;status-field-id&gt;**](#status-field)"
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
+-gh api "users/<owner>/projectsV2/9/items/1001?fields=419167630"
+-```
++<big><pre>
++gh api "users/[**&lt;owner&gt;**](#board-owner)/projectsV2/9/items/1001?fields=419167630"
++</pre></big>
+ 
+ ### Find User
+ 
+ Prints the login `gh` runs as, the user assigned to work from Ready on.
+ 
+-**Inputs:** Authenticated repository access.
++**Inputs:** [Authenticated Access](#authenticated-access).
++
++**Outputs:** [Assignee Login](#assignee-login).
++
++#### 1. Find User
+ 
+-```bash
++Run the following command with the supplied inputs.
++
++<big><pre>
+ gh api user --jq .login
+-```
++</pre></big>
++
++## Fields
++
++### Themes
++
++Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.
++
++Project examples are in [Themes](../configuration.md#themes).
++
++### One Theme
++
++An initiative carries one `theme:*` label, and each of its epics carries the same one.
++
++### One Board Per Theme
++
++- A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.
++- It is linked to the repository.
++- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.
++
++### Repositories
++
++A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.
++
++### Assignees
++
++An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.
++
++### Standalone Issues
++
++A standalone issue sits on no board.
++
++### Proposals
++
++- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.
++- **Suggested.**
++  Raised, and nobody has taken it up. A new proposal lands here, with no assignee.
++- **Considering.**
++  Someone is weighing the goal, the evidence and the criteria. That person is the assignee.
++- **Approved.**
++  Qualified to become an initiative. The assignee is the user.
++- **Held.**
++  Not now. It stays on the board, with no assignee.
++- **Declined.**
++  It will not become an initiative. It has no assignee.
++
++### Board Owner
++
++The supplied board owner.
++
++### Board Selection
++
++Either the supplied theme name or the proposals-board selection.
++
++### Board Coordinates
++
++The supplied existing board owner and number.
++
++### Repository
++
++The supplied repository name for the board link.
++
++### Theme Provenance
++
++The supplied theme title and originating proposal record when applicable.
++
++### Selected Kind
++
++The supplied selected board kind, with its theme title and proposal record when applicable.
++
++### Template Selection
++
++The supplied exact board-template title and its returned template number. The number is absent until the lookup succeeds.
++
++### Copy Title
++
++The supplied title for the copied board.
++
++### Selected Board
++
++The selected board number, an absent-board result or a missing-selection result.
++
++### Copied Board
++
++The new board owner and number. The number is absent until the copy succeeds.
++
++### Issue Id
++
++The supplied numeric issue id; it is distinct from the issue number.
++
++### Initial Status
++
++The initial Status selected by the caller.
++
++### Item Coordinates
++
++The supplied board item id and board coordinates.
++
++### Status Field
++
++The supplied Status field id and its option ids.
++
++### Status Input File
++
++The local input file containing the selected Status field and option ids in the exact JSON payload shown in the executing step.
++
++### Output Files
++
++The supplied local destinations for board-field or item snapshots.
++
++### Board State
++
++The returned items with their complete issues and Status, field and item ids, and repositories, retaining unreadable-issue findings.
++
++### Board Configuration
++
++The returned board-field definitions and requested current item state.
++
++### Authenticated Access
++
++The authenticated repository access supplied for the operation.
++
++### Assignee Login
++
++The authenticated login available for issue assignments.
++
++### Membership Result
++
++The added or removed board item id, or the saved Status returned for the item.
++
++### Optional Item
++
++The optional board item identity requested for write confirmation.
++
++### Link Result
++
++The repository link operation result for the supplied board.
++
++### Board Fields File
++
++The supplied local output path for the complete board-field definitions.
++
++### Board Items File
++
++The supplied local output path for the board items with Status and their complete issues.
++
++### Theme Name
++
++The supplied theme name, excluding any originating proposal designator.
+diff --git a/skills/work-planner/artifacts/dependency-graph.md b/skills/work-planner/artifacts/dependency-graph.md
+index 71525e77e..38ac9f93e 100644
+--- a/skills/work-planner/artifacts/dependency-graph.md
++++ b/skills/work-planner/artifacts/dependency-graph.md
+@@ -15,35 +15,143 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Check* Dependencies and Numbering
++### Check Dependencies and Numbering
+ 
+ The task graph and the row numbers it permits, checked and renumbered across the supplied bodies.
+ 
+-**Inputs:** Initiative and epic bodies or local drafts, the work-item file of each task that has one, current pull request records, confirmed numbering maps when any, the caller's change allowance when it has one, and explicitly authorized outside-initiative files.
+-
+-1. Use the supplied local drafts when reviewing unpublished work.
+-   - For published issues, fetch the initiative and each epic body with [Read Tracker Issue](issue.md#read-tracker-issue).
+-   - Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation applies [Check Unit Lanes](lane.md#check-unit-lanes) to the units it derives, using their epic bodies and complete ids.
+-2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.
+-   - Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
+-   - Read tasks for implied consumption edges.
+-   - Answer every open candidate unit as [Joins](#joins) states.
+-   - Account for every contending pair through [Component Contention](#component-contention).
+-   - Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.
+-3. Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
+-   - For a confirmed epic map, run [Renumber Epics](#renumber-epics) with current pull request records and every affected body.
+-   - For a confirmed task map, run [Renumber Tasks](#renumber-tasks) with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
+-   - Re-sort rewritten tables.
+-   - Inspect every reported range.
+-   - Search prose for references the script cannot see.
+-   - Repeat Check Dependencies after each edge or numbering change until it reports no problem.
+-   - Record the printed longest chains and each printed contending pair in the planning record.
+-   - Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering.
++**Inputs:** [Graph Inputs](#graph-inputs).
++
++**Outputs:** [Graph Result](#graph-result).
++
++#### 1. Check Supplied Task Graph
++
++Use the supplied local drafts when reviewing unpublished work.
++- For published issues, Apply [Read Tracker Issue](issue.md#read-tracker-issue) for the initiative and each epic body.
++- Apply [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation invokes Apply [Check Unit Lanes](lane.md#check-unit-lanes) internally with each derived unit’s epic body and complete ids.
++
++#### 2. Resolve Graph Findings
++
++For each finding, Apply [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) with the supplied allowance.
++- Take an automatic correction.
++- Settle a held finding as [Held Change](plan-change.md#held-change) states.
++- Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.
++- Read tasks for implied consumption edges.
++- Answer every open candidate unit as [Joins](#joins) states.
++- Account for every contending pair through [Component Contention](#component-contention).
++- Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.
++
++#### 3. Apply Confirmed Numbering
++
++Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.
++- For a confirmed epic map, Apply [Renumber Epics](#renumber-epics) with current pull request records and every affected body.
++- For a confirmed task map, Apply [Renumber Tasks](#renumber-tasks) with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.
++- Re-sort rewritten tables.
++- Inspect every reported range.
++- Search prose for references the script cannot see.
++- After each edge or numbering change, Apply [Check Dependencies](#check-dependencies) with the refreshed initiative and epic bodies and every supplied work-item and split-unit record file. Repeat that operation until it reports no problem.
++- Record the printed longest chains and each printed contending pair in the planning record.
++- Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering.
++
++### Check Dependencies
++
++Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
++
++**Inputs:** [Dependency Files](#dependency-files).
++
++**Outputs:** [Graph Result](#graph-result).
++
++#### 1. Check Dependencies
++
++Run the following command with the supplied inputs.
++
++- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
++- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it. Supply the paths as [Dependency Files](#dependency-files) defines them.
++
++- Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
++- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
++- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
++- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
++- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.
++- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
++- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
++- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
++- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
++- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
++- Its supplied inputs are published body text or local drafts.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=[**&lt;initiative-body-file&gt;**](#dependency-files)' '[**&lt;epic-id&gt;**](#dependency-files)=[**&lt;epic-body-file&gt;**](#dependency-files)' '[**&lt;epic-id&gt;**](#dependency-files):[**&lt;task-id&gt;**](#dependency-files)=[**&lt;work-item-file&gt;**](#dependency-files)' 'R=[**&lt;record-file&gt;**](#dependency-files)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md R=/records/joins.md
++</pre></big>
++
++### Renumber Tasks
++
++Renumbers one epic's tasks by the map given, in the files given.
++
++**Inputs:** [Renumber Inputs](#renumber-inputs).
++
++**Outputs:** [Rewritten Bodies](#rewritten-bodies).
++
++#### 1. Renumber Tasks
++
++Run the following command with the supplied inputs.
++
++- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
++
++- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.
++- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.
++- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
++- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '[**&lt;initiative-number&gt;**](#renumber-inputs)' --epic '[**&lt;epic-number&gt;**](#renumber-inputs)' --own '[**&lt;epic-body-file&gt;**](#dependency-files)' --tasks '[**&lt;task-number-map&gt;**](#renumber-inputs)' '[**&lt;affected-body-file&gt;**](#renumber-inputs)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
++</pre></big>
++
++### Renumber Epics
++
++Renumbers an initiative's epics across supplied body files.
++
++**Inputs:** [Renumber Inputs](#renumber-inputs), [Pull Request Records](#pull-request-records).
++
++**Outputs:** [Rewritten Bodies](#rewritten-bodies).
++
++#### 1. Renumber Epics
++
++Run the following command with the supplied inputs.
++
++- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
++- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '[**&lt;initiative-number&gt;**](#renumber-inputs)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --map '[**&lt;epic-number-map&gt;**](#renumber-inputs)' '[**&lt;body-file&gt;**](#renumber-inputs)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-936.md live-943.md
++</pre></big>
+ 
+ ## Fields
+ 
+-- **Scope.** One initiative, its epics and their task rows.
+-- **Source.** The initiative body and every epic body it links, published or as local drafts.
++### Scope
++
++One initiative, its epics and their task rows.
++
++### Source
++
++The initiative body and every epic body it links, published or as local drafts.
+ 
+ ### Edges
+ 
+@@ -102,77 +210,30 @@ The undelivered rows of one epic whose work items declare one [component](work-i
+ 
+ A comma-separated list of `<old-number>:<new-number>` pairs assigning each old number one distinct new number. A number a pull request already names is preserved, and a row a pull request names is not renumbered. A source absent from the supplied files, or a duplicate destination, is refused.
+ 
+-## Commands
++### Graph Inputs
+ 
+-### Check Dependencies
++The supplied initiative and epic bodies or local drafts, work-item files for tasks that have them, current pull request records, any confirmed numbering maps, caller allowance when present and explicitly authorized outside-initiative files.
+ 
+-Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.
++### Dependency Files
+ 
+-**Inputs:** Initiative body file, each epic id with its body file, each task id with its work-item file, and each planning-record file accounting for split candidate units.
++The initiative body file, each epic id and body file, each task id and work-item file, and each record file accounting for split candidate units. Files are absolute paths.
+ 
+-- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.
+-- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it, so pass each one as an absolute path.
++### Renumber Inputs
+ 
+-- Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.
+-- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.
+-- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.
+-- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.
+-- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.
+-- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.
+-- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.
+-- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.
+-- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.
+-- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.
+-- It reads bodies from [Read Tracker Issue](issue.md#read-tracker-issue), or local drafts.
+-
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deps.py 'I=<initiative-body-file>' '<epic-id>=<epic-body-file>' '<epic-id>:<task-id>=<work-item-file>' 'R=<record-file>'
+-```
+-
+-**Example:**
+-
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/deps.py I=/drafts/live-936.md E00=/drafts/live-943.md E01=/drafts/live-937.md E00:W01=/drafts/e00/w01.md E01:W01=/drafts/e01/w01.md R=/records/joins.md
+-```
+-
+-### Renumber Tasks
+-
+-Renumbers one epic's tasks by the map given, in the files given.
+-
+-**Inputs:** Initiative number, epic number, epic body file, task-number map and affected body files.
+-
+-- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.
++The initiative number, epic number for task renumbering, owning epic body for task renumbering, confirmed numbering map and affected body files, with explicitly authorized outside-initiative files when supplied.
+ 
+-- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.
+-- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.
+-- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.
+-- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.
++### Pull Request Records
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '<initiative-number>' --epic '<epic-number>' --own '<epic-body-file>' --tasks '<task-number-map>' '<affected-body-file>'
+-```
++The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
+ 
+-**Example:**
++### Graph Result
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --epic 1 --own live-937.md --tasks 7:3,3:5 live-*.md
+-```
++The checked bodies, proposed epic-priority map and unresolved dependency, numbering, component or lane findings, including the printed chains and contending pairs.
+ 
+-### Renumber Epics
++### Rewritten Bodies
+ 
+-Renumbers an initiative's epics across supplied body files.
++The supplied bodies rewritten in place, with reported ranges and unresolved renumbering findings.
+ 
+-**Inputs:** Initiative number, current pull request records, confirmed epic-number map, body files and explicitly authorized outside-initiative files when present.
+-
+-- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.
+-- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.
+-
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative '<initiative-number>' --prs '<pull-request-records-file>' --map '<epic-number-map>' '<body-file>'
+-```
+-
+-**Example:**
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/renumber.py --initiative 07 --prs prs.json --map 6:0,0:1 live-936.md live-943.md
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/goal-trace.md b/skills/work-planner/artifacts/goal-trace.md
+index 1adb08202..7312399ca 100644
+--- a/skills/work-planner/artifacts/goal-trace.md
++++ b/skills/work-planner/artifacts/goal-trace.md
+@@ -12,43 +12,81 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Review* Initiative Goal
++### Review Initiative Goal
+ 
+ The draft checked against the initiative outcomes.
+ 
+-**Inputs:** Current initiative and epic bodies or drafts, confirmed goal clauses, marked requirement sources, and the supplied epic format results.
+-
+-1. Take the goal the user stated and confirmed, as clauses, each an outcome someone could observe.
+-2. Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
+-   - Every goal clause has an initiative criterion that makes it true.
+-   - Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.
+-   - Every initiative criterion traces to a goal clause.
+-   - Remove one that traces to none, or put that scope to the user.
+-   - Record any criterion no task row delivers as a gap from the supplied epic format results.
+-3. Call [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources) with the initiative References, checkout, authenticated access and output files.
+-   - Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.
+-4. Check each criterion against the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Initiative Acceptance Criteria](initiative-issue-body.md#initiative-acceptance-criteria).
+-5. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.
+-   - Use the returned initiative and epic JSON for [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.
+-   - Incorporate its local findings into this review.
+-6. Follow [Check Outside Threats](#check-outside-threats).
+-7. Rank the gaps, meeting [Gaps](#gaps).
+-   - Flag the few that most threaten the goal.
+-   - Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
+-   - Return the trace and ranked findings to the caller.
+-
+-### *Check* Outside Threats
++**Inputs:** [Goal Evidence](#goal-evidence).
++
++**Outputs:** [Trace Table](#trace-table), [Review Result](#review-result).
++
++#### 1. Identify Confirmed Goal Clauses
++
++Take the goal the user stated and confirmed, as clauses, each an outcome someone could observe.
++
++#### 2. Build Goal Trace
++
++Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.
++- Every goal clause has an initiative criterion that makes it true.
++- Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.
++- Every initiative criterion traces to a goal clause.
++- Remove one that traces to none, or put that scope to the user.
++- Record any criterion no task row delivers as a gap from the supplied epic format results.
++
++#### 3. Read Marked Requirement Sources
++
++Apply [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources) with the initiative References, checkout, authenticated access and output files.
++- Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.
++
++#### 4. Check Acceptance Criteria
++
++Check each criterion against the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Initiative Acceptance Criteria](initiative-issue-body.md#initiative-acceptance-criteria).
++
++#### 5. Validate Local Drafts
++
++Apply [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.
++- Apply [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.
++- Incorporate its local findings into this review.
++
++#### 6. Check Outside Threats
++
++Apply [Check Outside Threats](#check-outside-threats) with the current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.
++
++#### 7. Return Ranked Gaps
++
++Rank the gaps, meeting [Gaps](#gaps).
++- Flag the few that most threaten the goal.
++- Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.
++- Return the trace and ranked findings to the caller.
++
++### Check Outside Threats
+ 
+ An item the draft leaves open is a gap.
+ 
+-**Inputs:** Current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.
++**Inputs:** [Plan Bodies](#plan-bodies), [Changed Surface](#changed-surface).
++
++**Outputs:** [Review Result](#review-result).
+ 
+-1. Check for anything outside the plan that reads, builds or ships what the plan changes or removes.
+-2. Check for a skip, a fallback, or a fail-closed path that hides a violation.
+-3. Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures.
+-4. Check for skew between an artifact the plan produces and an implementation that reads it.
+-5. Check for a change elsewhere that alters the ground the plan stands on.
+-   - Return the evidenced threats and gaps to [Review Initiative Goal](#review-initiative-goal).
++#### 1. Check External Consumers
++
++Check for anything outside the plan that reads, builds or ships what the plan changes or removes.
++
++#### 2. Check Hidden Violations
++
++Check for a skip, a fallback, or a fail-closed path that hides a violation.
++
++#### 3. Check Completion Instrument
++
++Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures.
++
++#### 4. Check Consumer Alignment
++
++Check for skew between an artifact the plan produces and an implementation that reads it.
++
++#### 5. Return External Threats
++
++Check for a change elsewhere that alters the ground the plan stands on.
++- Return the evidenced threats and gaps to the calling goal review.
+ 
+ ## Fields
+ 
+@@ -63,3 +101,19 @@ Every clause, criterion and epic the initiative holds occupies a row. A cell wit
+ ### Gaps
+ 
+ A gap is a clause no criterion makes true, a criterion no epic delivers, a criterion tracing to no clause, a criterion no task row delivers, an unmatched source requirement, a criterion departing from the source it cites, a source that could not be read, or a threat the draft leaves open. Gaps are ranked, and the few that most threaten the goal are flagged.
++
++### Goal Evidence
++
++The current initiative and epic bodies or local drafts, confirmed goal clauses, marked requirement sources and supplied epic-format results.
++
++### Changed Surface
++
++The supplied artifacts and consumers the plan changes.
++
++### Review Result
++
++The trace table and ranked findings, including evidenced outside threats and gaps.
++
++### Plan Bodies
++
++The supplied current initiative and epic bodies or local drafts.
+diff --git a/skills/work-planner/artifacts/lane.md b/skills/work-planner/artifacts/lane.md
+index 43318926b..7d824ed16 100644
+--- a/skills/work-planner/artifacts/lane.md
++++ b/skills/work-planner/artifacts/lane.md
+@@ -8,35 +8,120 @@ A board-wide delivery lane, its task assignments and the units a request admits.
+ 
+ Lane assignments and malformed-cell findings from supplied task tables.
+ 
+-**Inputs:** Epic body file.
++**Inputs:** [Epic Body File](#epic-body-file).
+ 
+-- Run [Read Lane Assignments](#read-lane-assignments) with the body file and return its row-to-index map and findings, meeting [Assignments](#assignments).
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Read Task Lane Cells
++
++Apply [Read Lane Assignments](#read-lane-assignments) with the body file and return its row-to-index map and findings, meeting [Assignments](#assignments).
+ 
+ ### Assign Task Lanes
+ 
+ A task table with confirmed lane assignments.
+ 
+-**Inputs:** Epic body file, confirmed task-to-index map and output body path.
++**Inputs:** [Epic Body File](#epic-body-file), [Confirmed Map](#confirmed-map), [Output Body](#output-body).
++
++**Outputs:** [Output Body](#output-body).
++
++#### 1. Write Confirmed Lane Map
+ 
+-1. Run [Write Lane Assignments](#write-lane-assignments) with the body, confirmed map and output path.
+-   - Refuse unknown task ids or malformed resulting cells.
+-2. Return the output body for the caller's full body and dependency validation.
++Apply [Write Lane Assignments](#write-lane-assignments) with the body, confirmed map and output path.
++- Refuse unknown task ids or malformed resulting cells.
++
++#### 2. Return Updated Body
++
++Return the output body for the caller's full body and dependency validation.
+ 
+ ### Check Unit Lanes
+ 
+ The common lane of a supplied work unit, or its assignment findings.
+ 
+-**Inputs:** Epic body file and complete unit task ids.
++**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids).
++
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Check Complete Unit Lane
+ 
+-- Run [Validate Lane Unit](#validate-lane-unit) with the body and unit ids and return the common index or findings, meeting [Unit Consistency](#unit-consistency).
++Apply [Validate Lane Unit](#validate-lane-unit) with the body and unit ids and return the common index or findings, meeting [Unit Consistency](#unit-consistency).
+ 
+ ### Determine Lane Admission
+ 
+ The lane decision for one free unit and current request.
+ 
+-**Inputs:** Epic body file, complete unit task ids and optional requested lane index.
++**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids), [Requested Index](#requested-index).
++
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Evaluate Requested Lane
++
++Apply [Evaluate Lane Admission](#evaluate-lane-admission) with the body, unit ids and requested index and return its admitted flag and findings, meeting [Admission](#admission).
++
++### Read Lane Assignments
++
++Reads raw task-table Lane cells through the Lane module.
++
++**Inputs:** [Epic Body File](#epic-body-file).
+ 
+-- Run [Evaluate Lane Admission](#evaluate-lane-admission) with the body, unit ids and requested index and return its admitted flag and findings, meeting [Admission](#admission).
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Read Lane Assignments
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file)'
++</pre></big>
++
++### Write Lane Assignments
++
++Writes confirmed assignments while preserving other body content.
++
++**Inputs:** [Epic Body File](#epic-body-file), [Confirmed Map](#confirmed-map), [Output Body](#output-body).
++
++**Outputs:** [Output Body](#output-body).
++
++#### 1. Write Lane Assignments
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" assign '[**&lt;epic-body-file&gt;**](#epic-body-file)' --map '[**&lt;confirmed-map-file&gt;**](#confirmed-map)' --out '[**&lt;output-body-path&gt;**](#output-body)'
++</pre></big>
++
++### Validate Lane Unit
++
++Reports a unit's common lane or assignment findings.
++
++**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids).
++
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Validate Lane Unit
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" check '[**&lt;epic-body-file&gt;**](#epic-body-file)' --unit '[**&lt;task-ids&gt;**](#unit-task-ids)'
++</pre></big>
++
++### Evaluate Lane Admission
++
++Reports whether the request admits a valid unit.
++
++**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids), [Requested Index](#requested-index).
++
++**Outputs:** [Lane Result](#lane-result).
++
++#### 1. Evaluate Lane Admission
++
++Run the following command with the supplied inputs.
++
++Omit the lane option when the request supplies none.
++
++<big><pre>
++"[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace)/skills/work-planner/scripts/lane.py" admit '[**&lt;epic-body-file&gt;**](#epic-body-file)' --unit '[**&lt;task-ids&gt;**](#unit-task-ids)' --lane '[**&lt;lane-index&gt;**](#requested-index)'
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -60,50 +145,30 @@ A request naming an index admits free units with that index and unlaned units. A
+ 
+ A populated index is reported as `lane 2`, preserving its spelling; an unlaned unit is reported as `unlaned`.
+ 
+-## Commands
+-
+-### Read Lane Assignments
++### Epic Body File
+ 
+-Reads raw task-table Lane cells through the Lane module.
++The local file containing the supplied complete epic body text.
+ 
+-**Inputs:** Epic body file.
++### Confirmed Map
+ 
+-```bash
+-"<workspace>/scripts/sbx" python3 "<workspace>/skills/work-planner/scripts/lane.py" read '<epic-body-file>'
+-```
++The local JSON object keyed by task id, with decimal-string indices or `null` for unlaned rows.
+ 
+-### Write Lane Assignments
++### Output Body
+ 
+-Writes confirmed assignments while preserving other body content.
++The supplied local output path and resulting epic body. The output is absent until written.
+ 
+-**Inputs:** Epic body file, confirmed task-to-index JSON map and output body path.
++### Unit Task Ids
+ 
+-- The map is a JSON object keyed by task id; values are decimal strings or `null` for unlaned rows.
++The complete supplied unit task ids as a comma-separated list.
+ 
+-```bash
+-"<workspace>/scripts/sbx" python3 "<workspace>/skills/work-planner/scripts/lane.py" assign '<epic-body-file>' --map '<confirmed-map-file>' --out '<output-body-path>'
+-```
++### Requested Index
+ 
+-### Validate Lane Unit
++The optional lane index named by the request; absence selects an unlaned request.
+ 
+-Reports a unit's common lane or assignment findings.
+-
+-**Inputs:** Epic body file and complete unit task ids.
+-
+-- Unit ids form a comma-separated list.
+-
+-```bash
+-"<workspace>/scripts/sbx" python3 "<workspace>/skills/work-planner/scripts/lane.py" check '<epic-body-file>' --unit '<task-ids>'
+-```
+-
+-### Evaluate Lane Admission
+-
+-Reports whether the request admits a valid unit.
++### Lane Result
+ 
+-**Inputs:** Epic body file, complete unit task ids and optional requested lane index.
++The row-to-index map, common unit index or admitted flag selected by the operation, with its assignment findings.
+ 
+-- Unit ids form a comma-separated list; omit the lane option when the request supplies none.
++### Workspace
+ 
+-```bash
+-"<workspace>/scripts/sbx" python3 "<workspace>/skills/work-planner/scripts/lane.py" admit '<epic-body-file>' --unit '<task-ids>' --lane '<lane-index>'
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/placement.md b/skills/work-planner/artifacts/placement.md
+index b3589422d..666e9cc1c 100644
+--- a/skills/work-planner/artifacts/placement.md
++++ b/skills/work-planner/artifacts/placement.md
+@@ -17,99 +17,191 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Draft* Issue Placement
++### Draft Issue Placement
+ 
+ One placement option from the supplied orphan and candidate destinations.
+ 
+-**Inputs:** Current orphan body, candidate destinations, proposed work and supplied planning-record references.
++**Inputs:** [Placement Inputs](#placement-inputs).
+ 
+-1. Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
+-   - Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
+-2. Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions).
+-3. Return the placement for the caller to offer and apply.
++**Outputs:** [Placement Result](#placement-result).
+ 
+-### *Find* Placement Candidates
++#### 1. Select Candidate Destination
++
++Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.
++- Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.
++
++#### 2. Populate Placement Fields
++
++Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions).
++
++#### 3. Return Placement Option
++
++Return the placement for the caller to offer and apply.
++
++### Find Placement Candidates
+ 
+ The issue candidates and available destinations from supplied records.
+ 
+-**Inputs:** Complete repository issue collection.
++**Inputs:** [Issue Collection](#issue-collection).
++
++**Outputs:** [Candidate Destinations](#candidate-destinations).
++
++#### 1. List Repository Candidates
++
++Apply [List Orphans](#list-orphans) with the supplied issue file.
++
++#### 2. Return Available Destinations
+ 
+-1. Run [List Orphans](#list-orphans) with the supplied issue file.
+-2. Return the [Candidate Issues](#candidate-issues) and open initiative and epic destinations for the caller to investigate.
++Return the [Candidate Issues](#candidate-issues) and open initiative and epic destinations for the caller to investigate.
+ 
+-### *Apply* Issue Placement
++### Apply Issue Placement
+ 
+ One selected destination for an orphan's work.
+ 
+-**Inputs:** Confirmed placement, current source and destination records, and the affected initiative and epic bodies.
+-
+-1. Execute only the branch matching the confirmed destination:
+-   - **Existing task.**
+-     - Add the orphan's outcomes to the task criteria.
+-     - Add its design to Proposal.
+-     - When they exceed the epic's criteria, add epic criteria cited by the task row.
+-     - Publish the affected bodies through [Save Tracker Issue](issue.md#save-tracker-issue).
+-   - **New task.**
+-     - Run [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body) with the confirmed task scope, current epic context and output path.
+-     - Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](#destination-work) states.
+-     - Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](epic-issue-body.md#task-delivery) states.
+-     - Number the row where it can start, and keep its row id for the return.
+-     - When movable rows change number, run [Check Dependencies and Numbering](dependency-graph.md#check-dependencies-and-numbering) with the affected initiative and epic drafts and confirmed numbering map.
+-     - Publish the checked bodies through Save Tracker Issue.
+-   - **New epic.**
+-     - Run [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body), carrying the orphan's work in a task row, and keep its row id for the return.
+-     - Populate the covering row through [Draft Initiative Issue Body](initiative-issue-body.md#draft-initiative-issue-body).
+-     - Publish the epic through [Save Tracker Issue](issue.md#save-tracker-issue).
+-     - Link its issue in the initiative row.
+-   - **New initiative.**
+-     - Run [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
+-     - Publish through [Save Tracker Issue](issue.md#save-tracker-issue).
+-   - **Hot-fix.**
+-     - Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue.
+-     - Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
+-   - **Leave.**
+-     - Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
+-2. Return the saved destination, the identities of all affected bodies and the confirmed disposition to the caller, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The caller performs the rewrite or closure.
+-
+-### *Rewrite* Orphan Issue
++**Inputs:** [Confirmed Placement](#confirmed-placement).
++
++**Outputs:** [Placement Result](#placement-result).
++
++#### 1. Apply Confirmed Destination
++
++Execute only the branch matching the confirmed destination:
++
++##### Existing Task
++
++- Add the orphan's outcomes to the task criteria.
++- Add its design to Proposal.
++- When they exceed the epic's criteria, add epic criteria cited by the task row.
++- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the affected bodies.
++
++##### New Task
++
++- Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body) with the confirmed task scope, current epic context and output path.
++- Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](#destination-work) states.
++- Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](epic-issue-body.md#task-delivery) states.
++- Number the row where it can start, and keep its row id for the return.
++- When movable rows change number, Apply [Check Dependencies and Numbering](dependency-graph.md#check-dependencies-and-numbering) with the affected initiative and epic drafts and confirmed numbering map.
++- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the checked bodies.
++
++##### New Epic
++
++- Apply [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body), carrying the orphan's work in a task row, and keep its row id for the return.
++- Apply [Draft Initiative Issue Body](initiative-issue-body.md#draft-initiative-issue-body) with the covering row.
++- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the epic.
++- Link its issue in the initiative row.
++
++##### New Initiative Destination
++
++- Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.
++- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the populated initiative body.
++
++##### Hot-Fix Destination
++
++- Apply [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue.
++- Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.
++
++##### Leave
++
++- Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.
++
++#### 2. Return Saved Placement
++
++Return the saved destination, the identities of all affected bodies and the confirmed disposition to the caller, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The caller performs the rewrite or closure.
++
++### Rewrite Orphan Issue
+ 
+ One kept or left orphan rewritten in the layout of its destination kind.
+ 
+-**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label, confirmed target and theme board, and the number [Apply Issue Placement](#apply-issue-placement) returned.
++**Inputs:** [Rewrite Inputs](#rewrite-inputs).
++
++**Outputs:** [Saved Orphan](#saved-orphan).
++
++#### 1. Populate Selected Body
+ 
+-1. Use the selected [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or [Populate Standalone Body](standalone-body.md#populate-standalone-body) body.
+-   - Carry evidence into Problem and design into Proposal.
+-   - Pass a hot-fix its supplied number, theme label and target.
+-2. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
+-   - Resolve findings.
+-   - Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
+-3. For a hot-fix, run [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.
+-4. Return the saved identity, and a hot-fix's settled board item, to the caller.
++Apply [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), Apply [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or Apply [Populate Standalone Body](standalone-body.md#populate-standalone-body), selecting the confirmed destination kind and supplied evidence and design.
++- Carry evidence into Problem and design into Proposal.
++- Pass a hot-fix its supplied number, theme label and target.
+ 
+-### *Subsume* Orphan Work
++#### 2. Validate and Save Body
++
++Apply [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.
++- Resolve findings.
++- Apply [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.
++
++#### 3. Settle Hot-fix Status
++
++For a hot-fix, Apply [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.
++
++#### 4. Return Saved Identity
++
++Return the saved identity, and a hot-fix's settled board item, to the caller.
++
++### Subsume Orphan Work
+ 
+ The work remains tracked by the taking issue.
+ 
+-**Inputs:** Orphan identity and body, confirmed destination evidence, and the planning record it references when it has one.
++**Inputs:** [Transfer Inputs](#transfer-inputs).
++
++**Outputs:** [Saved Orphan](#saved-orphan).
++
++#### 1. Transfer Tracked Work
++
++Transfer the work to the taking issue.
++- Make each outcome a criterion of one invariant.
++- Put the design in Proposal.
++- Cite the orphan and any planning record in References.
+ 
+-1. Transfer the work to the taking issue.
+-   - Make each outcome a criterion of one invariant.
+-   - Put the design in Proposal.
+-   - Cite the orphan and any planning record in References.
+-2. Prepare the comment file naming the taking epic and row, or the taking task issue, for example `Tracked in [I07:E01](…/issues/937) W04.` The closure operation records it once.
+-3. Run [Close Transferred Work](issue.md#close-transferred-work) with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.
+-   - Return the confirmed closure or blocker to the caller.
++#### 2. Prepare Closure Comment
++
++Prepare the comment file naming the taking epic and row, or the taking task issue, for example `Tracked in [I07:E01](…/issues/937) W04.` The closure operation records it once.
++
++#### 3. Close Transferred Orphan
++
++Apply [Close Transferred Work](issue.md#close-transferred-work) with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.
++- Return the confirmed closure or blocker to the caller.
++
++### List Orphans
++
++Lists the hoist candidates, and the open initiatives and epics they could join.
++
++**Inputs:** [Issue Collection](#issue-collection).
++
++**Outputs:** [Candidate Destinations](#candidate-destinations).
++
++#### 1. List Orphans
++
++Run the following command with the supplied inputs.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/orphans.py '[**&lt;issues-json-file&gt;**](#issue-collection)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/orphans.py issues.json
++</pre></big>
+ 
+ ## Fields
+ 
+-- **Source.** The orphan's repository, issue number and current body.
+-- **Destination.** The selected issue or proposed work, with the criteria and design it takes.
+-- **Disposition.**
+-  Kept, subsumed or left, with a reason. A referenced planning record is carried with the source reference.
+-- **Draft bodies.**
+-  Each proposed body meets its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
+-- **Links.**
+-  An initiative row identifies its epic issue. A task issue has its delivery link through Development.
++### Source
++
++The orphan's repository, issue number and current body.
++
++### Destination
++
++The selected issue or proposed work, with the criteria and design it takes.
++
++### Disposition
++
++Kept, subsumed or left, with a reason. A referenced planning record is carried with the source reference.
++
++### Draft Bodies
++
++Each proposed body meets its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.
++
++### Links
++
++An initiative row identifies its epic issue. A task issue has its delivery link through Development.
+ 
+ ### Placement Record
+ 
+@@ -141,20 +233,38 @@ Candidates are open issues without an agent-engineering prefix, other than a pro
+ 
+ An existing-epic option identifies the row to add, with Description, criteria, Depends on and Joins, or the existing task already delivering the work. Leave applies when no initiative goal covers it and it is no hot-fix, or when it is not planned work. Each option names its disposition, as [Disposition Conditions](#disposition-conditions) state.
+ 
+-## Commands
++### Placement Inputs
+ 
+-### List Orphans
++The current orphan body, candidate destinations, proposed work and supplied planning-record references.
+ 
+-Lists the hoist candidates, and the open initiatives and epics they could join.
++### Issue Collection
+ 
+-**Inputs:** Complete supplied repository issue collection.
++The complete supplied repository issue collection, at its local JSON file path.
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/orphans.py '<issues-json-file>'
+-```
++### Confirmed Placement
+ 
+-**Example:**
++The supplied confirmed placement, current source and destination records, and affected initiative and epic bodies.
++
++### Rewrite Inputs
++
++The source identity, selected destination kind, body evidence and design; for a hot-fix, its theme label, confirmed target, theme board and returned number.
++
++### Transfer Inputs
++
++The orphan identity and body, confirmed destination evidence and referenced planning record when present.
++
++### Placement Result
++
++The proposed placement or saved destination and confirmed disposition, affected body identities, and returned initiative, epic, row or hot-fix identities as applicable.
++
++### Candidate Destinations
++
++The candidate issues and open initiative and epic destinations returned for investigation.
++
++### Saved Orphan
++
++The saved issue identity and settled hot-fix board item when applicable, or the confirmed transferred closure or blocker.
++
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/orphans.py issues.json
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/plan-change.md b/skills/work-planner/artifacts/plan-change.md
+index f6f7c3258..96c9366e1 100644
+--- a/skills/work-planner/artifacts/plan-change.md
++++ b/skills/work-planner/artifacts/plan-change.md
+@@ -4,26 +4,43 @@ One change to the plan that a run makes as it works, and whether the run applies
+ 
+ ## Operations
+ 
+-### *Check* Plan Change Autonomy
++### Check Plan Change Autonomy
+ 
+ One pending change assessed against the run's allowance.
+ 
+-**Inputs:** The pending change, its subject, the option recommended for it, and the allowance the caller was supplied.
++**Inputs:** [Pending Change](#pending-change), [Allowance](#allowance).
+ 
+-1. Match the change to one kind in [Change Kinds](#change-kinds).
+-2. Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.
+-3. Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
+-   - A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
+-   - An absent allowance holds every change, so a run the user drives decides nothing on their behalf.
++**Outputs:** [Autonomy Result](#autonomy-result).
+ 
+-### *Record* Plan Change
++#### 1. Classify Pending Change
++
++Match the change to one kind in [Change Kinds](#change-kinds).
++
++#### 2. Return Allowed Change
++
++Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.
++
++#### 3. Return Held Change
++
++Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.
++- A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).
++- An absent allowance holds every change, so a run the user drives decides nothing on their behalf.
++
++### Record Plan Change
+ 
+ One entry in the run's list, for a change it applied or held.
+ 
+-**Inputs:** The change, its kind, the option applied or recommended, the affected issue identities and the run's current list.
++**Inputs:** [Change Details](#change-details), [Change List](#change-list).
++
++**Outputs:** [Change List](#change-list).
++
++#### 1. Record Applied or Held Entry
+ 
+-1. Add one entry meeting [Entry](#entry) to the supplied [Change List](#change-list), marked applied or held.
+-2. Return the updated list for the caller to publish and report.
++Add one entry meeting [Entry](#entry) to the supplied [Change List](#change-list), marked applied or held.
++
++#### 2. Return Updated List
++
++Return the updated list for the caller to publish and report.
+ 
+ ## Fields
+ 
+@@ -64,3 +81,15 @@ One line: the kind, the issue or row it concerns, and the option applied or reco
+ A held change is left unapplied and its subject stays as it stands, so the next run sees the same decision. Its entry carries the recommended option, which is what the user is answering.
+ 
+ A run working under an allowance records and reports a held change rather than asking, since the work it was dispatched for does not wait on an answer. A run supplied no allowance puts it to the user.
++
++### Pending Change
++
++The supplied pending change, its subject and recommended option.
++
++### Change Details
++
++The supplied change, its kind, applied or recommended option and affected issue identities.
++
++### Autonomy Result
++
++The change classified as automatic or held, retaining its recommendation.
+diff --git a/skills/work-planner/artifacts/planning-record.md b/skills/work-planner/artifacts/planning-record.md
+index 62fabe4bb..06456863b 100644
+--- a/skills/work-planner/artifacts/planning-record.md
++++ b/skills/work-planner/artifacts/planning-record.md
+@@ -10,36 +10,128 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Populate* Planning Record
++### Populate Planning Record
+ 
+ One planning directory and its artifact inventory.
+ 
+-**Inputs:** Record identity, folder path and supplied artifact files and links.
++**Inputs:** [Record Selection](#record-selection).
+ 
+-1. Prepare the selected record:
+-   - For a new record:
+-     - Create the folder with [Add Planning Record](#add-planning-record).
+-     - Populate README.md from the [Template](#template).
+-   - For an existing record:
+-     - Read its README, retaining its creation date, other artifacts and links.
+-     - Update only the supplied content.
+-   - The folder must meet [Layout](#layout).
+-   - All populated README fields must meet [Fields](#fields).
+-2. Register the artifact files supplied by the caller, using their chosen names.
+-   - Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).
+-   - File content remains supplied by the caller; this operation does not author that artifact's content.
++**Outputs:** [Planning Folder](#planning-folder).
+ 
++#### 1. Prepare Selected Record
+ 
+-### *Publish* Planning Record
++Prepare the selected record using the matching branch.
++
++##### New Record
++
++Apply [Add Planning Record](#add-planning-record) with the engineering checkout and supplied planning-folder path.
++- Populate README.md from the [Template](#template).
++
++##### Existing Record
++
++Read its README, retaining its creation date, other artifacts and links.
++- Update only the supplied content.
++
++##### Common Record Conditions
++
++The folder must meet [Layout](#layout).
++- All populated README fields must meet [Fields](#fields).
++
++#### 2. Register Supplied Artifacts
++
++Register the artifact files supplied by the caller, using their chosen names.
++- Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).
++- File content remains supplied by the caller; this operation does not author that artifact's content.
++
++### Publish Planning Record
+ 
+ The record's folder committed and pushed, so every link into it resolves for a reader.
+ 
+-**Inputs:** Planning-folder path, the files written into it and a commit message file.
++**Inputs:** [Planning Folder](#planning-folder), [Commit Message File](#commit-message-file).
++
++**Outputs:** [Publication Result](#publication-result).
++
++#### 1. Find Engineering Checkout
++
++Apply [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.
++
++#### 2. Publish Planning Files
++
++Apply [Commit Planning Record](#commit-planning-record).
++- Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
++- Report a rebase that stops on a conflict rather than rewriting the branch.
++
++### Find Engineering Worktree
++
++Prints the checkout holding the engineering branch, which is where every planning record is written.
++
++**Inputs:** [Project Checkout](#project-checkout).
++
++**Outputs:** [Engineering Worktree](#engineering-worktree).
++
++#### 1. Find Engineering Worktree
++
++Run the following command with the supplied inputs.
++
++- The engineering branch has one long-lived worktree and takes no further one.
++
++<big><pre>
++git -C '[**&lt;checkout&gt;**](#project-checkout)' worktree list | grep '\&#91;engineering\&#93;'
++</pre></big>
++
++### Commit Planning Record
++
++Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
++
++**Inputs:** [Engineering Worktree](#engineering-worktree), [Commit Message File](#commit-message-file).
++
++**Outputs:** [Publication Result](#publication-result).
++
++#### 1. Commit Planning Record
++
++Run the following command with the supplied inputs.
++
++- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
++- Planning records go straight to the branch; they take no pull request.
++- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
++
++<big><pre>
++cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' && git add -A && (git diff --cached --quiet || git commit -F '[**&lt;message-file&gt;**](#commit-message-file)') && git fetch origin engineering && git rebase origin/engineering && git push
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
++</pre></big>
++
++### Add Planning Record
++
++Adds the folder for one planning record on the long-lived engineering worktree.
++
++**Inputs:** [Engineering Worktree](#engineering-worktree), [Planning Folder](#planning-folder).
++
++**Outputs:** [Planning Folder](#planning-folder).
++
++#### 1. Add Planning Record
++
++Run the following command with the supplied inputs.
++
++- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
++- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
++- The slug is lowercase words separated by hyphens, a short name of the work.
++- The folder's files are the [planning layout](planning-record.md#layout).
++- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
++
++<big><pre>
++mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder)'
++</pre></big>
+ 
+-1. Run [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.
+-2. Run [Commit Planning Record](#commit-planning-record).
+-   - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
+-   - Report a rebase that stops on a conflict rather than rewriting the branch.
++**Example:**
++
++<big><pre>
++mkdir -p artifacts/planning/2026-10-15-950-queue-plan
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -102,58 +194,26 @@ Two paragraphs: the purpose of this work, and why it matters.
+ 
+ External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
+ 
+-## Commands
+-
+-### Find Engineering Worktree
+-
+-Prints the checkout holding the engineering branch, which is where every planning record is written.
+-
+-**Inputs:** Any checkout of the project.
+-
+-- The engineering branch has one long-lived worktree and takes no further one.
+-
+-```bash
+-git -C '<checkout>' worktree list | grep '\[engineering\]'
+-```
+-
+-### Commit Planning Record
++### Record Selection
+ 
+-Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
++The supplied record identity, folder path, artifact files and external links.
+ 
+-**Inputs:** Engineering worktree and a commit message file.
++### Planning Folder
+ 
+-- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
+-- Planning records go straight to the branch; they take no pull request.
+-- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
++The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.
+ 
+-```bash
+-cd '<engineering-worktree>' && git add -A && (git diff --cached --quiet || git commit -F '<message-file>') && git fetch origin engineering && git rebase origin/engineering && git push
+-```
++### Engineering Worktree
+ 
+-**Example:**
++The checkout holding the engineering branch, as an absolute path.
+ 
+-```bash
+-cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
+-```
++### Project Checkout
+ 
+-### Add Planning Record
++Any supplied checkout of the project.
+ 
+-Adds the folder for one planning record on the long-lived engineering worktree.
++### Commit Message File
+ 
+-**Inputs:** Engineering worktree and planning-folder path composed from the date, optional issue or pull request number, and slug.
++The supplied local file holding the exact commit message.
+ 
+-- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
+-- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
+-- The slug is lowercase words separated by hyphens, a short name of the work.
+-- The folder's files are the [planning layout](planning-record.md#layout).
+-- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
++### Publication Result
+ 
+-```bash
+-mkdir -p '<planning-folder-path>'
+-```
+-
+-**Example:**
+-
+-```bash
+-mkdir -p artifacts/planning/2026-10-15-950-queue-plan
+-```
++The published planning files and confirmed remote branch, or a stopped publication with its conflict or other blocker.
+diff --git a/skills/work-planner/artifacts/repository-graph.md b/skills/work-planner/artifacts/repository-graph.md
+index 43d3283e9..d50cb00ae 100644
+--- a/skills/work-planner/artifacts/repository-graph.md
++++ b/skills/work-planner/artifacts/repository-graph.md
+@@ -4,125 +4,204 @@ The indexed symbols, relationships and ordered flows for a repository revision.
+ 
+ ## Operations
+ 
+-### *Measure* Repository Change
++### Measure Repository Change
+ 
+ Current graph evidence for the supplied change.
+ 
+-**Inputs:** Review checkout, verified head commit and base branch.
+-
+-1. Run [Index Status](#index-status) in the review checkout. Every graph command runs there.
+-2. If the repository is unindexed or behind the verified head:
+-   - Run [Index Repository](#index-repository) in the review checkout.
+-   - Confirm freshness.
+-3. Run [Change Surface](#change-surface) in the review checkout against the supplied base using `--base-ref`.
+-4. For each changed symbol, run [Symbol Context](#symbol-context) in the review checkout.
+-5. For each reported flow, run [Flow Trace](#flow-trace) in the review checkout.
+-6. Inspect the staleness block on every response. For a behind index:
+-   - Discard its measurements.
+-   - Reindex.
+-   - Repeat the affected measurements.
+-7. Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker.
++**Inputs:** [Review Checkout](#review-checkout), [Requested Revision](#requested-revision), [Base Branch](#base-branch).
+ 
+-## Fields
++**Outputs:** [Graph Measurements](#graph-measurements).
+ 
+-### Revision
++#### 1. Read Index Status
+ 
+-The graph identifies its worktree and indexed commit. Measurements describe the supplied pull request head and its difference from the supplied base branch.
++Apply [Index Status](#index-status) in the review checkout. Every graph command runs there.
+ 
+-### Freshness
++#### 2. Refresh Absent or Stale Index
+ 
+-Graph responses carry a JSON `staleness` block. A behind index is not current with the requested head; measurements from it are invalid.
++If the repository is unindexed or behind the verified head:
++- Apply [Index Repository](#index-repository) in the review checkout.
++- Confirm freshness.
+ 
+-### Changed Symbols
++#### 3. Measure Change Surface
+ 
+-The surface identifies symbols touched by the diff and the flows containing them. It compares with the supplied base branch, rather than the branch's whole history.
++Apply [Change Surface](#change-surface) in the review checkout against the supplied base using `--base-ref`.
+ 
+-### Symbol Relationships
++#### 4. Measure Changed Symbols
+ 
+-Each changed symbol has callers, callees, containing flows and file locations. Files group into component areas; their measured relationships determine edges between areas.
++For each changed symbol, Apply [Symbol Context](#symbol-context) in the review checkout.
+ 
+-### Flow Traces
++#### 5. Measure Reported Flows
+ 
+-Each flow contains symbols in step order. Each `process_symbols` entry includes `step_index`, file and lines. Those ordered measurements supply sequence-diagram participants and interactions. A manually inferred call order does not establish a graph trace.
++For each reported flow, Apply [Flow Trace](#flow-trace) in the review checkout.
++
++#### 6. Check Response Freshness
++
++Inspect the staleness block on every response. When an index is behind, discard its measurements.
++- Apply [Index Repository](#index-repository) in the review checkout for the verified head, and confirm freshness.
++- Apply [Change Surface](#change-surface) again for any discarded surface using the same base branch in the review checkout.
++- Apply [Symbol Context](#symbol-context) again for each affected changed symbol in the review checkout.
++- Apply [Flow Trace](#flow-trace) again for each affected reported flow in the review checkout.
+ 
+-## Commands
++#### 7. Return Current Measurements
++
++Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker.
+ 
+ ### Index Status
+ 
+ Reports whether the repository is indexed, and how far behind the index sits.
+ 
+-**Inputs:** Requested revision.
++**Inputs:** [Requested Revision](#requested-revision).
++
++**Outputs:** [Index State](#index-state).
++
++#### 1. Index Status
+ 
+ **Acts on:** the checkout it runs in.
+ 
+-```bash
++Run the following command with the supplied inputs.
++
++<big><pre>
+ gitnexus status
+-```
++</pre></big>
+ 
+ ### Index Repository
+ 
+ Indexes the repository, which an unindexed or behind repository needs before any measurement.
+ 
+-**Inputs:** Requested revision.
++**Inputs:** [Requested Revision](#requested-revision).
++
++**Outputs:** [Index State](#index-state).
++
++#### 1. Index Repository
+ 
+ **Acts on:** the checkout it runs in.
+ 
+-```bash
++Run the following command with the supplied inputs.
++
++<big><pre>
+ gitnexus analyze
+-```
++</pre></big>
+ 
+ ### Change Surface
+ 
+ Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.
+ 
+-**Inputs:** Comparison base branch.
++**Inputs:** [Base Branch](#base-branch).
++
++**Outputs:** [Changed Symbols](#changed-symbols).
++
++#### 1. Change Surface
+ 
+ **Acts on:** the checkout it runs in.
+ 
++Run the following command with the supplied inputs.
++
+ - `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.
+ 
+-```bash
+-gitnexus detect-changes --scope compare --base-ref '<base-branch>'
+-```
++<big><pre>
++gitnexus detect-changes --scope compare --base-ref '[**&lt;base-branch&gt;**](#base-branch)'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
++<big><pre>
+ gitnexus detect-changes --scope compare --base-ref main
+-```
++</pre></big>
+ 
+ ### Symbol Context
+ 
+ Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.
+ 
+-**Inputs:** Symbol identity from the supplied change surface.
++**Inputs:** [Symbol Identity](#symbol-identity).
++
++**Outputs:** [Symbol Relationships](#symbol-relationships).
++
++#### 1. Symbol Context
+ 
+ **Acts on:** the checkout it runs in.
+ 
+-```bash
+-gitnexus context '<symbol-identity>'
+-```
++Run the following command with the supplied inputs.
++
++<big><pre>
++gitnexus context '[**&lt;symbol-identity&gt;**](#symbol-identity)'
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
++<big><pre>
+ gitnexus context reserveRow
+-```
++</pre></big>
+ 
+ ### Flow Trace
+ 
+ Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.
+ 
+-**Inputs:** Flow identity from the supplied change surface. The result meets [Flow Traces](#flow-traces).
++**Inputs:** [Flow Identity](#flow-identity).
++
++**Outputs:** [Flow Traces](#flow-traces).
++
++#### 1. Flow Trace
+ 
+ **Acts on:** the checkout it runs in.
+ 
+-```bash
+-gitnexus query --query '<flow-identity>' --limit 1
+-```
++Run the following command with the supplied inputs.
++
++<big><pre>
++gitnexus query --query '[**&lt;flow-identity&gt;**](#flow-identity)' --limit 1
++</pre></big>
+ 
+ **Example:**
+ 
+-```bash
++<big><pre>
+ gitnexus query --query "Queue Placement" --limit 1
+-```
++</pre></big>
++
++## Fields
++
++### Revision
++
++The graph identifies its worktree and indexed commit. Measurements describe the supplied pull request head and its difference from the supplied base branch.
++
++### Freshness
++
++Graph responses carry a JSON `staleness` block. A behind index is not current with the requested head; measurements from it are invalid.
++
++### Changed Symbols
++
++The surface identifies symbols touched by the diff and the flows containing them. It compares with the supplied base branch, rather than the branch's whole history.
++
++### Symbol Relationships
++
++Each changed symbol has callers, callees, containing flows and file locations. Files group into component areas; their measured relationships determine edges between areas.
++
++### Flow Traces
++
++Each flow contains symbols in step order. Each `process_symbols` entry includes `step_index`, file and lines. Those ordered measurements supply sequence-diagram participants and interactions. A manually inferred call order does not establish a graph trace.
++
++### Review Checkout
++
++The supplied checkout in which graph commands run.
++
++### Requested Revision
++
++The verified head commit supplied for measurement.
++
++### Base Branch
++
++The supplied comparison base branch.
++
++### Symbol Identity
++
++One symbol identity returned by the supplied change surface.
++
++### Flow Identity
++
++One flow identity returned by the supplied change surface.
++
++### Graph Measurements
++
++The measured revision, freshness, changed symbols, relationships and ordered flow traces, or a freshness blocker.
++
++### Index State
++
++The index status and indexed revision reported for the checkout.
+diff --git a/skills/work-planner/artifacts/review-finding.md b/skills/work-planner/artifacts/review-finding.md
+index e9732883d..25f78eb46 100644
+--- a/skills/work-planner/artifacts/review-finding.md
++++ b/skills/work-planner/artifacts/review-finding.md
+@@ -4,31 +4,51 @@ One evidenced problem and its proposed solution.
+ 
+ ## Operations
+ 
+-### *Populate* Review Finding
++### Populate Review Finding
+ 
+ One finding verified against its supplied source.
+ 
+-**Inputs:** Area, severity, problem, proposed solution, source text and file:line, decision requirement and any confirmed answer.
++**Inputs:** [Finding Evidence](#finding-evidence).
+ 
+-1. Verify the problem against the supplied source.
+-2. If evidence is missing or contradictory, return that finding for the caller to resolve.
+-3. Populate the finding with its source quotation.
+-   - It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
+-4. Return the finding and any pending decision.
++**Outputs:** [Finding Result](#finding-result).
+ 
+-### *Report* Review Finding
++#### 1. Verify Supplied Problem
++
++Verify the problem against the supplied source.
++
++#### 2. Return Evidence Gaps
++
++If evidence is missing or contradictory, return that finding for the caller to resolve.
++
++#### 3. Populate Verified Finding
++
++Populate the finding with its source quotation.
++- It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).
++
++#### 4. Return Finding Decision
++
++Return the finding and any pending decision.
++
++### Report Review Finding
+ 
+ The verified findings presented for resolution.
+ 
+-**Inputs:** Area, severity, problem, solution and source evidence for each finding.
++**Inputs:** [Finding Set](#finding-set).
++
++**Outputs:** [Finding Result](#finding-result).
+ 
+-1. Call [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.
+-   - Resolve any evidence gap before reporting it.
+-   - Group the returned findings by area.
+-2. Put each pending decision to the user, one question at a time.
+-   - Wait for the answer.
+-   - Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
+-   - Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.
++#### 1. Populate Verified Findings
++
++Apply [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.
++- Resolve any evidence gap before reporting it.
++- Group the returned findings by area.
++
++#### 2. Resolve Pending Decisions
++
++Put each pending decision to the user, one question at a time.
++- Wait for the answer.
++- Record the confirmed answer on the finding, meeting [Decision State](#decision-state).
++- Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.
+ 
+ ## Fields
+ 
+@@ -39,3 +59,15 @@ Each finding has an area, severity, one problem/solution pair and a source quota
+ ### Decision State
+ 
+ A finding identifies whether it needs a user decision and records any supplied answer. An unanswered decision remains pending.
++
++### Finding Evidence
++
++The supplied area, severity, problem, proposed solution, source text and file:line, decision requirement and any confirmed answer.
++
++### Finding Set
++
++The supplied findings with their area, severity, problem, proposed solution and source evidence.
++
++### Finding Result
++
++The verified findings and their confirmed resolutions or pending decisions, retaining evidence gaps.
+diff --git a/skills/work-planner/artifacts/standup-report.md b/skills/work-planner/artifacts/standup-report.md
+index 914e99a5a..3fbd9d8ac 100644
+--- a/skills/work-planner/artifacts/standup-report.md
++++ b/skills/work-planner/artifacts/standup-report.md
+@@ -12,20 +12,69 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Compose* Standup Report
++### Compose Standup Report
+ 
+ The copyable report and any missing-evidence findings.
+ 
+-**Inputs:** Board items, pull request records, complete issue-link snapshot, optional window start, initiative filter, resolved off-board initiative records and output paths.
++**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Report Selection](#report-selection), [Initiative Records](#initiative-records), [Output Paths](#output-paths).
+ 
+-1. Require the complete issue-link snapshot.
+-2. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative` and every resolved initiative as `--initiatives`.
+-3. If initiative references remain unresolved, return them for the caller to supply.
+-4. Write the management paragraph from the rendered Initiatives and Completed sections.
+-   - It must meet [Management Paragraph](#management-paragraph).
+-5. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
+-6. Return the report and separate unresolved findings.
+-   - The report must meet [Fields](#fields).
++**Outputs:** [Report Result](#report-result).
++
++#### 1. Require Complete Link Snapshot
++
++Require the complete issue-link snapshot.
++
++#### 2. Render Window Progress
++
++Apply [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative` and every resolved initiative as `--initiatives`.
++
++#### 3. Return Unresolved Initiatives
++
++If initiative references remain unresolved, return them for the caller to supply.
++
++#### 4. Write Management Paragraph
++
++Write the management paragraph from the rendered Initiatives and Completed sections.
++- It must meet [Management Paragraph](#management-paragraph).
++
++#### 5. Render Final Report
++
++Apply [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.
++
++#### 6. Return Report Findings
++
++Return the report and separate unresolved findings.
++- The report must meet [Fields](#fields).
++
++### Summarise Progress
++
++Prints the standup from supplied board items, pull request records and their issue-link snapshot.
++
++**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Report Selection](#report-selection), [Initiative Records](#initiative-records), [Management File](#management-file).
++
++**Outputs:** [Report Result](#report-result).
++
++#### 1. Summarise Progress
++
++Run the following command with the supplied inputs.
++
++- `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.
++- `--since` supplies the window start in [Report Selection](#report-selection), selecting the [window](#scope).
++- `--initiative` selects the initiative filter in [Report Selection](#report-selection). **Examples:** `I08`, `owner/repo:I08`.
++- `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
++- `--summary` gives the paragraph for management.
++
++The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --since '[**&lt;window-start-date&gt;**](#report-selection)' --initiative '[**&lt;initiative-filter&gt;**](#report-selection)' --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records)' --summary '[**&lt;management-paragraph-file&gt;**](#management-file)'
++</pre></big>
++
++**Example:**
++
++<big><pre>
++cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08 --initiatives issue-946.json --summary summary.txt
++</pre></big>
+ 
+ ## Fields
+ 
+@@ -63,30 +112,38 @@ One plain-language paragraph describes what the window delivered as outcomes for
+ 
+ An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and returned as a finding. Unresolved lines are separate from the copyable report.
+ 
+-## Commands
++### Report Selection
+ 
+-### Summarise Progress
++The optional window start uses `YYYY-MM-DD`. The optional initiative filter is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories.
+ 
+-Prints the standup from supplied board items, pull request records and their issue-link snapshot.
++### Initiative Records
+ 
+-**Inputs:** Board items, pull request records and link snapshot; optional window start, initiative filter, off-board initiative records and management paragraph file.
++The supplied resolved off-board initiative JSON records, each at a separate local file path.
+ 
+-- `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.
+-- `--since` supplies an explicit start for the [window](#scope).
+-- `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.
+-- `--initiatives` gives supplied off-board initiative records, each as a separate file argument.
+-- `--summary` gives the paragraph for management.
++### Output Paths
+ 
+-The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
++The supplied report and paragraph output paths.
+ 
+-`<window-start-date>` uses `YYYY-MM-DD`.
++### Management File
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --since '<window-start-date>' --initiative '<initiative-filter>' --initiatives '<initiative-json-file>' --summary '<management-paragraph-file>'
+-```
++The optional local file holding the management paragraph. It is absent before the paragraph is written.
+ 
+-**Example:**
++### Report Result
++
++The rendered copyable report and separate unresolved evidence findings.
++
++### Board Items
++
++The supplied board items with Status and their complete issue records, at the local paginated snapshot path.
++
++### Pull Request Records
++
++The supplied current complete pull request records, one JSON object per nonempty line at the local file path.
++
++### Issue Link Snapshot
++
++The complete supplied pull-request issue-link snapshot at its local JSON path.
++
++### Workspace
+ 
+-```bash
+-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/progress.py --items items.json --prs prs.json --links links.json --since 2026-09-21 --initiative I08 --initiatives issue-946.json --summary summary.txt
+-```
++The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
+diff --git a/skills/work-planner/artifacts/work-item.md b/skills/work-planner/artifacts/work-item.md
+index b1462e5a7..02139ddca 100644
+--- a/skills/work-planner/artifacts/work-item.md
++++ b/skills/work-planner/artifacts/work-item.md
+@@ -12,16 +12,20 @@ Read these files first.
+ 
+ ## Operations
+ 
+-### *Populate* Work Item
++### Populate Work Item
+ 
+ One task's local implementation plan.
+ 
+-**Inputs:** Task id, task scope, epic context, design, the component the implementation extends, supplied criteria and test requirements, and output file.
++**Inputs:** [Task Context](#task-context), [Work Item File](#work-item-file).
+ 
+-- Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
+-  - Its name and content must meet [Identity](#identity) and [Sections](#sections).
+-  - The supplied component must meet [Component](#component).
+-  - The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
++**Outputs:** [Work Item File](#work-item-file).
++
++#### 1. Populate Work Item File
++
++Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.
++- Its name and content must meet [Identity](#identity) and [Sections](#sections).
++- The supplied component must meet [Component](#component).
++- The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.
+ 
+ ## Fields
+ 
+@@ -72,3 +76,11 @@ One declaration line ahead of the first heading, naming the single component the
+ - Overview states what the task delivers and why.
+ - Problem and Proposal meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.
+ - Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.
++
++### Task Context
++
++The supplied task id and scope, epic context, design, component, criteria and test requirements.
++
++### Work Item File
++
++The supplied local output path and the populated work item at that path. The file is absent until populated.
+diff --git a/skills/work-planner/test/test_checkouts.py b/skills/work-planner/test/test_checkouts.py
+index 8b326e638..13a8c8892 100644
+--- a/skills/work-planner/test/test_checkouts.py
++++ b/skills/work-planner/test/test_checkouts.py
+@@ -24,6 +24,7 @@ inside a procedure step.
+ """
+ import re
+ import sys
++import tempfile
+ import unittest
+ from pathlib import Path
+ 
+@@ -61,8 +62,11 @@ class Document:
+     def __init__(self, path):
+         self.path = path
+         self.lines, self.fenced, self.headings = checker.scan(path)
+-        entry = checker.contract(path, {}) if hasattr(checker, 'contract') else None
++        entry = dict(checker.contract(path, {}) or {})
++        entry.update(procedures='Operations' if path.parent.name == 'artifacts' else 'Procedure',
++                     steps='headings')
+         self.steps = checker.procedure_spans(self.lines, self.fenced, self.headings, entry)
++        self.blocks = checker.scan_blocks(self.lines)
+         self.spans = {}
+         for position, (start, level, title) in enumerate(self.headings):
+             end = next((index for index, depth, _ in self.headings[position + 1:]
+@@ -77,7 +81,8 @@ class Document:
+     def lead(self, start):
+         """The lines between a heading and the heading after it."""
+         following = next((index for index, _, _ in self.headings if index > start), len(self.lines))
+-        return [self.lines[index] for index in range(start + 1, following) if not self.fenced[index]]
++        return [self.lines[index] for index in range(start + 1, following)
++                if not self.fenced[index] and index not in self.blocks.html_lines]
+ 
+     def declared(self, start):
+         """The checkout a heading's own lead declares it runs in."""
+@@ -111,15 +116,22 @@ class Document:
+         return next((start for start in self.enclosing(index) if self.spans[start][2] == level), None)
+ 
+     def commands(self):
+-        """Each command specification with whether its block runs git where
+-        it stands and whether it declares so."""
+-        for start, title in checker.specifications(self.headings):
+-            end = next((index for index, level, _ in self.headings
+-                        if index > start and level <= 3), len(self.lines))
+-            body = range(start + 1, end)
+-            bare = any(self.fenced[index] and WHERE_IT_STANDS.match(self.lines[index]) for index in body)
++        """Executing HTML operations and their working-directory declarations."""
++        operations = {}
++        for first, last in self.blocks.invocations:
++            if first not in self.steps:
++                continue
++            start = self.section(first, 3)
++            if start is not None:
++                payload = '\n'.join(self.lines[first:last + 1]).strip()
++                payload = payload.removeprefix('<big><pre>').removesuffix('</pre></big>')
++                operations.setdefault(start, []).extend(payload.splitlines())
++        for start, payload in operations.items():
++            _, end, _, title = self.spans[start]
++            bare = any(WHERE_IT_STANDS.match(line) for line in payload)
+             declares = any(self.lines[index].strip() == ACTS_ON
+-                           for index in body if not self.fenced[index])
++                           for index in range(start + 1, end)
++                           if not self.fenced[index] and index not in self.blocks.html_lines)
+             yield start, title, bare, declares
+ 
+     def calls(self):
+@@ -202,6 +214,114 @@ class Corpus:
+         return f'{checkout} checkout' in document.inputs(start).lower()
+ 
+ 
++class ExecutingCheckoutEvidence(unittest.TestCase):
++    def test_actual_graph_commands_and_transitive_calls_are_present(self):
++        corpus = Corpus()
++        graph = (ROOT / 'artifacts/repository-graph.md').resolve()
++        self.assertIn((graph, 'index-status'), corpus.commands)
++        self.assertIn((graph, 'index-repository'), corpus.commands)
++        self.assertIn((graph, 'measure-repository-change'), corpus.acting)
++        self.assertTrue(any(destination == graph and anchor == 'measure-repository-change'
++                            for _, _, destination, anchor in corpus.calls()))
++
++    def test_only_executing_html_supplies_command_and_declaration_evidence(self):
++        with tempfile.TemporaryDirectory() as directory:
++            path = Path(directory) / 'artifacts/control.md'
++            path.parent.mkdir()
++            path.write_text("""# Checkout Evidence
++
++## Operations
++
++### Inspect Current Checkout
++
++#### 1. Inspect Current State
++
++**Acts on:** the checkout it runs in.
++
++<big><pre>
++git status
++# Opaque Payload Heading
++</pre></big>
++
++### Inspect Explicit Checkout
++
++#### 1. Inspect Supplied State
++
++<big><pre>git -C '/tmp/control' status</pre></big>
++
++### Inspect Undeclared Checkout
++
++#### 1. Inspect Undeclared State
++
++<big><pre>
++**Acts on:** the checkout it runs in.
++git status
++</pre></big>
++
++### Unexecuted Operation
++
++<big><pre>git status</pre></big>
++
++## Fields
++
++### Template
++
++````markdown
++### Literal Command Operation
++
++#### 1. Inspect Literal State
++
++**Acts on:** the checkout it runs in.
++
++<big><pre>git status</pre></big>
++````
++
++### Unexecuted Field
++
++<big><pre>git status</pre></big>
++""")
++            document = Document(path)
++            commands = {title: (bare, declares) for _, title, bare, declares in document.commands()}
++            self.assertEqual(commands, {
++                'Inspect Current Checkout': (True, True),
++                'Inspect Explicit Checkout': (False, False),
++                'Inspect Undeclared Checkout': (True, False),
++            })
++
++    def test_calls_follow_heading_steps_and_exclude_literal_and_lead_links(self):
++        with tempfile.TemporaryDirectory() as directory:
++            path = Path(directory) / 'artifacts/control.md'
++            path.parent.mkdir()
++            path.write_text("""# Call Evidence
++
++## Operations
++
++### Inspect Current Checkout
++
++[Unexecuted lead](#lead-target)
++
++#### 1. Inspect Current State
++
++Apply [Inspect Live Target](#live-target) in the review checkout.
++
++````markdown
++Apply [Inspect Literal Target](#literal-target) in the review checkout.
++````
++
++<big><pre>
++[Opaque payload](#payload-target)
++</pre></big>
++
++## Fields
++
++### Reference
++
++[Unexecuted field](#field-target)
++""")
++            document = Document(path)
++            self.assertEqual([anchor for _, _, anchor in document.calls()], ['live-target'])
++
++
+ class CheckoutVocabulary(unittest.TestCase):
+     def test_conventions_name_the_checkouts(self):
+         """The vocabulary every declaration and call draws from."""
+diff --git a/skills/work-planner/test/test_plan_mode.py b/skills/work-planner/test/test_plan_mode.py
+index 10a8b6a09..65365f30d 100644
+--- a/skills/work-planner/test/test_plan_mode.py
++++ b/skills/work-planner/test/test_plan_mode.py
+@@ -3,11 +3,15 @@
+ Every draft body and work item the mode writes lands in the record's folder,
+ and the record reaches readers by a commit and push of the engineering branch.
+ """
++import html
+ import re
++import sys
+ import unittest
+ from pathlib import Path
+ 
+ ROOT = Path(__file__).resolve().parents[1]
++sys.path.insert(0, str(ROOT.parent / 'scripts'))
++import check_skill_files as checker
+ STEP = re.compile(r'^### \d+\. (.+)$', re.MULTILINE)
+ PUBLISH_RECORD = 'Publish Planning Record'
+ IN_RECORD = "in the record's folder"
+@@ -19,11 +23,20 @@ WRITERS = (
+ 
+ 
+ def section(text, heading):
+-    """The lines under one heading, up to the next heading of equal or higher level."""
+-    level = heading.split(' ', 1)[0]
+-    body = text.split(f'\n{heading}\n', 1)[1]
+-    end = re.search(rf'^#{{1,{len(level)}}} ', body, re.MULTILINE)
+-    return body[:end.start()] if end else body
++    """One heading's prose and executing invocations, excluding literal specimens."""
++    marker, title = heading.split(' ', 1)
++    lines, fenced, headings = checker.parse(text)
++    found = [(start, level) for start, level, name in headings
++             if level == len(marker) and checker.anchor_of(name) == checker.anchor_of(title)]
++    if len(found) != 1:
++        raise ValueError(f'expected one heading {heading!r}: {found}')
++    start, level = found[0]
++    end = checker.heading_end(headings, start, level, len(lines))
++    commands = checker.scan_blocks(lines).html_lines
++    return '\n'.join(html.unescape(checker.ARGUMENT_LINK.sub(lambda match: match[1], line))
++                     if index in commands else line
++                     for index, line in enumerate(lines[start + 1:end], start + 1)
++                     if not fenced[index])
+ 
+ 
+ def steps():
+@@ -34,6 +47,45 @@ def steps():
+             for i, mark in enumerate(marks)}
+ 
+ 
++class SectionReads(unittest.TestCase):
++    def test_literal_headings_and_commands_do_not_supply_execution_evidence(self):
++        text = """# Document
++
++````markdown
++### Publish Planning Record
++
++git push specimen
++````
++
++### Publish Planning Record
++
++#### 1. Publish Planning Files
++
++<big><pre>
++git -C '[**&lt;checkout&gt;**](#checkout)' push
++</pre></big>
++
++```bash
++git push example
++```
++
++### Other Operation
++
++git push unrelated
++"""
++        body = section(text, '### Publish Planning Record')
++        self.assertIn("git -C '<checkout>' push", body)
++        self.assertIn('#### 1. Publish Planning Files', body)
++        self.assertNotIn('specimen', body)
++        self.assertNotIn('example', body)
++        self.assertNotIn('unrelated', body)
++
++    def test_a_literal_heading_cannot_supply_a_missing_operation(self):
++        with self.assertRaises(ValueError):
++            section('# Document\n\n```markdown\n### Missing Operation\n```\n',
++                    '### Missing Operation')
++
++
+ class DraftsInTheRecord(unittest.TestCase):
+     def test_each_draft_and_work_item_is_written_in_the_record(self):
+         lines = [line for text in steps().values() for line in text.splitlines()]
+@@ -71,7 +123,7 @@ class PublishedOnEngineering(unittest.TestCase):
+ 
+     def test_publishing_commits_and_pushes_the_engineering_branch(self):
+         text = (ROOT / 'artifacts' / 'planning-record.md').read_text()
+-        publish = section(text, '### *Publish* Planning Record')
++        publish = section(text, '### Publish Planning Record')
+         self.assertIn('[Commit Planning Record](#commit-planning-record)', publish)
+         self.assertIn("cd '<engineering-worktree>' && git add -A && "
+                       "(git diff --cached --quiet || git commit -F '<message-file>') && "

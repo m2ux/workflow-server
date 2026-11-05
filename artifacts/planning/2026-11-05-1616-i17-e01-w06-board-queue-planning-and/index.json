@@ -1,0 +1,223 @@
+{
+  "status": "All six coordinator-reviewed final contexts archived; all Partial.",
+  "registered_source": "registered-source.json",
+  "completed_walks": [
+    {
+      "scenario": "standup",
+      "repeat": 1,
+      "session": "/root/w06_final_standup1",
+      "scratch": "/tmp/w06-walk-final-standup1",
+      "status": "Partial",
+      "archive": "completed-walks/standup1.tar.gz",
+      "archive_sha256": "3c312de3217c077233845020ecfb54eb54bc20824d1a330f0056666ec5a8ce82",
+      "manifest": "completed-walks/standup1-manifest.json",
+      "result_files": 31,
+      "primary_results": [
+        "report.txt",
+        "management.txt",
+        "unresolved.md",
+        "trace.md"
+      ]
+    },
+    {
+      "scenario": "standup",
+      "repeat": 2,
+      "session": "/root/w06_final_standup2",
+      "scratch": "/tmp/w06-walk-final-standup2",
+      "status": "Partial",
+      "archive": "completed-walks/standup2.tar.gz",
+      "archive_sha256": "264e5cde0aca8b16d08538365cbffec34ddec89af912480d872997f0d126d084",
+      "manifest": "completed-walks/standup2-manifest.json",
+      "result_files": 44,
+      "primary_results": [
+        "report.txt",
+        "management.txt",
+        "unresolved.md",
+        "receipt-trace.md",
+        "commands.txt"
+      ]
+    },
+    {
+      "scenario": "understand",
+      "repeat": 1,
+      "session": "/root/w06_final_understand1",
+      "scratch": "/tmp/w06-walk-final-understand1",
+      "status": "Partial",
+      "archive": "completed-walks/understand1.tar.gz",
+      "archive_sha256": "83552a13a18bb7216dc84ff2739c93560440881dca96f27a9b5c9955cab9d823",
+      "manifest": "completed-walks/understand1-manifest.json",
+      "result_files": 50,
+      "primary_results": [
+        "trace.md",
+        "measurements.json",
+        "2026-11-05-1643-modes-in-the-new-style/overview-preparation.md"
+      ]
+    },
+    {
+      "scenario": "understand",
+      "repeat": 2,
+      "session": "/root/w06_final_understand2",
+      "scratch": "/tmp/w06-walk-final-understand2",
+      "status": "Partial",
+      "archive": "completed-walks/understand2.tar.gz",
+      "archive_sha256": "a39ace25a7c1bef0db58ae84badb157a18df9957900c48f146124d6ba8aa4c67",
+      "manifest": "completed-walks/understand2-manifest.json",
+      "result_files": 30,
+      "primary_results": [
+        "overview.md",
+        "findings.md",
+        "measurements.json",
+        "reads/reads.jsonl"
+      ]
+    },
+    {
+      "scenario": "review-goal",
+      "repeat": 1,
+      "session": "/root/w06_final_goal1",
+      "scratch": "/tmp/w06-walk-final-goal1",
+      "status": "Partial",
+      "archive": "completed-walks/goal1.tar.gz",
+      "archive_sha256": "9496fab2e68a7ff46105a8ab60a43cb1a0848007bab8dc980a265658dcee169d",
+      "manifest": "completed-walks/goal1-manifest.json",
+      "result_files": 65,
+      "primary_results": [
+        "README.md",
+        "goal-trace.md",
+        "review-findings.md",
+        "execution.md"
+      ]
+    },
+    {
+      "scenario": "review-goal",
+      "repeat": 2,
+      "session": "/root/w06_final_goal2",
+      "scratch": "/tmp/w06-walk-final-goal2",
+      "status": "Partial",
+      "archive": "completed-walks/goal2.tar.gz",
+      "archive_sha256": "57b1163c099b16eacf608b8b68943363e7489698dcb5a8d77cff1e1ab9344513",
+      "manifest": "completed-walks/goal2-manifest.json",
+      "result_files": 104,
+      "primary_results": [
+        "README.md",
+        "goal-trace.md",
+        "ranked-findings.md",
+        "read-trace.md",
+        "commands.md",
+        "tool-output-manifest.json"
+      ]
+    }
+  ],
+  "pending_walks": [],
+  "support": [
+    {
+      "path": "controls/verify-w06.py",
+      "original": "/tmp/i17-e01-w06/verify-w06.py",
+      "sha256": "f7ce39366168dee9c98415e27ad6c32e732f75a91d7bc336928ea6c25e287db5"
+    },
+    {
+      "path": "controls/neutral-read.py",
+      "original": "/tmp/i17-e01-w06/verification-preparation/neutral-read.py",
+      "sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202"
+    },
+    {
+      "path": "controls/verification-preparation-README.md",
+      "original": "/tmp/i17-e01-w06/verification-preparation/README.md",
+      "sha256": "6595caebd8f26a32944ed89cd8b891d42942519a125620bc6fcdefdc7dee0c07"
+    },
+    {
+      "path": "controls/verification-preparation-controls.py",
+      "original": "/tmp/i17-e01-w06/verification-preparation-controls.py",
+      "sha256": "950907d65eec16e71d518adae32e9b247283198170f73866b848597a499e5b7d"
+    },
+    {
+      "path": "controls/verification-preparation-controls.json",
+      "original": "/tmp/i17-e01-w06/verification-preparation-controls.json",
+      "sha256": "f133ea343e9d5aea636b5b52680462afe2e3a8950a8d65dbe99921a3e48828ac"
+    },
+    {
+      "path": "controls/verification-preparation-controls.log",
+      "original": "/tmp/i17-e01-w06/verification-preparation-controls.log",
+      "sha256": "f133ea343e9d5aea636b5b52680462afe2e3a8950a8d65dbe99921a3e48828ac"
+    },
+    {
+      "path": "controls/reader-provenance.json",
+      "original": "/tmp/i17-e01-w06/reader-provenance.json",
+      "sha256": "fa08c44bfe5e3378deb6ac0bc1efed03429244c5a88dc74dd3a89cc99872b4d7"
+    },
+    {
+      "path": "history/historical-v2-neutral-read.py",
+      "original": "/tmp/i17-e01-w06/disclosure-v2/read.py",
+      "sha256": "e510c18752a7878ea123f9eb5e176cb762da6a97278e5589075bd5906581db0e"
+    },
+    {
+      "path": "history/initial-combined-reader-failures.log",
+      "original": "/tmp/i17-e01-w06/planner-combined-first.log",
+      "sha256": "6b7262db066cb77dd25ea94e4e409a56dbd5ba0a32d8cb354f7b73a5f8d7f1bc"
+    },
+    {
+      "path": "history/actual-empty-checkout-reader-suite.log",
+      "original": "/tmp/i17-e01-w06/actual-composition/planner.log",
+      "sha256": "e4e9cf697102060cc40ca7bebeb5d5acddb2a2748c36d0a542bb2bff3a3d387c"
+    },
+    {
+      "path": "history/checkout-reader-probe.log",
+      "original": "/tmp/i17-e01-w06/actual-composition/checkout-reader-probe.log",
+      "sha256": "57dca452cd89e95837ea0aaf383c794186840acc3624fced786b2a5ec67c3014"
+    },
+    {
+      "path": "history/checkout-reader-integration-findings.log",
+      "original": "/tmp/i17-e01-w06/actual-composition/checkouts-repaired.log",
+      "sha256": "97ee4b8b77051e85ef18bcd838681bcf6af1efde3b2c60ead7cd9a48ee3ec818"
+    },
+    {
+      "path": "history/checkout-reader-caller-proof.log",
+      "original": "/tmp/i17-e01-w06/actual-composition/checkouts-combined-proof.log",
+      "sha256": "f2473686148dea3ef73fe33fbc23f85d78a0c1a6eecb064ec808ccd5505b1457"
+    },
+    {
+      "path": "history/initial-capture-import-failure.log",
+      "original": "/tmp/i17-e01-w06/final-actual/capture-attempt-1.log",
+      "sha256": "e211b0f2924f633e6be30979e776c9e51124cad9707e0310be5b30d2d054585f"
+    },
+    {
+      "path": "history/initial-capture-files.tar.gz",
+      "original": "/tmp/i17-e01-w06/final-actual/capture-attempt-1",
+      "sha256": "ae98c97ceb98dcbbf224063ca1701fe43219f2faa394f1a647a76f8758fd4a4f",
+      "files": {
+        "inputs/epic-1616.json": {
+          "kind": "file",
+          "sha256": "d3a1cdd7290777808fa754fa9148cb39f0d363b6145e1567d13b4ec3a2f578b5",
+          "bytes": 12621
+        },
+        "inputs/epic-board-item.json": {
+          "kind": "file",
+          "sha256": "8a622b0d5e8519f1810229c028b2996b2f9055dbb50bebbf4ed8f76aa50f5e98",
+          "bytes": 19482
+        },
+        "inputs/fields.json": {
+          "kind": "file",
+          "sha256": "d4f3b50f92d1c0da6b58564f9ef84a6249318e60d0b6cbd34987f8d164408abe",
+          "bytes": 4451
+        },
+        "inputs/initiative-1597.json": {
+          "kind": "file",
+          "sha256": "8485d385428787af219dc823aa55fcd4bf2c4ac0516424864a12a845536ea48e",
+          "bytes": 9120
+        },
+        "inputs/items.json": {
+          "kind": "file",
+          "sha256": "f748a911382c38e67a0a46d058ec8a6b3904635e8fc0d6f508aeee50ec6e7995",
+          "bytes": 722017
+        }
+      }
+    }
+  ],
+  "goal_review_disposition": "Unapplied bounded plan-proof concerns; no confirmed live defect or I17/I16 change is asserted.",
+  "live_writes": "None. Source, snapshot, walk originals and shared engineering records remain unchanged.",
+  "disclosure": "disclosure.md",
+  "parent_manifest_audit": "parent-manifest-audit.json",
+  "package_archive": {
+    "path": "final-walk-package.tar.gz",
+    "sha256": "fa1c526388226158f19be2e6cd119a27bec75b5d523a100efeaac011801871c3"
+  }
+}

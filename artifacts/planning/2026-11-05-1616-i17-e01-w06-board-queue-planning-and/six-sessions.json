@@ -1,0 +1,106 @@
+[
+  {
+    "scenario": "standup",
+    "repeat": 1,
+    "session": "/root/w06_final_standup1",
+    "scratch": "/tmp/w06-walk-final-standup1",
+    "status": "Partial",
+    "archive": "completed-walks/standup1.tar.gz",
+    "archive_sha256": "3c312de3217c077233845020ecfb54eb54bc20824d1a330f0056666ec5a8ce82",
+    "manifest": "completed-walks/standup1-manifest.json",
+    "result_files": 31,
+    "primary_results": [
+      "report.txt",
+      "management.txt",
+      "unresolved.md",
+      "trace.md"
+    ]
+  },
+  {
+    "scenario": "standup",
+    "repeat": 2,
+    "session": "/root/w06_final_standup2",
+    "scratch": "/tmp/w06-walk-final-standup2",
+    "status": "Partial",
+    "archive": "completed-walks/standup2.tar.gz",
+    "archive_sha256": "264e5cde0aca8b16d08538365cbffec34ddec89af912480d872997f0d126d084",
+    "manifest": "completed-walks/standup2-manifest.json",
+    "result_files": 44,
+    "primary_results": [
+      "report.txt",
+      "management.txt",
+      "unresolved.md",
+      "receipt-trace.md",
+      "commands.txt"
+    ]
+  },
+  {
+    "scenario": "understand",
+    "repeat": 1,
+    "session": "/root/w06_final_understand1",
+    "scratch": "/tmp/w06-walk-final-understand1",
+    "status": "Partial",
+    "archive": "completed-walks/understand1.tar.gz",
+    "archive_sha256": "83552a13a18bb7216dc84ff2739c93560440881dca96f27a9b5c9955cab9d823",
+    "manifest": "completed-walks/understand1-manifest.json",
+    "result_files": 50,
+    "primary_results": [
+      "trace.md",
+      "measurements.json",
+      "2026-11-05-1643-modes-in-the-new-style/overview-preparation.md"
+    ]
+  },
+  {
+    "scenario": "understand",
+    "repeat": 2,
+    "session": "/root/w06_final_understand2",
+    "scratch": "/tmp/w06-walk-final-understand2",
+    "status": "Partial",
+    "archive": "completed-walks/understand2.tar.gz",
+    "archive_sha256": "a39ace25a7c1bef0db58ae84badb157a18df9957900c48f146124d6ba8aa4c67",
+    "manifest": "completed-walks/understand2-manifest.json",
+    "result_files": 30,
+    "primary_results": [
+      "overview.md",
+      "findings.md",
+      "measurements.json",
+      "reads/reads.jsonl"
+    ]
+  },
+  {
+    "scenario": "review-goal",
+    "repeat": 1,
+    "session": "/root/w06_final_goal1",
+    "scratch": "/tmp/w06-walk-final-goal1",
+    "status": "Partial",
+    "archive": "completed-walks/goal1.tar.gz",
+    "archive_sha256": "9496fab2e68a7ff46105a8ab60a43cb1a0848007bab8dc980a265658dcee169d",
+    "manifest": "completed-walks/goal1-manifest.json",
+    "result_files": 65,
+    "primary_results": [
+      "README.md",
+      "goal-trace.md",
+      "review-findings.md",
+      "execution.md"
+    ]
+  },
+  {
+    "scenario": "review-goal",
+    "repeat": 2,
+    "session": "/root/w06_final_goal2",
+    "scratch": "/tmp/w06-walk-final-goal2",
+    "status": "Partial",
+    "archive": "completed-walks/goal2.tar.gz",
+    "archive_sha256": "57b1163c099b16eacf608b8b68943363e7489698dcb5a8d77cff1e1ab9344513",
+    "manifest": "completed-walks/goal2-manifest.json",
+    "result_files": 104,
+    "primary_results": [
+      "README.md",
+      "goal-trace.md",
+      "ranked-findings.md",
+      "read-trace.md",
+      "commands.md",
+      "tool-output-manifest.json"
+    ]
+  }
+]

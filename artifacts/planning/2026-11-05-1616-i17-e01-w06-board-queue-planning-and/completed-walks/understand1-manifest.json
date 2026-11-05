@@ -1,0 +1,269 @@
+{
+  "walk": "understand1",
+  "source": "/tmp/w06-walk-final-understand1",
+  "completion_authority": "Root explicitly reports this walk complete; no in-flight walk is read or archived.",
+  "archive": "completed-walks/understand1.tar.gz",
+  "archive_sha256": "83552a13a18bb7216dc84ff2739c93560440881dca96f27a9b5c9955cab9d823",
+  "files": {
+    "2026-11-05-1643-modes-in-the-new-style/README.md": {
+      "kind": "file",
+      "sha256": "72de16cd85ec2550c045b6891a3175037baf9b5bb9425e2b54618a735d49b8ac",
+      "bytes": 1512
+    },
+    "2026-11-05-1643-modes-in-the-new-style/overview-preparation.md": {
+      "kind": "file",
+      "sha256": "95ba3a7161f3d56272c03a56fcdb22ce4a12d3d6b40c3941300311439acd745d",
+      "bytes": 11134
+    },
+    "base-source/skills/work-planner/modes/advance-mode.md": {
+      "kind": "file",
+      "sha256": "a5ccf14c8e9ebebe9639a7caba61f5c17c6e4aeb42279228e32349f90d3692a8",
+      "bytes": 6478
+    },
+    "base-source/skills/work-planner/modes/align-mode.md": {
+      "kind": "file",
+      "sha256": "b64214666820d341729bd49b8a1521a8ca640850866f3e4242d7d51a8a937754",
+      "bytes": 15156
+    },
+    "base-source/skills/work-planner/modes/deliver-mode.md": {
+      "kind": "file",
+      "sha256": "ed40675ee8507d3b27440c4595e2fab3e0ced18b6517e9c8b7c0ab7a5003b223",
+      "bytes": 18809
+    },
+    "base-source/skills/work-planner/modes/hoist-mode.md": {
+      "kind": "file",
+      "sha256": "872ca9f919207ddb45f313d14f87708d4890c3dfa6e7aafab6e0efcf4cf7bbc4",
+      "bytes": 4452
+    },
+    "base-source/skills/work-planner/modes/plan-mode.md": {
+      "kind": "file",
+      "sha256": "4008e07fec19c1521bd14c7b4bac98ef10275bf127d9331a3d76dd30a03c4366",
+      "bytes": 9887
+    },
+    "base-source/skills/work-planner/modes/propose-mode.md": {
+      "kind": "file",
+      "sha256": "252101c48dfe2f500d82c13bc2a3c649d991db6822c20630cbbb87c063d29c3d",
+      "bytes": 3215
+    },
+    "base-source/skills/work-planner/modes/revise-mode.md": {
+      "kind": "file",
+      "sha256": "19dd7a0f7e7605d8739819a23f7f61b7acdae19db3717a55b48628f924852c60",
+      "bytes": 4476
+    },
+    "base-source/skills/work-planner/modes/standup-mode.md": {
+      "kind": "file",
+      "sha256": "61b134aee0f7bc42d320130754998f06e96c1c546a9cfbe07f7cc7c7b9810b1a",
+      "bytes": 4355
+    },
+    "base-source/skills/work-planner/modes/sync-mode.md": {
+      "kind": "file",
+      "sha256": "77c7a650119d9beb3aabc8949496c861111fa6240dc65f68fdd670b9eb18b166",
+      "bytes": 16976
+    },
+    "base-source/skills/work-planner/modes/understand-mode.md": {
+      "kind": "file",
+      "sha256": "8a58bfc77f8b6ceefd0f0230998547618eb0999dd9fd90dc6db04041f6e8a1dc",
+      "bytes": 1306
+    },
+    "base-source/skills/work-planner/test/test_documents.py": {
+      "kind": "file",
+      "sha256": "ca6c3bd49ebcb763663f8ef61eb4fa883de7e851ae422c4438f1d182215b3df6",
+      "bytes": 11613
+    },
+    "base-source/skills/work-planner/test/test_plan_mode.py": {
+      "kind": "file",
+      "sha256": "52f4d2a9055b8e636c09d41bf46ccc7bd6f69ff403b139e5c1cc19f7da443e17",
+      "bytes": 3658
+    },
+    "head-source/skills/work-planner/modes/advance-mode.md": {
+      "kind": "file",
+      "sha256": "81f9559ff8321f1626229a277cce325cbdef3797e50df981bf71a652de0a4b46",
+      "bytes": 6498
+    },
+    "head-source/skills/work-planner/modes/align-mode.md": {
+      "kind": "file",
+      "sha256": "a6eb7427acadb655ddd91a191edbca8a4c82230aff8b48797f660974b341eafb",
+      "bytes": 14901
+    },
+    "head-source/skills/work-planner/modes/deliver-mode.md": {
+      "kind": "file",
+      "sha256": "6aa1d968a48c85f57e9c430ace5f931973b40da4fcbbc5075487a184ba384324",
+      "bytes": 18758
+    },
+    "head-source/skills/work-planner/modes/hoist-mode.md": {
+      "kind": "file",
+      "sha256": "08cd8e6b9c460f50234d40cf603ddbc9483f4f03c697b0c1beb6bb5099a6cd2d",
+      "bytes": 4666
+    },
+    "head-source/skills/work-planner/modes/plan-mode.md": {
+      "kind": "file",
+      "sha256": "c7b5242ed97134e19cfb81df210949e513c2c6b2c6dda6d1b243ea9cba7752f6",
+      "bytes": 10425
+    },
+    "head-source/skills/work-planner/modes/propose-mode.md": {
+      "kind": "file",
+      "sha256": "4684434d05e29c64284dd572ceacf1649f86a57ef2fbdf14a23b247a31a3eb74",
+      "bytes": 3318
+    },
+    "head-source/skills/work-planner/modes/revise-mode.md": {
+      "kind": "file",
+      "sha256": "3669d8071137f04c4e3bb3f40d76455dc6ced752bc4955653563208038f9c686",
+      "bytes": 5369
+    },
+    "head-source/skills/work-planner/modes/standup-mode.md": {
+      "kind": "file",
+      "sha256": "ef6dce3c9aadc38ce50662e0de04762906eef85d389fa110ced2ba505ecea252",
+      "bytes": 4426
+    },
+    "head-source/skills/work-planner/modes/sync-mode.md": {
+      "kind": "file",
+      "sha256": "7cb5f106b1139a9b4897c603d109759599c54748d0b0a71f81c5df1f1710f9cc",
+      "bytes": 16809
+    },
+    "head-source/skills/work-planner/modes/understand-mode.md": {
+      "kind": "file",
+      "sha256": "13d68f12c201fcb1f89f4d154010b33fb7ce68387f561a5d1cb9e338be260011",
+      "bytes": 1403
+    },
+    "head-source/skills/work-planner/test/test_documents.py": {
+      "kind": "file",
+      "sha256": "81917518d6f197d80fd8aa1f34fe9e122c7abf5246597f37c32ac95329f5e182",
+      "bytes": 11758
+    },
+    "head-source/skills/work-planner/test/test_plan_mode.py": {
+      "kind": "file",
+      "sha256": "80a2dd0dd27f116e567b53f79be63fd4efa4724ef3a2fe94f8e458c993592716",
+      "bytes": 3674
+    },
+    "measure.py": {
+      "kind": "file",
+      "sha256": "87c0728cfd3842467c28be1f31d058b407fdc873c3195bfadceb6ff452f3b18f",
+      "bytes": 3233
+    },
+    "measurements.json": {
+      "kind": "file",
+      "sha256": "e31e2cd3cd5138d3401a6e56474529b59d6eed1a580131879f359fac018f355e",
+      "bytes": 19678
+    },
+    "neutral-reads/read-r4savyls.txt": {
+      "kind": "file",
+      "sha256": "587375687b1d600282663c6bb518fb6f5bd0543ddfbbb3fe609e332728741134",
+      "bytes": 6469
+    },
+    "neutral-reads/reads.jsonl": {
+      "kind": "file",
+      "sha256": "22a0b8c69d4ed566f702fd96ffe029a4335dca4d5444c860078b528c08f93ed6",
+      "bytes": 291
+    },
+    "receipts/03-rules-mode.json": {
+      "kind": "file",
+      "sha256": "623924fa522a65a309d723409671b3a61a494addfa6d9d57ca53a08dd7f8030c",
+      "bytes": 5923
+    },
+    "receipts/04-protocol.json": {
+      "kind": "file",
+      "sha256": "e45d84fdb3a53baa84f0d15559b119e3fb84e6634904b49308e8f7abe1e45653",
+      "bytes": 4003
+    },
+    "receipts/05-prerequisites.json": {
+      "kind": "file",
+      "sha256": "f8a8b6e61ce991049321bad829b97d10bddd5cc88ed6b12d60f0ab06aba0da9a",
+      "bytes": 108619
+    },
+    "receipts/06-recovery-inventory.json": {
+      "kind": "file",
+      "sha256": "fc42174d268f2df16feb701f282e1058f86f14110aa045217ec8e2d485803b32",
+      "bytes": 1333
+    },
+    "receipts/07-repository-graph.json": {
+      "kind": "file",
+      "sha256": "10676efd669db0bb7d2a7773b0def4206000e640be8794bf2409f14d9b4c1543",
+      "bytes": 6228
+    },
+    "receipts/08-pr-metadata.json": {
+      "kind": "file",
+      "sha256": "13bd95b1d71798033d787ca047ed63fe17639a7e9530092ea76ef82de877189e",
+      "bytes": 4613
+    },
+    "receipts/09-local-revision-surface.json": {
+      "kind": "file",
+      "sha256": "d8ae5c323db2f20fa904482d5839f8c1228ce28d8fd72f0d0e53bb7548dc1812",
+      "bytes": 1395
+    },
+    "receipts/10-prerequisite-recovery.json": {
+      "kind": "file",
+      "sha256": "55b4b0f55506dd0c8b8380a18ebf6d8c8a91baa34e6d6dbecb58a751e2fca874",
+      "bytes": 16854
+    },
+    "receipts/11-neutral-sbx-attempt.json": {
+      "kind": "file",
+      "sha256": "2bf712882dcd38e3c32cdad130068e1e4b34962eb39151496351b7b278eabeff",
+      "bytes": 910
+    },
+    "receipts/12-neutral-sbx-retry.json": {
+      "kind": "file",
+      "sha256": "56637aa0ebef03ab5c336f496f101532816cf65ae5eac2c141fc2cb3877018f8",
+      "bytes": 7137
+    },
+    "receipts/13-mode-test-diff.json": {
+      "kind": "file",
+      "sha256": "86bda1b05dce6620e8dc40385ab56731c347fd416db5e794f027674104446781",
+      "bytes": 23658
+    },
+    "receipts/14-revise-and-plan-tests.json": {
+      "kind": "file",
+      "sha256": "07dfd123d0fccf0d1c821108b21e0b03fbc0d7460834c437714aa730b55057c8",
+      "bytes": 13918
+    },
+    "receipts/15-initial-read-recapture.json": {
+      "kind": "file",
+      "sha256": "035e242c59fe6fa06ddb6413f3ef21ff2096a35fcd56dfce47ab8d8c6c6025ce",
+      "bytes": 11005
+    },
+    "receipts/16-measurements-command.json": {
+      "kind": "file",
+      "sha256": "b0ea8c5e706e7fa7bc268368720c390b412b81c3bd80a5dab8ac15ece84613be",
+      "bytes": 4528
+    },
+    "receipts/17-head-anchors.json": {
+      "kind": "file",
+      "sha256": "26f79247166d852e44790c1a35aa66306c73b86a92b0b37fb83e25b9e8c0aab9",
+      "bytes": 14201
+    },
+    "receipts/18-head-source-selections.json": {
+      "kind": "file",
+      "sha256": "e7aa24498f3d73a206a1e48a6cc5b199606bddaedd30eb647aa68fe99363ccbc",
+      "bytes": 17534
+    },
+    "receipts/19-retrieval-accounting.json": {
+      "kind": "file",
+      "sha256": "91fcfd6574d09537626d83148525ed650f05f65ac6a93110f958c5c2c540e5b0",
+      "bytes": 1262
+    },
+    "receipts/20-head-context.json": {
+      "kind": "file",
+      "sha256": "23dee9aaefce65cc77a27d5170c347856b7b0f1328854be2bbad8fe8efb889d3",
+      "bytes": 6585
+    },
+    "receipts/21-final-readback.json": {
+      "kind": "file",
+      "sha256": "fd4a431e84c6ef7b1099afa3504800143df7b240eae7558c6d055ddeaaebc20f",
+      "bytes": 12470
+    },
+    "trace.md": {
+      "kind": "file",
+      "sha256": "7df29c71ce5bfbb61a2a5c18a92d2851f2e5da9ffcdd38920e9beb5fc012bad5",
+      "bytes": 6254
+    }
+  },
+  "primary_results": [
+    "trace.md",
+    "measurements.json",
+    "2026-11-05-1643-modes-in-the-new-style/overview-preparation.md"
+  ],
+  "assessment": "Original observations, receipts, limitations and pending decisions retained; six-result disclosure review remains root-owned.",
+  "session": "/root/w06_final_understand1",
+  "status": "Partial",
+  "scenario": "understand",
+  "repeat": 1
+}

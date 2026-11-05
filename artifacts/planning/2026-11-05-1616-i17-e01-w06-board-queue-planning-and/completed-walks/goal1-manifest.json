@@ -1,0 +1,345 @@
+{
+  "walk": "goal1",
+  "source": "/tmp/w06-walk-final-goal1",
+  "completion_authority": "Root explicitly reports this walk complete; no in-flight walk is read or archived.",
+  "archive": "completed-walks/goal1.tar.gz",
+  "archive_sha256": "9496fab2e68a7ff46105a8ab60a43cb1a0848007bab8dc980a265658dcee169d",
+  "files": {
+    "README.md": {
+      "kind": "file",
+      "sha256": "7edc344ed66e08365789d1ee0ce7dcd87da9482b3ec61afa42068130975a52a9",
+      "bytes": 1848
+    },
+    "delivery_ancestry.py": {
+      "kind": "file",
+      "sha256": "e99cb10761038b6272fd52043de1ca59f60ebabf99c734231c19a918690a0f74",
+      "bytes": 1064
+    },
+    "evidence/skills-1.json": {
+      "kind": "file",
+      "sha256": "0f990c9f801f0ae00cecf783dfe09e7a41e8d3af3261cf96ff04516cd37d580d",
+      "bytes": 21769
+    },
+    "evidence/skills-1.md": {
+      "kind": "file",
+      "sha256": "54501bab70780c2d9cd2391aab9a0959b1df99515b66365f550c12667862af9c",
+      "bytes": 12076
+    },
+    "evidence/skills-1.numbered.txt": {
+      "kind": "file",
+      "sha256": "1ebd8cb8fb2b9fed13c1eabc4ac7be3f0c03490ea9161f30b2a80b4b2f77c413",
+      "bytes": 12581
+    },
+    "evidence/skills-2.json": {
+      "kind": "file",
+      "sha256": "711a47cd4c62cfaaf172cb7b49380debaa4f12a3b02bf1740ebf00fd3e19077c",
+      "bytes": 13494
+    },
+    "evidence/skills-2.md": {
+      "kind": "file",
+      "sha256": "a03c7a0659eb58425fd5763974f8cef02b79a14a94a8b6c2051ce751aa76e99c",
+      "bytes": 3891
+    },
+    "evidence/skills-2.numbered.txt": {
+      "kind": "file",
+      "sha256": "3779e62cde44499a4e4ce6c9cf612e41c4d7c2e8fd74db1b40e20dad54a614de",
+      "bytes": 4121
+    },
+    "evidence/workflow-1597.json": {
+      "kind": "file",
+      "sha256": "31f2d3833910ab335223a5f33391e550bca77030dd7c6f6711e74c0a64cf5ff0",
+      "bytes": 10188
+    },
+    "evidence/workflow-1597.md": {
+      "kind": "file",
+      "sha256": "59c1f52a79697b26e141781d0b075d94a04a566b4fadb06cab532997619c6381",
+      "bytes": 3674
+    },
+    "evidence/workflow-1597.numbered.txt": {
+      "kind": "file",
+      "sha256": "897cc92ba5233159a60c796de2b9458e03ee723dcf7fe1a6dd3b2b3c2a27a9e5",
+      "bytes": 3909
+    },
+    "evidence/workflow-1598.json": {
+      "kind": "file",
+      "sha256": "d608c20d5345c1df3937611b9c109db4d89eefcbc690fd304ef3580192469f01",
+      "bytes": 18431
+    },
+    "evidence/workflow-1598.md": {
+      "kind": "file",
+      "sha256": "5d2b75595e27b7953ea20fab546086ecdc81b99643f053541c94fd0720936a3d",
+      "bytes": 5749
+    },
+    "evidence/workflow-1598.numbered.txt": {
+      "kind": "file",
+      "sha256": "1947aba4e5e7072a04269bb6e2e7b675221dcb8386938e3c0494a32f81c5f299",
+      "bytes": 6024
+    },
+    "evidence/workflow-1615.json": {
+      "kind": "file",
+      "sha256": "990bf42e6da537eb086ab4ac0cbfd3a54235744a6331e0ce974bb6e42606aa07",
+      "bytes": 15229
+    },
+    "evidence/workflow-1615.md": {
+      "kind": "file",
+      "sha256": "5840cf8349ccf7fb4441d96ae18072974ea658e12c407098ddec1e14ac1d4181",
+      "bytes": 4935
+    },
+    "evidence/workflow-1615.numbered.txt": {
+      "kind": "file",
+      "sha256": "336de5adf2bceb048d5c94756f26c419a3e9ca8a693b0d0ee757cd7a62202e63",
+      "bytes": 5230
+    },
+    "evidence/workflow-1616.json": {
+      "kind": "file",
+      "sha256": "68537a39492a5c390837a9c7e11a5922e1e6b165c02a7ca68fcacef7d6e20d57",
+      "bytes": 13628
+    },
+    "evidence/workflow-1616.md": {
+      "kind": "file",
+      "sha256": "81bc9f2598394b41fe089970d35c63c4dd8c1596c1855fdab58749ec4f379bf4",
+      "bytes": 7431
+    },
+    "evidence/workflow-1616.numbered.txt": {
+      "kind": "file",
+      "sha256": "8ae91150b11521af86fca20805beb85790c12f3f0e2329999d9b921b42348798",
+      "bytes": 7771
+    },
+    "evidence/workflow-1625.json": {
+      "kind": "file",
+      "sha256": "34761bca632155b1bcbef6d7014a911c6d244009006adc72ff71b0a84d44b008",
+      "bytes": 20744
+    },
+    "evidence/workflow-1625.md": {
+      "kind": "file",
+      "sha256": "bc1b438dbcdf9f4a1075f3c3e86d2a6f59dd547e8d1eaaef3759cb940120ac99",
+      "bytes": 8341
+    },
+    "evidence/workflow-1625.numbered.txt": {
+      "kind": "file",
+      "sha256": "22b0fdb5685351927bd32de04338e71529c58c0e5c110a91d7a7898bd7609055",
+      "bytes": 8736
+    },
+    "execution.md": {
+      "kind": "file",
+      "sha256": "9c1d981f90ce2b5b10c444385c1a2240c1c151385b43e455ee860b854f48bd5f",
+      "bytes": 5870
+    },
+    "goal-trace.md": {
+      "kind": "file",
+      "sha256": "817ebacf80c302145f94963f0067dcae987bfdf884cf832f7c66e7c91ed34235",
+      "bytes": 4858
+    },
+    "project_validation.py": {
+      "kind": "file",
+      "sha256": "4a015556a49b9b89a8a6ca9c0029c91e5221f815a5cd4ccc2f882b496b78b760",
+      "bytes": 1149
+    },
+    "receipts/core-read.json": {
+      "kind": "file",
+      "sha256": "eec62511db493e7ae9b1d2e9c271234bde839e9513159838683d5d3139bb7931",
+      "bytes": 16494
+    },
+    "receipts/early-retrievals.md": {
+      "kind": "file",
+      "sha256": "2a52aff6a1bdb0531af6c979a6f321334f766a7f7824c6cdc4488bd14e4c71ba",
+      "bytes": 1176
+    },
+    "receipts/final-verification.json": {
+      "kind": "file",
+      "sha256": "8afae6308f6a26fee029e07b51fd257a25987f8ae1f8f2c37b3ed123c4efc8f4",
+      "bytes": 419
+    },
+    "receipts/neutral/read-w6psu44f.txt": {
+      "kind": "file",
+      "sha256": "6b53ac15c6a54acd8a434581506b0b6a80de6b0c1f6742cc4918cde59fc79ecc",
+      "bytes": 101
+    },
+    "receipts/neutral/reads.jsonl": {
+      "kind": "file",
+      "sha256": "f7b3a692ddff4fb68ca464b074f7e6741294d684b268b4fc2dba98709a32b715",
+      "bytes": 280
+    },
+    "receipts/recoveries.json": {
+      "kind": "file",
+      "sha256": "b893291ad9563673b94be9d62442352a025a0078f5199df8e050e35493c4157b",
+      "bytes": 393
+    },
+    "receipts/tool-results.json": {
+      "kind": "file",
+      "sha256": "4ab3dd382e7969a003fb35f39ba4ed498850c616947b2e890b16b6506b6cc3a1",
+      "bytes": 434460
+    },
+    "review-findings.md": {
+      "kind": "file",
+      "sha256": "0cfea31cca5a3bc4eb03ec8f639e75967900a77b622e7e0deff550883cb8c66d",
+      "bytes": 6342
+    },
+    "review_helper.py": {
+      "kind": "file",
+      "sha256": "da457cb7e4b6c9805bb82085f90966ca9baad1cb3ad69d34db09005430e6e5d2",
+      "bytes": 3205
+    },
+    "validation/all-i17-ancestry.json": {
+      "kind": "file",
+      "sha256": "1ecb33f3bf5278f8cecac57079e400f2f28539e01a33eb7f3f57446bf86db158",
+      "bytes": 13607
+    },
+    "validation/config-03d353300ca4804194fd50d316d73e3bf1270d1d.json": {
+      "kind": "file",
+      "sha256": "5be741bef9ddfa39988ffc2507d26da2df4cac498189942b15ecacc50f4615fc",
+      "bytes": 427
+    },
+    "validation/config-48f4ac592814d6c74bd67d94350909d096835c45.json": {
+      "kind": "file",
+      "sha256": "eb268267d86d9fc229b31d75488de30117f8cedcfa90fbab7f85320b140df454",
+      "bytes": 427
+    },
+    "validation/config-origin-i17-e01-workspace.json": {
+      "kind": "file",
+      "sha256": "988f34a2c0ebe8bd48975e0b8495a861f9bf76aa65d55b28aec07e4fa6161014",
+      "bytes": 395
+    },
+    "validation/config-origin-workspace.json": {
+      "kind": "file",
+      "sha256": "537f45a4cffb63f63b995123ea56a2bf32777acd13ecff14e894c56c48ad1070",
+      "bytes": 379
+    },
+    "validation/dependencies.json": {
+      "kind": "file",
+      "sha256": "6d26b7a538391ffe0492f17135412572c2505c1116ecf7868031df95c66c8a5a",
+      "bytes": 3749
+    },
+    "validation/e00-integration-at-origin-i17-e01-workspace.json": {
+      "kind": "file",
+      "sha256": "ee0fd88fd2ca41cab3d7cff2cbb9d867c99841b3b44ff9ada49a15c913c9dcf3",
+      "bytes": 430
+    },
+    "validation/e00-integration-at-origin-workspace.json": {
+      "kind": "file",
+      "sha256": "33ba2d7226db79e3f0ab3124501c7aca8ce31ad9d78ff5ddc4b6fe6c88723977",
+      "bytes": 414
+    },
+    "validation/e01-w07-at-origin-i17-e01-workspace.json": {
+      "kind": "file",
+      "sha256": "ad504de84bd24007e2f98b9771a96f757c705b9573eb4c19fae32e3c6ee18a27",
+      "bytes": 422
+    },
+    "validation/e01-w07-at-origin-workspace.json": {
+      "kind": "file",
+      "sha256": "3377ea0594d81d2560b147f0078a0950a0c6cf70b3177c65338f64e9e156f3f2",
+      "bytes": 406
+    },
+    "validation/e03-integration-at-origin-i17-e01-workspace.json": {
+      "kind": "file",
+      "sha256": "7a90401ca527415c5f11faa53bce45ebb9712e4ca6f1ef7621272c630a8029d1",
+      "bytes": 430
+    },
+    "validation/e03-integration-at-origin-workspace.json": {
+      "kind": "file",
+      "sha256": "69a84363775fc727551dee05ae4dcc02420ee4604bfa32a89158989065e55fc3",
+      "bytes": 414
+    },
+    "validation/initiative-format.json": {
+      "kind": "file",
+      "sha256": "552414cbc9b38e3cfff77aa34a57235330b7af03e2275b007af2481254ea2789",
+      "bytes": 746
+    },
+    "validation/initiative-format.md": {
+      "kind": "file",
+      "sha256": "59c1f52a79697b26e141781d0b075d94a04a566b4fadb06cab532997619c6381",
+      "bytes": 3674
+    },
+    "validation/project-1598.json": {
+      "kind": "file",
+      "sha256": "0364ae6fe883889b95259c266ff1589991d966a2cf569bbd8632f795268c91ec",
+      "bytes": 2271
+    },
+    "validation/project-1598.md": {
+      "kind": "file",
+      "sha256": "ebabadcb87edb47b963d7d727bed6f5c0a460054aa18f6bec5ad8c0c9059ce0b",
+      "bytes": 5770
+    },
+    "validation/project-1615.json": {
+      "kind": "file",
+      "sha256": "08d24e7a6262bf92782c054793453b28a5bf7dbaa37e51d02b71301ef2318aea",
+      "bytes": 866
+    },
+    "validation/project-1615.md": {
+      "kind": "file",
+      "sha256": "5840cf8349ccf7fb4441d96ae18072974ea658e12c407098ddec1e14ac1d4181",
+      "bytes": 4935
+    },
+    "validation/project-1616.json": {
+      "kind": "file",
+      "sha256": "1fc530a8a5f50f9b175803644f02a4853d0b51ba0912f7a7c20c81f3811b64dc",
+      "bytes": 866
+    },
+    "validation/project-1616.md": {
+      "kind": "file",
+      "sha256": "81bc9f2598394b41fe089970d35c63c4dd8c1596c1855fdab58749ec4f379bf4",
+      "bytes": 7431
+    },
+    "validation/project-1625.json": {
+      "kind": "file",
+      "sha256": "cbd859cdf2c77c735cac98e83b67a78b8e8978f3deb146c50275ea7a61787e53",
+      "bytes": 868
+    },
+    "validation/project-1625.md": {
+      "kind": "file",
+      "sha256": "bc1b438dbcdf9f4a1075f3c3e86d2a6f59dd547e8d1eaaef3759cb940120ac99",
+      "bytes": 8341
+    },
+    "validation/workflow-1598-format.json": {
+      "kind": "file",
+      "sha256": "081c170ace082e2eb01fdcb0d8c5eb87a80940e536e306c3de78293c3551c4a7",
+      "bytes": 1940
+    },
+    "validation/workflow-1598-format.md": {
+      "kind": "file",
+      "sha256": "ebabadcb87edb47b963d7d727bed6f5c0a460054aa18f6bec5ad8c0c9059ce0b",
+      "bytes": 5770
+    },
+    "validation/workflow-1615-format.json": {
+      "kind": "file",
+      "sha256": "e04224c507d0b070ae43117374dbe740c4beb97004a3f009157c4bfd45e78d57",
+      "bytes": 527
+    },
+    "validation/workflow-1615-format.md": {
+      "kind": "file",
+      "sha256": "5840cf8349ccf7fb4441d96ae18072974ea658e12c407098ddec1e14ac1d4181",
+      "bytes": 4935
+    },
+    "validation/workflow-1616-format.json": {
+      "kind": "file",
+      "sha256": "a0c66e795a58999ddaaffc7916bb358639e4228ebc5ef8d9df03f3ba81099abd",
+      "bytes": 527
+    },
+    "validation/workflow-1616-format.md": {
+      "kind": "file",
+      "sha256": "81bc9f2598394b41fe089970d35c63c4dd8c1596c1855fdab58749ec4f379bf4",
+      "bytes": 7431
+    },
+    "validation/workflow-1625-format.json": {
+      "kind": "file",
+      "sha256": "454a50a10ea5f8e25f609f66dd1c445cb65844ecb2abc1aafe49668952c58430",
+      "bytes": 529
+    },
+    "validation/workflow-1625-format.md": {
+      "kind": "file",
+      "sha256": "bc1b438dbcdf9f4a1075f3c3e86d2a6f59dd547e8d1eaaef3759cb940120ac99",
+      "bytes": 8341
+    }
+  },
+  "primary_results": [
+    "README.md",
+    "goal-trace.md",
+    "review-findings.md",
+    "execution.md"
+  ],
+  "assessment": "Original observations, receipts, limitations and pending decisions retained; six-result disclosure review remains root-owned.",
+  "session": "/root/w06_final_goal1",
+  "status": "Partial",
+  "scenario": "review-goal",
+  "repeat": 1
+}

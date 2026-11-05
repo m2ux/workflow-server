@@ -1,0 +1,578 @@
+[
+  {
+    "file": "architecture-overview.md",
+    "operation": "Populate Architecture Overview",
+    "source_input": "**Inputs:** Measured structure and flows, pull request head, code permalinks and the output path.",
+    "linked_input": "**Inputs:** [Measurements](#measurements), [Pull Request Head](#pull-request-head), [Overview File](#overview-file).",
+    "linked_output": "**Outputs:** [Overview File](#overview-file).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Populate Planning Record",
+    "source_input": "**Inputs:** Record identity, folder path and supplied artifact files and links.",
+    "linked_input": "**Inputs:** [Record Selection](#record-selection).",
+    "linked_output": "**Outputs:** [Planning Folder](#planning-folder).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Publish Planning Record",
+    "source_input": "**Inputs:** Planning-folder path, the files written into it and a commit message file.",
+    "linked_input": "**Inputs:** [Planning Folder](#planning-folder), [Commit Message File](#commit-message-file).",
+    "linked_output": "**Outputs:** [Publication Result](#publication-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Find Engineering Worktree",
+    "source_input": "**Inputs:** Any checkout of the project.",
+    "linked_input": "**Inputs:** [Project Checkout](#project-checkout).",
+    "linked_output": "**Outputs:** [Engineering Worktree](#engineering-worktree).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Commit Planning Record",
+    "source_input": "**Inputs:** Engineering worktree and a commit message file.",
+    "linked_input": "**Inputs:** [Engineering Worktree](#engineering-worktree), [Commit Message File](#commit-message-file).",
+    "linked_output": "**Outputs:** [Publication Result](#publication-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "planning-record.md",
+    "operation": "Add Planning Record",
+    "source_input": "**Inputs:** Engineering worktree and planning-folder path composed from the date, optional issue or pull request number, and slug.",
+    "linked_input": "**Inputs:** [Engineering Worktree](#engineering-worktree), [Planning Folder](#planning-folder).",
+    "linked_output": "**Outputs:** [Planning Folder](#planning-folder).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "work-item.md",
+    "operation": "Populate Work Item",
+    "source_input": "**Inputs:** Task id, task scope, epic context, design, the component the implementation extends, supplied criteria and test requirements, and output file.",
+    "linked_input": "**Inputs:** [Task Context](#task-context), [Work Item File](#work-item-file).",
+    "linked_output": "**Outputs:** [Work Item File](#work-item-file).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Produce Agent Review",
+    "source_input": "**Inputs:** Fresh pull request metadata, checkout, the criteria the pull request delivers, validation evidence and the planning record destination.",
+    "linked_input": "**Inputs:** [Review Inputs](#review-inputs).",
+    "linked_output": "**Outputs:** [Review Record](#review-record).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Check Agent Review",
+    "source_input": "**Inputs:** Fresh REST pull request JSON and the published JSON review records fetched from the linked planning record.",
+    "linked_input": "**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).",
+    "linked_output": "**Outputs:** [Review Eligibility](#review-eligibility).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "agent-review.md",
+    "operation": "Validate Agent Review",
+    "source_input": "**Inputs:** REST pull request JSON and a JSON list of published review records.",
+    "linked_input": "**Inputs:** [Pull Request Record](#pull-request-record), [Published Reviews](#published-reviews).",
+    "linked_output": "**Outputs:** [Review Eligibility](#review-eligibility).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "goal-trace.md",
+    "operation": "Review Initiative Goal",
+    "source_input": "**Inputs:** Current initiative and epic bodies or drafts, confirmed goal clauses, marked requirement sources, and the supplied epic format results.",
+    "linked_input": "**Inputs:** [Goal Evidence](#goal-evidence).",
+    "linked_output": "**Outputs:** [Trace Table](#trace-table), [Review Result](#review-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "goal-trace.md",
+    "operation": "Check Outside Threats",
+    "source_input": "**Inputs:** Current initiative and epic bodies or drafts, and the artifacts and consumers the plan changes.",
+    "linked_input": "**Inputs:** [Plan Bodies](#plan-bodies), [Changed Surface](#changed-surface).",
+    "linked_output": "**Outputs:** [Review Result](#review-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "review-finding.md",
+    "operation": "Populate Review Finding",
+    "source_input": "**Inputs:** Area, severity, problem, proposed solution, source text and file:line, decision requirement and any confirmed answer.",
+    "linked_input": "**Inputs:** [Finding Evidence](#finding-evidence).",
+    "linked_output": "**Outputs:** [Finding Result](#finding-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "review-finding.md",
+    "operation": "Report Review Finding",
+    "source_input": "**Inputs:** Area, severity, problem, solution and source evidence for each finding.",
+    "linked_input": "**Inputs:** [Finding Set](#finding-set).",
+    "linked_output": "**Outputs:** [Finding Result](#finding-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "Draft Issue Placement",
+    "source_input": "**Inputs:** Current orphan body, candidate destinations, proposed work and supplied planning-record references.",
+    "linked_input": "**Inputs:** [Placement Inputs](#placement-inputs).",
+    "linked_output": "**Outputs:** [Placement Result](#placement-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "Find Placement Candidates",
+    "source_input": "**Inputs:** Complete repository issue collection.",
+    "linked_input": "**Inputs:** [Issue Collection](#issue-collection).",
+    "linked_output": "**Outputs:** [Candidate Destinations](#candidate-destinations).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "Apply Issue Placement",
+    "source_input": "**Inputs:** Confirmed placement, current source and destination records, and the affected initiative and epic bodies.",
+    "linked_input": "**Inputs:** [Confirmed Placement](#confirmed-placement).",
+    "linked_output": "**Outputs:** [Placement Result](#placement-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "Rewrite Orphan Issue",
+    "source_input": "**Inputs:** Source issue identity, selected destination kind, the evidence and design the body carries, and for a hot-fix its theme label, confirmed target and theme board, and the number [Apply Issue Placement](#apply-issue-placement) returned.",
+    "linked_input": "**Inputs:** [Rewrite Inputs](#rewrite-inputs).",
+    "linked_output": "**Outputs:** [Saved Orphan](#saved-orphan).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "Subsume Orphan Work",
+    "source_input": "**Inputs:** Orphan identity and body, confirmed destination evidence, and the planning record it references when it has one.",
+    "linked_input": "**Inputs:** [Transfer Inputs](#transfer-inputs).",
+    "linked_output": "**Outputs:** [Saved Orphan](#saved-orphan).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "placement.md",
+    "operation": "List Orphans",
+    "source_input": "**Inputs:** Complete supplied repository issue collection.",
+    "linked_input": "**Inputs:** [Issue Collection](#issue-collection).",
+    "linked_output": "**Outputs:** [Candidate Destinations](#candidate-destinations).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Measure Repository Change",
+    "source_input": "**Inputs:** Review checkout, verified head commit and base branch.",
+    "linked_input": "**Inputs:** [Review Checkout](#review-checkout), [Requested Revision](#requested-revision), [Base Branch](#base-branch).",
+    "linked_output": "**Outputs:** [Graph Measurements](#graph-measurements).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Index Status",
+    "source_input": "**Inputs:** Requested revision.",
+    "linked_input": "**Inputs:** [Requested Revision](#requested-revision).",
+    "linked_output": "**Outputs:** [Index State](#index-state).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Index Repository",
+    "source_input": "**Inputs:** Requested revision.",
+    "linked_input": "**Inputs:** [Requested Revision](#requested-revision).",
+    "linked_output": "**Outputs:** [Index State](#index-state).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Change Surface",
+    "source_input": "**Inputs:** Comparison base branch.",
+    "linked_input": "**Inputs:** [Base Branch](#base-branch).",
+    "linked_output": "**Outputs:** [Changed Symbols](#changed-symbols).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Symbol Context",
+    "source_input": "**Inputs:** Symbol identity from the supplied change surface.",
+    "linked_input": "**Inputs:** [Symbol Identity](#symbol-identity).",
+    "linked_output": "**Outputs:** [Symbol Relationships](#symbol-relationships).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "repository-graph.md",
+    "operation": "Flow Trace",
+    "source_input": "**Inputs:** Flow identity from the supplied change surface. The result meets [Flow Traces](#flow-traces).",
+    "linked_input": "**Inputs:** [Flow Identity](#flow-identity).",
+    "linked_output": "**Outputs:** [Flow Traces](#flow-traces).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Read Task Lanes",
+    "source_input": "**Inputs:** Epic body file.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Assign Task Lanes",
+    "source_input": "**Inputs:** Epic body file, confirmed task-to-index map and output body path.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Confirmed Map](#confirmed-map), [Output Body](#output-body).",
+    "linked_output": "**Outputs:** [Output Body](#output-body).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Check Unit Lanes",
+    "source_input": "**Inputs:** Epic body file and complete unit task ids.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Determine Lane Admission",
+    "source_input": "**Inputs:** Epic body file, complete unit task ids and optional requested lane index.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids), [Requested Index](#requested-index).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Read Lane Assignments",
+    "source_input": "**Inputs:** Epic body file.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Write Lane Assignments",
+    "source_input": "**Inputs:** Epic body file, confirmed task-to-index JSON map and output body path.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Confirmed Map](#confirmed-map), [Output Body](#output-body).",
+    "linked_output": "**Outputs:** [Output Body](#output-body).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Validate Lane Unit",
+    "source_input": "**Inputs:** Epic body file and complete unit task ids.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "lane.md",
+    "operation": "Evaluate Lane Admission",
+    "source_input": "**Inputs:** Epic body file, complete unit task ids and optional requested lane index.",
+    "linked_input": "**Inputs:** [Epic Body File](#epic-body-file), [Unit Task Ids](#unit-task-ids), [Requested Index](#requested-index).",
+    "linked_output": "**Outputs:** [Lane Result](#lane-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Check Dependencies and Numbering",
+    "source_input": "**Inputs:** Initiative and epic bodies or local drafts, the work-item file of each task that has one, current pull request records, confirmed numbering maps when any, the caller's change allowance when it has one, and explicitly authorized outside-initiative files.",
+    "linked_input": "**Inputs:** [Graph Inputs](#graph-inputs).",
+    "linked_output": "**Outputs:** [Graph Result](#graph-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Check Dependencies",
+    "source_input": "**Inputs:** Initiative body file, each epic id with its body file, each task id with its work-item file, and each planning-record file accounting for split candidate units.",
+    "linked_input": "**Inputs:** [Dependency Files](#dependency-files).",
+    "linked_output": "**Outputs:** [Graph Result](#graph-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Renumber Tasks",
+    "source_input": "**Inputs:** Initiative number, epic number, epic body file, task-number map and affected body files.",
+    "linked_input": "**Inputs:** [Renumber Inputs](#renumber-inputs).",
+    "linked_output": "**Outputs:** [Rewritten Bodies](#rewritten-bodies).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "dependency-graph.md",
+    "operation": "Renumber Epics",
+    "source_input": "**Inputs:** Initiative number, current pull request records, confirmed epic-number map, body files and explicitly authorized outside-initiative files when present.",
+    "linked_input": "**Inputs:** [Renumber Inputs](#renumber-inputs), [Pull Request Records](#pull-request-records).",
+    "linked_output": "**Outputs:** [Rewritten Bodies](#rewritten-bodies).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Select Project Board",
+    "source_input": "**Inputs:** Board owner and either a theme name or the proposals-board selection.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Board Selection](#board-selection).",
+    "linked_output": "**Outputs:** [Selected Board](#selected-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Copy Project Board",
+    "source_input": "**Inputs:** Board owner, repository, selected board kind, theme title and originating proposal record when applicable.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Repository](#repository), [Selected Kind](#selected-kind).",
+    "linked_output": "**Outputs:** [Copied Board](#copied-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Create Proposals Board",
+    "source_input": "**Inputs:** Board owner and repository.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Repository](#repository).",
+    "linked_output": "**Outputs:** [Copied Board](#copied-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Create Theme Board",
+    "source_input": "**Inputs:** Board owner, repository, theme title and originating proposal record when applicable.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Repository](#repository), [Theme Provenance](#theme-provenance).",
+    "linked_output": "**Outputs:** [Copied Board](#copied-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Place Issue on Board",
+    "source_input": "**Inputs:** Board owner and number, issue id and selected initial status.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Issue Id](#issue-id), [Initial Status](#initial-status).",
+    "linked_output": "**Outputs:** [Board Configuration](#board-configuration).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board State",
+    "source_input": "**Inputs:** Existing board owner and number, as [Select Project Board](#select-project-board) or [Copy Project Board](#copy-project-board) returns them, whether the caller ran that operation or carries its result.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates).",
+    "linked_output": "**Outputs:** [Board State](#board-state).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board Assignee",
+    "source_input": "**Inputs:** Authenticated repository access.",
+    "linked_input": "**Inputs:** [Authenticated Access](#authenticated-access).",
+    "linked_output": "**Outputs:** [Assignee Login](#assignee-login).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Read Board Configuration",
+    "source_input": "**Inputs:** Board owner and number, output paths and optional item identity.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Output Files](#output-files), [Optional Item](#optional-item).",
+    "linked_output": "**Outputs:** [Board Configuration](#board-configuration).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Locate Project Board",
+    "source_input": "**Inputs:** Owner and proposals-board purpose or theme title.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Board Selection](#board-selection).",
+    "linked_output": "**Outputs:** [Selected Board](#selected-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Board Template",
+    "source_input": "**Inputs:** Board owner and template title.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Template Selection](#template-selection).",
+    "linked_output": "**Outputs:** [Template Selection](#template-selection).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Copy Board Template",
+    "source_input": "**Inputs:** Board owner, template board number and new board title.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Template Selection](#template-selection), [Copy Title](#copy-title).",
+    "linked_output": "**Outputs:** [Copied Board](#copied-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Link Board to Repository",
+    "source_input": "**Inputs:** Board owner, board number and repository.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Repository](#repository).",
+    "linked_output": "**Outputs:** [Link Result](#link-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Proposals Board",
+    "source_input": "**Inputs:** Board owner.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner).",
+    "linked_output": "**Outputs:** [Selected Board](#selected-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Add Issue to Board",
+    "source_input": "**Inputs:** Board owner and number, and issue id.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Issue Id](#issue-id).",
+    "linked_output": "**Outputs:** [Membership Result](#membership-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Set Item Status",
+    "source_input": "**Inputs:** Board owner and number, item id, and input file containing the Status field id and selected option id.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates), [Status Input File](#status-input-file).",
+    "linked_output": "**Outputs:** [Membership Result](#membership-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Remove Board Item",
+    "source_input": "**Inputs:** Board owner and number, and the item id [Read Board State](#read-board-state) returns.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates).",
+    "linked_output": "**Outputs:** [Membership Result](#membership-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Fields",
+    "source_input": "**Inputs:** Board owner, board number and destination file.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Board Fields File](#board-fields-file).",
+    "linked_output": "**Outputs:** [Board Configuration](#board-configuration).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Theme Board",
+    "source_input": "**Inputs:** Board owner and theme name.",
+    "linked_input": "**Inputs:** [Board Owner](#board-owner), [Theme Name](#theme-name).",
+    "linked_output": "**Outputs:** [Selected Board](#selected-board).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Find Status Field",
+    "source_input": "**Inputs:** Board owner and number.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates).",
+    "linked_output": "**Outputs:** [Status Field](#status-field).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Items with Status",
+    "source_input": "**Inputs:** Board owner and number, Status field id and destination file.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Status Field](#status-field), [Board Items File](#board-items-file).",
+    "linked_output": "**Outputs:** [Board State](#board-state).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Fetch Board Item",
+    "source_input": "**Inputs:** Board owner and number, item id and Status field id.",
+    "linked_input": "**Inputs:** [Board Coordinates](#board-coordinates), [Item Coordinates](#item-coordinates), [Status Field](#status-field).",
+    "linked_output": "**Outputs:** [Board Configuration](#board-configuration).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board.md",
+    "operation": "Find User",
+    "source_input": "**Inputs:** Authenticated repository access.",
+    "linked_input": "**Inputs:** [Authenticated Access](#authenticated-access).",
+    "linked_output": "**Outputs:** [Assignee Login](#assignee-login).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "standup-report.md",
+    "operation": "Compose Standup Report",
+    "source_input": "**Inputs:** Board items, pull request records, complete issue-link snapshot, optional window start, initiative filter, resolved off-board initiative records and output paths.",
+    "linked_input": "**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Report Selection](#report-selection), [Initiative Records](#initiative-records), [Output Paths](#output-paths).",
+    "linked_output": "**Outputs:** [Report Result](#report-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "standup-report.md",
+    "operation": "Summarise Progress",
+    "source_input": "**Inputs:** Board items, pull request records and link snapshot; optional window start, initiative filter, off-board initiative records and management paragraph file.",
+    "linked_input": "**Inputs:** [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Report Selection](#report-selection), [Initiative Records](#initiative-records), [Management File](#management-file).",
+    "linked_output": "**Outputs:** [Report Result](#report-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Plan Board Changes",
+    "source_input": "**Inputs:** Initiative JSON, epic and task records, fresh REST pull request records, published agent review records fetched from their linked planning records, complete issue-link snapshot, board identity, fields and items, output directory, assignee login and resolved off-board issue files.",
+    "linked_input": "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Task Records](#task-records), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Issue Link Snapshot](#issue-link-snapshot), [Board Identity](#board-identity), [Board Fields](#board-fields), [Board Items](#board-items), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues).",
+    "linked_output": "**Outputs:** [Board Changes](#board-changes).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Epic Review",
+    "source_input": "**Inputs:** Epic issue identity, board identity, requested status (In Review or In Progress), fresh pull request records, published agent review records and output paths.",
+    "linked_input": "**Inputs:** [Review Selection](#review-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Output Paths](#output-paths).",
+    "linked_output": "**Outputs:** [Confirmed Statuses](#confirmed-statuses).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Board Delivery",
+    "source_input": "**Inputs:** Saved initiative, epic and task identities, board identity, output directory, and the repositories the board's issues live in.",
+    "linked_input": "**Inputs:** [Saved Identities](#saved-identities).",
+    "linked_output": "**Outputs:** [Confirmed Statuses](#confirmed-statuses).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Record Dispatch Status",
+    "source_input": "**Inputs:** Board items, board identity, field definitions, output directory, assignee login, held task and epic issue numbers for In Progress, and complete epic numbers for In Review, fresh pull request records and published agent review records.",
+    "linked_input": "**Inputs:** [Board Items](#board-items), [Board Identity](#board-identity), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Dispatch Selection](#dispatch-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews).",
+    "linked_output": "**Outputs:** [Confirmed Statuses](#confirmed-statuses).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Compute Board Changes",
+    "source_input": "**Inputs:** Initiative JSON, epic and task JSON records, pull request and complete issue-link snapshots, board identity, board fields and items, output directory, assignee login and resolved off-board issue records.",
+    "linked_input": "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Task Records](#task-records), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews), [Issue Link Snapshot](#issue-link-snapshot), [Board Identity](#board-identity), [Board Fields](#board-fields), [Board Items](#board-items), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues).",
+    "linked_output": "**Outputs:** [Board Changes](#board-changes).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-delivery.md",
+    "operation": "Compute Dispatch Status",
+    "source_input": "**Inputs:** Board items, board identity, fields, output directory, assignee, comma-separated held task and epic numbers, and comma-separated complete epic numbers, fresh pull request records and published agent review records.",
+    "linked_input": "**Inputs:** [Board Items](#board-items), [Board Identity](#board-identity), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Dispatch Selection](#dispatch-selection), [Pull Request Records](#pull-request-records), [Published Reviews](#published-reviews).",
+    "linked_output": "**Outputs:** [Board Changes](#board-changes).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "plan-change.md",
+    "operation": "Check Plan Change Autonomy",
+    "source_input": "**Inputs:** The pending change, its subject, the option recommended for it, and the allowance the caller was supplied.",
+    "linked_input": "**Inputs:** [Pending Change](#pending-change), [Allowance](#allowance).",
+    "linked_output": "**Outputs:** [Autonomy Result](#autonomy-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "plan-change.md",
+    "operation": "Record Plan Change",
+    "source_input": "**Inputs:** The change, its kind, the option applied or recommended, the affected issue identities and the run's current list.",
+    "linked_input": "**Inputs:** [Change Details](#change-details), [Change List](#change-list).",
+    "linked_output": "**Outputs:** [Change List](#change-list).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-queue.md",
+    "operation": "Plan Board Queue",
+    "source_input": "**Inputs:** Board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login, output directory, resolved off-board issue files and confirmed unplanned initiative identities. The caller supplies the delivery state.",
+    "linked_input": "**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives).",
+    "linked_output": "**Outputs:** [Queue Result](#queue-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  },
+  {
+    "file": "board-queue.md",
+    "operation": "Compute Board Queue",
+    "source_input": "**Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.",
+    "linked_input": "**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives), [Status Scope](#status-scope).",
+    "linked_output": "**Outputs:** [Queue Result](#queue-result).",
+    "review": "The linked contracts retain the supplied shape; complete JSON records, raw body text, identities, output paths and optional inputs remain distinct."
+  }
+]

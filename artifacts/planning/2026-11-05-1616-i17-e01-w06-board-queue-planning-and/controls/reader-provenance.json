@@ -1,0 +1,6 @@
+{
+  "source": "/tmp/i17-e01-w07/composed-v4/neutral-read.py",
+  "prepared_helper": "/tmp/i17-e01-w06/verification-preparation/neutral-read.py",
+  "sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202",
+  "adaptation": "The captured-checker path remains sibling source/skills/scripts; final composition supplies it."
+}

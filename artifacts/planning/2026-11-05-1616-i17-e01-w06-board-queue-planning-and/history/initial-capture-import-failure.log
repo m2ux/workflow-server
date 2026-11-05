@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/tmp/i17-e01-w06/capture-final-inputs.py", line 44, in <module>
+    from board import status_of
+ImportError: cannot import name 'status_of' from 'board' (/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w06-board-queue-planning-and/skills/work-planner/scripts/board.py)

@@ -1,0 +1,3889 @@
+[
+  {
+    "file": "architecture-overview.md",
+    "head_sha256": "587375687b1d600282663c6bb518fb6f5bd0543ddfbbb3fe609e332728741134",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "markdown",
+        "sha256": "a900520b5c8d34fae7138f18db379c32fcf708d0319cd9988beec6adcffc3e6e",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The architecture overview explains one pull request's changes to the engineer who reviews them: where the change sits in the system, how it behaves, and in what order to read the diff. Its reader knows software and does not know this codebase. It lives in a planning record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "One architecture overview from supplied measurements.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "1. Take the graph measurements supplied by the caller and check the proposed diagrams.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "2. Populate the overview from the [Template](#template) at the supplied output path.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "- All populated fields must meet [Fields](#fields).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "3. Pin each code reference.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 18,
+        "source": "- Each reference must meet [Code References](#code-references).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 19,
+        "source": "4. Return the file for the caller to register in its planning record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 111,
+        "source": "Every overview carries one structural diagram and one functional diagram. A further diagram is carried when the change warrants it, and displaces prose rather than adding to it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 113,
+        "source": "| Diagram | Notation | Shows | Carried |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 114,
+        "source": "| --- | --- | --- | --- |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 115,
+        "source": "| Component | `flowchart` with subgraphs | The areas the change reaches and the dependencies between them | Always, as the structural diagram |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 116,
+        "source": "| Class | `classDiagram` | The types the change adds or alters, their members and their relations | In place of the component diagram when the change sits in one area and lands in its types |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 117,
+        "source": "| Sequence | `sequenceDiagram` | One flow's ordered interactions between components | Always, one per flow the change runs through, as the functional diagram |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "| State | `stateDiagram-v2` | One subject's states and the transitions between them | When the change alters a lifecycle |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 119,
+        "source": "| Before and After | A pair in the notation of the structure they show | The arrangement the change replaces beside the one it establishes | When the change rearranges structure or reorders a flow |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "Component node shapes: `[text]` a module, `[(text)]` a store, `[[text]]` a process boundary, `([text])` an actor.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 125,
+        "source": "The reader is an engineer meeting this codebase for the first time. A component, type or function carries the name the diff carries, so the document and the diff name one thing once. A term the codebase coins is defined where it first appears.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 129,
+        "source": "A reference is a permalink pinned to the pull request's head commit with its line anchors, on the words it supports, as the code references rule states. A link resolved against a branch moves under the reader.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 133,
+        "source": "A component diagram's areas and edges, and a sequence's step order, are the ones measured over the graph. A boundary taken from the directory layout, and a call order traced by hand, are each a defect.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 137,
+        "source": "Five to ten elements. A diagram that needs more splits by concept, and relationships between areas carry it rather than the internals of one.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 141,
+        "source": "An element the change adds or alters carries a distinct fill, and untouched context is grey. A name and its fill hold across every diagram in the overview.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 145,
+        "source": "Every edge names its interaction, and its direction is the direction data or control travels.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 149,
+        "source": "Items of one kind go in a bulleted list, never packed into a paragraph. Each opens with a bold lead naming the item, and its body is the line beneath.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 153,
+        "source": "What Changed states the behaviour each area now has. The change-by-change listing is the pull request's Changes section, which the overview links rather than reproduces.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 157,
+        "source": "One numbered entry per file the reviewer opens, ordered so the change reads from its entry point outward to what it calls. Each entry links the file at the head commit and gives one line on why it comes there. A file the change touches incidentally is left out.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 161,
+        "source": "About two hundred lines, diagrams counted.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 165,
+        "source": "Summary, Structure, Behaviour, What Changed and Reading Order are always present. Risks and Watch Points, and References, are deleted when they have nothing to say.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "planning-record.md",
+    "head_sha256": "46241acf091ef5b4defc9d5edf7111b3388c89813decb1429a037877b744089a",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "markdown",
+        "sha256": "137bd46c0d9eb1f607e1501e7af39aa125d40cf8cf34d259e73706131a9725c6",
+        "preserved": true
+      },
+      {
+        "language": "text",
+        "sha256": "f424556d06e78139bf5ebf9bb71f64d91aea5cbcf983df3ea1b89ec55348ef21",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "a597b3d726cd022cfe147c4b5982f0f044bbc2185e0f512c904d93f6528b9898",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "37a15bc5af58e9b945ef923c4d17a4c87499a8a942ac31c3919005fa06fc1888",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "7277532c3b1a89e14ed3866f53a29c80ee7a3210da136c1488203d69c593e82c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "75929a63b564e342749d648f25b86fb4b1d78fe9d6849757e95d5f7e3ea168cd",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "43ad9b9adf80c6a32a0302c7a21f273765eca49ed5726354e56818d9e952e8c9",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "A planning record is a folder. README.md is its entry point: it answers what the work is, and links to every other artifact the plan produces. Each artifact is the home of its own content. The progress of the work is the theme's project board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Planning Records Configuration](../configuration.md#planning-records)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "One planning directory and its artifact inventory.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 19,
+        "source": "1. Prepare the selected record:",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 20,
+        "source": "- For a new record:",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 21,
+        "source": "- Create the folder with [Add Planning Record](#add-planning-record).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 22,
+        "source": "- Populate README.md from the [Template](#template).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "- For an existing record:",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 24,
+        "source": "- Read its README, retaining its creation date, other artifacts and links.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "- Update only the supplied content.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "- The folder must meet [Layout](#layout).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "- All populated README fields must meet [Fields](#fields).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "2. Register the artifact files supplied by the caller, using their chosen names.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "- Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "- File content remains supplied by the caller; this operation does not author that artifact's content.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 35,
+        "source": "The record's folder committed and pushed, so every link into it resolves for a reader.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "1. Run [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 40,
+        "source": "2. Run [Commit Planning Record](#commit-planning-record).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 41,
+        "source": "- Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "- Report a rebase that stops on a conflict rather than rewriting the branch.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "The engineering branch has one worktree and every session writes its records there, so they share one index. A commit on engineering may include other sessions' uncommitted or unpushed work, a `design.md` amendment among them. A session confirms only that its own files reached `origin/engineering` after the push.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 76,
+        "source": "README.md is the one file the folder must hold. Any file beyond README.md is added as the work needs it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 84,
+        "source": "Each file beyond README.md is a row in the README's Artifacts.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 86,
+        "source": "A plan's draft issue bodies and its work items are files of its record. Each draft is the source every later edit and save of its issue reads, and it reaches readers through [Publish Planning Record](#publish-planning-record).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 90,
+        "source": "One blockquote: the classifier, the day the record was created, and a revised date when the README is updated after the work is done.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 94,
+        "source": "Two paragraphs: the purpose of this work, and why it matters.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 98,
+        "source": "- One row for every artifact in the record other than README.md, added when the file is produced.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 99,
+        "source": "- The link sits on the artifact's name. The row says what the artifact holds, and the artifact is the home of that content.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 103,
+        "source": "External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 109,
+        "source": "Prints the checkout holding the engineering branch, which is where every planning record is written.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 113,
+        "source": "- The engineering branch has one long-lived worktree and takes no further one.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 125,
+        "source": "- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 126,
+        "source": "- Planning records go straight to the branch; they take no pull request.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 127,
+        "source": "- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 133,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 141,
+        "source": "Adds the folder for one planning record on the long-lived engineering worktree.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 145,
+        "source": "- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 146,
+        "source": "- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 147,
+        "source": "- The slug is lowercase words separated by hyphens, a short name of the work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 148,
+        "source": "- The folder's files are the [planning layout](planning-record.md#layout).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 149,
+        "source": "- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 155,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "work-item.md",
+    "head_sha256": "37e7f8517525200e3f474d45a754ececbb1d53cac850a2cfb1c5aeeacf717e35",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "markdown",
+        "sha256": "725d4b7a06ffea894e76811fe1c26f3212a0a2af1b5ea0820c92743ea0b5bb57",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The local plan for one task's work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Issue Body](issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Pull Request Body](pull-request-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Delivery Branches](delivery-branches.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "One task's local implementation plan.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "- Write the supplied task's file from [Template](#template), returning its path for registration in the planning record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "- Its name and content must meet [Identity](#identity) and [Sections](#sections).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "- The supplied component must meet [Component](#component).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "- The test row must meet [Test Coverage](pull-request-body.md#test-coverage), using the supplied criteria without copying them into the file.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "One file per task, named for its id in lowercase, such as `w01.md`: the name the epic row's link carries once its reservation is released. The record's README links each file by that name, and releasing the row refuses a record that does not hold it. The file names no other task and carries no acceptance criteria, Coverage, dependency or Joins; those belong to the epic table.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 62,
+        "source": "One declaration line ahead of the first heading, naming the single component the Implementation part extends as `<long-lived branch>:<path>`: the [long-lived branch](delivery-branches.md#branches) that holds it and the path to it there, such as `workspace:skills/work-planner/scripts/deliver.py`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "- A task that creates the component names the path it creates.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 65,
+        "source": "- The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "- A task whose implementation extends more than one component is split into a task for each.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 67,
+        "source": "- A component is one file, never a directory, since the dependency check groups an epic's rows into candidate units by it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 71,
+        "source": "- Component names the component the Implementation part extends, meeting [Component](#component).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "- Overview states what the task delivers and why.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 73,
+        "source": "- Problem and Proposal meet [Problem and Proposal](issue-body.md#problem-and-proposal); the Proposal starts with the scene.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 74,
+        "source": "- Work Breakdown decomposes the work into parts, such as analysis, plan, implementation, review and test. Its columns are Part and Description. The test row names the checks required by the work.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "agent-review.md",
+    "head_sha256": "fe24359cac43dd9bfe03af2349e6e2e9c30482e8da86043fa69cd623d9a2b286",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "c6599eca21d7b0d864210556dd80ab9caa6864f5b7b83a510318113819d77a88",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "Published evidence of an agent's review of one integration diff, an epic's review pull request or a hot-fix's delivering pull request, and its acceptance evidence.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "A review record for the exact integration revision.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "1. Read the complete diff from the target to the integration head, the affected definitions and callers, and every criterion's verification evidence. Inspect behavior and failure paths; test counts alone do not establish review completion.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "2. Record findings with severity and disposition. Fix each finding [Review Record](#review-record) requires fixed on the reviewed branch, run appropriate regression checks, and repeat the review against the resulting head. A nonblocking deferred finding names its ticket.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 15,
+        "source": "3. Write a JSON list containing the [Review Record](#review-record), with the full reviewed head and target SHAs, the `base_ref` a hot-fix's record carries, the scope actually inspected, findings and validation results. An empty findings list states that the review found no defect.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "4. Return the record for publication on the engineering branch. Evidence lives outside the reviewed branch, so publishing it does not change the head it identifies.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 20,
+        "source": "The current review's handoff eligibility.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "1. Run [Validate Agent Review](#validate-agent-review) with those files. Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that leaves the record no longer current, as [Review Record](#review-record) states, requires another review.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 31,
+        "source": "Each record contains `pull_request` (the full GitHub URL), `head` and `base` (full commit SHAs), `url` (the published HTTPS record URL), `reviewer`, `reviewed_at`, `scope`, `criteria`, `validation` and `findings`. The scope describes the full integration diff and inspected callers; criteria and validation describe the evidence inspected and its results. The pull request body links the published record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 33,
+        "source": "Each finding contains `description`, `severity` (`blocking` or `nonblocking`) and `disposition` (`open`, `fixed` or `deferred`). A fixed finding has an HTTPS `evidence` link; a deferred finding has an HTTPS `ticket` link. Blocking findings, and every finding on a hot-fix's delivering pull request, must be fixed and reviewed at the recorded head. Every finding has a completed disposition before handoff. A record on a hot-fix's delivering pull request also carries `base_ref`, the name of its base branch. A record is current while it names the pull request's head and base SHAs. One on a hot-fix's delivering pull request is current while it names its head SHA and its base branch: its reviewed change is the head against its target, which a target moving on leaves as it was and a retarget does not. The last record for the same revision is authoritative.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "Checks published review evidence against a freshly fetched integration pull request.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "goal-trace.md",
+    "head_sha256": "bc1d0c076e6516f1ae83be4a60e836d83902d21101bdbd3f6739d7b5289aed83",
+    "prerequisites": "byte-identical",
+    "payloads": [],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The table tying each clause of a confirmed goal to the initiative criteria that make it true, the epics that deliver them, and the source requirements they answer to, with the ranked gaps that trace exposes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Issue Body](issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Initiative Issue Body](initiative-issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Planning Record](planning-record.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "The draft checked against the initiative outcomes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "1. Take the goal the user stated and confirmed, as clauses, each an outcome someone could observe.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "2. Build the [Trace Table](#trace-table) from those clauses, the initiative criteria, the epics whose Coverage cells cite them and the epic criteria that deliver them.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "- Every goal clause has an initiative criterion that makes it true.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "- Every initiative criterion is delivered by an epic, and that epic's criteria make the criterion wholly true.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "- Every initiative criterion traces to a goal clause.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "- Remove one that traces to none, or put that scope to the user.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "- Record any criterion no task row delivers as a gap from the supplied epic format results.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "3. Call [Read Requirement Sources](initiative-issue-body.md#read-requirement-sources) with the initiative References, checkout, authenticated access and output files.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "- Extend the trace table with the source requirement each criterion answers to. Each unmatched requirement, each criterion that departs from the one it cites, and each source that could not be read is a gap [Sources](initiative-issue-body.md#sources) names.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "4. Check each criterion against the [shared acceptance criteria](issue-body.md#shared-acceptance-criteria) and [Initiative Acceptance Criteria](initiative-issue-body.md#initiative-acceptance-criteria).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 31,
+        "source": "5. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) for each supplied local draft with its title, labels and existing identity when present.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 32,
+        "source": "- Use the returned initiative and epic JSON for [Validate Initiative Body](initiative-issue-body.md#validate-initiative-body) with the initiative JSON, every linked epic's current JSON, source evidence and output file.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 33,
+        "source": "- Incorporate its local findings into this review.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 34,
+        "source": "6. Follow [Check Outside Threats](#check-outside-threats).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 35,
+        "source": "7. Rank the gaps, meeting [Gaps](#gaps).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "- Flag the few that most threaten the goal.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "- Record the trace table in the [planning record](planning-record.md), or give it to the user when the change has none.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "- Return the trace and ranked findings to the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "An item the draft leaves open is a gap.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 46,
+        "source": "1. Check for anything outside the plan that reads, builds or ships what the plan changes or removes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 47,
+        "source": "2. Check for a skip, a fallback, or a fail-closed path that hides a violation.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 48,
+        "source": "3. Check that done has a threshold, a baseline, and an instrument that is independent of the thing measured. The baseline is fixed before the plan changes what it measures.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "4. Check for skew between an artifact the plan produces and an implementation that reads it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "5. Check for a change elsewhere that alters the ground the plan stands on.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 51,
+        "source": "- Return the evidenced threats and gaps to [Review Initiative Goal](#review-initiative-goal).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 57,
+        "source": "| Goal clause | Initiative criteria | Epics | Epic criteria | Source requirement |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "| --- | --- | --- | --- | --- |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 59,
+        "source": "| The outcome the user confirmed | The criteria that make the clause true | The epics whose Coverage cells cite those criteria | The epic criteria that deliver them | The requirement the criterion answers to |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 61,
+        "source": "Every clause, criterion and epic the initiative holds occupies a row. A cell with no entry is a gap, not an omission.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 65,
+        "source": "A gap is a clause no criterion makes true, a criterion no epic delivers, a criterion tracing to no clause, a criterion no task row delivers, an unmatched source requirement, a criterion departing from the source it cites, a source that could not be read, or a threat the draft leaves open. Gaps are ranked, and the few that most threaten the goal are flagged.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "review-finding.md",
+    "head_sha256": "1b4f741468ba1182e0615eac2a5203b15586fc96477d10a6a6fa3b87e444b2cd",
+    "prerequisites": "byte-identical",
+    "payloads": [],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "One evidenced problem and its proposed solution.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "One finding verified against its supplied source.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "1. Verify the problem against the supplied source.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "2. If evidence is missing or contradictory, return that finding for the caller to resolve.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "3. Populate the finding with its source quotation.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "- It must meet [Finding Content](#finding-content) and [Decision State](#decision-state).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "4. Return the finding and any pending decision.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "The verified findings presented for resolution.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "1. Call [Populate Review Finding](#populate-review-finding) with the area, severity, problem, solution and source evidence.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "- Resolve any evidence gap before reporting it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "- Group the returned findings by area.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "2. Put each pending decision to the user, one question at a time.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "- Wait for the answer.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "- Record the confirmed answer on the finding, meeting [Decision State](#decision-state).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 31,
+        "source": "- Return each confirmed resolution to the caller for application to its selected issue kind. A pending decision returns without applying a change.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "Each finding has an area, severity, one problem/solution pair and a source quotation with file and line. The source establishes the stated problem. Findings are grouped by area when presented together.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 41,
+        "source": "A finding identifies whether it needs a user decision and records any supplied answer. An unanswered decision remains pending.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "placement.md",
+    "head_sha256": "3b6e05f4e774bd1c306eac7a0cbfed69e1c66e2734908804e8fc6b1b840dd433",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "b0cf25a46171ecaf6dd01c16e9c4dad6a1878aaa6ba51ed8288655dc9ad69135",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "22c3d56c82e096d4ced1518a2f3cc412a714d9b642930df89934e4175c6710b3",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "A proposed destination and disposition for one orphan's work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Issue](issue.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Issue Body](issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Epic Issue Body](epic-issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 12,
+        "source": "- [Initiative Issue Body](initiative-issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "- [Standalone Body](standalone-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "- [Hot-fix Body](hotfix-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "- [Hot-fix](hotfix.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "- [Dependency Graph](dependency-graph.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "One placement option from the supplied orphan and candidate destinations.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "1. Identify an existing task, a new task, a new epic, a new initiative, a hot-fix, or Leave.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "- Offer a hot-fix only for an orphan that meets the hot-fix [Definition](hotfix-body.md#definition), with the theme board it joins and its [target](hotfix-body.md#target): the declared long-lived branch the orphan's evidence places the defect on, the repository's default branch where it is declared and the evidence names no other.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "2. Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "3. Return the placement for the caller to offer and apply.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 33,
+        "source": "The issue candidates and available destinations from supplied records.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "1. Run [List Orphans](#list-orphans) with the supplied issue file.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "2. Return the [Candidate Issues](#candidate-issues) and open initiative and epic destinations for the caller to investigate.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "One selected destination for an orphan's work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 46,
+        "source": "1. Execute only the branch matching the confirmed destination:",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 47,
+        "source": "- **Existing task.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 48,
+        "source": "- Add the orphan's outcomes to the task criteria.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "- Add its design to Proposal.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "- When they exceed the epic's criteria, add epic criteria cited by the task row.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 51,
+        "source": "- Publish the affected bodies through [Save Tracker Issue](issue.md#save-tracker-issue).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 52,
+        "source": "- **New task.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 53,
+        "source": "- Run [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body) with the confirmed task scope, current epic context and output path.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 54,
+        "source": "- Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](#destination-work) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 55,
+        "source": "- Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](epic-issue-body.md#task-delivery) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "- Number the row where it can start, and keep its row id for the return.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 57,
+        "source": "- When movable rows change number, run [Check Dependencies and Numbering](dependency-graph.md#check-dependencies-and-numbering) with the affected initiative and epic drafts and confirmed numbering map.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "- Publish the checked bodies through Save Tracker Issue.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 59,
+        "source": "- **New epic.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 60,
+        "source": "- Run [Populate Epic Issue Body](epic-issue-body.md#populate-epic-issue-body), carrying the orphan's work in a task row, and keep its row id for the return.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 61,
+        "source": "- Populate the covering row through [Draft Initiative Issue Body](initiative-issue-body.md#draft-initiative-issue-body).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 62,
+        "source": "- Publish the epic through [Save Tracker Issue](issue.md#save-tracker-issue).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 63,
+        "source": "- Link its issue in the initiative row.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "- **New initiative.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 65,
+        "source": "- Run [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body) from the orphan's scoped problem and confirmed goal.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "- Publish through [Save Tracker Issue](issue.md#save-tracker-issue).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 67,
+        "source": "- **Hot-fix.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "- Run [Open Hot-fix Issue](hotfix.md#open-hot-fix-issue) with the source issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 69,
+        "source": "- Use the source issue as the destination with disposition Kept. The caller rewrites its hot-fix body and keeps the issue open.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 70,
+        "source": "- **Leave.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 71,
+        "source": "- Use the source issue as the destination with disposition Leave. The caller rewrites its standalone body and keeps the issue open.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "2. Return the saved destination, the identities of all affected bodies and the confirmed disposition to the caller, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The caller performs the rewrite or closure.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 76,
+        "source": "One kept or left orphan rewritten in the layout of its destination kind.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 80,
+        "source": "1. Use the selected [Populate Initiative Issue Body](initiative-issue-body.md#populate-initiative-issue-body), [Populate Hot-fix Body](hotfix-body.md#populate-hot-fix-body) or [Populate Standalone Body](standalone-body.md#populate-standalone-body) body.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 81,
+        "source": "- Carry evidence into Problem and design into Proposal.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 82,
+        "source": "- Pass a hot-fix its supplied number, theme label and target.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 83,
+        "source": "2. Run [Check Round of Edits](issue-body.md#check-round-of-edits) with the populated body and selected kind conditions before publishing.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 84,
+        "source": "- Resolve findings.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 85,
+        "source": "- Run [Save Tracker Issue](issue.md#save-tracker-issue) with the validated body, title and labels, a hot-fix's being every label its [Titles](hotfix-body.md#titles) name.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 86,
+        "source": "3. For a hot-fix, run [Settle Hot-fix Board Status](hotfix.md#settle-hot-fix-board-status) with the confirmed theme board and the saved issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 87,
+        "source": "4. Return the saved identity, and a hot-fix's settled board item, to the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 91,
+        "source": "The work remains tracked by the taking issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 95,
+        "source": "1. Transfer the work to the taking issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 96,
+        "source": "- Make each outcome a criterion of one invariant.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 97,
+        "source": "- Put the design in Proposal.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 98,
+        "source": "- Cite the orphan and any planning record in References.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 99,
+        "source": "2. Prepare the comment file naming the taking epic and row, or the taking task issue, for example `Tracked in [I07:E01](\u2026/issues/937) W04.` The closure operation records it once.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 100,
+        "source": "3. Run [Close Transferred Work](issue.md#close-transferred-work) with the orphan identity, confirmed destination evidence and closure comment file, retaining the orphan's body.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 101,
+        "source": "- Return the confirmed closure or blocker to the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 105,
+        "source": "- **Source.** The orphan's repository, issue number and current body.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 106,
+        "source": "- **Destination.** The selected issue or proposed work, with the criteria and design it takes.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 107,
+        "source": "- **Disposition.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 108,
+        "source": "Kept, subsumed or left, with a reason. A referenced planning record is carried with the source reference.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 109,
+        "source": "- **Draft bodies.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 110,
+        "source": "Each proposed body meets its own kind's shape and states the result. It carries no account of how the work arrived. A source reference says what detail it holds.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 111,
+        "source": "- **Links.**",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 112,
+        "source": "An initiative row identifies its epic issue. A task issue has its delivery link through Development.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 116,
+        "source": "| Destination | Work | Issue Disposition |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 117,
+        "source": "| --- | --- | --- |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "| Existing task | Criteria and design in a task that has its own issue | Subsumed |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 119,
+        "source": "| New task | A row in an existing epic, with its criteria | Subsumed |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 120,
+        "source": "| New epic | An epic in an existing initiative, with a task row carrying the work | Subsumed |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "| New initiative | An initiative | Kept or subsumed |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 122,
+        "source": "| Hot-fix | A [hot-fix](hotfix-body.md#definition) on its theme board, with its target | Kept |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 123,
+        "source": "| Leave | Work outside the initiative structure | Left open |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 127,
+        "source": "- **Existing task, new task and new epic.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 128,
+        "source": "The source is subsumed, its work planned as an ordinary task row.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 129,
+        "source": "- **Hot-fix.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 130,
+        "source": "The source is kept, under the hot-fix layout, and is placed on its theme board once it is saved as a hot-fix.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 131,
+        "source": "- **New initiative.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 132,
+        "source": "A source with a planning-record reference is subsumed, with that folder cited beside the source in the destination. Otherwise the source is kept when its work needs its own discussion or evidence, and subsumed when its detail fits in rows, criteria and a reference.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 133,
+        "source": "- **Existing criterion.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 134,
+        "source": "Work an existing criterion already states is subsumed into the issue holding that criterion, without a new row; for cited standalone work this is usually the citing issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 138,
+        "source": "Candidates are open issues without an agent-engineering prefix, other than a proposal, a [hot-fix](hotfix-body.md#titles), and a declared throwaway target: an issue carrying a `throwaway:*` label, a fixture a write check changes, which stays open and belongs in no initiative. Orphans have no incoming link from an open initiative, epic or task. Cited standalone issues have such a link in prose or References; their records include labels, citing issues and any linked planning folder. An investigation cited by an epic is a candidate, with disposition determined from supplied criteria.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 142,
+        "source": "An existing-epic option identifies the row to add, with Description, criteria, Depends on and Joins, or the existing task already delivering the work. Leave applies when no initiative goal covers it and it is no hot-fix, or when it is not planned work. Each option names its disposition, as [Disposition Conditions](#disposition-conditions) state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 148,
+        "source": "Lists the hoist candidates, and the open initiatives and epics they could join.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 156,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "repository-graph.md",
+    "head_sha256": "325183acb97ed359d114501e1504f1e41bd90f9b45418b84f6210e0656255ff1",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "1fffca309a13095f7dbbb9693386af4ca3ae6deaefa0328cdfd937410a94b1fe",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "dd6245c1837dcedf890f1433b6102dc29297b4155ea973cad0c5e049a57666c4",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "455426ba4642890c3f1d7ee739c3b58aad3c492813886654b19da2551ceb50e5",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "f80e50c8255544f402e5028a01cbfab1b18f26444de8f851144ce717fd381625",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "d556d5773548244d0a5a32e27488dce4c3ded9ec9806b1cb1601563503774c2f",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "a23d4954a185f72e86054b04f0f4515769ee39fc3c28b859dbdfca98a9b8b581",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "eb961066784d798ecd646b765c2f0d2dd53a194b663836f7023c828d92e69ac7",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "fa3c8488909c447aba618af9e075637514ecfa26a0c117c1640b0502da41a17c",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The indexed symbols, relationships and ordered flows for a repository revision.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "Current graph evidence for the supplied change.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "1. Run [Index Status](#index-status) in the review checkout. Every graph command runs there.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "2. If the repository is unindexed or behind the verified head:",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "- Run [Index Repository](#index-repository) in the review checkout.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "- Confirm freshness.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "3. Run [Change Surface](#change-surface) in the review checkout against the supplied base using `--base-ref`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 18,
+        "source": "4. For each changed symbol, run [Symbol Context](#symbol-context) in the review checkout.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 19,
+        "source": "5. For each reported flow, run [Flow Trace](#flow-trace) in the review checkout.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 20,
+        "source": "6. Inspect the staleness block on every response. For a behind index:",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 21,
+        "source": "- Discard its measurements.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 22,
+        "source": "- Reindex.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 23,
+        "source": "- Repeat the affected measurements.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 24,
+        "source": "7. Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "The graph identifies its worktree and indexed commit. Measurements describe the supplied pull request head and its difference from the supplied base branch.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 34,
+        "source": "Graph responses carry a JSON `staleness` block. A behind index is not current with the requested head; measurements from it are invalid.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "The surface identifies symbols touched by the diff and the flows containing them. It compares with the supplied base branch, rather than the branch's whole history.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "Each changed symbol has callers, callees, containing flows and file locations. Files group into component areas; their measured relationships determine edges between areas.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 46,
+        "source": "Each flow contains symbols in step order. Each `process_symbols` entry includes `step_index`, file and lines. Those ordered measurements supply sequence-diagram participants and interactions. A manually inferred call order does not establish a graph trace.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "Reports whether the repository is indexed, and how far behind the index sits.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "**Acts on:** the checkout it runs in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "Indexes the repository, which an unindexed or behind repository needs before any measurement.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "**Acts on:** the checkout it runs in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 76,
+        "source": "Reports the symbols a pull request's diff touches and the flows they sit in, against the base branch.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 80,
+        "source": "**Acts on:** the checkout it runs in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 82,
+        "source": "- `--base-ref` is the pull request's base, so the surface is the change rather than the branch's whole history.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 88,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 96,
+        "source": "Reports one symbol's callers, its callees and the flows it sits in, each with the file it sits in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 100,
+        "source": "**Acts on:** the checkout it runs in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 106,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 114,
+        "source": "Reports one flow's symbols in step order, the structure a sequence diagram is drawn from.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "**Acts on:** the checkout it runs in.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 124,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "lane.md",
+    "head_sha256": "bf537ec738d9d7a5f8b6f5642827d7c53a3c2f327da2f55140675443f4512a11",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "66180cd6652f318a71519d3ba2a887c17170db9375921fbc3cd0a998b70b3ec4",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "4a6b110b6557270197b5b6d13045087ad9dba7064573fa986324a27d16e4802c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "1c2b99cf8780522d270b8fa5ff18b8069d339da34704479143627fde4ce317ad",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "a03a858c89b9f0c50423bb82ecb2d85b58d2b3180eddc932367280a9226a6f4e",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "A board-wide delivery lane, its task assignments and the units a request admits.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "Lane assignments and malformed-cell findings from supplied task tables.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "- Run [Read Lane Assignments](#read-lane-assignments) with the body file and return its row-to-index map and findings, meeting [Assignments](#assignments).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "A task table with confirmed lane assignments.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "1. Run [Write Lane Assignments](#write-lane-assignments) with the body, confirmed map and output path.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "- Refuse unknown task ids or malformed resulting cells.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "2. Return the output body for the caller's full body and dependency validation.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "The common lane of a supplied work unit, or its assignment findings.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 31,
+        "source": "- Run [Validate Lane Unit](#validate-lane-unit) with the body and unit ids and return the common index or findings, meeting [Unit Consistency](#unit-consistency).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 35,
+        "source": "The lane decision for one free unit and current request.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "- Run [Evaluate Lane Admission](#evaluate-lane-admission) with the body, unit ids and requested index and return its admitted flag and findings, meeting [Admission](#admission).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 45,
+        "source": "An index is an opaque board-wide decimal string. Its spelling is significant: `02` and `2` are distinct indices, and `0` is valid. The same index identifies one lane across the theme board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "Each task's Lane cell holds a bare [Index](#index), or is empty for an unlaned task. A populated cell's complete content is the index. Raw cells supply assignments independently of work-item links. Malformed cells supply findings and no assignment; a missing Lane column supplies no lane data.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 53,
+        "source": "Every member of a unit carries the same index, or every member is unlaned. Missing assignments and differing values are findings. A differing assignment requires changing the row lanes or unjoining the rows.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 57,
+        "source": "A request naming an index admits free units with that index and unlaned units. A request naming none admits only unlaned units. Malformed or inconsistent assignments admit no unit. Availability and priority are supplied by the caller; lane admission applies to free units and leaves other findings visible. A unit without task rows is unlaned.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 61,
+        "source": "A populated index is reported as `lane 2`, preserving its spelling; an unlaned unit is reported as `unlaned`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 67,
+        "source": "Reads raw task-table Lane cells through the Lane module.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 77,
+        "source": "Writes confirmed assignments while preserving other body content.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 81,
+        "source": "- The map is a JSON object keyed by task id; values are decimal strings or `null` for unlaned rows.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 89,
+        "source": "Reports a unit's common lane or assignment findings.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 93,
+        "source": "- Unit ids form a comma-separated list.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 101,
+        "source": "Reports whether the request admits a valid unit.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 105,
+        "source": "- Unit ids form a comma-separated list; omit the lane option when the request supplies none.",
+        "disposition": "explicit review"
+      }
+    ]
+  },
+  {
+    "file": "dependency-graph.md",
+    "head_sha256": "69c69f25fedd3c2780cb0abf72e871938014d5b6b35244ea872fc2a29b240215",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "5e247d515abfa1a377cce1e5d7b275d97812a229d05a8d62f73743a7fb7eb865",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "0c5faa5e3ef1a54d8ae73c687fc550ea6d4875c2ecfcdce71eddcd4c8d741981",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "cccb7179b4910cd6972d27dcdd4c7a8c3f624b4c39a0aad1487be29e0f5ebddb",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "35b543145f5e0eb7e497963e48781d5f3da4cecef2c8f085a8adee6f80dbe766",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "e4d3e5e27c5da41ebf401effa7fdfd2eda79457cd620c95bc573881641e66f7c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "c54a1e810a11cfb5c8d86fd2c966928d70e8979c405f5a0ccce99d237b63a61f",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The task edges an initiative's epics declare, and the row numbers that graph permits.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Lane](lane.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Issue](issue.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Initiative Issue Body](initiative-issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 12,
+        "source": "- [Work Item](work-item.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "- [Plan Change](plan-change.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "- [Delivery Branches](delivery-branches.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 20,
+        "source": "The task graph and the row numbers it permits, checked and renumbered across the supplied bodies.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "1. Use the supplied local drafts when reviewing unpublished work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "- For published issues, fetch the initiative and each epic body with [Read Tracker Issue](issue.md#read-tracker-issue).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 26,
+        "source": "- Run [Check Dependencies](#check-dependencies) with the initiative body, every epic body and every supplied work-item file. The computation applies [Check Unit Lanes](lane.md#check-unit-lanes) to the units it derives, using their epic bodies and complete ids.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 27,
+        "source": "2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 28,
+        "source": "- Name the producing row for each consumed output, meeting [Edges](#edges), replacing an epic a task row names with the rows the task consumes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "- Read tasks for implied consumption edges.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "- Answer every open candidate unit as [Joins](#joins) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 31,
+        "source": "- Account for every contending pair through [Component Contention](#component-contention).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 32,
+        "source": "- Resolve backward references by moving work to the epic owning its inputs, or removing duplicate work already owned there. Work claimed twice has one owner and a boundary in both bodies.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 33,
+        "source": "3. Renumber the confirmed maps, preserving the numbers [Numbering Map](#numbering-map) protects.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 34,
+        "source": "- For a confirmed epic map, run [Renumber Epics](#renumber-epics) with current pull request records and every affected body.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 35,
+        "source": "- For a confirmed task map, run [Renumber Tasks](#renumber-tasks) with the initiative and epic identities, owning epic body, confirmed old-to-new task-number map and every affected body file.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "- Re-sort rewritten tables.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "- Inspect every reported range.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "- Search prose for references the script cannot see.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "- Repeat Check Dependencies after each edge or numbering change until it reports no problem.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 40,
+        "source": "- Record the printed longest chains and each printed contending pair in the planning record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 41,
+        "source": "- Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 45,
+        "source": "- **Scope.** One initiative, its epics and their task rows.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 46,
+        "source": "- **Source.** The initiative body and every epic body it links, published or as local drafts.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 50,
+        "source": "A task edge names the producing row for each output the depending row consumes. An edge a task's prose implies is carried explicitly.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "- **An edge names rows, never an epic.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 53,
+        "source": "A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 54,
+        "source": "- **A task consuming from every row of an epic names the producing row for each output.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 55,
+        "source": "An edge another in the cell already implies is dropped, so a prerequisite chain is named by its last row, and the whole-epic reach is what the rows establish either way.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "- **An edge to another epic's row waits for that row's outputs.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 57,
+        "source": "The dependent row starts once the producing row is delivered and its outputs are available at the dependent epic's base, as [Producer Outputs](delivery-branches.md#producer-outputs) states; the producing epic's other rows and its closure gate nothing.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "- **An entry that cannot resolve is a permanent condition, not a prerequisite to come.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 59,
+        "source": "An entry naming no row and linking no issue, naming an issue the run was not given, or naming a row the epic it points to does not carry, cannot resolve. Every tool reading the cell names the entry as written, leaves the row where it stands rather than placing it as work still to come, and exits nonzero.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 63,
+        "source": "An initiative Depends on cell takes the epics it derives, as [Work Breakdown](initiative-issue-body.md#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 65,
+        "source": "- **The edge is the coarsest gate the plan has.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "It holds the dependent epic until the prerequisite closes, not until the row it consumes merges, and it drops the dependent a [priority](#epic-priority) number, so the board keeps it out of Ready while the prerequisite runs.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 67,
+        "source": "- **Its cost is why it is derived and never written.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "A narrower dependency stays in the task graph, where it gates the row that consumes the output rather than the epic around it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "The map proposes one positive integer for each epic supplied, derived from the whole-epic edges and the components its rows declare. Epics sharing a number start together, so the number asserts they can run in parallel, and it holds a set only where both of these do.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 74,
+        "source": "- **Prerequisite depth establishes when an epic may start.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 75,
+        "source": "An epic with no prerequisite epic, one whose tasks are not yet written among them, carries the largest number, and each other epic takes one less than the smallest its prerequisites carry.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 76,
+        "source": "- **Component contention establishes whether it can.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 77,
+        "source": "An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 81,
+        "source": "Two task rows in different epics whose work items declare one [component](work-item.md#component) contend. Concurrent epics are two bases and two pull requests, so one component written from both is a merge conflict.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 83,
+        "source": "- Rows of one epic are out of scope: they land on one base, in the order Depends on and [Joins](#joins) set, so one component written twice is a rebase on that base rather than a conflict between two of them. [Joins](#joins) proposes them as one unit.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 84,
+        "source": "- A contending pair is answered by the number that separates its epics, or by moving the rows into one epic.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 88,
+        "source": "The undelivered rows of one epic whose work items declare one [component](work-item.md#component) are a candidate unit: one pull request writes that file once, where separate ones each rebase on the last. Rows declaring different components need no accounting.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 90,
+        "source": "- **A joined unit has one lane.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 91,
+        "source": "Joined rows meet [Unit Consistency](lane.md#unit-consistency).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 92,
+        "source": "- **A candidate is answered once.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 93,
+        "source": "Its rows name each other in Joins, or one line of a record names exactly its rows and why they stay split. A line naming only some of its rows, or rows besides, accounts for none.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 94,
+        "source": "- **Both resolutions are stated where the candidate is reported.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 95,
+        "source": "Naming the rows in Joins asserts one pull request; the record line says why there are several. A report naming only the first makes the assertion the cheaper answer.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 96,
+        "source": "- **A direct edge inside a candidate is the edge a join drops.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 97,
+        "source": "The report names it, since the joined pull request orders the commits.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 98,
+        "source": "- **Some candidates are split by rule.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 99,
+        "source": "A candidate whose rows cover more than six criteria, or with a path between two of them through a row outside it, cannot join. The report names the reason, and no record line is asked for.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 103,
+        "source": "A comma-separated list of `<old-number>:<new-number>` pairs assigning each old number one distinct new number. A number a pull request already names is preserved, and a row a pull request names is not renumbered. A source absent from the supplied files, or a duplicate destination, is refused.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 109,
+        "source": "Checks the task dependency graph across the epics given, and with `I=` the initiative's Depends on cells.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 113,
+        "source": "- Keep `I=` for the initiative. Repeat the `<epic-id>=<epic-body-file>` argument once per epic, the `<epic-id>:<task-id>=<work-item-file>` argument once per work item, and `R=<record-file>` once per record.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 114,
+        "source": "- The command runs in `<workspace>`, and each file sits in a planning record or a working directory beyond it, so pass each one as an absolute path.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 116,
+        "source": "- Initiative edges follow the [whole-epic prerequisite rule](initiative-issue-body.md#work-breakdown); narrower dependencies stay in the task graph.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 117,
+        "source": "- It also reports dependencies listed twice or already implied, Joins pairs that do not name each other or that a dependency links, and a joined unit covering more than six criteria.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "- It refuses a joined unit that fails the [lane condition](#joins), naming each row and its lane, and exits nonzero.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 119,
+        "source": "- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 120,
+        "source": "- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "- It prints each pair of rows in different epics whose work items declare one component, meeting [Component Contention](#component-contention), and names the rows it was given no work item for, so a partial report says what it passed over.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 122,
+        "source": "- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 123,
+        "source": "- It reads a declared component without its link, a wrapping code span, a trailing full stop or a leading `./`, and reports a work item it cannot read.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 124,
+        "source": "- It reports a work item declaring a directory: a path ending in `/`, carrying a glob, or naming a directory under `<workspace>`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 125,
+        "source": "- It prints the proposed [Epic Priority](#epic-priority) of each epic, largest first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 126,
+        "source": "- It reads bodies from [Read Tracker Issue](issue.md#read-tracker-issue), or local drafts.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 132,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 140,
+        "source": "Renumbers one epic's tasks by the map given, in the files given.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 144,
+        "source": "- `<task-number-map>` is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each affected body file as a separate argument.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 146,
+        "source": "- It renumbers `<epic-id> Wxx` and `<epic-id>:Wxx` everywhere, and bare `Wxx` inside that epic's own body. **Example:** for `E01`, the qualified forms are `E01 Wxx` and `E01:Wxx`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 147,
+        "source": "- The map assigns each old task number a distinct new number. A source absent from the files or a duplicate destination is refused.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 148,
+        "source": "- Append `--outside` followed by each explicitly authorized outside-initiative body file when supplied; only this initiative's prefixed references change there.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 149,
+        "source": "- Only rows no pull request names may be renumbered. Inspect the rewritten files before publishing them.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 155,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 163,
+        "source": "Renumbers an initiative's epics across supplied body files.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 167,
+        "source": "- The map is a comma-separated list of `<old-number>:<new-number>` pairs. Pass each body file as a separate argument; append `--outside` followed by each outside-initiative file when supplied.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 168,
+        "source": "- Files are rewritten in place. Outside files change only references carrying this initiative's prefix; links retain their targets. A source absent from the files, a collision or a number already named by a pull request is refused.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 174,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "board.md",
+    "head_sha256": "f52877c47a938535c56dea8439b48ad4756a2803bcccba474a4718f83525b447",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "dd754050cb4c7cd91c5aa223d61ae004e2df2eadc2e74ee54ac465e63d498c2b",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "687a75f3f8b246e377c5e1fc40816a9a01c73e398fcd5cfcc8fc97b6fba9e453",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "7c0c2035cd1111c9a631bec4ea7325026ecef2a8541541849a9606fb69187a23",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "65b6b87af91b8059e8ecbcd5b4c5d0eaadc8dd78bd94d5080b1f97a39e1b4544",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "de6bff16a76136bbc73a81cf2f60a0f613a07569ad7f5fe9429497d386233193",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "88805b9182c6d62b4dd876f2dbde48f834f704e18490ebd6f7aaefb833c62704",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "0831382e2dfa3b75263ddbf7df4b74a1236bc1f987d1a9a814ef7479e13f1d1b",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "90e10c04e63f967f1057eda9ab1b2b6ac31f464234873a0eaed79dc1e9420d43",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "aa387b32f36e9fa7c5299837b638505b1371cd532d3c336ff1680bb60a251fa4",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "22b2de5b18a1a8c755faf0daf358990da7e6671d46fd74b85cb2b3a806d0d1e9",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "b6dccb41236f6a4e385863b7321a82866862bddd452103b0f773f5581f380e53",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "e484a74dd0c4d37403c0192444f56e26f5b4a9a7804861543c37ade53d8a228b",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "ecbc2ecaecda5c6abf115826494759100ea1952fe6751e6db0f085abe4c1410c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "7438c98bfb984710098d0e2c6c9bef1de236a14005c807cb22a2ed25654b837c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "f70a53106f20736062d49aad0572d2ff618fd62307da61b3d6021d549ef9f768",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "10c5408af4d17b237a2841499b95494d3bc0d5aab98cbdd7ace33f9a90e49a3b",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "4ff22407eb98c0187149c4d1a462898e9d6ecb07bfebfd30fd4fb1d99a1edc4c",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "eb6815f5a2f1a9b123c8265ae474e6a80b6582469caeb8c92746dde6d5a1b7b7",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "cfc95cc4eec1b20aea6eeaa546a8e73eb780713547a17f3e5b9f9fdc4648f081",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "9600d506de8255e06bd35a91ff07cebaaf5ff20e1d1220d0cba93d9eff6d6b1f",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "4333abd3aaf727fa367d00f03e4b2f04c2c473b6b540a35c5d02a2dd31c8816d",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The theme or proposals board, its membership and each item's status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- For proposals-board selection or creation, read [Proposals Board Configuration](../configuration.md#proposals-board).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- For theme-board creation, read [Theme Board Configuration](../configuration.md#theme-boards).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "The theme or proposals board the request names.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 20,
+        "source": "1. Run [Find Theme Board](#find-theme-board) for the named theme, or [Find Proposals Board](#find-proposals-board) when the request names proposals. The selection meets [Themes](#themes) or [Proposals](#proposals).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 21,
+        "source": "2. Return a missing-selection result when neither a theme nor proposals is specified; the caller obtains that choice.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "3. Return the selected board number, or an absent-board result for [Copy Project Board](#copy-project-board). Work one board at a time.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 26,
+        "source": "A missing theme board, or a missing proposals board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "1. When no open board has the [proposals title](../configuration.md#proposals-board), run [Create Proposals Board](#create-proposals-board). The copy source and the title meet [Proposals](#proposals).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 31,
+        "source": "2. When the selected theme board is absent:",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 32,
+        "source": "- Run [Create Theme Board](#create-theme-board) with the owner, repository, theme title and originating proposal record when applicable.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 33,
+        "source": "- Require the new theme's label and board before an initiative takes that theme.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "A new proposals board linked to the supplied repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 41,
+        "source": "1. Run [Find Board Template](#find-board-template) with the owner and the exact [proposals-template title](../configuration.md#proposals-board).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "2. Use the returned number as the copy source.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 43,
+        "source": "3. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the [proposals title](../configuration.md#proposals-board).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 44,
+        "source": "4. Retain the new board number. The copy meets [Proposals](#proposals).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 45,
+        "source": "5. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 46,
+        "source": "6. Return the new board number after linking succeeds.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "A new theme board linked to the supplied repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 54,
+        "source": "1. Require the originating proposal record for a proposal-derived board; return a missing-input finding when its designator is unavailable.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 55,
+        "source": "2. Run [Find Board Template](#find-board-template) with the owner and the exact [theme-template title](../configuration.md#theme-boards).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "3. Use the returned number as the copy source.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 57,
+        "source": "4. Run [Copy Board Template](#copy-board-template) with that template number, the owner and the title required by [One Board Per Theme](#one-board-per-theme).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "5. Retain the new board number. The copy carries the [theme-board fields](../configuration.md#theme-boards).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 59,
+        "source": "6. Run [Link Board to Repository](#link-board-to-repository) with the owner, new board number and repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 60,
+        "source": "7. Return the new board number after linking succeeds.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "One issue's membership and initial status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "1. Run [Fetch Board Fields](#fetch-board-fields) for the Status options, using the caller's supplied board and issue identities.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 69,
+        "source": "2. Run [Add Issue to Board](#add-issue-to-board) with the issue id.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 70,
+        "source": "3. Run [Set Item Status](#set-item-status) with the caller's selected status and the matching field and option ids.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 71,
+        "source": "4. Run [Fetch Board Item](#fetch-board-item) for the saved item.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 75,
+        "source": "The selected board's items and status fields.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 79,
+        "source": "1. Run [Find Status Field](#find-status-field) for the board number.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 80,
+        "source": "2. Run [Fetch Board Items with Status](#fetch-board-items-with-status), passing that field id and board number.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 81,
+        "source": "3. Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 85,
+        "source": "The authenticated login available for board assignments.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 89,
+        "source": "1. Run [Find User](#find-user).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 90,
+        "source": "2. Return its login for the caller's assignment decisions.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 94,
+        "source": "One board's field definitions and requested item state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 98,
+        "source": "1. Run [Fetch Board Fields](#fetch-board-fields) for the supplied board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 99,
+        "source": "2. When a single item is requested for write confirmation, run [Fetch Board Item](#fetch-board-item). A list snapshot may lag a write.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 100,
+        "source": "3. Return the field definitions and requested current item.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 104,
+        "source": "The board identity matching a supplied purpose or theme.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 108,
+        "source": "1. Run [Find Proposals Board](#find-proposals-board) for proposals, or [Find Theme Board](#find-theme-board) for a theme.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 109,
+        "source": "2. Return the identity or an absent-board finding for the caller's selection or creation path.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 115,
+        "source": "Every initiative belongs to one theme, and each theme has one project board. Each project names its own themes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 117,
+        "source": "Project examples are in [Themes](../configuration.md#themes).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "An initiative carries one `theme:*` label, and each of its epics carries the same one.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 125,
+        "source": "- A proposal-derived board title is the originating proposal's exact `[Pxx]` designator, a space, the theme name, a colon, and its description: `[P03] Canon: Definitions Checked Against the Design Canon`. Preserve the proposal's digits exactly. A board with no originating proposal uses `Name: Description`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 126,
+        "source": "- It is linked to the repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 127,
+        "source": "- It holds the theme's initiatives, their epics and their task issues, and its hot-fixes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 131,
+        "source": "A board's repositories are those its items' issues live in, read from each item's issue, deduplicated and ordered with the board's own repository first. An item whose issue is unreadable leaves the list incomplete, which is reported rather than filled by assumption.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 135,
+        "source": "An issue at Ready, In Progress, In Review or Done is assigned to the user; one in Backlog has no assignee. An assignee is set on the issue, not on the board item, so the call that changes one acts on the issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 139,
+        "source": "A standalone issue sits on no board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 143,
+        "source": "- The [configured board](../configuration.md#proposals-board) holds proposal issues, the incoming funnel for work that may become an initiative.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 144,
+        "source": "- **Suggested.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 145,
+        "source": "Raised, and nobody has taken it up. A new proposal lands here, with no assignee.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 146,
+        "source": "- **Considering.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 147,
+        "source": "Someone is weighing the goal, the evidence and the criteria. That person is the assignee.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 148,
+        "source": "- **Approved.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 149,
+        "source": "Qualified to become an initiative. The assignee is the user.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 150,
+        "source": "- **Held.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 151,
+        "source": "Not now. It stays on the board, with no assignee.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 152,
+        "source": "- **Declined.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 153,
+        "source": "It will not become an initiative. It has no assignee.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 159,
+        "source": "Prints the number of the open board with the supplied exact template title.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 169,
+        "source": "Copies the supplied template into a new open board with the supplied title and prints its number.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 173,
+        "source": "- The copy's JSON is one project; `.number` identifies the new board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 181,
+        "source": "Links one board to the supplied repository.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 191,
+        "source": "Prints the number of the open [proposals board](../configuration.md#proposals-board).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 201,
+        "source": "Adds the caller-supplied issue id to a board and prints the new item's id. The input is the issue id, not its number.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 209,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 217,
+        "source": "Sets one board item's Status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 221,
+        "source": "The input body names the Status field id and option id from [Fetch Board Fields](#fetch-board-fields): `{\"fields\":[{\"id\":<status-field-id>,\"value\":\"<status-option-id>\"}]}`. Substitute the field id as a JSON integer and the option id as a JSON string.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 223,
+        "source": "**Example payload:** `{\"fields\":[{\"id\":419167630,\"value\":\"OPTION\"}]}`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 229,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 237,
+        "source": "Removes one item from a board, leaving its issue as it stands.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 245,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 253,
+        "source": "Saves a board's fields.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 261,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 269,
+        "source": "Prints the number of the open board for one theme, by its theme name after any proposal designator.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 277,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 285,
+        "source": "Prints the id of a board's Status field.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 293,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 301,
+        "source": "Saves a board's items with their Status, each carrying its issue whole.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 309,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 317,
+        "source": "Reads one board item, including its current Status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 325,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 333,
+        "source": "Prints the login `gh` runs as, the user assigned to work from Ready on.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "standup-report.md",
+    "head_sha256": "4a15d1d1167ea5c246677d9517e8ae5d7834c5a3b7469ebc9c073ebed7aaa80c",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "e63702ea38a7d18ca974ee59683e638f7a3223afa0d5c43b35fb2111f181a2d2",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "25d2da8ac5f13bbd804a8b536749bbca1216b32878bce175178f7b7b5dc98954",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "A board progress report for a selected window, formatted for pasting into Slack.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- When no window start is supplied, read [Standup Configuration](../configuration.md#standup).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Hot-fix Body](hotfix-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Hot-fix](hotfix.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "The copyable report and any missing-evidence findings.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "1. Require the complete issue-link snapshot.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 22,
+        "source": "2. Run [Summarise Progress](#summarise-progress), passing items as `--items`, pull requests as `--prs`, links as `--links`, the selected start as `--since`, the filter as `--initiative` and every resolved initiative as `--initiatives`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "3. If initiative references remain unresolved, return them for the caller to supply.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "4. Write the management paragraph from the rendered Initiatives and Completed sections.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "- It must meet [Management Paragraph](#management-paragraph).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "5. Run [Summarise Progress](#summarise-progress) with the same inputs and the paragraph file as `--summary`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "6. Return the report and separate unresolved findings.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "- The report must meet [Fields](#fields).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 34,
+        "source": "When no start date is supplied, the window follows [Standup Configuration](../configuration.md#standup). A supplied start date selects another window, such as the previous working day for a daily standup. An initiative filter names one initiative, qualified by repository when its number is ambiguous.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "Each repository numbers its own initiatives, and an initiative's epics and task issues may live in other repositories. Each item's place follows the Work Breakdown links, or for a task issue the pull request whose Development field links it. A pull request counts towards the epic of its reference in the epic's repository or its initiative's.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 40,
+        "source": "The management paragraph is set off by blank lines, with the board's link beneath the heading.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "- **Initiatives.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 43,
+        "source": "One line for each initiative with work under Completed or In progress, its title's name and subtitle, opening with the mark of its state. One off the board is done when closed, else in progress. An item works for the initiative whose table links its epic and for the one its epic's title names.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 44,
+        "source": "- **Completed.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 45,
+        "source": "Items Done whose issue closed in the window, grouped under their epic, and tasks whose pull requests merged in it. Closing is when an issue became Done; an issue the board caught up with later still falls on its closing date.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 46,
+        "source": "- **In progress.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 47,
+        "source": "Epics In Progress or In Review and task issues In Progress, each epic with its open pull requests, or else its next task.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 48,
+        "source": "- **Next.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "The five Ready items, each epic with its next task, and a count of the rest.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "- Ready hot-fixes lead.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 51,
+        "source": "- They rank by the priority label of the initiative their epic belongs to, then by their epic's own.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "- An epic is placed ahead of any listed epic naming it, so a supplier reads before the work drawing on it. An epic names another when a task row names one of its rows or the initiative row names it whole.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 53,
+        "source": "- **Hot-fixes.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 54,
+        "source": "Each [hot-fix](hotfix-body.md) follows the epic groups of Completed, In progress or Next as its status places it, with its [delivering pull requests](hotfix.md#delivering-pull-request) beneath. An initiative filter leaves hot-fixes out.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 55,
+        "source": "- **Key.**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "I Initiative, E Epic, W Work Item and F Hot-fix. Opening marks are \u2705 done, \ud83d\udd04 in progress (an initiative, epic or hot-fix open and not In Review, or a task issue In Progress), \ud83d\udc40 in review (an initiative, epic or hot-fix In Review, or a pull request ready for review), \ud83d\udcdd draft and \u25b6\ufe0f ready.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 60,
+        "source": "One plain-language paragraph describes what the window delivered as outcomes for the initiatives it serves, grounded in Initiatives and Completed. It carries no references, links, task ids or tool names, and leaves out work in progress and next. With nothing completed, it says so in one sentence.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "An unresolved initiative identifies its number and repository for the caller to fetch. An off-board dependency is blocked. An epic with unreadable Work Breakdown is summarised without tasks and returned as a finding. Unresolved lines are separate from the copyable report.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 70,
+        "source": "Prints the standup from supplied board items, pull request records and their issue-link snapshot.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 74,
+        "source": "- `--links` is the supplied complete pull-request issue-link snapshot; it identifies the issue each pull request delivers.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 75,
+        "source": "- `--since` supplies an explicit start for the [window](#scope).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 76,
+        "source": "- `<initiative-filter>` is an initiative id, or `<owner>/<repo>:<initiative-id>` where that id names initiatives in several repositories. **Examples:** `I08`, `owner/repo:I08`.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 77,
+        "source": "- `--initiatives` gives supplied off-board initiative records, each as a separate file argument.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 78,
+        "source": "- `--summary` gives the paragraph for management.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 80,
+        "source": "The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 82,
+        "source": "`<window-start-date>` uses `YYYY-MM-DD`.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 88,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "board-delivery.md",
+    "head_sha256": "cd2ef5ecf91f1d001050052f88cae6b397c7e7c37347840ba0f112c8207bb0e2",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "ce771c60418920e63601a38b4253f5a32437a44ef79b16788a12bab73ad64211",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "a0301fa3d9a99d6696536507a0c34da4bf1fce6cf75d742a4e2ab29f89889914",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "c7961f7f16f88fedf94deac4e68f3fe2af42842d32a5463fba3964f6f039ec4d",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The membership, status and assignee changes that record delivery on one board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Board Queue](board-queue.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Board](board.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Issue](issue.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 12,
+        "source": "- [Pull Request](pull-request.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "- [Agent Review](agent-review.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 19,
+        "source": "The board changes implied by supplied delivery state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 23,
+        "source": "1. Require the complete pull-request issue-link snapshot; refuse the computation without it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "2. Supply the published agent review records linked from each open epic integration pull request; retain missing records as handoff blockers. Run [Compute Board Changes](#compute-board-changes), mapping the supplied records and board context to its parameters.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "3. Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "One epic's review status on its board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 33,
+        "source": "1. Run [Read Board State](board.md#read-board-state) for the supplied board to obtain its items and Status field.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 34,
+        "source": "2. Run [Read Board Configuration](board.md#read-board-configuration) with the board identity and output paths for the Status option ids.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 35,
+        "source": "- Run [Read Board Assignee](board.md#read-board-assignee) for the dispatch assignee login.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "3. Match the epic's issue to its board item.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "- Return an absent item as a finding and stop. The status write below needs it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "4. Run [Record Dispatch Status](#record-dispatch-status) with the epic as the review identity for In Review or the progress identity for In Progress, fresh pull request and published agent review records, and the fetched board evidence, meeting [Status Changes](#status-changes).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "- Repeat the write and read the item again when it still shows the preceding status. The item list can lag a write.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 40,
+        "source": "5. Return the confirmed status or the discrepancy left for the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 44,
+        "source": "The board's status and assignees after its issues record delivery.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 48,
+        "source": "1. Read the issues, the board and its delivery records.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "- Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved initiative, epic and task identities.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "- Run [Read Board State](board.md#read-board-state) for the selected board.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 51,
+        "source": "- Run [Fetch All Delivery Pull Requests](pull-request.md#fetch-all-delivery-pull-requests) for its repositories and items.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "- Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links) for those records.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 53,
+        "source": "- Fetch the published agent review records linked from each open epic integration pull request, retaining absent or unreadable evidence as a handoff blocker.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 54,
+        "source": "- Run [Read Board Configuration](board.md#read-board-configuration) with the board and output paths.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 55,
+        "source": "- Run [Read Board Assignee](board.md#read-board-assignee) for the assignment login.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "- Pass these returned snapshots to Plan Board Changes.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 57,
+        "source": "2. Run [Plan Board Changes](#plan-board-changes) with the initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, and assignee login.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 58,
+        "source": "- Fetch each unresolved issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 59,
+        "source": "- Pass the fetched files to Plan Board Changes as resolved off-board issue files.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 60,
+        "source": "3. Run each emitted call, including the assignee calls, which act on the issue rather than the board item.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 61,
+        "source": "- Run [Read Board Configuration](board.md#read-board-configuration) with the board identity, output paths and changed item identity to confirm its current status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 62,
+        "source": "- If that item still shows the preceding status:",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 63,
+        "source": "- Repeat its write.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 64,
+        "source": "- Repeat the same item read. The item list can lag a write.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 65,
+        "source": "4. Fetch the issues and items again.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "- Refresh the pull request metadata and linked published agent review records before recomputing statuses; either tip may have changed during the writes.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 67,
+        "source": "- Run [Plan Board Changes](#plan-board-changes) with the refreshed initiative JSON, linked epic records, task issue records, fresh REST pull request records, published agent review records, complete issue-link snapshot, board identity, board fields, board items, output directory, assignee login, and every resolved off-board issue file.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "- Stop when it emits no further call and every changed item has been confirmed. An issue added in one pass gets its status in the next.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "The task and epic statuses owned by a delivery dispatch.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 76,
+        "source": "1. Run [Compute Dispatch Status](#compute-dispatch-status) with the supplied identities, board evidence, fresh pull request records and published agent review records. A missing or failing agent review blocks the In Review write.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 77,
+        "source": "2. Apply each returned call and confirm each affected item through [Read Board Configuration](board.md#read-board-configuration).",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 78,
+        "source": "3. Return the saved statuses or unresolved discrepancies.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 84,
+        "source": "An issue closed as completed is Done. Every board item whose issue is closed any other way is removed, whether or not an initiative, epic or task body cites it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 86,
+        "source": "An open initiative whose criteria are all ticked is In Review. An open epic whose criteria are all ticked is In Review only with current published [agent review evidence](agent-review.md#review-record); missing, stale or unresolved review evidence keeps it In Progress.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 88,
+        "source": "An open epic with a criterion unticked is In Progress while it is [active](board-queue.md#epic-activity). An inactive one keeps Ready or Backlog; In Progress and In Review become Backlog, and one not yet on the board is added at Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 90,
+        "source": "An initiative is In Progress when an epic its Work Breakdown lists is In Progress or In Review. An epic that has left that table is not read. Otherwise the initiative keeps the Status it holds, In Review becoming In Progress, and one not yet on the board is added at Backlog, so completed work alone starts no initiative. Delivery does not move an initiative or epic between Ready and Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 92,
+        "source": "Only an initiative, an epic or a hot-fix stands In Review. An open task issue is In Progress while a delivery pull request, draft or ready, links it, and Done once that pull request merges into the epic base and the issue closes as completed. Every jurisdiction refuses a task set In Review.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 94,
+        "source": "A task whose row links a reserved planning folder is In Progress. A work-item file link alone leaves the row available. Dispatch writes are limited to In Progress for held tasks and epics, and In Review for completed epics; the shared DISPATCH jurisdiction refuses other statuses and removals.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 96,
+        "source": "Task readiness meets [Task Eligibility](board-queue.md#task-eligibility). The caller supplies saved issue bodies and closure state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 98,
+        "source": "A task gated on an [unresolvable dependency](board-queue.md#unresolvable-dependencies) keeps the Status it holds: the row waits on no delivery, so no status follows from its gate. The run names the row and the entry and exits nonzero, as every reader of that cell does.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 102,
+        "source": "The result contains calls for issues to add, items to remove, Status to set and assignees to add or remove. Each call names its affected issue and board item. Assignees follow [Assignees](board.md#assignees).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 106,
+        "source": "Unresolved issue references identify dependency records the caller must supply before a complete result. A newly added issue receives its status on a subsequent pass using refreshed items.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 112,
+        "source": "Computes membership, Status and assignee calls from supplied delivery evidence.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 116,
+        "source": "- `--epics`, `--tasks`, `--prs` and `--links` receive the related records and complete link snapshot. `--agent-reviews` supplies the published review records fetched from the open epic pull requests; absent evidence holds those epics In Progress.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 117,
+        "source": "- `--board`, `--fields` and `--items` identify the current board state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "- `--out` receives the call files; `--assignee` is the supplied login.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 119,
+        "source": "- `--others` supplies each resolved dependency issue.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 121,
+        "source": "Pass each epic or task JSON file as a separate argument after its corresponding flag.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 127,
+        "source": "**Example:**",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 135,
+        "source": "Renders board calls within the dispatch jurisdiction.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "plan-change.md",
+    "head_sha256": "ba52d17321187549d5e50b4a50a4a57d19dd26ded1f735a7b9229b24e0daa080",
+    "prerequisites": "byte-identical",
+    "payloads": [],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "One change to the plan that a run makes as it works, and whether the run applies it or the user decides it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "One pending change assessed against the run's allowance.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "1. Match the change to one kind in [Change Kinds](#change-kinds).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "2. Return it as automatic where the supplied allowance names that kind, with the supplied recommendation as the option the caller applies.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 15,
+        "source": "3. Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 16,
+        "source": "- A change matching no kind is held, as is one matching [Initiative Creation](#initiative-creation) or [Hot-fix Creation](#hot-fix-creation).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 17,
+        "source": "- An absent allowance holds every change, so a run the user drives decides nothing on their behalf.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 21,
+        "source": "One entry in the run's list, for a change it applied or held.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "1. Add one entry meeting [Entry](#entry) to the supplied [Change List](#change-list), marked applied or held.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 26,
+        "source": "2. Return the updated list for the caller to publish and report.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 32,
+        "source": "The caller names the change kinds its run applies without asking. A run the user drives directly is supplied none.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "| Kind | What It Covers |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 37,
+        "source": "| --- | --- |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 38,
+        "source": "| Task creation | A new task row |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 39,
+        "source": "| Epic creation | A new epic, and the initiative row that carries it |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 40,
+        "source": "| Migration | Work moved from one issue to another, with the renumbering that move forces |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 41,
+        "source": "| Re-prioritisation | A priority label, a queue order or a board status |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "| Folded work | Criteria, scope or design added to an existing issue because the work in hand needs it |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 44,
+        "source": "An option deciding to leave work where it is changes no plan, so it needs no allowance and takes no entry, unlike a change [held](#held-change) for the user to decide.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 48,
+        "source": "A new initiative is outside every allowance. The work stays where it is, open and unplaced, until the user decides where it belongs.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "A new hot-fix is outside every allowance, since it runs ahead of all queued work. The work stays where it is until the user decides it is a hot-fix.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 56,
+        "source": "One list for the run, holding every change it applied and every change it held. It is what the run reports and what its record keeps.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 60,
+        "source": "One line: the kind, the issue or row it concerns, and the option applied or recommended. The entry states the change, not the alternatives weighed against it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "A held change is left unapplied and its subject stays as it stands, so the next run sees the same decision. Its entry carries the recommended option, which is what the user is answering.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "A run working under an allowance records and reports a held change rather than asking, since the work it was dispatched for does not wait on an answer. A run supplied no allowance puts it to the user.",
+        "disposition": "retained"
+      }
+    ]
+  },
+  {
+    "file": "board-queue.md",
+    "head_sha256": "06c0a09a4cdf9e74c15a28169af64e348e1cbf17fb49be2360f03e89091e5add",
+    "prerequisites": "byte-identical",
+    "payloads": [
+      {
+        "language": "bash",
+        "sha256": "859015f3587bdc73c83e5a5b7465896865b3772f30e5b60dd8a3f2126d6e3317",
+        "preserved": true
+      },
+      {
+        "language": "bash",
+        "sha256": "c258d16a3eba9a754fe3ca38f602c75798332ed9a80ae1a799afff47ac36e014",
+        "preserved": true
+      }
+    ],
+    "prose": [
+      {
+        "source_line": 3,
+        "source": "The queue for one theme board: initiative priority sets, hot-fix status, status and assignee changes, pending decisions, waiting work, next epics, Ready units and epics waiting on a priority.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 7,
+        "source": "Read these files first.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 9,
+        "source": "- [Lane](lane.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 10,
+        "source": "- [Board](board.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 11,
+        "source": "- [Epic Issue Body](epic-issue-body.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 12,
+        "source": "- [Dependency Graph](dependency-graph.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 13,
+        "source": "- [Delivery Branches](delivery-branches.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 14,
+        "source": "- [Hot-fix](hotfix.md)",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 20,
+        "source": "Derives the queue from supplied board and delivery snapshots and confirmed decisions.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 24,
+        "source": "1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 25,
+        "source": "- The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 26,
+        "source": "- The queue must meet [Fields](#fields).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 27,
+        "source": "- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 28,
+        "source": "2. Return the queue to the caller.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 29,
+        "source": "- Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 30,
+        "source": "- The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 36,
+        "source": "The queue belongs to one theme board, identified as `users/{owner}/projectsV2/{id}` or `orgs/{owner}/projectsV2/{id}`. Its source snapshots contain board items with Status, board fields, initiative pull requests and any off-board issues its rows depend on.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 40,
+        "source": "A parallel work map assigns a positive integer to each ranked initiative. Every initiative with the same number runs together as one set. One left unordered stays in Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 42,
+        "source": "The epics of one initiative carry their own sets. Every epic with the same number starts together, and a number is compared only with its siblings'.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 44,
+        "source": "A priority label is `priority:` and a positive integer. A larger number is higher, with no maximum. Two such labels on one issue count as the larger number.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 48,
+        "source": "- The highest priority set is In Progress, all together. The next set is Ready, all together. Lower sets stay in Backlog. When the highest set leaves In Progress, the Ready set moves to In Progress.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 49,
+        "source": "- An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 50,
+        "source": "- An initiative In Progress with no priority label needs a decision: a positive integer keeps it In Progress; none sends it to Backlog once its epics' work has completed.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 51,
+        "source": "- An initiative stays In Progress while an epic its Work Breakdown lists is [active](#epic-activity), [handed off](#epic-handoff) or In Review, even when a higher set has started, as Board Delivery holds it In Progress. The epic's integration pull request is not activity; the epic's In Review status is what holds the initiative while that pull request awaits its merge. The highest set moves to In Progress immediately. Once that work completes, a lower set moves to Ready if it is the next number, or Backlog if a number sits between it and the highest.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 52,
+        "source": "- An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 53,
+        "source": "- An initiative In Review or Done remains in that state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 57,
+        "source": "Each hot-fix stands where its [Board Status](hotfix.md#board-status) places it.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 61,
+        "source": "- On an initiative Ready or In Progress, an [active](#epic-activity) epic is In Progress even with open questions. A delivered task row alone is not activity.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 62,
+        "source": "- On that initiative, an inactive epic can start when every entry of its initiative row's Depends on cell is delivered, every prerequisite epic that row names is closed as completed, all of each prerequisite's bases have merged into their long-lived branches, and the epic's Open Questions section is empty.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 63,
+        "source": "- Of the epics that can start, those carrying the highest priority number are next and Ready, all together. The highest counts the epics already In Progress, so an epic of a lower number waits while a higher one runs.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 64,
+        "source": "- An epic with no priority label is never Ready, whatever its siblings' state, so one that can start stays in Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 65,
+        "source": "- Any other Ready or In Progress epic of that initiative moves to Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 66,
+        "source": "- An epic In Review or Done, or [handed off](#epic-handoff), remains in that state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 67,
+        "source": "- A Ready epic of an initiative that is neither Ready nor In Progress moves to Backlog. An epic is Ready only on an initiative Ready or In Progress.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 68,
+        "source": "- An initiative kept In Progress only while its epics' work completes readies none of its epics: its active epics are In Progress, and its inactive epics in Ready or In Progress move to Backlog.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 72,
+        "source": "An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 74,
+        "source": "An epic that is [active](#epic-activity), [handed off](#epic-handoff) or In Review is not released. The queue prints a `reconcile` line naming it, and the initiative and every one of its epics stay where they stand until the user finishes or releases that work.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 78,
+        "source": "An open epic is active while it has task work under way, and Board Delivery reads it the same way:",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 80,
+        "source": "- a task row links a reserved planning folder, as [Task Delivery](epic-issue-body.md#task-delivery) defines, or",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 81,
+        "source": "- an open pull request whose title names the epic, `[Ixx:Eyy]`, is not the epic's integration pull request, whose head is the epic base `ixx/eyy/<branch>` and whose base is `<branch>`.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 83,
+        "source": "A delivered row, and the integration pull request, are not activity.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 87,
+        "source": "An open epic whose acceptance criteria are all ticked is handed off. Board Delivery places it In Review when its current agent review passes, and holds it In Progress while that review is missing or failing. The queue neither readies, parks nor releases it, and it holds its initiative In Progress as an epic In Review does.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 91,
+        "source": "A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 95,
+        "source": "A Ready unit contains one unjoined row or all rows of a unit defined by [Joins](dependency-graph.md#joins). Every member is free, undelivered and meets [Task Eligibility](#task-eligibility) under its epic's proposed status; row availability follows [Task Delivery](epic-issue-body.md#task-delivery). Units include rows with no linked work item. Status and assignee calls depend on priority and delivery state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 99,
+        "source": "The queue contains calls for Status and assignee changes to initiatives, epics and hot-fixes. Status changes are between Backlog, Ready and In Progress, and a hot-fix's change as its [Board Status](hotfix.md#board-status) gives it. The assignee is the login assigned to work from Ready. Call files occupy the supplied output directory, for example `board/`. They describe proposed changes, not confirmation of live board state.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 103,
+        "source": "| Line | When It Is Printed | What It Names |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 104,
+        "source": "| --- | --- | --- |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 105,
+        "source": "| `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a parallel work map |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 106,
+        "source": "| `ask` | An initiative is In Progress and has no priority label | That initiative, for a positive integer or none |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 107,
+        "source": "| `wait` | An initiative is held In Progress by an epic it lists that is active, handed off or In Review | That initiative, the open delivery pull requests, and each epic In Review, awaiting review or held by a session |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 108,
+        "source": "| `reconcile` | An initiative would return to Backlog while an epic of it is active, handed off or In Review | That initiative and each such epic, for the user to finish or release |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 109,
+        "source": "| `next` | An initiative is Ready or In Progress and has epics that are Ready | Those epics |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 110,
+        "source": "| `unit` | A unit meets [Ready Units](#ready-units) and [Unit Consistency](lane.md#unit-consistency) | Its initiative, epic and task ids followed by its [Report Label](lane.md#report-label), for example `unit I01:E00:W01+W02: lane 2` |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 111,
+        "source": "| `invalid` | A task has an [assignment finding](lane.md#assignments), or a free unit fails [Unit Consistency](lane.md#unit-consistency) | Its affected rows and values; the invalid unit is not reported as Ready, and the run exits nonzero |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 112,
+        "source": "| `rank` | An open initiative has an open epic with no priority label that is not [handed off](#epic-handoff) | That initiative and each such epic, for the user to rank |",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 116,
+        "source": "The answer a caller applies where it resolves an `order` or `ask` line on its own.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 118,
+        "source": "- For `order`, priority 1 on every open initiative already In Progress or named by an open pull request, and no number on the rest. Where no initiative qualifies, nothing is under way and the line has no recommended answer.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 119,
+        "source": "- For `ask`, the number of the highest set already running, so the initiative joins it, or 1 where no initiative carries a priority label.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 123,
+        "source": "A `Depends on` entry that names no row and links no issue, names an issue the run was not given, or names a row the epic it points to does not carry, cannot resolve. No delivery makes it readable, so it is told apart from a prerequisite that has not landed.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 125,
+        "source": "- The report names the row and the entry as written, and a run that met one while deciding a placement exits nonzero.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 126,
+        "source": "- The epic that row gates keeps the Status it holds. The run proposes no move for it, so a Ready epic is not returned to Backlog on an entry nobody can read.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 127,
+        "source": "- Every entry of a cell is read, so a cell carrying two names both.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 131,
+        "source": "An `order` or `ask` line means a decision is pending. An unresolved issue reference means dependency evidence is missing. Either leaves the queue incomplete.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 133,
+        "source": "Invalid lane assignments leave the unit report incomplete and the run exits nonzero. They do not supply placement or assignee inputs.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 135,
+        "source": "A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 141,
+        "source": "Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 145,
+        "source": "- `--items` is the board's items with Status.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 146,
+        "source": "- `--prs` is the pull requests that name an initiative or a hot-fix.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 147,
+        "source": "- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 148,
+        "source": "- `--board` is the [board identity](#board-identity).",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 149,
+        "source": "- `--fields` is the board's fields.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 150,
+        "source": "- `--out` is the directory the calls are written to.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 151,
+        "source": "- `--assignee` is the login assigned to work from Ready.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 152,
+        "source": "- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.",
+        "disposition": "retained"
+      },
+      {
+        "source_line": 153,
+        "source": "- `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.",
+        "disposition": "explicit review"
+      },
+      {
+        "source_line": 159,
+        "source": "**Example:**",
+        "disposition": "retained"
+      }
+    ]
+  }
+]

@@ -1,0 +1,48 @@
+...FFF...
+======================================================================
+FAIL: test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout) (call='modes/align-mode.md:178')
+A call to an acting command, or to an operation reaching one,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/i17-e01-w06/actual-composition/checkout-reader-probe/skills/work-planner/test/test_checkouts.py", line 242, in test_each_call_to_an_acting_section_names_a_checkout
+    self.assertTrue(named(document.lines[index], corpus.names),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    f'{where} {label} calls {corpus.title(destination, anchor)} '
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    'naming no checkout')
+                    ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: set() is not true : modes/align-mode.md:178 10. Branches calls Update Task Branch naming no checkout
+
+======================================================================
+FAIL: test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout) (call='protocols/change-overview.md:31')
+A call to an acting command, or to an operation reaching one,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/i17-e01-w06/actual-composition/checkout-reader-probe/skills/work-planner/test/test_checkouts.py", line 242, in test_each_call_to_an_acting_section_names_a_checkout
+    self.assertTrue(named(document.lines[index], corpus.names),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    f'{where} {label} calls {corpus.title(destination, anchor)} '
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    'naming no checkout')
+                    ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: set() is not true : protocols/change-overview.md:31 1. Prepare the Evidence calls Create Pull Request Worktree naming no checkout
+
+======================================================================
+FAIL: test_each_call_to_an_acting_section_names_a_checkout (test_checkouts.CommandsActingOnTheirCheckout.test_each_call_to_an_acting_section_names_a_checkout) (call='protocols/change-overview.md:38')
+A call to an acting command, or to an operation reaching one,
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/i17-e01-w06/actual-composition/checkout-reader-probe/skills/work-planner/test/test_checkouts.py", line 242, in test_each_call_to_an_acting_section_names_a_checkout
+    self.assertTrue(named(document.lines[index], corpus.names),
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    f'{where} {label} calls {corpus.title(destination, anchor)} '
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    'naming no checkout')
+                    ^^^^^^^^^^^^^^^^^^^^^
+AssertionError: set() is not true : protocols/change-overview.md:38 1. Prepare the Evidence calls Measure Repository Change naming no checkout
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.536s
+
+FAILED (failures=3)
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

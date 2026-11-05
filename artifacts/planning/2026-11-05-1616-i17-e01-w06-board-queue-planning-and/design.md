@@ -2,7 +2,7 @@
 
 ## Boundary
 
-The fifteen files assigned in the family manifest are the source boundary: architecture-overview, planning-record, work-item, agent-review, goal-trace, review-finding, placement, repository-graph, lane, dependency-graph, board, standup-report, board-delivery, plan-change and board-queue. Commands execute in artifact operation steps. Fields owns linked Inputs and Outputs contracts. Lane owns Ready Unit Lanes and the bare optional index cell after Joins and before Done.
+The fifteen artifacts and the consuming test_plan_mode.py and test_checkouts.py readers form the 17-path source boundary. The artifacts are: architecture-overview, planning-record, work-item, agent-review, goal-trace, review-finding, placement, repository-graph, lane, dependency-graph, board, standup-report, board-delivery, plan-change and board-queue. Commands execute in artifact operation steps. Fields owns linked Inputs and Outputs contracts. Lane owns Read Task Lanes, Check Unit Lanes and Report Label, including the bare optional index cell after Joins and before Done. Board Queue owns Ready Units and Report Lines and links those Lane homes.
 
 ## Preservation
 
@@ -10,14 +10,14 @@ The live skill defines content. Preserve prerequisites, every command's shell or
 
 ## Validation
 
-Freeze a baseline and per-file preservation ledger before edits. Use temporary strict declarations only in an isolated source copy, preserving current declarations for unconverted families. Report installed declaration mismatches separately from unexplained findings. Reader support belongs to the concurrent artifact-reader delivery; its supplied patch may be applied only in an isolated combined validation copy until actual base integration permits final literal-head tests. Run complete Work Planner and shared suites, inspect unrelated-file boundaries, and record repeated fresh-context Standup, Understand and planning/review requests with actual reads and returned content. Unavailable workflow execution remains a gap. Source is committed only after disclosure evidence is recorded.
+The preservation ledger, actual integrated strict checker, complete suites and literal-head identity evidence are published in validation.md. Installed-model adoption belongs to W08. The corrected neutral reader uses the captured checker parser and raw bytes. Six repeated fresh contexts are Partial supplementary observations, with their limitations recorded in disclosure.md. The source commit follows the recorded disclosure review.
 
 ## Delivery State
 
 - [x] Confirm supplied unit/base and retained reservation.
 - [x] Publish initial work item and design.
-- [ ] Convert assigned artifact family and preservation ledger.
-- [ ] Complete structural, suite and disclosure validation.
+- [x] Convert assigned artifact family and preservation ledger.
+- [x] Complete required structural/suite validation and record Partial supplementary disclosure.
 - [ ] Publish source PR and request exact-head merge clearance.
 - [ ] Reconcile authorized merge and tracker/board readback.
 
