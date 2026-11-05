@@ -175,7 +175,7 @@ After preparing the bases, align the selected initiative's pull requests:
 - For each open epic, Apply [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic. Unevaluable branch names stop this step with a finding.
 - Use the returned long-lived target; for example, `main` and `i07/e00/main` identify the same target.
 - Apply [Publish Pull Request](../artifacts/pull-request.md#publish-pull-request) to point an open task pull request at its epic base.
-- When that pull request is not mergeable, Apply [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) with the epic base, task branch and unit checkout holding it. A conflict is reported and the pull request stays open.
+- When that pull request is not mergeable, Apply [Update Task Branch](../artifacts/delivery-branches.md#update-task-branch) with the epic base, task branch and the unit checkout holding it. A conflict is reported and the pull request stays open.
 - An open pull request whose head is an epic base targets its corresponding long-lived branch.
 - A merged pull request is left as merged.
 - A base that is none of these is put to the user.

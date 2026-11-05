@@ -28,14 +28,14 @@ Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-s
 
 On a changed-head finding:
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) again for the same pull request.
-- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again using its new verified head.
+- Apply [Create Pull Request Worktree](../artifacts/delivery-branches.md#create-pull-request-worktree) again with the project checkout, same pull request number and new verified head.
 
 #### Matching Head
 
 - Continue to measurement only when the worktree matches that head.
 - Apply [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its changed paths.
 - Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) with the review checkout it returns, head and base.
-- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) again after its index update.
+- On stale index evidence, Apply [Measure Repository Change](../artifacts/repository-graph.md#measure-repository-change) again with the review checkout, head and base after its index update.
 
 #### Changed Revision
 
