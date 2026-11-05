@@ -6,9 +6,9 @@
 - [x] Match AC2 and AC5 to artifact inspection and CLI fixtures.
 - [x] Implement and commit component groups.
 - [x] Verify focused cases, complete suites and skill files at the tested head.
-- [ ] Publish task PR, record its links and merge verified work. **In progress.**
-- [ ] Verify merged revision, criteria, Done cells and draft integration.
-- [ ] Publish final evidence and change list.
+- [x] Publish task PR, record its links and merge verified work.
+- [x] Verify merged revision, criteria, Done cells and draft integration.
+- [x] Publish final evidence and change list.
 
 ## T1: Delivery Plan
 
@@ -44,3 +44,12 @@ python3 skills/work-planner/scripts/revision-check.py --project <project> --revi
 ```
 
 No new debt or arising issue was found. The unsupported cross-epic Joins recursion remains the separately planned W14 work; this unit does not claim its repair.
+
+## Merge and Live Readback
+
+- Task PR [#1632](https://github.com/m2ux/workflow-server/pull/1632) merged into i17/e03/workspace at `6cc09a5c65de546fc4f10ba6692478b66b157dfb`, preserving tested head `2468d37694e795786305d7657afb71ffb29ddf2e`. The merge tree is identical to the tested head.
+- The 21 criterion and document-interface tests passed again in a detached checkout at the literal merge revision. merged-criterion-tests.log retains the exact result.
+- Fresh target requirements show branch protection absent and active rules empty. The tested head has no configured check runs or status contexts and no required reviews. Its PR remained clean and mergeable at the same head, and the published local test plan passed before the SHA-pinned merge.
+- The live epic and canonical body agree. AC2 and AC5 are ticked; W07 and W08 link the merged PR and carry Done ticks. W10's independently reserved folder is preserved. The retired historical W01/AC1 coverage disagreement remains documented.
+- Draft integration #1627 is at the merge revision and describes/cites #1626, #1628, #1629 and #1632. It remains draft while E03 has further work. The exact item readback confirms In Progress.
+- No plan change or arising issue is applied by this unit. The outer automatic coordinator owns subsequent refresh and dispatch.

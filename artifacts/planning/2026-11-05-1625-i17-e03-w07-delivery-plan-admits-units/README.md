@@ -21,6 +21,7 @@ The Delivery Plan defines that admission rule and deliver.py applies it to the t
 | [Shared results](shared-tests.log) | Complete shared checker output |
 | [Skill files](skill-files.log) | Installed skill-file validation |
 | [Criterion results](criterion-tests.log) | Detached exact-head lane and document checks |
+| [Merged criterion results](merged-criterion-tests.log) | Detached exact-merge criterion verification |
 
 ## Links
 
