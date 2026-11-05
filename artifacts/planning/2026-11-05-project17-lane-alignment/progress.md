@@ -1,5 +1,6 @@
 - [x] Publish and verify Lane columns in all open epic tables.
 - [x] Complete independent alignment checks and record findings.
 - [x] Resolve dependency and numbering decision; confirmed map is recorded in ../2026-11-05-1597-epic-order-alignment/.
-- [ ] Resolve I16 E05 candidate-unit decision (in progress), then style activation.
+- [x] Resolve I16 E05 candidate-unit decision: W01 and W02 join and wait for both prerequisites.
+- [ ] Resolve style-model activation before implementation (in progress).
 - [ ] Revalidate affected plans and resume I17 delivery.

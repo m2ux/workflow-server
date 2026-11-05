@@ -39,4 +39,4 @@ Mechanical edits preserve every existing task id, link, description, criterion, 
 
 ## Current Resolution
 
-The epic-order decision is confirmed and applied in [Epic Order Alignment](../2026-11-05-1597-epic-order-alignment/README.md). This record retains the captured pre-decision issue snapshots and reports. Current identities are I17 E01 Skill Style (#1616) and I17 E02 Skill Separation (#1615). I16 E05 joins and style activation remain pending.
+The epic-order decision is confirmed and applied in [Epic Order Alignment](../2026-11-05-1597-epic-order-alignment/README.md). This record retains the captured pre-decision issue snapshots and reports. Current identities are I17 E01 Skill Style (#1616) and I17 E02 Skill Separation (#1615). I16 E05 W01 and W02 form the confirmed joined unit; style activation remains pending.

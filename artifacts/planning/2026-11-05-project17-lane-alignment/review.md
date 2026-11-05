@@ -20,7 +20,7 @@ No acceptance criterion is changed or ticked. Current criteria name inspection, 
 
 Evidence: m2ux--workflow-server--1615.md:40: | W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | | |
 
-**Medium — pending subsequent interview question.** I16 E05 W01 and W02 both declare `main:guidelines.md`. The dependency report names the pair as a candidate unit and its direct edge. They neither join nor have an exact split decision in the existing record. Recommended: one joined unit for the definition and its prose callers, with the internal sequencing inside its PR; alternatively record why separate PRs are required.
+**Resolved — user confirmed.** I16 E05 W01 and W02 share one pull request. The reciprocal joins remove the internal dependency and preserve E02 W01 and W02 as the unit's prerequisite set. The initiative's E05 row takes the derived E02 gate. Both members remain unlaned, and the full I16 graph has no unaccounted candidate unit. The evidence below is the captured pre-decision finding.
 
 Evidence: `I16-dependencies.txt` names “E05:W01, E05:W02 extend main:guidelines.md”; both registered work-item declarations match, and the pair is absent from the supplied `joins.md`.
 
@@ -50,4 +50,4 @@ Current source: workspace 03d353300ca4804194fd50d316d73e3bf1270d1d, `skills/work
 
 ## Result
 
-The Lane schema alignment is published and verified. Full alignment remains pending the content decisions above; delivery remains held. The dependency/order decision is applied and verified. I16 E05 joins and style activation remain pending, asked one at a time. Align step 6 requires “Decide each non-mechanical finding with the user.”
+The Lane schema alignment is published and verified. Full alignment remains pending the content decisions above; delivery remains held. The dependency/order decision is applied and verified. The I16 E05 joined-unit decision is applied. Style activation remains pending before implementation. Align step 6 requires “Decide each non-mechanical finding with the user.”
