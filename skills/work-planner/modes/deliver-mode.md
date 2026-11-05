@@ -37,6 +37,7 @@ The main path meets [Outcomes](#outcomes).
 1. **Select.**
    Run [Select Project Board](../artifacts/board.md#select-project-board) with the requested theme or board identity.
    - Use its returned owner and board number for the following steps.
+   - Take the optional lane index from this request, following [Lane Admission](../artifacts/delivery-plan.md#lane-admission). Each run takes its lane afresh from its request; a request naming none supplies none, and session state carries no lane.
 2. **Advance.**
    Run [Advance Mode](advance-mode.md) for the selected board, with the [allowance](../artifacts/plan-change.md#allowance) this run applies.
    - An epic starts only when the queue this step returns in this run places it Ready or In Progress. Its assignment comes from that queue, and an epic base is prepared only for such an epic. An epic that queue leaves in Backlog does not start, whatever the run was asked for.
@@ -55,9 +56,9 @@ The main path meets [Outcomes](#outcomes).
    - Run [Check Epic Prerequisites](../artifacts/epic.md#check-epic-prerequisites) for each epic that queue places Ready or In Progress, with its current initiative and epic bodies and all prerequisite issue and base-merge records.
    - Pass its confirmed result and the project checkout to [Prepare Delivery Bases](../artifacts/delivery-branches.md#prepare-delivery-bases).
    - Read the project branches and each epic's bases through [Read Delivery Branches](../artifacts/delivery-branches.md#read-delivery-branches) in the project checkout, at the revision [Branches](../artifacts/delivery-branches.md#branches) names for a read of one epic.
-   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree and selected record date.
+   - Call [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) with the board items, pull requests, complete issue-link snapshot, project checkout, the revision Branches names for a delivery survey, epic bases, engineering worktree, the request's optional lane index and selected record date.
    - Resolve any missing issue through [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue).
-   - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs.
+   - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs, including the request's optional lane index.
    - For delivery discrepancies:
      - Run [Read Delivery Evidence](../artifacts/delivery-evidence.md#read-delivery-evidence) with the fetched initiative, epic and task issue JSON of the affected initiative.
      - Resume the survey with its returned records.
@@ -76,7 +77,7 @@ The main path meets [Outcomes](#outcomes).
      - Run [Read Pull Request State](../artifacts/pull-request.md#read-pull-request-state) for its merged pull request.
      - Run [Task Merge](../protocols/task-merge.md) with that merge result and the selected board identity.
 6. **Confirm.**
-   Show each `unit` line, with its tasks, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
+   Show each `unit` line, with its tasks, lane or unlaned designation, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.
    - Confirm the units to dispatch and the holds to release as one [Interview](../guidelines.md#modes). Dispatch only the units the user confirms. No session starts until the user confirms the set of units.
    - This mode reads no clock and reclaims nothing on its own, so a hold the user leaves stays held.
    - For each released hold:
@@ -85,7 +86,7 @@ The main path meets [Outcomes](#outcomes).
        - Publish the returned body through [Save Tracker Issue](../artifacts/issue.md#save-tracker-issue).
      - **Released hot-fix.**
        - Run [Release Hot-fix Hold](../artifacts/hotfix.md#release-hot-fix-hold) with the selected board identity and the hot-fix issue.
-     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, and the record date when supplied.
+     - Run [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) again with refreshed board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, every resolved off-board issue file, the request's optional lane index, and the record date when supplied.
      - Confirm the units it returns before any of them is dispatched.
    - No plan change after this step is put to the user. Each follows [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy).
 7. **Hold.**
