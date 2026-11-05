@@ -37,6 +37,20 @@ The protocol family preserves its complete conditions and required reads while e
 | [head-shared-suite.json](head-shared-suite.json) | Complete shared suite at the literal pushed head |
 | [pull-request-body.md](pull-request-body.md) | Source for the task PR body |
 
+| [epic-open-body.md](epic-open-body.md) | Task PR and scoped row-publication evidence |
+
+| [epic-open-sync.log](epic-open-sync.log) | Task PR and scoped row-publication evidence |
+
+| [open-delivery-inputs.tar.gz](open-delivery-inputs.tar.gz) | Task PR and scoped row-publication evidence |
+
+| [pr-checks.json](pr-checks.json) | Task PR and scoped row-publication evidence |
+
+| [pr-links.json](pr-links.json) | Task PR and scoped row-publication evidence |
+
+| [pr-open.json](pr-open.json) | Task PR and scoped row-publication evidence |
+
+| [pr-state.json](pr-state.json) | Task PR and scoped row-publication evidence |
+
 ## Links
 
 | Resource | Link |
@@ -44,3 +58,5 @@ The protocol family preserves its complete conditions and required reads while e
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Prerequisite delivery | https://github.com/m2ux/workflow-server/pull/1642 |
 | Epic integration | https://github.com/m2ux/workflow-server/pull/1641 |
+
+| Task pull request | https://github.com/m2ux/workflow-server/pull/1644 |
