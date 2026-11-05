@@ -1,0 +1,26 @@
+[
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1597,
+    "title": "[I17] Cutover Readiness: Every Known Skill Fix Lands Before the Extraction",
+    "body_exact": true
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1615,
+    "title": "[I17:E02] Skill Separation: Every Rule in One Home Before the Extraction",
+    "body_exact": true
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1616,
+    "title": "[I17:E01] Skill Style: The Groundwork for Prosiform Compliance",
+    "body_exact": true
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "number": 2,
+    "title": "[I16:E00] Skill Cutover: The Skill Moves Unchanged with Its History",
+    "body_exact": true
+  }
+]

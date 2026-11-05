@@ -19,14 +19,14 @@ W01 is delivered by PR #1626 at epic-base merge `6f7370b864d848c2877ae695230e297
 | Routing | A free row with no work-item link was implicitly unlaned. | W07+W08 read the task cell independently of a work-item link. |
 | Queue inputs | The earlier queue plan adds an engineering checkout solely to read lane declarations. | W11–W13 use task cells in the existing issue snapshots. |
 | Delivery history | Editing the delivered row could erase its PR and evidence. | W01 retains its recorded delivery; only undelivered rows are renumbered. Its obsolete criterion leaves the current required set. |
-| Later style work | E02 restyles artifacts and modes that E03 touches. | Existing confirmed priorities separate them: E03 8, E02 7, E01 6. No priority change is proposed. |
+| Later style work | E01 restyles artifacts and modes that E03 touches. | Existing confirmed priorities separate them: E03 8, E01 7, E02 6. No priority change is proposed. |
 | External consumer | Prosiform I10 has lane values in work-item files. | Those values need task-table assignment when that initiative adopts the delivered feature. No declaration fallback or cross-repository edit is part of this plan revision. |
 
 ## Validation
 
 - Every current E03 work item declares one component. The dependency check runs over all 13 rows and all 13 work items and reports no problem, cycle, candidate join or unchecked component. Its full output is e03-lane-column-dependencies.txt.
 - Joined delivery units are W02+W03, W04+W05+W06, W07+W08 and W11+W12. Their covered criterion counts are 2, 4, 2 and 2; no joined unit contains a dependency between its members.
-- The official renumberer checks the undelivered-row map against a copy of the live pre-revision body and preserves W01. The full initiative dependency context reports no E03 problem; its existing E01 whole-epic/backward-reference findings remain outside this revision. The refreshed full report is dependencies.txt.
+- The official renumberer checks the undelivered-row map against a copy of the live pre-revision body and preserves W01. The full initiative dependency context reports no E03 problem; the current epic-order alignment resolves the Separation dependency and numbering findings. The refreshed full report is dependencies.txt.
 - The stock issue-format checker reports exactly one finding on the revised body: `Work Breakdown column not in the template: Lane`. Its installed template still describes the six-column schema. This is the planned schema change, not a passing installed-schema check.
 - A plan-model check uses the existing Review implementation with only the epic template's column list set to the user-confirmed seven-column order. It reports no format finding, correction or metadata change. It verifies 13 full-width rows, empty Lane cells, preserved W01 delivery and Done, and coverage of AC2–AC14.
 - A search of the operative work items W02–W13 finds no work-item Lane declaration or lane-driven engineering-checkout requirement. W01 remains historical evidence of the completed declaration task.

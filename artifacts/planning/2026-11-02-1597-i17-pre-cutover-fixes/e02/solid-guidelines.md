@@ -1,6 +1,6 @@
 # SOLID Guidelines for the Work Planner Skill
 
-The draft E01's first task lands in the skill's guidelines (`skills/work-planner/guidelines.md`), and the measure E01's audit applies to every file.
+The draft E02's first task lands in the skill's guidelines (`skills/work-planner/guidelines.md`), and the measure E02's audit applies to every file.
 
 ## The Model
 
@@ -81,7 +81,7 @@ A call goes down the layers (mode, then protocol, then artifact), never up. That
 
 ## Audit Questions
 
-E01's audit asks these questions of each file.
+E02's audit asks these questions of each file.
 
 1. What one shape or change does this file own, and does every section serve it?
 2. Does any rule here also appear elsewhere? Which copy is the owner?

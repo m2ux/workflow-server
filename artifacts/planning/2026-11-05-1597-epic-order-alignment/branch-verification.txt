@@ -1,0 +1,6 @@
+Style epic base: i17/e01/workspace at 03d353300ca4804194fd50d316d73e3bf1270d1d, origin tracking confirmed, clean.
+Unstarted task: i17/e01/w01-per-skill-style-model at 03d353300ca4804194fd50d316d73e3bf1270d1d, clean, tracks the E01 base.
+Worktree paths: .worktrees/i17/e01/workspace and .worktrees/i17/e01/w01-per-skill-style-model.
+Obsolete remote i17/e02/workspace: deleted after exact issue-body readback; it held the same source commit and no task work.
+Board: #1616 I17 E01 Skill Style In Progress; #1615 I17 E02 Skill Separation Backlog.
+Reservation: #1616 W01 retains its renamed E01 planning record; no worker or task PR started.

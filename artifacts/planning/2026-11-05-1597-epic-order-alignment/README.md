@@ -34,6 +34,14 @@ The confirmed order matches the producer graph while preserving task ids, criter
 | [progress.md](progress.md) | Renumbering evidence and approved plan |
 | [renumber.txt](renumber.txt) | Renumbering evidence and approved plan |
 
+| [branch-verification.txt](branch-verification.txt) | Saved-state verification |
+| [m2ux--workflow-server--1597.after.json](m2ux--workflow-server--1597.after.json) | Saved-state verification |
+| [m2ux--workflow-server--1615.after.json](m2ux--workflow-server--1615.after.json) | Saved-state verification |
+| [m2ux--workflow-server--1616.after.json](m2ux--workflow-server--1616.after.json) | Saved-state verification |
+| [verification.json](verification.json) | Saved-state verification |
+
+| [Post-publication format](post-publication-format.json) | Validation of actual saved issue bodies |
+
 ## Links
 
 | Resource | Link |

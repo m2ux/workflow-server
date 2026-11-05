@@ -50,7 +50,7 @@ The user's decisions:
 4. **No link marks.** The prosiform link marks (↳ ⇉ ⫽ ¬) need prosiform's grammar to place, so they are left for the compliance work along with the frontmatter and the `pf` instruction.
 5. **Per-skill section model.** The shared guidelines and the other skills keep their shape. work-planner declares its model in its own guidelines, `structure.json` and `rules.json`, and the shared checker reads each skill's declared model.
 6. **Rows.** W01 is the section model and checker. W02 builds rules, conventions and configuration from the live SKILL.md and guidelines. W03 restyles the modes and W04 the protocols. W05 to W07 restyle the artifacts in three file groups: issue and bodies; board, queue, planning and review; delivery, branch and pull request. W02 depends on W01, and W03 to W07 depend on W02 and run in parallel.
-7. **Order.** E02 waits for E01: E02's W01 depends on E01, so the SOLID guidelines and the audit work on the restyled skill. The extraction waits for E01 as well.
+7. **Order.** The SOLID guidelines and audit consume the restyled skill through the producer rows recorded in Separation's task table. The extraction includes Style and Separation.
 
 Planning decisions:
 

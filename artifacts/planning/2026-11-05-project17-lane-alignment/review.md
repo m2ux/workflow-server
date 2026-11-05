@@ -16,7 +16,7 @@ No acceptance criterion is changed or ticked. Current criteria name inspection, 
 
 ## Dependencies and Numbering
 
-**High — pending user decision.** E01 W01 names the entire later-numbered E02. The dependency checker reports both the whole-epic task reference and backward edges. The proposed repair puts the undelivered style epic before separation and names the terminal style rows whose outputs separation consumes. The alternative keeps epic numbers with an explicit numbering exception and still replaces the whole-epic task reference. No numbers, dependencies, reservations or branches change until the user decides.
+**Resolved — confirmed and verified.** Skill Style is I17 E01 (#1616), and Skill Separation is I17 E02 (#1615). E02 W01 names E01 W03–W07. The four affected issue bodies and their titles match the published drafts, and the complete I17 graph reports no problem. Active records, reservation, branches and worktrees carry the confirmed names; the obsolete style base is retired. The evidence below is the captured pre-decision row.
 
 Evidence: m2ux--workflow-server--1615.md:40: | W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | | |
 
@@ -28,7 +28,7 @@ The I16 report records 16 cross-epic component pairs, separated by its proposed 
 
 ## Style Activation
 
-**High — pending design decision before implementation.** E02 W01 declares and enforces the new model, while the document conversions are assigned to its successors. The current model explicitly keeps artifact Commands sections and the live skill has numbered-list procedures, entry-point Rules/Conventions and fenced invocations. The work-item plan must define how the first delivery passes Check Skill Files without accepting obsolete syntax as compatibility or enforcing an unmet model over the still-live documents. Candidate resolution: separate checker capability from its activation and place enforcement acceptance at the conversion boundary. This review does not change criteria or dependencies to assert that design.
+**High — pending design decision before implementation.** E01 W01 declares and enforces the new model, while the document conversions are assigned to its successors. The current model explicitly keeps artifact Commands sections and the live skill has numbered-list procedures, entry-point Rules/Conventions and fenced invocations. The work-item plan must define how the first delivery passes Check Skill Files without accepting obsolete syntax as compatibility or enforcing an unmet model over the still-live documents. Candidate resolution: separate checker capability from its activation and place enforcement acceptance at the conversion boundary. This review does not change criteria or dependencies to assert that design.
 
 Evidence: m2ux--workflow-server--1616.md:50: - [ ] **AC1.** The work-planner guidelines, `structure.json` and `rules.json` declare the new style model, and `check_skill_files.py` enforces each skill’s declared model and the proposed command style while every other skill passes unchanged, as checker acceptance/rejection fixtures and Check Skill Files over `skills/` show.
 
@@ -37,17 +37,17 @@ Current source: workspace 03d353300ca4804194fd50d316d73e3bf1270d1d, `skills/work
 ## References
 
 - The reference check passes for eleven issues.
-- E02's old `m2ux/md-composer` URLs resolve to canonical `m2ux/prosiform`. The repository API and pinned file responses confirm public visibility and the same pinned source paths. This is resolved evidence; the checker itself reports the alias as unavailable because it indexes only canonical full names.
-- E02 cites the private `shieldedtech/midnight-agent-eng` on a public issue. The user explicitly selected that reference for the preceding issue update. Preserve that confirmed reference and record the visibility finding; no source content is published by this alignment.
+- E01's old `m2ux/md-composer` URLs resolve to canonical `m2ux/prosiform`. The repository API and pinned file responses confirm public visibility and the same pinned source paths. This is resolved evidence; the checker itself reports the alias as unavailable because it indexes only canonical full names.
+- E01 cites the private `shieldedtech/midnight-agent-eng` on a public issue. The user explicitly selected that reference for the preceding issue update. Preserve that confirmed reference and record the visibility finding; no source content is published by this alignment.
 
 ## Delivery and Branches
 
 - E03 is closed as completed and confirmed Done. I17 remains In Progress; E01 and E02 are incomplete.
-- E02 W01 is reserved at its published record, with an isolated task worktree. No worker has started and no task PR exists. The alignment holds further delivery.
+- E01 W01 is reserved at its published record, with an isolated task worktree. No worker has started and no task PR exists. The alignment holds further delivery.
 - All thirteen existing I17 task PR test plans already use the current form and need no conversion.
 - I16 has no pull requests, including body and Development-linked deliveries. Its only remote branch is engineering; main and config/branches are produced by its cutover work. Its base and integration checks remain unevaluable until that planned prerequisite exists. No branch is guessed or created for I16.
-- E01's prerequisite E02 is open, so no E01 base is created. E02's sole base is rooted at current workspace with no task changes; an empty integration PR cannot be opened. No open task PR needs retargeting.
+- E02's prerequisite E01 is open, so no E02 base is created. E01's sole base is rooted at current workspace with no task changes; an empty integration PR cannot be opened. No open task PR needs retargeting.
 
 ## Result
 
-The Lane schema alignment is published and verified. Full alignment remains pending the content decisions above; delivery remains held. The first dependency/order question is presented through the native interview tool, with subsequent findings asked one at a time. Align step 6 requires “Decide each non-mechanical finding with the user.”
+The Lane schema alignment is published and verified. Full alignment remains pending the content decisions above; delivery remains held. The dependency/order decision is applied and verified. I16 E05 joins and style activation remain pending, asked one at a time. Align step 6 requires “Decide each non-mechanical finding with the user.”
