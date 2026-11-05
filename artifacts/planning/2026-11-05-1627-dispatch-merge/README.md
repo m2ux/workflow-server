@@ -13,7 +13,7 @@ Combine lane-filtered survey reports with dispatch export entries. Use the conti
 - [x] Refresh branches and identify the three conflicted files.
 - [x] Resolve textual and semantic conflicts, preserving both sides.
 - [x] Run combined behavior, document and structural validation; review preservation.
-- [ ] Commit and plain-push, then read back mergeability and renew review evidence. **In progress.**
+- [x] Commit and plain-push, then read back mergeability and renew review evidence.
 
 ## Evidence
 
@@ -38,3 +38,10 @@ Combine lane-filtered survey reports with dispatch export entries. Use the conti
 - [human-reviews.json](human-reviews.json)
 - [target-rules.json](target-rules.json)
 - [head-checks.json](head-checks.json)
+
+## Handoff
+
+Merge commit `1ebd241841fc5963743cb0440dfaeb97d9e9ab34` includes target `f1007d1db7d2a4301c22e367cd12e726775833ca`. GitHub reads mergeable true, ready and unmerged; current review evidence passes. Project 17 item 291913055 reads In Review. No target merge or issue closure is performed.
+
+- [Final PR Readback](pull-request-final.json)
+- [Final Board Readback](board-final.json)
