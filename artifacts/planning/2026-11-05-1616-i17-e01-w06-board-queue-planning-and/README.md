@@ -10,6 +10,8 @@ This record carries the approved W06 Work Planner artifact-family conversion. Ea
 
 | Artifact | What it holds |
 | --- | --- |
+| [Work item](w06.md) | Local implementation plan and required checks |
+| [Design](design.md) | Source boundary, preservation rules, validation and delivery state |
 
 ## Links
 
