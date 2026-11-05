@@ -19,7 +19,7 @@ Read these files first.
 
 One delivery plan from supplied board and delivery evidence.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index and optional record date.
+**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue files, optional requested lane index, optional record date and optional dispatch-export path.
 
 1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.
 2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.
@@ -57,13 +57,17 @@ A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with
 
 The long-lived branch names are the ones [Branches](delivery-branches.md#branches) reads at the evaluated revision a delivery survey names, and the `source` line names it. A base whose last segment is not one of those names is ignored. A supplied record date determines the planning folder's day; the default is today.
 
+### Dispatch Export
+
+The optional JSON export holds exactly the available units in report order. Each entry has a repository-qualified `id`, its `record` folder and its complete `report` line. Joined rows share one entry, such as `o/r#I07:E00:W01+W02`; a hot-fix uses `o/r#F02`. Diagnostic, held and blocked lines remain in the report and create no export entry.
+
 ## Commands
 
 ### Compute Available Work
 
 Computes available work from supplied board and delivery snapshots.
 
-**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional requested lane index and optional record date.
+**Inputs:** Board items, pull request records, complete issue-link snapshot, project checkout, evaluated revision, epic-base names, engineering worktree, resolved off-board issue records, optional requested lane index, optional record date and optional dispatch-export path.
 
 - `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.
 - `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.
@@ -71,6 +75,7 @@ Computes available work from supplied board and delivery snapshots.
 - `--engineering` is the engineering worktree, where each free row's work-item file is read.
 - `--others` supplies each resolved off-board issue; `--date` selects another record date.
 - `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).
+- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).
 
 `<epic-base-names>` is a comma-separated list of full epic-base branch names.
 
