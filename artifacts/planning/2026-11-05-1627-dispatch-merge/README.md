@@ -11,6 +11,30 @@ Combine lane-filtered survey reports with dispatch export entries. Use the conti
 ## Checklist
 
 - [x] Refresh branches and identify the three conflicted files.
-- [ ] Resolve textual and semantic conflicts, preserving both sides. **In progress.**
-- [ ] Run combined behavior, document and structural validation; review preservation.
-- [ ] Commit and plain-push, then read back mergeability and renew review evidence.
+- [x] Resolve textual and semantic conflicts, preserving both sides.
+- [x] Run combined behavior, document and structural validation; review preservation.
+- [ ] Commit and plain-push, then read back mergeability and renew review evidence. **In progress.**
+
+## Evidence
+
+- [review.md](review.md)
+- [planner-tests.log](planner-tests.log)
+- [shared-tests.log](shared-tests.log)
+- [preservation.json](preservation.json)
+
+## Current Review Evidence
+
+- [agent-review.json](agent-review.json)
+- [criterion-audit.md](criterion-audit.md)
+- [architecture-overview.md](architecture-overview.md)
+- [graph-analysis.log](graph-analysis.log)
+- [graph-measure.mjs](graph-measure.mjs)
+- [graph-measure.log](graph-measure.log)
+- [graph-context.yaml](graph-context.yaml)
+- [graph-changes.json](graph-changes.json)
+- [graph-contexts.json](graph-contexts.json)
+- [graph-traces.json](graph-traces.json)
+- [pull-request.json](pull-request.json)
+- [human-reviews.json](human-reviews.json)
+- [target-rules.json](target-rules.json)
+- [head-checks.json](head-checks.json)

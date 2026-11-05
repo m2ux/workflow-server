@@ -1,0 +1,75 @@
+[
+  {
+    "pull_request": "https://github.com/m2ux/workflow-server/pull/1627",
+    "head": "1ebd241841fc5963743cb0440dfaeb97d9e9ab34",
+    "base": "f1007d1db7d2a4301c22e367cd12e726775833ca",
+    "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1627-dispatch-merge/agent-review.json",
+    "reviewer": "Codex Lane and automatic-dispatch conflict-resolution review",
+    "reviewed_at": "2026-11-05T07:02:09.829764+00:00",
+    "scope": "Complete 40-file integration diff against current workspace f1007d1db. Prior Lane/DRY/Ready Units review plus all target additions, three conflicted files, shared Lane validation consumer and two real survey-to-batch regressions. Both parent diffs and preservation checks reviewed. Five current graph contexts and an ordered assignment trace checked; graph reports 263 changed symbols and 51 affected processes, with inference limits retained. Two independent bounded contract walks confirm the integrated path.",
+    "criteria": "AC2\u2013AC15 retain the refreshed criterion matrix. Requested/absent Lane admission, table preservation, Ready-unit reporting, opaque spellings and bounded joins pass alongside automatic dispatch. The coordinator now carries the request lane through one fixed authorization and every survey/refill/release path. Historical AC1/W01 evidence remains accounted for.",
+    "validation": "Exact merged tree: 923 planner tests run, 922 pass and 1 opt-in live skip; 208 shared tests pass; 19 dispatch tests pass including both new end-to-end cases; 55 skill files zero findings; whitespace clean; no unresolved paths or conflict markers. Byte/AST accounting proves preservation of unchanged Lane/queue modules, target Unit Dispatch, worker lifecycle, refill and dispatch behavior. Native source probe accepts real m2ux/workflow-server IDs and rejects whitespace. Bounded reading walks retain recursive-prerequisite and sandbox limits; no live worker starts or full inferred-flow claim.",
+    "findings": [
+      {
+        "description": "Lane rules and operations have scattered owners",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Lane admission rejects healthy units for unrelated row errors",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Queue imports shared state from the delivery command",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Caller operations require units before deriving them and retain unused prerequisites",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Lane writer disagrees with reader table forms and line ending preservation",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Standalone dependency checks skip missing joined-unit Lane data",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Document test enforces a retired italic-verb rule",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/73b6bcf0cdc6c379a6abbcd67c81c6082553c6c0"
+      },
+      {
+        "description": "Callers repeat linked operations and enumerate output fields already defined by the owning contracts",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/89efe190ba97d50de1fc8f73a523e992ed3e91b2"
+      },
+      {
+        "description": "Ready Unit Lanes mixes queue readiness with Lane report semantics",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7"
+      },
+      {
+        "description": "Target automatic-dispatch changes conflict with Lane survey/report/input paths",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/1ebd241841fc5963743cb0440dfaeb97d9e9ab34"
+      }
+    ]
+  }
+]

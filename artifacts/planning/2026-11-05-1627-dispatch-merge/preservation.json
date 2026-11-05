@@ -1,0 +1,21 @@
+{
+  "lane_and_queue_files_identical_to_head": [
+    "artifacts/lane.md",
+    "artifacts/board-queue.md",
+    "scripts/lane.py",
+    "scripts/board.py",
+    "scripts/deps.py",
+    "scripts/format.py"
+  ],
+  "unit_dispatch_protocol_identical_to_target": true,
+  "delivery_worker_and_outcomes_identical_to_target": true,
+  "refill_identical_except_explicit_lane_input": true,
+  "dispatch_functions_identical_except_shared_index_validator": true,
+  "existing_delivery_functions_modified": [
+    "hotfix_units",
+    "survey",
+    "main"
+  ],
+  "unmerged_paths": [],
+  "conflict_markers": []
+}

@@ -1,0 +1,533 @@
+[
+  {
+    "status": "found",
+    "symbol": {
+      "uid": "Function:skills/work-planner/scripts/lane.py:read_lanes",
+      "name": "read_lanes",
+      "kind": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "startLine": 20,
+      "endLine": 53
+    },
+    "epistemic": "exact",
+    "incoming": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:survey",
+          "name": "survey",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deps.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/deps.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:assign_lanes",
+          "name": "assign_lanes",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/scripts/board-queue.py:Queue.ready_units#0",
+          "name": "ready_units",
+          "filePath": "skills/work-planner/scripts/board-queue.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/scripts/format.py:Review.check_body#0",
+          "name": "check_body",
+          "filePath": "skills/work-planner/scripts/format.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_a_missing_cell_is_not_an_empty_lane#0",
+          "name": "test_a_missing_cell_is_not_an_empty_lane",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_assignment_preserves_other_content_and_clears_indices#0",
+          "name": "test_assignment_preserves_other_content_and_clears_indices",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_keeps_lane_data_inside_its_task_table#0",
+          "name": "test_reader_keeps_lane_data_inside_its_task_table",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_reports_malformed_cells_without_an_empty_value#0",
+          "name": "test_reader_reports_malformed_cells_without_an_empty_value",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_retains_indices_and_empty_cells_by_row#0",
+          "name": "test_reader_retains_indices_and_empty_cells_by_row",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_reader_uses_column_names_and_ignores_non_task_rows#0",
+          "name": "test_reader_uses_column_names_and_ignores_non_task_rows",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_writer_accepts_reader_table_forms_and_preserves_line_endings#0",
+          "name": "test_writer_accepts_reader_table_forms_and_preserves_line_endings",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        }
+      ]
+    },
+    "outgoing": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:is_index",
+          "name": "is_index",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        }
+      ]
+    },
+    "processes": [
+      {
+        "id": "proc_156_main",
+        "name": "Main → Is_index",
+        "step_index": 2,
+        "step_count": 3
+      },
+      {
+        "id": "proc_68_main",
+        "name": "Main → Is_index",
+        "step_index": 3,
+        "step_count": 4
+      }
+    ]
+  },
+  {
+    "status": "found",
+    "symbol": {
+      "uid": "Function:skills/work-planner/scripts/lane.py:is_index",
+      "name": "is_index",
+      "kind": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "startLine": 15,
+      "endLine": 17
+    },
+    "epistemic": "exact",
+    "incoming": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:batch",
+          "name": "batch",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:admits",
+          "name": "admits",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:assign_lanes",
+          "name": "assign_lanes",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:read_lanes",
+          "name": "read_lanes",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_request_admission_preserves_index_spelling#0",
+          "name": "test_request_admission_preserves_index_spelling",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        }
+      ]
+    },
+    "outgoing": {},
+    "processes": [
+      {
+        "id": "proc_156_main",
+        "name": "Main → Is_index",
+        "step_index": 3,
+        "step_count": 3
+      },
+      {
+        "id": "proc_186_main",
+        "name": "Main → Is_index",
+        "step_index": 3,
+        "step_count": 3
+      },
+      {
+        "id": "proc_68_main",
+        "name": "Main → Is_index",
+        "step_index": 4,
+        "step_count": 4
+      }
+    ]
+  },
+  {
+    "status": "found",
+    "symbol": {
+      "uid": "Function:skills/work-planner/scripts/lane.py:assign_lanes",
+      "name": "assign_lanes",
+      "kind": "Function",
+      "filePath": "skills/work-planner/scripts/lane.py",
+      "startLine": 81,
+      "endLine": 122
+    },
+    "epistemic": "exact",
+    "incoming": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes#0",
+          "name": "test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_assignment_preserves_other_content_and_clears_indices#0",
+          "name": "test_assignment_preserves_other_content_and_clears_indices",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_assignment_refuses_unknown_or_malformed_rows#0",
+          "name": "test_assignment_refuses_unknown_or_malformed_rows",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_lane.py:LaneOperations.test_writer_accepts_reader_table_forms_and_preserves_line_endings#0",
+          "name": "test_writer_accepts_reader_table_forms_and_preserves_line_endings",
+          "filePath": "skills/work-planner/test/test_lane.py"
+        }
+      ]
+    },
+    "outgoing": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:is_index",
+          "name": "is_index",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:read_lanes",
+          "name": "read_lanes",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        }
+      ]
+    },
+    "processes": [
+      {
+        "id": "proc_68_main",
+        "name": "Main → Is_index",
+        "step_index": 2,
+        "step_count": 4
+      }
+    ]
+  },
+  {
+    "status": "found",
+    "symbol": {
+      "uid": "Function:skills/work-planner/scripts/dispatch.py:batch",
+      "name": "batch",
+      "kind": "Function",
+      "filePath": "skills/work-planner/scripts/dispatch.py",
+      "startLine": 71,
+      "endLine": 109
+    },
+    "epistemic": "exact",
+    "incoming": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/test/test_dispatch.py:Refill.test_one_authorization_refills_after_successive_completions.refill@69:8#1",
+          "name": "refill",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_actual_sessions_prevent_duplicates_even_from_a_stale_offer#0",
+          "name": "test_actual_sessions_prevent_duplicates_even_from_a_stale_offer",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_an_out_of_scope_preparation_does_not_keep_a_run_active#0",
+          "name": "test_an_out_of_scope_preparation_does_not_keep_a_run_active",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_capacity_event_refills_without_a_worker_completion#0",
+          "name": "test_capacity_event_refills_without_a_worker_completion",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_capacity_lost_during_preparation_resumes_the_same_held_unit#0",
+          "name": "test_capacity_lost_during_preparation_resumes_the_same_held_unit",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_hotfix_export_uses_repository_qualified_identity#0",
+          "name": "test_hotfix_export_uses_repository_qualified_identity",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_independent_work_continues_beside_blockers_and_required_review#0",
+          "name": "test_independent_work_continues_beside_blockers_and_required_review",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_invalid_lane_units_leave_independent_export_and_refill_available#0",
+          "name": "test_invalid_lane_units_leave_independent_export_and_refill_available",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_joined_rows_are_one_slot_and_require_full_scope#0",
+          "name": "test_joined_rows_are_one_slot_and_require_full_scope",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_lane_admitted_export_is_bound_to_authorized_survey_context#0",
+          "name": "test_lane_admitted_export_is_bound_to_authorized_survey_context",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_parent_selectors_cannot_be_dispatched_as_units#0",
+          "name": "test_parent_selectors_cannot_be_dispatched_as_units",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes#0",
+          "name": "test_real_lane_filtered_export_drives_dispatch_and_keeps_hotfixes",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_real_survey_excludes_holds_dependencies_and_backlog#0",
+          "name": "test_real_survey_excludes_holds_dependencies_and_backlog",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Refill.test_scope_is_repository_qualified_and_has_component_boundaries#0",
+          "name": "test_scope_is_repository_qualified_and_has_component_boundaries",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Start.test_malformed_observations_fail_before_selection#0",
+          "name": "test_malformed_observations_fail_before_selection",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Start.test_ordered_evidence_precedes_execution#0",
+          "name": "test_ordered_evidence_precedes_execution",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        },
+        {
+          "uid": "Method:skills/work-planner/test/test_dispatch.py:Start.test_start_rechecks_capacity_and_session_identity#0",
+          "name": "test_start_rechecks_capacity_and_session_identity",
+          "filePath": "skills/work-planner/test/test_dispatch.py"
+        }
+      ]
+    },
+    "outgoing": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:inventory",
+          "name": "inventory",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:members",
+          "name": "members",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:unit_members",
+          "name": "unit_members",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/dispatch.py:within",
+          "name": "within",
+          "filePath": "skills/work-planner/scripts/dispatch.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:is_index",
+          "name": "is_index",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        }
+      ]
+    },
+    "processes": [
+      {
+        "id": "proc_186_main",
+        "name": "Main → Is_index",
+        "step_index": 2,
+        "step_count": 3
+      },
+      {
+        "id": "proc_44_main",
+        "name": "Main → Members",
+        "step_index": 2,
+        "step_count": 5
+      }
+    ]
+  },
+  {
+    "status": "found",
+    "symbol": {
+      "uid": "Function:skills/work-planner/scripts/deliver.py:survey",
+      "name": "survey",
+      "kind": "Function",
+      "filePath": "skills/work-planner/scripts/deliver.py",
+      "startLine": 320,
+      "endLine": 447
+    },
+    "epistemic": "exact",
+    "incoming": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:main",
+          "name": "main",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        }
+      ]
+    },
+    "outgoing": {
+      "calls": [
+        {
+          "uid": "Function:skills/work-planner/scripts/board.py:epic_state",
+          "name": "epic_state",
+          "filePath": "skills/work-planner/scripts/board.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/board.py:units",
+          "name": "units",
+          "filePath": "skills/work-planner/scripts/board.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:branch_lines",
+          "name": "branch_lines",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:changed_bases",
+          "name": "changed_bases",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:epic_bases",
+          "name": "epic_bases",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:hotfix_units",
+          "name": "hotfix_units",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:ident_tag",
+          "name": "ident_tag",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:is_epic",
+          "name": "is_epic",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:names",
+          "name": "names",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:ready_merges",
+          "name": "ready_merges",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/deliver.py:tags",
+          "name": "tags",
+          "filePath": "skills/work-planner/scripts/deliver.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:admits",
+          "name": "admits",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:check_unit",
+          "name": "check_unit",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:label",
+          "name": "label",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/lane.py:read_lanes",
+          "name": "read_lanes",
+          "filePath": "skills/work-planner/scripts/lane.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/statuses.py:key_of",
+          "name": "key_of",
+          "filePath": "skills/work-planner/scripts/statuses.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/statuses.py:label",
+          "name": "label",
+          "filePath": "skills/work-planner/scripts/statuses.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/statuses.py:pages",
+          "name": "pages",
+          "filePath": "skills/work-planner/scripts/statuses.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/statuses.py:status_of",
+          "name": "status_of",
+          "filePath": "skills/work-planner/scripts/statuses.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/sync.py:attach_links",
+          "name": "attach_links",
+          "filePath": "skills/work-planner/scripts/sync.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/sync.py:long_lived_names",
+          "name": "long_lived_names",
+          "filePath": "skills/work-planner/scripts/sync.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/sync.py:origin_repository",
+          "name": "origin_repository",
+          "filePath": "skills/work-planner/scripts/sync.py"
+        },
+        {
+          "uid": "Function:skills/work-planner/scripts/sync.py:pull_requests",
+          "name": "pull_requests",
+          "filePath": "skills/work-planner/scripts/sync.py"
+        }
+      ]
+    },
+    "processes": [
+      {
+        "id": "proc_155_survey",
+        "name": "Survey → Option_name",
+        "step_index": 1,
+        "step_count": 3
+      }
+    ]
+  }
+]
