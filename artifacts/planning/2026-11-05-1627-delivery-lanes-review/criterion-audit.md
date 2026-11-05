@@ -38,3 +38,5 @@ The approved task-table redesign retired AC1 after W01 #1626 delivered its initi
 ## Integration Boundary
 
 Content readiness and final delivery are distinct. Every current criterion and task is verified; the epic base has not yet merged to workspace. Current overview, agent review, head/target checks and the required human approving review govern the final handoff. The epic is not closed or marked Done here.
+
+The [full-suite delivery evidence](../2026-11-05-1625-i17-e03-w13-advance-mode-reports-ready/delivery.md#t2-combined-validation) and its registered logs establish the complete tested tree. Final delivery Sync has only the published historical W01 disposition and the expected unmerged ready integration; no current criterion or row is pending.

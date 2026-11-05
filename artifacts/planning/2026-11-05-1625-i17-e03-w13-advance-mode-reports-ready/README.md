@@ -29,3 +29,4 @@ This unit delivers AC10 through its isolated task branch into i17/e03/workspace.
 | Epic | [I17 E03](https://github.com/m2ux/workflow-server/issues/1625) |
 | Authorization | [Automatic remaining delivery](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
 | Integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+| Final integration evidence | [Review record](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1627-delivery-lanes-review) |

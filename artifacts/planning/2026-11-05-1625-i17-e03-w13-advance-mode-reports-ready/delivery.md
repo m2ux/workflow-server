@@ -9,8 +9,8 @@ W13 covers AC10. Advance mode carries Ready-unit lanes from the Board Queue repo
 - [x] Confirm live reservation, criterion, component and published plan.
 - [x] Implement and inspect report wiring; run focused and complete checks.
 - [x] Publish task PR, merge verified work and record AC10 and Done.
-- [ ] Complete the epic integration audit, measured overview and agent review. **In progress.**
-- [ ] Publish current integration evidence and required human-review handoff.
+- [x] Complete the epic integration audit, measured overview and agent review.
+- [x] Publish current integration evidence and required human-review handoff.
 
 ## T1: Advance Mode Contract
 
@@ -31,3 +31,7 @@ Continue Task Merge through Epic Integration with all active AC2–AC15 and rows
 ## Merged Unit
 
 Task PR #1638 merged at dbfe21c2bc88d97034c3de8e64e8b490ae54688f from full-suite-tested a6d025d3025f08ad4b0a027d9762ccd0096a780b; trees are identical. Exact merged criterion56 and document11 checks pass. Live AC10 and W13 Done are recorded; all current rows and criteria now hold. The task-base target had no classic protection or active rules, no required review/check and no outstanding head status; the SHA-pinned native merge succeeded normally. Final integration preparation continues in the linked integration review record.
+
+## Final Outcome
+
+All current epic tasks and AC2–AC15 hold. Integration #1627 is ready and Project 17 epic #1625 is individually confirmed In Review, with the current [architecture, criterion audit and agent review](../2026-11-05-1627-delivery-lanes-review). Its target requires one human approving review before merge. No integration merge, epic closure or new work outside E03 occurs in this session. Applied and held plan changes are both empty.

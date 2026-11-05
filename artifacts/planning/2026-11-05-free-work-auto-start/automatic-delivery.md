@@ -33,3 +33,7 @@ Finish the epic's current criterion verification and agent review and publish it
 - [x] Publish and read back the upstream issue.
 - [x] Publish this authorization and resolve the reporting deferral in the planning record.
 - [x] Start the continuous delivery coordinator and verify its first unit is running.
+
+- [x] Deliver and record every authorized remaining E03 unit.
+- [x] Publish final criterion verification, measured architecture and current agent review.
+- [x] Verify ready integration and exact In Review board state; hand off required human approval.

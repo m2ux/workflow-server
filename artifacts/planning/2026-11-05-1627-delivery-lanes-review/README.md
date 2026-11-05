@@ -35,6 +35,17 @@ This record binds the combined criterion audit, measured architecture and agent 
 | [graph-measure.mjs](graph-measure.mjs) | Complete graph measurement evidence and provenance |
 | [graph-details.mjs](graph-details.mjs) | Complete graph measurement evidence and provenance |
 
+| [delivery-sync.log](delivery-sync.log) | Final handoff state and current delivery evidence |
+| [pull-request.json](pull-request.json) | Final handoff state and current delivery evidence |
+| [board-item.json](board-item.json) | Final handoff state and current delivery evidence |
+| [target-rules.json](target-rules.json) | Final handoff state and current delivery evidence |
+| [target-protection.json](target-protection.json) | Final handoff state and current delivery evidence |
+| [head-checks.json](head-checks.json) | Final handoff state and current delivery evidence |
+| [head-status.json](head-status.json) | Final handoff state and current delivery evidence |
+| [human-reviews.json](human-reviews.json) | Final handoff state and current delivery evidence |
+| [development-links.json](development-links.json) | Final handoff state and current delivery evidence |
+| [available-work.txt](available-work.txt) | Final handoff state and current delivery evidence |
+
 ## Links
 
 | Resource | Link |

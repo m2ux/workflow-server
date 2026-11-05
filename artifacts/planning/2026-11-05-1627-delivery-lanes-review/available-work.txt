@@ -1,0 +1,2 @@
+source: config/branches at d0a62b8037bb1b8fdafac5bf0e0035ada8c64486 in /home/mike1/projects/dev/workflow-server/.git
+  available: 0, held: 0, blocked: 0, unresolvable: 0, undeclared: 0, merge: 0, unrecorded: 0, invalid: 0
