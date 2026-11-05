@@ -1,22 +1,24 @@
 # Work Planner Test Suite
 
-What each module in this folder guards, and which script it reaches.
+Work Planner plans work as GitHub issues and keeps that plan true until the work lands. It scopes a problem, turns an approved proposal into initiatives and epics, breaks epics into tasks, places items on theme boards, delivers rows as pull requests, and records what landed. Everything it knows between runs lives in issue bodies, board fields and pull request records.
 
-## Running the Suite
+## What Is Under Test
 
-Run every module from the skill directory:
+- **The scripts.**
+  Twenty-three programs read those issue bodies, board items and pull request records, and report what a run should change. Most modules here hold one script to the rules its own docstring states.
+- **The prose.**
+  Modes, protocols and artifacts are instructions an agent follows. Five modules hold their shape instead of a script's behaviour: that every link resolves, that each operation names its inputs, that each command names the checkout it acts on, and that a plan is written where the plan says.
+- **Neither against a live tracker.**
+  Issue, board and pull request state arrives in shapes pinned in `fixtures.py`. A test writes those shapes to a temporary directory and runs a script over them.
 
-```bash
-cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest discover -s test
-```
+## Why It Is Tested
 
-Run one module by name:
-
-```bash
-cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest -v test.test.format
-```
-
-A module that reaches `gh` runs outside the sandbox.
+- **A wrong reading becomes a wrong write.**
+  A script reports what a mode should change, and the mode changes the tracker accordingly. A misread board item costs a misassigned issue, a wrong board field, or a branch cut from the wrong base on work already under way.
+- **The instructions are the product.**
+  Editing a mode or an artifact changes what every later session does. A link that no longer resolves, a step that stops naming its command, or an operation missing an input is a defect no compiler reports.
+- **A session is expensive.**
+  The suite runs with no network, so a change is checked before a session spends tokens acting on a real tracker.
 
 ## Catalogue
 
@@ -57,7 +59,7 @@ One row per module. The description is the module's docstring, and the tests col
 
 ## Coverage
 
-One row per script in `../scripts`. A dash names a script no module reaches.
+One row per script in `../scripts`.
 
 | Script | Exercised by |
 | --- | --- |
@@ -85,7 +87,7 @@ One row per script in `../scripts`. A dash names a script no module reaches.
 | `statuses.py` | `test_board.py`, `test_shared.py`, `test_statuses.py` |
 | `sync.py` | `test_align.py`, `test_link_capture.py`, `test_shared.py`, `test_sync.py` |
 
-Five modules test the skill's prose rather than a script: `test_checkouts.py`, `test_documents.py`, `test_modes.py`, `test_plan_mode.py` and `test_worktrees.py`. They reach the scripts folder only to read it.
+This table states reach, not depth. A module that imports a script and tests one branch of it reads the same as one that tests every branch; the Tests column is the only signal of depth.
 
 ## Keeping It Current
 
@@ -95,5 +97,19 @@ Five modules test the skill's prose rather than a script: `test_checkouts.py`, `
   Where no module imports a script directly, the module that imports the script reaching it holds the row, so a shared reader stays covered through its callers.
 - **Fix the row the check names.**
   The check reports the row and the file to add or remove. A description is read from its module's docstring, so correcting the prose there keeps the two one statement.
-- **The run command lives here.**
-  No module docstring repeats it.
+
+## Running the Suite
+
+Run every module from the skill directory:
+
+```bash
+cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest discover -s test
+```
+
+Run one module by name:
+
+```bash
+cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest -v test.test.format
+```
+
+A module that reaches `gh` runs outside the sandbox. No module docstring repeats these commands; this section is their only home.
