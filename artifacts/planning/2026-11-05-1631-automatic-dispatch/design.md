@@ -12,6 +12,15 @@ A dispatch-batch helper consumes machine-readable available units exported by th
 
 After a unit returns, the coordinator records its delivery result, releases the finished session's slot, refreshes and refills. A unit waiting for human review or blocked on external input stays held and visible while independent work proceeds. A worker slot becomes free only when the harness confirms the worker has finished or is suspended. The coordinator waits on running work or a capacity event while automatic progress remains possible; it reports a stable blocker when no such work or event can advance the scope.
 
+## Ownership
+
+- Deliver mode owns the refill lifecycle in one procedure subsection.
+- Delivery Plan owns eligibility and exports the admitted units from its existing computation.
+- Unit Dispatch is one protocol for the cross-artifact change from an admitted unit to a held, prepared and running unit. Its procedure uses the existing record, reservation, status, worktree and brief operations.
+- Dispatch Batch is one derived artifact with operations for batch selection and start validation. Authorization and observed sessions are supplied evidence, not additional persisted artifact kinds.
+
+Each rule has one home. The mode calls the dispatch protocol, the protocol calls artifact operations, and artifact operations do not manage other artifacts. Refill and start selection share the batch artifact's supplied-evidence contract without duplicating eligibility or tracker writes.
+
 ## Verification
 
 | Test | Observation | Coverage |
