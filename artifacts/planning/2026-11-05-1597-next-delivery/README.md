@@ -46,3 +46,13 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 | [Checkout call patch](checkout-call-fixes.patch) | Exact three-line caller correction |
 | [Checkout proof](checkout-call-proof.log) | Ten passing focused tests in the combined candidate |
 | [Checkout proof identity](checkout-call-proof.json) | Combined-source and caller-patch identities |
+
+## Final Model Activation Admission
+
+All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab3346b77b7780424831b2a12fde2 with the tested tree unchanged and fresh merged criterion evidence. The exact board item reads In Progress after closeout; the refreshed queue places the free epic Ready. That transition is applied and the queue converges with no pending calls. The survey offers only the unlaned W08 within I17; no hold or evidence error remains. Three observed free slots admit its one worker.
+
+| Artifact | What it holds |
+| --- | --- |
+| [Activation batch](activation-batch.json) | One authorized unit |
+| [Activation export](activation-export.json) | Current free unit and branch/worktree identities |
+| [Current queue](activation-queue-confirmed.txt) | Applied, complete queue |

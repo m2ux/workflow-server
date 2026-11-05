@@ -1,0 +1,45 @@
+{
+  "unit": {
+    "id": "m2ux/workflow-server#I17:E01:W08",
+    "record": "2026-11-05-1616-i17-e01-w08-activate-the-work-planner",
+    "report": "unit I17:E01:W08: unlaned, coverage AC8, record 2026-11-05-1616-i17-e01-w08-activate-the-work-planner, branch i17/e01/w08-activate-the-work-planner, base i17/e01/workspace, worktree .worktrees/i17/e01/w08-activate-the-work-planner"
+  },
+  "base_head": "dfb00380a58ab3346b77b7780424831b2a12fde2",
+  "prerequisites": "W01-W07 Done and AC1-AC7 verified in the current epic body",
+  "lane": null,
+  "inputs": {
+    "/tmp/project17-w08-items.json": {
+      "sha256": "6f5559f38e3a85d955f38fd2dd6d0191354b43226eb7c545c0063be6f71d71d5",
+      "bytes": 721927
+    },
+    "/tmp/project17-w08-fields.json": {
+      "sha256": "d4f3b50f92d1c0da6b58564f9ef84a6249318e60d0b6cbd34987f8d164408abe",
+      "bytes": 4451
+    },
+    "/tmp/project17-w08-prs.jsonl": {
+      "sha256": "adee50aa1f8cc6ef8518a45eae3798eedcfcf79fda00cb2036c0712501a581e8",
+      "bytes": 6768251
+    },
+    "/tmp/project17-w08-links.json": {
+      "sha256": "181fd8d4a2efb5315092636407f9b1017b231747609338782ea00e3ae1f000a2",
+      "bytes": 43180
+    },
+    "/tmp/project17-w08-epic.json": {
+      "sha256": "feb6e74b87dd96d2bf3e86e6ecf45fa2ede76f56ba4a077c9d6890b3a09c2086",
+      "bytes": 12545
+    },
+    "/tmp/project17-w08-export.json": {
+      "sha256": "0985e96779ddc90bc88b31081bb15cabfda9b32476b18b3d8ad560aa0693c76d",
+      "bytes": 376
+    },
+    "/tmp/project17-w08-batch.json": {
+      "sha256": "4c47e734ad950a5395620a393015aaf2b0bca8bf356917ef5979765acb617597",
+      "bytes": 443
+    },
+    "/tmp/project17-w08-queue-confirmed.txt": {
+      "sha256": "57a96146dfb57ab31130cb7c0cfdaade5c1a6927ad9926266800d1b2fb1d02bf",
+      "bytes": 320
+    }
+  },
+  "limits": "A premature321-PR link snapshot is excluded. The final364-PR snapshot follows completion of linked-PR discovery."
+}

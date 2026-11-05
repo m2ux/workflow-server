@@ -1,0 +1,5 @@
+users/m2ux/projectsV2/17: Status field 422017304
+  next #1597 [I17] Cutover Readiness: Every Known Skill Fix Lands Before the Extraction: E01
+  rank m2ux/prosiform-skills#1 [I16] Work Planner Home: The Skill in a Repository of Its Own: E00, E01
+  unit I17:E01:W08: unlaned
+  current: 23, to do: 0 (the queue is current)
