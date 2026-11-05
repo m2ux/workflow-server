@@ -17,6 +17,20 @@ Mechanical edits preserve every existing task id, link, description, criterion, 
 | [m2ux--workflow-server--1615.diff](m2ux--workflow-server--1615.diff) | Mechanical table diff |
 | [m2ux--workflow-server--1615.format.txt](m2ux--workflow-server--1615.format.txt) | Template validation result |
 
+| [I16-dependencies.txt](I16-dependencies.txt) | Alignment evidence and findings |
+| [I17-dependencies.txt](I17-dependencies.txt) | Alignment evidence and findings |
+| [criteria-inventory.json](criteria-inventory.json) | Alignment evidence and findings |
+| [format-after.json](format-after.json) | Alignment evidence and findings |
+| [goal-trace.md](goal-trace.md) | Alignment evidence and findings |
+| [progress.md](progress.md) | Alignment evidence and findings |
+| [readback-verification.json](readback-verification.json) | Alignment evidence and findings |
+| [reference-visibility.json](reference-visibility.json) | Alignment evidence and findings |
+| [repositories.json](repositories.json) | Alignment evidence and findings |
+| [review.md](review.md) | Alignment evidence and findings |
+| [style-example-path.json](style-example-path.json) | Alignment evidence and findings |
+| [style-guidelines-path.json](style-guidelines-path.json) | Alignment evidence and findings |
+| [test-plan-review.json](test-plan-review.json) | Alignment evidence and findings |
+
 ## Links
 
 | Resource | Link |

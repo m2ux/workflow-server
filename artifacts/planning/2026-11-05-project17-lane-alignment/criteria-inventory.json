@@ -1,0 +1,62 @@
+[
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 1,
+    "criteria": 14
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 2,
+    "criteria": 4
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 3,
+    "criteria": 8
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 4,
+    "criteria": 7
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 5,
+    "criteria": 4
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 6,
+    "criteria": 5
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 7,
+    "criteria": 4
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 8,
+    "criteria": 4
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "issue": 9,
+    "criteria": 8
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "issue": 1597,
+    "criteria": 1
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "issue": 1615,
+    "criteria": 5
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "issue": 1616,
+    "criteria": 7
+  }
+]

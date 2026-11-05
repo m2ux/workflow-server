@@ -1,0 +1,78 @@
+--- problems
+none
+
+--- joins: candidate units, rows of one epic extending one component
+E05:W01, E05:W02 extend main:guidelines.md: name each other in Joins, dropping the dependency of E05:W02 on E05:W01, or name exactly these rows on one record line with why they stay split
+
+--- advisory: numbering against start order
+none
+
+--- levels (0 = can start now)
+0 E00:W00 - Skill history extracted into main
+0 E01:W01 - Deploy checks out submodules
+0 E01:W02 - Update checks out submodules
+1 E00:W01 - Long-lived branches stated
+1 E01:W03 - prosiform workspace links the skill
+2 E01:W04 - Plain copy removed from the template
+3 E02:W01 - Scripts named relative to the skill
+3 E02:W02 - Shared check run from the root
+3 E03:W01 - Priority Number field on every board
+4 E03:W02 - Board Queue reads the Priority field
+4 E03:W03 - Planning sets the Priority field
+4 E04:W01 - Bootstrap and link rules stated
+4 E04:W02 - Operator and budget rules stated
+4 E05:W01 - Each check defined in the shared guide
+5 E03:W04 - prosiform pins a skill reading the field
+5 E05:W02 - Prose names each check by link
+5 E06:W01 - Work Planner links named by section
+6 E03:W05 - Priority labels deleted
+6 E05:W03 - Check reports a check named by path
+6 E06:W02 - Modes named in passing as text
+7 E06:W03 - Hand-offs dispatched, conditional reads deferred
+8 E07:W01 - Entry point bootstraps through prosiform
+8 E07:W02 - Every mode compiled within budget
+9 E07:W03 - Bundle sizes compared against baseline
+9 E07:W04 - Check reports link scope and mode reach
+9 E07:W05 - Check compiles each mode under budget
+
+--- component contention: rows of different epics extending one component
+E00:W00 and E02:W01 both extend main:work-planner/SKILL.md
+E00:W00 and E06:W01 both extend main:work-planner/SKILL.md
+E00:W00 and E07:W01 both extend main:work-planner/SKILL.md
+E02:W01 and E06:W01 both extend main:work-planner/SKILL.md
+E02:W01 and E07:W01 both extend main:work-planner/SKILL.md
+E02:W02 and E05:W03 both extend main:scripts/check_skill_files.py
+E02:W02 and E07:W04 both extend main:scripts/check_skill_files.py
+E02:W02 and E07:W05 both extend main:scripts/check_skill_files.py
+E04:W01 and E05:W01 both extend main:guidelines.md
+E04:W01 and E05:W02 both extend main:guidelines.md
+E04:W02 and E05:W01 both extend main:guidelines.md
+E04:W02 and E05:W02 both extend main:guidelines.md
+E05:W03 and E07:W04 both extend main:scripts/check_skill_files.py
+E05:W03 and E07:W05 both extend main:scripts/check_skill_files.py
+E06:W01 and E07:W01 both extend main:work-planner/SKILL.md
+E06:W03 and E07:W02 both extend main:work-planner/modes/deliver-mode.md
+
+--- epic priority (epics sharing a number start together)
+4 E00
+4 E01
+3 E02
+3 E03
+3 E04
+2 E05
+2 E06
+1 E07
+
+--- longest chains: 54, each of 10 steps
+on every chain: E01:W03, E01:W04, E06:W01, E06:W02, E06:W03
+E01:W01 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W02 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W02 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W02 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E00:W00 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W02 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W01 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W03 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W02 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W03 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E00:W00 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W03 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W01 -> E01:W03 -> E01:W04 -> E02:W02 -> E04:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W02 -> E01:W03 -> E01:W04 -> E02:W02 -> E04:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E00:W00 -> E01:W03 -> E01:W04 -> E02:W02 -> E04:W01 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W01 -> E07:W03
+E01:W01 -> E01:W03 -> E01:W04 -> E03:W01 -> E03:W02 -> E06:W01 -> E06:W02 -> E06:W03 -> E07:W02 -> E07:W03
+... 44 more

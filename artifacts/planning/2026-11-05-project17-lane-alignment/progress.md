@@ -1,0 +1,5 @@
+- [x] Publish and verify Lane columns in all open epic tables.
+- [x] Complete independent alignment checks and record findings.
+- [ ] Resolve dependency and numbering decision (in progress).
+- [ ] Resolve remaining content findings one at a time.
+- [ ] Revalidate affected plans and resume I17 delivery.
