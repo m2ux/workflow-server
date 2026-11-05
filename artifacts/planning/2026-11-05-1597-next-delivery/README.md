@@ -36,3 +36,7 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 | [Family sessions](family-sessions.json) | Observed worker identities for the held units |
 
 | [Artifact family ownership](artifact-family-ownership.json) | Exhaustive, disjoint W05–W07 source manifest |
+
+| [Remaining family batch](tail-batch.json) | W06 and W07 selected for observed capacity |
+| [Remaining family survey](tail-survey-export.json) | Fresh eligible unit identities |
+| [Selection session inventory](tail-selection-sessions.json) | W03 complete, W04/W05 retained |

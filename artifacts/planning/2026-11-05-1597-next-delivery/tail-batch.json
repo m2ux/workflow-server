@@ -1,0 +1,16 @@
+{
+  "action": "dispatch",
+  "units": [
+    {
+      "id": "m2ux/workflow-server#I17:E01:W06",
+      "record": "2026-11-05-1616-i17-e01-w06-board-queue-planning-and",
+      "report": "unit I17:E01:W06: unlaned, coverage AC6, record 2026-11-05-1616-i17-e01-w06-board-queue-planning-and, branch i17/e01/w06-board-queue-planning-and, base i17/e01/workspace, worktree .worktrees/i17/e01/w06-board-queue-planning-and"
+    },
+    {
+      "id": "m2ux/workflow-server#I17:E01:W07",
+      "record": "2026-11-05-1616-i17-e01-w07-delivery-branch-and-pull",
+      "report": "unit I17:E01:W07: unlaned, coverage AC7, record 2026-11-05-1616-i17-e01-w07-delivery-branch-and-pull, branch i17/e01/w07-delivery-branch-and-pull, base i17/e01/workspace, worktree .worktrees/i17/e01/w07-delivery-branch-and-pull"
+    }
+  ],
+  "pending": 0
+}

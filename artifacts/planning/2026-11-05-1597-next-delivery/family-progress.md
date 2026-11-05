@@ -28,3 +28,9 @@ Root and three workers occupy all four slots. Workers observe capacity before fr
 ## Plan Changes
 
 None. The validation instrument follows the user's confirmed support/conversion/final-activation sequence; source model activation remains W08.
+
+## Remaining Family Refill
+
+W03 is delivered through PR #1643 at epic base fb9a834c940cbed9742709d7e03594900e31d22f, with AC3/Done read back. W04/W05 retain their existing sessions and holds while validation continues. A complete fresh queue proposes no changes; the current survey has exactly two available units, W06 and W07, with no invalid or missing-evidence unit. Two observed free slots select those units while the third is used by an existing unit's independent validation.
+
+W05 owns generic artifact/source-reader support. Remaining families implement independently and may use its precise reader patch only in isolated combined validation. Their published heads must integrate the actual support and pass without a waived assertion. Shared publications remain serialized; merge order reflects shared-reader availability without changing the approved parallel implementation rows.
