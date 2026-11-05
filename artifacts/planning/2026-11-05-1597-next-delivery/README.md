@@ -112,6 +112,7 @@ Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/bl
 | --- | --- |
 | [Coverage audit](context-contract-audit.json) | 237 artifact operations and expected versus observed role links |
 | [Revise command audit](context-revise-contract-audit.json) | Three additional command operations and their actual results |
+| [Published review gate](context-review-gate.log) | Current integration head and target match the fetched published review |
 | [Independent obligations](context-contract-ledger.json) | Original declarations reconciled with actual command argument contracts |
 | [Reading review](context-reading-review.md) | Six independent bounded plans, observed failures and evidence limits |
 | [Reading receipts](context-reading-evidence.tar.gz) | Exact preserved plans, read accounts and source/tool receipts |
