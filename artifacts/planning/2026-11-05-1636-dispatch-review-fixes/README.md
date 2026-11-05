@@ -13,6 +13,8 @@ The implementation starts from the current workspace branch, including the merge
 | Artifact | What it holds |
 | --- | --- |
 | [Design and verification](design.md) | Ownership, regression coverage and task checklist |
+| [Validation](validation.md) | Regression results, review findings and disclosure observations |
+| [Planner test output](planner-tests.txt) | Complete Work Planner test-suite result |
 
 ## Links
 

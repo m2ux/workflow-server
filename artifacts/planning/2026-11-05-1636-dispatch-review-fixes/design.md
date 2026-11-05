@@ -8,7 +8,7 @@ Base: `03d353300` on `workspace`. Branch: `skill/1636-dispatch-review-fixes`. Th
 
 - Delivery Branches owns validation of a retained task worktree. A new operation verifies its repository registration, branch, recorded preparation revision and clean state through a subject script. Creation returns the recorded revision. Unit Dispatch selects creation for a new unit and validation for its retained preparation.
 - Dispatch Batch owns recorded run and unit blockers. Its existing batch and start operations apply those blockers. Unit Dispatch returns the blocker scope; Deliver retains the result and reports a run blocker immediately. Unit blockers exclude the failed unit while independent work continues. New evidence can resolve a blocker; elapsed time supplies no resolution.
-- Board Queue's Priority Sets owns ordering. A shared priority reader supplies the existing queue and delivery survey. The survey orders admitted units by initiative priority and by epic priority within that initiative before export. Dispatch Batch consumes that order and owns only scope, occupancy and capacity.
+- Board Queue's Priority Sets owns ordering. A shared priority reader supplies the existing queue, delivery survey and standup reader. The survey orders admitted units by initiative priority and by epic priority within that initiative before export. Dispatch Batch consumes that order and owns only scope, occupancy and capacity.
 
 ## Verification
 
@@ -23,7 +23,7 @@ Full Work Planner and shared checker suites, skill-file validation, final diff r
 ## Checklist
 
 - [x] Verify #1636 is merged and create an isolated branch from current workspace.
-- [ ] Implement and verify retained-worktree validation.
-- [ ] Implement and verify stable dispatch blockers.
-- [ ] Implement and verify priority ordering.
+- [x] Implement and verify retained-worktree validation.
+- [x] Implement and verify stable dispatch blockers.
+- [x] Implement and verify priority ordering.
 - [ ] Complete regression checks, commit and push, and open the separate fixes PR.
