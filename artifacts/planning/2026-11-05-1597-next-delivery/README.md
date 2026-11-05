@@ -34,3 +34,5 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 
 | [Family progress](family-progress.md) | Current tasks, validation model, reader ownership and capacity |
 | [Family sessions](family-sessions.json) | Observed worker identities for the held units |
+
+| [Artifact family ownership](artifact-family-ownership.json) | Exhaustive, disjoint W05–W07 source manifest |

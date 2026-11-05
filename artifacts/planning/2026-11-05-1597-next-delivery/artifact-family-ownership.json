@@ -1,0 +1,43 @@
+{
+  "W05": [
+    "acceptance-criteria.md",
+    "epic.md",
+    "epic-issue-body.md",
+    "hotfix.md",
+    "hotfix-body.md",
+    "initiative.md",
+    "initiative-issue-body.md",
+    "issue.md",
+    "issue-body.md",
+    "proposal-body.md",
+    "pull-request-body.md",
+    "repository-labels.md",
+    "standalone-body.md",
+    "task-body.md"
+  ],
+  "W06": [
+    "architecture-overview.md",
+    "planning-record.md",
+    "work-item.md",
+    "agent-review.md",
+    "goal-trace.md",
+    "review-finding.md",
+    "placement.md",
+    "repository-graph.md",
+    "lane.md",
+    "dependency-graph.md",
+    "board.md",
+    "standup-report.md",
+    "board-delivery.md",
+    "plan-change.md",
+    "board-queue.md"
+  ],
+  "W07": [
+    "delivery-plan.md",
+    "delivery-branches.md",
+    "delivery-evidence.md",
+    "dispatch-batch.md",
+    "delivery-brief.md",
+    "pull-request.md"
+  ]
+}
