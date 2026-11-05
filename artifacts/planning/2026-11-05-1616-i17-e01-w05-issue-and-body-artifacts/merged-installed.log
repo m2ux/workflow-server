@@ -1,0 +1,4 @@
+{"revision": "709a038e40aafb59a05c1798f3d1a6b1f9248e83", "checkout": "/tmp/revision-check-16yrbpdo/709a038e40aa"}
+work-planner/modes/revise-mode.md:128: section outside the set — Fields
+58 files checked, 1 findings
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

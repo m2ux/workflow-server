@@ -26,4 +26,12 @@ The literal installed-model check at the same detached head reports58files and t
 
 The dirty-checkout control exits2 before evaluating uncommitted files. A fresh detached delivered-base control at11e6085570ea60bd1132e32a5bd375d4fa03a77c reports517target findings because it lacks this conversion; that failed diagnostic supplies no AC5 pass. Both probe logs are retained. revision-check.py removes each temporary checkout after the run.
 
-The source has not yet merged into the epic base. Merge authorization, merged-revision verification, epic/board recording and criterion ticks remain pending root's exact-head clearance. Issue1636 owns retained-worktree reuse only; other disclosure limits remain observations. No duplicate issue is raised.
+PR1646 merged into the epic base with the exact cleared head; the verified delivery is recorded below. Issue1636 owns retained-worktree reuse only; other disclosure limits remain observations. No duplicate issue is raised.
+
+## Merged Revision and Recording
+
+PR1646 merged as709a038e40aafb59a05c1798f3d1a6b1f9248e83, tree b10362558947ecfdb5fe5ca379c23457613dd472, matching the exact walked/task-head source. Fresh detached merged-revision runs pass the14-file instrument, all925 Work Planner tests (924pass/1opt-in skip) and all255 shared tests. The literal installed model retains only the separately recorded Revise Fields diagnostic.
+
+Fresh complete I17 evidence contains21 PR records and their full3 Development links, with issue-end capture as well. The recording changes only W05's delivery link/Done and AC5's tick. W06/W07 reservations, W08/AC8 and all other criteria remain preserved. The updated epic is open, and the integration1641 body is reconciled with the W05 merge reference and the authorized removal of “All seven”. Integration1641 remains draft and unmerged. A repeated delivery inspection reports no reference or Changes-path discrepancy and confirms the epic is not closable while W06–W08/AC6–AC8 remain incomplete.
+
+Exact Project17 item291152098 was read back with issue1616 and Status field422017304=In Progress; its embedded issue body equals the saved W05-only epic update. No board status mutation or initiative completion is warranted. readback-summary.json and the hashed closeout archive preserve these observations. Disclosure remains Partial; this merge creates no complete-reading or external-workflow claim.

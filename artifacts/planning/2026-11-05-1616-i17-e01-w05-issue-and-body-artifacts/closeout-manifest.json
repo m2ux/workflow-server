@@ -1,0 +1,155 @@
+{
+  "archive_sha256": "a0cb65114be613327470959d1b52c4fba4df017ad71cfbf58ef6909571e70b42",
+  "files": [
+    {
+      "path": "board-before.json",
+      "bytes": 19634,
+      "sha256": "c45f1dcf13ece4876c13ae21eb440f0edc5e8b94df43f3a594308b2151151b7f"
+    },
+    {
+      "path": "board-readback.json",
+      "bytes": 19558,
+      "sha256": "dfdee0b1a09e8fc8b36996ebfaa4bf8968bcc691cb0997f00f551e3b9d855b53"
+    },
+    {
+      "path": "epic-before.md",
+      "bytes": 7584,
+      "sha256": "8adaa12931b301a3b57c81e838604f3dc516c729eb1ba58f00d8c5956456ab5d"
+    },
+    {
+      "path": "epic-candidate.md",
+      "bytes": 7507,
+      "sha256": "0a36d36164e967802c77a998e8c8e9fc35a0a9938012018970bd8aaae0f9b29d"
+    },
+    {
+      "path": "epic-diff.patch",
+      "bytes": 2634,
+      "sha256": "8c7432daf30434e5df5572e7778aa8cfbfe3b60eded0d2a102018610c8dc75a5"
+    },
+    {
+      "path": "epic-readback.json",
+      "bytes": 12697,
+      "sha256": "4d5349091e50ec129c6af451add0d19a52449732228af67649bf2293a68292c7"
+    },
+    {
+      "path": "epic-sync.log",
+      "bytes": 369,
+      "sha256": "8a31d89ac7ef6dce768ab6694e5bed9a6b24904882feed70f00c797b872a51c6"
+    },
+    {
+      "path": "epic.json",
+      "bytes": 12773,
+      "sha256": "e8c8c825b0b87c29e3634aeadf566d3d3af5aed1593698a26acda83d396131e2"
+    },
+    {
+      "path": "final-pr-links.json",
+      "bytes": 2334,
+      "sha256": "4aaa42cd8e039f331aa7ad7184858531ba9e4e9147747cb5a37d3e9547d7d603"
+    },
+    {
+      "path": "final-prs.jsonl",
+      "bytes": 404484,
+      "sha256": "1f5de4f1f8439fef52495f14daf63447ca01064beaa8861b08cd9becc2d3c3ad"
+    },
+    {
+      "path": "final-sync.log",
+      "bytes": 204,
+      "sha256": "37351b0761245e639a6ec8ff731f7b1b7cfbf416e88281e666b6b44bbbf11881"
+    },
+    {
+      "path": "final-synced-epic.md",
+      "bytes": 7507,
+      "sha256": "0a36d36164e967802c77a998e8c8e9fc35a0a9938012018970bd8aaae0f9b29d"
+    },
+    {
+      "path": "initiative.json",
+      "bytes": 9120,
+      "sha256": "8485d385428787af219dc823aa55fcd4bf2c4ac0516424864a12a845536ea48e"
+    },
+    {
+      "path": "integration-candidate.md",
+      "bytes": 4756,
+      "sha256": "1e7e7e5047c949265111f4caf3e12cf5aab3c3940411234b0ebe6971fa72a818"
+    },
+    {
+      "path": "integration-diff.patch",
+      "bytes": 3804,
+      "sha256": "0668dc51cee10949dac2403c1cbea0612e53567e6fcd4f68030c0dc2ccd902bf"
+    },
+    {
+      "path": "integration-readback.json",
+      "bytes": 20708,
+      "sha256": "cc06b7749641b962b4f9a5124792668f5e616186d9ebde122e0366da76fe6c40"
+    },
+    {
+      "path": "integration.json",
+      "bytes": 19623,
+      "sha256": "4e62c7c09d445d90292c07c02ca43eb15b2c3d7caa430b170ec0b06be8deb61b"
+    },
+    {
+      "path": "issue-links.json",
+      "bytes": 202,
+      "sha256": "f377e59565594054a638653179268951551a0974fce9e15d69282b61584fc831"
+    },
+    {
+      "path": "issues.json",
+      "bytes": 24588,
+      "sha256": "f9a58a8fbbf70271d33fcdd1cae5f8903ab23cf28543e1e283aba55ad2ae4c05"
+    },
+    {
+      "path": "merged-installed.log",
+      "bytes": 289,
+      "sha256": "c5ae9837e69ce72056c26f667b142e54aa8f68a9387ed0aa391d8fc5bd88bba2"
+    },
+    {
+      "path": "merged-planner.log",
+      "bytes": 1153,
+      "sha256": "03091bd53bcf6d84598942b72143dc6e47a7a1da87b478e0f316914ec220a48c"
+    },
+    {
+      "path": "merged-shared.log",
+      "bytes": 469,
+      "sha256": "de724a1d2b31dca49e4d39313ec6cd455ee911a264700d84a4380f6f45213beb"
+    },
+    {
+      "path": "merged-strict.log",
+      "bytes": 400,
+      "sha256": "440d874e79377b10ccb1046a3d9580f6abce623c0214d23614c17d26efcbbe9b"
+    },
+    {
+      "path": "pr-links.json",
+      "bytes": 2334,
+      "sha256": "4aaa42cd8e039f331aa7ad7184858531ba9e4e9147747cb5a37d3e9547d7d603"
+    },
+    {
+      "path": "prepublish-epic.json",
+      "bytes": 12773,
+      "sha256": "e8c8c825b0b87c29e3634aeadf566d3d3af5aed1593698a26acda83d396131e2"
+    },
+    {
+      "path": "prepublish-integration.json",
+      "bytes": 19623,
+      "sha256": "4e62c7c09d445d90292c07c02ca43eb15b2c3d7caa430b170ec0b06be8deb61b"
+    },
+    {
+      "path": "prs.jsonl",
+      "bytes": 388129,
+      "sha256": "f4d53b07920bae09b9665477b86db875ffb5c60ae531937b90778561e4b4fec2"
+    },
+    {
+      "path": "readback-summary.json",
+      "bytes": 548,
+      "sha256": "9cb1fb565a90d400fd46ecf24dd976e125f2e174ce75b6bc135db1f79e40d6a0"
+    },
+    {
+      "path": "saved-epic.json",
+      "bytes": 12697,
+      "sha256": "4d5349091e50ec129c6af451add0d19a52449732228af67649bf2293a68292c7"
+    },
+    {
+      "path": "saved-integration.json",
+      "bytes": 20708,
+      "sha256": "cc06b7749641b962b4f9a5124792668f5e616186d9ebde122e0366da76fe6c40"
+    }
+  ]
+}

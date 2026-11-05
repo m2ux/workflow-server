@@ -1,0 +1,44 @@
+--- fresh integration
++++ W05 integration
+@@ -1,10 +1,10 @@
+ ## Overview
+ 
+-Work Planner loads common rules and conventions before mode selection and keeps deployed values in linked configuration sections. The shared checker validates heading procedures and HTML invocations for each selected model, using the same parser and contract ownership for citation and interface checks. Modes and protocols expose ordered heading steps and explicit artifact and procedure calls.
++Work Planner loads common rules and conventions before mode selection and keeps deployed values in linked configuration sections. The shared checker validates heading procedures and HTML invocations for each selected model, using the same parser and contract ownership for citation and interface checks. Modes and protocols expose ordered heading steps and explicit artifact and procedure calls. Issue and body artifacts link accepted record shapes and execute their commands within ordered steps.
+ 
+ ## Changes
+ 
+-The epic base carries the declared-model checker capability, its acceptance/rejection specimens, Work Planner's common context files and its mode and protocol presentation.
++The epic base carries the declared-model checker capability, its acceptance/rejection specimens, Work Planner's common context files and its mode, protocol and issue/body artifact presentation.
+ 
+ ### Declared Models
+ 
+@@ -41,11 +41,22 @@
+ ### Protocol Procedures
+ 
+ - **Ordered coordination.**
+-  All seven protocols use numbered heading steps, Rules/Conventions preambles and scoped flush conditions while preserving prerequisites, inputs, refusals and return points.
++  Protocols use numbered heading steps, Rules/Conventions preambles and scoped flush conditions while preserving prerequisites, inputs, refusals and return points.
+ - **Layered invocation.**
+   Artifact operations use Apply and whole-protocol calls use Follow, including repeated calls to existing required callees.
+ - **Evidence boundaries.**
+   Literal-head and merged-revision instruments preserve the walked protocol bytes and test the actual source composition. Independent reading observations remain Partial; inherited prerequisite, receipt, authority and live-evidence limits remain recorded.
++
++### Issue and Body Artifacts
++
++- **Contracted operations.**
++  Operations link their accepted inputs and returned states, distinguishing complete JSON records, body text, identities and supplied versus posted values.
++- **Executing steps.**
++  Commands use raw HTML within ordered heading steps, with linked argument contracts and preserved literal syntax, examples and prerequisites.
++- **Template and interface readers.**
++  Body-template fences recognize valid closing indentation; document readers verify linked contracts, step order, fetched-base inputs and cited executable reach.
++- **Evidence boundaries.**
++  Repeated bounded walks produce correct local results; prerequisite order, transitive closure and unavailable live evidence remain explicitly Partial.
+ 
+ ## References
+ 
+@@ -53,3 +64,4 @@
+ - **R2.** [Common Files](https://github.com/m2ux/workflow-server/pull/1642) — shared rules, conventions and configuration with their consuming readers.
+ - **R3.** [Mode Procedures](https://github.com/m2ux/workflow-server/pull/1643) — heading steps, preserved command inputs and maintained readers, with explicit partial disclosure observations.
+ - **R4.** [Protocol Procedures](https://github.com/m2ux/workflow-server/pull/1644) — heading steps, preserved operative conditions and explicit repeated calls, with separately qualified reading observations.
++- **R5.** [Issue and Body Artifacts](https://github.com/m2ux/workflow-server/pull/1646) — linked contracts, executing commands and maintained readers, with separately qualified Partial disclosure.

@@ -1,10 +1,12 @@
 # Issue and Body Artifacts — November 2026
 
-> I17 E01 W05 · Created 2026-11-05
+> I17 E01 W05 · Created 2026-11-05 · Revised 2026-11-05
 
 ## Executive Summary
 
 This record carries the user-approved Work Planner style conversion for W05. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
+
+PR1646 delivers W05 and AC5 with exact source identities, committed-head and merged-revision checks, preserved payloads and six independent bounded walkthroughs. Structural and behavioral evidence passes; disclosure remains Partial with reading and unavailable-evidence limits recorded explicitly.
 
 ## Artifacts
 
@@ -52,6 +54,18 @@ This record carries the user-approved Work Planner style conversion for W05. The
 | [head-checks.json](head-checks.json) | Literal-head GitHub check-run snapshot at PR handoff |
 | [head-status.json](head-status.json) | Literal-head GitHub combined-status snapshot at PR handoff |
 | [issue-links.json](issue-links.json) | Readback showing no closure link from the row-only task PR to the whole epic |
+
+| [merged-strict.log](merged-strict.log) | Fresh detached AC5 verification at the literal merge revision |
+| [merged-planner.log](merged-planner.log) | Complete925-test Work Planner suite at the literal merge revision |
+| [merged-shared.log](merged-shared.log) | Complete255-test shared suite at the literal merge revision |
+| [merged-installed.log](merged-installed.log) | Separate installed-model diagnostic at the literal merge revision |
+| [readback-summary.json](readback-summary.json) | Confirmed W05/AC5 delivery, preserved holds and exact board status |
+| [final-sync.log](final-sync.log) | Post-publication delivery inspection with reconciled integration references |
+| [epic-diff.patch](epic-diff.patch) | Scoped W05 delivery/AC5 body delta |
+| [integration-diff.patch](integration-diff.patch) | Draft integration reconciliation including the no-count wording correction |
+| [closeout-evidence.tar.gz](closeout-evidence.tar.gz) | Fresh complete delivery/relation captures and tracker/board readbacks |
+| [closeout-manifest.json](closeout-manifest.json) | Every closeout receipt byte count and hash |
+| [merged-pr.json](merged-pr.json) | GitHub confirmation of the exact-head task merge |
 
 ## Links
 

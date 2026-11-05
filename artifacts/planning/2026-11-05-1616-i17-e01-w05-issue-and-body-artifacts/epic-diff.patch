@@ -1,0 +1,20 @@
+--- captured epic
++++ W05 delivery
+@@ -42,7 +42,7 @@
+ | [W02](https://github.com/m2ux/workflow-server/pull/1642) | Rules, conventions and configuration files | AC2 | W01 | | | ✓ |
+ | [W03](https://github.com/m2ux/workflow-server/pull/1643) | Modes in the new style | AC3 | W02 | | | ✓ |
+ | [W04](https://github.com/m2ux/workflow-server/pull/1644) | Protocols in the new style | AC4 | W02 | | | ✓ |
+-| [W05](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w05-issue-and-body-artifacts/) | Issue and body artifacts in the new style | AC5 | W02 | | | |
++| [W05](https://github.com/m2ux/workflow-server/pull/1646) | Issue and body artifacts in the new style | AC5 | W02 | | | ✓ |
+ | [W06](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w06-board-queue-planning-and/) | Board, queue, planning and review artifacts restyled | AC6 | W02 | | | |
+ | [W07](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-1616-i17-e01-w07-delivery-branch-and-pull/) | Delivery, branch and pull-request artifacts restyled | AC7 | W02 | | | |
+ | W08 | Activate the Work Planner style model | AC8 | W03, W04, W05, W06, W07 | | | |
+@@ -53,7 +53,7 @@
+ - [x] **AC2.** SKILL.md holds only its opening, Modes and Dependencies, and `rules.md`, `conventions.md` and `configuration.md` hold what binds every mode, checked by Check Skill Files.
+ - [x] **AC3.** Every mode states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+ - [x] **AC4.** Every protocol states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+-- [ ] **AC5.** Every issue and body artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
++- [x] **AC5.** Every issue and body artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC6.** Every board, queue, planning and review artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC7.** Every delivery, branch and pull-request artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+ 

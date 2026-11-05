@@ -2,11 +2,13 @@
   "number": 1646,
   "html_url": "https://github.com/m2ux/workflow-server/pull/1646",
   "title": "[I17:E01] Issue Artifacts: Linked Contracts and Executing Commands",
-  "state": "open",
+  "state": "closed",
   "draft": false,
   "mergeable": true,
   "mergeable_state": "clean",
   "head": "c2b3dc2292fb7ba6aedc4b014d0e5bef084bd7a9",
   "tree": "b10362558947ecfdb5fe5ca379c23457613dd472",
-  "base": "i17/e01/workspace"
+  "base": "i17/e01/workspace",
+  "merged": true,
+  "merge_commit_sha": "709a038e40aafb59a05c1798f3d1a6b1f9248e83"
 }

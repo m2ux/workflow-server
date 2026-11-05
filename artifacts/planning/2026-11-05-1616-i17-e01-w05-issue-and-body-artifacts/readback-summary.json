@@ -1,0 +1,20 @@
+{
+  "epic": 1616,
+  "state": "open",
+  "task": "W05",
+  "pull_request": 1646,
+  "merge_commit": "709a038e40aafb59a05c1798f3d1a6b1f9248e83",
+  "head": "c2b3dc2292fb7ba6aedc4b014d0e5bef084bd7a9",
+  "tree": "b10362558947ecfdb5fe5ca379c23457613dd472",
+  "board_item": 291152098,
+  "status_field": 422017304,
+  "status": "In Progress",
+  "w06_w07_reservations_preserved": true,
+  "w08_ac8_untouched": true,
+  "integration": {
+    "number": 1641,
+    "draft": true,
+    "head": "709a038e40aafb59a05c1798f3d1a6b1f9248e83"
+  },
+  "disclosure": "Partial"
+}
