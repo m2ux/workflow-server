@@ -65,3 +65,9 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | [Parent audit](graph-capability-audit.json) |1197contexts/33flows/144steps, identity and freshness checks |
 | [Archive manifest](graph-capability-manifest.json) | Exact safe members and hashes |
 | [Native measurements](graph-capability-preliminary.tar.gz) | Reproducible preliminary data and executed instruments |
+
+## Step Instruction Review
+
+| Artifact | What it holds |
+| --- | --- |
+| [Step instruction format](step-instruction-format.md) | User clarification, single-home rule and verification plan |
