@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-Deliver the next eligible I17 work from Project 17 after the lane integration reaches workspace. The requested command presentation is recorded in E02.
+Deliver the next eligible I17 work from Project 17 after the lane integration reaches workspace. The requested command presentation is recorded in E01.
 
 The coordinator refreshes delivery, reservations and live board state before each start and preserves required integration review gates.
 

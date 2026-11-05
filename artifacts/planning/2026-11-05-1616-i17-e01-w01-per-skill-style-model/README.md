@@ -1,6 +1,6 @@
 # Per-skill style model and checker — November 2026
 
-> I17 E02 W01 · Created 2026-11-05
+> I17 E01 W01 · Created 2026-11-05
 
 ## Executive Summary
 

@@ -1,0 +1,19 @@
+--- before
++++ approved
+@@ -37,7 +37,7 @@
+ 
+ | Task | Description | Coverage | Depends on | Joins | Lane | Done |
+ | --- | --- | --- | --- | --- | --- | --- |
+-| W01 | SOLID guidelines for files and operations | AC1 | [E02](https://github.com/m2ux/workflow-server/issues/1616) | | | |
++| W01 | SOLID guidelines for files and operations | AC1 | [E01:W03](https://github.com/m2ux/workflow-server/issues/1616), [E01:W04](https://github.com/m2ux/workflow-server/issues/1616), [E01:W05](https://github.com/m2ux/workflow-server/issues/1616), [E01:W06](https://github.com/m2ux/workflow-server/issues/1616), [E01:W07](https://github.com/m2ux/workflow-server/issues/1616) |  |  |  |
+ | W02 | Audit the skill against the guidelines | AC2 | W01 | | | |
+ | W03 | Generic prose in general artifacts and modes | AC3 | W02 | | | |
+ | W04 | Generic interfaces in general scripts | AC4 | W02 | | | |
+@@ -54,6 +54,6 @@
+ ## References
+ 
+ - **R1.** [Planning record](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes) — the decisions, the audit and each task's work item.
+-- **R2.** [SOLID guidelines draft](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes/e01/solid-guidelines.md) — the guidelines the first task lands, with the class model and the audit questions.
++- **R2.** [SOLID guidelines draft](https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-02-1597-i17-pre-cutover-fixes/e02/solid-guidelines.md) — the guidelines the first task lands, with the class model and the audit questions.
+ - **R3.** [Delivery Units](https://github.com/m2ux/workflow-server/issues/1614) — the delivery-path breach that prompted this review.
+ - **R4.** [Work Planner at the planned revision](https://github.com/m2ux/workflow-server/tree/9d71790c2668debbc03a2ba1d00509e8bea3bff6/skills/work-planner) — the skill the review audits.

@@ -28,9 +28,9 @@
   **Resolution.** Dropped; the check reports no E03 problem. The report is [dependencies.txt](dependencies.txt).
 - **Problem.** The source issue's criteria were each delivered by several rows.
   **Resolution.** Split into one criterion per row, AC1 to AC10.
-- **Problem.** E01:W01 names epic E02 and depends on a later epic's rows.
-  **Resolution.** Left as E01's recorded decision 7; outside E03's scope.
-- **Problem.** Contention between E02 and E03 is unchecked, since E02 has no work items.
+- **Problem.** E02:W01 names epic E01 and depends on a later epic's rows.
+  **Resolution.** Left as E02's recorded decision 7; outside E03's scope.
+- **Problem.** Contention between E01 and E03 is unchecked, since E01 has no work items.
   **Resolution.** Put to the user with E03's priority.
 - **Format.** The epic and the initiative, checked with every epic, report nothing to fix, apply or decide.
 

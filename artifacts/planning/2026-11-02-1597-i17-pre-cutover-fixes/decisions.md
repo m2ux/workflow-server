@@ -24,38 +24,38 @@
 - **Cutover edge names the epic.** The W00 cell names `I17:E00` rather than its rows, because the epic takes further rows as faults are found and a row list would go stale. The dependency check reads another initiative's epic as an external reference.
 - **Record folder.** Named for the initiative's issue, 1597, which matched the number read before creation.
 
-## E01 Skill Separation, 2 November 2026
+## E02 Skill Separation, 2 November 2026
 
 The user's decisions:
 
-1. **Epic, not a standalone issue.** The delivery-path breach raised as #1614 becomes a separation-of-concerns review of the whole skill, raised as [I17:E01](https://github.com/m2ux/workflow-server/issues/1615). #1614 is closed into it.
+1. **Epic, not a standalone issue.** The delivery-path breach raised as #1614 becomes a separation-of-concerns review of the whole skill, raised as [I17:E02](https://github.com/m2ux/workflow-server/issues/1615). #1614 is closed into it.
 2. **Scope.** Every artifact, mode, protocol and script in `skills/work-planner`, with its tests where a rule moves.
 3. **Shape.** W01 audits the skill against SOLID and the one-home rule and records each breach with its file, rule and owning home in this folder. W02 (prose), W03 (scripts) and W04 (one-home rules) take the findings by concern. Each is split into one row per group of files it touches before it starts.
-4. **Extraction waits.** I16's extraction waits for E01, as for E00, so the skill moves already separated.
+4. **Extraction waits.** I16's extraction waits for E02, as for E00, so the skill moves already separated.
 5. **Priority.** The epic carries `priority: 6`.
 
 Planning decisions:
 
 - **No tests-pass criterion.** The tests and skill-file check are a gate every pull request meets, so no row carries them as a criterion.
-- **I17 reopened.** Its AC1 is unticked again until E01's fixes are in the extraction commit's history.
-6. **SOLID guidelines first.** Artifact and protocol files are classes, and linked operations are method calls that encapsulate each file's state. A new W01 lands SOLID guidelines fitted to that model in the skill's guidelines, drafted in [e01/solid-guidelines.md](e01/solid-guidelines.md). The audit becomes W02 and measures against them. The fix rows become W03 to W05.
+- **I17 reopened.** Its AC1 is unticked again until E02's fixes are in the extraction commit's history.
+6. **SOLID guidelines first.** Artifact and protocol files are classes, and linked operations are method calls that encapsulate each file's state. A new W01 lands SOLID guidelines fitted to that model in the skill's guidelines, drafted in [e02/solid-guidelines.md](e02/solid-guidelines.md). The audit becomes W02 and measures against them. The fix rows become W03 to W05.
 
-## E02 Skill Style, 2 November 2026
+## E01 Skill Style, 2 November 2026
 
 The user's decisions:
 
-1. **Purpose.** [I17:E02](https://github.com/m2ux/workflow-server/issues/1616) gives the skill the file style its prosiform form needs: the groundwork for prosiform compliance. It takes priority, with `priority: 7`.
-2. **Reference, style only.** The example under prosiform's `example/` is an older, stale work-planner. E02 takes its formatting and file shape and none of its content. No `technical-debt.md`, no new protocols; protocol extraction is a SOLID concern for E01's audit.
+1. **Purpose.** [I17:E01](https://github.com/m2ux/workflow-server/issues/1616) gives the skill the file style its prosiform form needs: the groundwork for prosiform compliance. It takes priority, with `priority: 7`.
+2. **Reference, style only.** The example under prosiform's `example/` is an older, stale work-planner. E01 takes its formatting and file shape and none of its content. No `technical-debt.md`, no new protocols; protocol extraction is a SOLID concern for E02's audit.
 3. **Not yet.** Prerequisites sections stay. No prosiform frontmatter and no `pf` instruction.
 4. **No link marks.** The prosiform link marks (↳ ⇉ ⫽ ¬) need prosiform's grammar to place, so they are left for the compliance work along with the frontmatter and the `pf` instruction.
 5. **Per-skill section model.** The shared guidelines and the other skills keep their shape. work-planner declares its model in its own guidelines, `structure.json` and `rules.json`, and the shared checker reads each skill's declared model.
 6. **Rows.** W01 is the section model and checker. W02 builds rules, conventions and configuration from the live SKILL.md and guidelines. W03 restyles the modes and W04 the protocols. W05 to W07 restyle the artifacts in three file groups: issue and bodies; board, queue, planning and review; delivery, branch and pull request. W02 depends on W01, and W03 to W07 depend on W02 and run in parallel.
-7. **Order.** E01 waits for E02: E01's W01 depends on E02, so the SOLID guidelines and the audit work on the restyled skill. The extraction waits for E02 as well.
+7. **Order.** E02 waits for E01: E02's W01 depends on E01, so the SOLID guidelines and the audit work on the restyled skill. The extraction waits for E01 as well.
 
 Planning decisions:
 
-- **Numbering.** E02 runs before E01 but keeps the next free number, since E01 was already published.
-8. **Command presentation.** (User, 2026-11-05.) The migration follows the command presentation defined in [E02 Proposal](https://github.com/m2ux/workflow-server/issues/1616#proposal), using the specific Graph Index step referenced there. The proposal is the requirement’s home; the example supplies presentation only.
+- **Numbering.** Style is E01 and Separation is E02, following their producer order.
+8. **Command presentation.** (User, 2026-11-05.) The migration follows the command presentation defined in [E01 Proposal](https://github.com/m2ux/workflow-server/issues/1616#proposal), using the specific Graph Index step referenced there. The proposal is the requirement’s home; the example supplies presentation only.
 
 
 ## E03 Delivery Lanes, 3 November 2026 — Decision History
@@ -75,11 +75,11 @@ Planning decisions:
 - **Hot-fix units are unlaned.** A hot-fix has no work item, so every run is offered it.
 - **Board queue reads the engineering worktree.** Its `next` report names each Ready unit's lane, read from the work items there. It reads files and runs no git.
 - **Criteria per row.** #1625's five criteria spanned several rows each; they are split into one criterion per row, AC1 to AC10, keeping every one of the original conditions.
-- **Labels.** `type:epic`, `theme:planning`, `bot:ai-assisted` and `priority: 7`, as E02 carries. No `type:hot-fix`.
-- **Priority.** The dependency check proposes 2 for E00, E02 and E03 and 1 for E01, matching the live labels' order, with E03 alongside E02. E02's rows declare no components yet, so contention between E02 and E03 is unchecked; both edit the same artifacts and modes, which is put to the user.
+- **Labels.** `type:epic`, `theme:planning`, `bot:ai-assisted` and `priority: 7`, as E01 carries. No `type:hot-fix`.
+- **Priority.** The dependency check proposes 2 for E00, E01 and E03 and 1 for E02, matching the live labels' order, with E03 alongside E01. E01's rows declare no components yet, so contention between E01 and E03 is unchecked; both edit the same artifacts and modes, which is put to the user.
 - **I17 admits a feature.** Its Proposal gains a bullet admitting a feature the skill must carry, and AC1 reads "fix and feature".
-- **Board.** E03 stands on board 17 at Ready, assigned to the user: I17 is In Progress and E03, with no prerequisite epic, carries the highest number among I17's epics that can start, beside E02.
-- **E03 lands before E02.** (User, 2026-11-03.) E03 takes `priority: 8` above E02's 7, so the lane rules land first and E02 restyles their text with the rest. This supersedes `priority: 7` above.
+- **Board.** E03 stands on board 17 at Ready, assigned to the user: I17 is In Progress and E03, with no prerequisite epic, carries the highest number among I17's epics that can start, beside E01.
+- **E03 lands before E01.** (User, 2026-11-03.) E03 takes `priority: 8` above E01's 7, so the lane rules land first and E01 restyles their text with the rest. This supersedes `priority: 7` above.
 - **The queue report is deferred.** (User, 2026-11-03.) Whether the board queue and Advance report each Ready unit's lane (W08 to W10, which teach the queue units and a read of the engineering worktree) is held for the user; it is settled before W08 starts. W01 to W07 are unaffected.
 
 
@@ -99,7 +99,7 @@ Planning decisions:
 - **Filter next.** W07+W08 deliver admission rules and the survey filter. A row's lane remains available when it has no work-item link. W09 integrates the requested lane into Deliver; W10 writes confirmed values through Populate Epic Issue Body.
 - **Reporting.** W11+W12 and W13 read the Lane cells already supplied in issue snapshots. They introduce no engineering-worktree input for lane data. The existing reporting decision remains held until before W11 starts; this renumbers the previously held W08–W10 scope.
 - **Numbering.** Only undelivered rows are renumbered, as the [row map](e03-lane-column-renumbering.json) records. No task beyond W01 has a delivering pull request or reservation.
-- **Priority.** E03 retains its confirmed priority 8, ahead of E02 at 7 and E01 at 6. The storage correction adds no cross-epic edge or contention requiring another priority decision.
+- **Priority.** E03 retains its confirmed priority 8, ahead of E01 at 7 and E02 at 6. The storage correction adds no cross-epic edge or contention requiring another priority decision.
 - **Scope.** This request revises the published plan and its work items. Source implementation and the draft integration remain at the delivered declaration revision. The new table contract is implemented by W02+W03.
 
 
@@ -119,3 +119,7 @@ Planning decisions:
 - **Coordination.** The coordinator refreshes the live queue after each completed unit and starts the next eligible work within harness capacity, with a published record and verified reservation before each session.
 - **Upstream.** [#1631](https://github.com/m2ux/workflow-server/issues/1631) asks Work Planner to provide this continuous automatic-dispatch behavior. It is reported as future work and is not added to the current delivery scope.
 - **Record.** [Automatic delivery authorization](../2026-11-05-free-work-auto-start/automatic-delivery.md) states the units, coordination and completion boundaries.
+
+## Epic Order, 5 November 2026
+
+The user confirms Style as E01 (#1616) and Separation as E02 (#1615). The Separation guidelines row consumes E01 W03, W04, W05, W06 and W07; those terminal producers carry the complete style chain. Existing task ids, criteria, priority labels and completed E00/E03 delivery identities are preserved. The unstarted Style W01 record and its branch/worktree carry E01. The cross-initiative extraction row names the same issue identities with their current epic labels.

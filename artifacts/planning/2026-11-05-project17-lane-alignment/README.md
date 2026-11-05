@@ -36,3 +36,7 @@ Mechanical edits preserve every existing task id, link, description, criterion, 
 | Resource | Link |
 | --- | --- |
 | Board | https://github.com/users/m2ux/projects/17 |
+
+## Current Resolution
+
+The epic-order decision is confirmed and applied in [Epic Order Alignment](../2026-11-05-1597-epic-order-alignment/README.md). This record retains the captured pre-decision issue snapshots and reports. Current identities are I17 E01 Skill Style (#1616) and I17 E02 Skill Separation (#1615). I16 E05 joins and style activation remain pending.

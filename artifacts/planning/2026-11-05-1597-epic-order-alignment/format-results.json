@@ -1,0 +1,26 @@
+[
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1597,
+    "exit": 0,
+    "report": "#1597 initiative (open): 0 fixed, 0 to apply, 0 to decide\n"
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1615,
+    "exit": 0,
+    "report": "#1615 epic (open): 0 fixed, 0 to apply, 0 to decide\n  source: config/required-criteria.json at 03d353300ca4804194fd50d316d73e3bf1270d1d in /home/mike1/projects/dev/workflow-server/.git\n"
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1616,
+    "exit": 0,
+    "report": "#1616 epic (open): 0 fixed, 0 to apply, 0 to decide\n  source: config/required-criteria.json at 03d353300ca4804194fd50d316d73e3bf1270d1d in /home/mike1/projects/dev/workflow-server/.git\n"
+  },
+  {
+    "repo": "m2ux/prosiform-skills",
+    "number": 2,
+    "exit": 0,
+    "report": "#2 epic (open): 0 fixed, 0 to apply, 0 to decide\n"
+  }
+]

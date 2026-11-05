@@ -1,0 +1,6 @@
+- [x] Verify no delivering PR or task commit protects either undelivered epic number.
+- [x] Apply confirmed map to drafts, producer references, active plans and branch names.
+- [x] Validate the complete I17 graph and every affected issue draft.
+- [ ] Publish and verify tracker titles, bodies, reservations and cross-initiative references (in progress).
+- [ ] Retire the obsolete style base and confirm branch/worktree state.
+- [ ] Continue remaining Align decisions before delivery.

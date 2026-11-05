@@ -2,7 +2,7 @@
 
 ## Scope
 
-Update I17 E02 #1616 to require the user-selected raw HTML command presentation, with bold linked contract-backed arguments. Preserve the seven task identities, coverage ownership, dependencies and existing migration exclusions. The specific Graph Index step is a style reference only. The installed skill is not migrated by this issue update.
+Update I17 E01 #1616 to require the user-selected raw HTML command presentation, with bold linked contract-backed arguments. Preserve the seven task identities, coverage ownership, dependencies and existing migration exclusions. The specific Graph Index step is a style reference only. The installed skill is not migrated by this issue update.
 
 ## Checklist
 
@@ -14,7 +14,7 @@ Update I17 E02 #1616 to require the user-selected raw HTML command presentation,
 ## Artifacts
 
 - [Before Snapshot](before.json)
-- [Canonical E02 Body](../2026-11-02-1597-i17-pre-cutover-fixes/bodies/e02.md)
+- [Canonical E01 Body](../2026-11-02-1597-i17-pre-cutover-fixes/bodies/e01.md)
 - [Body Diff](diff.txt)
 
 ## Validation
@@ -23,6 +23,6 @@ The issue formatter reports zero unresolved or metadata findings; its one mechan
 
 ## Publication
 
-[Issue #1616](https://github.com/m2ux/workflow-server/issues/1616) reads back byte-for-byte as the canonical E02 body, including Proposal’s HTML command style, checker acceptance/rejection evidence, migration criteria and pinned R5 example. The issue remains open; this is a requirement update, not implementation.
+[Issue #1616](https://github.com/m2ux/workflow-server/issues/1616) reads back byte-for-byte as the canonical E01 body, including Proposal’s HTML command style, checker acceptance/rejection evidence, migration criteria and pinned R5 example. The issue remains open; this is a requirement update, not implementation.
 
 - [Published Snapshot](after.json)
