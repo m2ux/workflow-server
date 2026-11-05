@@ -4,4 +4,4 @@
 - [x] Implement declaration-driven parsing and checks.
 - [x] Run validation, preservation checks and source review.
 - [x] Publish the task PR and obtain coordinator review.
-- [ ] Merge, record delivery and verify live readbacks (in progress).
+- [x] Merge, record delivery and verify live readbacks.

@@ -33,9 +33,18 @@ The shared checker selects each skill's declared model and keeps other skills va
 | [target-protection.json](target-protection.json) | Task-base branch-protection response |
 | [target-rules.json](target-rules.json) | Active task-base rules |
 
+| [task-pr-merged.json](task-pr-merged.json) | Confirmed exact-head merge result |
+| [epic-review.json](epic-review.json) | Draft epic integration readback |
+| [epic-final.json](epic-final.json) | Verified W01 and AC1 completion with final activation intact |
+| [board-final.json](board-final.json) | Exact Project 17 In Progress readback |
+| [delivery-links-final.json](delivery-links-final.json) | Complete post-merge Development relation snapshot |
+
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Initiative | https://github.com/m2ux/workflow-server/issues/1597 |
+
+| Task PR | https://github.com/m2ux/workflow-server/pull/1640 |
+| Draft Epic Integration | https://github.com/m2ux/workflow-server/pull/1641 |
