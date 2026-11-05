@@ -6,10 +6,14 @@
 
 This record carries the user-approved Work Planner style conversion for W03. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
 
+The work preserves every operative condition and verifies the proposed structure independently of the installed declarations.
+
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
+| [w03.md](w03.md) | Work item and required validation |
+| [design.md](design.md) | Source boundary, structure and validation design |
 
 ## Links
 
