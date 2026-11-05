@@ -10,8 +10,8 @@ W10 delivers Plan mode's initiative lane decision, confirmed row map and optiona
 - [x] Implement and commit the Plan mode lane inputs.
 - [x] Inspect AC7 and run initial mode/document, planner/shared and skill-file checks.
 - [x] Publish planning/evidence when the coordinator grants the shared turn.
-- [ ] Update the task branch onto the latest epic base and validate the final task head. **In progress.**
-- [ ] Publish the task PR, record its row link and merge verified work.
+- [x] Update the task branch onto the latest epic base and validate the final task head.
+- [ ] Publish the task PR, record its row link and merge verified work. **In progress.**
 - [ ] Record AC7/Done, update draft integration and verify board state.
 
 ## T1: Plan Mode Lane Inputs
@@ -40,4 +40,4 @@ Applied: none. Held: none. W01's original AC1 coverage disagreement remains reta
 
 ## Updated Task Head
 
-The task branch incorporates W07+W08 merge 6cc09a5c65de546fc4f10ba6692478b66b157dfb. Current pushed head: 2fc0ea4322fc2d2a4d3ecc2c3079bea2dca3e75b. Shared suite: 208 passed. Check Skill Files: 52 files, zero findings. Complete planner suite is running.
+The task branch incorporates W07+W08 merge 6cc09a5c65de546fc4f10ba6692478b66b157dfb. Current pushed head: 2fc0ea4322fc2d2a4d3ecc2c3079bea2dca3e75b. Shared suite: 208 passed. Check Skill Files: 52 files, zero findings. Complete planner suite: 882 run, 881 passed and one opt-in live Development-link test skipped. git diff --check passed. The operative Plan mode was inspected again at this combined head and AC7 holds. This is the final task head used by the task PR Test Plan.

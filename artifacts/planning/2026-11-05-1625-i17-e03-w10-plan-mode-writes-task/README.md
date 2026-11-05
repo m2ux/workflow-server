@@ -19,6 +19,8 @@ This unit delivers AC7 through its isolated task branch into i17/e03/workspace. 
 | [Planner results](planner-tests.log) | Initial complete planner suite |
 | [Shared results](shared-tests.log) | Initial shared checker suite |
 | [Change list](change-list.md) | Applied and held plan changes |
+| [Final planner results](final-planner-tests.log) | Complete planner suite at the updated task head |
+| [Final shared results](final-shared-tests.log) | Shared checker suite at the updated task head |
 
 ## Links
 
