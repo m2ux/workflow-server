@@ -11,6 +11,8 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 - **Neither against a live tracker.**
   Issue, board and pull request state arrives in shapes pinned in `fixtures.py`. A test writes those shapes to a temporary directory and runs a script over them.
 
+Both kinds sit in one folder. The script tests import `fixtures.py` from beside them, and a single discovery command runs the lot; `scripts/` holds the programs the skill runs, not the checks on them.
+
 ## Why It Is Tested
 
 - **A wrong reading becomes a wrong write.**
