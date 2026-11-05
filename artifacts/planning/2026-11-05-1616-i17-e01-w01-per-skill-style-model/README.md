@@ -20,6 +20,14 @@ The shared checker selects each skill's declared model and keeps other skills va
 | [baseline-tests.txt](baseline-tests.txt) | Unmodified shared-suite result |
 | [baseline-planner.txt](baseline-planner.txt) | Unmodified Work Planner checker result |
 
+| [validation.md](validation.md) | Tested revision, results and evidence limits |
+| [review.md](review.md) | Source ownership, scope and guideline review |
+| [change-list.md](change-list.md) | Applied and held plan changes |
+| [shared-tests.txt](shared-tests.txt) | Complete shared checker suite result |
+| [planner-tests.txt](planner-tests.txt) | Complete Work Planner suite result |
+| [planner-check.txt](planner-check.txt) | Work Planner zero-finding check |
+| [tree-check.txt](tree-check.txt) | Unchanged inherited installed-tree findings |
+
 ## Links
 
 | Resource | Link |

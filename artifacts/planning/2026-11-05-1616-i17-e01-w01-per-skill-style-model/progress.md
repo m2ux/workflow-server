@@ -1,7 +1,7 @@
 - [x] Confirm the live reservation and source worktree.
 - [x] Read checker contracts and capture baselines.
 - [x] Define the implementation and test plan.
-- [ ] Implement declaration-driven parsing and checks (in progress).
-- [ ] Run validation, preservation checks and source review.
-- [ ] Publish the task PR and obtain coordinator review.
+- [x] Implement declaration-driven parsing and checks.
+- [x] Run validation, preservation checks and source review.
+- [ ] Publish the task PR and obtain coordinator review (in progress).
 - [ ] Merge, record delivery and verify live readbacks.

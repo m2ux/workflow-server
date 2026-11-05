@@ -14,7 +14,7 @@ Structure entries select sections and required sections. The model extends that 
 
 ## Baseline and Acceptance
 
-At source 03d353300ca4804194fd50d316d73e3bf1270d1d, the full installed tree reports 81 files and 68 findings outside Work Planner. Work Planner reports zero findings. The complete baseline output is retained. Exact outside-finding equality is measured after implementation; root is reconciling the criterion's full-tree passing wording with this inherited baseline.
+At source 03d353300ca4804194fd50d316d73e3bf1270d1d, the full installed tree reports 81 files and 68 findings outside Work Planner. Work Planner reports zero findings. The complete baseline output is retained. The user confirms Work Planner-only acceptance. Exact outside-finding equality is retained as regression evidence, and inherited outside findings do not gate this task.
 
 ## Boundaries
 
