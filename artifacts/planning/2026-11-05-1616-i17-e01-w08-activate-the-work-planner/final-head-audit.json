@@ -1,0 +1,14 @@
+{
+  "full_suite_and_walk_head": "39248011df2320274c9d8d53078b887716e49fde",
+  "full_suite_and_walk_manifest_sha256": "4e5f8b9c2cff82b5776495b46dd6bcf751be73d752f2f8dcaf44ae50ec6ce600",
+  "final_head": "2c6ab442d61877dd23bb0692812b120b4c09fba8",
+  "final_tree": "126194e3308cc164a88a30e5a30c2858a5755a28",
+  "final_manifest_sha256": "e34be674fa1b60b63824cb9c57627b48bf4cdcc2edfef066c097773e72095420",
+  "committed_files_equal_actual_files": 190,
+  "differences_from_full_suite_and_walk_freeze": [
+    "skills/work-planner/guidelines.md"
+  ],
+  "headings_and_link_targets_equal": true,
+  "doc_delta_sha256": "f6fc1433e54ba0b6711dcd1bff845d4f3edf5b4d33a0cf66d2f3a4348c61d575",
+  "verification_boundary": "The full 933-test suite, shared 258-test suite and independent walks bind the earlier head. The final two-paragraph guideline consolidation has the ordinary installed checker and 24 affected reader tests, and changes no source code, headings or link targets."
+}

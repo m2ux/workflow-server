@@ -52,6 +52,16 @@ This record holds the approved final model activation, its declaration and consu
 | [read-receipt-summary.json](read-receipt-summary.json) | Saved read-volume metadata and explicit provenance limits |
 | [validation.md](validation.md) | Final-source automated results, exact identity and Partial disclosure observations |
 
+| [final-head-audit.json](final-head-audit.json) | Final head, exact documentation delta and qualified suite boundaries |
+| [final-source-manifest.json](final-source-manifest.json) | Final-head SHA256 map for 190 committed and actual files |
+| [final-rule-home-patch.json](final-rule-home-patch.json) | Exact two-paragraph guideline consolidation |
+| [final-installed-check.log](final-installed-check.log) | Final-head ordinary installed checker output without overrides |
+| [final-document-reader-tests.log](final-document-reader-tests.log) | Final-head document reader suite output |
+| [final-checkout-reader-tests.log](final-checkout-reader-tests.log) | Final-head checkout reader suite output |
+| [row-link-sync.log](row-link-sync.log) | W08-only link preparation with fetched epic-base provenance |
+| [row-link-audit.json](row-link-audit.json) | Only W08 link changes; criterion and Done remain pending |
+| [row-link-readback.json](row-link-readback.json) | Fresh issue readback after W08 task pull-request link publication |
+
 ## Links
 
 | Resource | Link |

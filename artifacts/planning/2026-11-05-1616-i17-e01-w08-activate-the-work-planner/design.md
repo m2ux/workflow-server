@@ -36,7 +36,8 @@ The installed Work Planner declaration is the single model selected by both the 
 - Complete: publish reviewed implementation design before source edits.
 - Complete: activate installed declarations, align guidelines and source readers.
 - Complete: run required suites, installed checker and preservation; record both Partial disclosure observations.
-- In progress: publish evidence and exact-head task pull request, then await root clearance.
+- Complete: publish evidence and exact-head task pull request, recording only its own row.
+- In progress: await root exact-head merge clearance; return the complete integration continuation to the coordinator.
 
 ## Change List
 
