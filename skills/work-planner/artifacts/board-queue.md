@@ -15,19 +15,58 @@ Read these files first.
 
 ## Operations
 
-### *Plan* Board Queue
+### Plan Board Queue
 
 Derives the queue from supplied board and delivery snapshots and confirmed decisions.
 
-**Inputs:** Board identity, current board items with Status, initiative pull request records and their issue-link snapshot, board fields, assignee login, output directory, resolved off-board issue files and confirmed unplanned initiative identities. The caller supplies the delivery state.
+**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives).
 
-1. Run [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
-   - The computation uses [Read Task Lanes](lane.md#read-task-lanes) on each epic body and [Check Unit Lanes](lane.md#check-unit-lanes) on the free units derived after queue placement.
-   - The queue must meet [Fields](#fields).
-   - Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
-2. Return the queue to the caller.
-   - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
-   - The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
+**Outputs:** [Queue Result](#queue-result).
+
+#### 1. Compute Queue Calls
+
+Apply [Compute Board Queue](#compute-board-queue) with the snapshots as `--items`, `--prs`, `--links` and `--fields`, the board as `--board`, the login as `--assignee`, the output directory as `--out`, every resolved issue file as `--others` and every confirmed unplanned initiative as `--unplanned`.
+- The computation invokes the lane operations internally: Apply [Read Task Lanes](lane.md#read-task-lanes) with each epic body and Apply [Check Unit Lanes](lane.md#check-unit-lanes) with each complete free unit derived after queue placement.
+- The queue must meet [Fields](#fields).
+- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix's, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+
+#### 2. Return Queue Evidence
+
+Return the queue to the caller.
+- Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines.
+- The caller supplies further evidence and confirmed decisions for another pass and applies the proposed changes to tracked objects.
+
+### Compute Board Queue
+
+Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+
+**Inputs:** [Board Identity](#board-identity), [Board Items](#board-items), [Pull Request Records](#pull-request-records), [Issue Link Snapshot](#issue-link-snapshot), [Board Fields](#board-fields), [Output Directory](#output-directory), [Assignee Login](#assignee-login), [Resolved Issues](#resolved-issues), [Unplanned Initiatives](#unplanned-initiatives), [Status Scope](#status-scope).
+
+**Outputs:** [Queue Result](#queue-result).
+
+#### 1. Compute Board Queue
+
+Run the following command with the supplied inputs.
+
+- `--items` is the board's items with Status.
+- `--prs` is the pull requests that name an initiative or a hot-fix.
+- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.
+- `--board` is the [board identity](#board-identity).
+- `--fields` is the board's fields.
+- `--out` is the directory the calls are written to.
+- `--assignee` is the login assigned to work from Ready.
+- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
+- `--unplanned` supplies each [Unplanned Initiative](#unplanned-initiatives). Repeatable.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '[**&lt;board-items-file&gt;**](#board-items)' --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records)' --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot)' --board '[**&lt;board-identity&gt;**](#board-identity)' --fields '[**&lt;board-fields-file&gt;**](#board-fields)' --out '[**&lt;output-directory&gt;**](#output-directory)' --assignee '[**&lt;assignee-login&gt;**](#assignee-login)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace)" && "[**&lt;workspace&gt;**](#workspace)/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/[**&lt;owner&gt;**](#board-identity)/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
+</pre></big>
 
 ## Fields
 
@@ -134,30 +173,46 @@ Invalid lane assignments leave the unit report incomplete and the run exits nonz
 
 A complete queue may still propose changes. Live board state has converged when a queue derived from refreshed items is complete and contains no further call. Every other [report line](#report-lines) remains reportable at that point.
 
-## Commands
+### Resolved Issues
 
-### Compute Board Queue
+The supplied off-board dependency issue files, each containing its complete issue record.
 
-Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
+### Unplanned Initiatives
 
-**Inputs:** Current board and delivery snapshots, board identity, assignee login, output directory, resolved dependency evidence, confirmed unplanned initiatives and the permitted Status scope.
+The confirmed initiatives left with no priority, each supplied as an issue number or `<owner>/<repo>#<issue-number>`.
 
-- `--items` is the board's items with Status.
-- `--prs` is the pull requests that name an initiative or a hot-fix.
-- `--links` is the issue-link snapshot of those pull requests, where the hot-fix each one delivers is read.
-- `--board` is the [board identity](#board-identity).
-- `--fields` is the board's fields.
-- `--out` is the directory the calls are written to.
-- `--assignee` is the login assigned to work from Ready.
-- `--others` is an issue file for an issue the rows depend on that is not on the board. Repeatable.
-- `--unplanned` is an initiative left with no priority, an issue number or `<owner>/<repo>#<issue-number>`. Repeatable.
+### Status Scope
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --board '<board-identity>' --fields '<board-fields-file>' --out '<output-directory>' --assignee '<assignee-login>'
-```
+The permitted Status scope supplied for queue computation.
 
-**Example:**
+### Queue Result
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py --items items.json --prs prs.json --links links.json --board 'users/<owner>/projectsV2/9' --fields fields.json --out board/ --assignee m2ux
-```
+The proposed calls, report lines and unresolved references, retaining pending decisions, missing evidence and invalid assignments.
+
+### Board Items
+
+The supplied current board items with Status and their complete issue records, at the local paginated snapshot path.
+
+### Pull Request Records
+
+The supplied complete initiative and hot-fix pull request records, one JSON object per nonempty line at the local file path.
+
+### Issue Link Snapshot
+
+The complete supplied pull-request issue-link snapshot at its local JSON path.
+
+### Board Fields
+
+The supplied board-field definitions at their local snapshot path.
+
+### Output Directory
+
+The supplied local directory receiving proposed calls.
+
+### Assignee Login
+
+The supplied login assigned to work from Ready.
+
+### Workspace
+
+The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.

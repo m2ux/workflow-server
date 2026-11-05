@@ -24,6 +24,7 @@ inside a procedure step.
 """
 import re
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -61,8 +62,11 @@ class Document:
     def __init__(self, path):
         self.path = path
         self.lines, self.fenced, self.headings = checker.scan(path)
-        entry = checker.contract(path, {}) if hasattr(checker, 'contract') else None
+        entry = dict(checker.contract(path, {}) or {})
+        entry.update(procedures='Operations' if path.parent.name == 'artifacts' else 'Procedure',
+                     steps='headings')
         self.steps = checker.procedure_spans(self.lines, self.fenced, self.headings, entry)
+        self.blocks = checker.scan_blocks(self.lines)
         self.spans = {}
         for position, (start, level, title) in enumerate(self.headings):
             end = next((index for index, depth, _ in self.headings[position + 1:]
@@ -77,7 +81,8 @@ class Document:
     def lead(self, start):
         """The lines between a heading and the heading after it."""
         following = next((index for index, _, _ in self.headings if index > start), len(self.lines))
-        return [self.lines[index] for index in range(start + 1, following) if not self.fenced[index]]
+        return [self.lines[index] for index in range(start + 1, following)
+                if not self.fenced[index] and index not in self.blocks.html_lines]
 
     def declared(self, start):
         """The checkout a heading's own lead declares it runs in."""
@@ -111,15 +116,22 @@ class Document:
         return next((start for start in self.enclosing(index) if self.spans[start][2] == level), None)
 
     def commands(self):
-        """Each command specification with whether its block runs git where
-        it stands and whether it declares so."""
-        for start, title in checker.specifications(self.headings):
-            end = next((index for index, level, _ in self.headings
-                        if index > start and level <= 3), len(self.lines))
-            body = range(start + 1, end)
-            bare = any(self.fenced[index] and WHERE_IT_STANDS.match(self.lines[index]) for index in body)
+        """Executing HTML operations and their working-directory declarations."""
+        operations = {}
+        for first, last in self.blocks.invocations:
+            if first not in self.steps:
+                continue
+            start = self.section(first, 3)
+            if start is not None:
+                payload = '\n'.join(self.lines[first:last + 1]).strip()
+                payload = payload.removeprefix('<big><pre>').removesuffix('</pre></big>')
+                operations.setdefault(start, []).extend(payload.splitlines())
+        for start, payload in operations.items():
+            _, end, _, title = self.spans[start]
+            bare = any(WHERE_IT_STANDS.match(line) for line in payload)
             declares = any(self.lines[index].strip() == ACTS_ON
-                           for index in body if not self.fenced[index])
+                           for index in range(start + 1, end)
+                           if not self.fenced[index] and index not in self.blocks.html_lines)
             yield start, title, bare, declares
 
     def calls(self):
@@ -200,6 +212,114 @@ class Corpus:
         if document.declared(start) == checkout:
             return True
         return f'{checkout} checkout' in document.inputs(start).lower()
+
+
+class ExecutingCheckoutEvidence(unittest.TestCase):
+    def test_actual_graph_commands_and_transitive_calls_are_present(self):
+        corpus = Corpus()
+        graph = (ROOT / 'artifacts/repository-graph.md').resolve()
+        self.assertIn((graph, 'index-status'), corpus.commands)
+        self.assertIn((graph, 'index-repository'), corpus.commands)
+        self.assertIn((graph, 'measure-repository-change'), corpus.acting)
+        self.assertTrue(any(destination == graph and anchor == 'measure-repository-change'
+                            for _, _, destination, anchor in corpus.calls()))
+
+    def test_only_executing_html_supplies_command_and_declaration_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'artifacts/control.md'
+            path.parent.mkdir()
+            path.write_text("""# Checkout Evidence
+
+## Operations
+
+### Inspect Current Checkout
+
+#### 1. Inspect Current State
+
+**Acts on:** the checkout it runs in.
+
+<big><pre>
+git status
+# Opaque Payload Heading
+</pre></big>
+
+### Inspect Explicit Checkout
+
+#### 1. Inspect Supplied State
+
+<big><pre>git -C '/tmp/control' status</pre></big>
+
+### Inspect Undeclared Checkout
+
+#### 1. Inspect Undeclared State
+
+<big><pre>
+**Acts on:** the checkout it runs in.
+git status
+</pre></big>
+
+### Unexecuted Operation
+
+<big><pre>git status</pre></big>
+
+## Fields
+
+### Template
+
+````markdown
+### Literal Command Operation
+
+#### 1. Inspect Literal State
+
+**Acts on:** the checkout it runs in.
+
+<big><pre>git status</pre></big>
+````
+
+### Unexecuted Field
+
+<big><pre>git status</pre></big>
+""")
+            document = Document(path)
+            commands = {title: (bare, declares) for _, title, bare, declares in document.commands()}
+            self.assertEqual(commands, {
+                'Inspect Current Checkout': (True, True),
+                'Inspect Explicit Checkout': (False, False),
+                'Inspect Undeclared Checkout': (True, False),
+            })
+
+    def test_calls_follow_heading_steps_and_exclude_literal_and_lead_links(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'artifacts/control.md'
+            path.parent.mkdir()
+            path.write_text("""# Call Evidence
+
+## Operations
+
+### Inspect Current Checkout
+
+[Unexecuted lead](#lead-target)
+
+#### 1. Inspect Current State
+
+Apply [Inspect Live Target](#live-target) in the review checkout.
+
+````markdown
+Apply [Inspect Literal Target](#literal-target) in the review checkout.
+````
+
+<big><pre>
+[Opaque payload](#payload-target)
+</pre></big>
+
+## Fields
+
+### Reference
+
+[Unexecuted field](#field-target)
+""")
+            document = Document(path)
+            self.assertEqual([anchor for _, _, anchor in document.calls()], ['live-target'])
 
 
 class CheckoutVocabulary(unittest.TestCase):

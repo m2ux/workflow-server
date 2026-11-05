@@ -4,19 +4,32 @@ The architecture overview explains one pull request's changes to the engineer wh
 
 ## Operations
 
-### *Populate* Architecture Overview
+### Populate Architecture Overview
 
 One architecture overview from supplied measurements.
 
-**Inputs:** Measured structure and flows, pull request head, code permalinks and the output path.
+**Inputs:** [Measurements](#measurements), [Pull Request Head](#pull-request-head), [Overview File](#overview-file).
 
-1. Take the graph measurements supplied by the caller and check the proposed diagrams.
-   - The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
-2. Populate the overview from the [Template](#template) at the supplied output path.
-   - All populated fields must meet [Fields](#fields).
-3. Pin each code reference.
-   - Each reference must meet [Code References](#code-references).
-4. Return the file for the caller to register in its planning record.
+**Outputs:** [Overview File](#overview-file).
+
+#### 1. Check Measured Diagrams
+
+Take the graph measurements supplied by the caller and check the proposed diagrams.
+- The diagrams must meet [Measured Structure](#measured-structure) and [Diagrams](#diagrams).
+
+#### 2. Populate Overview File
+
+Populate the overview from the [Template](#template) at the supplied output path.
+- All populated fields must meet [Fields](#fields).
+
+#### 3. Pin Code References
+
+Pin each code reference.
+- Each reference must meet [Code References](#code-references).
+
+#### 4. Return Overview File
+
+Return the file for the caller to register in its planning record.
 
 ## Fields
 
@@ -163,3 +176,15 @@ About two hundred lines, diagrams counted.
 ### Sections
 
 Summary, Structure, Behaviour, What Changed and Reading Order are always present. Risks and Watch Points, and References, are deleted when they have nothing to say.
+
+### Measurements
+
+The supplied measured component relationships, symbols and ordered flows for the change.
+
+### Pull Request Head
+
+The supplied full head commit and code permalinks pinned to that commit.
+
+### Overview File
+
+The supplied local output path and the overview contents at that path. The file is absent until populated.
