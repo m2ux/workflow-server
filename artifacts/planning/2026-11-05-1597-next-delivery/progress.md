@@ -1,7 +1,11 @@
-- [x] Verify merged E03 delivery, criteria and Development links; close epic as completed.
-- [ ] Confirm initiative and board readback; derive eligible I17 unit.
-- [ ] Publish task record, confirm reservation and start worker.
-- [ ] Implement, validate, review and merge task delivery.
-- [ ] Refresh scope and continue eligible work to the required review boundary.
+# I17 Delivery Progress
 
-E03 sync reports closable with all fourteen rows delivered. Its historical W01 AC1 coverage disagreement is retained as an approved retired-criterion record. Closure gate passes. Integration #1627 is merged at 03d353300ca4804194fd50d316d73e3bf1270d1d; its head is 1ebd241841fc5963743cb0440dfaeb97d9e9ab34. Current criterion audit and full-suite evidence are in ../2026-11-05-1627-dispatch-merge/.
+- [x] Verify and close E03, preserving its approved retired-criterion history.
+- [x] Confirm initiative/board state and derive authorized I17 units.
+- [x] Deliver E01 W01–W07 and read back each task/criterion and board item.
+- [x] Publish W08 plan, verify its reservation and start its observed worker.
+- [ ] In progress: deliver W08 installed-model activation and meaningful reader checks.
+- [ ] Complete E01 exact-head criteria, graph measurements, overview and integration review.
+- [ ] Hand off at required workspace human-review boundary; continue newly eligible I17 work once its output is available.
+
+E03 integration1627 is in workspace at03d353300ca4804194fd50d316d73e3bf1270d1d. E01's current base is dfb00380a58ab3346b77b7780424831b2a12fde2 after W06 PR1651; its merge tree equals the verified86748050tree. W06/AC6 is complete; W08/AC8 is held for /root/i17_e01_w08. Integration1641 remains draft. E02 consumes W08's integrated workspace output and remains unstarted.

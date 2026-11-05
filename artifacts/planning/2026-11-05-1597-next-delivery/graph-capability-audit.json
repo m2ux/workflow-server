@@ -1,0 +1,179 @@
+{
+  "head": "652ef07ea5b8553d3bdb73542c3a393ac20e6ea9",
+  "base": "03d353300ca4804194fd50d316d73e3bf1270d1d",
+  "symbols": 1197,
+  "contexts": 1197,
+  "flows": 33,
+  "complete_ordered_steps": 144,
+  "fresh_status_pair": true,
+  "failures": [],
+  "native_flow_queries": [
+    {
+      "requested": "proc_4_main",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_17_main",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_18_main",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_19_main",
+      "matched": false,
+      "native_listed_symbols": 3
+    },
+    {
+      "requested": "proc_60_check",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_84_interfaces",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_86_retired_terms",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_119_reach",
+      "matched": true,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_129_reach",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_130_doubled_conventions",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_131_interfaces",
+      "matched": true,
+      "native_listed_symbols": 3
+    },
+    {
+      "requested": "proc_155_interfaces",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_168_mode_commands",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_175_interfaces",
+      "matched": true,
+      "native_listed_symbols": 3
+    },
+    {
+      "requested": "proc_176_heading_model",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_177_mode_commands",
+      "matched": true,
+      "native_listed_symbols": 3
+    },
+    {
+      "requested": "proc_194_doubled_conventions",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_198_heading_model",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_199_inline_commands",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_200_operation_calls",
+      "matched": true,
+      "native_listed_symbols": 3
+    },
+    {
+      "requested": "proc_206_retired_terms",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_210_heading_model",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_213_reach",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_214_reach",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_221_inline_commands",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_223_undecided_rules",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_229_mixed_moods",
+      "matched": true,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_231_anchors",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_238_interfaces",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_243_undecided_rules",
+      "matched": false,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_245_mode_commands",
+      "matched": true,
+      "native_listed_symbols": 2
+    },
+    {
+      "requested": "proc_252_operation_calls",
+      "matched": false,
+      "native_listed_symbols": 1
+    },
+    {
+      "requested": "proc_258_retired_terms",
+      "matched": false,
+      "native_listed_symbols": 2
+    }
+  ],
+  "use": "Preliminary capability proof only. Final integration head requires fresh complete measurements.",
+  "limits": "Graph-index coverage warnings remain. Native responses omit current staleness blocks. Native query search results do not establish exact full flow traces; exact process-membership rows are separate measurements."
+}

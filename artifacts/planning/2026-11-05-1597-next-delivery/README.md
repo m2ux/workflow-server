@@ -56,3 +56,12 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | [Activation batch](activation-batch.json) | One authorized unit |
 | [Activation export](activation-export.json) | Current free unit and branch/worktree identities |
 | [Current queue](activation-queue-confirmed.txt) | Applied, complete queue |
+
+## Integration Graph Preparation
+
+| Artifact | What it holds |
+| --- | --- |
+| [Capability evidence](graph-capability.md) | Preliminary full-surface/flow recovery and interface limits |
+| [Parent audit](graph-capability-audit.json) |1197contexts/33flows/144steps, identity and freshness checks |
+| [Archive manifest](graph-capability-manifest.json) | Exact safe members and hashes |
+| [Native measurements](graph-capability-preliminary.tar.gz) | Reproducible preliminary data and executed instruments |
