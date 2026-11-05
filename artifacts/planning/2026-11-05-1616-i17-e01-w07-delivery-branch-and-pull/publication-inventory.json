@@ -1,0 +1,134 @@
+{
+  "destination": "public m2ux/workflow-server engineering",
+  "files": {
+    "README.md": {
+      "bytes": 4610,
+      "sha256": "36117e2b795d1c3c33dc12b3cb20a550d20ed3f21dd4f87df9a123dd90c89768"
+    },
+    "change-list.json": {
+      "bytes": 216,
+      "sha256": "72f019d4911a7b1d66cde4b10c4deaf3f69cc0e4e069b30f6f35041352a658eb"
+    },
+    "composed-model-checks.json": {
+      "bytes": 541,
+      "sha256": "d2a6930dac230727d0e01974088bb9a1d81ca141323916e31545d5aa4a9b1ba2"
+    },
+    "composed-work-planner.log": {
+      "bytes": 1039,
+      "sha256": "9fe9a0bbca863e2826af5b4e2c15be0a2acf16abb44976cff5e875d92e3670d9"
+    },
+    "criterion-check.py": {
+      "bytes": 5171,
+      "sha256": "9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a"
+    },
+    "criterion-dirty-refusal.log": {
+      "bytes": 613,
+      "sha256": "566656be16b54fb62a4834ac4e69ae0f35577a8816961da478352b98356d0853"
+    },
+    "criterion-source-sha256.json": {
+      "bytes": 1189,
+      "sha256": "ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e"
+    },
+    "design.md": {
+      "bytes": 3264,
+      "sha256": "e168b87e8cc96833e55e021a615fe892cd9c7aebea0f4f09cc7c9f656fba7ce7"
+    },
+    "disclosure-capture-manifest.json": {
+      "bytes": 4177,
+      "sha256": "fc585c633996be4deb3f41cd8ee846b97da326d901103ecef5746ef6acd6feeb"
+    },
+    "disclosure-inputs.tar.gz": {
+      "bytes": 160849,
+      "sha256": "e62ab85a59a1a4716b2cbaa3b9a1229e4bda9bd7094eb514c4db2b04c27158cf"
+    },
+    "disclosure-package-manifest.json": {
+      "bytes": 2460,
+      "sha256": "0da9793c51d6d43b0229f0896db2f14a51352c71ca16bf374772bd26da767ecb"
+    },
+    "disclosure-prompts.tar.gz": {
+      "bytes": 2511,
+      "sha256": "df2b59c885468be794e9f9e5673a8e7a2f888540e0a7300efccc8976ef3777d6"
+    },
+    "disclosure-source-manifest.json": {
+      "bytes": 29173,
+      "sha256": "bacb2c252404704f46ce32a87f04cbb3a10bd9dc9229546072ee8d49da9b9ba9"
+    },
+    "disclosure-source.patch": {
+      "bytes": 147339,
+      "sha256": "40d7cfd465ad82bfeee4418b1d9a34cb3b469ed3af027430e02093085764d9bf"
+    },
+    "disclosure-source.tar.gz": {
+      "bytes": 361602,
+      "sha256": "9b73dc8688e4e64f8a0513d5cbf46a2479c161697456181db4b2fd4853964f8d"
+    },
+    "disclosure.md": {
+      "bytes": 6493,
+      "sha256": "a93d18b6e9ec800b469bb4586fdfa621d1a0c0d50e4e5ffe578b6139adaf77fd"
+    },
+    "helper-probe-results.json": {
+      "bytes": 2896,
+      "sha256": "098321f9d58c58ae60bb5039d353122fe8db1a70233e40096cb9caacd7b680a8"
+    },
+    "interrupted-v3-instrument.tar.gz": {
+      "bytes": 253563,
+      "sha256": "28dea571bda4d0f703a185f83a054964a933e4ca266b38d8b918f83fcb80457d"
+    },
+    "neutral-read.py": {
+      "bytes": 1703,
+      "sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202"
+    },
+    "outside-skill-baseline.json": {
+      "bytes": 12983,
+      "sha256": "26ab40d3d43af1a86d501e9d9cf4401804efb7f97880ce4f862523987f2a63dd"
+    },
+    "preservation-ledger.json": {
+      "bytes": 96464,
+      "sha256": "bec5d43b14bf459bc9133fb58008d46e80c9999885bde32acd4d4bdf926c6fb0"
+    },
+    "publication-audit.json": {
+      "bytes": 86416,
+      "sha256": "0e224834932e55a1b6ee361039a78a511c5376d5215e3d76ca1af9c9535fa569"
+    },
+    "shared-checker.log": {
+      "bytes": 358,
+      "sha256": "8b65a132875f4dca900762e2f054cf2f5878ac45ccb53aeb5620c7027783c645"
+    },
+    "validation.md": {
+      "bytes": 4057,
+      "sha256": "36fd83db132ee18c2dc2344f08eaf972675598857fd7ff7189ab6c11913311d6"
+    },
+    "w07.md": {
+      "bytes": 2088,
+      "sha256": "a85ee706fb9a214f8748c8fee33f0d9827472bdf5c07c69a96b7490bd22e05b0"
+    },
+    "walk-archives.json": {
+      "bytes": 3199,
+      "sha256": "c02c30e47312d15c286997481131633d6e37e736d545b0b5e2ec56b1c5dedd11"
+    },
+    "walk-v4-deliver1.tar.gz": {
+      "bytes": 138150,
+      "sha256": "faac243815c1a3442b81f03a09babfab7b4be8aaa4506c932d5fd25c8dde53cb"
+    },
+    "walk-v4-deliver2.tar.gz": {
+      "bytes": 146528,
+      "sha256": "adac5bea5d77e91181e646f518b0ff0e4ccc51a0a40fa22d48fcfb2d9b1cfa7a"
+    },
+    "walk-v4-sync1.tar.gz": {
+      "bytes": 75929,
+      "sha256": "caaa1f9a014df92c38a6d76c1c43f97e0a6040de4797164d7f0bd61d81a75481"
+    },
+    "walk-v4-sync2.tar.gz": {
+      "bytes": 96006,
+      "sha256": "b81284d8c356ae379f59aea2df7ed8ee1fe53f09e57ed0e0488e918d5ef9ea9d"
+    },
+    "walk-v4-understand1.tar.gz": {
+      "bytes": 51151,
+      "sha256": "03581d66b7331031807430e3fb3168fe26e4f7999e6aa725dfd3c852a321c768"
+    },
+    "walk-v4-understand2.tar.gz": {
+      "bytes": 38534,
+      "sha256": "efe31dc0cd9abac527c4b75611a3555395311b363c7c8b22ed94f8f2a9d4b5b6"
+    }
+  },
+  "inspection": "Archives are separately member-inspected in publication-audit.json; all remaining files are UTF-8 and contain no matched credential/private-key signatures."
+}

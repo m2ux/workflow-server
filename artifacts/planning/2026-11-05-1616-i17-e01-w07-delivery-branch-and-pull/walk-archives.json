@@ -1,0 +1,89 @@
+{
+  "status": "Partial",
+  "completed_v4": [
+    {
+      "scenario": "deliver",
+      "repeat": 1,
+      "session": "/root/w07_v4_deliver1",
+      "scratch": "/tmp/w07-v4-deliver1",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-deliver1.tar.gz",
+      "helper_emissions": 38,
+      "distinct_source_paths": 33,
+      "emitted_bytes": 507432,
+      "emitted_lines": 10690,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    },
+    {
+      "scenario": "sync",
+      "repeat": 1,
+      "session": "/root/w07_v4_sync1",
+      "scratch": "/tmp/w07-v4-sync1",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-sync1.tar.gz",
+      "helper_emissions": 24,
+      "distinct_source_paths": 21,
+      "emitted_bytes": 279288,
+      "emitted_lines": 6175,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    },
+    {
+      "scenario": "understand",
+      "repeat": 1,
+      "session": "/root/w07_v4_understand1",
+      "scratch": "/tmp/w07-v4-understand1",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-understand1.tar.gz",
+      "helper_emissions": 17,
+      "distinct_source_paths": 14,
+      "emitted_bytes": 179635,
+      "emitted_lines": 4285,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    },
+    {
+      "scenario": "deliver",
+      "repeat": 2,
+      "session": "/root/w07_v4_deliver2",
+      "scratch": "/tmp/w07-v4-deliver2",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-deliver2.tar.gz",
+      "helper_emissions": 43,
+      "distinct_source_paths": 30,
+      "emitted_bytes": 557855,
+      "emitted_lines": 12027,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    },
+    {
+      "scenario": "sync",
+      "repeat": 2,
+      "session": "/root/w07_v4_sync2",
+      "scratch": "/tmp/w07-v4-sync2",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-sync2.tar.gz",
+      "helper_emissions": 31,
+      "distinct_source_paths": 28,
+      "emitted_bytes": 354382,
+      "emitted_lines": 7908,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    },
+    {
+      "scenario": "understand",
+      "repeat": 2,
+      "session": "/root/w07_v4_understand2",
+      "scratch": "/tmp/w07-v4-understand2",
+      "state": "completed bounded request; Partial disclosure",
+      "archive": "walk-v4-understand2.tar.gz",
+      "helper_emissions": 31,
+      "distinct_source_paths": 17,
+      "emitted_bytes": 120734,
+      "emitted_lines": 2724,
+      "receipt_class": "helper-emitted source bytes/ranges, not model receipt or raw tool transcript"
+    }
+  ],
+  "interrupted_v3": {
+    "archive": "interrupted-v3-instrument.tar.gz",
+    "count": 3,
+    "accepted_for_final_six": 0
+  },
+  "provenance": "Authored task/read accounts and helper source emissions are retained. No exported raw-session transcript is present or claimed."
+}

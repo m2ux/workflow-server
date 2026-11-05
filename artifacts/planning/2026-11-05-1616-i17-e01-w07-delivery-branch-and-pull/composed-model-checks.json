@@ -1,0 +1,20 @@
+{
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-delivery-branch-and-pull",
+  "installed": [
+    [
+      "skills/work-planner/modes/revise-mode.md",
+      128,
+      "section outside the set",
+      "Fields"
+    ]
+  ],
+  "strict": [],
+  "installed_complete": {
+    "returncode": 1,
+    "stdout": "work-planner/modes/revise-mode.md:128: section outside the set \u2014 Fields\n58 files checked, 1 findings\n"
+  },
+  "strict_complete": {
+    "returncode": 0,
+    "stdout": "58 files checked, 0 findings\n"
+  }
+}

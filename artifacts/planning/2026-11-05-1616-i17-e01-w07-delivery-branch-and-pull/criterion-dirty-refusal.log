@@ -1,0 +1,3 @@
+{"checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-delivery-branch-and-pull", "instrument_sha256": "9497f621a1c0dd251c472260687d80e118a5c7ae99d679b4a3e2c132635c976a", "revision": "709a038e40aafb59a05c1798f3d1a6b1f9248e83", "source_hash_manifest_sha256": "ac851df41e63f374ff8ff1b22a75aea0c72242869a4429502a742ea2e951d35e", "tree": "b10362558947ecfdb5fe5ca379c23457613dd472"}
+The supplied commit checkout has uncommitted files.
+sbx: exit 2; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-delivery-branch-and-pull (name more with SBX_EXTRA_ROOTS=dir1:dir2)

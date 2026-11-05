@@ -1,0 +1,44 @@
+{
+  "source_manifest": "source-manifest.json",
+  "capture_manifest": "capture-manifest.json",
+  "source_digest": "dcd61a116505ff8b681c50064bca2e373807fb481aa959c517017542b8dc69e5",
+  "source_base": "709a038e40aafb59a05c1798f3d1a6b1f9248e83",
+  "source_base_tree": "b10362558947ecfdb5fe5ca379c23457613dd472",
+  "inputs_digest": "cd6f4eac76790c36e4c0fd67714d2790c9abfb100d215b274081741c88dd474e",
+  "prompt_digest": "98c8f562b1135446e11fbb8e4a6e8f36ade532d63b1769d7817bf55e954ceb06",
+  "prompts": {
+    "prompts/common.md": "76fce76446428c31293ca39c1ea6db6897dd4396236f963a72e18e15eeefdb1b",
+    "prompts/deliver.md": "9a2117337768f162b781a0b6d9be68ba1db0e5593518262750703697f4524ecf",
+    "prompts/sync.md": "bb276d7751c84632c9a508bf3eb36f4b55296f93fad8ef5f219e54a60daf077c",
+    "prompts/understand.md": "c79601095be1a8f9e8da73d0c4a2b293739fdb9d16802f4f1a1325d46dccadf3"
+  },
+  "source_patch_sha256": "40d7cfd465ad82bfeee4418b1d9a34cb3b469ed3af027430e02093085764d9bf",
+  "neutral_reader_sha256": "d6cf2bffa1b59a4bc1e70d019dec64387b88f22b19104fe835b479156f572202",
+  "capture_manifest_sha256": "fc585c633996be4deb3f41cd8ee846b97da326d901103ecef5746ef6acd6feeb",
+  "status": "corrected lexer-backed neutral instrument; identical source/inputs; three v3 walks interrupted and excluded; zero of final six walks complete",
+  "package_digest": "032ca3f8858069eae905601ef9b45bcaacf52cfa7877903e4b03c6eda8c41fff",
+  "source_symlinks": {
+    "CLAUDE.md": "AGENTS.md",
+    ".agents/skills": "../skills",
+    ".claude/hooks": "../hooks",
+    ".claude/rules": "../rules",
+    ".claude/skills": "../skills",
+    ".claude/CLAUDE.md": "../AGENTS.md",
+    ".cursor/skills": "../skills",
+    ".cursor/AGENTS.md": "../AGENTS.md",
+    ".cursor/mcp.json": "../.mcp.json",
+    ".cursor/rules/bash-composition.mdc": "../../rules/bash-composition.md",
+    ".cursor/rules/concept-rag.mdc": "../../rules/concept-rag.md",
+    ".cursor/rules/workflow-server.mdc": "../../rules/workflow-server.md"
+  },
+  "source_symlink_digest": "51c29ea0523671ded89682828e231f9fdf8982f9528154f44a5393c2de537d01",
+  "helper_probe_results_sha256": "098321f9d58c58ae60bb5039d353122fe8db1a70233e40096cb9caacd7b680a8",
+  "interrupted_v3_observations_manifest_sha256": "80168ec34c6df88f6a19550099623e06bec81f2862d8f0d077caaeaf4536f705",
+  "supersedes_instrument": "composed-v3",
+  "package_digest_components": [
+    "source_digest",
+    "inputs_digest",
+    "prompt_digest",
+    "neutral_reader_sha256"
+  ]
+}

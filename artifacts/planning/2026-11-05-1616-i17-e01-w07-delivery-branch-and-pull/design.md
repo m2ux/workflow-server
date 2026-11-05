@@ -1,27 +1,28 @@
 # Delivery, Branch and Pull Request Design
 
-## Authority and Boundary
-
-The live epic #1616 reserves W07 for this record and AC7. The supplied unit head is fb9a834c940cbed9742709d7e03594900e31d22f. The source manifest is exactly delivery-plan.md, delivery-branches.md, delivery-evidence.md, dispatch-batch.md, delivery-brief.md and pull-request.md under skills/work-planner/artifacts. R2/R3 supply structural presentation only; pinned R5 supplies raw HTML command presentation only. Live skill prose is the behavior authority.
-
 ## Operations and Contracts
 
-Existing operation and command anchors remain callable. Existing operations use numbered heading steps; former command specifications become operations with their command inside an executing step. Every operation lists linked Inputs and Outputs backed by Fields contracts. Argument links decorate original command arguments while preserving literal syntax, order, shell quoting and line breaks. Examples remain explicitly labelled examples. Literal JSON, GraphQL and output specimens retain their content.
+The six family artifacts hold their subject state, linked Inputs/Outputs and callable operations. Numbered heading steps execute raw HTML commands with contract-backed argument links. Existing callable anchors, command syntax/order/quoting, examples, literal data and original Prerequisites are preserved. Complete records, body text, identities, node metadata, paths and saved-state absence have distinct contracts. Action guards live in their executing steps; contracts own their type/shape definitions. Named retries pass refreshed evidence through resolving Apply calls.
 
-Contracts distinguish repository-qualified identities, complete pull request JSON, body text, title/head/base changes, draft node metadata, snapshots, paths, verified evidence and results. A saved value is absent until creation. Each condition has one home, with action guards in executing steps and shape invariants in Fields. Calls and named retries use Apply or Follow links; result mentions remain prose. Flattened lists retain explicit conditions and scopes.
+## Source and Readers
 
-## Preservation and Ownership
+The source family is delivery-plan.md, delivery-branches.md, delivery-evidence.md, dispatch-batch.md, delivery-brief.md and pull-request.md. The shared checker validates bold argument links independently before ordinary Markdown links, preserving literal bracket filters and rejection coverage. The worktree placement reader selects the three executing commands in Delivery Branches, excludes payload prose and retains real-git behavior assertions. W05 supplies the integrated generic document/template readers; W06 owns lane and its source consumers. Installed declarations and guidelines stay with W08.
 
-All original Prerequisites remain. A baseline ledger captures six source hashes, every operation and condition, and every literal specimen before source edits; the final ledger maps each to its destination. Lane and pull-request-body remain in their approved family homes. Shared artifact-interface and script-reach readers belong to W05, whose patch is used only for isolated combined validation until actually integrated. Installed structure.json, rules.json and full guideline adoption remain outside this source manifest.
+## Verification
 
-## Validation and Delivery
+The original baseline is fb9a834c940cbed9742709d7e03594900e31d22f. The walked composed source uses actual integrated base 709a038e40aafb59a05c1798f3d1a6b1f9248e83 and its nine owned files. The preservation ledger accounts for every original condition and specimen. A supplied-checkout criterion instrument binds a clean root, exact revision/tree and source hashes to a fresh checker/cache. Complete Work Planner/shared suites and installed diagnostics are separate evidence.
 
-Strict checks use a fresh isolated source copy and temporary exact-file proposed declarations, with proven mode declarations and current declarations elsewhere. Literal installed-model output is recorded separately, including the known Revise Fields mismatch. Full Work Planner and shared test suites must pass at the literal branch head with actual shared support integrated before final publication. Independent fresh-context walks exercise affected delivery, branch and pull-request reading paths with realistic bounded requests and read-only captured inputs; repeat affected scenarios and inspect actual reads and results. Partial observations and unavailable external execution remain explicit gaps. No source commit precedes recorded disclosure. Engineering and epic publication stay serialized by coordinator lease; no merge precedes exact-head clearance.
+Six independent v4 bounded requests are repeated across Deliver, Sync and Understand. Their results are correct while prerequisite order/closure, breadth/repetition, selective truncation recovery and external execution limits keep disclosure Partial. Three interrupted v3 instrument observations remain separate. The neutral reader uses the checker's lexer and exact original byte slices, with eight boundary probes. No emitted-byte count is a token or complete-receipt claim.
+
+## Publication and Delivery
+
+Evidence archives contain scoped regular-file payloads inspected against the verified public repository destination. Raw Git/system-session material, credential signatures, unsafe paths, symlinks and caches are excluded. Engineering writes are serialized by coordinator lease. The shared checker and its fixtures form one source commit; family conversion and worktree reader form the next. Exact-head checks precede PR readiness and root's merge clearance. No successor is part of this unit.
 
 ## Todo
 
-- [x] Confirm the supplied checkout, reservation, manifest and source baseline.
-- [ ] Publish this plan and work item before implementation.
-- [ ] Convert and review the six source files and preservation ledger.
-- [ ] Complete structural, suite and disclosure validation at the exact source state.
-- [ ] Publish evidence and source pull request, then await exact-head merge clearance.
+- [x] Confirm the unit, reservation, baseline and reviewed six-file design.
+- [x] Publish the work item and design before source implementation.
+- [x] Convert the family and necessary readers with a complete preservation ledger.
+- [x] Record the six bounded v4 results, Partial disclosure and separate interrupted v3 observations.
+- [ ] Complete committed-head checks and publish the task pull request.
+- [ ] Await exact-head merge clearance and complete delivery recording/readback.

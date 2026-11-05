@@ -1,0 +1,14 @@
+{
+  "scope": "W07 six artifact files plus owned checker, fixtures and worktree reader",
+  "files": {
+    "skills/scripts/check_skill_files.py": "46bee5bd96ba2653b29e0709ec07e45b705b83054f33aba12d80c5c41925c4e6",
+    "skills/test/test_check_skill_files.py": "e7d53f9063e150e85434cdf4b465bf72dc95101c10f036eb542d19c22b9a9921",
+    "skills/work-planner/test/test_worktrees.py": "24709daf50cd1e64da7fd063b08688173fc3aefe5c7f3e5eed86e2a5f78f936a",
+    "skills/work-planner/artifacts/delivery-plan.md": "c147ff92a1c4bdcfa50cd71bb6d9b84d6f33ebb49cae672f82473977b9d4fe45",
+    "skills/work-planner/artifacts/delivery-branches.md": "8169ec085123aa78f4470ef2f09c41c48ef912805ff2150cb87ed93de2501270",
+    "skills/work-planner/artifacts/delivery-evidence.md": "ab28a23ce1ad9c3fa7d7bae051674032bc6ae18cc9ebc2f5837f1db6434fc075",
+    "skills/work-planner/artifacts/dispatch-batch.md": "853d4195f1938a4be6eebd038ede4c104da3e7131d30d79dc8521f527621d42e",
+    "skills/work-planner/artifacts/delivery-brief.md": "033d3633d607651d22d5ea0de4c18d18e0f1b13f7da574fa7b8ad9df8b51582d",
+    "skills/work-planner/artifacts/pull-request.md": "bbe23104ae0c3e9662b02e6dbf6f19a30eb0c7ca57fe6da629cceea0d13fc656"
+  }
+}

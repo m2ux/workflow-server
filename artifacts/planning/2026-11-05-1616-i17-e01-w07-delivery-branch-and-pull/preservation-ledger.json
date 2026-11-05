@@ -1,0 +1,2026 @@
+{
+  "checkout": "/home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w07-delivery-branch-and-pull",
+  "files": [
+    {
+      "file": "delivery-branches.md",
+      "base_sha256": "5b0ad1b9f8865d343123191efeb531e06b0599f8dbb640bbac7c4c9eb53f2d13",
+      "source_sha256": "8169ec085123aa78f4470ef2f09c41c48ef912805ff2150cb87ed93de2501270",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 23,
+      "literal_specimens": 0,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Work Item](work-item.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Hot-fix](hotfix.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 20,
+          "text": "1. For each changed long-lived branch, run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout, then [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 21,
+          "text": "2. Run [List Epic Bases](#list-epic-bases) in the project checkout for the epic.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 22,
+          "text": "3. If `config/branches` is missing or empty at that revision, or does not name the changed branch:",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 23,
+          "text": "   - Report the names as unevaluable at that revision.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 24,
+          "text": "   - Obtain the project's branch names before creating delivery branches.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 25,
+          "text": "4. Require the caller's confirmed prerequisite evidence before creating a base. The board status alone supplies no such evidence.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 26,
+          "text": "5. Run [Create Epic Base](#create-epic-base) in the project checkout for each missing base, passing the corresponding long-lived branch, epic base name and confirmed prerequisite evidence.",
+          "source_section": "Prepare Delivery Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 34,
+          "text": "1. Require the confirmed prerequisites and a missing destination. Refuse a destination that already exists.",
+          "source_section": "Create Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 35,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout with the corresponding long-lived source branch, such as `main`.",
+          "source_section": "Create Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 36,
+          "text": "3. After a successful fetch:",
+          "source_section": "Create Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 37,
+          "text": "   - Run [Publish Epic Base](#publish-epic-base) in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases).",
+          "source_section": "Create Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 38,
+          "text": "   - Return the created branch or the failure.",
+          "source_section": "Create Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 46,
+          "text": "1. Take the long-lived target and the epic base checkout's path from the base name, meeting [Epic Bases](#epic-bases).",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 47,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout with that epic base; stop on failure.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 48,
+          "text": "3. Run [Add Epic Base Worktree](#add-epic-base-worktree) in the project checkout for an absent epic base checkout, and reuse an existing one; stop on failure, which a base checked out elsewhere returns.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 49,
+          "text": "4. Run [Fetch Remote Branch](#fetch-remote-branch) in the epic base checkout with the long-lived target, such as `main`; stop on failure.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 50,
+          "text": "5. Run [Merge Remote Branch](#merge-remote-branch) in the epic base checkout with the target branch name, such as `main`, to merge `origin/main`. A conflict stops the update, leaves the pull request open and is reported.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 51,
+          "text": "6. After a successful merge:",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 52,
+          "text": "   - Run [Push Epic Base](#push-epic-base) in the epic base checkout.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 53,
+          "text": "   - Return the updated branch or the failure.",
+          "source_section": "Update Epic Base",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 61,
+          "text": "1. Run [Fetch Remote Branch](#fetch-remote-branch) in the unit checkout with the base, such as `i07/e00/main`.",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 62,
+          "text": "2. Stop on failure.",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 63,
+          "text": "3. Run [Merge Remote Branch](#merge-remote-branch) in the unit checkout with the base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported.",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 64,
+          "text": "4. After a successful merge:",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 65,
+          "text": "   - Run [Push Task Branch](#push-task-branch) in the unit checkout with the task branch as destination.",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 66,
+          "text": "   - Return the updated branch or the failure.",
+          "source_section": "Update Task Branch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 74,
+          "text": "1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).",
+          "source_section": "Create Task Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 75,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the base; stop on failure.",
+          "source_section": "Create Task Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 76,
+          "text": "3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base.",
+          "source_section": "Create Task Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 77,
+          "text": "4. Return the worktree path, branch and base, or the failure.",
+          "source_section": "Create Task Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 87,
+          "text": "1. Run [Fetch Review Head](#fetch-review-head) in the project checkout of the repository the pull request changes, passing its number; stop on failure.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 88,
+          "text": "2. Run [Read Checkout Revision](#read-checkout-revision) on the project checkout for `FETCH_HEAD`.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 89,
+          "text": "3. If it differs from the verified head, return a changed-head finding before creating a worktree.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 90,
+          "text": "4. Take the worktree path from the pull request number, meeting [Review Worktrees](#review-worktrees).",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 91,
+          "text": "5. If that worktree already exists:",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 92,
+          "text": "   - Run Read Checkout Revision there for `HEAD`.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": false,
+          "destination": "create-pull-request-worktree",
+          "review": "The named revision read is an Apply call in the existing review checkout for HEAD."
+        },
+        {
+          "line": 93,
+          "text": "   - Run [Read Checkout Status](#read-checkout-status) there.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 94,
+          "text": "   - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 95,
+          "text": "   - Otherwise retain it and select an unused path suffixed with the verified commit.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 96,
+          "text": "6. For an unused path, run [Add Review Worktree](#add-review-worktree) in the project checkout with that path and the verified commit.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 97,
+          "text": "7. Confirm its HEAD through Read Checkout Revision.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": false,
+          "destination": "create-pull-request-worktree",
+          "review": "The final HEAD confirmation calls Read Checkout Revision in the selected review checkout."
+        },
+        {
+          "line": 98,
+          "text": "8. Return the selected detached worktree path and head, or the discrepancy before measuring.",
+          "source_section": "Create Pull Request Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 106,
+          "text": "1. Run [Fetch Branch Protection](#fetch-branch-protection) for the supplied target.",
+          "source_section": "Read Target Requirements",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 107,
+          "text": "2. Run [Fetch Active Branch Rules](#fetch-active-branch-rules) for the same target.",
+          "source_section": "Read Target Requirements",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 108,
+          "text": "3. Return both records. An unreadable requirement remains unresolved; a protection 404 does not establish the absence of active rules.",
+          "source_section": "Read Target Requirements",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 116,
+          "text": "1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source.",
+          "source_section": "Read Delivery Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 117,
+          "text": "2. Run [List Epic Bases](#list-epic-bases) in the project checkout for the supplied epic.",
+          "source_section": "Read Delivery Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 118,
+          "text": "3. Return both collections and any missing configuration.",
+          "source_section": "Read Delivery Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 126,
+          "text": "- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source.",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 127,
+          "text": "- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`.",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 128,
+          "text": "- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`.",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 129,
+          "text": "- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`.",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 130,
+          "text": "- Verification of merged delivery evaluates the merged commit.",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 132,
+          "text": "- **Example.**",
+          "source_section": "Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 137,
+          "text": "- Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 138,
+          "text": "- **Example.**",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 140,
+          "text": "- The base's last segment is its long-lived branch, which gives the target it merges and is merged into.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 141,
+          "text": "- Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 142,
+          "text": "- **Example.**",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 144,
+          "text": "- Every pull request delivering the epic's tasks targets that epic base.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 145,
+          "text": "- A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 146,
+          "text": "- An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names.",
+          "source_section": "Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 152,
+          "text": "- **The output.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 154,
+          "text": "- **Available.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 156,
+          "text": "- **Not available.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 158,
+          "text": "- **Not gates.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 160,
+          "text": "- **Record.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 162,
+          "text": "- **Example.**",
+          "source_section": "Producer Outputs",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 169,
+          "text": "- **Example.**",
+          "source_section": "Review Worktrees",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 176,
+          "text": "- **Changed branches.**",
+          "source_section": "Task Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 178,
+          "text": "- **Unplanned rows.**",
+          "source_section": "Task Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 180,
+          "text": "- **Several long-lived branches.**",
+          "source_section": "Task Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 182,
+          "text": "- **Example.**",
+          "source_section": "Task Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 184,
+          "text": "- **Hot-fix.**",
+          "source_section": "Task Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 193,
+          "text": "- **Found.**",
+          "source_section": "Stash Entries",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 195,
+          "text": "- **Restored.**",
+          "source_section": "Stash Entries",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 197,
+          "text": "- **Dropped.**",
+          "source_section": "Stash Entries",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 199,
+          "text": "- **Example.**",
+          "source_section": "Stash Entries",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 212,
+          "text": "- A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states.",
+          "source_section": "List Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 213,
+          "text": "- The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`.",
+          "source_section": "List Epic Bases",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 214,
+          "text": "- The output contains one full base branch name per line.",
+          "source_section": "List Epic Bases",
+          "verbatim_after_routing": false,
+          "destination": "epic-base-names",
+          "review": "The one-full-base-name-per-line output type has one home in the linked Epic-Base Names contract."
+        },
+        {
+          "line": 232,
+          "text": "- The names meet [Branches](#branches).",
+          "source_section": "List Long-Lived Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 233,
+          "text": "- `--project` is any checkout of the project. `--revision` is the evaluated revision [Branches](#branches) names for the run.",
+          "source_section": "List Long-Lived Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 234,
+          "text": "- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.",
+          "source_section": "List Long-Lived Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 235,
+          "text": "- `--names` reads one `--revision`.",
+          "source_section": "List Long-Lived Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 236,
+          "text": "- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.",
+          "source_section": "List Long-Lived Branches",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 322,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.",
+          "source_section": "Add Task Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 360,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.",
+          "source_section": "Add Epic Base Worktree",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 380,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.",
+          "source_section": "Add Review Worktree",
+          "verbatim_after_routing": true
+        }
+      ],
+      "original_fields": "byte-identical"
+    },
+    {
+      "file": "delivery-brief.md",
+      "base_sha256": "c13944a36d833af480f37861ee307f801860746f01257af5c4f33762f38ce1ac",
+      "source_sha256": "033d3633d607651d22d5ea0de4c18d18e0f1b13f7da574fa7b8ad9df8b51582d",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 0,
+      "literal_specimens": 0,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Pull Request Body](pull-request-body.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Plan Change](plan-change.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 20,
+          "text": "1. Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it.",
+          "source_section": "Populate Delivery Brief",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 21,
+          "text": "   - Each part must meet [Fields](#fields).",
+          "source_section": "Populate Delivery Brief",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 22,
+          "text": "2. Return the brief path and any missing context. The caller resolves gaps before dispatch.",
+          "source_section": "Populate Delivery Brief",
+          "verbatim_after_routing": true
+        }
+      ],
+      "original_fields": "byte-identical"
+    },
+    {
+      "file": "delivery-evidence.md",
+      "base_sha256": "276e992a12c09dda99c5609098e96433c116088e3ce5005f4d47825ef50df0b9",
+      "source_sha256": "ab28a23ce1ad9c3fa7d7bae051674032bc6ae18cc9ebc2f5837f1db6434fc075",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 0,
+      "literal_specimens": 0,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Pull Request](pull-request.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Epic](epic.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 20,
+          "text": "1. Fetch the pull requests and their links.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 21,
+          "text": "   - Run [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests) with the fetched issue files.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 22,
+          "text": "   - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links).",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 23,
+          "text": "   - Use [Access Development Links](pull-request.md#access-development-links) for the actual complete link sets.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 24,
+          "text": "2. Run [Inspect Epic Delivery](epic.md#inspect-epic-delivery) with the epic JSON, pull request records and complete issue-link snapshot.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 25,
+          "text": "   - Route the returned [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 26,
+          "text": "3. Repair each reported missing-prefix title of a merged pull request linked directly by an epic task row, meeting [Named Delivery](#named-delivery).",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 27,
+          "text": "   - The row identifies its owning epic; preserve the title purpose and set that epic prefix without another confirmation. A title already naming another epic remains a conflict requiring reconciliation.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": false,
+          "destination": "read-delivery-evidence",
+          "review": "The row owns the prefix, title purpose is retained, matching initiative/task prefixes are repairable, correct titles are retained, and a different epic prefix remains a reconciliation conflict."
+        },
+        {
+          "line": 28,
+          "text": "   - Run [Publish Pull Request](pull-request.md#publish-pull-request) with the confirmed epic prefix and purpose.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 29,
+          "text": "   - Repeat the fetch and match steps with the saved title before returning.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": false,
+          "destination": "read-delivery-evidence",
+          "review": "The saved-title retry calls Read Delivery Evidence with retained repositories, initiative prefix, issue records, access and destinations, returning refreshed records and findings."
+        },
+        {
+          "line": 30,
+          "text": "4. Return the current pull request records, complete issue-link snapshot and per-epic findings to the caller, reporting incomplete evidence as a blocker.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 34,
+          "text": "- **Pull request records.**",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": false,
+          "destination": "pull-request-records",
+          "review": "The labelled group is a Fields contract heading and retains the complete original definition."
+        },
+        {
+          "line": 36,
+          "text": "- **Issue-link snapshot.**",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 38,
+          "text": "- **Findings.** The per-epic [Delivery Findings](epic.md#delivery-findings) the evidence yields.",
+          "source_section": "Read Delivery Evidence",
+          "verbatim_after_routing": false,
+          "destination": "delivery-findings",
+          "review": "The labelled group is a Fields contract heading with the original linked per-epic finding definition."
+        }
+      ],
+      "original_fields": "labelled groups become contract headings; title-repair guards have one home in their executing step; completeness preserves the same required set"
+    },
+    {
+      "file": "delivery-plan.md",
+      "base_sha256": "68a65d9c00a5a517b1eedc9a1990c3ee7999717ef48ed4fea2afcc74755e9629",
+      "source_sha256": "c147ff92a1c4bdcfa50cd71bb6d9b84d6f33ebb49cae672f82473977b9d4fe45",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 2,
+      "literal_specimens": 0,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Lane](lane.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Epic Issue Body](epic-issue-body.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 11,
+          "text": "- [Delivery Branches](delivery-branches.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 12,
+          "text": "- [Work Item](work-item.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 13,
+          "text": "- [Hot-fix](hotfix.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 14,
+          "text": "- [Hot-fix Body](hotfix-body.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 24,
+          "text": "1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.",
+          "source_section": "Plan Available Work",
+          "verbatim_after_routing": false,
+          "destination": "plan-available-work",
+          "review": "Compute Available Work retains parameter mapping and its internal Determine Lane Admission call for every derived free unit with epic body, complete ids and requested index."
+        },
+        {
+          "line": 25,
+          "text": "2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.",
+          "source_section": "Plan Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 39,
+          "text": "- A unit fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges.",
+          "source_section": "Debt",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 40,
+          "text": "- Debt in code outside the unit's change is an issue of its own, arising from the delivery.",
+          "source_section": "Debt",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 44,
+          "text": "- A `unit` line names one session's tasks, its lane as `lane 2` or `unlaned`, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: unlaned, coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base workspace, worktree .worktrees/f00-key-validation`.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 45,
+          "text": "- An `invalid` line names a malformed task-table Lane cell or a joined unit with different Lane values. The unit is not offered and the run exits nonzero; the summary counts invalid units.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 46,
+          "text": "- An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero. It also names an open hot-fix, whatever its state, whose body names no [target](hotfix-body.md#target), or one of the project checkout's repository whose target the evaluated revision's [Branches](delivery-branches.md#branches) does not declare. It is offered as no unit and no merge until its target is one.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 47,
+          "text": "- A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 48,
+          "text": "- A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 49,
+          "text": "- An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 50,
+          "text": "- An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 51,
+          "text": "- A `merge` line names an open pull request, never a draft, whose test plan has passed and the base it targets: a task pull request into an epic base, or an open hot-fix's [delivering pull request](hotfix.md#delivering-pull-request) into its target, when no `undeclared` or unresolved line names that hot-fix's target.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 52,
+          "text": "- An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 53,
+          "text": "- An unresolved issue reference identifies missing dependency evidence.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 54,
+          "text": "- An unresolved hot-fix of a repository other than the project checkout's names its target, which that checkout's [Branches](delivery-branches.md#branches) cannot declare. It is offered once a plan whose project checkout is of its repository finds the target declared.",
+          "source_section": "Report Lines",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 72,
+          "text": "- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body.",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 73,
+          "text": "- `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": false,
+          "destination": "epic-base-names",
+          "review": "The project and revision flag associations are retained; --bases receives the linked Epic-Base Names contract, which owns its comma-separated full-name type."
+        },
+        {
+          "line": 74,
+          "text": "- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run.",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 75,
+          "text": "- `--engineering` is the engineering worktree, where each free row's work-item file is read.",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 76,
+          "text": "- `--others` supplies each resolved off-board issue; `--date` selects another record date.",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 77,
+          "text": "- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission).",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 78,
+          "text": "- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export).",
+          "source_section": "Compute Available Work",
+          "verbatim_after_routing": true
+        }
+      ],
+      "original_fields": "byte-identical"
+    },
+    {
+      "file": "dispatch-batch.md",
+      "base_sha256": "a57f889d975d9a1d179a73412ee6a5bb427aea89b5a5dc7555e4caeea16ba3af",
+      "source_sha256": "853d4195f1938a4be6eebd038ede4c104da3e7131d30d79dc8521f527621d42e",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 2,
+      "literal_specimens": 3,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Lane](lane.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Delivery Plan](delivery-plan.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 20,
+          "text": "1. Run [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.",
+          "source_section": "Plan Dispatch Batch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 21,
+          "text": "2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.",
+          "source_section": "Plan Dispatch Batch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 29,
+          "text": "1. Run [Check Dispatch Start](#check-dispatch-start) with the supplied evidence.",
+          "source_section": "Validate Dispatch Start",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 30,
+          "text": "2. Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness).",
+          "source_section": "Validate Dispatch Start",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 78,
+          "text": "- Supply `--lane '<lane-index>'` only when that lane was used by the survey.",
+          "source_section": "Compute Dispatch Batch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 79,
+          "text": "- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.",
+          "source_section": "Compute Dispatch Batch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 80,
+          "text": "- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.",
+          "source_section": "Compute Dispatch Batch",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 92,
+          "text": "- Exit 0 returns the selected unit; exit 1 names the blocking condition.",
+          "source_section": "Check Dispatch Start",
+          "verbatim_after_routing": true
+        }
+      ],
+      "original_fields": "byte-identical"
+    },
+    {
+      "file": "pull-request.md",
+      "base_sha256": "b4128c7d54b553ecddd11806cf63191dbeb0fe9a68bb97b17b755c06361fa7c3",
+      "source_sha256": "bbe23104ae0c3e9662b02e6dbf6f19a30eb0c7ca57fe6da629cceea0d13fc656",
+      "prerequisites": "byte-identical",
+      "anchors": "preserved",
+      "commands": 45,
+      "literal_specimens": 5,
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Issue](issue.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 10,
+          "text": "- [Delivery Branches](delivery-branches.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 11,
+          "text": "- [Agent Review](agent-review.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 12,
+          "text": "- [Hot-fix](hotfix.md)",
+          "source_section": "",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 22,
+          "text": "1. Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 23,
+          "text": "   - Report the pull request as ready for approval, naming what was verified.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 24,
+          "text": "   - Stop merge attempts. This handoff is a finished outcome.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 25,
+          "text": "   - Keep approval with that reviewer. Another account, an administrative bypass or a setting change cannot supply it. Changing repository protection requires the user's explicit authorization, asked for separately.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 26,
+          "text": "   - For example, workflow-server's `main` requires one approving review, so carry an epic to ready and stop.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 27,
+          "text": "2. When approval permits the agent to merge:",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 28,
+          "text": "   - Call [Merge Pull Request](#merge-pull-request) for a task or [Merge Epic Pull Request](#merge-epic-pull-request) for an epic, passing the verified readiness evidence and authorization result. For an epic, also supply the target requirements and exact verified head SHA.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 29,
+          "text": "   - If GitHub refuses the merge, return the refusal to the caller for fresh verification.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 30,
+          "text": "   - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 31,
+          "text": "3. Return the merge result, including its merge commit when supplied, for the caller's readback.",
+          "source_section": "Merge Delivery Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 39,
+          "text": "1. For a read-only request:",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 40,
+          "text": "   - Run [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 41,
+          "text": "   - Run [Capture Pull Request Links](#capture-pull-request-links) with that record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 42,
+          "text": "2. For a link edit:",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 43,
+          "text": "   - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": false,
+          "destination": "access-development-links",
+          "review": "The caller-supplied Repository Prerequisite links the confirmed Auto-Close Setting contract; the edit remains blocked when unconfirmed."
+        },
+        {
+          "line": 44,
+          "text": "   - For an addition, run [Set Development Link](#set-development-link) with the pull request and issue identities.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 45,
+          "text": "   - For removal of an abandoned or incorrect link:",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 46,
+          "text": "     - Require the supplied user decision.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 47,
+          "text": "     - Run [Remove Development Link](#remove-development-link) with those identities.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 48,
+          "text": "3. Return the relation the command verified from both ends, or the discrepancy or failure it names. A failed write is a blocker carrying its operation and error, never an unavailable field.",
+          "source_section": "Access Development Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 56,
+          "text": "1. Run [Capture Pull Request Links](#capture-pull-request-links) with `prs.json` and destination `links.json`.",
+          "source_section": "Fetch Pull Request Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 57,
+          "text": "2. If it names an unreadable relation, stop and return each one named as a blocker. Incomplete evidence is never a partial snapshot.",
+          "source_section": "Fetch Pull Request Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 58,
+          "text": "3. Repeat the capture after a link changes.",
+          "source_section": "Fetch Pull Request Issue Links",
+          "verbatim_after_routing": false,
+          "destination": "fetch-pull-request-issue-links",
+          "review": "The changed-link retry calls Capture Pull Request Links with refreshed records, retained authenticated access and the same destination."
+        },
+        {
+          "line": 59,
+          "text": "4. Return the snapshot for the scripts' `--links` input.",
+          "source_section": "Fetch Pull Request Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 67,
+          "text": "1. Run [Access Development Links](#access-development-links) with the supplied identities, requested link addition and confirmed repository prerequisite.",
+          "source_section": "Link Pull Request to Issue",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 68,
+          "text": "2. Stop on a blocker or an unverified edit.",
+          "source_section": "Link Pull Request to Issue",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 69,
+          "text": "3. Run [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) with the current records and destination after the edit.",
+          "source_section": "Link Pull Request to Issue",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 70,
+          "text": "4. Return the verified relation and refreshed snapshot.",
+          "source_section": "Link Pull Request to Issue",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 78,
+          "text": "1. Require the supplied target requirements, readiness evidence and authorization.",
+          "source_section": "Merge Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 79,
+          "text": "2. Run [Submit Epic Merge](#submit-epic-merge) with the exact head whose checks and target requirements were verified; return a refusal without continuing.",
+          "source_section": "Merge Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 80,
+          "text": "3. Run [Read Merge Result](#read-merge-result) for that pull request.",
+          "source_section": "Merge Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 81,
+          "text": "4. Confirm the merged state, merge commit, verified head and target.",
+          "source_section": "Merge Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 82,
+          "text": "5. Return the result or discrepancy.",
+          "source_section": "Merge Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 90,
+          "text": "1. Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests) for the first repository and destination `prs.json`. This replaces the destination with a fresh collection.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 91,
+          "text": "2. Stop on failure.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 92,
+          "text": "3. Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests) for each further repository, passing the same destination.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 93,
+          "text": "4. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that destination and the board items file.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 94,
+          "text": "5. If any fetch failed, return incomplete evidence.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 95,
+          "text": "6. Return the complete collection only after every fetch succeeds.",
+          "source_section": "Fetch All Delivery Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 103,
+          "text": "1. Run [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests) with the supplied repository and prefix, saving the collection to the supplied file.",
+          "source_section": "Read Initiative Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 104,
+          "text": "2. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that collection and the supplied issue files.",
+          "source_section": "Read Initiative Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 105,
+          "text": "3. Return the collection, or an incomplete-fetch finding naming each unreadable relation or pull request.",
+          "source_section": "Read Initiative Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 113,
+          "text": "1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) with the pull request identity and destination JSON path.",
+          "source_section": "Read Pull Request State",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 114,
+          "text": "2. Run [Fetch Pull Request Files](#fetch-pull-request-files) or [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when the caller requests those records.",
+          "source_section": "Read Pull Request State",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 115,
+          "text": "3. Return the snapshots or missing evidence.",
+          "source_section": "Read Pull Request State",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 123,
+          "text": "1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state. A task pull request titled with a hot-fix prefix always opens as a draft.",
+          "source_section": "Publish Pull Request",
+          "verbatim_after_routing": false,
+          "destination": "publish-pull-request",
+          "review": "Creation dispatches the same task/epic operations and supplied content. Open Task Pull Request owns the hot-fix draft flag; Open Epic Pull Request owns always-draft creation."
+        },
+        {
+          "line": 124,
+          "text": "   - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).",
+          "source_section": "Publish Pull Request",
+          "verbatim_after_routing": false,
+          "destination": "publish-pull-request",
+          "review": "The link call carries the issue, confirmed setting and snapshot destination; the no-issue case follows the preserved Issue Links contract and remains unlinked."
+        },
+        {
+          "line": 125,
+          "text": "2. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields.",
+          "source_section": "Publish Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 126,
+          "text": "3. Re-read through [Read Pull Request State](#read-pull-request-state).",
+          "source_section": "Publish Pull Request",
+          "verbatim_after_routing": false,
+          "destination": "publish-pull-request",
+          "review": "The saved-state readback is an Apply call to Read Pull Request State."
+        },
+        {
+          "line": 127,
+          "text": "4. Return the saved state or discrepancy.",
+          "source_section": "Publish Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 135,
+          "text": "1. Run [Find Review Pull Request](#find-review-pull-request) with the supplied head.",
+          "source_section": "Locate Review Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 136,
+          "text": "2. Return its number or an absent-review finding.",
+          "source_section": "Locate Review Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 144,
+          "text": "1. Run [Fetch Head Check Runs](#fetch-head-check-runs) for the supplied literal SHA.",
+          "source_section": "Read Head Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 145,
+          "text": "2. Run [Fetch Head Status](#fetch-head-status) for the same SHA.",
+          "source_section": "Read Head Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 146,
+          "text": "3. Return both snapshots, retaining missing or pending evidence as unresolved. The caller compares them with supplied target requirements and current reviews.",
+          "source_section": "Read Head Evidence",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 154,
+          "text": "1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's base, as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": false,
+          "destination": "merge-task-pull-requests",
+          "review": "Repository auto-close and base confirmation remain first; applicable target review requirements reach Merge Delivery Pull Request at the existing merge step."
+        },
+        {
+          "line": 155,
+          "text": "2. Merge the task pull request.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 156,
+          "text": "   - Where its base is an epic base, run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and that base.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 157,
+          "text": "   - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": false,
+          "destination": "merge-task-pull-requests",
+          "review": "Fetch Merge Readiness is an Apply call with the task pull request and its base."
+        },
+        {
+          "line": 158,
+          "text": "   - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 159,
+          "text": "   - Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 160,
+          "text": "   - If GitHub refuses the merge:",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 161,
+          "text": "     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its base.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 162,
+          "text": "     - Repeat Fetch Merge Readiness for the updated task head.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": false,
+          "destination": "merge-task-pull-requests",
+          "review": "After the updated task branch, Apply Fetch Merge Readiness again for its current head."
+        },
+        {
+          "line": 163,
+          "text": "     - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": false,
+          "destination": "merge-task-pull-requests",
+          "review": "The single merge retry calls Merge Delivery Pull Request once more with freshly verified evidence; conflict or repeated refusal leaves the pull request open with the blocker."
+        },
+        {
+          "line": 164,
+          "text": "3. Run [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 165,
+          "text": "   - Return that result to the caller.",
+          "source_section": "Merge Task Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 173,
+          "text": "1. Run [Read Pull Request State](#read-pull-request-state) with the pull request identity and destination `epic-pr.json`.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 174,
+          "text": "   - Retain the literal head SHA and target branch for the evidence calls.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 175,
+          "text": "2. Call [Read Target Requirements](delivery-branches.md#read-target-requirements) with the repository, target and protection/rules output paths.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 176,
+          "text": "   - Carry any unresolved requirement into the readiness result.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 177,
+          "text": "3. Read the head evidence.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 178,
+          "text": "   - Call [Read Head Evidence](#read-head-evidence) with the exact head SHA and check/status output paths.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 179,
+          "text": "   - Request reviews through [Read Pull Request State](#read-pull-request-state) with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": false,
+          "destination": "fetch-merge-readiness",
+          "review": "The review read calls Read Pull Request State with identity and reviews destination, retaining the missing/pending check, blocked state and unmet required-review conditions."
+        },
+        {
+          "line": 180,
+          "text": "4. Run [Read Pull Request State](#read-pull-request-state) again with the same identity and destination.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 181,
+          "text": "   - Compare its head with the retained SHA; a changed head requires fresh evidence.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 182,
+          "text": "   - Return the verified head, target requirements and readiness result, including unresolved conditions.",
+          "source_section": "Fetch Merge Readiness",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 190,
+          "text": "1. Read full metadata through [Read Pull Request State](#read-pull-request-state). For an open ready pull request, run [Mark Review Draft](#mark-review-draft).",
+          "source_section": "Hold Epic Review",
+          "verbatim_after_routing": false,
+          "destination": "hold-epic-review",
+          "review": "The full metadata read is an Apply call; only an open ready pull request calls Mark Review Draft."
+        },
+        {
+          "line": 191,
+          "text": "2. Read the state again and return the confirmed draft state or discrepancy.",
+          "source_section": "Hold Epic Review",
+          "verbatim_after_routing": false,
+          "destination": "hold-epic-review",
+          "review": "The second state read is an Apply call with the same identity and retains the confirmed-draft or discrepancy return."
+        },
+        {
+          "line": 199,
+          "text": "1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state).",
+          "source_section": "Ready Epic Review",
+          "verbatim_after_routing": false,
+          "destination": "ready-epic-review",
+          "review": "Readiness evidence remains required before the explicit Apply metadata read."
+        },
+        {
+          "line": 200,
+          "text": "2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names.",
+          "source_section": "Ready Epic Review",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 201,
+          "text": "3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge.",
+          "source_section": "Ready Epic Review",
+          "verbatim_after_routing": false,
+          "destination": "ready-epic-review",
+          "review": "Fresh metadata is passed to the repeated Check Agent Review with retained published records; a changed revision calls Hold Epic Review and reports the discrepancy, and target review requirements still govern merging."
+        },
+        {
+          "line": 209,
+          "text": "1. Run [Read Pull Request State](#read-pull-request-state) for its full metadata.",
+          "source_section": "Ready Hot-fix Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 210,
+          "text": "2. Run [Check Agent Review](agent-review.md#check-agent-review) with that metadata and the published records.",
+          "source_section": "Ready Hot-fix Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 211,
+          "text": "   - On a finding, return it to the caller; the pull request stays a draft.",
+          "source_section": "Ready Hot-fix Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 212,
+          "text": "3. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names.",
+          "source_section": "Ready Hot-fix Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 213,
+          "text": "4. Run Read Pull Request State again and repeat Check Agent Review. Return the confirmed ready state, or the changed revision or finding that leaves it unconfirmed.",
+          "source_section": "Ready Hot-fix Pull Request",
+          "verbatim_after_routing": false,
+          "destination": "ready-hot-fix-pull-request",
+          "review": "Fresh metadata and retained published reviews go to the repeated Check Agent Review; changed revision or finding retains the unconfirmed result."
+        },
+        {
+          "line": 233,
+          "text": "- **Claude Code.**",
+          "source_section": "Merge Permission",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 253,
+          "text": "- GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 254,
+          "text": "- A task pull request links the task's issue, and a review pull request links its epic's issue.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 255,
+          "text": "- The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 256,
+          "text": "- The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 257,
+          "text": "- A linked issue remains open until its criteria and delivery requirements hold and every Development-linked pull request is merged.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 258,
+          "text": "- The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 259,
+          "text": "- A pull request with a delivery issue but no Development link is uncited.",
+          "source_section": "Issue Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 301,
+          "text": "- Supply the title, the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the complete body file.",
+          "source_section": "Open Task Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 302,
+          "text": "- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.",
+          "source_section": "Open Task Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 326,
+          "text": "- Supply the epic prefix and name as title, the epic base as head, its long-lived branch as base, and the populated review body file.",
+          "source_section": "Open Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 327,
+          "text": "- `draft` is true, including when the work is already complete.",
+          "source_section": "Open Epic Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 345,
+          "text": "- Require the supplied readiness evidence and authorization before issuing the merge.",
+          "source_section": "Merge Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 346,
+          "text": "- The merge method is a merge commit.",
+          "source_section": "Merge Pull Request",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 364,
+          "text": "- The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing.",
+          "source_section": "Patch Pull Request Body",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 434,
+          "text": "- The issue and pull request may sit in different repositories, and the pull request may be a draft on any base branch.",
+          "source_section": "Set Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 435,
+          "text": "- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.",
+          "source_section": "Set Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 436,
+          "text": "- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.",
+          "source_section": "Set Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 437,
+          "text": "- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.",
+          "source_section": "Set Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 465,
+          "text": "- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.",
+          "source_section": "Remove Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 466,
+          "text": "- Exit 0 means neither end holds the other and every other link on the issue stands.",
+          "source_section": "Remove Development Link",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 467,
+          "text": "- Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.",
+          "source_section": "Remove Development Link",
+          "verbatim_after_routing": false,
+          "destination": "remove-development-link",
+          "review": "The failed/discrepancy result retains operation, step, tracker error and relation readback without a descriptive operation call."
+        },
+        {
+          "line": 493,
+          "text": "- The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.",
+          "source_section": "Capture Pull Request Links",
+          "verbatim_after_routing": false,
+          "destination": "issue-link-snapshot",
+          "review": "The snapshot-shape definition has one home in Fields; Capture Pull Request Links cites that contract."
+        },
+        {
+          "line": 494,
+          "text": "- Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.",
+          "source_section": "Capture Pull Request Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 495,
+          "text": "- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.",
+          "source_section": "Capture Pull Request Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 496,
+          "text": "- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.",
+          "source_section": "Capture Pull Request Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 497,
+          "text": "- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.",
+          "source_section": "Capture Pull Request Links",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 579,
+          "text": "- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives.",
+          "source_section": "Fetch Linked Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 580,
+          "text": "- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows.",
+          "source_section": "Fetch Linked Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 581,
+          "text": "- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker.",
+          "source_section": "Fetch Linked Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 582,
+          "text": "- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.",
+          "source_section": "Fetch Linked Pull Requests",
+          "verbatim_after_routing": true
+        },
+        {
+          "line": 682,
+          "text": "- The query file holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:",
+          "source_section": "Mark Review Ready",
+          "verbatim_after_routing": true
+        }
+      ],
+      "original_fields": "byte-identical"
+    }
+  ],
+  "review_required": [
+    {
+      "file": "delivery-branches.md",
+      "line": 92,
+      "text": "   - Run Read Checkout Revision there for `HEAD`.",
+      "source_section": "Create Pull Request Worktree",
+      "verbatim_after_routing": false,
+      "destination": "create-pull-request-worktree",
+      "review": "The named revision read is an Apply call in the existing review checkout for HEAD."
+    },
+    {
+      "file": "delivery-branches.md",
+      "line": 97,
+      "text": "7. Confirm its HEAD through Read Checkout Revision.",
+      "source_section": "Create Pull Request Worktree",
+      "verbatim_after_routing": false,
+      "destination": "create-pull-request-worktree",
+      "review": "The final HEAD confirmation calls Read Checkout Revision in the selected review checkout."
+    },
+    {
+      "file": "delivery-branches.md",
+      "line": 214,
+      "text": "- The output contains one full base branch name per line.",
+      "source_section": "List Epic Bases",
+      "verbatim_after_routing": false,
+      "destination": "epic-base-names",
+      "review": "The one-full-base-name-per-line output type has one home in the linked Epic-Base Names contract."
+    },
+    {
+      "file": "delivery-evidence.md",
+      "line": 27,
+      "text": "   - The row identifies its owning epic; preserve the title purpose and set that epic prefix without another confirmation. A title already naming another epic remains a conflict requiring reconciliation.",
+      "source_section": "Read Delivery Evidence",
+      "verbatim_after_routing": false,
+      "destination": "read-delivery-evidence",
+      "review": "The row owns the prefix, title purpose is retained, matching initiative/task prefixes are repairable, correct titles are retained, and a different epic prefix remains a reconciliation conflict."
+    },
+    {
+      "file": "delivery-evidence.md",
+      "line": 29,
+      "text": "   - Repeat the fetch and match steps with the saved title before returning.",
+      "source_section": "Read Delivery Evidence",
+      "verbatim_after_routing": false,
+      "destination": "read-delivery-evidence",
+      "review": "The saved-title retry calls Read Delivery Evidence with retained repositories, initiative prefix, issue records, access and destinations, returning refreshed records and findings."
+    },
+    {
+      "file": "delivery-evidence.md",
+      "line": 34,
+      "text": "- **Pull request records.**",
+      "source_section": "Read Delivery Evidence",
+      "verbatim_after_routing": false,
+      "destination": "pull-request-records",
+      "review": "The labelled group is a Fields contract heading and retains the complete original definition."
+    },
+    {
+      "file": "delivery-evidence.md",
+      "line": 38,
+      "text": "- **Findings.** The per-epic [Delivery Findings](epic.md#delivery-findings) the evidence yields.",
+      "source_section": "Read Delivery Evidence",
+      "verbatim_after_routing": false,
+      "destination": "delivery-findings",
+      "review": "The labelled group is a Fields contract heading with the original linked per-epic finding definition."
+    },
+    {
+      "file": "delivery-plan.md",
+      "line": 24,
+      "text": "1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index.",
+      "source_section": "Plan Available Work",
+      "verbatim_after_routing": false,
+      "destination": "plan-available-work",
+      "review": "Compute Available Work retains parameter mapping and its internal Determine Lane Admission call for every derived free unit with epic body, complete ids and requested index."
+    },
+    {
+      "file": "delivery-plan.md",
+      "line": 73,
+      "text": "- `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list.",
+      "source_section": "Compute Available Work",
+      "verbatim_after_routing": false,
+      "destination": "epic-base-names",
+      "review": "The project and revision flag associations are retained; --bases receives the linked Epic-Base Names contract, which owns its comma-separated full-name type."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 43,
+      "text": "   - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit.",
+      "source_section": "Access Development Links",
+      "verbatim_after_routing": false,
+      "destination": "access-development-links",
+      "review": "The caller-supplied Repository Prerequisite links the confirmed Auto-Close Setting contract; the edit remains blocked when unconfirmed."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 58,
+      "text": "3. Repeat the capture after a link changes.",
+      "source_section": "Fetch Pull Request Issue Links",
+      "verbatim_after_routing": false,
+      "destination": "fetch-pull-request-issue-links",
+      "review": "The changed-link retry calls Capture Pull Request Links with refreshed records, retained authenticated access and the same destination."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 123,
+      "text": "1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state. A task pull request titled with a hot-fix prefix always opens as a draft.",
+      "source_section": "Publish Pull Request",
+      "verbatim_after_routing": false,
+      "destination": "publish-pull-request",
+      "review": "Creation dispatches the same task/epic operations and supplied content. Open Task Pull Request owns the hot-fix draft flag; Open Epic Pull Request owns always-draft creation."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 124,
+      "text": "   - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links).",
+      "source_section": "Publish Pull Request",
+      "verbatim_after_routing": false,
+      "destination": "publish-pull-request",
+      "review": "The link call carries the issue, confirmed setting and snapshot destination; the no-issue case follows the preserved Issue Links contract and remains unlinked."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 126,
+      "text": "3. Re-read through [Read Pull Request State](#read-pull-request-state).",
+      "source_section": "Publish Pull Request",
+      "verbatim_after_routing": false,
+      "destination": "publish-pull-request",
+      "review": "The saved-state readback is an Apply call to Read Pull Request State."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 154,
+      "text": "1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's base, as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs.",
+      "source_section": "Merge Task Pull Requests",
+      "verbatim_after_routing": false,
+      "destination": "merge-task-pull-requests",
+      "review": "Repository auto-close and base confirmation remain first; applicable target review requirements reach Merge Delivery Pull Request at the existing merge step."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 157,
+      "text": "   - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base.",
+      "source_section": "Merge Task Pull Requests",
+      "verbatim_after_routing": false,
+      "destination": "merge-task-pull-requests",
+      "review": "Fetch Merge Readiness is an Apply call with the task pull request and its base."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 162,
+      "text": "     - Repeat Fetch Merge Readiness for the updated task head.",
+      "source_section": "Merge Task Pull Requests",
+      "verbatim_after_routing": false,
+      "destination": "merge-task-pull-requests",
+      "review": "After the updated task branch, Apply Fetch Merge Readiness again for its current head."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 163,
+      "text": "     - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported.",
+      "source_section": "Merge Task Pull Requests",
+      "verbatim_after_routing": false,
+      "destination": "merge-task-pull-requests",
+      "review": "The single merge retry calls Merge Delivery Pull Request once more with freshly verified evidence; conflict or repeated refusal leaves the pull request open with the blocker."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 179,
+      "text": "   - Request reviews through [Read Pull Request State](#read-pull-request-state) with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved.",
+      "source_section": "Fetch Merge Readiness",
+      "verbatim_after_routing": false,
+      "destination": "fetch-merge-readiness",
+      "review": "The review read calls Read Pull Request State with identity and reviews destination, retaining the missing/pending check, blocked state and unmet required-review conditions."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 190,
+      "text": "1. Read full metadata through [Read Pull Request State](#read-pull-request-state). For an open ready pull request, run [Mark Review Draft](#mark-review-draft).",
+      "source_section": "Hold Epic Review",
+      "verbatim_after_routing": false,
+      "destination": "hold-epic-review",
+      "review": "The full metadata read is an Apply call; only an open ready pull request calls Mark Review Draft."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 191,
+      "text": "2. Read the state again and return the confirmed draft state or discrepancy.",
+      "source_section": "Hold Epic Review",
+      "verbatim_after_routing": false,
+      "destination": "hold-epic-review",
+      "review": "The second state read is an Apply call with the same identity and retains the confirmed-draft or discrepancy return."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 199,
+      "text": "1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state).",
+      "source_section": "Ready Epic Review",
+      "verbatim_after_routing": false,
+      "destination": "ready-epic-review",
+      "review": "Readiness evidence remains required before the explicit Apply metadata read."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 201,
+      "text": "3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge.",
+      "source_section": "Ready Epic Review",
+      "verbatim_after_routing": false,
+      "destination": "ready-epic-review",
+      "review": "Fresh metadata is passed to the repeated Check Agent Review with retained published records; a changed revision calls Hold Epic Review and reports the discrepancy, and target review requirements still govern merging."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 213,
+      "text": "4. Run Read Pull Request State again and repeat Check Agent Review. Return the confirmed ready state, or the changed revision or finding that leaves it unconfirmed.",
+      "source_section": "Ready Hot-fix Pull Request",
+      "verbatim_after_routing": false,
+      "destination": "ready-hot-fix-pull-request",
+      "review": "Fresh metadata and retained published reviews go to the repeated Check Agent Review; changed revision or finding retains the unconfirmed result."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 467,
+      "text": "- Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does.",
+      "source_section": "Remove Development Link",
+      "verbatim_after_routing": false,
+      "destination": "remove-development-link",
+      "review": "The failed/discrepancy result retains operation, step, tracker error and relation readback without a descriptive operation call."
+    },
+    {
+      "file": "pull-request.md",
+      "line": 493,
+      "text": "- The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array.",
+      "source_section": "Capture Pull Request Links",
+      "verbatim_after_routing": false,
+      "destination": "issue-link-snapshot",
+      "review": "The snapshot-shape definition has one home in Fields; Capture Pull Request Links cites that contract."
+    }
+  ],
+  "review_status": "All 273 original operative lines are preserved verbatim after call routing or explicitly mapped to their semantic home.",
+  "specimen_total": 80,
+  "initial_baseline_measurement": "The initial flush-only count78 omits two indented data specimens; complete fenced parsing establishes80 specimens with the same six original source hashes.",
+  "consolidated_type_definitions": [
+    {
+      "file": "delivery-plan.md",
+      "original": "<epic-base-names> is a comma-separated list of full epic-base branch names.",
+      "home": "epic-base-names",
+      "review": "The standalone duplicate is removed; --bases and its invocation argument retain the resolving contract link."
+    },
+    {
+      "file": "delivery-branches.md",
+      "original": "The output contains one full base branch name per line.",
+      "home": "epic-base-names",
+      "review": "The executing operation links the unchanged output type contract."
+    },
+    {
+      "file": "pull-request.md",
+      "original": "<initiative-prefix> includes the opening bracket and initiative id, matching its task and epic titles.",
+      "home": "initiative-prefix",
+      "review": "The standalone duplicate is removed; operation input and invocation argument retain the resolving bracket/id contract and explicit example."
+    }
+  ]
+}

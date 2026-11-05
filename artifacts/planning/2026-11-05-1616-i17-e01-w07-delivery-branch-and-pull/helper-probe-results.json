@@ -1,0 +1,79 @@
+{
+  "helper": "neutral-read.py",
+  "lexer": "source/skills/scripts/check_skill_files.py parse(text)",
+  "product_source_changes": false,
+  "outcomes": [
+    {
+      "probe": "actual-fields",
+      "status": "pass",
+      "heading": "Fields",
+      "bytes": 14057,
+      "sha256": "93dbc4d1b10ed6accacfb478a5aee0381905cca0868847c829b8e134e587b873",
+      "start_line": 323,
+      "end_line": 566,
+      "claim": "stdout captured by this subprocess and retained log bytes exactly equal the expected original slice"
+    },
+    {
+      "probe": "actual-template",
+      "status": "pass",
+      "heading": "Template",
+      "bytes": 1149,
+      "sha256": "9870889325eded635d7f8e07b883e28f6aa9b7496b10e91d01f742d749bce750",
+      "start_line": 325,
+      "end_line": 358,
+      "claim": "stdout captured by this subprocess and retained log bytes exactly equal the expected original slice"
+    },
+    {
+      "probe": "synthetic-target",
+      "status": "pass",
+      "heading": "Target",
+      "bytes": 185,
+      "sha256": "47c34c5cea0abcf4e20c51ff000348858ef4b796d322689ca48f50578a5db693",
+      "start_line": 3,
+      "end_line": 20,
+      "claim": "stdout captured by this subprocess and retained log bytes exactly equal the expected original slice"
+    },
+    {
+      "probe": "synthetic-child",
+      "status": "pass",
+      "heading": "Real Child",
+      "bytes": 25,
+      "sha256": "de3d08e5661173d3c9c39fa599d86f12954c9298a274472b6bf95fab9bb4695b",
+      "start_line": 18,
+      "end_line": 20,
+      "claim": "stdout captured by this subprocess and retained log bytes exactly equal the expected original slice"
+    },
+    {
+      "probe": "synthetic-whole",
+      "status": "pass",
+      "heading": null,
+      "bytes": 217,
+      "sha256": "7dba9ee3deadc5d2251361f9d10e9099de391e9e744380d4d1bac616857d2415",
+      "start_line": 1,
+      "end_line": 22,
+      "claim": "stdout captured by this subprocess and retained log bytes exactly equal the expected original slice"
+    },
+    {
+      "probe": "missing-heading",
+      "status": "pass",
+      "returncode": 1,
+      "heading": "Absent",
+      "claim": "unavailable Markdown heading is refused without emitting bytes or creating a successful-read log"
+    },
+    {
+      "probe": "fenced-heading-refusal",
+      "status": "pass",
+      "returncode": 1,
+      "heading": "Fenced Fake Peer",
+      "claim": "unavailable Markdown heading is refused without emitting bytes or creating a successful-read log"
+    },
+    {
+      "probe": "html-heading-refusal",
+      "status": "pass",
+      "returncode": 1,
+      "heading": "HTML Fake Peer",
+      "claim": "unavailable Markdown heading is refused without emitting bytes or creating a successful-read log"
+    }
+  ],
+  "limit": "These probes verify complete bytes returned to a local subprocess. Enclosing walk tools can truncate their response; emission logs do not prove model receipt."
+}

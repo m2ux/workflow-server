@@ -1,0 +1,87 @@
+{
+  "capture_window_utc": {
+    "first_supporting_read": "2026-11-05 11:55:37 UTC",
+    "post_closeout_core_refresh": "2026-11-05 11:58:31 UTC",
+    "final_Development_read": "2026-11-05 11:59:27 UTC"
+  },
+  "atomic_snapshot": false,
+  "scope": "users/m2ux/projectsV2/17; m2ux/workflow-server I17, with E01 selected for the bounded requests",
+  "raw_record_preservation": "Raw REST responses, all paginated board/field pages, full title-selected and plan-linked PR collection, complete issue-side and PR-side Development snapshots retained. No external write occurs.",
+  "observations": {
+    "repository": {
+      "full_name": "m2ux/workflow-server",
+      "id": 1137318642,
+      "node_id": "R_kgDOQ8oa8g"
+    },
+    "board": {
+      "owner": "m2ux",
+      "owner_type": "users",
+      "number": 17,
+      "id": 26724834,
+      "node_id": "PVT_kwHOCotKsc4Bl8ni",
+      "status_field": 422017304,
+      "epic_item": 291152098,
+      "epic_status": "In Progress"
+    },
+    "initiative": {
+      "number": 1597,
+      "id": 6157607533,
+      "node_id": "I_kwDOQ8oa8s8AAAABbwWibQ",
+      "updated_at": "2026-11-05T07:47:31Z"
+    },
+    "epic": {
+      "number": 1616,
+      "id": 6164649166,
+      "node_id": "I_kwDOQ8oa8s8AAAABb3EUzg",
+      "updated_at": "2026-11-05T11:53:54Z",
+      "W05": "Done",
+      "AC5": true,
+      "W07": "reserved"
+    },
+    "draft_integration": {
+      "number": 1641,
+      "node_id": "PR_kwDOQ8oa8s8AAAABNBOy2w",
+      "draft": true,
+      "updated_at": "2026-11-05T11:53:55Z",
+      "head": "709a038e40aafb59a05c1798f3d1a6b1f9248e83",
+      "base": "workspace"
+    },
+    "W05": {
+      "number": 1646,
+      "node_id": "PR_kwDOQ8oa8s8AAAABNDcc1Q",
+      "head": "c2b3dc2292fb7ba6aedc4b014d0e5bef084bd7a9",
+      "base": "i17/e01/workspace",
+      "merge_commit": "709a038e40aafb59a05c1798f3d1a6b1f9248e83"
+    },
+    "counts": {
+      "board_items": 42,
+      "I17_issues": 5,
+      "pull_requests": 21,
+      "pull_Development_entries": 21,
+      "issue_Development_entries": 5
+    }
+  },
+  "files": {
+    "inputs/i17-issues.json": "bad25b7f690c9b61879af71109c7295b53736428006948949d567190dde9fe3f",
+    "inputs/initiative1597.json": "8485d385428787af219dc823aa55fcd4bf2c4ac0516424864a12a845536ea48e",
+    "inputs/issue-development.log": "c5550767a2a143630e6c8974def3e0dd0d271717848138f4d708630100208f92",
+    "inputs/linked-pull-requests.log": "7e542be934dd76552b1af0c98eef6f7400af0da2a36bbd6cd64b6e05b6bbc279",
+    "inputs/pr1641.json": "6a108cc3a5849d237bf774eb9b01a3aedce5a798936df07be91bc8d1ea6fd2bb",
+    "inputs/pr1643-files.json": "416ffaf590fe07dcfefdd8a0a9f8ac96691c20533ce6fac95e1095eb9665021b",
+    "inputs/pr1643-reviews.json": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "inputs/pr1643.json": "6a6c440569213582b9414314b6e7ec12f7c3c67fd868206ba3cc3854646b9106",
+    "inputs/pr1646.json": "8eefe325253b24ccce27e861bb3fe666f4da967c7127ecb6a40ba5d2dd6e290a",
+    "inputs/project17-board.json": "6775c7a75bda4f029ebac6992b9bfb580e27ead3989cd44a8f607fa6bb9c1f4f",
+    "inputs/project17-epic-item.json": "9a19db1e002401e24c5bf4770bd29889b0365d4a62d2c9a154038e81552e4898",
+    "inputs/project17-fields.json": "d4f3b50f92d1c0da6b58564f9ef84a6249318e60d0b6cbd34987f8d164408abe",
+    "inputs/project17-issue-development.json": "005744d0395e54aa60935e6317283778b96d88e9cd5634b2399457705a8f5c4a",
+    "inputs/project17-tail-held-epic.json": "4d5349091e50ec129c6af451add0d19a52449732228af67649bf2293a68292c7",
+    "inputs/project17-tail-items.json": "28237bd28d9ffe02e369aa455668dfc227952e74826d4b268de1e3e2302bb8d3",
+    "inputs/project17-tail-links.json": "4aaa42cd8e039f331aa7ad7184858531ba9e4e9147747cb5a37d3e9547d7d603",
+    "inputs/project17-tail-prs.jsonl": "9172e7361c2af5600ab3a867459ddf1b6440997a8fbe7cd482873cec4bb4b729",
+    "inputs/pull-development.log": "e03eca08ec7c2e76547b6b69f2669fd826ba1e7a94a3c19730bc5979a5c1d2e5",
+    "inputs/repository.json": "7857519a48ab7e5e1d83bb9cb5dd04339bb384cd359e9012fe25f620bb542eae"
+  },
+  "inputs_digest": "cd6f4eac76790c36e4c0fd67714d2790c9abfb100d215b274081741c88dd474e",
+  "source_digest": "dcd61a116505ff8b681c50064bca2e373807fb481aa959c517017542b8dc69e5"
+}
