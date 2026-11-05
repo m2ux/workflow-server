@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-STEP = re.compile(r'^\d+\. \*\*(.+?)\*\*', re.MULTILINE)
+STEP = re.compile(r'^### \d+\. (.+)$', re.MULTILINE)
 PUBLISH_RECORD = 'Publish Planning Record'
 IN_RECORD = "in the record's folder"
 WRITERS = (
@@ -27,10 +27,10 @@ def section(text, heading):
 
 
 def steps():
-    """Plan Mode's procedure steps by their action label."""
+    """Plan Mode's numbered heading steps by their case-insensitive action title."""
     procedure = section((ROOT / 'modes' / 'plan-mode.md').read_text(), '## Procedure')
     marks = list(STEP.finditer(procedure))
-    return {mark[1].rstrip('.'): procedure[mark.start():(marks[i + 1].start() if i + 1 < len(marks) else len(procedure))]
+    return {mark[1].casefold(): procedure[mark.start():(marks[i + 1].start() if i + 1 < len(marks) else len(procedure))]
             for i, mark in enumerate(marks)}
 
 
@@ -46,7 +46,7 @@ class DraftsInTheRecord(unittest.TestCase):
 
     def test_the_record_registers_each_draft(self):
         self.assertIn('Register each draft body and returned work-item file in the planning record.',
-                      steps()['Populate the epics'])
+                      steps()['populate the epics'])
 
     def test_the_record_layout_holds_the_drafts(self):
         layout = section((ROOT / 'artifacts' / 'planning-record.md').read_text(), '### Layout')
@@ -56,18 +56,18 @@ class DraftsInTheRecord(unittest.TestCase):
 class PublishedOnEngineering(unittest.TestCase):
     def test_each_step_writing_the_record_publishes_it(self):
         found = steps()
-        for label in ('Prepare the planning record', 'Publish', 'Keep the goal current'):
+        for label in ('prepare the planning record', 'publish', 'keep the goal current'):
             with self.subTest(step=label):
                 self.assertIn(PUBLISH_RECORD, found[label])
 
     def test_the_mode_opens_no_pull_request_for_its_plan(self):
         found = steps()
         for label, text in found.items():
-            if label == 'Prepare epic delivery':
+            if label == 'prepare epic delivery':
                 continue
             with self.subTest(step=label):
                 self.assertNotIn('pull-request.md#publish-pull-request', text)
-                self.assertNotRegex(text, r'(?m)^\s+- (Commit|Push)\.$')
+                self.assertNotRegex(text, r'(?m)^- (Commit|Push)\.$')
 
     def test_publishing_commits_and_pushes_the_engineering_branch(self):
         text = (ROOT / 'artifacts' / 'planning-record.md').read_text()

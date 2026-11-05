@@ -4,6 +4,8 @@ Explains the named pull request's changes through a measured architecture overvi
 
 **Runs in:** the project checkout.
 
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+
 ## Prerequisites
 
 Read these files first.
@@ -12,16 +14,20 @@ Read these files first.
 
 ## Procedure
 
-The main path meets [Outcomes](#outcomes).
+### 1. Select the Change
 
-1. **Select the change.**
-   Require the pull request number or URL.
-   - Ask and stop when none is supplied. Do not infer it from the current branch.
-   - For several supplied pull requests, complete one overview per pull request. An initiative has no overview of its own.
-2. **Explain each change.**
-   Follow [Change Overview](../protocols/change-overview.md) for each selected pull request, resuming with what it returns.
-3. **Report.**
-   Report the pull request, record folder, diagrams and References row of each overview.
+Require the pull request number or URL.
+
+- Ask and stop when none is supplied. Do not infer it from the current branch.
+- For several supplied pull requests, complete one overview per pull request. An initiative has no overview of its own.
+
+### 2. Explain Each Change
+
+Follow [Change Overview](../protocols/change-overview.md) for each selected pull request, resuming with what it returns.
+
+### 3. Report
+
+Report the pull request, record folder, diagrams and References row of each overview.
 
 ## Outcomes
 
