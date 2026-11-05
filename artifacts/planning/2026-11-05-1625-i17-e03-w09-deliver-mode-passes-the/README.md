@@ -28,3 +28,4 @@ This unit delivers AC6 through its isolated task branch into i17/e03/workspace. 
 | Epic | [I17 E03](https://github.com/m2ux/workflow-server/issues/1625) |
 | Authorization | [Automatic remaining delivery](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
 | Integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+| Task PR | [#1634](https://github.com/m2ux/workflow-server/pull/1634) |

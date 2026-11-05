@@ -9,8 +9,8 @@ W09 delivers AC6 on branch i17/e03/w09-deliver-mode-passes-the. The component is
 - [x] Confirm live reservation and criterion, and inspect current mode and lane owner.
 - [x] Implement the request input, every survey call and confirmation output.
 - [x] Verify complete suites at the final task head.
-- [ ] Publish the task PR and record its row link. **In progress.**
-- [ ] Merge verified work, observe the merged revision and record AC6/Done.
+- [x] Publish the task PR and record its row link.
+- [ ] Merge verified work, observe the merged revision and record AC6/Done. **In progress.**
 - [ ] Update draft integration, read back board and publish final evidence.
 
 ## T1: Deliver Mode Lane Input
