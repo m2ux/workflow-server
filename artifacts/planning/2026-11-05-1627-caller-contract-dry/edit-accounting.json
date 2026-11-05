@@ -1,0 +1,182 @@
+[
+  {
+    "file": "skills/guidelines.md",
+    "before": "  - Every other file cites it by link, never restates it.",
+    "after": "  - Every other file cites it by link, never restates it. A caller passes inputs and routes results without repeating the linked operation\u2019s description, output fields or guarantees.",
+    "contract": "Shared Prose / One Home per Rule"
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "before": "   - Retain the returned [Ready Unit Lanes](../artifacts/board-queue.md#ready-unit-lanes) report from the supplied issue bodies with the queue\u2019s other report lines.\n",
+    "after": "",
+    "contract": "Board Queue / Plan Board Queue and Report Lines"
+  },
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "before": "Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines), including each Ready unit and its lane index or unlaned state returned by the queue.",
+    "after": "Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines).",
+    "contract": "Board Queue / Report Lines"
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "before": "Show each `unit` line, with its tasks, lane or unlaned designation, coverage, record folder, and each branch with its base and worktree, and each `hold` line with the record it links and whether a session is still running.",
+    "after": "Show each `unit` and `hold` in [Report Lines](../artifacts/delivery-plan.md#report-lines), adding whether each holding session is still running.",
+    "contract": "Delivery Plan / Report Lines"
+  },
+  {
+    "file": "skills/work-planner/modes/plan-mode.md",
+    "before": "   - The record's folder holds every draft body and work item this plan writes, as [Layout](../artifacts/planning-record.md#layout) states.\n",
+    "after": "   - Use [Layout](../artifacts/planning-record.md#layout) for draft paths.\n",
+    "contract": "Planning Record / Layout"
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "before": "Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery), with the epic JSON fetched after closing. An epic row is delivered when its issue is closed as completed, and Done is ticked on it as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.",
+    "after": "Run [Record Initiative Delivery](../artifacts/initiative-issue-body.md#record-initiative-delivery) with the epic JSON fetched after closing.",
+    "contract": "Initiative Issue Body / Record Initiative Delivery"
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "before": "Put each problem it reports to the user. An initiative Depends on cell takes the epics it derives, as [Work Breakdown](../artifacts/initiative-issue-body.md#work-breakdown) states.",
+    "after": "Put each problem it reports to the user.",
+    "contract": "Initiative Issue Body / Work Breakdown; Dependency Graph / Check Dependencies and Numbering"
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "before": "Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings), including each pull request and row.",
+    "after": "Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings).",
+    "contract": "Epic / Delivery Findings"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "2. Return the proposed Status and assignee calls, report lines including [Ready Unit Lanes](#ready-unit-lanes), and unresolved issue references to the caller.",
+    "after": "2. Return the queue meeting [Fields](#fields) to the caller.",
+    "contract": "Board Queue / Fields"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "   - Report each [unresolvable dependency](#unresolvable-dependencies) with the row and the entry, and leave that row's epic where it stands.\n",
+    "after": "",
+    "contract": "Board Queue / Report Lines and Unresolvable Dependencies"
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "before": "2. Return the units admitted by [Admission](lane.md#admission), holds, blockers, invalid lane assignments, undeclared rows, merge candidates, unrecorded hot-fixes and unresolved references meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.",
+    "after": "2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass.",
+    "contract": "Delivery Plan / Fields and Lane / Admission"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "before": "2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form). A Depends on cell that holds prose fails [Tables](#tables). Numbering that does not follow start order is advisory, as [Numbering](#numbering) states.",
+    "after": "2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form).",
+    "contract": "Issue Body / Tables and Numbering"
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "before": "3. Return the [Format Findings](#format-findings), mechanical diff and field findings, including missing sections, extra sections, wrong-kind layout, historical narration and criteria that fail their named instrument. A mechanical correction preserves wording; new content and scope decisions require caller-supplied resolutions.",
+    "after": "3. Return the [Format Findings](#format-findings).",
+    "contract": "Issue Body / Format Findings"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "before": "3. Record whether the orphan is kept, subsumed or left, meeting [Disposition Conditions](#disposition-conditions), including the reason and any planning record reference.",
+    "after": "3. Record the disposition meeting [Disposition Conditions](#disposition-conditions) and [Fields](#fields).",
+    "contract": "Placement / Disposition Conditions and Fields"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "before": "4. Return the placement for the caller to offer and apply. The output is the [Placement](#placement-record), including the draft issue changes.",
+    "after": "4. Return the [Placement](#placement-record) for the caller to offer and apply.",
+    "contract": "Placement / Placement Record and Fields"
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "before": "   - Account for every contending pair as [Component Contention](#component-contention) states: the proposed map separates the two epics by a number, or the contending rows move into one epic.",
+    "after": "   - Account for every contending pair through [Component Contention](#component-contention).",
+    "contract": "Dependency Graph / Component Contention"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "before": "1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) for full REST metadata, including URL, body and both revision SHAs, replacing the supplied destination with one JSON object on every refresh.",
+    "after": "1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) with the pull request identity and destination JSON path.",
+    "contract": "Pull Request / Save Pull Request Snapshot"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "3. Return the body with the unit's folder as each of its rows' single link, meeting [Task Delivery](#task-delivery).",
+    "after": "3. Return the reserved body meeting [Task Delivery](#task-delivery).",
+    "contract": "Epic Issue Body / Task Delivery"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "3. Return the body with each task id linked to its lowercase work-item file inside the reserved folder, meeting [Task Delivery](#task-delivery).",
+    "after": "3. Return the released body meeting [Task Delivery](#task-delivery).",
+    "contract": "Epic Issue Body / Task Delivery"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "Return the saved row and criterion disposition to the caller. Done follows [Tables](issue-body.md#tables).",
+    "after": "Return the saved row and criterion disposition to the caller.",
+    "contract": "Issue Body / Tables; Epic Issue Body / Work Breakdown"
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "before": "2. Return the body and refused criteria. Complete rows receive Done ticks.",
+    "after": "2. Return the body and refused criteria.",
+    "contract": "Body / Work Breakdown and Issue Body / Tables"
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "before": "2. Return the body and refused criteria. Complete rows receive Done ticks.",
+    "after": "2. Return the body and refused criteria.",
+    "contract": "Body / Work Breakdown and Issue Body / Tables"
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "before": "2. Return the resulting body and any criteria refused as not ready to verify. The artifact operations return the updated bodies for publication.",
+    "after": "2. Return the resulting body and any refused criteria to the caller for publication.",
+    "contract": "Epic and Initiative Issue Body / Record Criteria; Acceptance Criteria / Tick State"
+  },
+  {
+    "file": "skills/work-planner/artifacts/proposal-body.md",
+    "before": "All populated fields must meet [Fields](#fields), including the required [Sections](#sections).",
+    "after": "All populated fields must meet [Fields](#fields).",
+    "contract": "Local Fields, including Sections"
+  },
+  {
+    "file": "skills/work-planner/artifacts/standalone-body.md",
+    "before": "All populated fields must meet [Fields](#fields), including the required [Sections](#sections).",
+    "after": "All populated fields must meet [Fields](#fields).",
+    "contract": "Local Fields, including Sections"
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix-body.md",
+    "before": "All populated fields must meet [Fields](#fields), including the required [Sections](#sections).",
+    "after": "All populated fields must meet [Fields](#fields).",
+    "contract": "Local Fields, including Sections"
+  },
+  {
+    "file": "skills/work-planner/artifacts/architecture-overview.md",
+    "before": "All populated fields must meet [Fields](#fields), including the required [Sections](#sections).",
+    "after": "All populated fields must meet [Fields](#fields).",
+    "contract": "Local Fields, including Sections"
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "before": "All populated fields must meet [Fields](#fields), including the review-specific requirements in [Review Body](#review-body).",
+    "after": "All populated fields must meet [Fields](#fields).",
+    "contract": "Pull Request Body / Fields, including Review Body"
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "before": "2. Return the queue meeting [Fields](#fields) to the caller.",
+    "after": "2. Return the queue to the caller.",
+    "contract": "Fields already governs the computation in step 1"
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "before": "2. Record the destination and the work it takes, meeting [Fields](#fields).\n3. Record the disposition meeting [Disposition Conditions](#disposition-conditions) and [Fields](#fields).\n4. Return the [Placement](#placement-record) for the caller to offer and apply.",
+    "after": "2. Populate the placement meeting [Fields](#fields) and [Disposition Conditions](#disposition-conditions).\n3. Return the placement for the caller to offer and apply.",
+    "contract": "Placement / Fields includes destination, work, disposition and draft bodies"
+  }
+]

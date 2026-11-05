@@ -1,0 +1,628 @@
+[
+  {
+    "file": "skills/work-planner/modes/advance-mode.md",
+    "candidates": [
+      {
+        "line": 51,
+        "text": "     - A held line, and an automatic one the recommendation leaves without an answer, is settled as [Held Change](../artifacts/plan-change.md#held-change) states, following the interview rules in the [guidelines](../guidelines.md#modes) where it reaches the user."
+      },
+      {
+        "line": 64,
+        "text": "   - Return the [change list](../artifacts/plan-change.md#change-list) with the queue, so the caller reports each decision this mode made and each it held."
+      },
+      {
+        "line": 72,
+        "text": "   Report each move and each line in [Report Lines](../artifacts/board-queue.md#report-lines)."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/align-mode.md",
+    "candidates": [
+      {
+        "line": 80,
+        "text": "   - Align the criteria with the sources the initiative's References mark, as [Sources](../artifacts/initiative-issue-body.md#sources) defines."
+      },
+      {
+        "line": 105,
+        "text": "       - Repair Done cells as [Tables](../artifacts/issue-body.md#tables) states."
+      },
+      {
+        "line": 120,
+        "text": "   - Report criterion evidence as [Coverage Reports](../artifacts/issue-body.md#coverage-reports) defines."
+      },
+      {
+        "line": 154,
+        "text": "    - Report what changed on each issue, including each finding the criteria check reported."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/deliver-mode.md",
+    "candidates": [
+      {
+        "line": 62,
+        "text": "   - Repeat Plan Available Work with every resolved off-board issue while retaining the other inputs, including the request's optional lane index."
+      },
+      {
+        "line": 120,
+        "text": "   - A unit works on each branch [Plan Available Work](../artifacts/delivery-plan.md#plan-available-work) names, cut from its base, as [Task Branches](../artifacts/delivery-branches.md#task-branches) defines."
+      },
+      {
+        "line": 123,
+        "text": "   - Report the run's [change list](../artifacts/plan-change.md#change-list) as a list of its own, so each plan change this run applied, and each it held for the user, is read in one place."
+      },
+      {
+        "line": 164,
+        "text": "   Fix the technical debt this unit's validation finds, as [Debt](../artifacts/delivery-plan.md#debt) states."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/hoist-mode.md",
+    "candidates": [
+      {
+        "line": 35,
+        "text": "   - A held option is settled as [Held Change](../artifacts/plan-change.md#held-change) states, leaving the orphan where it is."
+      },
+      {
+        "line": 42,
+        "text": "   - After it returns the saved destination, run exactly one disposition procedure with the returned destination and source records, including a new task's row id: [Rewrite Orphan Issue](../artifacts/placement.md#rewrite-orphan-issue) for kept or left issues, or [Subsume Orphan Work](../artifacts/placement.md#subsume-orphan-work) for work taken by another issue."
+      },
+      {
+        "line": 47,
+        "text": "   - Resolve each finding as [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) returns it: an automatic correction is applied, and a held one is settled as [Held Change](../artifacts/plan-change.md#held-change) states."
+      },
+      {
+        "line": 55,
+        "text": "   - Return the [change list](../artifacts/plan-change.md#change-list) with it, so the caller reports each placement this mode made and each it held."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/plan-mode.md",
+    "candidates": [
+      {
+        "line": 59,
+        "text": "     - For a local epic finding, call Populate Epic Issue Body with the confirmed Proposal, row and criterion changes, including every new or renumbered criterion in Coverage."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/propose-mode.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/modes/revise-mode.md",
+    "candidates": [
+      {
+        "line": 38,
+        "text": "   - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/standup-mode.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/modes/sync-mode.md",
+    "candidates": [
+      {
+        "line": 49,
+        "text": "   - Run [Read Tracker Issue](../artifacts/issue.md#read-tracker-issue) for each issue, including each task issue under an epic being synced, titled as [Titles](../artifacts/task-body.md#titles) states."
+      },
+      {
+        "line": 111,
+        "text": "         - A held row is settled as [Held Change](../artifacts/plan-change.md#held-change) states; an unanswered placement stays pending."
+      },
+      {
+        "line": 180,
+        "text": "    - Report per issue: tasks linked, criteria ticked, rows marked done, criteria left unticked and why, conflicts, test plan disagreements, what was closed, each board and assignee change, and each overview written. What the report names about criteria is [Coverage Reports](../artifacts/issue-body.md#coverage-reports)."
+      },
+      {
+        "line": 189,
+        "text": "  The theme board shows where the initiative and its epics stand, including what a reviewer can take up."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/modes/understand-mode.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/protocols/change-overview.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/protocols/epic-integration.md",
+    "candidates": [
+      {
+        "line": 24,
+        "text": "   - For any failed gate or called operation through handoff, repeat those withdrawal operations before returning or retrying, including failures between ready and board writes. The confirmed absence of a board is the sole exception to board withdrawal."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-closure.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/protocols/issue-delivery.md",
+    "candidates": [
+      {
+        "line": 21,
+        "text": "   For a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:"
+      },
+      {
+        "line": 37,
+        "text": "   Report the coverage disagreements returned in [Delivery Findings](../artifacts/epic.md#delivery-findings)."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/protocols/review-pull-request.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/protocols/task-merge.md",
+    "candidates": [
+      {
+        "line": 23,
+        "text": "   For the merge of a [hot-fix](../artifacts/hotfix.md), recorded as its [Delivery Record](../artifacts/hotfix.md#delivery-record) states:"
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/acceptance-criteria.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/agent-review.md",
+    "candidates": [
+      {
+        "line": 25,
+        "text": "2. Return the result and the head and target SHAs checked. Refresh both tips immediately before ready, board and user-handoff actions; a tip change that leaves the record no longer current, as [Review Record](#review-record) states, requires another review."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/architecture-overview.md",
+    "candidates": [
+      {
+        "line": 129,
+        "text": "A reference is a permalink pinned to the pull request's head commit with its line anchors, on the words it supports, as the code references rule states. A link resolved against a branch moves under the reader."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-delivery.md",
+    "candidates": [
+      {
+        "line": 25,
+        "text": "3. Return the generated calls and unresolved references, meeting [Fields](#fields). The caller gathers missing evidence, applies changes and confirms their live state."
+      },
+      {
+        "line": 60,
+        "text": "3. Run each emitted call, including the assignee calls, which act on the issue rather than the board item."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board-queue.md",
+    "candidates": [
+      {
+        "line": 29,
+        "text": "   - Distinguish pending decisions and missing evidence as [Completeness](#completeness) defines."
+      },
+      {
+        "line": 49,
+        "text": "- An initiative in Backlog with no priority label stays there. An initiative in Ready with no priority label moves to Backlog, as [Backlog Cascade](#backlog-cascade) states."
+      },
+      {
+        "line": 52,
+        "text": "- An initiative confirmed unplanned follows the same wait, then moves to Backlog as [Backlog Cascade](#backlog-cascade) states."
+      },
+      {
+        "line": 72,
+        "text": "An initiative that moves to Backlog takes its unstarted epics with it, and each loses its assignees, as [Assignees](board.md#assignees) states. Board Delivery moves each Ready task issue of a Backlog epic to Backlog, as [Task Eligibility](#task-eligibility) states."
+      },
+      {
+        "line": 80,
+        "text": "- a task row links a reserved planning folder, as [Task Delivery](epic-issue-body.md#task-delivery) defines, or"
+      },
+      {
+        "line": 91,
+        "text": "A task is Ready only when its epic is Ready or In Progress and every row its Depends on cell names is delivered. A row naming another epic's row waits for that row's outputs, as [Producer Outputs](delivery-branches.md#producer-outputs) states, and the rows beside it wait for nothing it waits on. The queue reads no checkout, so an output in the consumer's own repository stays unverified here, and the delivery survey, which reads one, is where such a row is found available. The queue contains no task issue changes; task status comes from the supplied delivery state."
+      },
+      {
+        "line": 95,
+        "text": "A Ready unit consists of free, undelivered task rows joined through [Joins](dependency-graph.md#joins), or one unjoined row. Every member meets [Task Eligibility](#task-eligibility) under its epic's proposed Ready or In Progress status. A reservation or an open delivery pull request holds its rows, as [Task Delivery](epic-issue-body.md#task-delivery) states."
+      },
+      {
+        "line": 97,
+        "text": "Each unit meets [Unit Consistency](lane.md#unit-consistency) and carries its [Report Label](lane.md#report-label), including rows with no linked work item. Priority and delivery state determine the Status and assignee calls; lanes annotate the unit report."
+      },
+      {
+        "line": 107,
+        "text": "| `order` | No open initiative has a priority label | The open initiatives, including any already In Progress, for a parallel work map |"
+      },
+      {
+        "line": 143,
+        "text": "Prints proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/board.md",
+    "candidates": [
+      {
+        "line": 15,
+        "text": "3. Return the selected board number, or an absent-board result for [Copy Project Board](#copy-project-board). Work one board at a time."
+      },
+      {
+        "line": 74,
+        "text": "3. Return the items, Status field, item ids and the board's [Repositories](#repositories) to the caller."
+      },
+      {
+        "line": 319,
+        "text": "Reads one board item, including its current Status."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-branches.md",
+    "candidates": [
+      {
+        "line": 212,
+        "text": "- A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-brief.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-evidence.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/delivery-plan.md",
+    "candidates": [
+      {
+        "line": 25,
+        "text": "2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass."
+      },
+      {
+        "line": 31,
+        "text": "A unit is one task row or tasks that name each other in Joins, as [Work Breakdown](epic-issue-body.md#work-breakdown) defines. A unit of rows comes only from an epic that is Ready or In Progress in the supplied board items: the plan offers no other row, and none other is held. A [hot-fix unit](#hot-fix-units) has no row. One unit is one session's work, delivered by one pull request into each epic base it changes. Its first task id and Description determine the planning-folder identity, which every row of the unit is reserved with, and with each epic base it changes its branch and worktree, as [Task Branches](delivery-branches.md#task-branches) names them. In an epic of several bases, the bases a unit changes are read from the [Component](work-item.md#component) declaration of the work-item file each free row links, in the engineering worktree. A unit with a row linking no work item changes every epic base, as [Task Branches](delivery-branches.md#task-branches) states for unplanned rows."
+      },
+      {
+        "line": 35,
+        "text": "A hot-fix is a unit as its [Delivery Unit](hotfix.md#delivery-unit) states, with the branch, base and worktree its [Branch](hotfix.md#branch) names."
+      },
+      {
+        "line": 49,
+        "text": "- An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/dependency-graph.md",
+    "candidates": [
+      {
+        "line": 27,
+        "text": "2. Resolve each finding, as [Check Plan Change Autonomy](plan-change.md#check-plan-change-autonomy) returns it for the supplied allowance: an automatic correction is taken, and a held one is settled as [Held Change](plan-change.md#held-change) states."
+      },
+      {
+        "line": 30,
+        "text": "   - Answer every open candidate unit as [Joins](#joins) states."
+      },
+      {
+        "line": 41,
+        "text": "   - Return the checked bodies, the proposed [Epic Priority](#epic-priority) map and unresolved findings to the caller; do not publish a failed renumbering."
+      },
+      {
+        "line": 53,
+        "text": "  A row naming an epic gates its task on every row of that epic, including the rows it consumes nothing from, which is how a [whole-epic edge](#whole-epic-edges) the rows do not justify reaches the initiative."
+      },
+      {
+        "line": 57,
+        "text": "  The dependent row starts once the producing row is delivered and its outputs are available at the dependent epic's base, as [Producer Outputs](delivery-branches.md#producer-outputs) states; the producing epic's other rows and its closure gate nothing."
+      },
+      {
+        "line": 63,
+        "text": "An initiative Depends on cell takes the epics it derives, as [Work Breakdown](initiative-issue-body.md#work-breakdown) states. It derives one only where every row of the dependent epic requires every row of the prerequisite, through the task edges alone: a task row names rows, so no cell can assert a whole epic that the rows do not already establish."
+      },
+      {
+        "line": 77,
+        "text": "  An epic holding a row that contends with a row of an epic of the same depth takes the number below that depth, and the epics depending on it follow it down, as [Component Contention](#component-contention) states."
+      },
+      {
+        "line": 119,
+        "text": "- It prints each candidate unit its rows do not join and no `R=` record line names exactly, with both resolutions and each direct edge a join drops, and each candidate split by rule with its reason, as [Joins](#joins) states. An `R=` file it cannot read is a problem."
+      },
+      {
+        "line": 120,
+        "text": "- An entry it cannot resolve is a problem naming the entry as written, as [Edges](#edges) states. Its second clause says what this run could not find, which is the epics it was given."
+      },
+      {
+        "line": 122,
+        "text": "- A task row naming an epic rather than the rows it consumes is a problem, as [Edges](#edges) states. That row still reaches the epic's rows, so a body carrying the retired form is reported once rather than taking its initiative's gates down with it."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic-issue-body.md",
+    "candidates": [
+      {
+        "line": 45,
+        "text": "2. Return the updated body and [Delivery Findings](epic.md#delivery-findings) for the caller to resolve and publish. An unmerged epic base prevents a closable result."
+      },
+      {
+        "line": 64,
+        "text": "3. Return the reserved body meeting [Task Delivery](#task-delivery)."
+      },
+      {
+        "line": 74,
+        "text": "3. Return the released body meeting [Task Delivery](#task-delivery)."
+      },
+      {
+        "line": 179,
+        "text": "  Coverage names the epic's criteria the task delivers, whether its Done cell is ticked or empty. Each row claims only criteria its work makes true; it cannot claim a criterion another row delivers alone or one its work cannot meet. A cell is empty only on a delivered task whose criteria a further task adopts, as task grain states."
+      },
+      {
+        "line": 190,
+        "text": "  - Every test the work calls for accompanies that task. The content steers which kinds those are, including the project's system test when the work is something that test can exercise. A failure in any test the task carries keeps the task open. None of those tests is a later row."
+      },
+      {
+        "line": 198,
+        "text": "  - Joins are complete before any issue of the epic is created. Each candidate unit, the rows declaring one component, is answered as [Joins](dependency-graph.md#joins) states."
+      },
+      {
+        "line": 292,
+        "text": "- `--project` is a checkout of the project and each `--revision` one of the epic's bases, such as `origin/i07/e00/main`. The long-lived branch names are the ones `config/branches` states at those commits, and each `source` line names a path, commit and repository."
+      },
+      {
+        "line": 355,
+        "text": "- The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/epic.md",
+    "candidates": [
+      {
+        "line": 23,
+        "text": "4. Return the [Prerequisite Evidence](#prerequisite-evidence), identifying each confirmed prerequisite and missing condition. Only a confirmed result permits an unstarted epic's bases to be created or its task to be dispatched."
+      },
+      {
+        "line": 34,
+        "text": "2. Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply."
+      },
+      {
+        "line": 44,
+        "text": "3. Return the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge."
+      },
+      {
+        "line": 55,
+        "text": "4. Return the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/goal-trace.md",
+    "candidates": [
+      {
+        "line": 51,
+        "text": "   - Return the evidenced threats and gaps to [Review Initiative Goal](#review-initiative-goal)."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix-body.md",
+    "candidates": [
+      {
+        "line": 27,
+        "text": "  - The Overview must name the confirmed target as [Target](#target) states."
+      },
+      {
+        "line": 41,
+        "text": "- The target is a long-lived branch its project declares, as [Branches](delivery-branches.md#branches) states, confirmed with the hot-fix's placement."
+      },
+      {
+        "line": 57,
+        "text": "- A hot-fix fixes the debt its delivery finds as a unit's [Debt](delivery-plan.md#debt) states."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/hotfix.md",
+    "candidates": [
+      {
+        "line": 27,
+        "text": "3. Return the hot-fix number to the caller, which rewrites and saves the issue's body, title and labels, then places it through [Settle Hot-fix Board Status](#settle-hot-fix-board-status), as its [placement](placement.md#disposition-conditions) orders."
+      },
+      {
+        "line": 56,
+        "text": "2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative-issue-body.md",
+    "candidates": [
+      {
+        "line": 52,
+        "text": "2. Return the body and [Delivery Findings](initiative.md#delivery-findings) from the supplied initiative and epic records. Delivery eligibility follows [Delivery State](initiative.md#delivery-state)."
+      },
+      {
+        "line": 139,
+        "text": "- A Proposal states the design, as [Problem and Proposal](issue-body.md#problem-and-proposal) defines."
+      },
+      {
+        "line": 166,
+        "text": "  An initiative criterion states what the initiative achieves as a whole. One that restates a single epic's criterion is a duplicate: it is raised to what the epics achieve together, or left to the epic."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/initiative.md",
+    "candidates": [
+      {
+        "line": 27,
+        "text": "An epic is delivered when its issue is closed as completed. An open or cancelled epic remains undelivered, including when all initiative criteria are ticked. An epic the run was not given is unchecked: its row's Done cell stands, the sync reports the row unchanged, and completion stays unconfirmed. Criterion readiness and premature ticks are [Delivery Findings](#delivery-findings); delivery alone does not verify a criterion."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue-body.md",
+    "candidates": [
+      {
+        "line": 42,
+        "text": "3. Return the [Format Findings](#format-findings)."
+      },
+      {
+        "line": 162,
+        "text": "- A judgment about meaning, such as a claim that a description states what choosing means, is subjective wording."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/issue.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/lane.md",
+    "candidates": [
+      {
+        "line": 13,
+        "text": "- Run [Read Lane Assignments](#read-lane-assignments) with the body file and return its row-to-index map and findings, meeting [Assignments](#assignments)."
+      },
+      {
+        "line": 31,
+        "text": "- Run [Validate Lane Unit](#validate-lane-unit) with the body and unit ids and return the common index or findings, meeting [Unit Consistency](#unit-consistency)."
+      },
+      {
+        "line": 39,
+        "text": "- Run [Evaluate Lane Admission](#evaluate-lane-admission) with the body, unit ids and requested index and return its admitted flag and findings, meeting [Admission](#admission)."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/placement.md",
+    "candidates": [
+      {
+        "line": 38,
+        "text": "2. Return the [Candidate Issues](#candidate-issues) and open initiative and epic destinations for the caller to investigate."
+      },
+      {
+        "line": 54,
+        "text": "     - Add the epic criteria the row's Coverage needs where the orphan's outcomes exceed the epic's, as [Destination Work](#destination-work) states."
+      },
+      {
+        "line": 55,
+        "text": "     - Leave the row's Task cell holding the row id alone until the work is planned and the row gains its work-item file, as [Task Delivery](epic-issue-body.md#task-delivery) states."
+      },
+      {
+        "line": 72,
+        "text": "2. Return the saved destination, the identities of all affected bodies and the confirmed disposition to the caller, including the destination initiative, epic and new row id for a new task or new epic, and the number for a hot-fix. The caller performs the rewrite or closure."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/plan-change.md",
+    "candidates": [
+      {
+        "line": 15,
+        "text": "3. Return it as held otherwise, for the caller to settle as [Held Change](#held-change) states."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/planning-record.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/proposal-body.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request-body.md",
+    "candidates": [
+      {
+        "line": 139,
+        "text": "- An instrument that does not exist yet is work the task carries, as the verified rule defines. Use the project's own system test where it can observe the criterion."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/pull-request.md",
+    "candidates": [
+      {
+        "line": 30,
+        "text": "   - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it."
+      },
+      {
+        "line": 31,
+        "text": "3. Return the merge result, including its merge commit when supplied, for the caller's readback."
+      },
+      {
+        "line": 182,
+        "text": "   - Return the verified head, target requirements and readiness result, including unresolved conditions."
+      },
+      {
+        "line": 327,
+        "text": "- `draft` is true, including when the work is already complete."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-graph.md",
+    "candidates": [
+      {
+        "line": 24,
+        "text": "7. Return only evidence current with the supplied head, meeting [Fields](#fields), or a freshness blocker."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/repository-labels.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/review-finding.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/standalone-body.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/standup-report.md",
+    "candidates": [
+      {
+        "line": 27,
+        "text": "   - The report must meet [Fields](#fields)."
+      }
+    ]
+  },
+  {
+    "file": "skills/work-planner/artifacts/task-body.md",
+    "candidates": []
+  },
+  {
+    "file": "skills/work-planner/artifacts/work-item.md",
+    "candidates": [
+      {
+        "line": 53,
+        "text": "| Test | {{The checks required by the work, including the project's system test when applicable}} |"
+      },
+      {
+        "line": 65,
+        "text": "- The long-lived branch decides which of an epic's bases the task's unit changes, as [Task Branches](delivery-branches.md#task-branches) states."
+      }
+    ]
+  }
+]
