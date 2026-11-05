@@ -13,6 +13,13 @@ The shared checker selects each skill's declared model and keeps other skills va
 | Artifact | What it holds |
 | --- | --- |
 
+| [w01.md](w01.md) | Implementation scope and validation obligations |
+| [design.md](design.md) | Model and parser responsibilities, baseline and reading-path limits |
+| [progress.md](progress.md) | Delivery checklist |
+| [baseline-check.txt](baseline-check.txt) | Complete installed-tree baseline findings |
+| [baseline-tests.txt](baseline-tests.txt) | Unmodified shared-suite result |
+| [baseline-planner.txt](baseline-planner.txt) | Unmodified Work Planner checker result |
+
 ## Links
 
 | Resource | Link |
