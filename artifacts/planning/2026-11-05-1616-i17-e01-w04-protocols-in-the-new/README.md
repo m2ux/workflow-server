@@ -6,10 +6,15 @@
 
 This record carries the user-approved Work Planner style conversion for W04. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
 
+The protocol family preserves its complete conditions and required reads while exposing each step as a heading and each call through its layer-specific verb.
+
 ## Artifacts
 
 | Artifact | What it holds |
 | --- | --- |
+
+| [Work item](w04.md) | Protocol-family implementation plan and required checks |
+| [Design](design.md) | Presentation, preservation accounting, reader ownership and validation |
 
 ## Links
 
