@@ -91,3 +91,11 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
 | [Epic readback](integration-epic-readback.json) | Saved specification, eight delivered rows and checked criteria |
 | [Human handoff](integration-handoff.json) | Ready PR, exact In Review item, target rules and blocked successor |
+
+## Contextual Contract Draft
+
+`→` identifies a linked input consumed by an operation; `←` identifies a linked output it provides. A future feature derives the operation’s explicit IO contract from these marked links and verifies a performed operation against that contract.
+
+| Artifact | What it holds |
+| --- | --- |
+| [Single-file example](contextual-contract-example.md) | Draft operation with contextual → input and ← output links and Provide prose, for review before migration |
