@@ -9,9 +9,9 @@ Work Planner plans work as GitHub issues and keeps that plan true until the work
 - **The prose.**
   Modes, protocols and artifacts are instructions an agent follows. Five modules hold their shape instead of a script's behaviour: that every link resolves, that each operation names its inputs, that each command names the checkout it acts on, and that a plan is written where the plan says.
 - **Neither against a live tracker.**
-  Issue, board and pull request state arrives in shapes pinned in `fixtures.py`. A test writes those shapes to a temporary directory and runs a script over them.
+  Issue, board and pull request state arrives in shapes pinned in [fixtures](fixtures.py). A test writes those shapes to a temporary directory and runs a script over them.
 
-Both kinds sit in one folder. The script tests import `fixtures.py` from beside them, and a single discovery command runs the lot; `scripts/` holds the programs the skill runs, not the checks on them.
+Both kinds sit in one folder. The script tests import the fixture module from beside them, and a single discovery command runs the lot; `scripts/` holds the programs the skill runs, not the checks on them.
 
 ## Why It Is Tested
 
@@ -24,103 +24,109 @@ Both kinds sit in one folder. The script tests import `fixtures.py` from beside 
 
 ## Catalogue
 
-One row per module, split by what it tests. The description is the module's docstring, and the tests column is the count of `test_` methods.
+One row per module, split by what it tests. The description is the module's docstring, and the coverage table carries each module's test count beside its name.
 
 ### Script Tests
 
 These modules exercise the programs in `../scripts`, which the coverage table maps back from.
 
-| Module | What it guards | Tests |
-| --- | --- | --- |
-| `test_agent_review.py` | Current integration review evidence gates board and user handoff | 16 |
-| `test_align.py` | Alignment repairs, unreadable evidence and reference visibility fixtures | 18 |
-| `test_board.py` | The assignees `board.py` gives an issue for its Status, and an initiative's Status once its criteria are ticked | 60 |
-| `test_board_queue.py` | The queue `board-queue.py` sets on a theme board | 75 |
-| `test_closure.py` | The closure gate passes on the issue and its Development links, the evidence GitHub exposes | 13 |
-| `test_closure_sweep.py` | The closure sweep lists each closed issue its criteria or Development links do not support | 14 |
-| `test_deliver.py` | The work `deliver.py` finds available on a theme board, and the rows it reserves and releases | 96 |
-| `test_deps.py` | `deps.py` checks the task graph and proposes the rows that can share a pull request | 74 |
-| `test_development_link.py` | Development links added and removed by `development-link.py`, and read back from both ends | 9 |
-| `test_dispatch.py` | Continuous dispatch from real delivery surveys and observed worker events | 19 |
-| `test_format.py` | `format.py` on standalone issues | 109 |
-| `test_hotfix.py` | `hotfix.py`: a hot-fix's identity, target, board status, delivering pull requests and delivery unit state | 16 |
-| `test_lane.py` | Lane's raw-cell, assignment, consistency and admission contracts | 12 |
-| `test_link_capture.py` | The Development relation read from each end by `links-by-pull-request.py` and `links-by-issue.py`, and the linked pull requests `linked-pull-requests.py` adds to a collection | 22 |
-| `test_orphans.py` | `orphans.py` keeps a proposal out of the hoist candidates and out of the initiative list, and a declared throwaway out of both candidate groups | 3 |
-| `test_progress.py` | `progress.py`: one test per rule its docstring states | 76 |
-| `test_renumber.py` | `renumber.py` rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies | 32 |
-| `test_revision_check.py` | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout | 8 |
-| `test_shared.py` | The helpers `progress.py` shares with `board.py`, `sync.py` and `format.py` | 11 |
-| `test_statuses.py` | The jurisdiction each mode's Status changes are held to, and the calls they render | 21 |
-| `test_sync.py` | Done on a Work Breakdown row, ticked when the row is complete | 185 |
-| `test_templates.py` | Body artifacts are the format checker's sole template source | 4 |
+| Module | What it guards |
+| --- | --- |
+| [test_agent_review](test_agent_review.py) | Current integration review evidence gates board and user handoff |
+| [test_align](test_align.py) | Alignment repairs, unreadable evidence and reference visibility fixtures |
+| [test_board](test_board.py) | The assignees [board](../scripts/board.py) gives an issue for its Status, and an initiative's Status once its criteria are ticked |
+| [test_board_queue](test_board_queue.py) | The queue [board-queue](../scripts/board-queue.py) sets on a theme board |
+| [test_closure](test_closure.py) | The closure gate passes on the issue and its Development links, the evidence GitHub exposes |
+| [test_closure_sweep](test_closure_sweep.py) | The closure sweep lists each closed issue its criteria or Development links do not support |
+| [test_deliver](test_deliver.py) | The work [deliver](../scripts/deliver.py) finds available on a theme board, and the rows it reserves and releases |
+| [test_deps](test_deps.py) | [deps](../scripts/deps.py) checks the task graph and proposes the rows that can share a pull request |
+| [test_development_link](test_development_link.py) | Development links added and removed by [development-link](../scripts/development-link.py), and read back from both ends |
+| [test_dispatch](test_dispatch.py) | Continuous dispatch from real delivery surveys and observed worker events |
+| [test_format](test_format.py) | [format](../scripts/format.py) on standalone issues |
+| [test_hotfix](test_hotfix.py) | [hotfix](../scripts/hotfix.py): a hot-fix's identity, target, board status, delivering pull requests and delivery unit state |
+| [test_lane](test_lane.py) | Lane's raw-cell, assignment, consistency and admission contracts |
+| [test_link_capture](test_link_capture.py) | The Development relation read from each end by [links-by-pull-request](../scripts/links-by-pull-request.py) and [links-by-issue](../scripts/links-by-issue.py), and the linked pull requests [linked-pull-requests](../scripts/linked-pull-requests.py) adds to a collection |
+| [test_orphans](test_orphans.py) | [orphans](../scripts/orphans.py) keeps a proposal out of the hoist candidates and out of the initiative list, and a declared throwaway out of both candidate groups |
+| [test_progress](test_progress.py) | [progress](../scripts/progress.py): one test per rule its docstring states |
+| [test_renumber](test_renumber.py) | [renumber](../scripts/renumber.py) rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies |
+| [test_revision_check](test_revision_check.py) | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout |
+| [test_shared](test_shared.py) | The helpers [progress](../scripts/progress.py) shares with [board](../scripts/board.py), [sync](../scripts/sync.py) and [format](../scripts/format.py) |
+| [test_statuses](test_statuses.py) | The jurisdiction each mode's Status changes are held to, and the calls they render |
+| [test_sync](test_sync.py) | Done on a Work Breakdown row, ticked when the row is complete |
+| [test_templates](test_templates.py) | Body artifacts are the format checker's sole template source |
 
 ### Prose Tests
 
 These modules read the skill's own documents rather than a script.
 
-| Module | What it guards | Tests |
-| --- | --- | --- |
-| `test_checkouts.py` | Each command acting on its checkout is run in a named one | 7 |
-| `test_documents.py` | The installed prose API exposes complete inputs and directed reading paths | 11 |
-| `test_modes.py` | Mode summaries in each skill's `SKILL.md` | 4 |
-| `test_plan_mode.py` | Plan Mode keeps a plan in one home: its planning record on the engineering branch | 6 |
-| `test_readme.py` | The test folder's README names every module and every script, and its rows match what the folder holds | 12 |
-| `test_worktrees.py` | Every worktree the skill creates is placed by a field, and git places a relative path where the command runs | 2 |
+| Module | What it guards |
+| --- | --- |
+| [test_checkouts](test_checkouts.py) | Each command acting on its checkout is run in a named one |
+| [test_documents](test_documents.py) | The installed prose API exposes complete inputs and directed reading paths |
+| [test_modes](test_modes.py) | Mode summaries in each skill's [SKILL](../SKILL.md) |
+| [test_plan_mode](test_plan_mode.py) | Plan Mode keeps a plan in one home: its planning record on the engineering branch |
+| [test_readme](test_readme.py) | The test folder's README names every module and every script, and its rows match what the folder holds |
+| [test_worktrees](test_worktrees.py) | Every worktree the skill creates is placed by a field, and git places a relative path where the command runs |
 
-`test_readme.py` checks this catalogue rather than an artifact, so it sits here by the same rule: it reaches no script.
+[test_readme](test_readme.py) checks this catalogue rather than an artifact, so it sits here by the same rule: it reaches no script.
 
-`fixtures.py` holds no tests. It builds board items, issues and pull requests as the REST API returns them, and runs the scripts over them.
+[fixtures](fixtures.py) holds no tests. It builds board items, issues and pull requests as the REST API returns them, and runs the scripts over them.
 
 ## Coverage
 
-One row per script in `../scripts`, then one per document the prose tests read. The table is the reverse of the catalogue: it answers what exercises a given file.
+One row per script in `../scripts`, then one per document the prose tests read. The table is the reverse of the catalogue: it answers what exercises a given file. Each module carries its test count, which is the only signal of how much of a subject a module reaches.
 
-| Subject | Exercised by |
+### Scripts
+
+| Script | Exercised by |
 | --- | --- |
-| `agent_review.py` | `test_agent_review.py` |
-| `align.py` | `test_align.py` |
-| `board.py` | `test_board.py`, `test_shared.py` |
-| `board-queue.py` | `test_board_queue.py` |
-| `closure.py` | `test_closure.py` |
-| `closure-sweep.py` | `test_closure_sweep.py` |
-| `deliver.py` | `test_deliver.py`, `test_dispatch.py` |
-| `deps.py` | `test_deps.py` |
-| `development.py` | `test_link_capture.py` |
-| `development-link.py` | `test_development_link.py` |
-| `dispatch.py` | `test_dispatch.py` |
-| `format.py` | `test_format.py`, `test_shared.py`, `test_sync.py`, `test_templates.py` |
-| `hotfix.py` | `test_hotfix.py` |
-| `lane.py` | `test_dispatch.py`, `test_lane.py` |
-| `linked-pull-requests.py` | `test_link_capture.py` |
-| `links-by-issue.py` | `test_link_capture.py` |
-| `links-by-pull-request.py` | `test_link_capture.py` |
-| `orphans.py` | `test_orphans.py` |
-| `progress.py` | `test_progress.py` |
-| `renumber.py` | `test_renumber.py` |
-| `revision-check.py` | `test_revision_check.py` |
-| `statuses.py` | `test_board.py`, `test_shared.py`, `test_statuses.py` |
-| `sync.py` | `test_align.py`, `test_link_capture.py`, `test_shared.py`, `test_sync.py` |
-| **Documents** | |
-| `SKILL.md` | `test_checkouts.py`, `test_documents.py` |
-| `guidelines.md` | `test_checkouts.py`, `test_documents.py` |
-| `modes/` | `test_checkouts.py`, `test_documents.py` |
-| `protocols/` | `test_checkouts.py`, `test_documents.py` |
-| `artifacts/` | `test_checkouts.py`, `test_documents.py`, `test_worktrees.py` |
-| `references/` | `test_checkouts.py`, `test_documents.py` |
-| `modes/plan-mode.md` | `test_plan_mode.py` |
-| `artifacts/planning-record.md` | `test_plan_mode.py` |
-| `*/SKILL.md` | `test_modes.py` |
-| `test/README.md` | `test_readme.py` |
+| [agent_review](../scripts/agent_review.py) | [test_agent_review](test_agent_review.py) (16) |
+| [align](../scripts/align.py) | [test_align](test_align.py) (18) |
+| [board](../scripts/board.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11) |
+| [board-queue](../scripts/board-queue.py) | [test_board_queue](test_board_queue.py) (75) |
+| [closure](../scripts/closure.py) | [test_closure](test_closure.py) (13) |
+| [closure-sweep](../scripts/closure-sweep.py) | [test_closure_sweep](test_closure_sweep.py) (14) |
+| [deliver](../scripts/deliver.py) | [test_deliver](test_deliver.py) (96), [test_dispatch](test_dispatch.py) (19) |
+| [deps](../scripts/deps.py) | [test_deps](test_deps.py) (74) |
+| [development](../scripts/development.py) | [test_link_capture](test_link_capture.py) (22) |
+| [development-link](../scripts/development-link.py) | [test_development_link](test_development_link.py) (9) |
+| [dispatch](../scripts/dispatch.py) | [test_dispatch](test_dispatch.py) (19) |
+| [format](../scripts/format.py) | [test_format](test_format.py) (109), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185), [test_templates](test_templates.py) (4) |
+| [hotfix](../scripts/hotfix.py) | [test_hotfix](test_hotfix.py) (16) |
+| [lane](../scripts/lane.py) | [test_dispatch](test_dispatch.py) (19), [test_lane](test_lane.py) (12) |
+| [linked-pull-requests](../scripts/linked-pull-requests.py) | [test_link_capture](test_link_capture.py) (22) |
+| [links-by-issue](../scripts/links-by-issue.py) | [test_link_capture](test_link_capture.py) (22) |
+| [links-by-pull-request](../scripts/links-by-pull-request.py) | [test_link_capture](test_link_capture.py) (22) |
+| [orphans](../scripts/orphans.py) | [test_orphans](test_orphans.py) (3) |
+| [progress](../scripts/progress.py) | [test_progress](test_progress.py) (76) |
+| [renumber](../scripts/renumber.py) | [test_renumber](test_renumber.py) (32) |
+| [revision-check](../scripts/revision-check.py) | [test_revision_check](test_revision_check.py) (8) |
+| [statuses](../scripts/statuses.py) | [test_board](test_board.py) (60), [test_shared](test_shared.py) (11), [test_statuses](test_statuses.py) (21) |
+| [sync](../scripts/sync.py) | [test_align](test_align.py) (18), [test_link_capture](test_link_capture.py) (22), [test_shared](test_shared.py) (11), [test_sync](test_sync.py) (185) |
 
-This table states reach, not depth. A module that imports a script and tests one branch of it reads the same as one that tests every branch; the Tests column is the only signal of depth.
+### Documents
 
-`test/README.md` is this folder's own file, so `test_readme.py` is the one row whose subject is the catalogue itself.
+| Document | Exercised by |
+| --- | --- |
+| [SKILL](../SKILL.md) | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
+| [guidelines](../guidelines.md) | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
+| `modes/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
+| `protocols/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
+| `artifacts/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11), [test_worktrees](test_worktrees.py) (2) |
+| `references/` | [test_checkouts](test_checkouts.py) (7), [test_documents](test_documents.py) (11) |
+| [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (6) |
+| [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (6) |
+| `*/SKILL.md` | [test_modes](test_modes.py) (4) |
+| [README](README.md) | [test_readme](test_readme.py) (14) |
+
+A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
+
+A folder row stays as code text because a link to a directory resolves to nothing a reader can open. [README](README.md) is this folder's own file, so [test_readme](test_readme.py) is the one row whose subject is the catalogue itself.
 
 ## Keeping It Current
 
 - **All three tables are checked.**
-  `test_readme.py` fails when a module, script or document has no row, when a row names something absent, and when a cell disagrees with the file it describes.
+  [test_readme](test_readme.py) fails when a module, script or document has no row, when a row names something absent, and when a cell disagrees with the file it describes.
 - **A table follows its scripts.**
   A module that gains or loses a script import must move to the matching table, since the check reads the row's table against what the module reaches.
 - **Fix the row the check names.**
