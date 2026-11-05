@@ -1,0 +1,62 @@
+{
+  "task": {
+    "number": 1642,
+    "head": "83ac545a0c9f37cf545fd17ce945c27dd6a0ddd2",
+    "base": "i17/e01/workspace",
+    "merged": true,
+    "merge_commit": "238b652aaa52057f66c86c9651c379296a7ba5b2"
+  },
+  "epic": {
+    "number": 1616,
+    "state": "open",
+    "verified_criteria": [
+      "AC1",
+      "AC2"
+    ],
+    "done_rows": [
+      "W01",
+      "W02"
+    ],
+    "W08_retained": true
+  },
+  "review": {
+    "number": 1641,
+    "draft": true,
+    "head": "238b652aaa52057f66c86c9651c379296a7ba5b2",
+    "base": "workspace",
+    "task_references": [
+      1640,
+      1642
+    ]
+  },
+  "board": {
+    "id": 291152098,
+    "status_field": 422017304,
+    "status": "In Progress",
+    "option": "47fc9ee4"
+  },
+  "tree": "f2ad2ec1c50469133dd11fb3994a0e795b2ab0c8",
+  "development_relations": {
+    "epic_to_review": [
+      {
+        "repo": "m2ux/workflow-server",
+        "number": 1641,
+        "state": "OPEN"
+      }
+    ],
+    "task_to_issue": []
+  },
+  "target_readiness": {
+    "protection_http_status": 404,
+    "active_rules": [],
+    "reviews": [],
+    "check_count": 0,
+    "status_count": 0,
+    "composite_status": "pending"
+  },
+  "scope": "Work Planner only",
+  "plan_changes": {
+    "applied": [],
+    "held": []
+  }
+}

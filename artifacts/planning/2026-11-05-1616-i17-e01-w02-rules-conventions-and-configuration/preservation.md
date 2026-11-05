@@ -30,4 +30,4 @@ The source is the live Work Planner at dd44528b3fdea032c4128e1e0f638d038261498a.
 - [x] Implement extraction and caller repairs.
 - [x] Complete review, tests and reading-path validation, preserving partial workflow findings.
 - [x] Publish task pull request and obtain coordinator review at 83ac545a0c9f37cf545fd17ce945c27dd6a0ddd2.
-- [ ] Confirm merge, record delivery and publish the session change list.
+- [x] Confirm merge, record delivery and publish the session change list.

@@ -1,0 +1,3 @@
+#1616 epic (open)
+  source: config/branches at 238b652aaa52057f66c86c9651c379296a7ba5b2 in /home/mike1/projects/dev/workflow-server/.git
+  closable: no (undelivered W03, W04, W05, W06, W07, W08, unticked AC3, AC4, AC5, AC6, AC7, AC8)

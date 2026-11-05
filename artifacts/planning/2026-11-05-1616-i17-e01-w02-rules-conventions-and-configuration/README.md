@@ -1,6 +1,6 @@
 # Rules, Conventions and Configuration — November 2026
 
-> I17 E01 W02 · Created 2026-11-05
+> I17 E01 W02 · Created 2026-11-05 · Revised 2026-11-05
 
 ## Executive Summary
 
@@ -33,6 +33,9 @@ The extraction preserves the live skill's instructions and updates the readers t
 | [revision-check.log](revision-check.log) | AC2 named instrument at the literal published task commit. |
 | [epic-body.md](epic-body.md) | Current epic body used by the session’s tracker publications. |
 | [merged-revision-check.log](merged-revision-check.log) | AC2 named instrument at the confirmed merged delivery revision. |
+| [delivery.md](delivery.md) | Confirmed merge, tracker/review/board readbacks and coordinator handoff. |
+| [delivery.json](delivery.json) | Machine-readable exact-head, merge, criterion, relation and board evidence. |
+| [delivery-sync.txt](delivery-sync.txt) | Final delivery match with current review references and explicit remaining scope. |
 
 ## Links
 
