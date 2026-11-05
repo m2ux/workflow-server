@@ -63,3 +63,13 @@ Update Epic Base found the workspace target already incorporated. An initial Run
 Only AC4 is verified by these task-merge results. Disclosure observations remain Partial; W08/AC8 retains installed model adoption. The completion source changes only W04 Done and AC4's tick. Sibling reservations, W08 and unticked AC8 are preserved. No task issue exists to close, and the incomplete epic does not enter review or close. The exact board item291152098 identifies epic1616 as In Progress. [Completion source](epic-complete-body.md), [delivery output](epic-completion-sync.log), [input archive](merged-delivery-inputs.tar.gz), [board](board-after-merge.json).
 
 The draft integration's source retains every actual task merge reference through PR1644 and adds the protocol-family design account. Publication/readback follows below; its ready state is not changed.
+
+## Confirmed Unit Completion
+
+Task Merge is complete for W04. The live epic was fetched immediately before its write and matched the reviewed source input. Its saved/read-back body changes only verified AC4 and W04 Done, preserving W05/W06/W07 reservations, W08 and unticked AC8. The epic remains open. [Epic readback](epic-final.json).
+
+Review Pull Request updates draft1641 to cite every actual merged task PR through1644 and to describe the protocol family. Its saved body equals the published source; it remains draft against workspace at merged epic-base head `11e6085570ea60bd1132e32a5bd375d4fa03a77c`. Fresh complete pull-side and issue-side Development captures and a final Record Epic Delivery run report no further link, criterion, Done, reference or Changes-path discrepancy and produce an identical body. Its remaining incomplete result is undelivered sibling work and criteria. [Integration readback](integration-final.json), [consistency output](final-sync.log), [input archive](final-delivery-inputs.tar.gz).
+
+The exact Project17 item291152098 identifies epic1616 and Status field422017304 equal to In Progress. No board-status write is needed for this incomplete epic. No task issue exists to close; epic integration, epic closure and initiative sync remain gated on their own completion conditions. Both the unit and epic-base worktrees are clean at their recorded heads. Applied/held change lists are empty; no successor starts. [Board readback](board-final.json), [completion identity](completion.json).
+
+Strict family, preservation and complete behavioral suites pass at both literal task head and merge revision. Disclosure observations remain Partial, and installed model activation remains W08/AC8. The shared engineering lease is returned after this final record is pushed.

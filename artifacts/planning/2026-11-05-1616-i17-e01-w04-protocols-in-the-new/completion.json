@@ -1,0 +1,31 @@
+{
+  "pr": 1644,
+  "head": "790370ae2eff38a5619ec68c2ca431748c31982a",
+  "merge": "11e6085570ea60bd1132e32a5bd375d4fa03a77c",
+  "tree": "9334e31ff12b80c7ba411bde1fa4323f01d0fb29",
+  "epic": 1616,
+  "criteria_verified": [
+    "AC4"
+  ],
+  "tasks_complete": [
+    "W04"
+  ],
+  "integration": {
+    "pr": 1641,
+    "draft": true,
+    "head": "11e6085570ea60bd1132e32a5bd375d4fa03a77c",
+    "target": "workspace"
+  },
+  "board": {
+    "number": 17,
+    "item": 291152098,
+    "status_field": 422017304,
+    "status": "In Progress"
+  },
+  "disclosure": "Partial",
+  "plan_changes": {
+    "applied": [],
+    "held": []
+  },
+  "successor_started": false
+}

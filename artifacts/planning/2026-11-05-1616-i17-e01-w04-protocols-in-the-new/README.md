@@ -1,12 +1,12 @@
 # Protocols in the New Style — November 2026
 
-> I17 E01 W04 · Created 2026-11-05
+> I17 E01 W04 · Created 2026-11-05 · Revised 2026-11-05
 
 ## Executive Summary
 
 This record carries the user-approved Work Planner style conversion for W04. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
 
-The protocol family preserves its complete conditions and required reads while exposing each step as a heading and each call through its layer-specific verb. Exact-head checks test the composed source; the six repeated reading observations remain explicitly Partial.
+The protocol family preserves its complete conditions and required reads while exposing each step as a heading and each call through its layer-specific verb. PR1644 is merged and AC4/W04 are recorded complete. Exact-head and merged-revision checks test the composed source; the six repeated reading observations remain explicitly Partial. The integration remains draft while sibling work is incomplete.
 
 ## Artifacts
 
@@ -82,6 +82,18 @@ The protocol family preserves its complete conditions and required reads while e
 | [merged-shared-suite.json](merged-shared-suite.json) | Literal merge verification and scoped completion evidence |
 
 | [pr-merged.json](pr-merged.json) | Literal merge verification and scoped completion evidence |
+
+| [board-final.json](board-final.json) | Confirmed Task Merge and final readback evidence |
+
+| [completion.json](completion.json) | Confirmed Task Merge and final readback evidence |
+
+| [epic-final.json](epic-final.json) | Confirmed Task Merge and final readback evidence |
+
+| [final-delivery-inputs.tar.gz](final-delivery-inputs.tar.gz) | Confirmed Task Merge and final readback evidence |
+
+| [final-sync.log](final-sync.log) | Confirmed Task Merge and final readback evidence |
+
+| [integration-final.json](integration-final.json) | Confirmed Task Merge and final readback evidence |
 
 ## Links
 
