@@ -18,6 +18,8 @@ This unit delivers AC6 through its isolated task branch into i17/e03/workspace. 
 | [Change list](change-list.md) | Applied and held plan changes |
 | [Planner results](planner-tests.log) | Complete planner-suite output |
 | [Shared results](shared-tests.log) | Complete shared-checker output |
+| [Final planner results](planner-final.log) | Complete suite after W10 base integration |
+| [Final shared results](shared-final.log) | Shared checks at the final task head |
 
 ## Links
 

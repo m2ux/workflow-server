@@ -8,8 +8,8 @@ W09 delivers AC6 on branch i17/e03/w09-deliver-mode-passes-the. The component is
 
 - [x] Confirm live reservation and criterion, and inspect current mode and lane owner.
 - [x] Implement the request input, every survey call and confirmation output.
-- [ ] Verify complete suites at the final task head. **In progress.**
-- [ ] Publish the task PR and record its row link.
+- [x] Verify complete suites at the final task head.
+- [ ] Publish the task PR and record its row link. **In progress.**
 - [ ] Merge verified work, observe the merged revision and record AC6/Done.
 - [ ] Update draft integration, read back board and publish final evidence.
 
@@ -28,3 +28,7 @@ The complete planner suite, shared-checker suite and skill-file check run from t
 ## Debt and Plan Changes
 
 Inspection found no defect in this unit. No arising issue, applied plan change or held plan change is identified. The existing W01/AC1 historical coverage disagreement remains intentional evidence after the approved criterion retirement. W14 owns the unsupported cross-epic join diagnostic; this unit changes only Deliver-mode request flow.
+
+## Final Task Head
+
+The task incorporates merged W10 #1633. The final tested and pushed head is `66ec92c4fea05169e8dc8cda3c02f41fd63e625d`. Its complete planner suite exited zero: 882 run, 881 passed, one opt-in live-link skip. All 208 shared-checker tests passed, 15 document/mode checks passed, and the skill-file check reported 52 files with zero findings. planner-final.log and shared-final.log retain the final-head output. The complete committed mode retains each T1 observation at this revision.
