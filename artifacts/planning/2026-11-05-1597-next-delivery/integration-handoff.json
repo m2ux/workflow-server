@@ -1,15 +1,15 @@
 {
   "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
-  "head": "dc1b274f9176a8d562ada4748c7bb89028532d1b",
+  "head": "00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01",
   "base": "03d353300ca4804194fd50d316d73e3bf1270d1d",
-  "draft": false,
+  "draft": true,
   "merged": false,
   "mergeable": true,
   "mergeable_state": "blocked",
   "board": {
     "identity": "users/m2ux/projectsV2/17",
     "item": 291152098,
-    "status": "In Review"
+    "status": "In Progress"
   },
   "requirements": [
     {
@@ -54,7 +54,7 @@
     "statuses": []
   },
   "reviews": [],
-  "agent_review_current": true,
+  "agent_review_current": false,
   "human_handoff": "One approving human review and reviewer merge required by workspace rules. No merge attempted.",
   "next_unit": {
     "epic": "https://github.com/m2ux/workflow-server/issues/1615",
@@ -62,5 +62,6 @@
     "state": "blocked",
     "reason": "Initiative E02 depends on completed E01; E02 W01 also consumes E01 W08 output on workspace. E01 integration is open and unmerged.",
     "auto_start_authorized": true
-  }
+  },
+  "stage": "Exact-head review published; ready and board transitions pending published-record validation."
 }

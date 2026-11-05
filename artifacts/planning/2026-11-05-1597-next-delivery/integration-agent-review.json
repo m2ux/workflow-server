@@ -1,14 +1,14 @@
 [
   {
     "pull_request": "https://github.com/m2ux/workflow-server/pull/1641",
-    "head": "dc1b274f9176a8d562ada4748c7bb89028532d1b",
+    "head": "00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01",
     "base": "03d353300ca4804194fd50d316d73e3bf1270d1d",
     "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1597-next-delivery/integration-agent-review.json",
     "reviewer": "codex:/root",
-    "reviewed_at": "2026-11-05T15:41:56.159267+00:00",
-    "scope": "Complete 67-path E01 target-to-head integration, composed per-unit diff and caller reviews, shared parser/model/format changes, meaningful consuming tests, integration checkout caller corrections and all final item-prefix/guideline changes. Exact preservation audits bind the final formatting delta; graph measurements bind current static relationships.",
-    "criteria": "AC1\u2013AC8 verified and ticked on issue #1616. All eight planned task PRs merged into the epic base; complete scoped Development-link snapshot read successfully. Current installed-model check and meaningful suite assertions observe the criterion contracts.",
-    "validation": "Frozen head: Work Planner 933 tests (932 pass, one opt-in live check skipped), shared checker 258 pass, installed model 58 files/zero findings, full diff whitespace pass. Exact 333-prefix audit preserves procedure payloads and route identities. Full graph recovery/context and exact process-order audit pass. Historical independent reading trials remain Partial with exclusions, over-reading and receipt limits; no clean external workflow or token-saving claim. See integration-validation.md and linked unit records.",
+    "reviewed_at": "2026-11-05T17:02:53.312537+00:00",
+    "scope": "Complete 67-path E01 target-to-head integration, composed per-unit diff/caller reviews, final shared lexical/model and contextual role validation, 237 operation prose contracts, guidelines/declarations, source and checkout readers. Final frozen-source identity and payload/prerequisite preservation audited.",
+    "criteria": "AC1\u2013AC8 verified on issue #1616, all eight task PRs merged into the epic base. Contextual role requirements checked against actual operation uses and independent retained obligations.",
+    "validation": "Frozen source matches final commit: Work Planner 934 tests (933 pass, one opt-in live check skipped), shared checker 262 pass, installed model 58 files/zero findings, target-to-head whitespace pass. Complete current graph audit passes. Six independent reading plans remain Partial for over-reading, closure, truncation and receipt limits; no full disclosure, runtime verification or token-saving claim. See integration-validation.md and context-reading-review.md.",
     "findings": []
   }
 ]

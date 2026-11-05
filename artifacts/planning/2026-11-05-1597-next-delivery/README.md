@@ -84,31 +84,38 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 | [Graph audit](integration-graph-audit.json) | Context identities, ordered flow completeness and freshness |
 | [Step item inventory](step-item-audit.json) | Every step and exact bullet-prefix correction |
 | [Step preservation](step-preservation.json) | Exact procedure text, payload and route preservation |
-| [Work Planner result](integration-work-planner.log) | Frozen-head 933-test run with one opt-in skip |
-| [Shared checker result](integration-shared-checker.log) | Frozen-head 258-test run |
+| [Work Planner result](integration-work-planner.log) | Frozen-head 934-test run with one opt-in skip |
+| [Shared checker result](integration-shared-checker.log) | Frozen-head 262-test run |
 | [Installed model result](integration-installed-check.log) | 58 files and zero findings |
 | [Final document result](step-document-check.log) | 13 affected document checks |
 | [Delivery reconciliation](integration-sync.log) | Sole expected unmerged integration base |
 | [Epic readback](integration-epic-readback.json) | Saved specification, eight delivered rows and checked criteria |
 | [Human handoff](integration-handoff.json) | Ready PR, exact In Review item, target rules and blocked successor |
 
-## Contextual Contract Draft
-
-`[Input](#input-field "input")` identifies an input consumed by an operation; `[Output](#output-field "output")` identifies an output it provides. The Markdown link title records the role while the rendered link text carries the field name. A future feature derives the operation’s explicit IO contract from these annotated links and verifies a performed operation against that contract.
+## Contextual Contract Example
 
 | Artifact | What it holds |
 | --- | --- |
-| [Single-file example](contextual-contract-example.md) | Draft operation with input/output link titles and Provide prose, for review before migration |
+| [Approved example](contextual-contract-example.md) | Natural input/output prose and tagged callable links |
 
-### Required Migration Check
-
-- Inventory every operation and its actual consumed inputs and provided outputs by inspecting its step prose, commands, operation calls, conditions and result handling. The expected inventory comes from those uses, independently of the annotated links.
-- Check the applied skill files against that inventory: every input and output is explicitly named in step prose and linked to its corresponding Field with the notation above. A command placeholder or implied value alone does not establish that prose contract.
-- Resolve every annotated target to its owning Field, add a missing Field at its owning home, and add an explicit Provide step for an output the procedure leaves unstated. Preserve the operation’s conditions and responsibilities.
-- Reconcile every operation against the inventory, including conditional results, and record missing, unannotated or unresolved contracts as failures. Completion requires no input or output carried by implication alone.
+Runtime meanings live in [Link Roles](https://github.com/m2ux/workflow-server/blob/00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01/skills/work-planner/rules.md#link-roles); the migration record owns the completeness check. Performed-operation verification is a future feature.
 
 ## Contextual Contract Migration
 
 | Artifact | What it holds |
 | --- | --- |
 | [Approved migration](context-contract-migration.md) | Ownership, complete IO audit and implementation/verification sequence |
+
+## Contextual Contract Evidence
+
+| Artifact | What it holds |
+| --- | --- |
+| [Coverage audit](context-contract-audit.json) | 237 artifact operations and expected versus observed role links |
+| [Revise command audit](context-revise-contract-audit.json) | Three additional command operations and their actual results |
+| [Independent obligations](context-contract-ledger.json) | Original declarations reconciled with actual command argument contracts |
+| [Reading review](context-reading-review.md) | Six independent bounded plans, observed failures and evidence limits |
+| [Reading receipts](context-reading-evidence.tar.gz) | Exact preserved plans, read accounts and source/tool receipts |
+| [Reading manifest](context-reading-manifest.json) | Archive member identities |
+| [Initial source identity](context-initial-manifest.json) | First reading round, 115 frozen files |
+| [Final source identity](context-final-manifest.json) | Second reading round and definitive full-suite source |
+| [Source preservation](context-source-preservation.json) | Unchanged frozen trees and final integration equality |

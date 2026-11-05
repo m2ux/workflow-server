@@ -1,0 +1,74 @@
+{
+  "file": "skills/work-planner/modes/revise-mode.md",
+  "operations": 3,
+  "inputs": 7,
+  "outputs": 3,
+  "failures": [],
+  "rows": [
+    {
+      "operation": "Run Tests",
+      "expected": {
+        "input": [
+          "#workspace"
+        ],
+        "output": [
+          "#test-result"
+        ]
+      },
+      "observed": {
+        "input": [
+          "#workspace"
+        ],
+        "output": [
+          "#test-result"
+        ]
+      }
+    },
+    {
+      "operation": "Check Skill Files",
+      "expected": {
+        "input": [
+          "#workspace",
+          "#skill-directory"
+        ],
+        "output": [
+          "#skill-check-result"
+        ]
+      },
+      "observed": {
+        "input": [
+          "#skill-directory",
+          "#workspace"
+        ],
+        "output": [
+          "#skill-check-result"
+        ]
+      }
+    },
+    {
+      "operation": "Compare Section Bodies",
+      "expected": {
+        "input": [
+          "#workspace",
+          "#base",
+          "#head",
+          "#skill-directory"
+        ],
+        "output": [
+          "#section-comparison"
+        ]
+      },
+      "observed": {
+        "input": [
+          "#base",
+          "#head",
+          "#skill-directory",
+          "#workspace"
+        ],
+        "output": [
+          "#section-comparison"
+        ]
+      }
+    }
+  ]
+}

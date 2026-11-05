@@ -1,0 +1,475 @@
+{
+  "archive_sha256": "004c31969311ffadd2ef66e8cb62f133311458d06c4e6af707e71455358e9e3a",
+  "members": [
+    {
+      "member": "standup-1/evidence/project17-handoff-items-raw.json",
+      "bytes": 722051,
+      "sha256": "393d839d9e1ef4456e2b7f9f31b806929d8943afb08015fce0202095d88ad99d"
+    },
+    {
+      "member": "standup-1/evidence/project17-integration-links.json",
+      "bytes": 978,
+      "sha256": "b06a48b99ae118ebbeb0e806f48224e555e5c6e013af31492ab0df808b0990b1"
+    },
+    {
+      "member": "standup-1/evidence/project17-integration-prs-ready.jsonl",
+      "bytes": 184728,
+      "sha256": "ce12d217c0c4fd22f74ff6573165efcc92da2d7e301d06d9bc01cd35f996f6cb"
+    },
+    {
+      "member": "standup-1/plan.md",
+      "bytes": 9916,
+      "sha256": "9dd2437ff8daa70760ba3f6e85226bc34dd9e594cbd01dcdae6a86fdd336c5a7"
+    },
+    {
+      "member": "standup-1/read-account.md",
+      "bytes": 6486,
+      "sha256": "8b0e68a485be31370f30b967e9b97d9a0240ea2a535471843d75f504c9570a6a"
+    },
+    {
+      "member": "standup-1/receipts/001.json",
+      "bytes": 5662,
+      "sha256": "94ae9b535bc5177ecb03e42675967463978eb904b7645103f5b160a7e4444069"
+    },
+    {
+      "member": "standup-1/receipts/002.json",
+      "bytes": 9515,
+      "sha256": "c82e0c17593655e48eb086f768fe454703fcb8cad6777ed0d8856f3aef707c51"
+    },
+    {
+      "member": "standup-1/receipts/003.json",
+      "bytes": 1767,
+      "sha256": "088e695b0760fc771e8db8c9b0a77690b76b6b04f553730f30137aed4c2685f6"
+    },
+    {
+      "member": "standup-1/receipts/004.json",
+      "bytes": 22046,
+      "sha256": "e2df751b6aaf13b1c66ccdca12dfb016f3fc77c7d53f6d15c29b5857c27440ef"
+    },
+    {
+      "member": "standup-1/receipts/005.json",
+      "bytes": 18382,
+      "sha256": "751b83df0d1286b19a54f180e04e11857c3c7029f82a7367f1eb8d855a911e2b"
+    },
+    {
+      "member": "standup-1/receipts/006.json",
+      "bytes": 53646,
+      "sha256": "dcf02834b131ca1f06cabac935f5b24365b17c2221707fb7034d6e621da84162"
+    },
+    {
+      "member": "standup-1/receipts/007.json",
+      "bytes": 8717,
+      "sha256": "65262041839a9c045c39ade82c4af252347ef961b71491839afc37a2e5dfff2f"
+    },
+    {
+      "member": "standup-1/receipts/008.json",
+      "bytes": 37472,
+      "sha256": "a8568a8f5bbcf1c092dd06d7e25b0b7cd3402a403ae1eabf383fd0ee1c364ce7"
+    },
+    {
+      "member": "standup-1/receipts/009.json",
+      "bytes": 33241,
+      "sha256": "c69834fa17803f3da6a4e4d9f75bc03423a012f614f9d484b847490b8e6fb430"
+    },
+    {
+      "member": "standup-1/receipts/010.json",
+      "bytes": 18893,
+      "sha256": "e86859c81bfa0cc23aecac4d3ed415310660881fb66ca6374337109da5bd79bc"
+    },
+    {
+      "member": "standup-1/receipts/011.json",
+      "bytes": 5654,
+      "sha256": "a795c53badd91f504fded36a5d262405297d3a9a19b613aa6025fce2d401a4de"
+    },
+    {
+      "member": "standup-1/receipts/012.json",
+      "bytes": 35266,
+      "sha256": "5477b2915d3c154bbbcaa254a1877046f499be0dda62677048da9a26266964e3"
+    },
+    {
+      "member": "standup-1/receipts/013.json",
+      "bytes": 5037,
+      "sha256": "2889940f6d89b8bd1e47b1c153fdb8d0c339c198bbd2390735ba9f70feadd94a"
+    },
+    {
+      "member": "standup-1/receipts/014.json",
+      "bytes": 1454,
+      "sha256": "20eb1adcdd83af72692462af7c40784c904364043b9bc942a0f9d03a33d4d0cf"
+    },
+    {
+      "member": "standup-1/receipts/015.json",
+      "bytes": 674,
+      "sha256": "8ffbcf46394929752d37e3e56946c2400356771fe4919d92bf33e175d5fa19b2"
+    },
+    {
+      "member": "standup-1/receipts/016.json",
+      "bytes": 9837,
+      "sha256": "1933af0c29996a47ce19250dc6c38302b4c7091b4f6c1c4dc53e79ac8d204f0e"
+    },
+    {
+      "member": "standup-1/receipts/017.json",
+      "bytes": 31451,
+      "sha256": "424a21d73b070fd4bb587ddcb8d49b8064525e8f7a1306951c93e3388be4c5e3"
+    },
+    {
+      "member": "standup-1/receipts/018.json",
+      "bytes": 14949,
+      "sha256": "f4829b0c5ddf947143bb13ab1033aea2d8a571e868cee10918130412a2c8c10b"
+    },
+    {
+      "member": "standup-1/receipts/019.json",
+      "bytes": 905,
+      "sha256": "23c08975a536370c5022ae1bc594320d059cc074e51ee3da169a94d10a65fe40"
+    },
+    {
+      "member": "standup-1/receipts/020.json",
+      "bytes": 21235,
+      "sha256": "1b290cdc59bb15ce5ff13929498bcca99f14163e9f9d157c28976c75f08d19f1"
+    },
+    {
+      "member": "standup-1/receipts/021.json",
+      "bytes": 7915,
+      "sha256": "baab6bb9da7000af404e67f65a566408ee5017131592d775ab75249618c5f3fd"
+    },
+    {
+      "member": "standup-1/receipts/022.json",
+      "bytes": 1316,
+      "sha256": "3e82e5210e263d7d3b99aa51ddfc1559230e75489339198a9378f8aad4554078"
+    },
+    {
+      "member": "standup-1/source-manifest-after.sha256",
+      "bytes": 17239,
+      "sha256": "9958fcec282726cb609eb525129cf52a08107c225da18415396bac13dc72dceb"
+    },
+    {
+      "member": "standup-1/source-manifest-before.sha256",
+      "bytes": 17239,
+      "sha256": "9958fcec282726cb609eb525129cf52a08107c225da18415396bac13dc72dceb"
+    },
+    {
+      "member": "standup-1/source-preservation.diff",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "standup-2/blocked-attempts.json",
+      "bytes": 3597,
+      "sha256": "f52ae5823d8234182e985e2f430fd2e391a5afafcc314198b4b72bb408ec0979"
+    },
+    {
+      "member": "standup-2/plan.md",
+      "bytes": 10532,
+      "sha256": "a387b5fe3c8b010cb9476afca81f87d2eb69ca4e81c26f2087e83401d2e0f696"
+    },
+    {
+      "member": "standup-2/read-account.md",
+      "bytes": 7304,
+      "sha256": "ed42595ffd068ebc8707ce25d34d9347a71dc374d293c1a143ceb8c88750bf9c"
+    },
+    {
+      "member": "standup-2/receipts-extra.json",
+      "bytes": 34089,
+      "sha256": "6c9f86e318fef9622ac7867387bc8b87c1b575db1580a807cbb495c1f3258bf1"
+    },
+    {
+      "member": "standup-2/receipts.json",
+      "bytes": 252781,
+      "sha256": "ee213b50a2d19827e36d21c08ef66e5806bb01d8fe37c656c9d9f7924111f81b"
+    },
+    {
+      "member": "revise-1/README.md",
+      "bytes": 261,
+      "sha256": "549f3aed23c23aaf152d9f983912141210782058c5e4bf0aec7d8d3b6e626330"
+    },
+    {
+      "member": "revise-1/proposal.md",
+      "bytes": 3789,
+      "sha256": "ce1375cd940cc8a55ecddcd7d2d532d9e1d2c9e4b303fd9a224b9edde2e9549b"
+    },
+    {
+      "member": "revise-1/read-account.md",
+      "bytes": 7360,
+      "sha256": "397c2ef8de60feeea80c6c241f192f4098e16c2d7ddd88921ce49c42e36831a6"
+    },
+    {
+      "member": "revise-1/receipts/00-blocked-attempt.json",
+      "bytes": 1585,
+      "sha256": "da10d98f637dabf00e021124b5ef558f6cae5998f19e8300d0bab9edc9011482"
+    },
+    {
+      "member": "revise-1/receipts/01-skill-content.json",
+      "bytes": 5071,
+      "sha256": "ab9da5a41853bf21397d3d088a310cce75e6da6d003329f4e4fdc89a142e245d"
+    },
+    {
+      "member": "revise-1/receipts/02-skill-metadata.json",
+      "bytes": 828,
+      "sha256": "8371db44505e7a869aeda512dba4288c5b6dae02b55315fb046b6269d3616ff2"
+    },
+    {
+      "member": "revise-1/receipts/03-skill-hash.json",
+      "bytes": 524,
+      "sha256": "811886b56d4dfefdcddd9b1f9e6a8df96c950d936a0025cf773dab13bb439be2"
+    },
+    {
+      "member": "revise-1/receipts/04-rules-conventions-revise.json",
+      "bytes": 11074,
+      "sha256": "0a78b524efd897f56760f08de8497e3d886ec8900bcc9202b5b68d502b8bcee1"
+    },
+    {
+      "member": "revise-1/receipts/05-component-discovery.json",
+      "bytes": 9230,
+      "sha256": "c710da8f493597487c5b01df1b5029fbdd7b684c20740b496d4a7d42e6ca2841"
+    },
+    {
+      "member": "revise-1/receipts/06-shared-guidelines.json",
+      "bytes": 18418,
+      "sha256": "cea93b5aff64f24606f87f18ffb32fcce3bb68f11343d2031cef15973a76e0f4"
+    },
+    {
+      "member": "revise-1/receipts/07-skill-guidelines.json",
+      "bytes": 24189,
+      "sha256": "c434f9641f18aebd7b7505ef021581aae167af611e52b9ed8d3e791cbda7e504"
+    },
+    {
+      "member": "revise-1/receipts/08-work-item.json",
+      "bytes": 3891,
+      "sha256": "c74abd8bfbe42101d877ed2ab7da2c3a6e24a480f5976558d51da22ddfa64a06"
+    },
+    {
+      "member": "revise-1/receipts/09-guidelines-truncation-recovery.json",
+      "bytes": 24251,
+      "sha256": "a92401d03900f5280d087c0be75fd476052811dda5391d6680e8a1c5ed27de0e"
+    },
+    {
+      "member": "revise-1/receipts/10-work-item-prerequisites.json",
+      "bytes": 60096,
+      "sha256": "5c591f6ea79a5564fa5ebcb15dd414245c4e04501eedea6e814ac996d7e4b9d2"
+    },
+    {
+      "member": "revise-1/receipts/11-pull-request-recovery.json",
+      "bytes": 11204,
+      "sha256": "c098a0d34a81aa16f0ef48125adb07772242357b3f298122fe49906b9b175d3c"
+    },
+    {
+      "member": "revise-1/receipts/12-delivery-opening-recovery.json",
+      "bytes": 4720,
+      "sha256": "47da1763ba51df5c076231b1cf8323ecc8010aa02c81ce65eb588142ccf2075b"
+    },
+    {
+      "member": "revise-1/receipts/13-component-parser-tests.json",
+      "bytes": 24960,
+      "sha256": "b13018b71f899ab02c39554a3838637149ebe7ef9b83e539ab345401cdb8f397"
+    },
+    {
+      "member": "revise-1/receipts/14-parser-recovery.json",
+      "bytes": 2581,
+      "sha256": "bc65b25b7d8b77865bada7dc85f2a48cf15b7eda9c759ab8c72a60f9b8fc1912"
+    },
+    {
+      "member": "revise-1/receipts/15-directory-tests-recovery.json",
+      "bytes": 2114,
+      "sha256": "6f869d92c16a4f3d502c9d215aa09567db0f2c31d1efc303b29780183b11277b"
+    },
+    {
+      "member": "revise-1/receipts/16-contention-tests-recovery.json",
+      "bytes": 5821,
+      "sha256": "6ed9996545910414d69796a0ed4a8bffdac47b2e4edca1d5f6bec5c7822322b9"
+    },
+    {
+      "member": "revise-1/receipts/17-consumer-links.json",
+      "bytes": 5131,
+      "sha256": "00bf3b415a4308b5bce4851b1b12f0c27665eb4fe64393554393b0d804a60ffb"
+    },
+    {
+      "member": "revise-1/receipts/18-report-inventory.json",
+      "bytes": 1959,
+      "sha256": "bf62783a36572ec004e3eb161ab1dcea615bf9c1f845e73084d36e68d7f2f5d0"
+    },
+    {
+      "member": "revise-1/receipts/19-truncation-location-audit.json",
+      "bytes": 764,
+      "sha256": "437f9d8fbbaa155ffc385cbd8aa3fc172fe92f88edb0642c033a3a48717b58fd"
+    },
+    {
+      "member": "revise-1/validation-plan.md",
+      "bytes": 6829,
+      "sha256": "dc7a47dc03c725f9e37c5790edb986639a365fc136845544a5cc3634d2fb858c"
+    },
+    {
+      "member": "revise-2/proposal.md",
+      "bytes": 2655,
+      "sha256": "ca9e6c65a57128b59839ad60b32389c947f696cd5bc3dcb60cddddf532a99221"
+    },
+    {
+      "member": "revise-2/read-001.json",
+      "bytes": 5018,
+      "sha256": "7ef55d5f62500de87ce0bb1517c60d07432fd8891a8a9c5cbe0a4265806721f7"
+    },
+    {
+      "member": "revise-2/read-002.json",
+      "bytes": 2033,
+      "sha256": "ebc209057f6715d5f1d8fba46b777a918bd1678d37d470f5e04de5a8da20c636"
+    },
+    {
+      "member": "revise-2/read-003.json",
+      "bytes": 2896,
+      "sha256": "52c7fc63682e0e02ae987cab883196da4768f9d1b2cd03218a01187962f66657"
+    },
+    {
+      "member": "revise-2/read-004.json",
+      "bytes": 6612,
+      "sha256": "21f2cf4efd0c3ed8618458cf9d15736b7e7fb5b91fb17e6b9e89e1d406ffef31"
+    },
+    {
+      "member": "revise-2/read-005.json",
+      "bytes": 18365,
+      "sha256": "2bf0491057dcde833a2dd45c920f5fa0d8fbab58b3c504b10b0dceea7852ea0b"
+    },
+    {
+      "member": "revise-2/read-006.json",
+      "bytes": 24146,
+      "sha256": "3e2a1f2999fe9abd51cef416d07c7338a1e4a11f06ba47e2761d3af676f056b7"
+    },
+    {
+      "member": "revise-2/read-007.json",
+      "bytes": 8265,
+      "sha256": "0ffcf508f82bdc43581d2919d1f3d3d7525eeb03de42db93adf8ba51d84c0a5e"
+    },
+    {
+      "member": "revise-2/read-008.json",
+      "bytes": 26674,
+      "sha256": "149c225617a13db14de10fac019568474787dbae6b4168f1e214ef18abcaa7b7"
+    },
+    {
+      "member": "revise-2/read-009.json",
+      "bytes": 1131,
+      "sha256": "56421f16f7a43bf024b41dc0161562a975899c6d04b7eaf3053bf2ca60c68ac7"
+    },
+    {
+      "member": "revise-2/read-010.json",
+      "bytes": 4468,
+      "sha256": "f1ebb3f2444569ddf6e6c522081fbe812f456e66b6fc338b14ebad99e42f332f"
+    },
+    {
+      "member": "revise-2/read-011.json",
+      "bytes": 2533,
+      "sha256": "10c1e3c916d5177adb2ddb974d8f633e78b1e1d2c0b8e43380f74b5701818b51"
+    },
+    {
+      "member": "revise-2/read-012.json",
+      "bytes": 678,
+      "sha256": "3e87a7750f1c0e13102f18f1c5fc882db44e6dced46f28ba492fdf2419355bdb"
+    },
+    {
+      "member": "revise-2/read-013.json",
+      "bytes": 607,
+      "sha256": "ed89d233ca6dc89737a5498b1dd74c0e6289c3188a546bfbc49a96b897155cd0"
+    },
+    {
+      "member": "revise-2/read-014.json",
+      "bytes": 591,
+      "sha256": "ecfee39cdcce1e9dc1fb36c8583482c294eb673a1059e9b513a7746fa7a084dd"
+    },
+    {
+      "member": "revise-2/read-015.json",
+      "bytes": 541,
+      "sha256": "4a6998aa7d82c3a2c5c1412b0c60ef6832c328580c8fa35edc2535afc2e5435b"
+    },
+    {
+      "member": "revise-2/read-016.json",
+      "bytes": 772,
+      "sha256": "8c9c8b76926acd886494e165486224f63da805abc07dc5bd43bdc1e4aafb44c8"
+    },
+    {
+      "member": "revise-2/read-017.json",
+      "bytes": 3837,
+      "sha256": "8fadf3be8de741290be0e5a3b362c208bf94c96a75d30d876f8cae0a261cf732"
+    },
+    {
+      "member": "revise-2/read-018.json",
+      "bytes": 4142,
+      "sha256": "dc2e2109e6531905675ebaa1bad8f203c78fd53256488669fd7ca728db6e5f4e"
+    },
+    {
+      "member": "revise-2/read-019.json",
+      "bytes": 3485,
+      "sha256": "83f1a9b7eeb3920f8e71b8f31fb10982834d951b4077b3e3cd040113355f16b7"
+    },
+    {
+      "member": "revise-2/read-020.json",
+      "bytes": 2753,
+      "sha256": "491dede9ff1b7da7a2417a8daeb3cb91c3a2bb068162309a19ae76f66a4d6a0c"
+    },
+    {
+      "member": "revise-2/read-021.json",
+      "bytes": 1824,
+      "sha256": "1ec673bc50cce77d8a01535c6fa17226f9c9ca2c62e035ec0863b664ea77ce81"
+    },
+    {
+      "member": "revise-2/read-account.md",
+      "bytes": 5186,
+      "sha256": "24b7b987445adfb96598cd56af77e4aa50fb0e4367f665b4136ad9c3edf0b30f"
+    },
+    {
+      "member": "revise-2/receipt-index.json",
+      "bytes": 5358,
+      "sha256": "d9fbb7a9ef4dc0394a9b5cba8ed2b48377ff92ae10988043bc3ced6db967a4d3"
+    },
+    {
+      "member": "revise-2/validation-plan.md",
+      "bytes": 4710,
+      "sha256": "51d2e8f5f1a3ecb5e5632be61d40acd5d4140395d3db2aaa000250d990b6c287"
+    },
+    {
+      "member": "understand-1/blocked-call.txt",
+      "bytes": 1518,
+      "sha256": "81f21170ddbfab8711d66b4cd1c6eb5e79d9a3f0015ff652a7230ea4482ee0c7"
+    },
+    {
+      "member": "understand-1/output-validation.json",
+      "bytes": 726,
+      "sha256": "a709b501149a8eb79f8e490610ae83346cfb4ec927513ab8938b3df5a1ae3ae4"
+    },
+    {
+      "member": "understand-1/plan.md",
+      "bytes": 11753,
+      "sha256": "641f2955067fd6a1bb1937596cc2e8e1a7e7faad8ab12c7ea13378c1842e0caf"
+    },
+    {
+      "member": "understand-1/read-account.md",
+      "bytes": 6979,
+      "sha256": "e9f83853a7e17793b0b3eca992a72885e4900c6e9bd9d44f10fd348a33870d22"
+    },
+    {
+      "member": "understand-1/receipts-continued.json",
+      "bytes": 83218,
+      "sha256": "176787ff33e79b04ea64ac4f9e1bdf0f1dd60c7b6f2a63782c9fcb52cabdbd48"
+    },
+    {
+      "member": "understand-1/receipts.json",
+      "bytes": 159082,
+      "sha256": "919377c93f5dfb22a4c01cc2035cfaa8b23c76ce657899eae60209d04d98e6c0"
+    },
+    {
+      "member": "understand-2/output-check.json",
+      "bytes": 1637,
+      "sha256": "d7e4d0b39bad2cbe5765e505107fae8189a07a75182724d4586adfc8b8fb79d0"
+    },
+    {
+      "member": "understand-2/plan.md",
+      "bytes": 12000,
+      "sha256": "a2aae62dba7238f78523763bd1bf28b4fb8f06f7699b9afc76a15df56d0a258f"
+    },
+    {
+      "member": "understand-2/read-account.md",
+      "bytes": 5511,
+      "sha256": "8cb320e80789a09d89a9109d0372670b36b0ef43f449afefb5ef5f7824f4e76f"
+    },
+    {
+      "member": "understand-2/receipts.json",
+      "bytes": 173892,
+      "sha256": "aff205dcf64e7801bf562d30e5f7fc06cbb3b0f62f9852d159f748fa587133f4"
+    }
+  ]
+}

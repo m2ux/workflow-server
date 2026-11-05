@@ -1,0 +1,17 @@
+[
+  {
+    "freeze": "project17-context-disclosure",
+    "files": 115,
+    "frozen_errors": [],
+    "current_changes": [
+      "skills/work-planner/guidelines.md",
+      "skills/work-planner/structure.json"
+    ]
+  },
+  {
+    "freeze": "project17-context-disclosure-final",
+    "files": 115,
+    "frozen_errors": [],
+    "current_changes": []
+  }
+]

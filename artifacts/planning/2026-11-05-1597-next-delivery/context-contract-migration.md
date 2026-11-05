@@ -28,6 +28,10 @@ The approved example uses Markdown link titles: input and output roles are attac
 
 - [x] Publish and approve the one-file notation example.
 - [x] Inventory the starting artifact declarations and identify the rule home.
-- [ ] In progress: migrate prose, model, readers and guidelines together.
-- [ ] Verify semantic coverage, regressions and independent reading observations.
-- [ ] Commit/push the current integration and publish current review handoff evidence.
+- [x] Migrate prose, model, readers and guidelines together.
+- [x] Verify semantic coverage, regressions and independent reading observations, preserving the Partial disclosure limits.
+- [x] Commit and push the product correction; publish exact-head integration review and handoff evidence.
+
+## Current Evidence
+
+Commit `00ec0b9dd516cf6031d44c1ac2184ca95d1e0a01` carries 237 operations, 817 retained input obligations and 357 output obligations, 651 tagged callable links and 204 byte-preserved HTML invocations. The final 115-file manifest matches the validated source. Work Planner runs 934 tests (933 pass, one opt-in skip); shared checker runs 262 passing tests; the ordinary installed check reports 58 files and zero findings. See [coverage audit](context-contract-audit.json) and [reading review](context-reading-review.md).
