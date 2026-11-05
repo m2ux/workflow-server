@@ -22,3 +22,12 @@ The coordinator refreshes delivery, reservations and live board state before eac
 | --- | --- |
 | Initiative | https://github.com/m2ux/workflow-server/issues/1597 |
 | Skill Style | https://github.com/m2ux/workflow-server/issues/1616 |
+
+## Family Conversion Refill
+
+W01 and W02 are delivered into the epic base. The live queue converges with five eligible unlaned family units and W08 waiting for them. Three observed free slots select W03, W04 and W05; W06 and W07 await capacity. The current survey has no held, invalid, missing-evidence or unrecorded unit. Work Planner alone supplies the zero-finding acceptance gate.
+
+| Artifact | What it holds |
+| --- | --- |
+| [Family batch](family-batch.json) | Three selected units and two awaiting capacity |
+| [Family survey export](family-survey-export.json) | All five eligible unit identities |

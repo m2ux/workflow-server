@@ -1,0 +1,21 @@
+{
+  "action": "dispatch",
+  "units": [
+    {
+      "id": "m2ux/workflow-server#I17:E01:W03",
+      "record": "2026-11-05-1616-i17-e01-w03-modes-in-the-new",
+      "report": "unit I17:E01:W03: unlaned, coverage AC3, record 2026-11-05-1616-i17-e01-w03-modes-in-the-new, branch i17/e01/w03-modes-in-the-new, base i17/e01/workspace, worktree .worktrees/i17/e01/w03-modes-in-the-new"
+    },
+    {
+      "id": "m2ux/workflow-server#I17:E01:W04",
+      "record": "2026-11-05-1616-i17-e01-w04-protocols-in-the-new",
+      "report": "unit I17:E01:W04: unlaned, coverage AC4, record 2026-11-05-1616-i17-e01-w04-protocols-in-the-new, branch i17/e01/w04-protocols-in-the-new, base i17/e01/workspace, worktree .worktrees/i17/e01/w04-protocols-in-the-new"
+    },
+    {
+      "id": "m2ux/workflow-server#I17:E01:W05",
+      "record": "2026-11-05-1616-i17-e01-w05-issue-and-body-artifacts",
+      "report": "unit I17:E01:W05: unlaned, coverage AC5, record 2026-11-05-1616-i17-e01-w05-issue-and-body-artifacts, branch i17/e01/w05-issue-and-body-artifacts, base i17/e01/workspace, worktree .worktrees/i17/e01/w05-issue-and-body-artifacts"
+    }
+  ],
+  "pending": 2
+}
