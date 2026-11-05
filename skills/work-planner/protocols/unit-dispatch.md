@@ -49,8 +49,12 @@ Read these files first.
      - Retain the confirmed hold for this record.
    - Return a competing hold or failed readback without starting a worker.
 4. **Prepare the session.**
-   Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) in the project checkout for each selected branch, base and worktree.
-   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the selected unit, its components, reserved folder, worktrees and returned bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.
+   Prepare each selected branch's unit checkout.
+   - **New unit.**
+     - Run [Create Task Worktree](../artifacts/delivery-branches.md#create-task-worktree) in the project checkout with the selected branch, base, worktree and confirmed prerequisites.
+   - **Retained preparation.**
+     - Run [Validate Task Worktree](../artifacts/delivery-branches.md#validate-task-worktree) in the project checkout with its retained worktree path, branch and preparation head.
+   - Call [Populate Delivery Brief](../artifacts/delivery-brief.md#populate-delivery-brief) with the selected unit, its components, reserved folder, worktrees and selected bases, project and engineering checkouts, test obligations, board identity, run allowance and supplied session procedure.
    - Return a missing-context finding before execution, retaining the hold.
 5. **Start the worker.**
    Run [Validate Dispatch Start](../artifacts/dispatch-batch.md#validate-dispatch-start) with the selected batch and unit, gathered start evidence, current observed sessions and actual free slots.

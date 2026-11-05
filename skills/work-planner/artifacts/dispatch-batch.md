@@ -8,6 +8,7 @@ Read these files first.
 
 - [Lane](lane.md)
 - [Delivery Plan](delivery-plan.md)
+- [Delivery Branches](delivery-branches.md)
 
 ## Operations
 
@@ -57,7 +58,7 @@ The batch retains authorized, unoccupied units in survey order, bounded by free 
 
 ### Preparations
 
-A preparation is this run's selected unit with its published record, captured component context, confirmed hold, prepared worktrees and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
+A preparation is this run's selected unit with its published record, captured component context, confirmed hold, [prepared task worktrees](delivery-branches.md#prepared-task-worktrees) and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
 
 ### Start Readiness
 

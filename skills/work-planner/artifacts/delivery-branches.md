@@ -74,9 +74,19 @@ The worktree and branch one unit's session works in.
 1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches).
 2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the base; stop on failure.
 3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base.
-4. Return the worktree path, branch and base, or the failure.
+4. Run [Read Checkout Revision](#read-checkout-revision) in the unit checkout for `HEAD`.
+5. Return the worktree path, branch, base and preparation head, or the failure.
 
 A unit that changes several long-lived branches runs this once for each epic base, with the branch and worktree [Task Branches](#task-branches) names for it.
+
+### *Validate* Task Worktree
+
+The recorded task checkout ready for a retained preparation.
+
+**Inputs:** Project checkout, unit worktree path, task branch and recorded preparation head.
+
+1. Run [Check Task Worktree](#check-task-worktree) with the supplied inputs.
+2. Return the verified checkout or blocker, meeting [Prepared Task Worktrees](#prepared-task-worktrees).
 
 ### *Create* Pull Request Worktree
 
@@ -185,6 +195,10 @@ A unit's task branch is cut from the epic base for the long-lived branch the uni
   A hot-fix works on the branch its [Branch](hotfix.md#branch) names.
 
 Each worktree is named by its branch under the worktree directory of the repository's main working tree.
+
+### Prepared Task Worktrees
+
+A retained task worktree is registered to the project repository, on its recorded task branch and full preparation head, with no tracked or untracked changes. Its preparation records that head when the checkout is created. A mismatch leaves the checkout and its contents intact and blocks its reuse.
 
 ### Stash Entries
 
@@ -309,6 +323,16 @@ git push origin 'HEAD:refs/heads/<task-branch>'
 
 ```bash
 git push origin HEAD:refs/heads/i07/e00/w01-queue-plan
+```
+
+### Check Task Worktree
+
+Validates one retained task checkout without changing its files or branch.
+
+**Inputs:** Project checkout, unit worktree path, recorded task branch and full preparation head.
+
+```bash
+cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/work-planner/scripts/delivery-branches.py --project '<project-checkout>' --worktree '<unit-worktree>' --branch '<task-branch>' --head '<preparation-head>'
 ```
 
 ### Add Task Worktree
