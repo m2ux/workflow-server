@@ -4,6 +4,8 @@ Changes the skill itself: SKILL.md, its modes, artifacts, references and scripts
 
 **Runs in:** the project checkout.
 
+Follow the [Procedure](#procedure), adhering to [Rules](../rules.md) and [Conventions](../conventions.md) and ensure all [Outcomes](#outcomes) are met.
+
 ## Prerequisites
 
 Read these files first.
@@ -13,41 +15,108 @@ Read these files first.
 
 ## Procedure
 
-The main path meets [Outcomes](#outcomes).
+### 1. Read the Guidelines
 
-1. **Read the guidelines.**
-   Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md) whole before the first edit.
-2. **Understand the request.**
-   Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
-   - Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
-3. **Work in a worktree.**
-   Branch a worktree for the change.
-   - Commit each distinct change as its own commit.
-4. **Revise.**
-   Make the change in the rule's one home.
-   - Link to it from every other file that needs it.
-   - Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
-   - When the user states a new writing rule, add it to the applicable shared or skill-specific guidelines before validation and delivery.
-5. **Check against the guidelines.**
-   Read every changed file against the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md), checking:
-   - The description, when the skill's reach changed.
-   - One line per item, bold leads on their own line, and sub-bullets for discrete points.
-   - Each rule stated once, and no description of replaced behaviour left anywhere.
-   - Every command linked to its operation section.
-   - Every link and anchor resolving.
-   - [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
-   - Fix each departure.
-6. **Verify.**
-   - Run [Run Tests](#run-tests) when an executable script, its consumed template or a test changed.
-   - When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
-   - Run [Check Skill Files](#check-skill-files) for every affected skill.
-   - Run [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
-   - Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
-   - Resolve every required file, command and heading without an implicit external dependency.
-7. **Deliver.**
-   - Commit.
-   - Push.
-   - Report what changed in each file.
+Read the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md) whole before the first edit.
+
+### 2. Understand the Request
+
+Interview the user, as an [Interview](../guidelines.md#modes), until the change and its scope are clear.
+
+- Find every file the change touches: the rule's home, each file that cites it, and any script, docstring or test that states it.
+
+### 3. Work in a Worktree
+
+Branch a worktree for the change.
+
+- Commit each distinct change as its own commit.
+
+### 4. Revise
+
+Make the change in the rule's one home.
+
+- Link to it from every other file that needs it.
+- Write it to the guidelines' layout, prose, link and command rules as it is written, not in a later pass.
+- When the user states a new writing rule, add it to the applicable shared or skill-specific guidelines before validation and delivery.
+
+### 5. Check Against the Guidelines
+
+Read every changed file against the [shared skill guidelines](../../guidelines.md) and [skill guidelines](../guidelines.md), checking:
+
+- The description, when the skill's reach changed.
+- One line per item, bold leads on their own line, and the declared step and detail structure for each family.
+- Each rule stated once, and no description of replaced behaviour left anywhere.
+- Every command inside the step that runs it.
+- Every link and anchor resolving.
+- [Progressive disclosure](../../guidelines.md#progressive-disclosure), including complete common sections and caller prerequisites.
+- Fix each departure.
+
+### 6. Verify
+
+- Follow [Run Tests](#run-tests) when an executable script, its consumed template or a test changed.
+- When SKILL.md changes, confirm its frontmatter opens and closes with `---` and holds `name` and `description`.
+- Follow [Check Skill Files](#check-skill-files) for every affected skill.
+- Follow [Compare Section Bodies](#compare-section-bodies) when the change moves a section between files, and read each section it reports as added, removed or differing.
+- Apply [disclosure verification](../../guidelines.md#disclosure-verification) with the skill's [representative scenarios](../guidelines.md#progressive-disclosure).
+- Resolve every required file, command and heading without an implicit external dependency.
+
+### 7. Deliver
+
+- Commit.
+- Push.
+- Report what changed in each file.
+
+### Run Tests
+
+Runs the skill's script tests.
+
+#### 1. Run Skill Tests
+
+Run the following command in the [workspace checkout](#workspace).
+
+**Inputs:** [Workspace](#workspace).
+
+<big><pre>
+cd "[**<workspace>**](#workspace)/skills/work-planner" && "[**<workspace>**](#workspace)/scripts/sbx" python3 -m unittest discover -s test
+</pre></big>
+
+### Check Skill Files
+
+Checks the affected skill's files against the rules the shared skill guidelines state.
+
+#### 1. Check Affected Skills
+
+Run the following command in the [workspace checkout](#workspace).
+
+**Inputs:** [Workspace](#workspace) and [Skill Directory](#skill-directory); repeat the skill argument for additional affected skills.
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py "[**<skill-directory>**](#skill-directory)"
+</pre></big>
+
+**Example:** Work Planner in the selected checkout.
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
+</pre></big>
+
+### Compare Section Bodies
+
+Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
+
+#### 1. Compare Changed Sections
+
+Run the following command in the [workspace checkout](#workspace).
+
+**Inputs:** [Workspace](#workspace), [Base](#base), [Head](#head) and [Skill Directory](#skill-directory).
+
+- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
+- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
+- Exit 1 means a section was added, removed or differs.
+
+<big><pre>
+cd "[**<workspace>**](#workspace)" && "[**<workspace>**](#workspace)/scripts/sbx" python3 skills/scripts/check_skill_files.py --compare "[**<base>**](#base)" "[**<head>**](#head)" "[**<skill-directory>**](#skill-directory)"
+</pre></big>
 
 ## Outcomes
 
@@ -56,44 +125,20 @@ The main path meets [Outcomes](#outcomes).
 - **The guidelines hold.**
   The change agrees with the guidelines, and a new rule the user stated for how the skill is written is part of that change.
 
-## Operations
+## Fields
 
-### Run Tests
+### Workspace
 
-Runs the skill's script tests.
+Checkout containing the installed skill, its scripts and tests.
 
-**Inputs:** Workspace checkout containing the installed skill and its tests.
+### Skill Directory
 
-```bash
-cd "<workspace>/skills/work-planner" && "<workspace>/scripts/sbx" python3 -m unittest discover -s test
-```
+Affected skill directory. Comparison takes each skill directory the move touches.
 
-### Check Skill Files
+### Base
 
-Checks the affected skill's files against the rules the shared skill guidelines state.
+Base revision of the section comparison.
 
-**Inputs:** Workspace checkout and affected skill directory; repeat the skill argument for additional affected skills.
+### Head
 
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill_files.py "<skill-directory>"
-```
-
-**Example:** Work Planner in the selected checkout.
-
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill_files.py skills/work-planner
-```
-
-### Compare Section Bodies
-
-Compares every third-level section's body between the change's base and its head, so a section damaged in a move is reported.
-
-**Inputs:** Workspace checkout, the base and head revisions, and each skill directory the move touches.
-
-- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
-- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
-- Exit 1 means a section was added, removed or differs.
-
-```bash
-cd "<workspace>" && "<workspace>/scripts/sbx" python3 skills/scripts/check_skill_files.py --compare "<base>" "<head>" "<skill-directory>"
-```
+Head revision of the section comparison.

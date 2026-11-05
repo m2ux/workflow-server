@@ -178,7 +178,7 @@ class DocumentInterfaces(unittest.TestCase):
 
 
 RECORD_EPIC_DELIVERY = re.compile(
-    r'\b(?:[Rr]un|[Rr]e-run|[Rr]epeat(?:ing)?)\s+\[?Record Epic Delivery\b')
+    r'\b(?:[Aa]pply|[Rr]un|[Rr]e-run|[Rr]epeat(?:ing)?)\s+\[?Record Epic Delivery\b')
 
 
 class EpicDeliveryCallers(unittest.TestCase):
@@ -217,3 +217,5 @@ class EpicDeliveryCallers(unittest.TestCase):
             'When the preceding Record Epic Delivery call reports a row done'))
         self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
             'Repeat Record Epic Delivery with the saved epic.'))
+        self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
+            'Apply [Record Epic Delivery](x.md) with the saved epic bases.'))
