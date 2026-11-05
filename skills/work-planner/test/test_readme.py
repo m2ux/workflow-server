@@ -19,7 +19,8 @@ sys.path.insert(0, str(ROOT.parent / 'scripts'))
 import check_skill_files as checker  # noqa: E402
 
 README = HERE / 'README.md'
-CATALOGUE = '## Catalogue'
+SCRIPT_TESTS = '### Script Tests'
+PROSE_TESTS = '### Prose Tests'
 COVERAGE = '## Coverage'
 # The sentence the README took over, held as a pattern so this module carries
 # no copy of it.
@@ -79,9 +80,11 @@ def summary(name: str) -> str:
 
 
 def section(title: str) -> list[str]:
-    """The lines under one heading, up to the next heading of the same level."""
+    """The lines under one heading, up to the next heading of the same or a
+    higher level."""
+    level = len(title) - len(title.lstrip('#'))
     body = README.read_text().split(f'\n{title}\n', 1)[1]
-    end = re.search(r'^## ', body, re.MULTILINE)
+    end = re.search(rf'^#{{1,{level}}} ', body, re.MULTILINE)
     return (body[:end.start()] if end else body).splitlines()
 
 
@@ -97,37 +100,51 @@ def rows(title: str) -> list[list[str]]:
     return found[2:]
 
 
+def catalogue() -> list[list[str]]:
+    """Every catalogue row from both tables."""
+    return rows(SCRIPT_TESTS) + rows(PROSE_TESTS)
+
+
 def backticked(cell: str) -> list[str]:
     return re.findall(r'`([^`]+)`', cell)
 
 
 class Catalogue(unittest.TestCase):
     def test_every_module_has_one_row(self):
-        named = [backticked(row[0])[0] for row in rows(CATALOGUE)]
+        named = [backticked(row[0])[0] for row in catalogue()]
         self.assertEqual(sorted(set(modules()) - set(named)), [], 'modules with no catalogue row')
         self.assertEqual(len(named), len(set(named)), 'modules with two catalogue rows')
 
     def test_no_row_names_an_absent_module(self):
         held = {path.name for path in HERE.glob('*.py')}
-        named = {backticked(row[0])[0] for row in rows(CATALOGUE)}
+        named = {backticked(row[0])[0] for row in catalogue()}
         self.assertEqual(sorted(named - held), [], 'catalogue rows with no module')
 
     def test_a_row_lists_the_scripts_its_module_names(self):
-        for row in rows(CATALOGUE):
+        for row in catalogue():
             name = backticked(row[0])[0]
             with self.subTest(module=name):
                 self.assertEqual(set(backticked(row[2])), {f'{script}.py' for script in scripts_named(name)})
 
+    def test_a_module_sits_under_the_table_its_scripts_put_it_in(self):
+        """A module that reaches a script is a script test, and one that
+        reaches none is a prose test. The split is what the rows state."""
+        for title, expected in ((SCRIPT_TESTS, True), (PROSE_TESTS, False)):
+            for row in rows(title):
+                name = backticked(row[0])[0]
+                with self.subTest(module=name, table=title):
+                    self.assertEqual(bool(scripts_named(name)), expected)
+
     def test_the_description_is_the_docstring(self):
         """The row states what the docstring states. Backticks mark a name in
         one and not the other, so they are not part of the comparison."""
-        for row in rows(CATALOGUE):
+        for row in catalogue():
             name = backticked(row[0])[0]
             with self.subTest(module=name):
                 self.assertEqual(row[1].replace('`', ''), summary(name).replace('`', ''))
 
     def test_the_count_is_the_modules_test_methods(self):
-        for row in rows(CATALOGUE):
+        for row in catalogue():
             name = backticked(row[0])[0]
             with self.subTest(module=name):
                 self.assertEqual(row[3], str(len(re.findall(r'^\s*def test_', (HERE / name).read_text(), re.M))))

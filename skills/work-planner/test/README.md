@@ -24,7 +24,11 @@ Both kinds sit in one folder. The script tests import `fixtures.py` from beside 
 
 ## Catalogue
 
-One row per module. The description is the module's docstring, and the tests column is the count of `test_` methods.
+One row per module, split by what it tests. The description is the module's docstring, and the tests column is the count of `test_` methods.
+
+### Script Tests
+
+These modules exercise the programs in `../scripts`, and each names the ones it imports or runs.
 
 | Module | What it guards | Scripts | Tests |
 | --- | --- | --- | --- |
@@ -32,30 +36,39 @@ One row per module. The description is the module's docstring, and the tests col
 | `test_align.py` | Alignment repairs, unreadable evidence and reference visibility fixtures | `align.py`, `sync.py` | 18 |
 | `test_board.py` | The assignees `board.py` gives an issue for its Status, and an initiative's Status once its criteria are ticked | `board.py`, `statuses.py` | 60 |
 | `test_board_queue.py` | The queue `board-queue.py` sets on a theme board | `board-queue.py` | 75 |
-| `test_checkouts.py` | Each command acting on its checkout is run in a named one | — | 7 |
 | `test_closure.py` | The closure gate passes on the issue and its Development links, the evidence GitHub exposes | `closure.py` | 13 |
 | `test_closure_sweep.py` | The closure sweep lists each closed issue its criteria or Development links do not support | `closure-sweep.py` | 14 |
 | `test_deliver.py` | The work `deliver.py` finds available on a theme board, and the rows it reserves and releases | `deliver.py` | 96 |
 | `test_deps.py` | `deps.py` checks the task graph and proposes the rows that can share a pull request | `deps.py` | 74 |
 | `test_development_link.py` | Development links added and removed by `development-link.py`, and read back from both ends | `development-link.py` | 9 |
 | `test_dispatch.py` | Continuous dispatch from real delivery surveys and observed worker events | `deliver.py`, `dispatch.py`, `lane.py` | 19 |
-| `test_documents.py` | The installed prose API exposes complete inputs and directed reading paths | — | 11 |
 | `test_format.py` | `format.py` on standalone issues | `format.py` | 109 |
 | `test_hotfix.py` | `hotfix.py`: a hot-fix's identity, target, board status, delivering pull requests and delivery unit state | `hotfix.py` | 16 |
 | `test_lane.py` | Lane's raw-cell, assignment, consistency and admission contracts | `lane.py` | 12 |
 | `test_link_capture.py` | The Development relation read from each end by `links-by-pull-request.py` and `links-by-issue.py`, and the linked pull requests `linked-pull-requests.py` adds to a collection | `development.py`, `linked-pull-requests.py`, `links-by-issue.py`, `links-by-pull-request.py`, `sync.py` | 22 |
-| `test_modes.py` | Mode summaries in each skill's `SKILL.md` | — | 4 |
 | `test_orphans.py` | `orphans.py` keeps a proposal out of the hoist candidates and out of the initiative list, and a declared throwaway out of both candidate groups | `orphans.py` | 3 |
-| `test_plan_mode.py` | Plan Mode keeps a plan in one home: its planning record on the engineering branch | — | 6 |
 | `test_progress.py` | `progress.py`: one test per rule its docstring states | `progress.py` | 76 |
-| `test_readme.py` | The test folder's README names every module and every script, and its rows match what the folder holds | — | 11 |
 | `test_renumber.py` | `renumber.py` rewrites an initiative's epic numbers, or one epic's task numbers, across issue bodies | `renumber.py` | 32 |
 | `test_revision_check.py` | An instrument runs at the commit a branch or tag resolves to, and the run leaves no checkout | `revision-check.py` | 8 |
 | `test_shared.py` | The helpers `progress.py` shares with `board.py`, `sync.py` and `format.py` | `board.py`, `format.py`, `statuses.py`, `sync.py` | 11 |
 | `test_statuses.py` | The jurisdiction each mode's Status changes are held to, and the calls they render | `statuses.py` | 21 |
 | `test_sync.py` | Done on a Work Breakdown row, ticked when the row is complete | `format.py`, `sync.py` | 185 |
 | `test_templates.py` | Body artifacts are the format checker's sole template source | `format.py` | 4 |
+
+### Prose Tests
+
+These modules read the skill's own documents and reach no script. Their Scripts cell is empty.
+
+| Module | What it guards | Scripts | Tests |
+| --- | --- | --- | --- |
+| `test_checkouts.py` | Each command acting on its checkout is run in a named one | — | 7 |
+| `test_documents.py` | The installed prose API exposes complete inputs and directed reading paths | — | 11 |
+| `test_modes.py` | Mode summaries in each skill's `SKILL.md` | — | 4 |
+| `test_plan_mode.py` | Plan Mode keeps a plan in one home: its planning record on the engineering branch | — | 6 |
+| `test_readme.py` | The test folder's README names every module and every script, and its rows match what the folder holds | — | 12 |
 | `test_worktrees.py` | Every worktree the skill creates is placed by a field, and git places a relative path where the command runs | — | 2 |
+
+`test_readme.py` checks this catalogue rather than an artifact, so it sits here by the same rule: it reaches no script.
 
 `fixtures.py` holds no tests. It builds board items, issues and pull requests as the REST API returns them, and runs the scripts over them.
 
