@@ -13,6 +13,8 @@ The change keeps eligibility with the delivery survey and keeps record publicati
 | Artifact | What it holds |
 | --- | --- |
 | [Design and verification](design.md) | Implementation boundaries, acceptance coverage and delivery checklist |
+| [Validation](validation.md) | Test results, disclosure traces and limitations |
+| [Planner suite output](planner-tests.txt) | Complete Work Planner regression result |
 
 ## Links
 
