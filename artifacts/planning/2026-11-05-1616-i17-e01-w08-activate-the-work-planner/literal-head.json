@@ -1,0 +1,16 @@
+{
+  "base": "dfb00380a58ab3346b77b7780424831b2a12fde2",
+  "head": "39248011df2320274c9d8d53078b887716e49fde",
+  "tree": "0ef1fe916ec77c29aa6f679757aebf1d242fbc20",
+  "frozen_files": 190,
+  "head_worktree_freeze_drift": [],
+  "changed_paths": [
+    "skills/work-planner/guidelines.md",
+    "skills/work-planner/rules.json",
+    "skills/work-planner/structure.json",
+    "skills/work-planner/test/test_checkouts.py",
+    "skills/work-planner/test/test_documents.py"
+  ],
+  "manifest_sha256": "4e5f8b9c2cff82b5776495b46dd6bcf751be73d752f2f8dcaf44ae50ec6ce600",
+  "protected_product_files": "All tracked files outside the five activation paths equal the starting tree."
+}

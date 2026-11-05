@@ -1,0 +1,86 @@
+{
+  "provenance": "Selected saved exec_command return objects only; not a complete session transcript or model-received context measurement.",
+  "reader_1": [
+    {
+      "receipt": "reader-1-read-checker-and-sandbox.json",
+      "command": "head -90 skills/scripts/check_skill_files.py",
+      "original_token_count": 1388,
+      "saved_output_characters": 5552,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-guidance-search-recovery.json",
+      "command": "rg -n -i 'conditional|returned|disclos|procedure|<details>|summary' skills/work-planner --glob '*.md' --glob '*.json' --glob '!test/**'",
+      "original_token_count": 11131,
+      "saved_output_characters": 44521,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-guidance-search.json",
+      "command": "rg -n -i 'conditional|returned|disclos|procedure|<details>|summary' skills/work-planner",
+      "original_token_count": 14901,
+      "saved_output_characters": 56099,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-planner-guidelines-recovery.json",
+      "command": "sed -n '1,55p' skills/work-planner/guidelines.md",
+      "original_token_count": 1193,
+      "saved_output_characters": 4772,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-planner-guidelines.json",
+      "command": "cat skills/work-planner/guidelines.md",
+      "original_token_count": 5906,
+      "saved_output_characters": 23617,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-receipt-1.json",
+      "command": null,
+      "original_token_count": 1156,
+      "saved_output_characters": 4622,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-receipt-2.json",
+      "command": null,
+      "original_token_count": 87,
+      "saved_output_characters": 348,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-revise.json",
+      "command": "cat skills/work-planner/modes/revise-mode.md",
+      "original_token_count": 1343,
+      "saved_output_characters": 5369,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-rule-consumers.json",
+      "command": "rg -n -i 'dependent.instructions|branch.headers|conditional detail|specific output|returned object|#procedure|conditional introduction' skills/work-planner --glob '*.md' --glob '*.json'",
+      "original_token_count": 1237,
+      "saved_output_characters": 4947,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-rules-conventions.json",
+      "command": "cat skills/work-planner/rules.md skills/work-planner/conventions.md",
+      "original_token_count": 1012,
+      "saved_output_characters": 4046,
+      "exit_code": 0
+    },
+    {
+      "receipt": "reader-1-read-shared-guidelines.json",
+      "command": "cat skills/guidelines.md",
+      "original_token_count": 4455,
+      "saved_output_characters": 17816,
+      "exit_code": 0
+    }
+  ],
+  "reader_1_saved_output_characters": 171709,
+  "reader_1_original_token_metadata_sum": 43809,
+  "reader_2_available_excerpt_characters": 3639,
+  "reader_2_limit": "Two saved source/search excerpts and an authored read account; no saved full tool-return transcript."
+}

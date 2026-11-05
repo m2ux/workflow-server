@@ -33,10 +33,10 @@ The installed Work Planner declaration is the single model selected by both the 
 
 ## Delivery Todos
 
-- In progress: publish reviewed implementation design before source edits.
-- Pending: activate installed declarations, align guidelines and source readers.
-- Pending: run required suites, installed checker, preservation and disclosure checks.
-- Pending: publish evidence and exact-head task pull request, then await root clearance.
+- Complete: publish reviewed implementation design before source edits.
+- Complete: activate installed declarations, align guidelines and source readers.
+- Complete: run required suites, installed checker and preservation; record both Partial disclosure observations.
+- In progress: publish evidence and exact-head task pull request, then await root clearance.
 
 ## Change List
 

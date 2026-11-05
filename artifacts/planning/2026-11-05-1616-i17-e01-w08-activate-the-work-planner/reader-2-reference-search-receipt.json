@@ -1,0 +1,6 @@
+{
+  "provenance": "Authored saved source/search excerpt, encoded losslessly to preserve original whitespace.",
+  "original_name": "reference-search-receipt.txt",
+  "original_sha256": "06d27e4055463a0da87f08b9a180acec1e2e77d18a70d724506447ee9b036398",
+  "output": "/tmp/project17-w08-disclosure/source/skills/work-planner/artifacts/issue-body.md:167:Apply [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.\n/tmp/project17-w08-disclosure/source/skills/work-planner/rules.json:10:  \"procedure/dependent-instructions\": [\"review\"],\n/tmp/project17-w08-disclosure/source/skills/work-planner/guidelines.md:32:  Put instructions that handle an action's specific output immediately after that action, naming the condition and returned value. Keep detail flush beneath the step heading. Name the returned object explicitly when a pronoun would leave its referent unclear.\n"
+}

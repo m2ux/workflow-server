@@ -1,0 +1,7 @@
+{
+  "chunk_id": "b52150",
+  "wall_time_seconds": 0.081332511,
+  "exit_code": 0,
+  "original_token_count": 87,
+  "output": "Failed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\nFailed to create stream fd: Operation not permitted\ntotal 0\ndrwxr-xr-x 4 mike mike1  80 Nov  5 15:34 .\ndrwxr-xr-x 3 mike mike1 100 Nov  5 15:34 ..\ndrwxr-xr-x 2 mike mike1  60 Nov  5 15:34 scripts\ndrwxr-xr-x 8 mike mike1 200 Nov  5 15:34 skills\n"
+}
