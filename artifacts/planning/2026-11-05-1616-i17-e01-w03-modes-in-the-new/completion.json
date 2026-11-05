@@ -1,0 +1,47 @@
+{
+  "unit": "I17 E01 W03",
+  "task_pr": 1643,
+  "state": "delivered",
+  "verified_task_head": "c28be9980208c469e2c119e715a5b9b50b9e246e",
+  "merge_and_epic_base": "fb9a834c940cbed9742709d7e03594900e31d22f",
+  "verified_tree": "96924656d6f331ad480615db0b76d6c3a2296d20",
+  "newly_verified_criteria": [
+    "AC3"
+  ],
+  "newly_completed_rows": [
+    "W03"
+  ],
+  "preserved_holds": [
+    "W04",
+    "W05"
+  ],
+  "adoption_criterion": "AC8 remains unticked",
+  "integration": {
+    "pr": 1641,
+    "draft": true,
+    "head": "fb9a834c940cbed9742709d7e03594900e31d22f",
+    "base": "workspace"
+  },
+  "board": {
+    "owner": "m2ux",
+    "number": 17,
+    "item": 291152098,
+    "status_field": 422017304,
+    "issue": 1616,
+    "status": "In Progress"
+  },
+  "target_model_findings": 0,
+  "installed_model": "one expected Revise Fields staging finding; zero remaining-file findings",
+  "planner_tests": {
+    "total": 923,
+    "passed": 922,
+    "skipped": 1
+  },
+  "shared_tests": {
+    "passed": 255
+  },
+  "disclosure_observations": "Partial",
+  "applied_plan_changes": [],
+  "held_plan_changes": [],
+  "successor_started": false
+}

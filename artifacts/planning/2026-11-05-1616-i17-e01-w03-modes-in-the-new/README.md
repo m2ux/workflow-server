@@ -1,12 +1,12 @@
 # Modes in the New Style — November 2026
 
-> I17 E01 W03 · Created 2026-11-05
+> I17 E01 W03 · Created 2026-11-05 · Revised 2026-11-05
 
 ## Executive Summary
 
 This record carries the user-approved Work Planner style conversion for W03. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
 
-The work preserves every operative condition and verifies the proposed structure independently of the installed declarations.
+The work preserves every operative condition and verifies the proposed structure independently of the installed declarations. PR 1643 is merged, W03 and AC3 are recorded complete, and the epic integration remains draft. Published reading observations remain explicitly Partial.
 
 ## Artifacts
 
@@ -52,6 +52,12 @@ The work preserves every operative condition and verifies the proposed structure
 | [board-after-merge.json](board-after-merge.json) | Exact Project 17 epic item In Progress after merge |
 | [merge-readiness.json](merge-readiness.json) | Fresh exact-head target/rules/reviews/checks/status readiness |
 | [walk-inputs.tar.gz](walk-inputs.tar.gz) | Historical captured board, PR, link and issue inputs supplied to the walks |
+
+| [epic-final.json](epic-final.json) | Live epic confirming scoped W03/AC3 completion and preserved holds/adoption state |
+| [integration-final.json](integration-final.json) | Draft integration body, task references and merged base-head readback |
+| [board-final.json](board-final.json) | Exact board item 291152098 with In Progress status |
+| [final-sync.log](final-sync.log) | Delivery consistency output with no further unit discrepancy |
+| [completion.json](completion.json) | Confirmed source, merge, criterion, board and remaining-scope identities |
 
 ## Links
 
