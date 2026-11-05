@@ -10,6 +10,9 @@ This record carries the approved W07 Work Planner artifact-family conversion. Ea
 
 | Artifact | What it holds |
 | --- | --- |
+| [W07](w07.md) | Component, scope, implementation and required validation |
+| [Design](design.md) | Operation and contract design, preservation and delivery gates |
+| [Baseline](baseline.json) | Six-file hashes, Prerequisites, operative lines and literal specimens |
 
 ## Links
 

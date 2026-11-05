@@ -1,0 +1,1646 @@
+{
+  "base": "fb9a834c940cbed9742709d7e03594900e31d22f",
+  "files": {
+    "delivery-branches.md": {
+      "sha256": "5b0ad1b9f8865d343123191efeb531e06b0599f8dbb640bbac7c4c9eb53f2d13",
+      "prerequisites": "\nRead these files first.\n\n- [Work Item](work-item.md)\n- [Hot-fix](hotfix.md)\n\n",
+      "headings": [
+        "*Prepare* Delivery Bases",
+        "*Create* Epic Base",
+        "*Update* Epic Base",
+        "*Update* Task Branch",
+        "*Create* Task Worktree",
+        "*Create* Pull Request Worktree",
+        "*Read* Target Requirements",
+        "*Read* Delivery Branches",
+        "Branches",
+        "Epic Bases",
+        "Producer Outputs",
+        "Review Worktrees",
+        "Task Branches",
+        "Stash Entries",
+        "List Epic Bases",
+        "List Long-Lived Branches",
+        "Fetch Remote Branch",
+        "Publish Epic Base",
+        "Merge Remote Branch",
+        "Push Epic Base",
+        "Push Task Branch",
+        "Add Task Worktree",
+        "Fetch Review Head",
+        "Add Epic Base Worktree",
+        "Add Review Worktree",
+        "Fetch Branch Protection",
+        "Fetch Active Branch Rules",
+        "Read Checkout Revision",
+        "Read Checkout Status"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Work Item](work-item.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Hot-fix](hotfix.md)"
+        },
+        {
+          "line": 20,
+          "text": "1. For each changed long-lived branch, run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout, then [List Long-Lived Branches](#list-long-lived-branches) with `--project` set to the checkout and `--revision` to that remote branch, such as `origin/main`, as [Branches](#branches) names for base preparation."
+        },
+        {
+          "line": 21,
+          "text": "2. Run [List Epic Bases](#list-epic-bases) in the project checkout for the epic."
+        },
+        {
+          "line": 22,
+          "text": "3. If `config/branches` is missing or empty at that revision, or does not name the changed branch:"
+        },
+        {
+          "line": 23,
+          "text": "   - Report the names as unevaluable at that revision."
+        },
+        {
+          "line": 24,
+          "text": "   - Obtain the project's branch names before creating delivery branches."
+        },
+        {
+          "line": 25,
+          "text": "4. Require the caller's confirmed prerequisite evidence before creating a base. The board status alone supplies no such evidence."
+        },
+        {
+          "line": 26,
+          "text": "5. Run [Create Epic Base](#create-epic-base) in the project checkout for each missing base, passing the corresponding long-lived branch, epic base name and confirmed prerequisite evidence."
+        },
+        {
+          "line": 34,
+          "text": "1. Require the confirmed prerequisites and a missing destination. Refuse a destination that already exists."
+        },
+        {
+          "line": 35,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout with the corresponding long-lived source branch, such as `main`."
+        },
+        {
+          "line": 36,
+          "text": "3. After a successful fetch:"
+        },
+        {
+          "line": 37,
+          "text": "   - Run [Publish Epic Base](#publish-epic-base) in the project checkout with that remote source and the missing epic base name, such as `i07/e00/main`, meeting [Epic Bases](#epic-bases)."
+        },
+        {
+          "line": 38,
+          "text": "   - Return the created branch or the failure."
+        },
+        {
+          "line": 46,
+          "text": "1. Take the long-lived target and the epic base checkout's path from the base name, meeting [Epic Bases](#epic-bases)."
+        },
+        {
+          "line": 47,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout with that epic base; stop on failure."
+        },
+        {
+          "line": 48,
+          "text": "3. Run [Add Epic Base Worktree](#add-epic-base-worktree) in the project checkout for an absent epic base checkout, and reuse an existing one; stop on failure, which a base checked out elsewhere returns."
+        },
+        {
+          "line": 49,
+          "text": "4. Run [Fetch Remote Branch](#fetch-remote-branch) in the epic base checkout with the long-lived target, such as `main`; stop on failure."
+        },
+        {
+          "line": 50,
+          "text": "5. Run [Merge Remote Branch](#merge-remote-branch) in the epic base checkout with the target branch name, such as `main`, to merge `origin/main`. A conflict stops the update, leaves the pull request open and is reported."
+        },
+        {
+          "line": 51,
+          "text": "6. After a successful merge:"
+        },
+        {
+          "line": 52,
+          "text": "   - Run [Push Epic Base](#push-epic-base) in the epic base checkout."
+        },
+        {
+          "line": 53,
+          "text": "   - Return the updated branch or the failure."
+        },
+        {
+          "line": 61,
+          "text": "1. Run [Fetch Remote Branch](#fetch-remote-branch) in the unit checkout with the base, such as `i07/e00/main`."
+        },
+        {
+          "line": 62,
+          "text": "2. Stop on failure."
+        },
+        {
+          "line": 63,
+          "text": "3. Run [Merge Remote Branch](#merge-remote-branch) in the unit checkout with the base name, such as `i07/e00/main`, to merge `origin/i07/e00/main`. A conflict stops the update, leaves the pull request open and is reported."
+        },
+        {
+          "line": 64,
+          "text": "4. After a successful merge:"
+        },
+        {
+          "line": 65,
+          "text": "   - Run [Push Task Branch](#push-task-branch) in the unit checkout with the task branch as destination."
+        },
+        {
+          "line": 66,
+          "text": "   - Return the updated branch or the failure."
+        },
+        {
+          "line": 74,
+          "text": "1. Require the supplied prerequisites and names meeting [Task Branches](#task-branches)."
+        },
+        {
+          "line": 75,
+          "text": "2. Run [Fetch Remote Branch](#fetch-remote-branch) in the project checkout of the repository the work changes, passing the base; stop on failure."
+        },
+        {
+          "line": 76,
+          "text": "3. Run [Add Task Worktree](#add-task-worktree) in the project checkout with the supplied path and task branch, rooted in the fetched base."
+        },
+        {
+          "line": 77,
+          "text": "4. Return the worktree path, branch and base, or the failure."
+        },
+        {
+          "line": 87,
+          "text": "1. Run [Fetch Review Head](#fetch-review-head) in the project checkout of the repository the pull request changes, passing its number; stop on failure."
+        },
+        {
+          "line": 88,
+          "text": "2. Run [Read Checkout Revision](#read-checkout-revision) on the project checkout for `FETCH_HEAD`."
+        },
+        {
+          "line": 89,
+          "text": "3. If it differs from the verified head, return a changed-head finding before creating a worktree."
+        },
+        {
+          "line": 90,
+          "text": "4. Take the worktree path from the pull request number, meeting [Review Worktrees](#review-worktrees)."
+        },
+        {
+          "line": 91,
+          "text": "5. If that worktree already exists:"
+        },
+        {
+          "line": 92,
+          "text": "   - Run Read Checkout Revision there for `HEAD`."
+        },
+        {
+          "line": 93,
+          "text": "   - Run [Read Checkout Status](#read-checkout-status) there."
+        },
+        {
+          "line": 94,
+          "text": "   - Reuse it only at the verified head and when its status reports detached HEAD with no tracked or untracked changes."
+        },
+        {
+          "line": 95,
+          "text": "   - Otherwise retain it and select an unused path suffixed with the verified commit."
+        },
+        {
+          "line": 96,
+          "text": "6. For an unused path, run [Add Review Worktree](#add-review-worktree) in the project checkout with that path and the verified commit."
+        },
+        {
+          "line": 97,
+          "text": "7. Confirm its HEAD through Read Checkout Revision."
+        },
+        {
+          "line": 98,
+          "text": "8. Return the selected detached worktree path and head, or the discrepancy before measuring."
+        },
+        {
+          "line": 106,
+          "text": "1. Run [Fetch Branch Protection](#fetch-branch-protection) for the supplied target."
+        },
+        {
+          "line": 107,
+          "text": "2. Run [Fetch Active Branch Rules](#fetch-active-branch-rules) for the same target."
+        },
+        {
+          "line": 108,
+          "text": "3. Return both records. An unreadable requirement remains unresolved; a protection 404 does not establish the absence of active rules."
+        },
+        {
+          "line": 116,
+          "text": "1. Run [List Long-Lived Branches](#list-long-lived-branches) with the supplied checkout and revision. Absent, empty or unreadable configuration at that revision leaves branch names unevaluable, reported with its source."
+        },
+        {
+          "line": 117,
+          "text": "2. Run [List Epic Bases](#list-epic-bases) in the project checkout for the supplied epic."
+        },
+        {
+          "line": 118,
+          "text": "3. Return both collections and any missing configuration."
+        },
+        {
+          "line": 126,
+          "text": "- An epic sync evaluates each of its epic bases, such as `origin/i07/e00/main` and `origin/i07/e00/workflows`. Declarations that disagree across those bases leave the names unevaluable, and each is reported with its source."
+        },
+        {
+          "line": 127,
+          "text": "- A read of one epic's branches evaluates its epic base, such as `origin/i07/e00/main`."
+        },
+        {
+          "line": 128,
+          "text": "- Base preparation, before a base exists, evaluates the long-lived branch the base is cut from, such as `origin/main`."
+        },
+        {
+          "line": 129,
+          "text": "- A delivery survey evaluates the long-lived branch that states the project's branches, such as `origin/workspace`."
+        },
+        {
+          "line": 130,
+          "text": "- Verification of merged delivery evaluates the merged commit."
+        },
+        {
+          "line": 132,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 137,
+          "text": "- Each long-lived branch an epic changes has a base branch, named for the initiative, the epic and that branch, and rooted in that long-lived branch. Its prerequisite epics are closed as completed with every delivery base merged."
+        },
+        {
+          "line": 138,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 140,
+          "text": "- The base's last segment is its long-lived branch, which gives the target it merges and is merged into."
+        },
+        {
+          "line": 141,
+          "text": "- Each base is worked in one worktree, named by the base under the worktree directory of the repository's main working tree."
+        },
+        {
+          "line": 142,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 144,
+          "text": "- Every pull request delivering the epic's tasks targets that epic base."
+        },
+        {
+          "line": 145,
+          "text": "- A completed epic is delivered by merging each base into its long-lived branch. The epic stays open until every base has merged. Another epic still incomplete holds no base back unless it is a prerequisite."
+        },
+        {
+          "line": 146,
+          "text": "- An epic sync reports each open or merged pull request off these routes as `target`: a task pull request into anything but one of its epic's bases, and an integration pull request into anything but the long-lived branch its head names."
+        },
+        {
+          "line": 152,
+          "text": "- **The output.**"
+        },
+        {
+          "line": 154,
+          "text": "- **Available.**"
+        },
+        {
+          "line": 156,
+          "text": "- **Not available.**"
+        },
+        {
+          "line": 158,
+          "text": "- **Not gates.**"
+        },
+        {
+          "line": 160,
+          "text": "- **Record.**"
+        },
+        {
+          "line": 162,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 169,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 176,
+          "text": "- **Changed branches.**"
+        },
+        {
+          "line": 178,
+          "text": "- **Unplanned rows.**"
+        },
+        {
+          "line": 180,
+          "text": "- **Several long-lived branches.**"
+        },
+        {
+          "line": 182,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 184,
+          "text": "- **Hot-fix.**"
+        },
+        {
+          "line": 193,
+          "text": "- **Found.**"
+        },
+        {
+          "line": 195,
+          "text": "- **Restored.**"
+        },
+        {
+          "line": 197,
+          "text": "- **Dropped.**"
+        },
+        {
+          "line": 199,
+          "text": "- **Example.**"
+        },
+        {
+          "line": 212,
+          "text": "- A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states."
+        },
+        {
+          "line": 213,
+          "text": "- The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`."
+        },
+        {
+          "line": 214,
+          "text": "- The output contains one full base branch name per line."
+        },
+        {
+          "line": 232,
+          "text": "- The names meet [Branches](#branches)."
+        },
+        {
+          "line": 233,
+          "text": "- `--project` is any checkout of the project. `--revision` is the evaluated revision [Branches](#branches) names for the run."
+        },
+        {
+          "line": 234,
+          "text": "- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository."
+        },
+        {
+          "line": 235,
+          "text": "- `--names` reads one `--revision`."
+        },
+        {
+          "line": 236,
+          "text": "- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1."
+        },
+        {
+          "line": 322,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree."
+        },
+        {
+          "line": 360,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree."
+        },
+        {
+          "line": 380,
+          "text": "- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree."
+        }
+      ],
+      "specimens": [
+        {
+          "language": "bash",
+          "content": "git ls-remote --heads origin 'refs/heads/<epic-branch-prefix>/*' | cut -f2 | sed 's|refs/heads/||'\n",
+          "sha256": "3dccba06aadd201d92518e4bc7d101b9012543b2ca0bb99e3df490e5d4e53fa5"
+        },
+        {
+          "language": "bash",
+          "content": "git ls-remote --heads origin 'refs/heads/i07/e00/*' | cut -f2 | sed 's|refs/heads/||'\n",
+          "sha256": "61f8b4e2cf03251d64ecb43ac082ea7a9e3d5f0d304bf3a3f6a15236fe85dc7f"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision '<revision>'\n",
+          "sha256": "596ad4aaad4db4d9e17bad88e32b4fd042800e051b937f415a489de50c4ddefb"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/sync.py --names --project '<checkout>' --revision origin/i07/e00/main\n",
+          "sha256": "3e5e7b7966db158dcc2401f4d597a7814f319f7d77d9aaa45722b728c3c4eb70"
+        },
+        {
+          "language": "bash",
+          "content": "git fetch origin '<source-branch>'\n",
+          "sha256": "ec1c3e3b27cca4846f2c7bf7852b5c4af568de529560168cc6d8ab86f75f5d05"
+        },
+        {
+          "language": "bash",
+          "content": "git push origin 'origin/<source-branch>:refs/heads/<epic-base>'\n",
+          "sha256": "5a98a8fb317c08c334a9fe83bddec26dc98602c02caa550a33b2ae8de9bcc66e"
+        },
+        {
+          "language": "bash",
+          "content": "git merge --no-edit 'origin/<source-branch>'\n",
+          "sha256": "7a284844d958aeb00e5adb0d24d85740c7c7d61914140c7fa75296188bbbd50c"
+        },
+        {
+          "language": "bash",
+          "content": "git push\n",
+          "sha256": "44aeb7423d78e906a765d3cc3df9b54714402ed9914e0ee3f76bd132d12a59c2"
+        },
+        {
+          "language": "bash",
+          "content": "git push origin 'HEAD:refs/heads/<task-branch>'\n",
+          "sha256": "6e8cea200a78497b19669360cee64654a9431efc7f0c6a2ef086c2d0134beca6"
+        },
+        {
+          "language": "bash",
+          "content": "git push origin HEAD:refs/heads/i07/e00/w01-queue-plan\n",
+          "sha256": "8de6fc32cd3ff1ccff9fde458e579a2bbe36fc3a2a3c4204a24e24dfed5e13ea"
+        },
+        {
+          "language": "bash",
+          "content": "git worktree add '<worktree-path>' -b '<task-branch>' 'origin/<base>'\n",
+          "sha256": "5f4d45679fd8e87d96574bc3d2eba74a326531b3fd6429e648c0ddd42a17dc1e"
+        },
+        {
+          "language": "bash",
+          "content": "git worktree add .worktrees/i07/e00/w01-queue-plan -b i07/e00/w01-queue-plan origin/i07/e00/main\n",
+          "sha256": "d68618e4d2429380d208b5c536ebec924278069319d0661afb9215ac7ec753e1"
+        },
+        {
+          "language": "bash",
+          "content": "git fetch origin 'pull/<pull-request-number>/head'\n",
+          "sha256": "1843168886617498963a5724ec4f4b01e68fa8f123870b9355b2086a5a83c388"
+        },
+        {
+          "language": "bash",
+          "content": "git fetch origin pull/950/head\n",
+          "sha256": "b0de1b7177f828bce1a4fe0eb1bcf20c9b83f7feb41f27575f8e0f320404d91f"
+        },
+        {
+          "language": "bash",
+          "content": "git worktree add '<worktree-path>' '<epic-base>'\n",
+          "sha256": "f5326b958213b3fec9731246932b8ccb430f88e7ba80041d17b3d2d612eb9f6c"
+        },
+        {
+          "language": "bash",
+          "content": "git worktree add .worktrees/i07/e00/main i07/e00/main\n",
+          "sha256": "5ab8a7c14d91717ab07ddb9b9f7db0c9f798e6c157a8cf2849721fcf0fd17fe8"
+        },
+        {
+          "language": "bash",
+          "content": "git worktree add --detach '<worktree-path>' '<head-commit>'\n",
+          "sha256": "050ef42c6b620394e4e815cdcf5e27e3a217c9af92ee3bf725637adf467dd7bc"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/branches/<target-branch>/protection' > '<branch-protection-file>'\n",
+          "sha256": "cc5789d65db08ba2344776bba2dca1c4a46bd72881176033411990da98121ee9"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/branches/main/protection' > protection.json\n",
+          "sha256": "28704ba42a7227670171906fcfcdc55518de512cd3281f958d683e025e37a770"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/rules/branches/<target-branch>' > '<branch-rules-file>'\n",
+          "sha256": "12ac6e09538133741aa92d422b5f8f374d5b84829e5cefc29b67d38d6b2a5f19"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/rules/branches/main' > branch-rules.json\n",
+          "sha256": "62041ea985616631d0e5fe2d221530d76e09d07afde67ff9c4d42e413f369870"
+        },
+        {
+          "language": "bash",
+          "content": "git -C '<checkout>' rev-parse '<revision>^{commit}'\n",
+          "sha256": "f3ba552cccc92396c9bd9d28324e9f70a7030ec5c1386bae736f580c05a0b70d"
+        },
+        {
+          "language": "bash",
+          "content": "git -C '<checkout>' status --porcelain --branch\n",
+          "sha256": "efb36af6a7e55df00a54f185fd6ee23fd2a0a93a2d58828c330b5a75a14e1876"
+        }
+      ]
+    },
+    "delivery-brief.md": {
+      "sha256": "c13944a36d833af480f37861ee307f801860746f01257af5c4f33762f38ce1ac",
+      "prerequisites": "\nRead these files first.\n\n- [Pull Request Body](pull-request-body.md)\n- [Plan Change](plan-change.md)\n\n",
+      "headings": [
+        "*Populate* Delivery Brief",
+        "Location",
+        "Work Identity",
+        "Planning Record",
+        "Validation Scope",
+        "Change Autonomy",
+        "Execution Instructions"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Pull Request Body](pull-request-body.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Plan Change](plan-change.md)"
+        },
+        {
+          "line": 20,
+          "text": "1. Write the supplied identity, context and execution instructions to the prompt file, at the supplied output path or where [Location](#location) puts it."
+        },
+        {
+          "line": 21,
+          "text": "   - Each part must meet [Fields](#fields)."
+        },
+        {
+          "line": 22,
+          "text": "2. Return the brief path and any missing context. The caller resolves gaps before dispatch."
+        }
+      ],
+      "specimens": []
+    },
+    "delivery-evidence.md": {
+      "sha256": "276e992a12c09dda99c5609098e96433c116088e3ce5005f4d47825ef50df0b9",
+      "prerequisites": "\nRead these files first.\n\n- [Pull Request](pull-request.md)\n- [Epic](epic.md)\n\n",
+      "headings": [
+        "*Read* Delivery Evidence",
+        "Completeness",
+        "Named Delivery"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Pull Request](pull-request.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Epic](epic.md)"
+        },
+        {
+          "line": 20,
+          "text": "1. Fetch the pull requests and their links."
+        },
+        {
+          "line": 21,
+          "text": "   - Run [Read Initiative Pull Requests](pull-request.md#read-initiative-pull-requests) with the fetched issue files."
+        },
+        {
+          "line": 22,
+          "text": "   - Run [Fetch Pull Request Issue Links](pull-request.md#fetch-pull-request-issue-links)."
+        },
+        {
+          "line": 23,
+          "text": "   - Use [Access Development Links](pull-request.md#access-development-links) for the actual complete link sets."
+        },
+        {
+          "line": 24,
+          "text": "2. Run [Inspect Epic Delivery](epic.md#inspect-epic-delivery) with the epic JSON, pull request records and complete issue-link snapshot."
+        },
+        {
+          "line": 25,
+          "text": "   - Route the returned [Delivery Findings](epic.md#delivery-findings) to matching, verification or user decisions."
+        },
+        {
+          "line": 26,
+          "text": "3. Repair each reported missing-prefix title of a merged pull request linked directly by an epic task row, meeting [Named Delivery](#named-delivery)."
+        },
+        {
+          "line": 27,
+          "text": "   - The row identifies its owning epic; preserve the title purpose and set that epic prefix without another confirmation. A title already naming another epic remains a conflict requiring reconciliation."
+        },
+        {
+          "line": 28,
+          "text": "   - Run [Publish Pull Request](pull-request.md#publish-pull-request) with the confirmed epic prefix and purpose."
+        },
+        {
+          "line": 29,
+          "text": "   - Repeat the fetch and match steps with the saved title before returning."
+        },
+        {
+          "line": 30,
+          "text": "4. Return the current pull request records, complete issue-link snapshot and per-epic findings to the caller, reporting incomplete evidence as a blocker."
+        },
+        {
+          "line": 34,
+          "text": "- **Pull request records.**"
+        },
+        {
+          "line": 36,
+          "text": "- **Issue-link snapshot.**"
+        },
+        {
+          "line": 38,
+          "text": "- **Findings.** The per-epic [Delivery Findings](epic.md#delivery-findings) the evidence yields."
+        }
+      ],
+      "specimens": []
+    },
+    "delivery-plan.md": {
+      "sha256": "68a65d9c00a5a517b1eedc9a1990c3ee7999717ef48ed4fea2afcc74755e9629",
+      "prerequisites": "\nRead these files first.\n\n- [Lane](lane.md)\n- [Epic Issue Body](epic-issue-body.md)\n- [Delivery Branches](delivery-branches.md)\n- [Work Item](work-item.md)\n- [Hot-fix](hotfix.md)\n- [Hot-fix Body](hotfix-body.md)\n\n",
+      "headings": [
+        "*Plan* Available Work",
+        "Work Units",
+        "Hot-fix Units",
+        "Debt",
+        "Report Lines",
+        "Branch Context",
+        "Dispatch Export",
+        "Compute Available Work"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Lane](lane.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Epic Issue Body](epic-issue-body.md)"
+        },
+        {
+          "line": 11,
+          "text": "- [Delivery Branches](delivery-branches.md)"
+        },
+        {
+          "line": 12,
+          "text": "- [Work Item](work-item.md)"
+        },
+        {
+          "line": 13,
+          "text": "- [Hot-fix](hotfix.md)"
+        },
+        {
+          "line": 14,
+          "text": "- [Hot-fix Body](hotfix-body.md)"
+        },
+        {
+          "line": 24,
+          "text": "1. Run [Compute Available Work](#compute-available-work), mapping each supplied input to its named command parameter. The computation applies [Determine Lane Admission](lane.md#determine-lane-admission) to each derived free unit with its epic body, complete ids and the requested index."
+        },
+        {
+          "line": 25,
+          "text": "2. Return the plan meeting [Fields](#fields). The caller decides holds and dispatch, and supplies missing evidence for another pass."
+        },
+        {
+          "line": 39,
+          "text": "- A unit fixes every debt item its validation finds, from running its tests, auditing the definitions it changed and reviewing its pull request, on its task branch, so its open pull request carries each fix before it merges."
+        },
+        {
+          "line": 40,
+          "text": "- Debt in code outside the unit's change is an issue of its own, arising from the delivery."
+        },
+        {
+          "line": 44,
+          "text": "- A `unit` line names one session's tasks, its lane as `lane 2` or `unlaned`, Coverage and record folder, then a branch, base and worktree for each epic base it changes, separated by semicolons: `branch i07/e00/w01-queue-plan-main, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan-main; branch i07/e00/w01-queue-plan-workflows, base i07/e00/workflows, worktree .worktrees/i07/e00/w01-queue-plan-workflows`. One base keeps the unsuffixed branch: `branch i07/e00/w01-queue-plan, base i07/e00/main, worktree .worktrees/i07/e00/w01-queue-plan`. A hot-fix's line names its prefix and issue: `unit F00 #874: unlaned, coverage AC1, record 2026-10-06-874-f00-key-validation, branch f00-key-validation, base workspace, worktree .worktrees/f00-key-validation`."
+        },
+        {
+          "line": 45,
+          "text": "- An `invalid` line names a malformed task-table Lane cell or a joined unit with different Lane values. The unit is not offered and the run exits nonzero; the summary counts invalid units."
+        },
+        {
+          "line": 46,
+          "text": "- An `undeclared` line names a row of a unit in an epic of several bases whose linked work item names no long-lived branch with an epic base, and why: the file is unread, or its component names no long-lived branch or one with no epic base. The unit is not offered until its work item declares one, and a run meeting one exits nonzero. It also names an open hot-fix, whatever its state, whose body names no [target](hotfix-body.md#target), or one of the project checkout's repository whose target the evaluated revision's [Branches](delivery-branches.md#branches) does not declare. It is offered as no unit and no merge until its target is one."
+        },
+        {
+          "line": 47,
+          "text": "- A `hold` line names a row a session holds and the record it links, or a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) holds."
+        },
+        {
+          "line": 48,
+          "text": "- A `blocked` line names a free row whose dependencies are undelivered or whose joined task is unavailable."
+        },
+        {
+          "line": 49,
+          "text": "- An `output` line records each output read for a row naming another epic's row, as [Producer Outputs](delivery-branches.md#producer-outputs) states: the producer row, the delivery, the output commit, the consumer revision and commit, and whether it is available there, or why it is unverified."
+        },
+        {
+          "line": 50,
+          "text": "- An `unresolvable` line names a free row carrying a `Depends on` entry nothing can resolve, and the entry as written. The row waits on no delivery, so it is told apart from a blocked one, and a run meeting one exits nonzero."
+        },
+        {
+          "line": 51,
+          "text": "- A `merge` line names an open pull request, never a draft, whose test plan has passed and the base it targets: a task pull request into an epic base, or an open hot-fix's [delivering pull request](hotfix.md#delivering-pull-request) into its target, when no `undeclared` or unresolved line names that hot-fix's target."
+        },
+        {
+          "line": 52,
+          "text": "- An `unrecorded` line names a hot-fix its [Delivery Unit](hotfix.md#delivery-unit) leaves unrecorded, and each merged delivering pull request."
+        },
+        {
+          "line": 53,
+          "text": "- An unresolved issue reference identifies missing dependency evidence."
+        },
+        {
+          "line": 54,
+          "text": "- An unresolved hot-fix of a repository other than the project checkout's names its target, which that checkout's [Branches](delivery-branches.md#branches) cannot declare. It is offered once a plan whose project checkout is of its repository finds the target declared."
+        },
+        {
+          "line": 72,
+          "text": "- `--items`, `--prs` and `--links` receive the supplied snapshots. A row's own links, which say whether its work is under way, are read from the epic body."
+        },
+        {
+          "line": 73,
+          "text": "- `--project` is the checkout and `--revision` the evaluated revision; `--bases` is its comma-separated epic-base list."
+        },
+        {
+          "line": 74,
+          "text": "- `--project` is also where producer outputs are read, against the remote epic bases and long-lived branches it holds, so fetch them before the run."
+        },
+        {
+          "line": 75,
+          "text": "- `--engineering` is the engineering worktree, where each free row's work-item file is read."
+        },
+        {
+          "line": 76,
+          "text": "- `--others` supplies each resolved off-board issue; `--date` selects another record date."
+        },
+        {
+          "line": 77,
+          "text": "- `--lane <id>` supplies the requested bare decimal index. Omit it when the run names no lane. The offered units meet [Admission](lane.md#admission)."
+        },
+        {
+          "line": 78,
+          "text": "- `--dispatch-plan '<dispatch-export-file>'` writes the [dispatch export](#dispatch-export)."
+        }
+      ],
+      "specimens": [
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --items '<board-items-file>' --prs '<pull-request-records-file>' --links '<issue-link-snapshot-file>' --project '<checkout>' --revision '<revision>' --bases '<epic-base-names>' --engineering '<engineering-worktree>' --lane '<lane-index>'\n",
+          "sha256": "7a7a9279d331c076e4ff405836edf4e9fda6418770dd80614849845f94897824"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/deliver.py --items items.json --prs prs.json --links links.json --project '<checkout>' --revision origin/workspace --bases i07/e00/main,i07/e00/workflows --engineering '<checkout>/.engineering' --lane 2\n",
+          "sha256": "9c5530fb3b712ef0037eb31973bc9a5c9fb1744db646b1dfdbcebdb4501a2fbc"
+        }
+      ]
+    },
+    "dispatch-batch.md": {
+      "sha256": "a57f889d975d9a1d179a73412ee6a5bb427aea89b5a5dc7555e4caeea16ba3af",
+      "prerequisites": "\nRead these files first.\n\n- [Lane](lane.md)\n- [Delivery Plan](delivery-plan.md)\n\n",
+      "headings": [
+        "*Plan* Dispatch Batch",
+        "*Validate* Dispatch Start",
+        "Authorization",
+        "Survey Evidence",
+        "Session Inventory",
+        "Selection",
+        "Preparations",
+        "Start Readiness",
+        "Compute Dispatch Batch",
+        "Check Dispatch Start"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Lane](lane.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Delivery Plan](delivery-plan.md)"
+        },
+        {
+          "line": 20,
+          "text": "1. Run [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence."
+        },
+        {
+          "line": 21,
+          "text": "2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error."
+        },
+        {
+          "line": 29,
+          "text": "1. Run [Check Dispatch Start](#check-dispatch-start) with the supplied evidence."
+        },
+        {
+          "line": 30,
+          "text": "2. Return the validated unit or the named blocker, meeting [Start Readiness](#start-readiness)."
+        },
+        {
+          "line": 78,
+          "text": "- Supply `--lane '<lane-index>'` only when that lane was used by the survey."
+        },
+        {
+          "line": 79,
+          "text": "- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity."
+        },
+        {
+          "line": 80,
+          "text": "- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified."
+        },
+        {
+          "line": 92,
+          "text": "- Exit 0 returns the selected unit; exit 1 names the blocking condition."
+        }
+      ],
+      "specimens": [
+        {
+          "language": "json",
+          "content": "{\"board\": \"users/o/projectsV2/7\", \"scope\": [\"o/r#I07\"], \"lane\": null}\n",
+          "sha256": "33a7e6c57182d9bf4e470fa68d655ce93f05653045fbef4b5d3008f1259c4000"
+        },
+        {
+          "language": "json",
+          "content": "[{\"unit\": \"o/r#I07:E00:W01\", \"session\": \"worker-1\", \"state\": \"running\"}]\n",
+          "sha256": "29dc1fbbbc7306422665da28cc0ebc79e1f23d9c07ec33cb11130dbf036979f0"
+        },
+        {
+          "language": "json",
+          "content": "{\"unit\": \"o/r#I07:E00:W01\", \"published_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reserved_record\": \"2026-11-05-943-i07-e00-w01-work\", \"reservation_verified\": true}\n",
+          "sha256": "0611ba28de4f2dbcf9549d77c2233488589b7c65c9c543d490dda1db437c16eb"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py batch --authorization '<authorization-file>' --plan '<dispatch-export-file>' --sessions '<session-inventory-file>' --capacity '<free-slot-count>' --board '<survey-board>' > '<batch-file>'\n",
+          "sha256": "3af2b54f3c5038137158521ca99cb43f8caa8a31498ab6fdd17f45c3a8c28411"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && \"<workspace>/scripts/sbx\" python3 skills/work-planner/scripts/dispatch.py start --batch '<batch-file>' --unit '<unit-identity>' --evidence '<start-evidence-file>' --sessions '<session-inventory-file>' --capacity '<free-slot-count>'\n",
+          "sha256": "dfc3085787cc1cc858926b4fe1c7396dfa9cc4283c8fd5fc9e21a7f4bd33a80c"
+        }
+      ]
+    },
+    "pull-request.md": {
+      "sha256": "b4128c7d54b553ecddd11806cf63191dbeb0fe9a68bb97b17b755c06361fa7c3",
+      "prerequisites": "\nRead these files first.\n\n- [Issue](issue.md)\n- [Delivery Branches](delivery-branches.md)\n- [Agent Review](agent-review.md)\n- [Hot-fix](hotfix.md)\n\n",
+      "headings": [
+        "*Merge* Delivery Pull Request",
+        "*Access* Development Links",
+        "*Fetch* Pull Request Issue Links",
+        "*Link* Pull Request to Issue",
+        "*Merge* Epic Pull Request",
+        "*Fetch* All Delivery Pull Requests",
+        "*Read* Initiative Pull Requests",
+        "*Read* Pull Request State",
+        "*Publish* Pull Request",
+        "*Locate* Review Pull Request",
+        "*Read* Head Evidence",
+        "*Merge* Task Pull Requests",
+        "*Fetch* Merge Readiness",
+        "*Hold* Epic Review",
+        "*Ready* Epic Review",
+        "*Ready* Hot-fix Pull Request",
+        "State",
+        "Scope",
+        "Other Pull Requests",
+        "Merge Permission",
+        "Issue Links",
+        "Retarget Pull Request",
+        "Retitle Pull Request",
+        "Open Task Pull Request",
+        "Open Epic Pull Request",
+        "Merge Pull Request",
+        "Patch Pull Request Body",
+        "Find Review Pull Request",
+        "Submit Epic Merge",
+        "Read Merge Result",
+        "Set Development Link",
+        "Remove Development Link",
+        "Capture Pull Request Links",
+        "Save Pull Request Snapshot",
+        "Fetch Pull Request Reviews",
+        "Fetch Initiative Pull Requests",
+        "Fetch Linked Pull Requests",
+        "Fetch Repository Delivery Pull Requests",
+        "Append Repository Delivery Pull Requests",
+        "Fetch Pull Request Files",
+        "Fetch Head Check Runs",
+        "Fetch Head Status",
+        "Mark Review Ready",
+        "Mark Review Draft"
+      ],
+      "operative_lines": [
+        {
+          "line": 9,
+          "text": "- [Issue](issue.md)"
+        },
+        {
+          "line": 10,
+          "text": "- [Delivery Branches](delivery-branches.md)"
+        },
+        {
+          "line": 11,
+          "text": "- [Agent Review](agent-review.md)"
+        },
+        {
+          "line": 12,
+          "text": "- [Hot-fix](hotfix.md)"
+        },
+        {
+          "line": 22,
+          "text": "1. Read the supplied target branch's current required reviews and checks alongside the verified head. A branch whose protection or active rules require an approving review takes that review from a person. An agent cannot approve a pull request it opened; on such a branch, the merge belongs to the reviewer even when every other condition holds."
+        },
+        {
+          "line": 23,
+          "text": "   - Report the pull request as ready for approval, naming what was verified."
+        },
+        {
+          "line": 24,
+          "text": "   - Stop merge attempts. This handoff is a finished outcome."
+        },
+        {
+          "line": 25,
+          "text": "   - Keep approval with that reviewer. Another account, an administrative bypass or a setting change cannot supply it. Changing repository protection requires the user's explicit authorization, asked for separately."
+        },
+        {
+          "line": 26,
+          "text": "   - For example, workflow-server's `main` requires one approving review, so carry an epic to ready and stop."
+        },
+        {
+          "line": 27,
+          "text": "2. When approval permits the agent to merge:"
+        },
+        {
+          "line": 28,
+          "text": "   - Call [Merge Pull Request](#merge-pull-request) for a task or [Merge Epic Pull Request](#merge-epic-pull-request) for an epic, passing the verified readiness evidence and authorization result. For an epic, also supply the target requirements and exact verified head SHA."
+        },
+        {
+          "line": 29,
+          "text": "   - If GitHub refuses the merge, return the refusal to the caller for fresh verification."
+        },
+        {
+          "line": 30,
+          "text": "   - If the agent's own permission layer refuses it, the harness declines to run the merge command and GitHub returns nothing. On a target with no review requirement, that refusal is neither a handoff for approval nor a branch blocker. Return the pull request as ready and verified, naming the refusal and the [merge permission](#merge-permission) it lacks, and stop merge attempts. A later Deliver run merges it in its merge step or reports the missing permission; neither asks the user to approve it."
+        },
+        {
+          "line": 31,
+          "text": "3. Return the merge result, including its merge commit when supplied, for the caller's readback."
+        },
+        {
+          "line": 39,
+          "text": "1. For a read-only request:"
+        },
+        {
+          "line": 40,
+          "text": "   - Run [Read Pull Request State](#read-pull-request-state) for the pull request's metadata, which carries the `html_url` the capture keys it by."
+        },
+        {
+          "line": 41,
+          "text": "   - Run [Capture Pull Request Links](#capture-pull-request-links) with that record and return its entry, every page read. An unreadable relation is a blocker, not an empty link set."
+        },
+        {
+          "line": 42,
+          "text": "2. For a link edit:"
+        },
+        {
+          "line": 43,
+          "text": "   - Take the supplied repository prerequisite from [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close); an unconfirmed setting blocks the edit."
+        },
+        {
+          "line": 44,
+          "text": "   - For an addition, run [Set Development Link](#set-development-link) with the pull request and issue identities."
+        },
+        {
+          "line": 45,
+          "text": "   - For removal of an abandoned or incorrect link:"
+        },
+        {
+          "line": 46,
+          "text": "     - Require the supplied user decision."
+        },
+        {
+          "line": 47,
+          "text": "     - Run [Remove Development Link](#remove-development-link) with those identities."
+        },
+        {
+          "line": 48,
+          "text": "3. Return the relation the command verified from both ends, or the discrepancy or failure it names. A failed write is a blocker carrying its operation and error, never an unavailable field."
+        },
+        {
+          "line": 56,
+          "text": "1. Run [Capture Pull Request Links](#capture-pull-request-links) with `prs.json` and destination `links.json`."
+        },
+        {
+          "line": 57,
+          "text": "2. If it names an unreadable relation, stop and return each one named as a blocker. Incomplete evidence is never a partial snapshot."
+        },
+        {
+          "line": 58,
+          "text": "3. Repeat the capture after a link changes."
+        },
+        {
+          "line": 59,
+          "text": "4. Return the snapshot for the scripts' `--links` input."
+        },
+        {
+          "line": 67,
+          "text": "1. Run [Access Development Links](#access-development-links) with the supplied identities, requested link addition and confirmed repository prerequisite."
+        },
+        {
+          "line": 68,
+          "text": "2. Stop on a blocker or an unverified edit."
+        },
+        {
+          "line": 69,
+          "text": "3. Run [Fetch Pull Request Issue Links](#fetch-pull-request-issue-links) with the current records and destination after the edit."
+        },
+        {
+          "line": 70,
+          "text": "4. Return the verified relation and refreshed snapshot."
+        },
+        {
+          "line": 78,
+          "text": "1. Require the supplied target requirements, readiness evidence and authorization."
+        },
+        {
+          "line": 79,
+          "text": "2. Run [Submit Epic Merge](#submit-epic-merge) with the exact head whose checks and target requirements were verified; return a refusal without continuing."
+        },
+        {
+          "line": 80,
+          "text": "3. Run [Read Merge Result](#read-merge-result) for that pull request."
+        },
+        {
+          "line": 81,
+          "text": "4. Confirm the merged state, merge commit, verified head and target."
+        },
+        {
+          "line": 82,
+          "text": "5. Return the result or discrepancy."
+        },
+        {
+          "line": 90,
+          "text": "1. Run [Fetch Repository Delivery Pull Requests](#fetch-repository-delivery-pull-requests) for the first repository and destination `prs.json`. This replaces the destination with a fresh collection."
+        },
+        {
+          "line": 91,
+          "text": "2. Stop on failure."
+        },
+        {
+          "line": 92,
+          "text": "3. Run [Append Repository Delivery Pull Requests](#append-repository-delivery-pull-requests) for each further repository, passing the same destination."
+        },
+        {
+          "line": 93,
+          "text": "4. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that destination and the board items file."
+        },
+        {
+          "line": 94,
+          "text": "5. If any fetch failed, return incomplete evidence."
+        },
+        {
+          "line": 95,
+          "text": "6. Return the complete collection only after every fetch succeeds."
+        },
+        {
+          "line": 103,
+          "text": "1. Run [Fetch Initiative Pull Requests](#fetch-initiative-pull-requests) with the supplied repository and prefix, saving the collection to the supplied file."
+        },
+        {
+          "line": 104,
+          "text": "2. Run [Fetch Linked Pull Requests](#fetch-linked-pull-requests) with that collection and the supplied issue files."
+        },
+        {
+          "line": 105,
+          "text": "3. Return the collection, or an incomplete-fetch finding naming each unreadable relation or pull request."
+        },
+        {
+          "line": 113,
+          "text": "1. Run [Save Pull Request Snapshot](#save-pull-request-snapshot) with the pull request identity and destination JSON path."
+        },
+        {
+          "line": 114,
+          "text": "2. Run [Fetch Pull Request Files](#fetch-pull-request-files) or [Fetch Pull Request Reviews](#fetch-pull-request-reviews) when the caller requests those records."
+        },
+        {
+          "line": 115,
+          "text": "3. Return the snapshots or missing evidence."
+        },
+        {
+          "line": 123,
+          "text": "1. For creation, run [Open Task Pull Request](#open-task-pull-request) or [Open Epic Pull Request](#open-epic-pull-request) for the supplied kind, body, title, head and base, preserving epic draft state. A task pull request titled with a hot-fix prefix always opens as a draft."
+        },
+        {
+          "line": 124,
+          "text": "   - For a task or epic pull request, run [Link Pull Request to Issue](#link-pull-request-to-issue) with it, the supplied delivery issue, that confirmed setting and the snapshot destination, meeting [Issue Links](#issue-links)."
+        },
+        {
+          "line": 125,
+          "text": "2. For an existing pull request, run [Patch Pull Request Body](#patch-pull-request-body), [Retitle Pull Request](#retitle-pull-request) or [Retarget Pull Request](#retarget-pull-request) for the supplied changes, preserving other fields."
+        },
+        {
+          "line": 126,
+          "text": "3. Re-read through [Read Pull Request State](#read-pull-request-state)."
+        },
+        {
+          "line": 127,
+          "text": "4. Return the saved state or discrepancy."
+        },
+        {
+          "line": 135,
+          "text": "1. Run [Find Review Pull Request](#find-review-pull-request) with the supplied head."
+        },
+        {
+          "line": 136,
+          "text": "2. Return its number or an absent-review finding."
+        },
+        {
+          "line": 144,
+          "text": "1. Run [Fetch Head Check Runs](#fetch-head-check-runs) for the supplied literal SHA."
+        },
+        {
+          "line": 145,
+          "text": "2. Run [Fetch Head Status](#fetch-head-status) for the same SHA."
+        },
+        {
+          "line": 146,
+          "text": "3. Return both snapshots, retaining missing or pending evidence as unresolved. The caller compares them with supplied target requirements and current reviews."
+        },
+        {
+          "line": 154,
+          "text": "1. Run [Confirm Repository Auto-Close](issue.md#confirm-repository-auto-close) for the repository, and confirm the task pull request's base, as [Task Branches](delivery-branches.md#task-branches) names it. An epic base carries no review requirement of its own; where one applies, [Merge Delivery Pull Request](#merge-delivery-pull-request) governs."
+        },
+        {
+          "line": 155,
+          "text": "2. Merge the task pull request."
+        },
+        {
+          "line": 156,
+          "text": "   - Where its base is an epic base, run [Update Epic Base](delivery-branches.md#update-epic-base) with the project checkout and that base."
+        },
+        {
+          "line": 157,
+          "text": "   - Fetch readiness with [Fetch Merge Readiness](#fetch-merge-readiness) for the task pull request and its base."
+        },
+        {
+          "line": 158,
+          "text": "   - Run [Merge Delivery Pull Request](#merge-delivery-pull-request) with delivery kind task, the verified head, target requirements, repository prerequisite and passing evidence, without further confirmation."
+        },
+        {
+          "line": 159,
+          "text": "   - Stop on a handoff for human approval or a permission-layer refusal, returning it to the caller."
+        },
+        {
+          "line": 160,
+          "text": "   - If GitHub refuses the merge:"
+        },
+        {
+          "line": 161,
+          "text": "     - Run [Update Task Branch](delivery-branches.md#update-task-branch) with the unit checkout, the task branch and its base."
+        },
+        {
+          "line": 162,
+          "text": "     - Repeat Fetch Merge Readiness for the updated task head."
+        },
+        {
+          "line": 163,
+          "text": "     - Retry Merge Delivery Pull Request once with that verified evidence. A conflict or repeated refusal leaves the pull request open with the blocker reported."
+        },
+        {
+          "line": 164,
+          "text": "3. Run [Read Pull Request State](#read-pull-request-state) to confirm the merged state, head, base and merge commit."
+        },
+        {
+          "line": 165,
+          "text": "   - Return that result to the caller."
+        },
+        {
+          "line": 173,
+          "text": "1. Run [Read Pull Request State](#read-pull-request-state) with the pull request identity and destination `epic-pr.json`."
+        },
+        {
+          "line": 174,
+          "text": "   - Retain the literal head SHA and target branch for the evidence calls."
+        },
+        {
+          "line": 175,
+          "text": "2. Call [Read Target Requirements](delivery-branches.md#read-target-requirements) with the repository, target and protection/rules output paths."
+        },
+        {
+          "line": 176,
+          "text": "   - Carry any unresolved requirement into the readiness result."
+        },
+        {
+          "line": 177,
+          "text": "3. Read the head evidence."
+        },
+        {
+          "line": 178,
+          "text": "   - Call [Read Head Evidence](#read-head-evidence) with the exact head SHA and check/status output paths."
+        },
+        {
+          "line": 179,
+          "text": "   - Request reviews through [Read Pull Request State](#read-pull-request-state) with the pull request identity and reviews output path. A missing or pending check, blocked merge state or unmet required review leaves readiness unresolved."
+        },
+        {
+          "line": 180,
+          "text": "4. Run [Read Pull Request State](#read-pull-request-state) again with the same identity and destination."
+        },
+        {
+          "line": 181,
+          "text": "   - Compare its head with the retained SHA; a changed head requires fresh evidence."
+        },
+        {
+          "line": 182,
+          "text": "   - Return the verified head, target requirements and readiness result, including unresolved conditions."
+        },
+        {
+          "line": 190,
+          "text": "1. Read full metadata through [Read Pull Request State](#read-pull-request-state). For an open ready pull request, run [Mark Review Draft](#mark-review-draft)."
+        },
+        {
+          "line": 191,
+          "text": "2. Read the state again and return the confirmed draft state or discrepancy."
+        },
+        {
+          "line": 199,
+          "text": "1. Require the supplied readiness evidence and read the pull request through [Read Pull Request State](#read-pull-request-state)."
+        },
+        {
+          "line": 200,
+          "text": "2. Run [Check Agent Review](agent-review.md#check-agent-review) with the fresh metadata and published records. On a finding, run [Hold Epic Review](#hold-epic-review) and stop. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names."
+        },
+        {
+          "line": 201,
+          "text": "3. Read the pull request again and repeat Check Agent Review. A changed revision returns to draft and reports the discrepancy. Return the confirmed ready state only with current evidence. Target review requirements still govern the merge."
+        },
+        {
+          "line": 209,
+          "text": "1. Run [Read Pull Request State](#read-pull-request-state) for its full metadata."
+        },
+        {
+          "line": 210,
+          "text": "2. Run [Check Agent Review](agent-review.md#check-agent-review) with that metadata and the published records."
+        },
+        {
+          "line": 211,
+          "text": "   - On a finding, return it to the caller; the pull request stays a draft."
+        },
+        {
+          "line": 212,
+          "text": "3. For a draft with passing evidence, run [Mark Review Ready](#mark-review-ready) with the node id its metadata names."
+        },
+        {
+          "line": 213,
+          "text": "4. Run Read Pull Request State again and repeat Check Agent Review. Return the confirmed ready state, or the changed revision or finding that leaves it unconfirmed."
+        },
+        {
+          "line": 233,
+          "text": "- **Claude Code.**"
+        },
+        {
+          "line": 253,
+          "text": "- GitHub shows the link in the pull request's Development field and in the issue's Linked pull requests field, which the project board reads."
+        },
+        {
+          "line": 254,
+          "text": "- A task pull request links the task's issue, and a review pull request links its epic's issue."
+        },
+        {
+          "line": 255,
+          "text": "- The link is addressed by issue, so a pull request whose work carries no issue links nothing. A task pull request delivering rows that have no issue of their own is the whole of what stays unlinked."
+        },
+        {
+          "line": 256,
+          "text": "- The link is stored on the pull request. It holds on any base branch and on a pull request that has merged, and a later body edit leaves it standing."
+        },
+        {
+          "line": 257,
+          "text": "- A linked issue remains open until its criteria and delivery requirements hold and every Development-linked pull request is merged."
+        },
+        {
+          "line": 258,
+          "text": "- The field is the whole of the relation: neither body links the other. The pull request's References carry its sources, and the issue it delivers is not among them."
+        },
+        {
+          "line": 259,
+          "text": "- A pull request with a delivery issue but no Development link is uncited."
+        },
+        {
+          "line": 301,
+          "text": "- Supply the title, the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the complete body file."
+        },
+        {
+          "line": 302,
+          "text": "- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens."
+        },
+        {
+          "line": 326,
+          "text": "- Supply the epic prefix and name as title, the epic base as head, its long-lived branch as base, and the populated review body file."
+        },
+        {
+          "line": 327,
+          "text": "- `draft` is true, including when the work is already complete."
+        },
+        {
+          "line": 345,
+          "text": "- Require the supplied readiness evidence and authorization before issuing the merge."
+        },
+        {
+          "line": 346,
+          "text": "- The merge method is a merge commit."
+        },
+        {
+          "line": 364,
+          "text": "- The file is the whole body. The issue a pull request delivers is linked on the pull request itself, so this call leaves that link standing."
+        },
+        {
+          "line": 434,
+          "text": "- The issue and pull request may sit in different repositories, and the pull request may be a draft on any base branch."
+        },
+        {
+          "line": 435,
+          "text": "- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker."
+        },
+        {
+          "line": 436,
+          "text": "- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation."
+        },
+        {
+          "line": 437,
+          "text": "- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back."
+        },
+        {
+          "line": 465,
+          "text": "- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`."
+        },
+        {
+          "line": 466,
+          "text": "- Exit 0 means neither end holds the other and every other link on the issue stands."
+        },
+        {
+          "line": 467,
+          "text": "- Exit 1 prints `failed:` or `discrepancy:` as [Set Development Link](#set-development-link) does."
+        },
+        {
+          "line": 493,
+          "text": "- The snapshot holds one entry per pull request, with every linked issue's repository and number, or an empty array."
+        },
+        {
+          "line": 494,
+          "text": "- Each batch of pull requests costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker."
+        },
+        {
+          "line": 495,
+          "text": "- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply."
+        },
+        {
+          "line": 496,
+          "text": "- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker."
+        },
+        {
+          "line": 497,
+          "text": "- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing."
+        },
+        {
+          "line": 579,
+          "text": "- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives."
+        },
+        {
+          "line": 580,
+          "text": "- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows."
+        },
+        {
+          "line": 581,
+          "text": "- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker."
+        },
+        {
+          "line": 582,
+          "text": "- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker."
+        },
+        {
+          "line": 682,
+          "text": "- The query file holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:"
+        }
+      ],
+      "specimens": [
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/<pull-request-number>' -f base='<target-branch>' --jq .base.ref\n",
+          "sha256": "777c15392297a8f3160ea5f200dc577eebae9826770599b10bbc87a8c5d28e3b"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -f base='i07/e00/main' --jq .base.ref\n",
+          "sha256": "bca446d15fb5e1ccfa2b98f3f6c52fb2c8458d28a83bb913ad732f33abd33e87"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/<pull-request-number>' -f title='<title>' --jq .title\n",
+          "sha256": "898af25611aa09004d94819c1e5e57364adc541ced669945aeaf890fafe54260"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -f title='[I07:E00] Purpose' --jq .title\n",
+          "sha256": "e06ce616b3e24de2c2a4fe67a7dfb543a2827c01507a145a78a1fd700b70c8c9"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<task-branch>' -f base='<base>' -F 'body=@<body-file>' --jq .html_url\n",
+          "sha256": "4d05ec88d3a9e8b2599b36d77d7c3fadd3688376a15403c227f58aa87db50336"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[I07:E00] Purpose' -f head='i07/e00/w01-purpose' -f base='i07/e00/main' -F body=@body.md --jq .html_url\n",
+          "sha256": "f02b29e703996e8f1cdfb2d92b03f0cb30b01b484f3e97cd15ab35fb40e410e2"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[F00] Reject Bad Keys' -f head='f00-key-validation' -f base='workspace' -F body=@body.md -F draft=true --jq .html_url\n",
+          "sha256": "2bedc58f356d6d266f43e693bf0dc67eac6aadcf32942d47c8a29a900abcc9a0"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='<title>' -f head='<epic-base>' -f base='<long-lived-base>' -F draft=true -F 'body=@<body-file>' --jq .html_url\n",
+          "sha256": "d499688b2beed1096fc506eba0b15f865e472ef7f161c576df5c8ecef1aa975d"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method POST 'repos/<owner>/<repo>/pulls' -f title='[I07:E00] Name' -f head='i07/e00/main' -f base='main' -F draft=true -F body=@body.md --jq .html_url\n",
+          "sha256": "a4d3c2ef675f670c23f661b4cda11866b5e720ed6f46f35f6feaddbbcd73d02f"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PUT 'repos/<owner>/<repo>/pulls/<pull-request-number>/merge' -f merge_method='merge' --jq .merged\n",
+          "sha256": "79df8a83e79de93ae63ed788dbb1d8fb3c0b3047dbaea28a4bd68733f9c9da3f"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PUT 'repos/<owner>/<repo>/pulls/950/merge' -f merge_method='merge' --jq .merged\n",
+          "sha256": "50f0984823065eb4cff85b590120b72dd29faa2970344b5bd181824bf96a1b3d"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/<pull-request-number>' -F 'body=@<body-file>' --jq .html_url\n",
+          "sha256": "0b72abaea5e16173a91cc7b67bd100bf598f38e1b13428405ecc9c3c8142f7f2"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PATCH 'repos/<owner>/<repo>/pulls/950' -F body=@pr-950.md --jq .html_url\n",
+          "sha256": "8f4d10f60784d974938aa5b263ded1bd7da8e78ba93d7842ece527c688820701"
+        },
+        {
+          "language": "bash",
+          "content": "gh api \"repos/<owner>/<repo>/pulls?state=open&head=<owner>:<epic-base>\" --jq '.[0].number'\n",
+          "sha256": "fd3fc01adff6f6db50439a64f384b88b606eb2b5dc8d59fae0755f98d0cd7904"
+        },
+        {
+          "language": "bash",
+          "content": "gh api \"repos/<owner>/<repo>/pulls?state=open&head=<owner>:i07/e00/main\" --jq '.[0].number'\n",
+          "sha256": "b8bc7cdef0d0ede452ee6ec5cc3dbe7ac386fd03299021793f57ac6f0eeda261"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PUT 'repos/<owner>/<repo>/pulls/<pull-request-number>/merge' -f merge_method='merge' -f sha='<head-sha>' --jq '{merged, message, sha}'\n",
+          "sha256": "362c31307b52c014d1be4e1b89f1d7913cbb3c416019e897d0c1cd5b3905ce7a"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --method PUT 'repos/<owner>/<repo>/pulls/980/merge' -f merge_method='merge' -f sha='<head-sha>' --jq '{merged, message, sha}'\n",
+          "sha256": "cee11d8ad2dab4f06efb39a0656fecbdd41694e62b1b4a9d045101078122f89d"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/pulls/<pull-request-number>' --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n",
+          "sha256": "6e624e332ea4cf9db01595e90b8d6cdfdf1c356b4f60fab9f9ee2c94570a37cb"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/pulls/980' --jq '{merged, merge_commit_sha, head: .head.sha, base: .base.ref}'\n",
+          "sha256": "d490eb9a4f7ac4236092e714cc6714bec66ecec6b0b912d94d115ba9d1db95dd"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/development-link.py add --issue '<issue-owner>/<issue-repo>#<issue-number>' --pull '<pr-owner>/<pr-repo>#<pull-request-number>'\n",
+          "sha256": "a83961ac00e5401357bd3bc3151768272d3f470ec3c0d4f339a1d247773d6c1f"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/development-link.py add --issue 'm2ux/workflow-server#637' --pull 'm2ux/workflow-server#950'\n",
+          "sha256": "f8957de4090156f97ea26a451ffe6b917db0afc12352b32630c3deb55f1d4b4a"
+        },
+        {
+          "language": "text",
+          "content": "issue m2ux/workflow-server#637: m2ux/workflow-server#950\npull request m2ux/workflow-server#950: m2ux/workflow-server#637\nverified: add m2ux/workflow-server#950 -> m2ux/workflow-server#637\n",
+          "sha256": "69c803b6c8ff8464576c987860e25b863a52b2d5dd5011fcdda1f3e2862116fa"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/development-link.py remove --issue '<issue-owner>/<issue-repo>#<issue-number>' --pull '<pr-owner>/<pr-repo>#<pull-request-number>'\n",
+          "sha256": "c24cafb720c958f9a68af23281bff7b71ef4bafb1f8b44e7245f6d9cb4acd381"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/development-link.py remove --issue 'm2ux/workflow-server#637' --pull 'm2ux/workflow-server#950'\n",
+          "sha256": "e032655314574db594c01a4e7a9ba3005fd5c2b22ed80d17d5e116221ee8ebbf"
+        },
+        {
+          "language": "text",
+          "content": "failed: remove m2ux/workflow-server#950 -> m2ux/workflow-server#637: removeCloseIssueReferences: Resource not accessible by integration\n",
+          "sha256": "f33abf57d4395764a3d0ca706a5812168962c6543cc9086d4b83b6184325610f"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs '<pull-request-records-file>' --out '<issue-link-snapshot-file>'\n",
+          "sha256": "9eed7d406cd8a4b167171c27dc659b8767b2d0719ff674c2ad231aa3cde3d8be"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/links-by-pull-request.py --prs prs.json --out links.json\n",
+          "sha256": "4e2b1d1262b9adbf7d5efd971c930e097f485a6b3404b26e16221331cbbd41e2"
+        },
+        {
+          "language": "json",
+          "content": "[\n  {\n    \"repo\": \"owner/repo\",\n    \"number\": 950,\n    \"closingIssuesReferences\": [{\"repo\": \"owner/repo\", \"number\": 637}]\n  }\n]\n",
+          "sha256": "4fcdea512a63d4d919f92e06ec18e77eb4e87a33606a2c36f9f33f7ae01916b3"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/pulls/<pull-request-number>' > '<pull-request-json-file>'\n",
+          "sha256": "6df14ca2883997de0457ceda94370d945fb4ff47cb0363f37e3a73eeb97d8f94"
+        },
+        {
+          "language": "bash",
+          "content": "gh api 'repos/<owner>/<repo>/pulls/980' > epic-pr.json\n",
+          "sha256": "dfcb9be326d8424c4831c27f17f7044a5344bdee6e1ecb7a123b8ac04374e53e"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/pulls/<pull-request-number>/reviews?per_page=100' > '<reviews-file>'\n",
+          "sha256": "ebb15872fd8fa874736fccab8ed31bc81ba2184585cf6e2e0b1324d3b6f800f4"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/pulls/980/reviews?per_page=100' > reviews.json\n",
+          "sha256": "a0abb69f93d67d5cf2e5fb2e9e9a6716b1a0ca4e12a05ea73740abaa3f4255bf"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"<initiative-prefix>\"))' > '<pull-request-records-file>'\n",
+          "sha256": "c00099d0b524a5a71ad763b2edadb0617527dc2f1166c122965dc4e28a5e1ae1"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I07\"))' > prs.json\n",
+          "sha256": "b65c9954246660c1264d8991f117f8ea13deb6ffaa9ccbd9a1208da8735352c3"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs '<pull-request-records-file>' --issues '<issue-file>' ...\n",
+          "sha256": "9e70eed7461a17c5dfd6f24bb2112b5096a4f9572c87f5fecb45f85ec60eab3f"
+        },
+        {
+          "language": "bash",
+          "content": "cd \"<workspace>\" && python3 skills/work-planner/scripts/linked-pull-requests.py --prs prs.json --issues issue-936.json issue-943.json issue-637.json\n",
+          "sha256": "46e94f17747c4e42fa2ca684495a7cabfa1622d5d154952bf357068af0356271"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' > '<pull-request-records-file>'\n",
+          "sha256": "5b865522042b4e1540501a03b4b83b1f8dc51ed8530b6a6195e8a4af7ebbc283"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' > prs.json\n",
+          "sha256": "08a5890515284c401d7169cf7957072ab4dfa8c13ca68772b42c4e4c7919ddd8"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' >> '<pull-request-records-file>'\n",
+          "sha256": "67614437bc2c7fb86d0b2494fe23a00683484ea4f168307b3b35475f7bf9b227"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate \"repos/<owner>/<repo>/pulls?state=all&per_page=100\" --jq '.[] | select(.title | startswith(\"[I\") or startswith(\"[F\"))' >> prs.json\n",
+          "sha256": "28573d09d922417900ddfe053e58cc73af0dfcfce8f71587b92795ec75f0b7da"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/pulls/<pull-request-number>/files' --jq '.[].filename' > '<changed-paths-file>'\n",
+          "sha256": "0911728a2dc9ea8dd8a59cafdedc55589c9207d90ed162f44a6d380b6fd67699"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/pulls/950/files' --jq '.[].filename' > changed-files.txt\n",
+          "sha256": "ee1d924b156c29eb9796e02524295aee0170ee9b88b4b4b77e896444aabb386b"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/check-runs?per_page=100' > '<check-runs-file>'\n",
+          "sha256": "b758bfa4958189016a4f728eb23d30fb34129a6a7457a46845d256e418db8bad"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/check-runs?per_page=100' > checks.json\n",
+          "sha256": "147ccd6b0a432bf159741231555f3bd8561cb79d8a4d7643e7754ecc5b5dbb1b"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/status?per_page=100' > '<commit-status-file>'\n",
+          "sha256": "90bb9de62de2c53ff3d1349cd1b27a052c6162466a77945146413d9098bb35e6"
+        },
+        {
+          "language": "bash",
+          "content": "gh api --paginate 'repos/<owner>/<repo>/commits/<head-sha>/status?per_page=100' > status.json\n",
+          "sha256": "8868465f71be9c278c6176a95c448d474bf355ee41bb96dd0fa3bad277d91a6b"
+        },
+        {
+          "language": "bash",
+          "content": "gh api graphql -F query=@'<query-file>' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft\n",
+          "sha256": "80f6002198c2fa7c2a57581a7212a25cedcb5ebbc9e1fba17ce3d46c39596692"
+        },
+        {
+          "language": "bash",
+          "content": "gh pr ready '<pull-request-number>' --undo --repo '<owner>/<repository>'\n",
+          "sha256": "932d6de5424f5a334db34cd6aa83b0f58d781e889a2109c9fdbdb2b672f304dc"
+        }
+      ]
+    }
+  }
+}
