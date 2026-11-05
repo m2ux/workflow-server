@@ -41,3 +41,4 @@ W01 and W02 are delivered into the epic base. The live queue converges with five
 | [Remaining family survey](tail-survey-export.json) | Fresh eligible unit identities |
 | [Selection session inventory](tail-selection-sessions.json) | W03 complete, W04/W05 retained |
 | [Parent family review](family-parent-review.md) | Composed-source review, DRY corrections and pending evidence gates |
+| [Validation boundaries](validation-boundaries.md) | Completed reader review, instrument correction and final activation checks |
