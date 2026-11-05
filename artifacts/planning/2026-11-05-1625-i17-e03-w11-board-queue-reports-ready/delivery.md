@@ -11,9 +11,9 @@ Each component is delegated sequentially. The artifact contributor owns board-qu
 - [x] Verify live reservation and current criteria; publish component plans and ownership.
 - [x] Implement the artifact and script through sequential component contributors.
 - [x] Verify criterion cases, complete planner/shared suites and skill-file checks.
-- [ ] Publish task PR, record row links and merge verified work into epic base. **In progress.**
-- [ ] Verify merged revision; record AC8/AC9 and Done, update draft integration and confirm board.
-- [ ] Publish complete evidence and change list.
+- [x] Publish task PR, record row links and merge verified work into epic base.
+- [x] Verify merged revision; record AC8/AC9 and Done, update draft integration and confirm board.
+- [x] Publish complete evidence and change list.
 
 ## T1: Board Queue Contract
 
@@ -36,3 +36,11 @@ Run the full planner suite, shared checker suite and skill-file checker. Keep pa
 At exact task head baef322b8b6fb83e5b1ffbd90d7de3afa33ad743, the complete planner suite ran 896 tests: 895 passed and one opt-in live Development-link test skipped. The shared checker suite passed 208 tests. The skill-file checker inspected 52 files with zero findings, and git diff --check passed. Both component contributors committed nothing; the session committed the complete artifact and script groups separately. The task checkout is clean and pushed.
 
 Independent source review confirms that reporting calls the existing delivery eligibility/grouping helpers and shared raw lane reader, after placement derivation, without adding checkout/work-item inputs. No technical debt or arising issue was found in this unit.
+
+## Merged Revision and Recording
+
+Task PR [#1637](https://github.com/m2ux/workflow-server/pull/1637) merged into i17/e03/workspace at f29df94515dc4c4d229cfa5c07db18cea3f4307a from verified head baef322b8b6fb83e5b1ffbd90d7de3afa33ad743. The merged tree equals the tested tree. The target's classic protection returns 404 and active rules are empty; no required review/check exists. Exact-head checks and status contexts are absent (zero), and the current local Test Plan passes. The native approval layer permitted the SHA-pinned merge normally.
+
+At the exact merged base revision, all 75 queue tests and 11 document-interface tests pass. The clean epic-base checkout is fast-forwarded to this revision. Live AC8/AC9 and both Done cells match the canonical body. Final Sync reports only the retained historical W01/AC1 coverage disagreement; the original declaration criterion was retired by the approved plan and its old PR evidence is preserved.
+
+Draft integration #1627 has the current merge head and a complete body citing all eight actual task PRs, including #1637. Its full body was read back equal to the published file. Both Development relation directions were refreshed; the task has no issue and stays unlinked, while integration retains its epic relation. The exact board item reads In Progress. W13 and AC10 remain free and unticked; no later unit starts in this session. No plan change, arising issue or unresolved unit debt remains.

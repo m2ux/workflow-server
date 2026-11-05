@@ -19,6 +19,8 @@ This unit delivers AC8, AC9 through its isolated task branch into i17/e03/worksp
 | [Change list](change-list.md) | Applied and held plan changes |
 | [Planner results](planner-tests.log) | Complete exact-head planner suite output |
 | [Shared results](shared-tests.log) | Shared checker suite output |
+| [Merged queue results](merged-queue-tests.log) | All queue tests at the exact epic-base merge revision |
+| [Next work](next-work.txt) | W13 available after the joined unit, with no further dispatch |
 
 ## Links
 
@@ -27,3 +29,7 @@ This unit delivers AC8, AC9 through its isolated task branch into i17/e03/worksp
 | Epic | [I17 E03](https://github.com/m2ux/workflow-server/issues/1625) |
 | Authorization | [Automatic remaining delivery](https://github.com/m2ux/workflow-server/tree/engineering/artifacts/planning/2026-11-05-free-work-auto-start) |
 | Integration | [#1627](https://github.com/m2ux/workflow-server/pull/1627) |
+
+| Delivery | Link |
+| --- | --- |
+| Task PR | [#1637, merged](https://github.com/m2ux/workflow-server/pull/1637) |

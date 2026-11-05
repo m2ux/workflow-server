@@ -1,0 +1,4 @@
+source: config/branches at d0a62b8037bb1b8fdafac5bf0e0035ada8c64486 in /home/mike1/projects/dev/workflow-server/.git
+#1625 In Progress: [I17:E03]
+  unit I17:E03:W13: unlaned, coverage AC10, record 2026-11-05-1625-i17-e03-w13-advance-mode-reports-ready, branch i17/e03/w13-advance-mode-reports-ready, base i17/e03/workspace, worktree .worktrees/i17/e03/w13-advance-mode-reports-ready
+  available: 1, held: 0, blocked: 0, unresolvable: 0, undeclared: 0, merge: 0, unrecorded: 0, invalid: 0
