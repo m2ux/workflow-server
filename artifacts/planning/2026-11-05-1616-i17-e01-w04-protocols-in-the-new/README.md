@@ -6,7 +6,7 @@
 
 This record carries the user-approved Work Planner style conversion for W04. The live skill supplies its content; pinned examples supply presentation only. The installed model is adopted by final W08 after all conversions.
 
-The protocol family preserves its complete conditions and required reads while exposing each step as a heading and each call through its layer-specific verb.
+The protocol family preserves its complete conditions and required reads while exposing each step as a heading and each call through its layer-specific verb. Exact-head checks test the composed source; the six repeated reading observations remain explicitly Partial.
 
 ## Artifacts
 
@@ -30,6 +30,12 @@ The protocol family preserves its complete conditions and required reads while e
 
 | [composed-model.json](composed-model.json) | Actual working-branch strict and installed findings, preservation and negative controls |
 | [run-checks.py](run-checks.py) | Detached current-checkout criterion and complete-suite runner |
+
+| [head-planner-suite.json](head-planner-suite.json) | Complete Work Planner suite at the literal pushed head |
+| [head-protocol-model.json](head-protocol-model.json) | Literal-head strict/installed findings, preservation and negative controls |
+| [head-revision.log](head-revision.log) | Detached revision helper identity and completed exits |
+| [head-shared-suite.json](head-shared-suite.json) | Complete shared suite at the literal pushed head |
+| [pull-request-body.md](pull-request-body.md) | Source for the task PR body |
 
 ## Links
 
