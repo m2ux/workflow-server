@@ -15,6 +15,14 @@ The work preserves every operative condition and verifies the proposed structure
 | [w03.md](w03.md) | Work item and required validation |
 | [design.md](design.md) | Source boundary, structure and validation design |
 
+| [validation.md](validation.md) | Acceptance boundary, exact-revision checks and qualification of results |
+| [verify-modes.py](verify-modes.py) | Reproducible detached-checkout target-model and preservation instrument |
+| [preservation.md](preservation.md) | Per-mode operative-condition ledger, literals and reader ownership |
+| [disclosure.md](disclosure.md) | Six repeated independent observations and explicit limits |
+| [walk-evidence.tar.gz](walk-evidence.tar.gz) | Raw read receipts, commands, prompts, accounts and local products |
+| [walk-manifest.json](walk-manifest.json) | Frozen candidate identity and archived evidence checksums |
+| [changes.md](changes.md) | Applied and held plan changes |
+
 ## Links
 
 | Resource | Link |
