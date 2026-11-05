@@ -1,0 +1,31 @@
+--- before
++++ approved
+@@ -19,6 +19,7 @@
+ 
+ - **Per-skill style model.** The skill's own guidelines, `structure.json` and `rules.json` state the new model, and the shared checker reads each skill's declared model.
+   - The shared guidelines and every other skill keep their current shape.
++  - Checker support is proven against specimen skills before document conversion. The final task adopts Work Planner's new guidelines and model declarations once every conversion is complete; the installed declarations govern the live checks until that adoption.
+ - **Entry files.** SKILL.md keeps its opening, Modes and Dependencies.
+   - `rules.md` holds the rules that bind every mode, `conventions.md` the conventions, and `configuration.md` the deployment values, each built from the live skill's own text.
+ - **Steps as sub-sections.** Each step is a heading of its position and action, with its instruction as a paragraph and flush bullets.
+@@ -44,16 +45,19 @@
+ | W05 | Issue and body artifacts in the new style | AC5 | W02 | | | |
+ | W06 | Board, queue, planning and review artifacts restyled | AC6 | W02 | | | |
+ | W07 | Delivery, branch and pull-request artifacts restyled | AC7 | W02 | | | |
++| W08 | Activate the Work Planner style model | AC8 | W03, W04, W05, W06, W07 | | | |
+ 
+ ## Acceptance Criteria
+ 
+-- [ ] **AC1.** The work-planner guidelines, `structure.json` and `rules.json` declare the new style model, and `check_skill_files.py` enforces each skill’s declared model and the proposed command style while every other skill passes unchanged, as checker acceptance/rejection fixtures and Check Skill Files over `skills/` show.
++- [ ] **AC1.** `check_skill_files.py` validates each skill against its declared style model, including the proposed command style, as acceptance/rejection fixtures over specimen skills and unchanged passing checks for the installed skills show.
+ - [ ] **AC2.** SKILL.md holds only its opening, Modes and Dependencies, and `rules.md`, `conventions.md` and `configuration.md` hold what binds every mode, checked by Check Skill Files.
+ - [ ] **AC3.** Every mode states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC4.** Every protocol states its steps as sub-sections, opens with the preamble line and calls through Apply and Follow, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC5.** Every issue and body artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC6.** Every board, queue, planning and review artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
+ - [ ] **AC7.** Every delivery, branch and pull-request artifact runs its commands inside its steps and lists linked Inputs and Outputs, using the [command style](#proposal), checked by Check Skill Files.
++
++- [ ] **AC8.** The Work Planner guidelines, `structure.json` and `rules.json` declare the new style model over the converted skill, with zero findings from Check Skill Files over `skills/` and every other skill passing unchanged.
+ 
+ ## References
+ 

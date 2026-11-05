@@ -123,3 +123,7 @@ Planning decisions:
 ## Epic Order, 5 November 2026
 
 The user confirms Style as E01 (#1616) and Separation as E02 (#1615). The Separation guidelines row consumes E01 W03, W04, W05, W06 and W07; those terminal producers carry the complete style chain. Existing task ids, criteria, priority labels and completed E00/E03 delivery identities are preserved. The unstarted Style W01 record and its branch/worktree carry E01. The cross-initiative extraction row names the same issue identities with their current epic labels.
+
+## Style-Model Activation, 5 November 2026
+
+The user confirms checker capability in E01 W01 and installed model adoption in final W08 after W02–W07. AC1 is demonstrated against specimen skills; AC8 owns the installed Work Planner declaration and zero-finding full check. The terminal conversions are W08's direct producers, and Separation W01 consumes W08. The held W01 reservation and task identity remain current. The new capability has no transitional dual-style model or validation bypass.

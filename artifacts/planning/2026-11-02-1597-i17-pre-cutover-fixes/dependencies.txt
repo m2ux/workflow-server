@@ -32,16 +32,17 @@ E03:W14 (level 2) is numbered after E03:W13 (level 3)
 2 E03:W11 - Board queue reports Ready units' lanes
 2 E03:W12 - Board-queue script prints Ready unit lanes
 2 E03:W14 - Cross-epic joins receive bounded diagnostics
-3 E02:W01 - SOLID guidelines for files and operations
+3 E01:W08 - Activate the Work Planner style model
 3 E03:W13 - Advance mode reports Ready unit lanes
-4 E02:W02 - Audit the skill against the guidelines
-5 E02:W03 - Generic prose in general artifacts and modes
-5 E02:W04 - Generic interfaces in general scripts
-5 E02:W05 - Each audited rule in one home
+4 E02:W01 - SOLID guidelines for files and operations
+5 E02:W02 - Audit the skill against the guidelines
+6 E02:W03 - Generic prose in general artifacts and modes
+6 E02:W04 - Generic interfaces in general scripts
+6 E02:W05 - Each audited rule in one home
 
 --- component contention: rows of different epics extending one component
 E00:W01 and E03:W10 both extend workspace:skills/work-planner/modes/plan-mode.md
-not checked, no component read: E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E02:W01, E02:W02, E02:W03, E02:W04, E02:W05
+not checked, no component read: E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01:W06, E01:W07, E01:W08, E02:W01, E02:W02, E02:W03, E02:W04, E02:W05
 
 --- epic priority (epics sharing a number start together)
 2 E00
@@ -49,16 +50,16 @@ not checked, no component read: E01:W01, E01:W02, E01:W03, E01:W04, E01:W05, E01
 1 E02
 1 E03
 
---- longest chains: 15, each of 6 steps
-on every chain: E01:W01, E01:W02, E02:W01, E02:W02
-E01:W01 -> E01:W02 -> E01:W03 -> E02:W01 -> E02:W02 -> E02:W03
-E01:W01 -> E01:W02 -> E01:W04 -> E02:W01 -> E02:W02 -> E02:W03
-E01:W01 -> E01:W02 -> E01:W05 -> E02:W01 -> E02:W02 -> E02:W03
-E01:W01 -> E01:W02 -> E01:W06 -> E02:W01 -> E02:W02 -> E02:W03
-E01:W01 -> E01:W02 -> E01:W07 -> E02:W01 -> E02:W02 -> E02:W03
-E01:W01 -> E01:W02 -> E01:W03 -> E02:W01 -> E02:W02 -> E02:W04
-E01:W01 -> E01:W02 -> E01:W04 -> E02:W01 -> E02:W02 -> E02:W04
-E01:W01 -> E01:W02 -> E01:W05 -> E02:W01 -> E02:W02 -> E02:W04
-E01:W01 -> E01:W02 -> E01:W06 -> E02:W01 -> E02:W02 -> E02:W04
-E01:W01 -> E01:W02 -> E01:W07 -> E02:W01 -> E02:W02 -> E02:W04
+--- longest chains: 15, each of 7 steps
+on every chain: E01:W01, E01:W02, E01:W08, E02:W01, E02:W02
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W03
+E01:W01 -> E01:W02 -> E01:W03 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04
+E01:W01 -> E01:W02 -> E01:W04 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04
+E01:W01 -> E01:W02 -> E01:W05 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04
+E01:W01 -> E01:W02 -> E01:W06 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04
+E01:W01 -> E01:W02 -> E01:W07 -> E01:W08 -> E02:W01 -> E02:W02 -> E02:W04
 ... 5 more

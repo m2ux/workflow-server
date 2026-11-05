@@ -28,7 +28,7 @@ The I16 report records 16 cross-epic component pairs, separated by its proposed 
 
 ## Style Activation
 
-**High — pending design decision before implementation.** E01 W01 declares and enforces the new model, while the document conversions are assigned to its successors. The current model explicitly keeps artifact Commands sections and the live skill has numbered-list procedures, entry-point Rules/Conventions and fenced invocations. The work-item plan must define how the first delivery passes Check Skill Files without accepting obsolete syntax as compatibility or enforcing an unmet model over the still-live documents. Candidate resolution: separate checker capability from its activation and place enforcement acceptance at the conversion boundary. This review does not change criteria or dependencies to assert that design.
+**Resolved — user confirmed.** I17 E01 W01 builds and tests checker support against specimen skills. W08 adopts the installed model after all conversion rows; AC8 owns that full declaration and zero-finding check. Separation consumes W08. Existing installed declarations govern validation until adoption, with no transitional dual-style model or validation bypass. The evidence below records the pre-decision criterion.
 
 Evidence: m2ux--workflow-server--1616.md:50: - [ ] **AC1.** The work-planner guidelines, `structure.json` and `rules.json` declare the new style model, and `check_skill_files.py` enforces each skill’s declared model and the proposed command style while every other skill passes unchanged, as checker acceptance/rejection fixtures and Check Skill Files over `skills/` show.
 
@@ -50,4 +50,4 @@ Current source: workspace 03d353300ca4804194fd50d316d73e3bf1270d1d, `skills/work
 
 ## Result
 
-The Lane schema alignment is published and verified. Full alignment remains pending the content decisions above; delivery remains held. The dependency/order decision is applied and verified. The I16 E05 joined-unit decision is applied. Style activation remains pending before implementation. Align step 6 requires “Decide each non-mechanical finding with the user.”
+The Lane schema alignment is published and verified. All content findings have confirmed resolutions. Final saved-body and queue verification precede delivery. The dependency/order decision is applied and verified. The I16 E05 joined-unit decision is applied. All three content decisions are confirmed. Saved-body and queue verification precede resumed I17 delivery. Align step 6 requires “Decide each non-mechanical finding with the user.”

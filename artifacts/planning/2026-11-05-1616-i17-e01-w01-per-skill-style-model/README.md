@@ -4,9 +4,9 @@
 
 ## Executive Summary
 
-Declare and validate the Work Planner style in its own model. Command invocations use the HTML presentation specified by the epic.
+Build and test checker support for each declared skill model. Specimen skills exercise the HTML command presentation specified by the epic.
 
-The shared checker selects each skill's declared model and keeps other skills valid. The task delivers its checker, declarations, guidelines and acceptance/rejection evidence together.
+The shared checker selects each skill's declared model and keeps other skills valid. The task delivers checker support and acceptance/rejection evidence. The final adoption row owns Work Planner's installed guidelines and model declarations.
 
 ## Artifacts
 
