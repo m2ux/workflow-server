@@ -94,7 +94,7 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 
 ## Contextual Contract Draft
 
-`→[Input](#input-field)` identifies an input consumed by an operation; `[Output](#output-field)→` identifies an output it provides. Both use the UTF-8 right arrow with no space between arrow and link. A future feature derives the operation’s explicit IO contract from these marked links and verifies a performed operation against that contract.
+`[→Input](#input-field)` identifies an input consumed by an operation; `[Output→](#output-field)` identifies an output it provides. The UTF-8 right arrow is part of the link text, with no space between arrow and name. A future feature derives the operation’s explicit IO contract from these marked links and verifies a performed operation against that contract.
 
 | Artifact | What it holds |
 | --- | --- |

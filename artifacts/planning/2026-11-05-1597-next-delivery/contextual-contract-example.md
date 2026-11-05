@@ -20,7 +20,7 @@ Prepares a source issue for its hot-fix body rewrite.
 
 #### 1. Select Hot-fix Number
 
-Apply [Select Tracker Number](https://github.com/m2ux/workflow-server/blob/dc1b274f9176a8d562ada4748c7bb89028532d1b/skills/work-planner/artifacts/issue.md#select-tracker-number) in the →[Repository](#repository), using the hot-fix prefix letter, to select a number for the source issue identified by →[Hot-fix Identity](#hot-fix-identity).
+Apply [Select Tracker Number](https://github.com/m2ux/workflow-server/blob/dc1b274f9176a8d562ada4748c7bb89028532d1b/skills/work-planner/artifacts/issue.md#select-tracker-number) in the [→Repository](#repository), using the hot-fix prefix letter, to select a number for the source issue identified by [→Hot-fix Identity](#hot-fix-identity).
 
 #### 2. Ensure Required Labels
 
@@ -28,7 +28,7 @@ Apply [Ensure Repository Labels](https://github.com/m2ux/workflow-server/blob/dc
 
 #### 3. Provide Selected Number
 
-- Provide the [Hot-fix Number](#hot-fix-number)→ for rewriting and saving the issue's body, title and labels.
+- Provide the [Hot-fix Number→](#hot-fix-number) for rewriting and saving the issue's body, title and labels.
 - After that rewrite is saved, the requesting procedure applies [Settle Hot-fix Board Status](https://github.com/m2ux/workflow-server/blob/dc1b274f9176a8d562ada4748c7bb89028532d1b/skills/work-planner/artifacts/hotfix.md#settle-hot-fix-board-status) as its [placement](https://github.com/m2ux/workflow-server/blob/dc1b274f9176a8d562ada4748c7bb89028532d1b/skills/work-planner/artifacts/placement.md#disposition-conditions) orders.
 
 ## Fields
