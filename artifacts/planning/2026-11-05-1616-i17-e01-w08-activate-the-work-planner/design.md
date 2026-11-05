@@ -13,3 +13,33 @@ Activate only Work Planner's installed style model after W03–W07 delivery is c
 - Register implementation design before edits. Perform required representative independent disclosure checks for affected reading paths, coordinating actual slots with root. Record failures, truncation, read volume and incomplete closure honestly; make no token-saving or full-workflow claim without evidence.
 - Keep source work to this approved activation. Do not rewrite inherited Repository Graph behavior from the capability probe or apply bounded goal-review recommendations to I17/I16.
 - Commit/push distinct source work; publish safe evidence; open one task PR into i17/e01/workspace; record only its own row. Return exact head/tree, installed-check and suite results, PR metadata/body and publication readbacks to root before merge. No successor.
+
+## Implementation Design
+
+The installed Work Planner declaration is the single model selected by both the ordinary checker and real-corpus source readers.
+
+1. Declare the entry point's Modes and Dependencies sections. Declare mode and protocol heading steps under Procedure, inline HTML commands, family preambles and Apply/Follow routes. Declare artifact heading steps under Operations, inline HTML commands and linked Fields contracts. Retain each family's optional Guidance section.
+2. Align Work Planner guidelines with those declarations: numbered heading steps and flush detail; operation calls with Apply and child/mode/protocol calls with Follow; executing-step command and access invocations with linked bold contract arguments; linked operation Inputs and Outputs; family preambles. Retain substantive execution, branch, prerequisite, checkout, literal, template and ownership conditions. Regenerate the corresponding rule map with the checker's registered finding kinds where mechanical checks decide a rule and review elsewhere.
+3. In test_documents.py, read installed declarations directly for operation steps and cited script reach. Remove exact-file declaration caches, list-step/single-bullet alternatives and legacy Commands/fenced-command discovery used only during conversion. Restrict Record Epic Delivery caller detection to Apply and actual execution spans; retain required caller coverage, fetched epic-base inputs, script/import coverage and literal exclusion.
+4. In test_checkouts.py, use the installed contract for actual documents. Synthetic reader controls select their fixture declaration explicitly. Preserve command, transitive acting-operation, checkout vocabulary, declaration and caller-propagation assertions.
+5. Add focused controls that change a selected declaration and demonstrate that each real-corpus reader responds. These controls must expose a missing heading/HTML declaration rather than repairing the declaration inside the reader.
+
+## Validation and Evidence
+
+- Run the complete Work Planner unittest suite and shared checker suite with the installed declaration and the ordinary whole-skill Check Skill Files command with no model override. Preserve complete logs and exact source identity.
+- Audit source readers, declaration consumers and stale guideline language; inspect changed files against shared and Work Planner guidelines. Verify protected frontmatter, executable payloads, templates, Lane placement, and every other product file against the starting tree.
+- Trace Revise's whole-guideline path, direct prerequisites and local-check routes. The changed guideline links also require a static trace of each affected mode's direct guideline citations. Freeze source and a bounded style-edit prompt with realistic inputs and read-only authority for root to schedule two independent fresh readers. Record actual reads, repeated/truncated output, failures and incomplete closure; make no baseline-saving or complete-workflow claim.
+- Perform final literal-head verification after publication. Open one task pull request into i17/e01/workspace, record W08 only, and return exact head/tree and evidence for root's merge clearance. No successor or integration readiness action is authorized here.
+
+## Delivery Todos
+
+- In progress: publish reviewed implementation design before source edits.
+- Pending: activate installed declarations, align guidelines and source readers.
+- Pending: run required suites, installed checker, preservation and disclosure checks.
+- Pending: publish evidence and exact-head task pull request, then await root clearance.
+
+## Change List
+
+Applied: none.
+
+Held: none.
