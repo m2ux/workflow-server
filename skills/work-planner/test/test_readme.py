@@ -22,6 +22,7 @@ import check_skill_files as checker  # noqa: E402
 README = HERE / 'README.md'
 SCRIPT_TESTS = '### Script Tests'
 PROSE_TESTS = '### Prose Tests'
+COVERAGE = '## Coverage'
 # The sentence the README took over, held as a pattern so this module carries
 # no copy of it.
 STALE = r'^Run from the skill directory: python3 -m unittest discover -s test$'
@@ -55,6 +56,38 @@ def summary(name: str) -> str:
     """The module docstring's first sentence, without its full stop."""
     doc = ' '.join((ast.get_docstring(ast.parse((HERE / name).read_text())) or '').split())
     return re.split(r'(?<=[.!?]) ', doc)[0].rstrip('.')
+
+
+FOLDERS = ('modes', 'artifacts', 'protocols', 'references')
+WHOLE_SKILL = frozenset([f'{folder}/' for folder in FOLDERS] + ['SKILL.md', 'guidelines.md'])
+# The catalogue this folder carries, which the check reads rather than a skill
+# document. Held in a constant so the check does not read its own search for it.
+CATALOGUE = 'test/README.md'
+READ_EVERY_FILE = 'rglob(' + "'*.md'" + ')'
+
+
+@functools.lru_cache(maxsize=None)
+def documents(name: str) -> frozenset[str]:
+    """The skill documents the module reads, as the paths its source names.
+
+    A module reading every markdown file covers each document. Otherwise each
+    file it names is one entry and each folder it globs is another, except
+    where it names a file within that folder.
+    """
+    if name == THIS:
+        return frozenset([CATALOGUE])
+    text = (HERE / name).read_text()
+    if READ_EVERY_FILE in text:
+        return WHOLE_SKILL
+    files = {f'{folder}/{filename}'
+             for folder, filename in re.findall(r"ROOT / '(\w+)' / '([\w-]+\.md)'", text)}
+    folders = {f'{folder}/' for folder in re.findall(r"ROOT / '(\w+)'", text) if folder in FOLDERS}
+    folders = {folder for folder in folders if not any(file.startswith(folder) for file in files)}
+    found = files | folders
+    found |= {filename for filename in ('SKILL.md', 'guidelines.md') if f"'{filename}'" in text}
+    if "SKILLS.glob('*/SKILL.md')" in text:
+        found.add('*/SKILL.md')
+    return frozenset(found)
 
 
 def section(title: str) -> list[str]:
@@ -98,12 +131,6 @@ class Catalogue(unittest.TestCase):
         named = {backticked(row[0])[0] for row in catalogue()}
         self.assertEqual(sorted(named - held), [], 'catalogue rows with no module')
 
-    def test_a_script_row_lists_the_scripts_its_module_names(self):
-        for row in rows(SCRIPT_TESTS):
-            name = backticked(row[0])[0]
-            with self.subTest(module=name):
-                self.assertEqual(set(backticked(row[1])), {f'{script}.py' for script in scripts_named(name)})
-
     def test_a_module_sits_under_the_table_its_scripts_put_it_in(self):
         """A module that reaches a script is a script test, and one that
         reaches none is a prose test. The split is what the rows state."""
@@ -119,37 +146,57 @@ class Catalogue(unittest.TestCase):
         for row in catalogue():
             name = backticked(row[0])[0]
             with self.subTest(module=name):
-                self.assertEqual(row[2].replace('`', ''), summary(name).replace('`', ''))
+                self.assertEqual(row[1].replace('`', ''), summary(name).replace('`', ''))
 
     def test_the_count_is_the_modules_test_methods(self):
         for row in catalogue():
             name = backticked(row[0])[0]
             with self.subTest(module=name):
-                self.assertEqual(row[3], str(len(re.findall(r'^\s*def test_', (HERE / name).read_text(), re.M))))
+                self.assertEqual(row[2], str(len(re.findall(r'^\s*def test_', (HERE / name).read_text(), re.M))))
 
 
-class Scope(unittest.TestCase):
-    def test_every_script_is_named_by_a_row(self):
-        """A script exists because something exercises it, and the Scope cells
-        are where the catalogue says what."""
-        named = {script for row in catalogue() for script in backticked(row[1]) if script.endswith('.py')}
-        self.assertEqual(sorted({f'{script}.py' for script in scripts()} - named), [],
-                         'scripts named by no Scope cell')
+class Coverage(unittest.TestCase):
+    def test_every_script_has_one_row(self):
+        named = [backticked(row[0])[0] for row in rows(COVERAGE) if backticked(row[0])
+                 and backticked(row[0])[0].endswith('.py')]
+        self.assertEqual(sorted({f'{script}.py' for script in scripts()} - set(named)), [],
+                         'scripts with no coverage row')
+        self.assertEqual(len(named), len(set(named)), 'scripts with two coverage rows')
 
-    def test_no_scope_names_an_absent_script(self):
-        named = {script for row in catalogue() for script in backticked(row[1]) if script.endswith('.py')}
+    def test_no_row_names_an_absent_script(self):
+        named = {backticked(row[0])[0] for row in rows(COVERAGE)
+                 if backticked(row[0]) and backticked(row[0])[0].endswith('.py')}
         self.assertEqual(sorted(named - {f'{script}.py' for script in scripts()}), [],
-                         'Scope entries with no script')
+                         'coverage rows with no script')
 
-    def test_a_prose_row_scopes_a_document_and_never_a_script(self):
-        """A prose test reaches no script, so its Scope cell names the documents
-        it reads and no program."""
-        for row in rows(PROSE_TESTS):
-            name = backticked(row[0])[0]
-            with self.subTest(module=name):
-                self.assertEqual([entry for entry in backticked(row[1]) if entry.endswith('.py')], [],
-                                 'a prose test scoping a script')
-                self.assertTrue(backticked(row[1]), 'a prose test with no Scope entry')
+    def test_a_row_names_every_module_that_reaches_the_script(self):
+        for row in rows(COVERAGE):
+            cell = backticked(row[0])
+            if not cell or not cell[0].endswith('.py'):
+                continue
+            script = Path(cell[0]).stem
+            holders = {name for name in modules() if script in scripts_named(name)}
+            with self.subTest(script=script):
+                self.assertEqual(set(backticked(row[1])), holders)
+
+    def test_a_document_row_names_every_prose_module_that_reads_it(self):
+        """A prose test reaches no script, so the coverage table states it
+        against the documents it reads. The check itself is counted, since it
+        reads this catalogue."""
+        for row in rows(COVERAGE):
+            cell = backticked(row[0])
+            if not cell or cell[0].endswith('.py'):
+                continue
+            readers = {name for name in modules() + [THIS]
+                       if not scripts_named(name) and cell[0] in documents(name)}
+            with self.subTest(document=cell[0]):
+                self.assertTrue(readers, f'{cell[0]} is read by no prose module')
+                self.assertEqual(set(backticked(row[1])), readers)
+
+    def test_every_prose_module_is_named_somewhere(self):
+        named = {module for row in rows(COVERAGE) for module in backticked(row[1])}
+        silent = {name for name in modules() + [THIS] if not scripts_named(name)} - named
+        self.assertEqual(sorted(silent), [], 'prose modules named by no coverage row')
 
 
 class RunCommand(unittest.TestCase):
