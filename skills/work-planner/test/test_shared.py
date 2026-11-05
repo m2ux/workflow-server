@@ -1,6 +1,4 @@
 """The helpers progress.py shares with board.py, sync.py and format.py.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import sys

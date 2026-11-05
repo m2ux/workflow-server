@@ -8,8 +8,6 @@ to the one call it names.
 Live runs against GitHub itself when WORK_PLANNER_LIVE_LINK names an issue and a draft pull request
 on a branch other than the default, already linked, as `owner/repo#issue owner/repo#pull`. It runs
 outside the sandbox, where gh reaches the tracker.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import os

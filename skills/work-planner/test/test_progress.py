@@ -1,6 +1,4 @@
 """progress.py: one test per rule its docstring states.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import sys
 import tempfile

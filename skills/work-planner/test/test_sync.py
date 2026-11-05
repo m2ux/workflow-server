@@ -1,6 +1,4 @@
 """Done on a Work Breakdown row, ticked when the row is complete.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import sys

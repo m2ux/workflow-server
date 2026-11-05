@@ -6,8 +6,6 @@ linked nodes to a page, so a relation longer than a page is read across pages, a
 read of one pull request from the records it holds.
 The shared reader is also run over
 hand-written tracker responses, one for each way a relation fails to arrive whole.
-
-Run from the skill directory: python3 -m unittest discover -s test
 """
 import json
 import os
