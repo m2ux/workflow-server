@@ -17,6 +17,8 @@ This unit delivers AC8, AC9 through its isolated task branch into i17/e03/worksp
 | [Dispatch](dispatch.md) | Authorization, current availability and checklist |
 | [Delivery evidence](delivery.md) | Execution checklist, criterion observations and verification |
 | [Change list](change-list.md) | Applied and held plan changes |
+| [Planner results](planner-tests.log) | Complete exact-head planner suite output |
+| [Shared results](shared-tests.log) | Shared checker suite output |
 
 ## Links
 
