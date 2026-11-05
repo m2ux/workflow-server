@@ -10,5 +10,5 @@ The historical #1626 W01 AC1 disagreement remains evidence after AC1 retirement.
 
 - [x] Refresh live queue, delivery relations, dependencies and holds.
 - [x] Publish the work items and record.
-- [ ] Reserve the unit and verify In Progress. **In progress.**
-- [ ] Create the worktree and start its delivery session.
+- [x] Reserve the unit and verify In Progress.
+- [ ] Create the worktree and start its delivery session. **In progress.**
