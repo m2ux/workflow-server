@@ -20,6 +20,7 @@ This unit delivers AC6 through its isolated task branch into i17/e03/workspace. 
 | [Shared results](shared-tests.log) | Complete shared-checker output |
 | [Final planner results](planner-final.log) | Complete suite after W10 base integration |
 | [Final shared results](shared-final.log) | Shared checks at the final task head |
+| [Merged criterion results](merged-criterion-tests.log) | Detached exact-merge document/mode verification |
 
 ## Links
 

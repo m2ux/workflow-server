@@ -10,8 +10,8 @@ W09 delivers AC6 on branch i17/e03/w09-deliver-mode-passes-the. The component is
 - [x] Implement the request input, every survey call and confirmation output.
 - [x] Verify complete suites at the final task head.
 - [x] Publish the task PR and record its row link.
-- [ ] Merge verified work, observe the merged revision and record AC6/Done. **In progress.**
-- [ ] Update draft integration, read back board and publish final evidence.
+- [x] Merge verified work, observe the merged revision and record AC6/Done.
+- [x] Update draft integration, read back board and publish final evidence.
 
 ## T1: Deliver Mode Lane Input
 
@@ -32,3 +32,13 @@ Inspection found no defect in this unit. No arising issue, applied plan change o
 ## Final Task Head
 
 The task incorporates merged W10 #1633. The final tested and pushed head is `66ec92c4fea05169e8dc8cda3c02f41fd63e625d`. Its complete planner suite exited zero: 882 run, 881 passed, one opt-in live-link skip. All 208 shared-checker tests passed, 15 document/mode checks passed, and the skill-file check reported 52 files with zero findings. planner-final.log and shared-final.log retain the final-head output. The complete committed mode retains each T1 observation at this revision.
+
+## Merge and Live Readback
+
+Task PR [#1634](https://github.com/m2ux/workflow-server/pull/1634) merged into i17/e03/workspace at `1eb5ea97dc29202cd3dd8d15e0c191363a7316f7`, preserving tested head `66ec92c4fea05169e8dc8cda3c02f41fd63e625d`. Their trees are identical. The exact merge revision passed all 15 document/mode checks again in its detached checkout; merged-criterion-tests.log retains the revision and outputs. T1's complete-mode read holds at the merged revision.
+
+Fresh target protection read returned Branch not protected (404), and active target rules are empty. The exact tested head carried no configured check runs/status contexts or required reviews, the passed published test plan remained current, and the PR was clean/mergeable at that same head. The SHA-pinned merge succeeded through native approval review.
+
+Fresh tracker/canonical readbacks agree: AC6 is ticked, W09 links #1634 and is Done. W14's separate running reservation is preserved. Integration #1627 remains draft at the merge revision, its complete body matches the updated file, and its references include every actual task merge through #1634. The exact Project 17 item reads In Progress. Remaining E03 rows and their criteria stay pending.
+
+The unit finds no validation debt, arising issue or plan change. The outer automatic coordinator owns subsequent dispatch and final epic review.
