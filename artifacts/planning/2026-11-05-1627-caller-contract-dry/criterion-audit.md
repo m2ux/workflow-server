@@ -1,6 +1,6 @@
 # Current Criterion Audit
 
-Reviewed head `89efe190ba97d50de1fc8f73a523e992ed3e91b2` against target `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486`. Current document/Plan/template tests pass 21 checks; shared tests pass 208 checks and the 53-file structure check has no finding. Executable, test and fenced-template contents equal reviewed 73b6bcf0c, whose full runtime suite had 903 passes and one opt-in live skip. That full run is inherited source-tree evidence, not a new execution. All 14 rows and AC2–AC15 remain complete in the refreshed issue snapshot.
+Reviewed head `50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7` against target `d0a62b8037bb1b8fdafac5bf0e0035ada8c64486`. Current document-interface tests pass 11 checks and the 53-file structure check has no finding. The preceding source-equivalent document/Plan/template suite passed 21 checks and shared tests passed 208 checks. Executable, test and fenced-template contents equal reviewed 73b6bcf0c, whose full runtime suite had 903 passes and one opt-in live skip. That full run is inherited source-tree evidence, not a new execution. All 14 rows and AC2–AC15 remain complete in the refreshed issue snapshot.
 
 ## Criterion Matrix
 
@@ -12,7 +12,7 @@ Reviewed head `89efe190ba97d50de1fc8f73a523e992ed3e91b2` against target `d0a62b8
 | AC5 | Actual survey offers only admitted free units, including rows without work-item links | test_deliver.LaneAdmission real CLI cases |
 | AC6 | Initial, resolved-issue and released-hold surveys carry the request's optional index; no session lane | Deliver mode read |
 | AC7 | Initiative lane decision and confirmed per-row map feed epic-body population; joined rows assigned together | Plan mode read |
-| AC8 | Ready-unit lanes come from raw cells in existing supplied issue snapshots | Board Queue Ready Unit Lanes read |
+| AC8 | Ready-unit lanes come from raw cells in existing supplied issue snapshots | Board Queue Ready Units and Report Lines read |
 | AC9 | Eligible joined units report index/unlaned, and Status/assignee calls match across valid lane maps | test_board_queue.ReadyUnitLanes real CLI cases |
 | AC10 | Advance reports every returned Report Lines entry, including unit lanes, through the owning output contract | Advance Plan/Report read and mode/document checks |
 | AC11 | Exact seven-column template places Lane after Joins and before Done, with bare index/empty row population | Epic Issue Body read, ArtifactTemplates and formatter specimen checks |
@@ -35,3 +35,5 @@ W01/#1626 retains its original delivery evidence and Done tick. AC1 was retired 
 ## Caller Contract Review
 
 The report, validation and recording conditions remain at their linked owners. The edit accounting and two independent bounded walks verify the shortened callers without reproducing field lists. No current criterion depends on a duplicate reminder.
+
+The Ready Units follow-up preserves AC8–AC10 through queue eligibility and Report Lines with Lane contract links. It renames the local anchor and includes unplanned rows; no executable behavior changes.

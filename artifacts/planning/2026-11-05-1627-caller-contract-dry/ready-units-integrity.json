@@ -1,0 +1,17 @@
+{
+  "base": "89efe190ba97d50de1fc8f73a523e992ed3e91b2",
+  "changed_files": [
+    "skills/work-planner/artifacts/board-queue.md"
+  ],
+  "commands_and_templates_identical": true,
+  "executable_and_test_changes": false,
+  "document_tests": {
+    "run": 11,
+    "passed": 11
+  },
+  "skill_files": {
+    "checked": 53,
+    "findings": 0
+  },
+  "whitespace": "passed"
+}

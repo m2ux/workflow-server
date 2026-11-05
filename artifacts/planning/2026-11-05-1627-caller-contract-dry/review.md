@@ -26,6 +26,8 @@ PR #1627 reads ready and unmerged at head `89efe190ba97d50de1fc8f73a523e992ed3e9
 
 ## Ready Unit Ownership Checklist
 
-- [ ] Rename the section and route Lane checks/labels through Report Lines. **In progress.**
-- [ ] Verify conditions, anchors and independent contract reading.
-- [ ] Commit, push and refresh exact-head handoff evidence.
+- [x] Rename the section and route Lane checks/labels through Report Lines.
+- [x] Verify conditions, anchors and independent contract reading.
+- [ ] Commit, push and refresh exact-head handoff evidence. **In progress.**
+
+The follow-up touches only Board Queue. Its intro and section use Ready Units; membership, free/undelivered state, proposed-status eligibility, unplanned-row inclusion and priority-based placement remain local. Report Lines cites Lane Assignments, Unit Consistency and Report Label. Eleven document tests pass; 53 structural files have zero findings; whitespace checks pass. Command/template blocks and runtime/test content are identical to 89efe190b. Integrity is registered in ready-units-integrity.json.

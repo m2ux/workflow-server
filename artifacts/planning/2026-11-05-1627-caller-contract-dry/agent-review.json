@@ -1,14 +1,14 @@
 [
   {
     "pull_request": "https://github.com/m2ux/workflow-server/pull/1627",
-    "head": "89efe190ba97d50de1fc8f73a523e992ed3e91b2",
+    "head": "50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7",
     "base": "d0a62b8037bb1b8fdafac5bf0e0035ada8c64486",
     "url": "https://github.com/m2ux/workflow-server/blob/engineering/artifacts/planning/2026-11-05-1627-caller-contract-dry/agent-review.json",
     "reviewer": "Codex complete integration and caller-contract DRY review",
-    "reviewed_at": "2026-11-05T05:50:23.897432+00:00",
-    "scope": "Complete current 38-file integration diff: prior runtime/criterion review plus all 21 Markdown-only changes. Caller scan spans all 50 modes, protocols and artifact documents, with surviving owner checks, independent contract walks and full current prose diff review. Exact-head graph measures 253 changed symbols and 49 affected processes; Lane/board contexts rechecked. Prior full graph traces remain runtime evidence, not exhaustive flow proof.",
+    "reviewed_at": "2026-11-05T06:35:54.872144+00:00",
+    "scope": "Complete integration review retained from 89efe190b, plus the full one-file Ready Units correction. Board Queue owns membership/eligibility/placement; Report Lines links Lane assignments, consistency and labels. All conditions and the renamed anchor checked against their owners. Two independent fresh-context artifact-contract walks repeat the cases without lost conditions. Runtime code and templates are identical; preceding graph evidence remains identified by its measured commit.",
     "criteria": "AC2\u2013AC15 verified by the updated criterion matrix and observing suite; all 14 rows Done. Historical retired AC1/W01 evidence remains accounted for.",
-    "validation": "Current head: 21 document/Plan/template tests pass; 208 shared tests pass; 53 skill files zero findings; all command/template fences identical and no runtime/test changes from reviewed 73b6bcf0c. Its earlier identical runtime suite has 903 passes and one opt-in live skip; no new full-suite execution claimed. Bounded independent walks preserve their incomplete prerequisite/truncation limits. Whitespace clean.",
+    "validation": "At current head: 11 document-interface tests pass; 53 Work Planner files zero structural findings; whitespace clean. One Markdown file differs from 89efe190b and every command/template fence is identical. Its preceding 21 document/Plan/template checks and 208 shared tests remain source-equivalent evidence. Full runtime evidence at identical executable/test/template content is 903 passes and 1 opt-in live skip from 73b6bcf0c, not a newly executed full suite. Both bounded contract walks preserve their incomplete recursive prerequisite limits.",
     "findings": [
       {
         "description": "Lane rules and operations have scattered owners",
@@ -57,6 +57,12 @@
         "severity": "blocking",
         "disposition": "fixed",
         "evidence": "https://github.com/m2ux/workflow-server/commit/89efe190ba97d50de1fc8f73a523e992ed3e91b2"
+      },
+      {
+        "description": "Ready Unit Lanes mixes queue readiness with Lane report semantics",
+        "severity": "blocking",
+        "disposition": "fixed",
+        "evidence": "https://github.com/m2ux/workflow-server/commit/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7"
       }
     ]
   }

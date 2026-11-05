@@ -8,7 +8,7 @@ Each task row carries a board-wide lane index. Lane owns its assignments, valida
 
 ## Structure
 
-The exact-head graph measures 38 changed files, 253 changed symbols and 49 affected processes. Current Lane/board contexts confirm the production relationships below. The preceding runtime review retains its 212 complete symbol contexts and ordered traces; executable, test and fenced-template contents are identical to that reviewed revision. These measurements are complementary evidence, not complete inferred flow coverage.
+The graph snapshot at `89efe190ba97d50de1fc8f73a523e992ed3e91b2` measures 38 changed files, 253 changed symbols and 49 affected processes. Its Lane/board contexts confirm the production relationships below. This head differs by one Markdown-only Ready Units ownership correction; executable, test and command/template-fence contents are identical. The earlier runtime review retains its symbol contexts and ordered traces. These measurements are supplementary evidence, not complete inferred flow coverage.
 
 ```mermaid
 ---
@@ -40,11 +40,11 @@ flowchart LR
 ### Lane Ownership
 
 - **Subject contract.**
-  [Lane](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/artifacts/lane.md#L1) defines index, assignment, unit consistency, admission and labels. The implementation depends only on standard-library values and files.
+  [Lane](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/artifacts/lane.md#L1) defines index, assignment, unit consistency, admission and labels. The implementation depends only on standard-library values and files.
 - **Body shape.**
-  [Epic Issue Body](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/artifacts/epic-issue-body.md#L130) owns the seven-column table with Lane after Joins and before Done, and delegates assignment.
+  [Epic Issue Body](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/artifacts/epic-issue-body.md#L130) owns the seven-column table with Lane after Joins and before Done, and delegates assignment.
 - **Shared state.**
-  [Board](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/scripts/board.py#L467) supplies the row-state and unit grouping functions used by both consumers. Queue placement is independent of lane annotations.
+  [Board](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/scripts/board.py#L467) supplies the row-state and unit grouping functions used by both consumers. Queue placement is independent of lane annotations.
 
 ## Behaviour
 
@@ -88,11 +88,11 @@ sequenceDiagram
 
 ## Reading Order
 
-1. [Lane contract](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/artifacts/lane.md#L1) — subject fields and operations.
-2. [Lane implementation](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/scripts/lane.py#L1) — parsing, assignment, consistency and admission.
-3. [Board state](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/scripts/board.py#L467) — shared eligibility and grouping.
-4. [Delivery](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/scripts/deliver.py#L343) and [queue](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/scripts/board-queue.py#L281) — caller policies and reports.
-5. [Lane regressions](https://github.com/m2ux/workflow-server/blob/89efe190ba97d50de1fc8f73a523e992ed3e91b2/skills/work-planner/test/test_lane.py#L1) — behavior and refusal cases.
+1. [Lane contract](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/artifacts/lane.md#L1) — subject fields and operations.
+2. [Lane implementation](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/scripts/lane.py#L1) — parsing, assignment, consistency and admission.
+3. [Board state](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/scripts/board.py#L467) — shared eligibility and grouping.
+4. [Delivery](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/scripts/deliver.py#L343) and [queue](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/scripts/board-queue.py#L281) — caller policies and reports.
+5. [Lane regressions](https://github.com/m2ux/workflow-server/blob/50ad0708f93d76b31efef3cc3c8b6b6eba3cb5b7/skills/work-planner/test/test_lane.py#L1) — behavior and refusal cases.
 
 ## Risks and Watch Points
 
