@@ -28,6 +28,11 @@ The shared checker selects each skill's declared model and keeps other skills va
 | [planner-check.txt](planner-check.txt) | Work Planner zero-finding check |
 | [tree-check.txt](tree-check.txt) | Unchanged inherited installed-tree findings |
 
+| [delivery.md](delivery.md) | Task PR, exact-head coordinator review and delivery state |
+| [task-pr-open.json](task-pr-open.json) | Published task PR readback |
+| [target-protection.json](target-protection.json) | Task-base branch-protection response |
+| [target-rules.json](target-rules.json) | Active task-base rules |
+
 ## Links
 
 | Resource | Link |

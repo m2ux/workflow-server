@@ -3,5 +3,5 @@
 - [x] Define the implementation and test plan.
 - [x] Implement declaration-driven parsing and checks.
 - [x] Run validation, preservation checks and source review.
-- [ ] Publish the task PR and obtain coordinator review (in progress).
-- [ ] Merge, record delivery and verify live readbacks.
+- [x] Publish the task PR and obtain coordinator review.
+- [ ] Merge, record delivery and verify live readbacks (in progress).
