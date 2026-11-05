@@ -7,8 +7,8 @@ Structure entries select sections and required sections. The model extends that 
 ## Responsibilities
 
 - The existing structure resolver owns file-to-model selection and declaration validation.
-- A bounded HTML-block reader owns invocation boundaries and payload masking. It preserves text and distinguishes actual bold argument links from literal command syntax.
-- The existing Markdown reader owns headings and ordinary links; HTML payload does not create headings or prose findings.
+- One lexical scanner owns Markdown fences, HTML invocation boundaries and payload masking. It preserves text and distinguishes actual bold argument links from literal command syntax.
+- The existing Markdown reader derives headings and ordinary links from those lexical contexts; HTML payload does not create headings or prose findings.
 - Heading-step validation owns sequence, scope and flush detail. Contract validation owns linked Inputs/Outputs and their field destinations. Preamble and call checks own only their selected file contracts.
 - Existing citation and interface checks consume the same selected model and invocation spans, retaining command reach, GraphQL REST-gap and Projects V2 checks.
 

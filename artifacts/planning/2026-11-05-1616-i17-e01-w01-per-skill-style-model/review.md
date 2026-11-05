@@ -14,4 +14,4 @@ Step sequences are grouped under their actual parent, supporting main mode steps
 
 ## Scope and Validation
 
-Only the shared checker and its seeded-skill tests change. All installed declarations, live Work Planner documents, other skills and shared guidelines retain their bytes. Validation.md records complete local suite results, exact inherited finding equality and the bounded disclosure result. Final merge waits for coordinator review of the published task head.
+Only the shared checker and its seeded-skill tests change. All installed declarations, live Work Planner documents, other skills and shared guidelines retain their bytes. Validation.md records complete local suite results, exact inherited finding equality and the bounded disclosure result. Coordinator review passes for the published task head; delivery.md records the confirmed merge and readbacks.

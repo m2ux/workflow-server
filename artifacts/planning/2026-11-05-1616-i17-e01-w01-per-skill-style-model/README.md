@@ -45,6 +45,5 @@ The shared checker selects each skill's declared model and keeps other skills va
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Initiative | https://github.com/m2ux/workflow-server/issues/1597 |
-
 | Task PR | https://github.com/m2ux/workflow-server/pull/1640 |
 | Draft Epic Integration | https://github.com/m2ux/workflow-server/pull/1641 |
