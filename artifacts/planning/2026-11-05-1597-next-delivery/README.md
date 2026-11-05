@@ -94,8 +94,15 @@ All seven conversion tasks are delivered. W06 is PR1651, merged as dfb00380a58ab
 
 ## Contextual Contract Draft
 
-`→` identifies a linked input consumed by an operation; `←` identifies a linked output it provides. A future feature derives the operation’s explicit IO contract from these marked links and verifies a performed operation against that contract.
+`→[Input](#input-field)` identifies an input consumed by an operation; `[Output](#output-field)→` identifies an output it provides. Both use the UTF-8 right arrow with no space between arrow and link. A future feature derives the operation’s explicit IO contract from these marked links and verifies a performed operation against that contract.
 
 | Artifact | What it holds |
 | --- | --- |
-| [Single-file example](contextual-contract-example.md) | Draft operation with contextual → input and ← output links and Provide prose, for review before migration |
+| [Single-file example](contextual-contract-example.md) | Draft operation with adjacent arrow-marked input/output links and Provide prose, for review before migration |
+
+### Required Migration Check
+
+- Inventory every operation and its actual consumed inputs and provided outputs by inspecting its step prose, commands, operation calls, conditions and result handling. The expected inventory comes from those uses, independently of the marked links.
+- Check the applied skill files against that inventory: every input and output is explicitly named in step prose and linked to its corresponding Field with the notation above. A command placeholder or implied value alone does not establish that prose contract.
+- Resolve every marked target to its owning Field, add a missing Field at its owning home, and add an explicit Provide step for an output the procedure leaves unstated. Preserve the operation’s conditions and responsibilities.
+- Reconcile every operation against the inventory, including conditional results, and record missing, unmarked or unresolved contracts as failures. Completion requires no input or output carried by implication alone.
