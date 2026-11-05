@@ -10,6 +10,10 @@ This record carries the user-approved Work Planner style conversion for W05. The
 
 | Artifact | What it holds |
 | --- | --- |
+| [w05.md](w05.md) | The task's implementation plan and required tests |
+| [Design](design.md) | Conversion boundary, contract ownership and validation gates |
+| [Todos](todo.md) | Ordered implementation and delivery checklist |
+| [Baseline Ledger](baseline-ledger.json) | Original source hashes, prerequisites, literal specimens and operative conditions |
 
 ## Links
 
