@@ -117,7 +117,7 @@ One row per script in `../scripts`, then one per document the prose tests read. 
 | [plan-mode](../modes/plan-mode.md) | [test_plan_mode](test_plan_mode.py) (6) |
 | [planning-record](../artifacts/planning-record.md) | [test_plan_mode](test_plan_mode.py) (6) |
 | `*/SKILL.md` | [test_modes](test_modes.py) (4) |
-| [README](README.md) | [test_readme](test_readme.py) (14) |
+| [README](README.md) | [test_readme](test_readme.py) (13) |
 
 A count beside a module measures that module, not the subject it appears against. The 19 tests of [test_dispatch](test_dispatch.py) do not all touch [deliver](../scripts/deliver.py), so a row's numbers are not a total.
 
