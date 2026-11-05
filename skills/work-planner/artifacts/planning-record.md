@@ -10,36 +10,128 @@ Read these files first.
 
 ## Operations
 
-### *Populate* Planning Record
+### Populate Planning Record
 
 One planning directory and its artifact inventory.
 
-**Inputs:** Record identity, folder path and supplied artifact files and links.
+**Inputs:** [Record Selection](#record-selection).
 
-1. Prepare the selected record:
-   - For a new record:
-     - Create the folder with [Add Planning Record](#add-planning-record).
-     - Populate README.md from the [Template](#template).
-   - For an existing record:
-     - Read its README, retaining its creation date, other artifacts and links.
-     - Update only the supplied content.
-   - The folder must meet [Layout](#layout).
-   - All populated README fields must meet [Fields](#fields).
-2. Register the artifact files supplied by the caller, using their chosen names.
-   - Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).
-   - File content remains supplied by the caller; this operation does not author that artifact's content.
+**Outputs:** [Planning Folder](#planning-folder).
 
+#### 1. Prepare Selected Record
 
-### *Publish* Planning Record
+Prepare the selected record using the matching branch.
+
+##### New Record
+
+Apply [Add Planning Record](#add-planning-record) with the engineering checkout and supplied planning-folder path.
+- Populate README.md from the [Template](#template).
+
+##### Existing Record
+
+Read its README, retaining its creation date, other artifacts and links.
+- Update only the supplied content.
+
+##### Common Record Conditions
+
+The folder must meet [Layout](#layout).
+- All populated README fields must meet [Fields](#fields).
+
+#### 2. Register Supplied Artifacts
+
+Register the artifact files supplied by the caller, using their chosen names.
+- Each file must have a row meeting [Layout](#layout) and [Artifacts](#artifacts).
+- File content remains supplied by the caller; this operation does not author that artifact's content.
+
+### Publish Planning Record
 
 The record's folder committed and pushed, so every link into it resolves for a reader.
 
-**Inputs:** Planning-folder path, the files written into it and a commit message file.
+**Inputs:** [Planning Folder](#planning-folder), [Commit Message File](#commit-message-file).
 
-1. Run [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.
-2. Run [Commit Planning Record](#commit-planning-record).
-   - Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
-   - Report a rebase that stops on a conflict rather than rewriting the branch.
+**Outputs:** [Publication Result](#publication-result).
+
+#### 1. Find Engineering Checkout
+
+Apply [Find Engineering Worktree](#find-engineering-worktree) for the path the record is written on.
+
+#### 2. Publish Planning Files
+
+Apply [Commit Planning Record](#commit-planning-record).
+- Confirm the files this record wrote reached `origin/engineering`, meeting [Shared Worktree](#shared-worktree).
+- Report a rebase that stops on a conflict rather than rewriting the branch.
+
+### Find Engineering Worktree
+
+Prints the checkout holding the engineering branch, which is where every planning record is written.
+
+**Inputs:** [Project Checkout](#project-checkout).
+
+**Outputs:** [Engineering Worktree](#engineering-worktree).
+
+#### 1. Find Engineering Worktree
+
+Run the following command with the supplied inputs.
+
+- The engineering branch has one long-lived worktree and takes no further one.
+
+<big><pre>
+git -C '[**&lt;checkout&gt;**](#project-checkout)' worktree list | grep '\&#91;engineering\&#93;'
+</pre></big>
+
+### Commit Planning Record
+
+Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
+
+**Inputs:** [Engineering Worktree](#engineering-worktree), [Commit Message File](#commit-message-file).
+
+**Outputs:** [Publication Result](#publication-result).
+
+#### 1. Commit Planning Record
+
+Run the following command with the supplied inputs.
+
+- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
+- Planning records go straight to the branch; they take no pull request.
+- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
+
+<big><pre>
+cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree)' && git add -A && (git diff --cached --quiet || git commit -F '[**&lt;message-file&gt;**](#commit-message-file)') && git fetch origin engineering && git rebase origin/engineering && git push
+</pre></big>
+
+**Example:**
+
+<big><pre>
+cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
+</pre></big>
+
+### Add Planning Record
+
+Adds the folder for one planning record on the long-lived engineering worktree.
+
+**Inputs:** [Engineering Worktree](#engineering-worktree), [Planning Folder](#planning-folder).
+
+**Outputs:** [Planning Folder](#planning-folder).
+
+#### 1. Add Planning Record
+
+Run the following command with the supplied inputs.
+
+- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
+- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
+- The slug is lowercase words separated by hyphens, a short name of the work.
+- The folder's files are the [planning layout](planning-record.md#layout).
+- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
+
+<big><pre>
+mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder)'
+</pre></big>
+
+**Example:**
+
+<big><pre>
+mkdir -p artifacts/planning/2026-10-15-950-queue-plan
+</pre></big>
 
 ## Fields
 
@@ -102,58 +194,26 @@ Two paragraphs: the purpose of this work, and why it matters.
 
 External references only: a tracker issue, a parent epic, a pull request. An artifact of this plan is an Artifacts row.
 
-## Commands
+### Record Selection
 
-### Find Engineering Worktree
+The supplied record identity, folder path, artifact files and external links.
 
-Prints the checkout holding the engineering branch, which is where every planning record is written.
+### Planning Folder
 
-**Inputs:** Any checkout of the project.
+The supplied folder path and its registered artifact files, meeting [Layout](#layout). A new folder is absent until created.
 
-- The engineering branch has one long-lived worktree and takes no further one.
+### Engineering Worktree
 
-```bash
-git -C '<checkout>' worktree list | grep '\[engineering\]'
-```
+The checkout holding the engineering branch, as an absolute path.
 
-### Commit Planning Record
+### Project Checkout
 
-Commits everything pending in the engineering worktree and publishes the branch, so every record's links resolve.
+Any supplied checkout of the project.
 
-**Inputs:** Engineering worktree and a commit message file.
+### Commit Message File
 
-- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
-- Planning records go straight to the branch; they take no pull request.
-- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
+The supplied local file holding the exact commit message.
 
-```bash
-cd '<engineering-worktree>' && git add -A && (git diff --cached --quiet || git commit -F '<message-file>') && git fetch origin engineering && git rebase origin/engineering && git push
-```
+### Publication Result
 
-**Example:**
-
-```bash
-cd .engineering && git add -A && (git diff --cached --quiet || git commit -F /tmp/msg.txt) && git fetch origin engineering && git rebase origin/engineering && git push
-```
-
-### Add Planning Record
-
-Adds the folder for one planning record on the long-lived engineering worktree.
-
-**Inputs:** Engineering worktree and planning-folder path composed from the date, optional issue or pull request number, and slug.
-
-- `<planning-folder-path>` is `<yyyy-mm-dd>[-<ref>]-<slug>/` under the [configured planning directory](../configuration.md#planning-records). The date is the day the record is opened.
-- `<ref>` is the bare number of the issue or the pull request the record is for. A record for ad hoc work, which has neither, has no ref segment.
-- The slug is lowercase words separated by hyphens, a short name of the work.
-- The folder's files are the [planning layout](planning-record.md#layout).
-- Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
-
-```bash
-mkdir -p '<planning-folder-path>'
-```
-
-**Example:**
-
-```bash
-mkdir -p artifacts/planning/2026-10-15-950-queue-plan
-```
+The published planning files and confirmed remote branch, or a stopped publication with its conflict or other blocker.
