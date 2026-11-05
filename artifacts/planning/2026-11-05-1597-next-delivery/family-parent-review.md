@@ -16,7 +16,7 @@ The parent reviewed all new or changed Fields across the15-file family, the expl
 
 ## W07 Review
 
-The parent reviewed all new or changed Fields across six artifacts, all23 non-verbatim semantic mappings and the exact worktree-reader patch. Input record shapes, retries, refusal conditions and real-git placement assertions remain accounted for. The narrow shared-checker repair and three acceptance/rejection fixtures were reviewed separately.
+The parent reviewed all new or changed Fields across six artifacts, all24 review_required entries in pending-v1 and the exact worktree-reader patch. Input record shapes, retries, refusal conditions and real-git placement assertions remain accounted for. The narrow shared-checker repair and three acceptance/rejection fixtures were reviewed separately.
 
 The parent found a type definition repeated between Compute Available Work and its new Epic-Base Names contract. The worker's related audit found the same overlap in the List Epic Bases output and initiative-prefix input. The parent inspected the exact three-file correction: type-only duplicates are removed and the --bases mapping links its contract. Commands, examples, flag associations and runtime guards remain intact. Fresh strict58-file validation and preservation pass; the installed model retains the staged Revise Fields diagnostic. Actual W05 integration, repeated walks and final literal-head suites remain required.
 

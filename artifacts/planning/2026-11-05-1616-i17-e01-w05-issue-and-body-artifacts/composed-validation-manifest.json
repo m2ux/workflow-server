@@ -1,0 +1,34 @@
+{
+  "candidate_tree": "b10362558947ecfdb5fe5ca379c23457613dd472",
+  "base_head": "11e6085570ea60bd1132e32a5bd375d4fa03a77c",
+  "logs": [
+    {
+      "path": "planner-tests.log",
+      "sha256": "f67843fbe5804345bd4b5099d4906551560002c82d7367a41bf30240fc02dce7"
+    },
+    {
+      "path": "shared-tests.log",
+      "sha256": "54fde35bb3d2e3b15f4eb1c28139e445dbd0b3aae4874ed97ed7b114bf8f9d27"
+    },
+    {
+      "path": "installed-check.log",
+      "sha256": "08e43a581ecae513b2ff33726cf00a861c6366a11eeff884067bdf123a2754b1"
+    },
+    {
+      "path": "preservation.log",
+      "sha256": "9203f3314d0b8b363f2c06b25e59c1938fa5b5409f0b6299ff11b860496f7db4"
+    },
+    {
+      "path": "preservation-ledger.json",
+      "sha256": "0103e5c8736dd734de051bd931554d6490304b16328712f6e465a95fd21ae59f"
+    },
+    {
+      "path": "static-family-routes.json",
+      "sha256": "de2eb7f20101059fc2e63c1ba516d7c3ac3cf67723dd46c94eddb037e0082492"
+    },
+    {
+      "path": "strict-check.log",
+      "sha256": "fe29dcd380253f0f001eddb2729a50df66a79e1c143d50b6d0ae2edfc47cd6ce"
+    }
+  ]
+}

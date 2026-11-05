@@ -1,0 +1,3 @@
+work-planner/modes/revise-mode.md:128: section outside the set — Fields
+58 files checked, 1 findings
+sbx: exit 1; writable: /tmp /home/mike1/projects/dev/workflow-server/.worktrees/i17/e01/w05-issue-and-body-artifacts (name more with SBX_EXTRA_ROOTS=dir1:dir2)

@@ -1,0 +1,17 @@
+--- reviewed-v3/test_documents.py
++++ composed-v4/test_documents.py
+@@ -226,7 +226,7 @@
+ 
+ 
+ RECORD_EPIC_DELIVERY = re.compile(
+-    r'\b(?:[Rr]un|[Rr]e-run|[Rr]epeat(?:ing)?)\s+\[?Record Epic Delivery\b')
++    r'\b(?:[Aa]pply|[Rr]un|[Rr]e-run|[Rr]epeat(?:ing)?)\s+\[?Record Epic Delivery\b')
+ 
+ 
+ class EpicDeliveryCallers(unittest.TestCase):
+@@ -275,3 +275,5 @@
+             'When the preceding Record Epic Delivery call reports a row done'))
+         self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
+             'Repeat Record Epic Delivery with the saved epic.'))
++        self.assertIsNotNone(RECORD_EPIC_DELIVERY.search(
++            'Apply [Record Epic Delivery](x.md) with the saved epic bases.'))

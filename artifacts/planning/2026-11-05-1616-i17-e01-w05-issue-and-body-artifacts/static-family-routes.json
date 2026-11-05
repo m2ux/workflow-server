@@ -1,0 +1,1529 @@
+[
+  {
+    "file": "acceptance-criteria.md",
+    "original_callable_anchors_retained": [
+      "instrument-checkout",
+      "instrument-result",
+      "readiness",
+      "run-at-revision",
+      "tick-state",
+      "tick-verified-criteria",
+      "verify-selected-criteria"
+    ],
+    "operations": [
+      {
+        "title": "Verify Selected Criteria",
+        "anchor": "verify-selected-criteria",
+        "heading_steps": [
+          "1. Confirm Criterion Readiness",
+          "2. Run Named Instruments",
+          "3. Return Criterion Evidence"
+        ],
+        "contracts": [
+          "**Inputs:** [Criterion Selection](#criterion-selection), [Issue Body](#issue-body), [Delivery Evidence](#delivery-evidence), [Instrument](#instrument), [Project Checkout](#project-checkout).",
+          "**Outputs:** [Verification Evidence](#verification-evidence)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Tick Verified Criteria",
+        "anchor": "tick-verified-criteria",
+        "heading_steps": [
+          "1. Record Verified Criteria",
+          "2. Return Body Disposition"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Evidence](#issue-evidence), [Criterion Selection](#criterion-selection), [Output Body](#output-body).",
+          "**Outputs:** [Tick State](#tick-state), [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Run at Revision",
+        "anchor": "run-at-revision",
+        "heading_steps": [
+          "1. Run at Revision"
+        ],
+        "contracts": [
+          "**Inputs:** [Project Checkout](#project-checkout), [Revision](#revision), [Instrument](#instrument).",
+          "**Outputs:** [Instrument Result](#instrument-result)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "epic.md",
+    "original_callable_anchors_retained": [
+      "check-epic-completion",
+      "check-epic-prerequisites",
+      "check-epic-readiness",
+      "delivery-findings",
+      "delivery-state",
+      "inspect-epic-delivery",
+      "match-pull-requests",
+      "prerequisite-evidence"
+    ],
+    "operations": [
+      {
+        "title": "Check Epic Prerequisites",
+        "anchor": "check-epic-prerequisites",
+        "heading_steps": [
+          "1. Identify Named Prerequisites",
+          "2. Apply Whole-Epic Dependency",
+          "3. Confirm Prerequisite Delivery",
+          "4. Return Prerequisite Evidence"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Evidence](#initiative-evidence), [Epic Body](#epic-body), [Prerequisite Records](#prerequisite-records).",
+          "**Outputs:** [Prerequisite Evidence](#prerequisite-evidence)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Inspect Epic Delivery",
+        "anchor": "inspect-epic-delivery",
+        "heading_steps": [
+          "1. Match Supplied Delivery",
+          "2. Return Delivery Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Output Body](#output-body).",
+          "**Outputs:** [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Check Epic Readiness",
+        "anchor": "check-epic-readiness",
+        "heading_steps": [
+          "1. Inspect Current Delivery",
+          "2. Confirm Integration Conditions",
+          "3. Return Integration Readiness"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Verification Evidence](#verification-evidence).",
+          "**Outputs:** [Delivery State](#delivery-state)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Check Epic Completion",
+        "anchor": "check-epic-completion",
+        "heading_steps": [
+          "1. Check Current Readiness",
+          "2. Reconcile Expected Bases",
+          "3. Confirm Base Merges",
+          "4. Return Completion Result"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Verification Evidence](#verification-evidence), [Base Merges](#base-merges).",
+          "**Outputs:** [Delivery State](#delivery-state)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Match Pull Requests",
+        "anchor": "match-pull-requests",
+        "heading_steps": [
+          "1. Match Pull Requests"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Output Body](#output-body).",
+          "**Outputs:** [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "epic-issue-body.md",
+    "original_callable_anchors_retained": [
+      "acceptance-criteria",
+      "breakdown-prose",
+      "open-questions",
+      "plan-gap-task",
+      "populate-epic-issue-body",
+      "proposal",
+      "record-epic-criteria",
+      "record-epic-delivery",
+      "release-row",
+      "release-task-rows",
+      "required-criteria",
+      "reserve-row",
+      "reserve-task-rows",
+      "revise-epic-rows",
+      "sync-epic",
+      "task-delivery",
+      "template",
+      "test-evidence",
+      "tick-epic-criteria",
+      "titles",
+      "validate-epic-body",
+      "work-breakdown"
+    ],
+    "operations": [
+      {
+        "title": "Populate Epic Issue Body",
+        "anchor": "populate-epic-issue-body",
+        "heading_steps": [
+          "1. Populate Epic Template",
+          "2. Populate Shared Table",
+          "3. Fill Epic Cells",
+          "4. Build Draft Snapshot",
+          "5. Validate Draft Body",
+          "6. Identify Pending Links",
+          "7. Return Draft Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Context](#initiative-context), [Draft Metadata](#draft-metadata), [Task Rows](#task-rows), [Pull Request Records](#pull-request-records), [Project Checkout](#project-checkout), [Evaluated Revision](#evaluated-revision), [Output Body](#output-body).",
+          "**Outputs:** [Row Result](#row-result), [Validation Findings](#validation-findings), [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Record Epic Delivery",
+        "anchor": "record-epic-delivery",
+        "heading_steps": [
+          "1. Record Supplied Matches",
+          "2. Return Updated Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Task Records](#task-records), [Delivery Matches](#delivery-matches), [Project Checkout](#project-checkout), [Epic Bases](#epic-bases), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](epic.md#delivery-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Record Epic Criteria",
+        "anchor": "record-epic-criteria",
+        "heading_steps": [
+          "1. Record Verified Criteria",
+          "2. Return Criterion Disposition"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Criterion Selection](#criterion-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Criterion Selection](#criterion-selection)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Reserve Task Rows",
+        "anchor": "reserve-task-rows",
+        "heading_steps": [
+          "1. Require Reservable Unit",
+          "2. Reserve Complete Unit",
+          "3. Return Reserved Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Task Selection](#task-selection), [Board Items](#board-items), [Planning Folder](#planning-folder), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Row Result](#row-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Release Task Rows",
+        "anchor": "release-task-rows",
+        "heading_steps": [
+          "1. Require Release Decision",
+          "2. Release Complete Unit",
+          "3. Return Released Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Task Selection](#task-selection), [Engineering Worktree](#engineering-worktree), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Row Result](#row-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Validate Epic Body",
+        "anchor": "validate-epic-body",
+        "heading_steps": [
+          "1. Read Changed Paths",
+          "2. Validate Kind Conditions",
+          "3. Read Delivery Reach",
+          "4. Identify Required Criteria",
+          "5. Return Local Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Initiative Context](#initiative-context), [Pull Request Records](#pull-request-records), [Project Checkout](#project-checkout), [Evaluated Revision](#evaluated-revision), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Revise Epic Rows",
+        "anchor": "revise-epic-rows",
+        "heading_steps": [
+          "1. Apply Confirmed Changes",
+          "2. Return Revised Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Body](#epic-body), [Task Rows](#task-rows), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Plan Gap Task",
+        "anchor": "plan-gap-task",
+        "heading_steps": [
+          "1. Resolve Unmet Criteria",
+          "2. Confirm Further Task",
+          "3. Reconcile Revised Delivery"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Epic Body](#epic-body), [Task Rows](#task-rows), [Criterion Selection](#criterion-selection), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Project Checkout](#project-checkout), [Epic Bases](#epic-bases), [Output Body](#output-body).",
+          "**Outputs:** [Row Result](#row-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Sync Epic",
+        "anchor": "sync-epic",
+        "heading_steps": [
+          "1. Sync Epic"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Task Records](#task-records), [Delivery Matches](#delivery-matches), [Project Checkout](#project-checkout), [Epic Bases](#epic-bases), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](epic.md#delivery-findings)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Tick Epic Criteria",
+        "anchor": "tick-epic-criteria",
+        "heading_steps": [
+          "1. Tick Epic Criteria"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Criterion Selection](#criterion-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Criterion Selection](#criterion-selection)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Reserve Row",
+        "anchor": "reserve-row",
+        "heading_steps": [
+          "1. Reserve Row"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Task Selection](#task-selection), [Board Items](#board-items), [Planning Folder](#planning-folder), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Row Result](#row-result)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Release Row",
+        "anchor": "release-row",
+        "heading_steps": [
+          "1. Release Row"
+        ],
+        "contracts": [
+          "**Inputs:** [Epic Record](#epic-record), [Task Selection](#task-selection), [Engineering Worktree](#engineering-worktree), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Row Result](#row-result)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "hotfix.md",
+    "original_callable_anchors_retained": [
+      "board-status",
+      "branch",
+      "delivering-pull-request",
+      "delivery-record",
+      "delivery-unit",
+      "hold-hot-fix-unit",
+      "open-hot-fix-issue",
+      "record-hot-fix-delivery",
+      "release-hot-fix-hold",
+      "settle-hot-fix-board-status",
+      "sync-hot-fix-issue"
+    ],
+    "operations": [
+      {
+        "title": "Open Hot-fix Issue",
+        "anchor": "open-hot-fix-issue",
+        "heading_steps": [
+          "1. Select Hot-fix Number",
+          "2. Ensure Required Labels",
+          "3. Return Selected Number"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Hot-fix Identity](#hot-fix-identity).",
+          "**Outputs:** [Hot-fix Number](#hot-fix-number)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Hold Hot-fix Unit",
+        "anchor": "hold-hot-fix-unit",
+        "heading_steps": [
+          "1. Record Dispatch Hold",
+          "2. Return Confirmed Hold"
+        ],
+        "contracts": [
+          "**Inputs:** [Hot-fix Identity](#hot-fix-identity), [Board Evidence](#board-evidence).",
+          "**Outputs:** [Board Result](#board-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Release Hot-fix Hold",
+        "anchor": "release-hot-fix-hold",
+        "heading_steps": [
+          "1. Read Current Development",
+          "2. Return Unit to Ready",
+          "3. Return Saved Status"
+        ],
+        "contracts": [
+          "**Inputs:** [Hot-fix Identity](#hot-fix-identity), [Board Evidence](#board-evidence).",
+          "**Outputs:** [Board Result](#board-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Record Hot-fix Delivery",
+        "anchor": "record-hot-fix-delivery",
+        "heading_steps": [
+          "1. Record Verified Delivery",
+          "2. Return Delivery Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Hot-fix Record](#hot-fix-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Settle Hot-fix Board Status",
+        "anchor": "settle-hot-fix-board-status",
+        "heading_steps": [
+          "1. Read Current Issue",
+          "2. Read Current Board",
+          "3. Apply Required Status",
+          "4. Return Settled Board"
+        ],
+        "contracts": [
+          "**Inputs:** [Board Evidence](#board-evidence), [Hot-fix Identity](#hot-fix-identity).",
+          "**Outputs:** [Board Result](#board-result)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Sync Hot-fix Issue",
+        "anchor": "sync-hot-fix-issue",
+        "heading_steps": [
+          "1. Sync Hot-fix Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Hot-fix Record](#hot-fix-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "hotfix-body.md",
+    "original_callable_anchors_retained": [
+      "debt",
+      "definition",
+      "membership",
+      "populate-hot-fix-body",
+      "sections",
+      "target",
+      "titles"
+    ],
+    "operations": [
+      {
+        "title": "Populate Hot-fix Body",
+        "anchor": "populate-hot-fix-body",
+        "heading_steps": [
+          "1. Populate Hot-fix Template"
+        ],
+        "contracts": [
+          "**Inputs:** [Hot-fix Identity](#hot-fix-identity), [Target](#target), [Defect Evidence](#defect-evidence), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      }
+    ]
+  },
+  {
+    "file": "initiative.md",
+    "original_callable_anchors_retained": [
+      "check-initiative-completion",
+      "delivery-findings",
+      "delivery-state",
+      "identity"
+    ],
+    "operations": [
+      {
+        "title": "Check Initiative Completion",
+        "anchor": "check-initiative-completion",
+        "heading_steps": [
+          "1. Evaluate Supplied Evidence",
+          "2. Identify Missing Conditions",
+          "3. Return Completion Result"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Verification Evidence](#verification-evidence), [Development Evidence](#development-evidence).",
+          "**Outputs:** [Delivery State](#delivery-state)."
+        ],
+        "invocations": 0
+      }
+    ]
+  },
+  {
+    "file": "initiative-issue-body.md",
+    "original_callable_anchors_retained": [
+      "breakdown-prose",
+      "draft-initiative-issue-body",
+      "fetch-source",
+      "initiative-acceptance-criteria",
+      "non-goals",
+      "populate-initiative-issue-body",
+      "problem",
+      "proposal",
+      "read-requirement-sources",
+      "record-initiative-criteria",
+      "record-initiative-delivery",
+      "references",
+      "sources",
+      "sync-initiative",
+      "template",
+      "tick-initiative-criteria",
+      "titles",
+      "validate-initiative-body",
+      "work-breakdown"
+    ],
+    "operations": [
+      {
+        "title": "Populate Initiative Issue Body",
+        "anchor": "populate-initiative-issue-body",
+        "heading_steps": [
+          "1. Draft Scoped Body",
+          "2. Check Current Round",
+          "3. Return Draft Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Proposal Context](#proposal-context), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Draft Initiative Issue Body",
+        "anchor": "draft-initiative-issue-body",
+        "heading_steps": [
+          "1. Populate Initiative Template",
+          "2. Derive Problem and Boundary",
+          "3. Write Source-Based Criteria",
+          "4. Populate Shared Table",
+          "5. Fill Initiative Cells"
+        ],
+        "contracts": [
+          "**Inputs:** [Proposal Context](#proposal-context), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Record Initiative Delivery",
+        "anchor": "record-initiative-delivery",
+        "heading_steps": [
+          "1. Record Supplied Epics",
+          "2. Return Initiative Delivery"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Delivery Findings](initiative.md#delivery-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Record Initiative Criteria",
+        "anchor": "record-initiative-criteria",
+        "heading_steps": [
+          "1. Record Verified Criteria",
+          "2. Return Criterion Disposition"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Criterion Selection](#criterion-selection), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Criterion Selection](#criterion-selection)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Validate Initiative Body",
+        "anchor": "validate-initiative-body",
+        "heading_steps": [
+          "1. Validate Kind Conditions",
+          "2. Retain Current Title",
+          "3. Identify Source Departures",
+          "4. Return Local Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Source Evidence](#source-evidence), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Read Requirement Sources",
+        "anchor": "read-requirement-sources",
+        "heading_steps": [
+          "1. Read Local Sources",
+          "2. Fetch Pinned Sources",
+          "3. Fetch Other URLs",
+          "4. Record Unreadable Sources",
+          "5. Return Source Evidence"
+        ],
+        "contracts": [
+          "**Inputs:** [Requirement References](#requirement-references), [Source Evidence](#source-evidence), [Output Files](#output-files).",
+          "**Outputs:** [Source Evidence](#source-evidence), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Sync Initiative",
+        "anchor": "sync-initiative",
+        "heading_steps": [
+          "1. Sync Initiative"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Delivery Findings](initiative.md#delivery-findings)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Tick Initiative Criteria",
+        "anchor": "tick-initiative-criteria",
+        "heading_steps": [
+          "1. Tick Initiative Criteria"
+        ],
+        "contracts": [
+          "**Inputs:** [Initiative Record](#initiative-record), [Epic Records](#epic-records), [Criterion Selection](#criterion-selection), [Output Files](#output-files).",
+          "**Outputs:** [Output Files](#output-files), [Criterion Selection](#criterion-selection)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Source",
+        "anchor": "fetch-source",
+        "heading_steps": [
+          "1. Fetch Source"
+        ],
+        "contracts": [
+          "**Inputs:** [Source Evidence](#source-evidence), [Output Files](#output-files).",
+          "**Outputs:** [Source Evidence](#source-evidence)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "issue.md",
+    "original_callable_anchors_retained": [
+      "add-issue-labels",
+      "audit-closure-evidence",
+      "auto-close-setting",
+      "capture-issue-development",
+      "capture-issue-links",
+      "check-issue-closure",
+      "close-as-completed",
+      "close-as-not-planned",
+      "close-tracker-issue",
+      "close-transferred-work",
+      "comment-on-issue",
+      "confirm-repository-auto-close",
+      "create-tracker-issue",
+      "fetch-all-issues",
+      "fetch-closed-issues",
+      "fetch-issue-body",
+      "fetch-issue-comments",
+      "fetch-selected-closed-issues",
+      "fetch-tracker-issue",
+      "find-initiative-issue",
+      "list-prefixed-titles",
+      "locate-initiative-issue",
+      "patch-issue-body",
+      "post-comment-file",
+      "post-inline-comment",
+      "read-issue-development",
+      "read-repository-issues",
+      "read-tracker-issue",
+      "remove-issue-label",
+      "retitle-tracker-issue",
+      "save-tracker-issue",
+      "select-tracker-number",
+      "set-completed-state",
+      "sweep-closure-evidence"
+    ],
+    "operations": [
+      {
+        "title": "Read Tracker Issue",
+        "anchor": "read-tracker-issue",
+        "heading_steps": [
+          "1. Select Issue Response",
+          "2. Read Requested Discussion"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files), [Discussion Selection](#discussion-selection).",
+          "**Outputs:** [Issue Record](#issue-record) for a complete response or [Issue Body](#issue-body) for a body-only response, with [Discussion](#discussion) when requested."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Save Tracker Issue",
+        "anchor": "save-tracker-issue",
+        "heading_steps": [
+          "1. Take Supplied Changes",
+          "2. Check Assigned Labels",
+          "3. Create New Issue",
+          "4. Change Existing Fields",
+          "5. Publish Required Comment",
+          "6. Read Saved Issue",
+          "7. Compare Saved Fields"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes), [Comment](#comment).",
+          "**Outputs:** [Issue Record](#issue-record)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Close Tracker Issue",
+        "anchor": "close-tracker-issue",
+        "heading_steps": [
+          "1. Capture Current Development",
+          "2. Check Closure Evidence",
+          "3. Require Completed Delivery",
+          "4. Close Verified Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Identity](#identity), [Delivery Evidence](#delivery-evidence), [Output Files](#output-files).",
+          "**Outputs:** [State](#state), [Closure Findings](#closure-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Close Transferred Work",
+        "anchor": "close-transferred-work",
+        "heading_steps": [
+          "1. Confirm Destination Evidence",
+          "2. Comment With Destination",
+          "3. Close Transferred Issue",
+          "4. Confirm Saved State"
+        ],
+        "contracts": [
+          "**Inputs:** [Identity](#identity), [Transfer Evidence](#transfer-evidence), [Comment](#comment).",
+          "**Outputs:** [State](#state)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Comment on Issue",
+        "anchor": "comment-on-issue",
+        "heading_steps": [
+          "1. Prepare Feedback Reply",
+          "2. Publish Supplied Comment",
+          "3. Return Comment URL"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).",
+          "**Outputs:** [Comment](#comment)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Close as Completed",
+        "anchor": "close-as-completed",
+        "heading_steps": [
+          "1. Capture Fresh Development",
+          "2. Run Fresh Closure Gate",
+          "3. Require Passing Evidence",
+          "4. Set Completed State",
+          "5. Return Saved State"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Authenticated Access](#authenticated-access), [Delivery Evidence](#delivery-evidence), [Closure Evidence Paths](#closure-evidence-paths).",
+          "**Outputs:** [State](#state), [Closure Findings](#closure-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Capture Issue Development",
+        "anchor": "capture-issue-development",
+        "heading_steps": [
+          "1. Fetch Current Issue",
+          "2. Read Development Links",
+          "3. Return Captured Files"
+        ],
+        "contracts": [
+          "**Inputs:** [Identity](#identity), [Authenticated Access](#authenticated-access), [Output Files](#output-files).",
+          "**Outputs:** [Issue Record](#issue-record), [Development Snapshot](#development-snapshot)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Read Issue Development",
+        "anchor": "read-issue-development",
+        "heading_steps": [
+          "1. Capture Supplied Relations",
+          "2. Return Complete Relations"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Collection](#issue-collection), [Authenticated Access](#authenticated-access), [Output Files](#output-files).",
+          "**Outputs:** [Development Snapshot](#development-snapshot)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Audit Closure Evidence",
+        "anchor": "audit-closure-evidence",
+        "heading_steps": [
+          "1. Fetch Selected Closed Issues",
+          "2. Read Complete Development",
+          "3. Run Closure Sweep",
+          "4. Return Audit Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Authenticated Access](#authenticated-access), [Audit Selection](#audit-selection), [Output Files](#output-files).",
+          "**Outputs:** [Closure Findings](#closure-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Confirm Repository Auto-Close",
+        "anchor": "confirm-repository-auto-close",
+        "heading_steps": [
+          "1. Read Exposed Setting",
+          "2. Confirm Unexposed Setting",
+          "3. Return Confirmed Setting"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Authenticated Access](#authenticated-access).",
+          "**Outputs:** [Auto-Close Setting](#auto-close-setting)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Read Repository Issues",
+        "anchor": "read-repository-issues",
+        "heading_steps": [
+          "1. Fetch Repository Issues",
+          "2. Return Issue Collection"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Output Files](#output-files).",
+          "**Outputs:** [Issue Collection](#issue-collection)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Locate Initiative Issue",
+        "anchor": "locate-initiative-issue",
+        "heading_steps": [
+          "1. Find Supplied Prefix",
+          "2. Return Resolved Identity"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).",
+          "**Outputs:** [Identity](#identity), [Tracker Number](#tracker-number)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Select Tracker Number",
+        "anchor": "select-tracker-number",
+        "heading_steps": [
+          "1. Read Existing Titles",
+          "2. Read Highest Prefix",
+          "3. Confirm Unused Number",
+          "4. Return Confirmed Number"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).",
+          "**Outputs:** [Tracker Number](#tracker-number)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Create Tracker Issue",
+        "anchor": "create-tracker-issue",
+        "heading_steps": [
+          "1. Create Tracker Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Issue Changes](#issue-changes), [Label Names](#label-names).",
+          "**Outputs:** [Identity](#identity)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Patch Issue Body",
+        "anchor": "patch-issue-body",
+        "heading_steps": [
+          "1. Patch Issue Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes).",
+          "**Outputs:** [Identity](#identity), [Content](#content)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Issue Body",
+        "anchor": "fetch-issue-body",
+        "heading_steps": [
+          "1. Fetch Issue Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files).",
+          "**Outputs:** [Issue Body](#issue-body)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Retitle Tracker Issue",
+        "anchor": "retitle-tracker-issue",
+        "heading_steps": [
+          "1. Retitle Tracker Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Issue Changes](#issue-changes).",
+          "**Outputs:** [Content](#content)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Add Issue Labels",
+        "anchor": "add-issue-labels",
+        "heading_steps": [
+          "1. Add Issue Labels"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Label Names](#label-names).",
+          "**Outputs:** [Label Names](#label-names)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Remove Issue Label",
+        "anchor": "remove-issue-label",
+        "heading_steps": [
+          "1. Remove Issue Label"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Label Names](#label-names).",
+          "**Outputs:** [Label Names](#label-names)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Issue Comments",
+        "anchor": "fetch-issue-comments",
+        "heading_steps": [
+          "1. Fetch Issue Comments"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity).",
+          "**Outputs:** [Discussion](#discussion)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Tracker Issue",
+        "anchor": "fetch-tracker-issue",
+        "heading_steps": [
+          "1. Fetch Tracker Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Output Files](#output-files).",
+          "**Outputs:** [Issue Record](#issue-record)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Check Issue Closure",
+        "anchor": "check-issue-closure",
+        "heading_steps": [
+          "1. Check Issue Closure"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Record](#issue-record), [Development Snapshot](#development-snapshot).",
+          "**Outputs:** [Closure Findings](#closure-findings)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Sweep Closure Evidence",
+        "anchor": "sweep-closure-evidence",
+        "heading_steps": [
+          "1. Sweep Closure Evidence"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Collection](#issue-collection), [Development Snapshot](#development-snapshot).",
+          "**Outputs:** [Closure Findings](#closure-findings)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Close as Not Planned",
+        "anchor": "close-as-not-planned",
+        "heading_steps": [
+          "1. Close as Not Planned"
+        ],
+        "contracts": [
+          "**Inputs:** [Identity](#identity), [Transfer Evidence](#transfer-evidence).",
+          "**Outputs:** [State](#state)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Post Inline Comment",
+        "anchor": "post-inline-comment",
+        "heading_steps": [
+          "1. Post Inline Comment"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).",
+          "**Outputs:** [Comment](#comment)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Post Comment File",
+        "anchor": "post-comment-file",
+        "heading_steps": [
+          "1. Post Comment File"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Comment](#comment).",
+          "**Outputs:** [Comment](#comment)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Set Completed State",
+        "anchor": "set-completed-state",
+        "heading_steps": [
+          "1. Set Completed State"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Identity](#identity), [Delivery Evidence](#delivery-evidence), [Closure Findings](#closure-findings).",
+          "**Outputs:** [State](#state)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Capture Issue Links",
+        "anchor": "capture-issue-links",
+        "heading_steps": [
+          "1. Capture Issue Links"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Collection](#issue-collection), [Authenticated Access](#authenticated-access), [Output Files](#output-files).",
+          "**Outputs:** [Development Snapshot](#development-snapshot)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch All Issues",
+        "anchor": "fetch-all-issues",
+        "heading_steps": [
+          "1. Fetch All Issues"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Output Files](#output-files).",
+          "**Outputs:** [Issue Collection](#issue-collection)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Closed Issues",
+        "anchor": "fetch-closed-issues",
+        "heading_steps": [
+          "1. Fetch Closed Issues"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Output Files](#output-files).",
+          "**Outputs:** [Issue Collection](#issue-collection)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Selected Closed Issues",
+        "anchor": "fetch-selected-closed-issues",
+        "heading_steps": [
+          "1. Fetch Named Closed Records"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Audit Selection](#audit-selection), [Output Files](#output-files).",
+          "**Outputs:** [Issue Collection](#issue-collection)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Find Initiative Issue",
+        "anchor": "find-initiative-issue",
+        "heading_steps": [
+          "1. Find Initiative Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).",
+          "**Outputs:** [Identity](#identity), [Tracker Number](#tracker-number)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "List Prefixed Titles",
+        "anchor": "list-prefixed-titles",
+        "heading_steps": [
+          "1. List Prefixed Titles"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Tracker Prefix](#tracker-prefix).",
+          "**Outputs:** [Tracker Prefix](#tracker-prefix)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "issue-body.md",
+    "original_callable_anchors_retained": [
+      "apply-body-corrections",
+      "body",
+      "build-body-snapshot",
+      "check-body-format",
+      "check-reference-visibility",
+      "check-round-of-edits",
+      "coverage-reports",
+      "fetch-reference-repository",
+      "format-findings",
+      "list-reference-repositories",
+      "numbering",
+      "problem-and-proposal",
+      "reference-form",
+      "references",
+      "repair-issue-format",
+      "shared-acceptance-criteria",
+      "stale-references",
+      "tables",
+      "titles",
+      "validate-issue-body",
+      "validate-reference-visibility",
+      "write-issue-table"
+    ],
+    "operations": [
+      {
+        "title": "Write Issue Table",
+        "anchor": "write-issue-table",
+        "heading_steps": [
+          "1. Populate Shared Cells",
+          "2. Check Finished Table"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Evidence](#body-evidence), [Kind Conditions](#kind-conditions), [Row Data](#row-data).",
+          "**Outputs:** [Body Evidence](#body-evidence)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Check Round of Edits",
+        "anchor": "check-round-of-edits",
+        "heading_steps": [
+          "1. Check Kind Conditions",
+          "2. Run Body Format"
+        ],
+        "contracts": [
+          "**Inputs:** [Changed Bodies](#changed-bodies), [Kind Conditions](#kind-conditions), [Output Files](#output-files).",
+          "**Outputs:** [Format Findings](#format-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Validate Issue Body",
+        "anchor": "validate-issue-body",
+        "heading_steps": [
+          "1. Run Body Format",
+          "2. Review Supplied Conditions",
+          "3. Return Format Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).",
+          "**Outputs:** [Format Findings](#format-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Apply Body Corrections",
+        "anchor": "apply-body-corrections",
+        "heading_steps": [
+          "1. Populate Missing Sections",
+          "2. Apply Confirmed Decisions",
+          "3. Record Kind Changes",
+          "4. State Current Design",
+          "5. Apply Criterion Changes",
+          "6. Validate Corrected Body",
+          "7. Return Corrected File"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Evidence](#body-evidence), [Kind Conditions](#kind-conditions), [Confirmed Corrections](#confirmed-corrections), [Output Files](#output-files).",
+          "**Outputs:** [Body Evidence](#body-evidence), [Format Findings](#format-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Build Body Snapshot",
+        "anchor": "build-body-snapshot",
+        "heading_steps": [
+          "1. Write Body Snapshot",
+          "2. Return Snapshot Path"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Evidence](#body-evidence), [Snapshot Metadata](#snapshot-metadata), [Output Files](#output-files).",
+          "**Outputs:** [Body Snapshot](#body-snapshot)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Repair Issue Format",
+        "anchor": "repair-issue-format",
+        "heading_steps": [
+          "1. Validate Current Body",
+          "2. Review Mechanical Changes",
+          "3. Resolve Local Content",
+          "4. Validate Saved Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).",
+          "**Outputs:** [Body Evidence](#body-evidence), [Format Findings](#format-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Check Reference Visibility",
+        "anchor": "check-reference-visibility",
+        "heading_steps": [
+          "1. Identify Reference Repositories",
+          "2. Fetch Repository Visibility",
+          "3. Validate Reference Snapshot",
+          "4. Return Visibility Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record), [Output Files](#output-files).",
+          "**Outputs:** [Visibility Findings](#visibility-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Check Body Format",
+        "anchor": "check-body-format",
+        "heading_steps": [
+          "1. Check Body Format"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record), [Kind Conditions](#kind-conditions), [Output Files](#output-files).",
+          "**Outputs:** [Format Findings](#format-findings)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "List Reference Repositories",
+        "anchor": "list-reference-repositories",
+        "heading_steps": [
+          "1. List Reference Repositories"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record).",
+          "**Outputs:** [Reference Repositories](#reference-repositories)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Fetch Reference Repository",
+        "anchor": "fetch-reference-repository",
+        "heading_steps": [
+          "1. Fetch Reference Repository"
+        ],
+        "contracts": [
+          "**Inputs:** [Reference Repositories](#reference-repositories), [Output Files](#output-files).",
+          "**Outputs:** [Repository Snapshot](#repository-snapshot)."
+        ],
+        "invocations": 2
+      },
+      {
+        "title": "Validate Reference Visibility",
+        "anchor": "validate-reference-visibility",
+        "heading_steps": [
+          "1. Validate Reference Visibility"
+        ],
+        "contracts": [
+          "**Inputs:** [Body Record](#body-record), [Repository Snapshot](#repository-snapshot).",
+          "**Outputs:** [Visibility Findings](#visibility-findings)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "proposal-body.md",
+    "original_callable_anchors_retained": [
+      "goal",
+      "non-goals",
+      "populate-proposal-body",
+      "problem",
+      "sections",
+      "template",
+      "titles",
+      "validate-proposal-body"
+    ],
+    "operations": [
+      {
+        "title": "Populate Proposal Body",
+        "anchor": "populate-proposal-body",
+        "heading_steps": [
+          "1. Populate Proposal Template"
+        ],
+        "contracts": [
+          "**Inputs:** [Proposal Context](#proposal-context), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Validate Proposal Body",
+        "anchor": "validate-proposal-body",
+        "heading_steps": [
+          "1. Validate Kind Conditions",
+          "2. Return Local Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Proposal Record](#proposal-record), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Validation Findings](#validation-findings)."
+        ],
+        "invocations": 0
+      }
+    ]
+  },
+  {
+    "file": "pull-request-body.md",
+    "original_callable_anchors_retained": [
+      "convert-test-plan",
+      "link-architecture-overview",
+      "populate-pull-request-body",
+      "populate-review-body",
+      "repair-test-plan",
+      "review-body",
+      "template",
+      "test-coverage",
+      "test-plan",
+      "titles"
+    ],
+    "operations": [
+      {
+        "title": "Populate Pull Request Body",
+        "anchor": "populate-pull-request-body",
+        "heading_steps": [
+          "1. Populate Change Body",
+          "2. Verify Evidence Links",
+          "3. Return Complete Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Change Evidence](#change-evidence), [Current Body](#current-body), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Populate Review Body",
+        "anchor": "populate-review-body",
+        "heading_steps": [
+          "1. Populate Base Review",
+          "2. Account for Task Merge",
+          "3. Return Updated Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Change Evidence](#change-evidence), [Current Body](#current-body), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Link Architecture Overview",
+        "anchor": "link-architecture-overview",
+        "heading_steps": [
+          "1. Add Published Reference",
+          "2. Preserve Existing Reference",
+          "3. Return Linked Overview Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Current Body](#current-body), [Overview URL](#overview-url), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Repair Test Plan",
+        "anchor": "repair-test-plan",
+        "heading_steps": [
+          "1. Convert Current Plan",
+          "2. Inspect Preserved Coverage",
+          "3. Verify Retained Evidence",
+          "4. Return Plan Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Pull Request Record](#pull-request-record), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Convert Test Plan",
+        "anchor": "convert-test-plan",
+        "heading_steps": [
+          "1. Convert Test Plan"
+        ],
+        "contracts": [
+          "**Inputs:** [Pull Request Record](#pull-request-record), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Unresolved Evidence](#unresolved-evidence)."
+        ],
+        "invocations": 2
+      }
+    ]
+  },
+  {
+    "file": "repository-labels.md",
+    "original_callable_anchors_retained": [
+      "create-label",
+      "ensure-repository-labels",
+      "label-identity",
+      "list-labels"
+    ],
+    "operations": [
+      {
+        "title": "Ensure Repository Labels",
+        "anchor": "ensure-repository-labels",
+        "heading_steps": [
+          "1. Read Repository Labels",
+          "2. Compare Required Names",
+          "3. Create Missing Labels",
+          "4. Return Available Labels"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Label Identity](#label-identity).",
+          "**Outputs:** [Label Identity](#label-identity)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "List Labels",
+        "anchor": "list-labels",
+        "heading_steps": [
+          "1. List Labels"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository).",
+          "**Outputs:** [Label Identity](#label-identity)."
+        ],
+        "invocations": 1
+      },
+      {
+        "title": "Create Label",
+        "anchor": "create-label",
+        "heading_steps": [
+          "1. Create Label"
+        ],
+        "contracts": [
+          "**Inputs:** [Repository](#repository), [Label Identity](#label-identity).",
+          "**Outputs:** [Label Identity](#label-identity)."
+        ],
+        "invocations": 1
+      }
+    ]
+  },
+  {
+    "file": "standalone-body.md",
+    "original_callable_anchors_retained": [
+      "populate-standalone-body",
+      "revise-standalone-body",
+      "sections",
+      "template",
+      "titles"
+    ],
+    "operations": [
+      {
+        "title": "Populate Standalone Body",
+        "anchor": "populate-standalone-body",
+        "heading_steps": [
+          "1. Populate Standalone Template"
+        ],
+        "contracts": [
+          "**Inputs:** [Issue Context](#issue-context), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Revise Standalone Body",
+        "anchor": "revise-standalone-body",
+        "heading_steps": [
+          "1. Apply Confirmed Boundary",
+          "2. Return Revised Body"
+        ],
+        "contracts": [
+          "**Inputs:** [Current Body](#current-body), [Confirmed Boundary](#confirmed-boundary), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body)."
+        ],
+        "invocations": 0
+      }
+    ]
+  },
+  {
+    "file": "task-body.md",
+    "original_callable_anchors_retained": [
+      "acceptance-criteria",
+      "open-questions",
+      "record-task-delivery",
+      "sections",
+      "sync-task-issue",
+      "template",
+      "titles"
+    ],
+    "operations": [
+      {
+        "title": "Record Task Delivery",
+        "anchor": "record-task-delivery",
+        "heading_steps": [
+          "1. Record Verified Delivery",
+          "2. Return Delivery Findings"
+        ],
+        "contracts": [
+          "**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 0
+      },
+      {
+        "title": "Sync Task Issue",
+        "anchor": "sync-task-issue",
+        "heading_steps": [
+          "1. Sync Task Issue"
+        ],
+        "contracts": [
+          "**Inputs:** [Task Record](#task-record), [Pull Request Records](#pull-request-records), [Issue Links](#issue-links), [Delivery Selection](#delivery-selection), [Output Body](#output-body).",
+          "**Outputs:** [Output Body](#output-body), [Delivery Findings](#delivery-findings)."
+        ],
+        "invocations": 2
+      }
+    ]
+  }
+]

@@ -1,0 +1,521 @@
+{"revision": "11e6085570ea60bd1132e32a5bd375d4fa03a77c", "checkout": "/tmp/revision-check-_fqlqn_a/11e6085570ea"}
+{"checkout": "/tmp/revision-check-_fqlqn_a/11e6085570ea", "instrument_sha256": "878532cc466f973b07d85e25ff1c963b88e2a00ddcb01a5368c09be42678e1c9", "revision": "11e6085570ea60bd1132e32a5bd375d4fa03a77c", "tree": "9334e31ff12b80c7ba411bde1fa4323f01d0fb29"}
+skills/work-planner/artifacts/acceptance-criteria.md:63: section outside the set: Commands
+skills/work-planner/artifacts/acceptance-criteria.md:21: list step in heading model: 1. Confirm the supplied delivery findings establish [Readiness](#readiness) for each selected criterion.
+skills/work-planner/artifacts/acceptance-criteria.md:22: indented detail in heading model: - Return evidence that fails Readiness as a blocker for that criterion.
+skills/work-planner/artifacts/acceptance-criteria.md:23: list step in heading model: 2. Run each criterion's named instrument at the delivering pull request head for an open task, or its merged revision for delivered work, meeting [Instrument Checkout](#instrument-checkout).
+skills/work-planner/artifacts/acceptance-criteria.md:24: indented detail in heading model: - Run [Run at Revision](#run-at-revision) with the project checkout, that revision and the instrument.
+skills/work-planner/artifacts/acceptance-criteria.md:25: indented detail in heading model: - Record the result against the commit it reports, meeting [Instrument Result](#instrument-result).
+skills/work-planner/artifacts/acceptance-criteria.md:26: list step in heading model: 3. Return verified criterion ids with their evidence and each unresolved criterion with what is missing.
+skills/work-planner/artifacts/acceptance-criteria.md:27: indented detail in heading model: - Leave body publication and further planning to the caller.
+skills/work-planner/artifacts/acceptance-criteria.md:35: list step in heading model: 1. Record the criteria, meeting [Tick State](#tick-state).
+skills/work-planner/artifacts/acceptance-criteria.md:36: indented detail in heading model: - For an epic, run [Record Epic Criteria](epic-issue-body.md#record-epic-criteria) with the issue JSON, pull request records, complete issue-link snapshot, verified criterion ids and output body file.
+skills/work-planner/artifacts/acceptance-criteria.md:37: indented detail in heading model: - For an initiative, run [Record Initiative Criteria](initiative-issue-body.md#record-initiative-criteria) with the issue JSON, every linked epic record, verified criterion ids and output body file.
+skills/work-planner/artifacts/acceptance-criteria.md:38: list step in heading model: 2. Return the resulting body and any refused criteria to the caller for publication.
+skills/work-planner/artifacts/acceptance-criteria.md:13: procedure without heading steps: Operations
+skills/work-planner/artifacts/acceptance-criteria.md:15: procedure without heading steps: *Verify* Selected Criteria
+skills/work-planner/artifacts/acceptance-criteria.md:29: procedure without heading steps: *Tick* Verified Criteria
+skills/work-planner/artifacts/acceptance-criteria.md:19: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/acceptance-criteria.md:15: operation contract links: *Verify* Selected Criteria: one Outputs declaration required
+skills/work-planner/artifacts/acceptance-criteria.md:33: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/acceptance-criteria.md:29: operation contract links: *Tick* Verified Criteria: one Outputs declaration required
+skills/work-planner/artifacts/acceptance-criteria.md:78: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/acceptance-criteria.md:84: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic.md:98: section outside the set: Commands
+skills/work-planner/artifacts/epic.md:20: list step in heading model: 1. Identify each prerequisite the supplied initiative row names.
+skills/work-planner/artifacts/epic.md:21: list step in heading model: 2. Apply the initiative's [whole-epic dependency rule](initiative-issue-body.md#work-breakdown); a task row's reference to a row of another epic gates that row rather than this epic.
+skills/work-planner/artifacts/epic.md:22: list step in heading model: 3. Confirm each prerequisite epic is closed as completed and every one of its bases has merged. Missing records leave the prerequisite unconfirmed.
+skills/work-planner/artifacts/epic.md:23: list step in heading model: 4. Return the [Prerequisite Evidence](#prerequisite-evidence), identifying each confirmed prerequisite and missing condition. Only a confirmed result permits an unstarted epic's bases to be created or its task to be dispatched.
+skills/work-planner/artifacts/epic.md:31: list step in heading model: 1. Run [Match Pull Requests](#match-pull-requests) with the epic JSON, pull request records as `--prs` and link snapshot as `--links`, supplying a local scratch output body as `--fix`.
+skills/work-planner/artifacts/epic.md:32: indented detail in heading model: - A closed epic is normalized to the current Work Breakdown columns before its tasks are read, using the shared format rules. Ambiguous or unsupported table content is a blocker.
+skills/work-planner/artifacts/epic.md:33: indented detail in heading model: - Publish reported table normalization through [Save Tracker Issue](issue.md#save-tracker-issue), fetch the saved epic and repeat the match before returning its evidence.
+skills/work-planner/artifacts/epic.md:34: list step in heading model: 2. Return the [Delivery Findings](#delivery-findings); missing linked pull requests are missing evidence for the caller to supply.
+skills/work-planner/artifacts/epic.md:42: list step in heading model: 1. Run [Inspect Epic Delivery](#inspect-epic-delivery) with the supplied epic JSON, pull request records and complete issue-link snapshot.
+skills/work-planner/artifacts/epic.md:43: list step in heading model: 2. Confirm every task is delivered, every epic criterion is verified and ticked, and no open question or unresolved delivery discrepancy remains. An unmerged epic base awaiting integration is expected at this stage. Missing or stale verification leaves readiness unconfirmed.
+skills/work-planner/artifacts/epic.md:44: list step in heading model: 3. Return the integration readiness in [Delivery State](#delivery-state), with the evidence revisions and each blocker. Readiness establishes the epic's content conditions; the caller supplies pull-request review, target and head-check evidence for the merge.
+skills/work-planner/artifacts/epic.md:52: list step in heading model: 1. Run [Check Epic Readiness](#check-epic-readiness) with the current epic, pull request records, issue-link snapshot and criterion verification evidence.
+skills/work-planner/artifacts/epic.md:53: list step in heading model: 2. Reconcile the expected bases with the task delivery targets.
+skills/work-planner/artifacts/epic.md:54: list step in heading model: 3. Confirm every base has merged into its corresponding long-lived branch. An unknown or incomplete base list, or missing merge evidence, leaves completion unconfirmed even when every task is delivered and every criterion is ticked.
+skills/work-planner/artifacts/epic.md:55: list step in heading model: 4. Return the completion result in [Delivery State](#delivery-state), identifying remaining blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+skills/work-planner/artifacts/epic.md:12: procedure without heading steps: Operations
+skills/work-planner/artifacts/epic.md:14: procedure without heading steps: *Check* Epic Prerequisites
+skills/work-planner/artifacts/epic.md:25: procedure without heading steps: *Inspect* Epic Delivery
+skills/work-planner/artifacts/epic.md:36: procedure without heading steps: *Check* Epic Readiness
+skills/work-planner/artifacts/epic.md:46: procedure without heading steps: *Check* Epic Completion
+skills/work-planner/artifacts/epic.md:18: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic.md:14: operation contract links: *Check* Epic Prerequisites: one Outputs declaration required
+skills/work-planner/artifacts/epic.md:29: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic.md:25: operation contract links: *Inspect* Epic Delivery: one Outputs declaration required
+skills/work-planner/artifacts/epic.md:40: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic.md:36: operation contract links: *Check* Epic Readiness: one Outputs declaration required
+skills/work-planner/artifacts/epic.md:50: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic.md:46: operation contract links: *Check* Epic Completion: one Outputs declaration required
+skills/work-planner/artifacts/epic.md:108: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic.md:114: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:280: section outside the set: Commands
+skills/work-planner/artifacts/epic-issue-body.md:25: list step in heading model: 1. Populate the body from the [Template](#template) at the supplied output path.
+skills/work-planner/artifacts/epic-issue-body.md:26: indented detail in heading model: - Every section must meet [Fields](#fields).
+skills/work-planner/artifacts/epic-issue-body.md:27: indented detail in heading model: - Shared content must meet the common [body conditions](issue-body.md#fields).
+skills/work-planner/artifacts/epic-issue-body.md:28: list step in heading model: 2. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
+skills/work-planner/artifacts/epic-issue-body.md:29: list step in heading model: 3. Fill the epic-specific cells.
+skills/work-planner/artifacts/epic-issue-body.md:30: indented detail in heading model: - Each row must meet [Work Breakdown](#work-breakdown).
+skills/work-planner/artifacts/epic-issue-body.md:31: indented detail in heading model: - Call [Assign Task Lanes](lane.md#assign-task-lanes) with the populated body, confirmed task-to-index map and output path.
+skills/work-planner/artifacts/epic-issue-body.md:32: list step in heading model: 4. Call [Build Body Snapshot](issue-body.md#build-body-snapshot) with the draft body, title, labels and existing issue JSON when present.
+skills/work-planner/artifacts/epic-issue-body.md:33: list step in heading model: 5. Pass that snapshot, initiative context, available pull request records, project checkout, evaluated revision and output file to [Validate Epic Body](#validate-epic-body).
+skills/work-planner/artifacts/epic-issue-body.md:34: list step in heading model: 6. Identify unresolved publication links separately; they remain pending until tracker identities exist.
+skills/work-planner/artifacts/epic-issue-body.md:35: list step in heading model: 7. Return the draft rows, their dependency references and the validation findings for the caller's cross-body ordering check.
+skills/work-planner/artifacts/epic-issue-body.md:43: list step in heading model: 1. Run [Sync Epic](#sync-epic), mapping pull requests to `--prs`, links to `--links`, task issues to `--tasks`, each confirmed match to `--link`, the checkout to `--project`, each fetched epic base to a `--revision` and the output file to `--fix`.
+skills/work-planner/artifacts/epic-issue-body.md:44: indented detail in heading model: - Row changes must meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
+skills/work-planner/artifacts/epic-issue-body.md:45: list step in heading model: 2. Return the updated body and [Delivery Findings](epic.md#delivery-findings) for the caller to resolve and publish. An unmerged epic base prevents a closable result.
+skills/work-planner/artifacts/epic-issue-body.md:53: list step in heading model: 1. Run [Tick Epic Criteria](#tick-epic-criteria) with the epic JSON, records as `--prs`, snapshot as `--links`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
+skills/work-planner/artifacts/epic-issue-body.md:54: list step in heading model: 2. Return the body and refused criteria.
+skills/work-planner/artifacts/epic-issue-body.md:62: list step in heading model: 1. Require the caller's confirmed unit and existing planning folder. Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
+skills/work-planner/artifacts/epic-issue-body.md:63: list step in heading model: 2. Run [Reserve Row](#reserve-row) with the epic as `--epic`, every id of the unit as `--reserve`, the board items as `--items`, supplied base URL as `--records`, record date as `--date` and output as `--fix`.
+skills/work-planner/artifacts/epic-issue-body.md:64: list step in heading model: 3. Return the reserved body meeting [Task Delivery](#task-delivery).
+skills/work-planner/artifacts/epic-issue-body.md:72: list step in heading model: 1. Require the supplied release decision and refuse any row that is not held.
+skills/work-planner/artifacts/epic-issue-body.md:73: list step in heading model: 2. Run [Release Row](#release-row) with the epic as `--epic`, every id of each released unit as `--release`, the engineering worktree as `--engineering` and output as `--fix`.
+skills/work-planner/artifacts/epic-issue-body.md:74: list step in heading model: 3. Return the released body meeting [Task Delivery](#task-delivery).
+skills/work-planner/artifacts/epic-issue-body.md:82: list step in heading model: 1. Read the changed paths of each epic pull request reaching a branch the project's [Required Criteria](#required-criteria) declare, through [Read Pull Request State](pull-request.md#read-pull-request-state).
+skills/work-planner/artifacts/epic-issue-body.md:83: list step in heading model: 2. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying initiative JSON as `--initiative`, pull requests as `--prs`, each pull request's changed paths as `--files <number>=<changed-paths-file>`, the checkout as `--project` and the revision as `--revision`.
+skills/work-planner/artifacts/epic-issue-body.md:84: indented detail in heading model: - The evaluated revision is the epic's base on the long-lived branch that holds the project's configuration, such as `origin/i07/e00/workspace`, or that branch itself, such as `origin/workspace`, while the epic has no base on it. Fetch it before the check reads it.
+skills/work-planner/artifacts/epic-issue-body.md:85: list step in heading model: 3. Read reach from each epic pull request's base, through an epic base or initiative branch. Without pull requests, no criterion is lacking.
+skills/work-planner/artifacts/epic-issue-body.md:86: list step in heading model: 4. Include in the findings each [Required Criteria](#required-criteria) criterion an epic lacks whose work changes the criterion's paths on its branch, required criteria the declaration or the changed paths leave unevaluable, and any epic criterion no task row delivers.
+skills/work-planner/artifacts/epic-issue-body.md:87: list step in heading model: 5. Return the corrected body, mechanical diff and unresolved findings for the caller.
+skills/work-planner/artifacts/epic-issue-body.md:95: list step in heading model: 1. Apply the confirmed row changes through [Populate Epic Issue Body](#populate-epic-issue-body), preserving unrelated content.
+skills/work-planner/artifacts/epic-issue-body.md:96: indented detail in heading model: - Description, Coverage, Depends on, Joins, Lane and task grain must meet [Work Breakdown](#work-breakdown).
+skills/work-planner/artifacts/epic-issue-body.md:97: indented detail in heading model: - Split a task exceeding the allowed criterion grain into the confirmed tasks.
+skills/work-planner/artifacts/epic-issue-body.md:98: list step in heading model: 2. Return the revised body and any cross-body numbering or dependency changes for the caller.
+skills/work-planner/artifacts/epic-issue-body.md:106: list step in heading model: 1. Present each unmet criterion and its missing evidence to the user.
+skills/work-planner/artifacts/epic-issue-body.md:107: indented detail in heading model: - Return the criteria the user confirms already hold to the caller for verification and ticking. The delivered task retains them.
+skills/work-planner/artifacts/epic-issue-body.md:108: indented detail in heading model: - Record an unanswered decision as pending.
+skills/work-planner/artifacts/epic-issue-body.md:109: indented detail in heading model: - If no criteria need further work, return the pending findings to the caller.
+skills/work-planner/artifacts/epic-issue-body.md:110: indented detail in heading model: - Continue to the draft step with only the criteria the user confirms need further work.
+skills/work-planner/artifacts/epic-issue-body.md:111: list step in heading model: 2. Draft a further task for the criteria selected for further work, meeting [Work Breakdown](#work-breakdown).
+skills/work-planner/artifacts/epic-issue-body.md:112: indented detail in heading model: - Confirm the draft with the user.
+skills/work-planner/artifacts/epic-issue-body.md:113: indented detail in heading model: - On acceptance, call [Revise Epic Rows](#revise-epic-rows) with the further row and the criteria it adopts from the delivered task's Coverage.
+skills/work-planner/artifacts/epic-issue-body.md:114: indented detail in heading model: - Return an unanswered draft as pending without continuing to the reconcile step.
+skills/work-planner/artifacts/epic-issue-body.md:115: list step in heading model: 3. Run [Record Epic Delivery](#record-epic-delivery) with the revised epic, the supplied delivery evidence, the project checkout and the fetched epic bases.
+skills/work-planner/artifacts/epic-issue-body.md:116: indented detail in heading model: - Publish the returned body through [Save Tracker Issue](issue.md#save-tracker-issue).
+skills/work-planner/artifacts/epic-issue-body.md:117: indented detail in heading model: - Return the saved row and criterion disposition to the caller.
+skills/work-planner/artifacts/epic-issue-body.md:17: procedure without heading steps: Operations
+skills/work-planner/artifacts/epic-issue-body.md:19: procedure without heading steps: *Populate* Epic Issue Body
+skills/work-planner/artifacts/epic-issue-body.md:37: procedure without heading steps: *Record* Epic Delivery
+skills/work-planner/artifacts/epic-issue-body.md:47: procedure without heading steps: *Record* Epic Criteria
+skills/work-planner/artifacts/epic-issue-body.md:56: procedure without heading steps: *Reserve* Task Rows
+skills/work-planner/artifacts/epic-issue-body.md:66: procedure without heading steps: *Release* Task Rows
+skills/work-planner/artifacts/epic-issue-body.md:76: procedure without heading steps: *Validate* Epic Body
+skills/work-planner/artifacts/epic-issue-body.md:89: procedure without heading steps: *Revise* Epic Rows
+skills/work-planner/artifacts/epic-issue-body.md:100: procedure without heading steps: *Plan* Gap Task
+skills/work-planner/artifacts/epic-issue-body.md:23: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:19: operation contract links: *Populate* Epic Issue Body: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:41: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:37: operation contract links: *Record* Epic Delivery: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:51: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:47: operation contract links: *Record* Epic Criteria: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:60: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:56: operation contract links: *Reserve* Task Rows: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:70: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:66: operation contract links: *Release* Task Rows: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:80: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:76: operation contract links: *Validate* Epic Body: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:93: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:89: operation contract links: *Revise* Epic Rows: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:104: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/epic-issue-body.md:100: operation contract links: *Plan* Gap Task: one Outputs declaration required
+skills/work-planner/artifacts/epic-issue-body.md:300: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:306: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:318: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:324: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:340: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:346: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:361: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/epic-issue-body.md:367: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/hotfix.md:113: section outside the set: Commands
+skills/work-planner/artifacts/hotfix.md:25: list step in heading model: 1. Run [Select Tracker Number](issue.md#select-tracker-number) with the hot-fix prefix letter.
+skills/work-planner/artifacts/hotfix.md:26: list step in heading model: 2. Run [Ensure Repository Labels](repository-labels.md#ensure-repository-labels) with the labels hot-fix [Titles](hotfix-body.md#titles) name.
+skills/work-planner/artifacts/hotfix.md:27: list step in heading model: 3. Return the hot-fix number to the caller, which rewrites and saves the issue's body, title and labels, then places it through [Settle Hot-fix Board Status](#settle-hot-fix-board-status), as its [placement](placement.md#disposition-conditions) orders.
+skills/work-planner/artifacts/hotfix.md:35: list step in heading model: 1. Run [Record Dispatch Status](board-delivery.md#record-dispatch-status) with the hot-fix issue for In Progress and the supplied board evidence. That status is the hold [Delivery Unit](#delivery-unit) defines.
+skills/work-planner/artifacts/hotfix.md:36: list step in heading model: 2. Return the confirmed status, or the discrepancy, to the caller. The session starts only once it is confirmed.
+skills/work-planner/artifacts/hotfix.md:44: list step in heading model: 1. Run [Capture Issue Development](issue.md#capture-issue-development) for the hot-fix issue.
+skills/work-planner/artifacts/hotfix.md:45: indented detail in heading model: - Refuse the release while its [Delivery Unit](#delivery-unit) is running or unrecorded, and return the pull request that makes it so to the caller.
+skills/work-planner/artifacts/hotfix.md:46: list step in heading model: 2. Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and Ready.
+skills/work-planner/artifacts/hotfix.md:47: list step in heading model: 3. Return the saved item and its Status to the caller.
+skills/work-planner/artifacts/hotfix.md:55: list step in heading model: 1. Run [Sync Hot-fix Issue](#sync-hot-fix-issue) with the hot-fix JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+skills/work-planner/artifacts/hotfix.md:56: list step in heading model: 2. Return the body and eligibility findings; the caller publishes the body and closes the tracker issue, as [Delivery Record](#delivery-record) states.
+skills/work-planner/artifacts/hotfix.md:64: list step in heading model: 1. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the hot-fix's current state.
+skills/work-planner/artifacts/hotfix.md:65: list step in heading model: 2. Run [Read Board State](board.md#read-board-state) for its item and Status. A hot-fix with no item has no Status.
+skills/work-planner/artifacts/hotfix.md:66: list step in heading model: 3. Apply the status [Board Status](#board-status) gives that state and Status:
+skills/work-planner/artifacts/hotfix.md:67: indented detail in heading model: - **A status.**
+skills/work-planner/artifacts/hotfix.md:68: indented detail in heading model: - Run [Place Issue on Board](board.md#place-issue-on-board) with the supplied board, the hot-fix issue and that status, which adds the item where the board has none.
+skills/work-planner/artifacts/hotfix.md:69: indented detail in heading model: - **Off the board, with an item.**
+skills/work-planner/artifacts/hotfix.md:70: indented detail in heading model: - Run [Remove Board Item](board.md#remove-board-item) with the supplied board owner and number and the item id Read Board State returned.
+skills/work-planner/artifacts/hotfix.md:71: indented detail in heading model: - **Off the board, with no item.**
+skills/work-planner/artifacts/hotfix.md:72: indented detail in heading model: - Change nothing; the hot-fix already stands off the board.
+skills/work-planner/artifacts/hotfix.md:73: list step in heading model: 4. Return the settled item, its removal, or the unchanged board to the caller.
+skills/work-planner/artifacts/hotfix.md:17: procedure without heading steps: Operations
+skills/work-planner/artifacts/hotfix.md:19: procedure without heading steps: *Open* Hot-fix Issue
+skills/work-planner/artifacts/hotfix.md:29: procedure without heading steps: *Hold* Hot-fix Unit
+skills/work-planner/artifacts/hotfix.md:38: procedure without heading steps: *Release* Hot-fix Hold
+skills/work-planner/artifacts/hotfix.md:49: procedure without heading steps: *Record* Hot-fix Delivery
+skills/work-planner/artifacts/hotfix.md:58: procedure without heading steps: *Settle* Hot-fix Board Status
+skills/work-planner/artifacts/hotfix.md:23: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix.md:19: operation contract links: *Open* Hot-fix Issue: one Outputs declaration required
+skills/work-planner/artifacts/hotfix.md:33: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix.md:29: operation contract links: *Hold* Hot-fix Unit: one Outputs declaration required
+skills/work-planner/artifacts/hotfix.md:42: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix.md:38: operation contract links: *Release* Hot-fix Hold: one Outputs declaration required
+skills/work-planner/artifacts/hotfix.md:53: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix.md:49: operation contract links: *Record* Hot-fix Delivery: one Outputs declaration required
+skills/work-planner/artifacts/hotfix.md:62: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix.md:58: operation contract links: *Settle* Hot-fix Board Status: one Outputs declaration required
+skills/work-planner/artifacts/hotfix.md:124: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/hotfix.md:130: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/hotfix-body.md:25: indented detail in heading model: - The work must meet [Definition](#definition).
+skills/work-planner/artifacts/hotfix-body.md:26: indented detail in heading model: - The title must meet the shared [Titles](issue-body.md#titles) conditions and the hot-fix [Titles](#titles).
+skills/work-planner/artifacts/hotfix-body.md:27: indented detail in heading model: - The Overview must name the confirmed target as [Target](#target) states.
+skills/work-planner/artifacts/hotfix-body.md:28: indented detail in heading model: - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+skills/work-planner/artifacts/hotfix-body.md:29: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/hotfix-body.md:16: procedure without heading steps: Operations
+skills/work-planner/artifacts/hotfix-body.md:18: procedure without heading steps: *Populate* Hot-fix Body
+skills/work-planner/artifacts/hotfix-body.md:22: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/hotfix-body.md:18: operation contract links: *Populate* Hot-fix Body: one Outputs declaration required
+skills/work-planner/artifacts/initiative.md:13: list step in heading model: 1. Evaluate the supplied evidence against [Delivery State](#delivery-state).
+skills/work-planner/artifacts/initiative.md:14: list step in heading model: 2. Identify each missing, open or cancelled epic, each unverified or unticked criterion, and each unmerged or unreadable Development-linked pull request. Incomplete link evidence leaves completion unconfirmed.
+skills/work-planner/artifacts/initiative.md:15: list step in heading model: 3. Return the completion result and its supporting issue identities, evidence revisions and blockers. Passing normal delivery checks supplies the caller's closure evidence; the tracker issue's current Development-link gate still governs the write.
+skills/work-planner/artifacts/initiative.md:5: procedure without heading steps: Operations
+skills/work-planner/artifacts/initiative.md:7: procedure without heading steps: *Check* Initiative Completion
+skills/work-planner/artifacts/initiative.md:11: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative.md:7: operation contract links: *Check* Initiative Completion: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:196: section outside the set: Commands
+skills/work-planner/artifacts/initiative-issue-body.md:21: list step in heading model: 1. Populate the body through [Draft Initiative Issue Body](#draft-initiative-issue-body).
+skills/work-planner/artifacts/initiative-issue-body.md:22: list step in heading model: 2. Follow [Check Round of Edits](issue-body.md#check-round-of-edits).
+skills/work-planner/artifacts/initiative-issue-body.md:23: list step in heading model: 3. Return the populated body and its local format findings to the caller.
+skills/work-planner/artifacts/initiative-issue-body.md:31: list step in heading model: 1. Populate the body from the [Template](#template) into a local file at the supplied output path.
+skills/work-planner/artifacts/initiative-issue-body.md:32: indented detail in heading model: - That file must be the source for every later edit.
+skills/work-planner/artifacts/initiative-issue-body.md:33: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/initiative-issue-body.md:34: list step in heading model: 2. Derive the Problem and Non-Goals from the proposal this initiative is scoped to.
+skills/work-planner/artifacts/initiative-issue-body.md:35: indented detail in heading model: - The Problem must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+skills/work-planner/artifacts/initiative-issue-body.md:36: indented detail in heading model: - Each Non-Goal must meet [Non-Goals](#non-goals).
+skills/work-planner/artifacts/initiative-issue-body.md:37: list step in heading model: 3. Write the acceptance criteria before the Work Breakdown, so each row's Coverage can cite them.
+skills/work-planner/artifacts/initiative-issue-body.md:38: indented detail in heading model: - Each criterion must come from a confirmed clause and meet [Initiative Acceptance Criteria](#initiative-acceptance-criteria).
+skills/work-planner/artifacts/initiative-issue-body.md:39: indented detail in heading model: - The criteria must come from the requirements sources the proposal references. Where the proposal references none, they must come from the proposal's body alone.
+skills/work-planner/artifacts/initiative-issue-body.md:40: list step in heading model: 4. Populate the shared table through [Write Issue Table](issue-body.md#write-issue-table).
+skills/work-planner/artifacts/initiative-issue-body.md:41: list step in heading model: 5. Fill the initiative-specific cells.
+skills/work-planner/artifacts/initiative-issue-body.md:42: indented detail in heading model: - Each row must meet [Work Breakdown](#work-breakdown).
+skills/work-planner/artifacts/initiative-issue-body.md:43: indented detail in heading model: - An item a test cannot observe must stay named as [Coverage Reports](issue-body.md#coverage-reports) define.
+skills/work-planner/artifacts/initiative-issue-body.md:51: list step in heading model: 1. Run [Sync Initiative](#sync-initiative) with the initiative and all linked epic records as `--epics`, supplying `--fix` when an output body is requested.
+skills/work-planner/artifacts/initiative-issue-body.md:52: list step in heading model: 2. Return the body and [Delivery Findings](initiative.md#delivery-findings) from the supplied initiative and epic records. Delivery eligibility follows [Delivery State](initiative.md#delivery-state).
+skills/work-planner/artifacts/initiative-issue-body.md:60: list step in heading model: 1. Run [Tick Initiative Criteria](#tick-initiative-criteria) with the initiative, linked epics as `--epics`, verified ids as `--tick` and output as `--fix`. Refuse criteria not ready to verify.
+skills/work-planner/artifacts/initiative-issue-body.md:61: list step in heading model: 2. Return the body and refused criteria.
+skills/work-planner/artifacts/initiative-issue-body.md:69: list step in heading model: 1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, supplying each linked epic as `--epic`.
+skills/work-planner/artifacts/initiative-issue-body.md:70: list step in heading model: 2. Use its current title for the initiative row.
+skills/work-planner/artifacts/initiative-issue-body.md:71: list step in heading model: 3. Include excluded names in Problem and Proposal and criterion/source departures in the findings.
+skills/work-planner/artifacts/initiative-issue-body.md:72: list step in heading model: 4. Return the corrected body, mechanical diff and unresolved findings for the caller.
+skills/work-planner/artifacts/initiative-issue-body.md:80: list step in heading model: 1. Read each local source at its checkout path.
+skills/work-planner/artifacts/initiative-issue-body.md:81: list step in heading model: 2. For a pinned GitHub blob, run [Fetch Source](#fetch-source) with its repository, path, pinned revision and output file.
+skills/work-planner/artifacts/initiative-issue-body.md:82: list step in heading model: 3. Fetch other URLs through the harness's web access.
+skills/work-planner/artifacts/initiative-issue-body.md:83: list step in heading model: 4. Record an unreadable or empty source as a [Sources](#sources) finding; its criteria remain unevaluated.
+skills/work-planner/artifacts/initiative-issue-body.md:84: list step in heading model: 5. Return each source's contents and identity with those findings.
+skills/work-planner/artifacts/initiative-issue-body.md:13: procedure without heading steps: Operations
+skills/work-planner/artifacts/initiative-issue-body.md:15: procedure without heading steps: *Populate* Initiative Issue Body
+skills/work-planner/artifacts/initiative-issue-body.md:25: procedure without heading steps: *Draft* Initiative Issue Body
+skills/work-planner/artifacts/initiative-issue-body.md:45: procedure without heading steps: *Record* Initiative Delivery
+skills/work-planner/artifacts/initiative-issue-body.md:54: procedure without heading steps: *Record* Initiative Criteria
+skills/work-planner/artifacts/initiative-issue-body.md:63: procedure without heading steps: *Validate* Initiative Body
+skills/work-planner/artifacts/initiative-issue-body.md:74: procedure without heading steps: *Read* Requirement Sources
+skills/work-planner/artifacts/initiative-issue-body.md:19: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:15: operation contract links: *Populate* Initiative Issue Body: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:29: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:25: operation contract links: *Draft* Initiative Issue Body: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:49: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:45: operation contract links: *Record* Initiative Delivery: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:58: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:54: operation contract links: *Record* Initiative Criteria: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:67: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:63: operation contract links: *Validate* Initiative Body: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:78: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/initiative-issue-body.md:74: operation contract links: *Read* Requirement Sources: one Outputs declaration required
+skills/work-planner/artifacts/initiative-issue-body.md:208: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/initiative-issue-body.md:214: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/initiative-issue-body.md:226: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/initiative-issue-body.md:232: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/initiative-issue-body.md:242: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/initiative-issue-body.md:248: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:168: section outside the set: Commands
+skills/work-planner/artifacts/issue.md:13: list step in heading model: 1. Run [Fetch Tracker Issue](#fetch-tracker-issue) for the complete JSON, or [Fetch Issue Body](#fetch-issue-body) for its body, with the issue number and destination file.
+skills/work-planner/artifacts/issue.md:14: list step in heading model: 2. Run [Fetch Issue Comments](#fetch-issue-comments) when the request depends on the discussion.
+skills/work-planner/artifacts/issue.md:22: list step in heading model: 1. Take the supplied body and metadata, preserving each field the caller does not change for an existing issue.
+skills/work-planner/artifacts/issue.md:23: list step in heading model: 2. Return a missing-label result when an assignment names a label the repository does not contain.
+skills/work-planner/artifacts/issue.md:24: list step in heading model: 3. For a new issue, run [Create Tracker Issue](#create-tracker-issue) with the body's file, title and labels.
+skills/work-planner/artifacts/issue.md:25: list step in heading model: 4. For an existing issue, run [Patch Issue Body](#patch-issue-body), [Retitle Tracker Issue](#retitle-tracker-issue), [Add Issue Labels](#add-issue-labels) or [Remove Issue Label](#remove-issue-label) for the fields being changed.
+skills/work-planner/artifacts/issue.md:26: list step in heading model: 5. Run [Comment on Issue](#comment-on-issue) for an answer the caller requires, with the issue number and comment file.
+skills/work-planner/artifacts/issue.md:27: list step in heading model: 6. Re-read with [Fetch Tracker Issue](#fetch-tracker-issue).
+skills/work-planner/artifacts/issue.md:28: list step in heading model: 7. Compare the saved fields with the intended body and metadata.
+skills/work-planner/artifacts/issue.md:36: list step in heading model: 1. Run [Capture Issue Development](#capture-issue-development) for the issue's current JSON and its Development snapshot.
+skills/work-planner/artifacts/issue.md:37: indented detail in heading model: - The issue's entire Development field establishes membership, across repositories and states. Titles, branch names, body mentions and a list filtered to one initiative do not. An empty field adds no pull request requirement.
+skills/work-planner/artifacts/issue.md:38: list step in heading model: 2. Run [Check Issue Closure](#check-issue-closure) with those two files.
+skills/work-planner/artifacts/issue.md:39: list step in heading model: 3. Require normal delivery checks to pass, every criterion to be verified and ticked, and every currently linked pull request to be merged.
+skills/work-planner/artifacts/issue.md:40: indented detail in heading model: - Keep the issue open for an open, draft or closed-without-merge linked pull request, and for links never read.
+skills/work-planner/artifacts/issue.md:41: indented detail in heading model: - Return an abandoned or incorrect Development link to the caller for the user's decision on its removal. A replacement pull request does not remove the requirement on a link still present.
+skills/work-planner/artifacts/issue.md:42: list step in heading model: 4. Run [Close as Completed](#close-as-completed), which repeats the gate immediately before the write.
+skills/work-planner/artifacts/issue.md:50: list step in heading model: 1. Confirm the supplied destination contains the work and cites its source issue.
+skills/work-planner/artifacts/issue.md:51: list step in heading model: 2. Run [Comment on Issue](#comment-on-issue) with the destination reference and supplied comment file.
+skills/work-planner/artifacts/issue.md:52: list step in heading model: 3. Run [Close as Not Planned](#close-as-not-planned), retaining the issue's body.
+skills/work-planner/artifacts/issue.md:53: list step in heading model: 4. Re-read it with [Fetch Tracker Issue](#fetch-tracker-issue) to confirm its state and reason.
+skills/work-planner/artifacts/issue.md:61: list step in heading model: 1. When replying to feedback already folded into the body, compose a precise, factual reply addressing each point and mentioning the reviewer, with no thanks or filler. Name what the body now says, by criterion id where one carries it, or the issue that takes the point.
+skills/work-planner/artifacts/issue.md:62: list step in heading model: 2. Publish the supplied comment:
+skills/work-planner/artifacts/issue.md:63: indented detail in heading model: - For a one-line comment, run [Post Inline Comment](#post-inline-comment) with the exact text.
+skills/work-planner/artifacts/issue.md:64: indented detail in heading model: - For a longer comment, run [Post Comment File](#post-comment-file) with the complete file.
+skills/work-planner/artifacts/issue.md:65: list step in heading model: 3. Return the saved comment URL.
+skills/work-planner/artifacts/issue.md:73: list step in heading model: 1. Run [Capture Issue Development](#capture-issue-development) immediately before closure with the issue identity, authenticated access and evidence paths.
+skills/work-planner/artifacts/issue.md:74: list step in heading model: 2. Run [Check Issue Closure](#check-issue-closure) with the issue and Development files it wrote, using absolute evidence paths when changing directory.
+skills/work-planner/artifacts/issue.md:75: list step in heading model: 3. Require exit 0 and passing normal delivery checks; a sync report of closable does not permit skipping this gate.
+skills/work-planner/artifacts/issue.md:76: list step in heading model: 4. Immediately after the gate passes, run [Set Completed State](#set-completed-state) with the issue's repository and number and the passing evidence.
+skills/work-planner/artifacts/issue.md:77: list step in heading model: 5. Return the saved state or failure.
+skills/work-planner/artifacts/issue.md:85: list step in heading model: 1. Run [Fetch Tracker Issue](#fetch-tracker-issue) into `issue-943.json` or the supplied path.
+skills/work-planner/artifacts/issue.md:86: list step in heading model: 2. Run [Read Issue Development](#read-issue-development) with that file, saving `links-943.json` or the supplied path. An unreadable relation writes no snapshot, which blocks the caller; an empty array means the field was read and is empty.
+skills/work-planner/artifacts/issue.md:87: list step in heading model: 3. Return both files, or the unreadable relation.
+skills/work-planner/artifacts/issue.md:95: list step in heading model: 1. Run [Capture Issue Links](#capture-issue-links) with the supplied issues and destination.
+skills/work-planner/artifacts/issue.md:96: list step in heading model: 2. Return each issue's observed pull requests, or stop and return each unreadable relation the capture names as a blocker.
+skills/work-planner/artifacts/issue.md:104: list step in heading model: 1. Fetch the closed issues alone:
+skills/work-planner/artifacts/issue.md:105: indented detail in heading model: - For named issues, run [Fetch Selected Closed Issues](#fetch-selected-closed-issues) with their numbers.
+skills/work-planner/artifacts/issue.md:106: indented detail in heading model: - For the whole repository, run [Fetch Closed Issues](#fetch-closed-issues).
+skills/work-planner/artifacts/issue.md:107: indented detail in heading model: - An empty collection means none of the named issues is closed; return nothing listed.
+skills/work-planner/artifacts/issue.md:108: list step in heading model: 2. Run [Read Issue Development](#read-issue-development) with that collection; an unreadable relation is returned as a blocker and the sweep does not run.
+skills/work-planner/artifacts/issue.md:109: list step in heading model: 3. Run [Sweep Closure Evidence](#sweep-closure-evidence) with the collection and the issue-links file.
+skills/work-planner/artifacts/issue.md:110: list step in heading model: 4. Return each unsupported issue with its state reason and findings, and each unevaluable issue as missing evidence, as findings. Return the not-planned closures apart, as listed for reference. The audit changes no issue.
+skills/work-planner/artifacts/issue.md:118: list step in heading model: 1. Read the setting where the authenticated API exposes it, and take a read value as the answer.
+skills/work-planner/artifacts/issue.md:119: list step in heading model: 2. Where no API field carries it, put the setting to the user and take their explicit answer, meeting [Auto-Close Setting](#auto-close-setting).
+skills/work-planner/artifacts/issue.md:120: list step in heading model: 3. Return the confirmed value. An unconfirmed setting is a blocker, and an enabled one leaves the caller to obtain authorization before the repository is reconfigured.
+skills/work-planner/artifacts/issue.md:128: list step in heading model: 1. Run [Fetch All Issues](#fetch-all-issues), saving the complete collection.
+skills/work-planner/artifacts/issue.md:129: list step in heading model: 2. Return it with pull requests distinguishable from issues.
+skills/work-planner/artifacts/issue.md:137: list step in heading model: 1. Run [Find Initiative Issue](#find-initiative-issue) with the supplied repository and prefix.
+skills/work-planner/artifacts/issue.md:138: list step in heading model: 2. Return its issue number or an unresolved identity.
+skills/work-planner/artifacts/issue.md:146: list step in heading model: 1. Run [List Prefixed Titles](#list-prefixed-titles) for the supplied repository and prefix letter, covering all issue states.
+skills/work-planner/artifacts/issue.md:147: list step in heading model: 2. Read the highest prefix carrying that letter.
+skills/work-planner/artifacts/issue.md:148: list step in heading model: 3. Confirm the following number, or `00` when there is no prefix, remains unused before creation.
+skills/work-planner/artifacts/issue.md:149: list step in heading model: 4. Return the confirmed number.
+skills/work-planner/artifacts/issue.md:5: procedure without heading steps: Operations
+skills/work-planner/artifacts/issue.md:7: procedure without heading steps: *Read* Tracker Issue
+skills/work-planner/artifacts/issue.md:16: procedure without heading steps: *Save* Tracker Issue
+skills/work-planner/artifacts/issue.md:30: procedure without heading steps: *Close* Tracker Issue
+skills/work-planner/artifacts/issue.md:44: procedure without heading steps: *Close* Transferred Work
+skills/work-planner/artifacts/issue.md:55: procedure without heading steps: *Comment* on Issue
+skills/work-planner/artifacts/issue.md:67: procedure without heading steps: *Close* as Completed
+skills/work-planner/artifacts/issue.md:79: procedure without heading steps: *Capture* Issue Development
+skills/work-planner/artifacts/issue.md:89: procedure without heading steps: *Read* Issue Development
+skills/work-planner/artifacts/issue.md:98: procedure without heading steps: *Audit* Closure Evidence
+skills/work-planner/artifacts/issue.md:112: procedure without heading steps: *Confirm* Repository Auto-Close
+skills/work-planner/artifacts/issue.md:122: procedure without heading steps: *Read* Repository Issues
+skills/work-planner/artifacts/issue.md:131: procedure without heading steps: *Locate* Initiative Issue
+skills/work-planner/artifacts/issue.md:140: procedure without heading steps: *Select* Tracker Number
+skills/work-planner/artifacts/issue.md:11: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:7: operation contract links: *Read* Tracker Issue: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:20: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:16: operation contract links: *Save* Tracker Issue: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:34: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:30: operation contract links: *Close* Tracker Issue: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:48: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:44: operation contract links: *Close* Transferred Work: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:59: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:55: operation contract links: *Comment* on Issue: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:71: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:67: operation contract links: *Close* as Completed: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:83: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:79: operation contract links: *Capture* Issue Development: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:93: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:89: operation contract links: *Read* Issue Development: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:102: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:98: operation contract links: *Audit* Closure Evidence: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:116: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:112: operation contract links: *Confirm* Repository Auto-Close: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:126: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:122: operation contract links: *Read* Repository Issues: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:135: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:131: operation contract links: *Locate* Initiative Issue: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:144: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue.md:140: operation contract links: *Select* Tracker Number: one Outputs declaration required
+skills/work-planner/artifacts/issue.md:178: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:184: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:194: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:200: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:210: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:216: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:226: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:232: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:244: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:250: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:260: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:266: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:276: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:282: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:292: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:298: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:312: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:318: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:336: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:342: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:361: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:367: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:377: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:383: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:393: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:399: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:409: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:415: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:433: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:439: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:457: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:463: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:473: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:479: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:489: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:495: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:507: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:513: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:523: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue.md:529: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue-body.md:218: section outside the set: Commands
+skills/work-planner/artifacts/issue-body.md:20: list step in heading model: 1. Populate the shared Done, Coverage and Depends on cells from the supplied row data.
+skills/work-planner/artifacts/issue-body.md:21: indented detail in heading model: - The columns must match the kind's table.
+skills/work-planner/artifacts/issue-body.md:22: indented detail in heading model: - The shared cells must meet [Tables](#tables).
+skills/work-planner/artifacts/issue-body.md:23: list step in heading model: 2. Read the finished table against [Tables](#tables), [Numbering](#numbering), and [Reference form](#reference-form).
+skills/work-planner/artifacts/issue-body.md:31: list step in heading model: 1. Check each section of the issue against the field conditions for its kind and against [Fields](#fields) in this file.
+skills/work-planner/artifacts/issue-body.md:32: list step in heading model: 2. Run [Check Body Format](#check-body-format) on every issue the round changed.
+skills/work-planner/artifacts/issue-body.md:40: list step in heading model: 1. Run [Check Body Format](#check-body-format) with the supplied issue JSON, kind inputs and output file as `--fix`.
+skills/work-planner/artifacts/issue-body.md:41: list step in heading model: 2. Review the body against the supplied field conditions.
+skills/work-planner/artifacts/issue-body.md:42: list step in heading model: 3. Return the [Format Findings](#format-findings).
+skills/work-planner/artifacts/issue-body.md:50: list step in heading model: 1. Populate missing sections from the supplied issue and related context.
+skills/work-planner/artifacts/issue-body.md:51: list step in heading model: 2. Apply each confirmed decision to keep, fold or remove an extra section, and rewrite a wrong-kind body in the selected template.
+skills/work-planner/artifacts/issue-body.md:52: list step in heading model: 3. Record a required tracker-kind change for the caller.
+skills/work-planner/artifacts/issue-body.md:53: list step in heading model: 4. Restate historical narration as the current design.
+skills/work-planner/artifacts/issue-body.md:54: list step in heading model: 5. Apply confirmed criterion changes.
+skills/work-planner/artifacts/issue-body.md:55: indented detail in heading model: - The body must meet [Body](#body), [Shared Acceptance Criteria](#shared-acceptance-criteria) and the supplied kind conditions.
+skills/work-planner/artifacts/issue-body.md:56: list step in heading model: 6. Validate the body through [Validate Issue Body](#validate-issue-body).
+skills/work-planner/artifacts/issue-body.md:57: list step in heading model: 7. Return the corrected file, validation findings and any required cross-body or metadata changes for the caller.
+skills/work-planner/artifacts/issue-body.md:65: list step in heading model: 1. Write the body's exact text, title and labels to the destination as JSON.
+skills/work-planner/artifacts/issue-body.md:66: list step in heading model: 2. Preserve the existing issue's identity and state when supplied.
+skills/work-planner/artifacts/issue-body.md:67: list step in heading model: 3. For an unpublished draft, use `number: null` and `state: "open"`; labels are strings or objects with a name.
+skills/work-planner/artifacts/issue-body.md:68: list step in heading model: 4. Return the JSON path for validation. No tracker issue is created by this operation.
+skills/work-planner/artifacts/issue-body.md:76: list step in heading model: 1. Run [Validate Issue Body](#validate-issue-body) with the supplied JSON, kind conditions, related evidence and output path.
+skills/work-planner/artifacts/issue-body.md:77: indented detail in heading model: - Return an unreadable source as a blocker before editing.
+skills/work-planner/artifacts/issue-body.md:78: list step in heading model: 2. Review the returned diff.
+skills/work-planner/artifacts/issue-body.md:79: indented detail in heading model: - Publish wording-preserving format, title and label corrections through [Save Tracker Issue](issue.md#save-tracker-issue), without asking.
+skills/work-planner/artifacts/issue-body.md:80: indented detail in heading model: - Retain content decisions and cross-body findings separately; do not publish them as mechanical fixes.
+skills/work-planner/artifacts/issue-body.md:81: list step in heading model: 3. Resolve a non-mechanical finding confined to this body.
+skills/work-planner/artifacts/issue-body.md:82: indented detail in heading model: - Obtain the user's decision.
+skills/work-planner/artifacts/issue-body.md:83: indented detail in heading model: - Run [Apply Body Corrections](#apply-body-corrections) with the current body, kind template and conditions, related context, confirmed resolution and output path.
+skills/work-planner/artifacts/issue-body.md:84: indented detail in heading model: - Publish through Save Tracker Issue. An unanswered decision or a finding requiring changes to other issues returns to the caller as a blocker.
+skills/work-planner/artifacts/issue-body.md:85: list step in heading model: 4. Run [Read Tracker Issue](issue.md#read-tracker-issue) for the saved issue.
+skills/work-planner/artifacts/issue-body.md:86: indented detail in heading model: - Repeat Validate Issue Body with the saved JSON and the same kind conditions, context and output path.
+skills/work-planner/artifacts/issue-body.md:87: indented detail in heading model: - Return the saved body, whether a correction was made, and the validation result to the caller. A remaining failure is a blocker.
+skills/work-planner/artifacts/issue-body.md:95: list step in heading model: 1. Run [List Reference Repositories](#list-reference-repositories) to identify the destination and cited repositories.
+skills/work-planner/artifacts/issue-body.md:96: list step in heading model: 2. Run [Fetch Reference Repository](#fetch-reference-repository) for each returned name; collect the returned objects into a JSON array at the snapshot path. Retain failed fetches as unresolved visibility, never as public visibility.
+skills/work-planner/artifacts/issue-body.md:97: list step in heading model: 3. Run [Validate Reference Visibility](#validate-reference-visibility) with that snapshot and the issue record.
+skills/work-planner/artifacts/issue-body.md:98: list step in heading model: 4. Return each private reference on a public issue and each unavailable visibility as a finding. A private destination has no public-reference restriction; deciding how to replace or remove a private reference belongs to the caller.
+skills/work-planner/artifacts/issue-body.md:12: procedure without heading steps: Operations
+skills/work-planner/artifacts/issue-body.md:14: procedure without heading steps: *Write* Issue Table
+skills/work-planner/artifacts/issue-body.md:25: procedure without heading steps: *Check* Round of Edits
+skills/work-planner/artifacts/issue-body.md:34: procedure without heading steps: *Validate* Issue Body
+skills/work-planner/artifacts/issue-body.md:44: procedure without heading steps: *Apply* Body Corrections
+skills/work-planner/artifacts/issue-body.md:59: procedure without heading steps: *Build* Body Snapshot
+skills/work-planner/artifacts/issue-body.md:70: procedure without heading steps: *Repair* Issue Format
+skills/work-planner/artifacts/issue-body.md:89: procedure without heading steps: *Check* Reference Visibility
+skills/work-planner/artifacts/issue-body.md:18: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:14: operation contract links: *Write* Issue Table: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:29: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:25: operation contract links: *Check* Round of Edits: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:38: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:34: operation contract links: *Validate* Issue Body: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:48: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:44: operation contract links: *Apply* Body Corrections: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:63: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:59: operation contract links: *Build* Body Snapshot: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:74: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:70: operation contract links: *Repair* Issue Format: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:93: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/issue-body.md:89: operation contract links: *Check* Reference Visibility: one Outputs declaration required
+skills/work-planner/artifacts/issue-body.md:229: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue-body.md:235: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue-body.md:243: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue-body.md:253: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/issue-body.md:263: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/proposal-body.md:20: indented detail in heading model: - The title must meet the shared [Titles](issue-body.md#titles) conditions and the proposal [Titles](#titles).
+skills/work-planner/artifacts/proposal-body.md:21: indented detail in heading model: - The Problem must meet the shared [Problem and Proposal](issue-body.md#problem-and-proposal) conditions.
+skills/work-planner/artifacts/proposal-body.md:22: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/proposal-body.md:30: list step in heading model: 1. Call [Validate Issue Body](issue-body.md#validate-issue-body) with the current body, local [Fields](#fields), supplied related evidence and output file, using the proposal field conditions and required title and label metadata.
+skills/work-planner/artifacts/proposal-body.md:31: list step in heading model: 2. Return the corrected body, mechanical diff and unresolved findings for the caller.
+skills/work-planner/artifacts/proposal-body.md:11: procedure without heading steps: Operations
+skills/work-planner/artifacts/proposal-body.md:13: procedure without heading steps: *Populate* Proposal Body
+skills/work-planner/artifacts/proposal-body.md:24: procedure without heading steps: *Validate* Proposal Body
+skills/work-planner/artifacts/proposal-body.md:17: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/proposal-body.md:13: operation contract links: *Populate* Proposal Body: one Outputs declaration required
+skills/work-planner/artifacts/proposal-body.md:28: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/proposal-body.md:24: operation contract links: *Validate* Proposal Body: one Outputs declaration required
+skills/work-planner/artifacts/pull-request-body.md:142: section outside the set: Commands
+skills/work-planner/artifacts/pull-request-body.md:20: list step in heading model: 1. Populate the body from the [Template](#template) using the change and its evidence, using [Populate Review Body](#populate-review-body) for an epic review.
+skills/work-planner/artifacts/pull-request-body.md:21: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/pull-request-body.md:22: list step in heading model: 2. Verify each result link against [Test Plan](#test-plan) before publishing the body.
+skills/work-planner/artifacts/pull-request-body.md:23: list step in heading model: 3. Return the complete body file and any unresolved evidence links to the caller for publication.
+skills/work-planner/artifacts/pull-request-body.md:31: list step in heading model: 1. Populate the review body from the [Template](#template) using the actual task merges into the base.
+skills/work-planner/artifacts/pull-request-body.md:32: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/pull-request-body.md:33: list step in heading model: 2. For a later task merge:
+skills/work-planner/artifacts/pull-request-body.md:34: indented detail in heading model: - Restate each standing Changes bullet the merged change makes false, so the bullet states the base as it now is.
+skills/work-planner/artifacts/pull-request-body.md:35: indented detail in heading model: - Add its functional change under the corresponding area.
+skills/work-planner/artifacts/pull-request-body.md:36: indented detail in heading model: - Cite the merged task pull request as the next reference.
+skills/work-planner/artifacts/pull-request-body.md:37: list step in heading model: 3. Return the complete updated body file to the caller.
+skills/work-planner/artifacts/pull-request-body.md:45: list step in heading model: 1. Add the Architecture Overview reference to the body's References section, creating that section in its [Template](#template) position when absent.
+skills/work-planner/artifacts/pull-request-body.md:46: list step in heading model: 2. Preserve an existing row already naming the overview. The link uses the engineering-artifacts base URL so later files resolve from the same record.
+skills/work-planner/artifacts/pull-request-body.md:52: list step in heading model: 3. Return the complete updated body file for publication.
+skills/work-planner/artifacts/pull-request-body.md:60: list step in heading model: 1. Run [Convert Test Plan](#convert-test-plan) with the supplied record and output path.
+skills/work-planner/artifacts/pull-request-body.md:61: list step in heading model: 2. Inspect the diff. A checked list and Test/Criteria table convert only when their ids agree and every line is accounted for; descriptions and coverage are preserved.
+skills/work-planner/artifacts/pull-request-body.md:62: list step in heading model: 3. Verify retained result links against [Test Plan](#test-plan). A checked entry without linked result evidence remains pending; restore its Pass result only from verified published evidence.
+skills/work-planner/artifacts/pull-request-body.md:63: list step in heading model: 4. Return the body, the converted pull request identity and unresolved findings. The caller publishes and names each conversion. An unreadable plan remains a finding until repaired from its actual checks and coverage.
+skills/work-planner/artifacts/pull-request-body.md:12: procedure without heading steps: Operations
+skills/work-planner/artifacts/pull-request-body.md:14: procedure without heading steps: *Populate* Pull Request Body
+skills/work-planner/artifacts/pull-request-body.md:25: procedure without heading steps: *Populate* Review Body
+skills/work-planner/artifacts/pull-request-body.md:39: procedure without heading steps: *Link* Architecture Overview
+skills/work-planner/artifacts/pull-request-body.md:54: procedure without heading steps: *Repair* Test Plan
+skills/work-planner/artifacts/pull-request-body.md:18: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/pull-request-body.md:14: operation contract links: *Populate* Pull Request Body: one Outputs declaration required
+skills/work-planner/artifacts/pull-request-body.md:29: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/pull-request-body.md:25: operation contract links: *Populate* Review Body: one Outputs declaration required
+skills/work-planner/artifacts/pull-request-body.md:43: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/pull-request-body.md:39: operation contract links: *Link* Architecture Overview: one Outputs declaration required
+skills/work-planner/artifacts/pull-request-body.md:58: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/pull-request-body.md:54: operation contract links: *Repair* Test Plan: one Outputs declaration required
+skills/work-planner/artifacts/pull-request-body.md:151: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/repository-labels.md:24: section outside the set: Commands
+skills/work-planner/artifacts/repository-labels.md:13: list step in heading model: 1. Run [List Labels](#list-labels) for the repository.
+skills/work-planner/artifacts/repository-labels.md:14: list step in heading model: 2. Compare the returned labels with the supplied required names.
+skills/work-planner/artifacts/repository-labels.md:15: list step in heading model: 3. Run [Create Label](#create-label) for each absent required definition.
+skills/work-planner/artifacts/repository-labels.md:16: list step in heading model: 4. Return the available labels; an unknown definition is a finding for the caller to resolve before publication.
+skills/work-planner/artifacts/repository-labels.md:5: procedure without heading steps: Operations
+skills/work-planner/artifacts/repository-labels.md:7: procedure without heading steps: *Ensure* Repository Labels
+skills/work-planner/artifacts/repository-labels.md:11: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/repository-labels.md:7: operation contract links: *Ensure* Repository Labels: one Outputs declaration required
+skills/work-planner/artifacts/repository-labels.md:32: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/repository-labels.md:42: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/standalone-body.md:21: indented detail in heading model: - The title must meet the shared [Titles](issue-body.md#titles) conditions and the standalone [Titles](#titles).
+skills/work-planner/artifacts/standalone-body.md:22: indented detail in heading model: - The Problem and Proposal must meet [Problem and Proposal](issue-body.md#problem-and-proposal).
+skills/work-planner/artifacts/standalone-body.md:23: indented detail in heading model: - All populated fields must meet [Fields](#fields).
+skills/work-planner/artifacts/standalone-body.md:31: list step in heading model: 1. Populate the body through [Populate Standalone Body](#populate-standalone-body), folding any Non-Goals into Proposal as a closing boundary.
+skills/work-planner/artifacts/standalone-body.md:32: list step in heading model: 2. Return the revised file for publication.
+skills/work-planner/artifacts/standalone-body.md:12: procedure without heading steps: Operations
+skills/work-planner/artifacts/standalone-body.md:14: procedure without heading steps: *Populate* Standalone Body
+skills/work-planner/artifacts/standalone-body.md:25: procedure without heading steps: *Revise* Standalone Body
+skills/work-planner/artifacts/standalone-body.md:18: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/standalone-body.md:14: operation contract links: *Populate* Standalone Body: one Outputs declaration required
+skills/work-planner/artifacts/standalone-body.md:29: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/standalone-body.md:25: operation contract links: *Revise* Standalone Body: one Outputs declaration required
+skills/work-planner/artifacts/task-body.md:72: section outside the set: Commands
+skills/work-planner/artifacts/task-body.md:20: list step in heading model: 1. Run [Sync Task Issue](#sync-task-issue) with the task JSON, records as `--prs`, snapshot as `--links`, delivery number as `--pr`, verified ids as `--tick` and output as `--fix`. Tick only criteria the caller has verified.
+skills/work-planner/artifacts/task-body.md:21: list step in heading model: 2. Return the body and eligibility findings; the caller publishes comments and closes the tracker issue.
+skills/work-planner/artifacts/task-body.md:12: procedure without heading steps: Operations
+skills/work-planner/artifacts/task-body.md:14: procedure without heading steps: *Record* Task Delivery
+skills/work-planner/artifacts/task-body.md:18: operation contract links: Inputs must link Fields contracts
+skills/work-planner/artifacts/task-body.md:14: operation contract links: *Record* Task Delivery: one Outputs declaration required
+skills/work-planner/artifacts/task-body.md:84: fenced invocation in HTML model: bash
+skills/work-planner/artifacts/task-body.md:90: fenced invocation in HTML model: bash
+14 converted files, 517 findings
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

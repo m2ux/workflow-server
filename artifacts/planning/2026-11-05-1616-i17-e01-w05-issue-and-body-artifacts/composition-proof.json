@@ -1,0 +1,77 @@
+{
+  "composed_base": "11e6085570ea60bd1132e32a5bd375d4fa03a77c",
+  "reversible_stash": "c145b8479ba72c923083a79653b98ce312a797f1",
+  "unchanged_reviewed_paths": [
+    {
+      "path": "skills/work-planner/artifacts/acceptance-criteria.md",
+      "sha256": "d70d0ef606fc42e4b46cd3261c301f09c97f95ad0db27f4a41244537ee33385b"
+    },
+    {
+      "path": "skills/work-planner/artifacts/epic-issue-body.md",
+      "sha256": "ea438875b7786d94de1722e5da0d46a973cdbbf1dffe3dd61b32daab3ff262e0"
+    },
+    {
+      "path": "skills/work-planner/artifacts/epic.md",
+      "sha256": "2e3f6d0d80d7a1795fd47d706632f82f0eaa85ec6d3bafdfb890e5ddbaf3ecf0"
+    },
+    {
+      "path": "skills/work-planner/artifacts/hotfix-body.md",
+      "sha256": "8d8295dd90e20622d9613cfba48b6c7a97a047dafcea498ba86c4234c19f3322"
+    },
+    {
+      "path": "skills/work-planner/artifacts/hotfix.md",
+      "sha256": "10854384ca3839ca99ab5013911a0433c75008ded28c7c8117a6588cae582828"
+    },
+    {
+      "path": "skills/work-planner/artifacts/initiative-issue-body.md",
+      "sha256": "3021d88a5646bf6d839bcccf9e227482042f5de2a68e7ed69fbe5a70234bc032"
+    },
+    {
+      "path": "skills/work-planner/artifacts/initiative.md",
+      "sha256": "54e95f8e2d680442b6e3665d007bc81081cea737a3a453875d6347004b96a109"
+    },
+    {
+      "path": "skills/work-planner/artifacts/issue-body.md",
+      "sha256": "49f627d14f66009b859639405a6821075670b5f4fb818bdd0e34a440e8b0d9ba"
+    },
+    {
+      "path": "skills/work-planner/artifacts/issue.md",
+      "sha256": "2498b830c76ab251a5d37d18658155dccff32681c3665148a76aa03a12e59643"
+    },
+    {
+      "path": "skills/work-planner/artifacts/proposal-body.md",
+      "sha256": "ad7f70d85b691c77047d157c286c76d0b3526e053f0b9b28d5410069cabcefc4"
+    },
+    {
+      "path": "skills/work-planner/artifacts/pull-request-body.md",
+      "sha256": "b431ea4de377b0f9eb98f6e1d020a45285934a3f8f77c0652cf22c8fe17d0960"
+    },
+    {
+      "path": "skills/work-planner/artifacts/repository-labels.md",
+      "sha256": "318733dfec1397a682e4a691b0a2a0fd4f1e91e4b9a080cd552484f45d9dc45f"
+    },
+    {
+      "path": "skills/work-planner/artifacts/standalone-body.md",
+      "sha256": "55460f7ba64ab72b8cfd04418d8e5e8ec2ac78d8fb67816d260304976bf21fb6"
+    },
+    {
+      "path": "skills/work-planner/artifacts/task-body.md",
+      "sha256": "e340f447f523265a4a30f399c7f301212c1764f85a1a2d7d5a3f2e7cefab3c23"
+    },
+    {
+      "path": "skills/work-planner/scripts/format.py",
+      "sha256": "f9986201e0ea6a6655ae7d319b5782a32a2f7a2ac2655b55751ed2a965907039"
+    },
+    {
+      "path": "skills/work-planner/test/test_templates.py",
+      "sha256": "22a09ce544802172155032a594e39938dbbdb7e14f45343138804acf18d4c3fe"
+    }
+  ],
+  "reader_merge": {
+    "path": "skills/work-planner/test/test_documents.py",
+    "exact_three_way_composition": true,
+    "reviewed_sha256": "0df7adee4c20d3c3d95e2217fd9ffbed2bc74243872495a604078c8c909e9409",
+    "base_sha256": "81917518d6f197d80fd8aa1f34fe9e122c7abf5246597f37c32ac95329f5e182",
+    "composed_sha256": "f9aade262d28ece8249ba988242b30596d85a0564dc45d0e04a5a8e101440eb4"
+  }
+}

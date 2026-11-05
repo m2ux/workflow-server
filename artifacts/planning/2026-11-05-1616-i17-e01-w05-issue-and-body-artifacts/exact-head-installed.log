@@ -1,0 +1,4 @@
+{"revision": "c2b3dc2292fb7ba6aedc4b014d0e5bef084bd7a9", "checkout": "/tmp/revision-check-gemqz5u8/c2b3dc2292fb"}
+work-planner/modes/revise-mode.md:128: section outside the set — Fields
+58 files checked, 1 findings
+sbx: exit 1; writable: /tmp  (name more with SBX_EXTRA_ROOTS=dir1:dir2)

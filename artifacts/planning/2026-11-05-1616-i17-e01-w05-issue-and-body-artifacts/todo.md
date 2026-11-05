@@ -1,10 +1,11 @@
 # W05 Todos
 
-- [x] Read the brief, governing instructions and authorized family.
-- [x] Capture the source preservation baseline and draft the plan.
-- [ ] Publish the work item, design and baseline ledger under engineering lease.
-- [ ] Convert the family and necessary consuming readers.
-- [ ] Verify preservation, strict target model, installed checks and complete suites.
-- [ ] Complete repeated independent disclosure walks.
-- [ ] Publish evidence, commit, push and open the task pull request.
-- [ ] Obtain exact-head merge clearance and complete merge/readback.
+- [x] Publish the work item/design and preserve the source baseline.
+- [x] Convert the authorized family and required readers.
+- [x] Review all contracts, preserve literal data and integrate delivered W03/W04.
+- [x] Complete six independent final walks and archive Partial disclosure accurately.
+- [x] Commit formatter/regressions separately from artifacts/readers.
+- [x] Verify the literal committed head with fresh detached strict checks and full suites.
+- [ ] Publish final evidence and open the task pull request.
+- [ ] Obtain exact-head merge clearance.
+- [ ] Merge, verify the merged revision, reconcile integration/epic/board and read back.
