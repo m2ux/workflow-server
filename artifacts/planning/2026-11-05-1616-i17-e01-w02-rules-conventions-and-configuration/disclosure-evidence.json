@@ -1,0 +1,50 @@
+[
+  {
+    "name": "standup1",
+    "characters_requested": 159053,
+    "lines_requested": 2964,
+    "record": "disclosure-standup1.json"
+  },
+  {
+    "name": "understand1",
+    "characters_requested": 161107,
+    "lines_requested": 3166,
+    "record": "disclosure-understand1.json"
+  },
+  {
+    "name": "revision1",
+    "characters_requested": 98619,
+    "lines_requested": 1256,
+    "record": "disclosure-revision1.json"
+  },
+  {
+    "name": "standup2",
+    "characters_requested": 263851,
+    "lines_requested": 4849,
+    "record": "disclosure-standup2.json"
+  },
+  {
+    "name": "understand2",
+    "characters_requested": 110551,
+    "lines_requested": 2454,
+    "record": "disclosure-understand2.json"
+  },
+  {
+    "name": "standup3",
+    "characters_requested": 257811,
+    "lines_requested": 4755,
+    "record": "disclosure-standup3.json"
+  },
+  {
+    "name": "revision2",
+    "characters_requested": 105806,
+    "lines_requested": 1362,
+    "record": "disclosure-revision2.json"
+  },
+  {
+    "name": "board-setup",
+    "characters_requested": 52334,
+    "lines_requested": 901,
+    "record": "disclosure-board-setup.json"
+  }
+]

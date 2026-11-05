@@ -1,0 +1,26 @@
+{
+  "base": "dd44528b3fdea032c4128e1e0f638d038261498a",
+  "checks": [
+    "four rule bodies exact",
+    "all conventions exact except resolving engineering-branch link",
+    "frontmatter, mode selector bodies and dependencies exact",
+    "entry point has only Modes and Dependencies",
+    "installed structure.json and rules.json byte-identical",
+    "all fenced command/template bodies byte-identical",
+    "theme table exact",
+    "no changed source outside Work Planner",
+    "no runtime script changes"
+  ],
+  "changed_tracked_files": [
+    "skills/work-planner/SKILL.md",
+    "skills/work-planner/artifacts/board.md",
+    "skills/work-planner/artifacts/planning-record.md",
+    "skills/work-planner/artifacts/standup-report.md",
+    "skills/work-planner/configuration.md",
+    "skills/work-planner/conventions.md",
+    "skills/work-planner/guidelines.md",
+    "skills/work-planner/modes/propose-mode.md",
+    "skills/work-planner/rules.md",
+    "skills/work-planner/test/test_checkouts.py"
+  ]
+}

@@ -27,7 +27,7 @@ The source is the live Work Planner at dd44528b3fdea032c4128e1e0f638d038261498a.
 
 - [x] Confirm the live reservation, source revision and clean engineering checkout.
 - [x] Publish the reviewed implementation plan.
-- [ ] Implement extraction and caller repairs.
-- [ ] Complete review, tests and reading-path validation.
+- [x] Implement extraction and caller repairs.
+- [x] Complete review, tests and reading-path validation, preserving partial workflow findings.
 - [ ] Publish task pull request and obtain coordinator review.
 - [ ] Confirm merge, record delivery and publish the session change list.

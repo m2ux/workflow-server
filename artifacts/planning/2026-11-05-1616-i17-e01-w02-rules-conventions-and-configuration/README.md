@@ -14,6 +14,23 @@ The extraction preserves the live skill's instructions and updates the readers t
 | --- | --- |
 | [w02.md](w02.md) | The implementation plan and test obligations. |
 | [preservation.md](preservation.md) | Source-to-home ledger, boundaries and progress. |
+| [work-planner-tests.log](work-planner-tests.log) | Complete Work Planner suite output. |
+| [shared-tests.log](shared-tests.log) | Complete shared skill suite output. |
+| [preservation.json](preservation.json) | Exact-base instruction, command and scope checks. |
+| [validation.md](validation.md) | Scoped checks, suite results, ownership review and disclosed limits. |
+| [disclosure-evidence.json](disclosure-evidence.json) | Index of independent walk records and their measured retrieval volume. |
+| [disclosure-standup1.json](disclosure-standup1.json) | Requested ranges/text and reports for standup1, preserving failures and evidence gaps. |
+| [disclosure-understand1.json](disclosure-understand1.json) | Requested ranges/text and reports for understand1, preserving failures and evidence gaps. |
+| [disclosure-revision1.json](disclosure-revision1.json) | Requested ranges/text and reports for revision1, preserving failures and evidence gaps. |
+| [disclosure-standup2.json](disclosure-standup2.json) | Requested ranges/text and reports for standup2, preserving failures and evidence gaps. |
+| [disclosure-understand2.json](disclosure-understand2.json) | Requested ranges/text and reports for understand2, preserving failures and evidence gaps. |
+| [disclosure-standup3.json](disclosure-standup3.json) | Requested ranges/text and reports for standup3, preserving failures and evidence gaps. |
+| [disclosure-revision2.json](disclosure-revision2.json) | Requested ranges/text and reports for revision2, preserving failures and evidence gaps. |
+| [disclosure-board-setup.json](disclosure-board-setup.json) | Requested ranges/text and reports for board-setup, preserving failures and evidence gaps. |
+| [disclosure.md](disclosure.md) | Bounded extraction-route results and partial full-workflow observations. |
+| [section-comparison.txt](section-comparison.txt) | Complete section comparison against the exact final source tree. |
+| [changes.md](changes.md) | Applied and held plan changes for the delivery session. |
+| [revision-check.log](revision-check.log) | AC2 named instrument at the literal published task commit. |
 
 ## Links
 
