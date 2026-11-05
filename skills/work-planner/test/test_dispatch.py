@@ -100,6 +100,25 @@ class Refill(unittest.TestCase):
         self.assertEqual([u['id'] for u in selected['units']], ['o/r#I07:E00:W01'])
         self.assertEqual(selected['pending'], 1)
 
+    def test_capacity_lost_during_preparation_resumes_the_same_held_unit(self):
+        unit = offered('o/r#I07:E00:W01')
+        selected = batch(AUTH, [unit], [], 1, BOARD)
+        with self.assertRaisesRegex(ValueError, 'free harness slot'):
+            check_start(selected, unit['id'], evidence(unit), [], 0)
+        # The live survey now sees the reservation, so it offers no free unit.
+        waiting = batch(AUTH, [], [], 0, BOARD, preparations=[unit])
+        self.assertEqual(waiting['action'], 'wait')
+        self.assertEqual(batch(AUTH, [unit], [], 1, BOARD, preparations=[unit])['units'], [])
+        resumed = check_start(selected, unit['id'], evidence(unit), [], 1)
+        self.assertEqual(resumed, unit)
+        self.assertEqual(batch(AUTH, [], [worker(unit['id'])], 0, BOARD)['action'], 'wait')
+        self.assertEqual(batch(AUTH, [], [worker(unit['id'], 'completed')], 1, BOARD)['action'], 'stop')
+
+    def test_an_out_of_scope_preparation_does_not_keep_a_run_active(self):
+        result = batch(AUTH, [], [], 0, BOARD,
+                       preparations=[offered('o/r#I08:E00:W01')])
+        self.assertEqual(result['action'], 'stop')
+
     def test_real_survey_excludes_holds_dependencies_and_backlog(self):
         held = f'[W01]({RECORDS}/existing)'
         plan, report = exported(staged(
@@ -240,6 +259,13 @@ class Start(unittest.TestCase):
             result = run('dispatch.py', *args)
             self.assertEqual(result.returncode, 1)
             self.assertIn('evidence must name', result.stderr)
+            (root / 'plan.json').write_text('[]')
+            (root / 'preparations.json').write_text(json.dumps([unit]))
+            result = run('dispatch.py', 'batch', '--authorization', str(root / 'auth.json'),
+                         '--plan', str(root / 'plan.json'), '--board', BOARD,
+                         '--preparations', str(root / 'preparations.json'), *common)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(json.loads(result.stdout)['action'], 'wait')
 
     def test_malformed_observations_fail_before_selection(self):
         for capacity, scope, sessions in [(-1, AUTH['scope'], []), (1, [], []),

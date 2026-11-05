@@ -14,7 +14,7 @@ Read these files first.
 
 One batch from current delivery and execution evidence.
 
-**Inputs:** Run authorization, machine-readable delivery plan, the board and requested lane used for that survey, observed session inventory and currently free harness slots.
+**Inputs:** Run authorization, machine-readable delivery plan, the board and requested lane used for that survey, observed session inventory, currently free harness slots and this run's admitted preparations awaiting capacity.
 
 1. Run [Compute Dispatch Batch](#compute-dispatch-batch) with the supplied evidence.
 2. Return its batch and continuation, meeting [Selection](#selection), or the named evidence error.
@@ -52,7 +52,11 @@ The harness supplies each observed session's `unit`, `session` identity and `sta
 
 ### Selection
 
-The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or eligible units await capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+The batch retains authorized, unoccupied units in survey order, bounded by free capacity. Overlapping joined rows are selected once. Its `units` carry each selected export entry, and `pending` counts the other eligible units. Its `action` is `dispatch` when units fit, `wait` while scoped workers execute or admitted work awaits capacity, and `stop` when neither remains. Holds, blockers and required human review remain in the delivery evidence returned alongside the batch.
+
+### Preparations
+
+A preparation is this run's selected unit with its published record, captured component context, confirmed hold, prepared worktrees and complete brief, awaiting an execution slot. It retains the selected batch for start validation and creates no worker session. The coordinator owns its continuation and supplies it for another call with current queue and hold evidence. Only preparations still admitted by the current queue contribute to capacity waiting; another run's held record supplies none.
 
 ### Start Readiness
 
@@ -68,9 +72,10 @@ The start names one selected unit, has a currently free harness slot and overlap
 
 Selects the next batch without tracker writes or worker execution.
 
-**Inputs:** Authorization, dispatch export and session-inventory JSON files, current survey board, optional requested lane, and free-slot count.
+**Inputs:** Authorization, dispatch export and session-inventory JSON files, current survey board, optional requested lane, free-slot count and optional admitted-preparations JSON file.
 
 - Supply `--lane '<lane-index>'` only when that lane was used by the survey.
+- Supply `--preparations '<preparations-file>'` for this run's admitted preparations awaiting capacity.
 - The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 ```bash

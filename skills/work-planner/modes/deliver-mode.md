@@ -44,7 +44,7 @@ The main path meets [Outcomes](#outcomes).
    - Resolve a missing scope decision through the [Interview](../guidelines.md#modes) before starting work.
    - Authorization covers successive eligible units within that boundary. Expanding it requires a new user decision.
    - Run [Check Plan Change Autonomy](../artifacts/plan-change.md#check-plan-change-autonomy) for each plan change with this run's allowance, retaining its applied or held result for the change list.
-   - Retain the run's authorization and session inventory in working files outside the repository for every refill round.
+   - Retain the run's authorization, session inventory and [preparations](../artifacts/dispatch-batch.md#preparations) in working files outside the repository for every refill round.
 3. **Coordinate delivery.**
    Run [Refill Delivery Capacity](#refill-delivery-capacity) with the authorization, project checkout, engineering worktree, run allowance and [Run Delivery Session](#run-delivery-session) as the supplied worker procedure.
    - Keep the calling session as coordinator until that procedure returns its completion or stable blockers.
@@ -90,7 +90,9 @@ The continuing coordinator for one authorized delivery scope.
    - Return to advance after a recorded merge; its queue, dependencies and available units require fresh evidence.
    - Retain a merge or required-review blocker with its unit and continue with independent work.
 5. **Select the batch.**
-   Observe current harness sessions and free capacity, then run [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch) with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory and free slots.
+   Resume each retained preparation still admitted by current delivery evidence through [Unit Dispatch](../protocols/unit-dispatch.md), with its selected batch, current evidence, retained context, project and engineering checkouts, run allowance and supplied worker procedure, while free slots permit it.
+   - Retain its returned continuation or observed session, removing a started preparation from the pending set.
+   - Observe current harness sessions and free capacity, then run [Plan Dispatch Batch](../artifacts/dispatch-batch.md#plan-dispatch-batch) with the fixed authorization, current dispatch export, survey board and requested lane, observed inventory, free slots and admitted preparations awaiting capacity.
    - Report an evidence error and return without dispatching from that batch.
    - For `dispatch`, continue to start units.
    - For `wait`, continue to await progress.
@@ -98,6 +100,7 @@ The continuing coordinator for one authorized delivery scope.
 6. **Start units.**
    Follow [Unit Dispatch](../protocols/unit-dispatch.md) for each selected unit with the batch, current evidence, project and engineering checkouts, run allowance and supplied worker procedure.
    - Retain every returned session identity in the observed inventory before another selection.
+   - Retain a capacity-only continuation as this run's preparation for the next refill round.
    - Return to advance after a failed start, with its held record and blocker retained.
    - Coordinate issue-body writes, engineering publications and epic-base updates serially across the coordinator and workers, refreshing their affected records before each write.
 7. **Await progress.**

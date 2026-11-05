@@ -3,6 +3,7 @@
 Usage:
   python3 dispatch.py batch --authorization run.json --plan available.json
       --sessions sessions.json --capacity 2 --board users/o/projectsV2/7 [--lane 2]
+      [--preparations preparations.json]
   python3 dispatch.py start --batch batch.json --unit 'o/r#I07:E00:W01'
       --evidence start.json --sessions sessions.json --capacity 1
 
@@ -66,7 +67,7 @@ def inventory(sessions: list[dict]) -> set[str]:
 
 
 def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity: int,
-          board: str, lane: str | None = None) -> dict:
+          board: str, lane: str | None = None, preparations: list[dict] | None = None) -> dict:
     """An ordered batch bounded by one authorization and actual free worker capacity."""
     if capacity < 0:
         raise ValueError('capacity must be a nonnegative count of currently free harness slots')
@@ -82,6 +83,12 @@ def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity:
         for selector in scope:
             members(selector)
     occupied = inventory(sessions)
+    preparing = False
+    for preparation in preparations or []:
+        occupied.update(unit_members(preparation['id']))
+        if not preparation.get('record'):
+            raise ValueError('a preparation needs its selected planning record')
+        preparing = preparing or within(preparation['id'], scope)
     selected = []
     pending = 0
     for unit in plan:
@@ -96,7 +103,7 @@ def batch(authorization: dict, plan: list[dict], sessions: list[dict], capacity:
             selected.append(unit)
     running = any(session['state'] in {'running', 'preparing'}
                   and within(session['unit'], scope) for session in sessions)
-    action = 'dispatch' if selected else 'wait' if running or pending else 'stop'
+    action = 'dispatch' if selected else 'wait' if running or pending or preparing else 'stop'
     return {'action': action, 'units': selected, 'pending': pending - len(selected)}
 
 
@@ -133,6 +140,7 @@ def main() -> int:
     select.add_argument('--plan', required=True)
     select.add_argument('--board', required=True)
     select.add_argument('--lane')
+    select.add_argument('--preparations', help='this run\'s admitted preparations awaiting capacity')
     start = commands.add_parser('start')
     start.add_argument('--batch', required=True)
     start.add_argument('--unit', required=True)
@@ -144,7 +152,8 @@ def main() -> int:
     try:
         if args.command == 'batch':
             result = batch(read(args.authorization), read(args.plan), read(args.sessions),
-                           args.capacity, args.board, args.lane)
+                           args.capacity, args.board, args.lane,
+                           read(args.preparations) if args.preparations else None)
         else:
             result = check_start(read(args.batch), args.unit, read(args.evidence),
                                  read(args.sessions), args.capacity)
