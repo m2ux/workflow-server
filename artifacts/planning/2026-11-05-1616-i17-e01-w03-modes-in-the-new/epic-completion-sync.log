@@ -1,0 +1,6 @@
+#1616 epic (open)
+  ticked: AC3
+  done: W03
+  references: i17/e01/workspace (#1641) cites #1640, #1642; merged #1640, #1642, #1643
+  source: config/branches at fb9a834c940cbed9742709d7e03594900e31d22f in /home/mike1/projects/dev/workflow-server/.git
+  closable: no (undelivered W04, W05, W06, W07, W08, unticked AC4, AC5, AC6, AC7, AC8)

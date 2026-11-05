@@ -6,7 +6,7 @@ Six independent fresh-context exercises repeated historical Standup, historical 
 
 **These are partial disclosure observations.** Oversized batches were truncated and recovered; some Rules/Conventions/mode batches do not prove common context preceded mode selection; recursive artifact prerequisite closure remained incomplete. Broad whole-file prerequisite material was often unused. Understand's graph/diagram requirements were not completed. These inherited limits are preserved, with no complete workflow, globally clean disclosure, citation-efficacy or reduced-token claim.
 
-The compressed [raw evidence](walk-evidence.tar.gz) holds prompts, per-read emitted text and ranges, actual command/output records, accounts and local products. [Manifest](walk-manifest.json) identifies included evidence bytes. Absolute temporary paths in original manifests identify the capture location; the archive retains each walk's same relative file structure. Emission or retained storage alone does not prove receipt from a truncated outer tool response. The accounts distinguish receipt and recovery.
+The [captured inputs](walk-inputs.tar.gz) retain the historical snapshots supplied to the walks. The compressed [raw evidence](walk-evidence.tar.gz) holds prompts, per-read emitted text and ranges, actual command/output records, accounts and local products. [Manifest](walk-manifest.json) identifies included evidence bytes. Absolute temporary paths in original manifests identify the capture location; the archive retains each walk's same relative file structure. Emission or retained storage alone does not prove receipt from a truncated outer tool response. The accounts distinguish receipt and recovery.
 
 ## Standup Repeats
 

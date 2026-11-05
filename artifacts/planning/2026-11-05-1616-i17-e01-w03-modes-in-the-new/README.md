@@ -38,6 +38,21 @@ The work preserves every operative condition and verifies the proposed structure
 
 | [epic-open-readback.json](epic-open-readback.json) | Saved live epic proving the W03 PR link and preserved sibling/adoption state |
 
+| [integration-body.md](integration-body.md) | Source body for the draft epic integration after the W03 merge |
+
+| [merged-mode-model.json](merged-mode-model.json) | Literal merged-revision strict/installed/preservation results and negative controls |
+| [merged-planner-suite.json](merged-planner-suite.json) | Complete Work Planner suite at the literal merged revision |
+| [merged-shared-suite.json](merged-shared-suite.json) | Complete shared suite at the literal merged revision |
+| [merge-result.json](merge-result.json) | SHA-pinned confirmed task merge |
+| [pr-merged.json](pr-merged.json) | Merged task PR head, base and merge metadata |
+| [merged-revision.log](merged-revision.log) | Merged-revision helper checkout and completed check exits |
+| [run-merged-checks.py](run-merged-checks.py) | Literal merged-revision suite runner |
+| [epic-completion-sync.log](epic-completion-sync.log) | Record Epic Delivery and verified criterion results |
+| [epic-complete-body.md](epic-complete-body.md) | Source completion body changing only W03 Done and AC3 tick |
+| [board-after-merge.json](board-after-merge.json) | Exact Project 17 epic item In Progress after merge |
+| [merge-readiness.json](merge-readiness.json) | Fresh exact-head target/rules/reviews/checks/status readiness |
+| [walk-inputs.tar.gz](walk-inputs.tar.gz) | Historical captured board, PR, link and issue inputs supplied to the walks |
+
 ## Links
 
 | Resource | Link |

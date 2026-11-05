@@ -1069,5 +1069,32 @@
       "file": "revise-2/result.md",
       "sha256": "cd06f64e849eea19af7622ac8389ad7ad1cc06c88cbf6b72a8319dfc8dd6fcbf"
     }
+  ],
+  "inputs_archive": "walk-inputs.tar.gz",
+  "input_files": [
+    {
+      "file": "captured/epic.json",
+      "sha256": "4912ecc32cac78e0b553b377ed7659c26cfa00ff167f25a65753b8809febceaa"
+    },
+    {
+      "file": "captured/integration-pr.json",
+      "sha256": "2088cf2af48ba6c0fd1029079153704e4b9fd10f417178286cb7b7e026c795c9"
+    },
+    {
+      "file": "captured/items.json",
+      "sha256": "04e6669cc1364307ee77252aeafea183355de8e33a1f94bddce671f16f9a9643"
+    },
+    {
+      "file": "captured/links.json",
+      "sha256": "76b304025ee10328371e32db87ab5080501bc4a374f79ba7c3dfa746d04fc13e"
+    },
+    {
+      "file": "captured/merged-pr.json",
+      "sha256": "a400c9bab602f8cbfa5b5838f9f5d8ecf70f079269ff4b9b7a279703a9cb4c49"
+    },
+    {
+      "file": "captured/prs.jsonl",
+      "sha256": "5e8e3aa3146ab236969b018ef97225580608b4bee619b803bb8d4ecd812f0c43"
+    }
   ]
 }

@@ -42,8 +42,16 @@ The published [run-head-checks.py](run-head-checks.py) runs from the detached cu
 
 Task PR 1643 targets `i17/e01/workspace`, is non-draft, and reports the exact verified head `c28be9980208c469e2c119e715a5b9b50b9e246e`. At capture its merge state is CLEAN and no remote status checks are reported; the local detached-revision checks are the validation evidence, not a claim of remote CI execution. The complete Development capture confirms this PR has no closing issue reference: the row has no task issue, and the whole epic is not linked as its delivering issue.
 
-Record Epic Delivery produces only the W03 planning-folder-to-PR link change. W04/W05 reservations, all other rows, AC8 and the epic's incomplete state are preserved. AC3 remains unticked until merged-revision verification. Exact-head merge clearance remains with the coordinator.
+Record Epic Delivery produces only the W03 planning-folder-to-PR link change. W04/W05 reservations, all other rows, AC8 and the epic's incomplete state are preserved. The coordinator cleared the literal tested head for merge. Merged-revision verification supplies the criterion evidence below.
 
 ## Open Row Readback
 
 The live epic was fetched immediately before its write and matched the reviewed proposal base. Its saved/read-back body equals the published row-only source: W03 links PR 1643, W04/W05 reservations and W08 are identical, and AC3/AC8 remain unticked. The epic remains open and its integration stays draft while sibling delivery is incomplete. [Live readback](epic-open-readback.json).
+
+## Merged Revision Verification
+
+PR 1643 merged with an exact-head SHA guard at `c28be9980208c469e2c119e715a5b9b50b9e246e`, after fresh target/readiness evidence and coordinator clearance. The merge commit and epic-base head are `fb9a834c940cbed9742709d7e03594900e31d22f`; its tree is `96924656d6f331ad480615db0b76d6c3a2296d20`, equal to the verified task-head tree. Update Epic Base found the current workspace target already incorporated. [Merge result](merge-result.json), [merged metadata](pr-merged.json), [readiness evidence](merge-readiness.json).
+
+Run at Revision created a disposable detached checkout of that literal merge commit. The published mode instrument passed all strict target, original-prerequisite, four command-body, literal-code-span, Runs in, negative-control and source-byte assertions. It retained the same sole installed Revise Fields diagnostic; the remaining installed files report no findings. The complete Work Planner suite passed 923 tests with one opt-in live skip; the complete shared suite passed 255. All commands exited 0 and the helper removed its temporary checkout. [Mode result](merged-mode-model.json), [planner result](merged-planner-suite.json), [shared result](merged-shared-suite.json), [revision log](merged-revision.log), [runner](run-merged-checks.py).
+
+These results verify AC3 only. Disclosure observations remain Partial. Installed model adoption remains assigned to W08/AC8; no other criterion is verified by this unit. The proposed completion body changes only W03's Done cell and AC3's tick. Sibling reservations and incomplete epic/adoption state are preserved. The exact board item after merge identifies epic 1616 as In Progress, not In Review. Final tracker and integration readbacks follow publication.
