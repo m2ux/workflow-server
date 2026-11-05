@@ -37,7 +37,7 @@ a task depending on itself or a later task in its epic,
 an epic depending on a later epic, cycles, a dependency listed twice, and a dependency that another
 in the same cell already implies. A named epic still reaches the rows it stands for, so one body
 carrying the retired form is reported once rather than taking its initiative's gates down with it.
-Joins problems: a task joining one that does not join it back, two joined tasks where one depends
+Joins problems: a task joining a row outside its epic, one that does not join it back, two joined tasks where one depends
 on the other, a joined task needing another through a task outside their unit, and a joined unit
 whose rows cover more than six criteria.
 Also printed: each candidate unit, the undelivered rows of one epic whose work items declare one
@@ -453,6 +453,7 @@ def main(argv: list[str]) -> int:
             problems.append(f'{key}: work item names no row in the epics given')
     components = {key: value for key, value in components.items() if key in tasks}
     advisory = []
+    unsupported_joins = False
 
     for key, (_, deps, acc) in tasks.items():
         epic, wid = key.split(':')
@@ -466,6 +467,9 @@ def main(argv: list[str]) -> int:
             if de > epic:
                 problems.append(f'{key}: depends on later epic {d}')
         for a in acc:
+            if a.split(':')[0] != epic:
+                problems.append(f'{key}: Joins names {a} outside its epic; a joined unit belongs to one epic')
+                unsupported_joins = True
             if a not in tasks:
                 problems.append(f'{key}: Joins names unknown task {a}')
 
@@ -524,11 +528,11 @@ def main(argv: list[str]) -> int:
                 problems.append(f'{", ".join(sorted(unit))}: joined unit covers {count} criteria, '
                                 f'more than the bound of {UNIT_BOUND}')
         joins = candidate_units(tasks, components, criteria, delivered, ancestors, recorded)
-        if initiative:
+        if initiative and not unsupported_joins:
             problems += check_initiative(initiative, tasks)
     print('--- problems')
     print('\n'.join(problems) if problems else 'none')
-    if cyclic:
+    if cyclic or unsupported_joins:
         return 1
     print('\n--- joins: candidate units, rows of one epic extending one component')
     print('\n'.join(joins) if joins else 'none')

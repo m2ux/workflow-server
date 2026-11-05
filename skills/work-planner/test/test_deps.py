@@ -4,6 +4,7 @@ Run from the skill directory: python3 -m unittest discover -s test
 """
 import io
 import os
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -170,6 +171,77 @@ class TaskLanes(unittest.TestCase):
                           ('E06:W02', work_item('b.py') + '**Lane:** 3\n')])
         self.assertEqual(code, 0, text)
         self.assertNotIn('not checked, no component read', text)
+
+
+class JoinedEpicScope(unittest.TestCase):
+    """The CLI refuses joins outside one epic before deriving epic priorities."""
+
+    @staticmethod
+    def cli(*bodies: tuple[str, str]) -> subprocess.CompletedProcess:
+        with tempfile.TemporaryDirectory() as directory:
+            args = []
+            for name, body in bodies:
+                path = Path(directory) / f'{name}.md'
+                path.write_text(body)
+                args.append(f'{name}={path}')
+            return subprocess.run([sys.executable, str(SCRIPTS / 'deps.py'), *args],
+                                  capture_output=True, text=True, timeout=10)
+
+    def test_pinned_reciprocal_cross_epic_joins_exit_before_priorities(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC1', '', 'E05:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertIn('E06:W01: Joins names E05:W01 outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_cross_epic_joins_with_initiative_skip_whole_epic_derivation(self):
+        initiative = ('| Epic | Description | Depends on | Done |\n'
+                      '| --- | --- | --- | --- |\n| E05 | One | | |\n| E06 | Two | | |\n')
+        result = self.cli(('I', initiative),
+                          ('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC1', '', 'E05:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertNotIn('initiative E05:', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_one_way_cross_epic_join_names_owner_and_target(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))),
+                          ('E06', breakdown(('W01', 'AC2', '', '', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertNotIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_unknown_cross_epic_join_retains_unknown_row_diagnostic(self):
+        result = self.cli(('E05', breakdown(('W01', 'AC1', '', 'E06:W01', ''))))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('E05:W01: Joins names E06:W01 outside its epic', result.stdout)
+        self.assertIn('E05:W01: Joins names unknown task E06:W01', result.stdout)
+        self.assertEqual(result.stderr, '')
+
+    def test_same_epic_qualified_and_local_joins_keep_priority_output(self):
+        for left, right in [('W02', 'W01'), ('E05:W02', 'E05:W01')]:
+            with self.subTest(left=left, right=right):
+                result = self.cli(('E05', breakdown(('W01', 'AC1', '', left, ''),
+                                                    ('W02', 'AC2', '', right, ''))))
+                self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+                self.assertIn('--- problems\nnone', result.stdout)
+                self.assertIn('--- epic priority', result.stdout)
+                self.assertEqual(result.stderr, '')
+
+    def test_same_epic_lane_and_dependency_diagnostics_remain(self):
+        body = TaskLanes.table(('W01', 'W02', '2'), ('W02', 'W01', '3'))
+        body = body.replace('| W02 | Work | AC1 | | W01', '| W02 | Work | AC1 | W09 | W01')
+        result = self.cli(('E05', body))
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn('joined unit has different Lane cells', result.stdout)
+        self.assertIn('E05:W02: cannot resolve E05:W09', result.stdout)
+        self.assertIn('--- epic priority', result.stdout)
+        self.assertEqual(result.stderr, '')
 
 
 class CandidateUnits(unittest.TestCase):
