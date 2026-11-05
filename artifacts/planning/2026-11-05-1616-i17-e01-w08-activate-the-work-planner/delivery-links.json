@@ -1,0 +1,52 @@
+[
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1652,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1651,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1647,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1646,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1644,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1643,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1642,
+    "closingIssuesReferences": []
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1641,
+    "closingIssuesReferences": [
+      {
+        "repo": "m2ux/workflow-server",
+        "number": 1616
+      }
+    ]
+  },
+  {
+    "repo": "m2ux/workflow-server",
+    "number": 1640,
+    "closingIssuesReferences": []
+  }
+]

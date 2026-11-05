@@ -37,7 +37,7 @@ The installed Work Planner declaration is the single model selected by both the 
 - Complete: activate installed declarations, align guidelines and source readers.
 - Complete: run required suites, installed checker and preservation; record both Partial disclosure observations.
 - Complete: publish evidence and exact-head task pull request, recording only its own row.
-- In progress: await root exact-head merge clearance; return the complete integration continuation to the coordinator.
+- Complete: merge the exact cleared task head, record W08 Done and AC8, reconcile draft integration and return Task Merge step 4 to the coordinator.
 
 ## Change List
 

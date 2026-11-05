@@ -38,6 +38,12 @@ No token-saving, complete external-workflow or full-session-closure claim is mad
 
 Earlier full-suite logs remain execution history. The first run reports 932 tests and one expected skip; later pre-final runs report 933 tests and one expected skip. Source review edits overlapped those runs, so they are not final-head evidence. Only the accepted unchanged-source run and its literal-head binding establish the complete-suite snapshot result; final-head affected checks and the exact documentation delta are stated separately.
 
+## Merged Revision
+
+Task PR #1652 merges as `633d0db9012e662f0234a433f2f406f551f26811`, tree `126194e3308cc164a88a30e5a30c2858a5755a28`. merged-source-audit.json verifies all 190 final-source hashes against that merge and confirms the unit checkout is clean. The fresh installed checker executes after the merge on the identical unit tree and reports 58 files checked, zero findings in merged-installed-check.log.
+
+Only W08 Done and AC8 are ticked in the epic update. Draft #1641 includes its task reference and model activation; the final sync reports only the unmerged base/draft integration. The exact board item reads In Progress. handoff.md supplies the coordinator's Task Merge step 4 continuation; no integration readiness, closure or successor is claimed.
+
 ## Change List
 
 Applied: none.

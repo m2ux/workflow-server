@@ -62,9 +62,29 @@ This record holds the approved final model activation, its declaration and consu
 | [row-link-audit.json](row-link-audit.json) | Only W08 link changes; criterion and Done remain pending |
 | [row-link-readback.json](row-link-readback.json) | Fresh issue readback after W08 task pull-request link publication |
 
+| [handoff.md](handoff.md) | Delivered W08 and the coordinator-owned Task Merge step 4 continuation |
+| [merge-result.json](merge-result.json) | Exact-head task merge result |
+| [merged-task-readback.json](merged-task-readback.json) | Merged task PR identity, source and merge commit |
+| [merged-epic-readback.json](merged-epic-readback.json) | W08 Done and AC8 checked with the epic open |
+| [integration-readback.json](integration-readback.json) | Updated draft integration and its current merge head |
+| [integration-body.md](integration-body.md) | Published complete integration body with the W08 task reference |
+| [delivery-prs.json](delivery-prs.json) | Scoped pull-request evidence with refreshed task and integration records |
+| [delivery-links.json](delivery-links.json) | Complete nine-pull Development relation snapshot |
+| [merged-source-audit.json](merged-source-audit.json) | Merged tree equality over 190 final-source files and clean unit checkout |
+| [merged-installed-check.log](merged-installed-check.log) | Fresh ordinary installed checker on source identical to the merged tree |
+| [merged-delivery-sync.log](merged-delivery-sync.log) | Final delivery findings after task and draft reconciliation |
+| [merged-board-readback.json](merged-board-readback.json) | Exact current board item with its Status field |
+| [merge-clearance-pr.json](merge-clearance-pr.json) | Immediately refreshed exact head and base before merge |
+| [merge-clearance-rules.json](merge-clearance-rules.json) | Current task-base rules before merge |
+| [merge-clearance-branch.json](merge-clearance-branch.json) | Current task-base protection before merge |
+| [merge-clearance-check-runs.json](merge-clearance-check-runs.json) | Zero check runs, with no CI pass claim |
+| [merge-clearance-status.json](merge-clearance-status.json) | Zero statuses; the empty combined state supplies no CI pass |
+| [task-pr-body.md](task-pr-body.md) | Published task PR body with qualified verification links |
+
 ## Links
 
 | Resource | Link |
 | --- | --- |
 | Epic | https://github.com/m2ux/workflow-server/issues/1616 |
 | Integration | https://github.com/m2ux/workflow-server/pull/1641 |
+| Task pull request | https://github.com/m2ux/workflow-server/pull/1652 |

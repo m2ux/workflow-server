@@ -1,0 +1,13 @@
+{
+  "task_head": "2c6ab442d61877dd23bb0692812b120b4c09fba8",
+  "merged": true,
+  "merge_commit": "633d0db9012e662f0234a433f2f406f551f26811",
+  "merge_tree": "126194e3308cc164a88a30e5a30c2858a5755a28",
+  "merged_files_equal_final_manifest": 190,
+  "integration_draft": true,
+  "integration_head": "633d0db9012e662f0234a433f2f406f551f26811",
+  "unit_checkout_clean": true,
+  "epic_state": "open",
+  "integration_body_readback_equal": true,
+  "epic_body_readback_equal": true
+}
