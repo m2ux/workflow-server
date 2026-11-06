@@ -19,15 +19,6 @@ Read these files first.
 
 Print proposed Status and assignee calls, [report lines](#report-lines) and unresolved issue references for one board queue and provide [Queue Result](#queue-result "●") to the requester. It exits nonzero for invalid task-table lane assignments or where an [unresolvable dependency](#unresolvable-dependencies) stopped it placing a row.
 
-- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
-- Limit proposed writes to [Status Scope](#status-scope "○").
-
-- Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
-
-- The computation reads [Read Lane Assignments](lane.md#read-lane-assignments "ƒ") and runs [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each complete free unit derived after queue placement.
-- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
-- Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board-queue.py &#92;
@@ -39,6 +30,15 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
+
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+- Limit proposed writes to [Status Scope](#status-scope "○").
+
+- Repeat `--unplanned` for each supplied [Unplanned Initiative](#unplanned-initiatives "○").
+
+- The computation reads [Read Lane Assignments](lane.md#read-lane-assignments "ƒ") and runs [Validate Lane Unit](lane.md#validate-lane-unit "ƒ") internally with each complete free unit derived after queue placement.
+- Refuse a Status change outside Backlog, Ready and In Progress, identifying the issue, other than a hot-fix’s, which its [Board Status](hotfix.md#board-status) settles. In Review, Done and task issues are otherwise outside the write scope.
+- Distinguish pending decisions and missing evidence under [Completeness](#completeness). The requester supplies further evidence and confirmed decisions for another pass and applies the proposed changes.
 
 ## Fields
 

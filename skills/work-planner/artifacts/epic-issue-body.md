@@ -122,6 +122,18 @@ The agreed disposition of criteria a delivered row left unmet.
 
 Link each named task id to the open or merged pull requests naming the epic it is delivered through, tick Done on completed rows, and provide [Output Body](#output-body "●") and [Delivery Findings](epic.md#delivery-findings "●") to the requester.
 
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
+  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches "○")' &#92;
+  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
+  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases "○")' &#92;
+  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
+</pre></big>
+
 - A row whose id links its task [issue links](#issue-links "○") the pull request instead.
 - A pull request whose head is an epic base is the pull request that merges that base, and is not matched to a task.
 - An unmerged epic base keeps the epic open, even when every row is delivered and every criterion is ticked.
@@ -135,18 +147,6 @@ Link each named task id to the open or merged pull requests naming the epic it i
 - `<task-pull-request-map>` is a comma-separated list of `<task-id>=<pull-request-number>` pairs, with a pair for each pull request a task id links. Pass each task JSON file as a separate argument after `--tasks`.
 
 - Updated rows meet [Task Delivery](#task-delivery) and [Work Breakdown](#work-breakdown).
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;epic-json-file&gt;**](#epic-record "○")' &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-links "○")' &#92;
-  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
-  --link '[**&lt;task-pull-request-map&gt;**](#delivery-matches "○")' &#92;
-  --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
-  --revision '[**&lt;epic-base-revision&gt;**](#epic-bases "○")' &#92;
-  --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
-</pre></big>
 
 ### Tick Epic Criteria
 
@@ -167,14 +167,6 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 Hold each named unit for one session by setting its record folder as the single link of every row in it, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
 
-- Supply the planning-records base URL when no epic row links a record.
-- The caller supplies the planned folder identity; `--date` is the day it is opened.
-- The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.
-
-- `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
-
-- Require a confirmed [Task Selection](#task-selection "○") and existing [Planning Folder](#planning-folder "○"). Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/deliver.py &#92;
@@ -186,17 +178,17 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
 
+- Supply the planning-records base URL when no epic row links a record.
+- The caller supplies the planned folder identity; `--date` is the day it is opened.
+- The folder is the one the unit's first task id and Description give it, as the available-work report's `unit` line names it. A call naming some rows of a joined unit and not the others is refused.
+
+- `<task-ids>` is a comma-separated list of task ids; `<records-base-url>` identifies the planning records folder.
+
+- Require a confirmed [Task Selection](#task-selection "○") and existing [Planning Folder](#planning-folder "○"). Refuse a row already held or linked to a pull request or commit, and a unit [Work Units](delivery-plan.md#work-units) does not admit.
+
 ### Release Row
 
 Free each named task row by replacing the planning-folder link with its work-item file link, and provide [Output Body](#output-body "●") and [Row Result](#row-result "●") to the requester.
-
-- The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
-- Refuse a row when its planning folder contains no matching work-item file or its README does not link that file.
-- A call naming some rows of a joined unit and not the others is refused.
-
-- `<task-ids>` is a comma-separated list of task ids.
-
-- Require a confirmed release decision and refuse any row that is not held.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -206,6 +198,14 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --engineering '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
+
+- The file is the task id in lowercase within that folder, as [Task ids](#task-delivery) defines.
+- Refuse a row when its planning folder contains no matching work-item file or its README does not link that file.
+- A call naming some rows of a joined unit and not the others is refused.
+
+- `<task-ids>` is a comma-separated list of task ids.
+
+- Require a confirmed release decision and refuse any row that is not held.
 
 ## Fields
 

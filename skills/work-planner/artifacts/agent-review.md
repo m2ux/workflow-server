@@ -35,15 +35,15 @@ Provide the record for publication on the engineering branch. Evidence lives out
 
 Check published review evidence against a freshly fetched integration pull request and provide [Review Eligibility](#review-eligibility "●") to the requester.
 
-- Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
-- Refresh both pull request tips immediately before ready, board and user-handoff actions. A tip change that invalidates [Review Record](#review-record) requires another review.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/agent_review.py &#92;
   --pr '[**&lt;pull-request-json-file&gt;**](#pull-request-record "○")' &#92;
   --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")'
 </pre></big>
+
+- Missing or stale evidence, an incomplete record or an unresolved finding blocks handoff.
+- Refresh both pull request tips immediately before ready, board and user-handoff actions. A tip change that invalidates [Review Record](#review-record) requires another review.
 
 ## Fields
 

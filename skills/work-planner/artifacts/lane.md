@@ -8,17 +8,15 @@ A board-wide delivery lane, its task assignments and the units a request admits.
 
 Read raw task-table Lane cells through the Lane module and provide [Lane Result](#lane-result "●") to the requester.
 
-- Results meet [Assignments](#assignments).
-
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" read '[**&lt;epic-body-file&gt;**](#epic-body-file "○")'
 </pre></big>
 
+- Results meet [Assignments](#assignments).
+
 ### Write Lane Assignments
 
 Write confirmed assignments while preserving other body content and provide [Output Body](#output-body "●") to the requester.
-
-- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" assign &#92;
@@ -27,11 +25,11 @@ Write confirmed assignments while preserving other body content and provide [Out
   --out '[**&lt;output-body-path&gt;**](#output-body "○")'
 </pre></big>
 
+- Refuse unknown task ids or malformed resulting cells. The requester validates the complete body and dependencies before publication.
+
 ### Validate Lane Unit
 
 Report a unit's common lane or assignment findings and provide [Lane Result](#lane-result "●") to the requester.
-
-- Results meet [Unit Consistency](#unit-consistency).
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" check &#92;
@@ -39,13 +37,13 @@ Report a unit's common lane or assignment findings and provide [Lane Result](#la
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")'
 </pre></big>
 
+- Results meet [Unit Consistency](#unit-consistency).
+
 ### Evaluate Lane Admission
 
 Report whether the request admits a valid unit and provide [Lane Result](#lane-result "●") to the requester.
 
 Omit the lane option when the request supplies none.
-
-- Results meet [Admission](#admission).
 
 <big><pre>
 "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 "[**&lt;workspace&gt;**](#workspace "○")/skills/work-planner/scripts/lane.py" admit &#92;
@@ -53,6 +51,8 @@ Omit the lane option when the request supplies none.
   --unit '[**&lt;task-ids&gt;**](#unit-task-ids "○")' &#92;
   --lane '[**&lt;lane-index&gt;**](#requested-index "○")'
 </pre></big>
+
+- Results meet [Admission](#admission).
 
 ## Fields
 

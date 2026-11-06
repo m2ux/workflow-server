@@ -48,12 +48,6 @@ Run [Summarise Progress](#summarise-progress "ƒ") with the same inputs and the 
 
 Print the standup from supplied board items, pull request records and their issue-link snapshot and provide [Report Result](#report-result "●") to the requester.
 
-- Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection "○").
-- An initiative filter can be `I08` or `owner/repo:I08`.
-- Pass each supplied off-board [initiative record](#initiative-records "○") as a separate argument after `--initiatives`.
-
-- The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/progress.py &#92;
@@ -65,6 +59,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --initiatives '[**&lt;initiative-json-file&gt;**](#initiative-records "○")' &#92;
   --summary '[**&lt;management-paragraph-file&gt;**](#management-file "○")'
 </pre></big>
+
+- Select the reporting [window](#scope) from the supplied [Report Selection](#report-selection "○").
+- An initiative filter can be `I08` or `owner/repo:I08`.
+- Pass each supplied off-board [initiative record](#initiative-records "○") as a separate argument after `--initiatives`.
+
+- The optional flags may be combined or omitted. Omitting all four uses the default window and all initiatives with no off-board records or management paragraph. **Example combinations:** a focused report can use `--since 2026-09-21 --initiative I08`; resolving an off-board initiative adds `--initiatives issue-946.json`; the final report adds `--summary summary.txt` to the same inputs.
 
 ## Fields
 

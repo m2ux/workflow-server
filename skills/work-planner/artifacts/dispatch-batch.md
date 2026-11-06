@@ -15,12 +15,6 @@ Read these files first.
 
 Select the next batch without tracker writes or worker execution and provide [Batch](#batch "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Honor [Requested Lane](#requested-lane "○") when selecting units.
-
-- Supply `--lane '<lane-index>'` only when that lane was used by the survey.
-- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "○") awaiting capacity.
-- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/dispatch.py batch &#92;
@@ -31,6 +25,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --board [**&lt;survey-board&gt;**](#survey-board "○") &#92;
   &gt; '[**&lt;batch-file&gt;**](#batch "○")'
 </pre></big>
+
+- Honor [Requested Lane](#requested-lane "○") when selecting units.
+
+- Supply `--lane '<lane-index>'` only when that lane was used by the survey.
+- Supply `--preparations '<preparations-file>'` for this run's admitted [preparations](#preparations "○") awaiting capacity.
+- The JSON result goes to the supplied batch file. A nonzero exit leaves the batch unverified.
 
 ### Check Dispatch Start
 

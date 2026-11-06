@@ -77,10 +77,6 @@ git -C '[**&lt;checkout&gt;**](#project-checkout "○")' worktree list | grep '\
 
 Commit everything pending in the engineering worktree, publish the branch so every record's links resolve, and provide [Publication Result](#publication-result "●") to the requester.
 
-- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
-- Planning records go straight to the branch; they take no pull request.
-- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
-
 <big><pre>
 cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
   git add &#92;
@@ -94,9 +90,17 @@ cd '[**&lt;engineering-worktree&gt;**](#engineering-worktree "○")' && &#92;
   git push
 </pre></big>
 
+- It stages the whole worktree, commits only when anything is staged, rebases on `origin/engineering` and pushes. A run with nothing new leaves the branch unchanged, so any session runs it at any time. See [Shared Worktree](#shared-worktree).
+- Planning records go straight to the branch; they take no pull request.
+- Pass the message through a file outside the worktree; the worktree is a linked one, so git writes here run unsandboxed.
+
 ### Add Planning Record
 
 Add the folder for one planning record on the long-lived engineering worktree and provide [Planning Folder](#planning-folder "●") to the requester.
+
+<big><pre>
+mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
+</pre></big>
 
 - Run in the [Engineering Worktree](#engineering-worktree "○").
 
@@ -105,10 +109,6 @@ Add the folder for one planning record on the long-lived engineering worktree an
 - The slug is lowercase words separated by hyphens, a short name of the work.
 - The folder's files are the [planning layout](planning-record.md#layout).
 - Edits are made on that worktree. The engineering branch takes no further worktree and no branch.
-
-<big><pre>
-mkdir -p '[**&lt;planning-folder-path&gt;**](#planning-folder "○")'
-</pre></big>
 
 ## Fields
 

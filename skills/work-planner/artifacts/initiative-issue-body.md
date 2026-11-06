@@ -90,18 +90,18 @@ Provide [Output Files](#output-files) with the corrected body and [Validation Fi
 
 Report an initiative's delivery state against its epics, tick Done on an epic row whose issue is closed as completed, and provide [Delivery Findings](initiative.md#delivery-findings "●") and, when a body was requested, [Output Files](#output-files "●") to the requester. A row whose epic it is not given keeps its Done cell and is reported unchanged.
 
-- Omit `--fix` when only a delivery report is requested.
-
-- It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
-
-- Pass every epic JSON file as a separate argument after `--epics`.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
   --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
+
+- Omit `--fix` when only a delivery report is requested.
+
+- It takes every linked epic's current JSON. Delivery findings follow [Delivery State](initiative.md#delivery-state).
+
+- Pass every epic JSON file as a separate argument after `--epics`.
 
 ### Tick Initiative Criteria
 

@@ -62,15 +62,6 @@ Provide [Confirmed Statuses](#confirmed-statuses) with saved statuses or unresol
 
 Compute membership, Status and assignee calls from supplied delivery evidence and provide [Board Changes](#board-changes "●") to the requester.
 
-- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
-
-- Missing published agent-review evidence holds the epic In Progress.
-
-- Pass each epic or task JSON file as a separate argument after its corresponding flag.
-
-- Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
-- Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
@@ -85,6 +76,15 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
   --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
 </pre></big>
+
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+
+- Missing published agent-review evidence holds the epic In Progress.
+
+- Pass each epic or task JSON file as a separate argument after its corresponding flag.
+
+- Require the complete [Issue Link Snapshot](#issue-link-snapshot "○"); refuse the computation without it.
+- Supply published review records linked from each open epic integration pull request; retain missing records as handoff blockers.
 
 ### Compute Dispatch Status
 

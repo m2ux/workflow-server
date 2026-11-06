@@ -132,10 +132,6 @@ Provide the confirmed [Tracker Number](#tracker-number).
 
 Create an issue from a body file with its title and labels, print its number, and provide [Identity](#identity "●") to the requester.
 
-- Run in the repository checkout.
-
-- Repeat `-f 'labels[]=<label>'` for each supplied label.
-
 <big><pre>
 gh api &#92;
   --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues &#92;
@@ -144,6 +140,10 @@ gh api &#92;
   -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' &#92;
   --jq .number
 </pre></big>
+
+- Run in the repository checkout.
+
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 ### Patch Issue Body
 
@@ -179,13 +179,13 @@ gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&g
 
 Add labels to an issue and provide [Label Names](#label-names "●") to the requester.
 
-- Run in the repository checkout.
-
-- Repeat `-f 'labels[]=<label>'` for each supplied label.
-
 <big><pre>
 gh api --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○")/labels -f 'labels&#91;&#93;=[**&lt;label&gt;**](#label-names "○")' --jq '.&#91;&#93;.name'
 </pre></big>
+
+- Run in the repository checkout.
+
+- Repeat `-f 'labels[]=<label>'` for each supplied label.
 
 ### Remove Issue Label
 
@@ -211,20 +211,16 @@ gh api --paginate repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**
 
 Save one complete issue as JSON for the issue-reading scripts and provide [Issue Record](#issue-record "●") to the requester.
 
-- Run in the repository checkout.
-- Use [Output Files](#output-files "○") to select the destination.
-
 <big><pre>
 gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") &gt; '[**&lt;issue-json-file&gt;**](#issue-record "○")'
 </pre></big>
 
+- Run in the repository checkout.
+- Use [Output Files](#output-files "○") to select the destination.
+
 ### Check Issue Closure
 
 Check the issue's criteria and the state of every pull request its Development field holds and provide [Closure Findings](#closure-findings "●") to the requester.
-
-- The gate reads only those two files, each a field GitHub exposes.
-- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
-- Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -233,9 +229,20 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --development '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
+- The gate reads only those two files, each a field GitHub exposes.
+- An issue the snapshot maps to an empty array adds no pull request requirement. An issue the snapshot holds no entry for, a missing or unreadable snapshot, or a snapshot of another repository's issues blocks as missing evidence.
+- Exit 0 means the closure gate passes; normal delivery checks must also pass. Exit 1 reports blockers. The command performs no network calls or writes.
+
 ### Sweep Closure Evidence
 
 List each closed issue with missing or unticked acceptance criteria or an unmerged Development pull request, include its state reason, and provide [Closure Findings](#closure-findings "●") to the requester.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py &#92;
+  --issues '[**&lt;issues-json-file&gt;**](#issue-collection "○")' &#92;
+  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
+</pre></big>
 
 - The sweep audits every closed issue in the collection, so the collection sets its scope. Run [Check Issue Closure](#check-issue-closure "ƒ") to each issue. Open issues and pull requests in the collection are skipped.
 - `--issue-links` takes the issue-links file of the collection's repository alone; any other shape, or another repository's file, is refused as unreadable evidence.
@@ -245,19 +252,9 @@ List each closed issue with missing or unticked acceptance criteria or an unmerg
 - `not planned:` for an issue closed as `not_planned` whose evidence would not support completion; these follow the findings, listed for reference.
 - The last line counts each label. Exit 0 means no issue is unsupported or unevaluable. Exit 1 means at least one is, or the evidence is unreadable. The command performs no network calls or writes.
 
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/closure-sweep.py &#92;
-  --issues '[**&lt;issues-json-file&gt;**](#issue-collection "○")' &#92;
-  --issue-links '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
-</pre></big>
-
 ### Close as Not Planned
 
 Close an issue whose work another issue tracks and provide [State](#state "●") to the requester.
-
-- Run in the repository checkout.
-- Base the transfer pointer on [Transfer Evidence](#transfer-evidence "○").
 
 <big><pre>
 gh api &#92;
@@ -266,6 +263,9 @@ gh api &#92;
   -f state_reason=not_planned &#92;
   --jq .state
 </pre></big>
+
+- Run in the repository checkout.
+- Base the transfer pointer on [Transfer Evidence](#transfer-evidence "○").
 
 ### Post Inline Comment
 
@@ -297,9 +297,6 @@ gh api &#92;
 
 Close an issue with the completed reason, read its state, and provide [State](#state "●") to the requester.
 
-- Run in the repository checkout.
-- Require [Closure Findings](#closure-findings "○"), [Delivery Evidence](#delivery-evidence "○") before executing the command.
-
 <big><pre>
 gh api &#92;
   --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues/[**&lt;issue-number&gt;**](#identity "○") &#92;
@@ -308,21 +305,14 @@ gh api &#92;
   --jq .state
 </pre></big>
 
+- Run in the repository checkout.
+- Require [Closure Findings](#closure-findings "○"), [Delivery Evidence](#delivery-evidence "○") before executing the command.
+
 ### Capture Issue Links
 
 Write each issue's Development pull requests from the issue end of the relation, keyed by issue number, and provide [Development Snapshot](#development-snapshot "●") to the requester.
 
-- Run in the repository checkout.
-- Require [Authenticated Access](#authenticated-access "○") before executing the command.
-- Use [Output Files](#output-files "○") to select the destination.
-
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
-
-- The snapshot names the repository its issues belong to. Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
-- Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
-- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
-- Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.
-- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -331,34 +321,42 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --out '[**&lt;issue-links-file&gt;**](#development-snapshot "○")'
 </pre></big>
 
+- Run in the repository checkout.
+- Require [Authenticated Access](#authenticated-access "○") before executing the command.
+- Use [Output Files](#output-files "○") to select the destination.
+
+
+- The snapshot names the repository its issues belong to. Each issue maps to every pull request its Development field holds, open, closed and merged, as repository, number and state, or to an empty array. Pull requests in the collection are skipped.
+- Each batch of issues costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
+- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
+- Exit 0 means every relation was read. Exit 1 names each unreadable relation with the tracker's reason and writes nothing; the caller treats it as a blocker.
+- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
+
 ### Fetch All Issues
 
 Save every issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
-
-- Run in the repository checkout.
-- Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
+- Run in the repository checkout.
+- Use [Output Files](#output-files "○") to select the destination.
+
 ### Fetch Closed Issues
 
 Save every closed issue in the repository and provide [Issue Collection](#issue-collection "●") to the requester. The scripts skip any pull requests among them.
-
-- Run in the repository checkout.
-- Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
 gh api --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=closed&per_page=100" &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
+- Run in the repository checkout.
+- Use [Output Files](#output-files "○") to select the destination.
+
 ### Fetch Selected Closed Issues
 
 Save the named closed issues with one issue per line and provide [Issue Collection](#issue-collection "●") to the requester. Leave out any issue that is open or absent.
-
-- Run in the repository checkout.
-- Use [Output Files](#output-files "○") to select the destination.
 
 <big><pre>
 gh api &#92;
@@ -367,19 +365,22 @@ gh api &#92;
   &gt; '[**&lt;issues-json-file&gt;**](#issue-collection "○")'
 </pre></big>
 
+- Run in the repository checkout.
+- Use [Output Files](#output-files "○") to select the destination.
+
 ### Find Initiative Issue
 
 Find an initiative by its title prefix, print its issue number, and provide [Identity](#identity "●") and [Tracker Number](#tracker-number "●") to the requester.
-
-- Run in the repository checkout.
-
-- `<initiative-prefix>` includes the initiative id and its enclosing brackets.
 
 <big><pre>
 gh api &#92;
   --paginate "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/issues?state=all&per_page=100" &#92;
   --jq '.&#91;&#93; | select(.pull_request == null) | select(.title | startswith("[**&lt;initiative-prefix&gt;**](#tracker-prefix "○")")) | .number'
 </pre></big>
+
+- Run in the repository checkout.
+
+- `<initiative-prefix>` includes the initiative id and its enclosing brackets.
 
 ### List Prefixed Titles
 

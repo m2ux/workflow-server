@@ -52,13 +52,6 @@ Provide the [resulting body](#output-body) and any refused criteria to the calle
 
 Run one instrument in a detached checkout at the commit resolved by a branch, tag or commit and provide [Instrument Result](#instrument-result "●") to the requester. The run creates and removes the checkout.
 
-- The instrument follows `--` and runs at the checkout’s top level.
-- The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
-- The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
-- Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
-- Worktrees the run did not create are left as they are.
-- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   python3 skills/work-planner/scripts/revision-check.py &#92;
@@ -66,6 +59,13 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --revision '[**&lt;revision&gt;**](#revision "○")' &#92;
   -- [**&lt;instrument-command&gt;**](#instrument "○")
 </pre></big>
+
+- The instrument follows `--` and runs at the checkout’s top level.
+- The first output line is `{"revision": <commit>, "checkout": <path>}`, the commit the result is recorded against. The instrument's output follows.
+- The exit status is the instrument's, whatever it is. The checkout is removed after a pass or a failure; one it cannot remove is reported with its path and the instrument's status stands.
+- Exit 125 is the helper's own failure, as `git bisect run` reserves it, with one standard error line naming the cause: a usage error, `revision not found:` or `checkout not created:` before any output, or `command not started:` after the first line, once the checkout exists. An instrument that itself exits 125 is told apart by that line's absence.
+- Worktrees the run did not create are left as they are.
+- The checkout is registered in the repository's git directory, which `sbx` leaves read-only for a linked worktree or another repository, so the helper runs outside `sbx`. An instrument that needs the sandbox carries its own `sbx` prefix.
 
 ## Fields
 

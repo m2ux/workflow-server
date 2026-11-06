@@ -140,14 +140,6 @@ The saved format corrections for one issue and any unresolved content findings.
 
 Check one issue against its template, write mechanical body fixes when `--fix` is supplied, and provide [Format Findings](#format-findings "●") and, when a corrected body was requested, [Output Files](#output-files "●") to the requester.
 
-- Validate the body against [Kind Conditions](#kind-conditions "○").
-
-- The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
-- For an epic, supply its parent with `--initiative`. For an initiative, supply every linked epic by repeating `--epic`; omit those options for other kinds.
-- For epic delivery checks, supply the pull request snapshot with `--prs` and repeat `--files` for each supplied changed-path record.
-- Supply `--project` and `--revision` together for project-required-criteria validation at the fetched revision. Omit both when that validation is outside the request.
-- Omit optional flags whose corresponding evidence is not applicable; retain all evidence required by the selected kind. Omit `--fix` when no corrected body is requested.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/format.py '[**&lt;issue-json-file&gt;**](#body-record "○")' &#92;
@@ -159,6 +151,14 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --revision '[**&lt;revision&gt;**](#evaluated-revision "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-files "○")'
 </pre></big>
+
+- Validate the body against [Kind Conditions](#kind-conditions "○").
+
+- The format reader takes the template fence from the body artifact and its table columns where present. A body with a Work Breakdown table requires coverage for every criterion.
+- For an epic, supply its parent with `--initiative`. For an initiative, supply every linked epic by repeating `--epic`; omit those options for other kinds.
+- For epic delivery checks, supply the pull request snapshot with `--prs` and repeat `--files` for each supplied changed-path record.
+- Supply `--project` and `--revision` together for project-required-criteria validation at the fetched revision. Omit both when that validation is outside the request.
+- Omit optional flags whose corresponding evidence is not applicable; retain all evidence required by the selected kind. Omit `--fix` when no corrected body is requested.
 
 ### List Reference Repositories
 
@@ -172,13 +172,13 @@ List repository names from the issue destination and References section and prov
 
 Read one listed repository's visibility with the authenticated repository API and provide [Repository Snapshot](#repository-snapshot "●") to the requester.
 
-- Run in the repository checkout.
-
-- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
-
 <big><pre>
 gh api repos/[**&lt;owner&gt;**](#reference-repositories "○")/[**&lt;repo&gt;**](#reference-repositories "○") &gt; '[**&lt;repository-json-file&gt;**](#output-files "○")'
 </pre></big>
+
+- Run in the repository checkout.
+
+- Save each object with its `full_name` and `private` fields; combine the objects into the caller's JSON array. A failed fetch supplies no visibility.
 
 ### Validate Reference Visibility
 

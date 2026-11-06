@@ -95,15 +95,15 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && "[**&lt;workspace&gt;**](#work
 
 Compare every third-level section's body between the change's base and its head to identify sections damaged in a move, and provide [Section Comparison](#section-comparison "●") to the requester.
 
-- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
-- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
-- Exit 1 means a section was added, removed or differs.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/scripts/check_skill_files.py &#92;
   --compare "[**&lt;base&gt;**](#base "○")" "[**&lt;head&gt;**](#head "○")" "[**&lt;skill-directory&gt;**](#skill-directory "○")"
 </pre></big>
+
+- A relative link target is compared by its fragment alone, so a retargeted link is no difference.
+- Each section is reported as identical, moved, added, removed or differing, with a diff of each differing body and the section count at each revision.
+- Exit 1 means a section was added, removed or differs.
 
 ## Fields
 

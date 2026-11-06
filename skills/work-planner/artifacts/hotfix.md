@@ -53,11 +53,6 @@ Provide [Board Result](#board-result) with the settled item, its removal, or the
 
 Record the open or merged pull request delivering a hot-fix, tick verified criteria, report whether the hot-fix is closable, and provide [Output Body](#output-body "●") and [Delivery Findings](#delivery-findings "●") to the requester.
 
-- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
-- `<criterion-ids>` is a comma-separated list of verified criterion ids.
-
-- Tick only criteria the requester has verified. The requester publishes the body and closes the tracker issue under [Delivery Record](#delivery-record).
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;hot-fix-json-file&gt;**](#hot-fix-record "○")' &#92;
@@ -67,6 +62,11 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
+
+- A `--pr` that does not deliver the hot-fix is refused, naming the condition it fails.
+- `<criterion-ids>` is a comma-separated list of verified criterion ids.
+
+- Tick only criteria the requester has verified. The requester publishes the body and closes the tracker issue under [Delivery Record](#delivery-record).
 
 ## Fields
 

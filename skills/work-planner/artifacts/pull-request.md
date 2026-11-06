@@ -302,9 +302,6 @@ gh api --method PATCH repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&g
 
 Create a pull request from a unit's branch to its base and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
-- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
-
 <big><pre>
 gh api &#92;
   --method POST repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls &#92;
@@ -315,12 +312,12 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
+- Supply the [title](#title "○"), the task branch as head, the base [Task Branches](delivery-branches.md#task-branches) names as base, and the [complete body file](#body-file "○").
+- A title opening with a hot-fix prefix, `[F00]`, always adds `-F draft=true`, as a [delivering pull request](hotfix.md#delivering-pull-request) opens.
+
 ### Open Epic Pull Request
 
 Create the draft pull request from an epic base to its long-lived target and provide [Identity](#identity "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-- Supply the epic prefix and name as [title](#title "○"), the epic base as head, its long-lived branch as base, and the populated review [body file](#body-file "○").
-- `draft` is true, including when the work is already complete.
 
 <big><pre>
 gh api &#92;
@@ -333,18 +330,21 @@ gh api &#92;
   --jq .html_url
 </pre></big>
 
+- Supply the epic prefix and name as [title](#title "○"), the epic base as head, its long-lived branch as base, and the populated review [body file](#body-file "○").
+- `draft` is true, including when the work is already complete.
+
 ### Merge Pull Request
 
 Merge the task pull request into its base and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
+
+<big><pre>
+gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge -f merge_method=merge --jq .merged
+</pre></big>
 
 - Require [Merge Authorization](#merge-authorization "○") before executing the command.
 
 - Require the supplied [readiness evidence](#readiness-evidence "○") and authorization before issuing the merge.
 - The merge method is a merge commit.
-
-<big><pre>
-gh api --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge -f merge_method=merge --jq .merged
-</pre></big>
 
 ### Patch Pull Request Body
 
@@ -368,10 +368,6 @@ gh api "repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#reposit
 
 Merge the epic base into its long-lived target at the supplied head and provide [Merge Result](#merge-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Require [Merge Authorization](#merge-authorization "○"), [Readiness Evidence](#readiness-evidence "○"), [Target Requirements](#target-requirements "○") before executing the command.
-
-- The merge method is a merge commit. The endpoint refuses a different head.
-
 <big><pre>
 gh api &#92;
   --method PUT repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#repository "○")/pulls/[**&lt;pull-request-number&gt;**](#identity "○")/merge &#92;
@@ -379,6 +375,10 @@ gh api &#92;
   -f sha=[**&lt;head-sha&gt;**](#verified-head "○") &#92;
   --jq '{merged, message, sha}'
 </pre></big>
+
+- Require [Merge Authorization](#merge-authorization "○"), [Readiness Evidence](#readiness-evidence "○"), [Target Requirements](#target-requirements "○") before executing the command.
+
+- The merge method is a merge commit. The endpoint refuses a different head.
 
 ### Read Merge Result
 
@@ -393,14 +393,7 @@ gh api repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;**](#reposito
 
 Add one pull request to an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Require [Authenticated Access](#authenticated-access "○"), [Repository Prerequisite](#repository-prerequisite "○") before executing the command.
-
 **REST gap:** REST exposes no write to the Development relation; `addCloseIssueReferences` is a GraphQL mutation alone.
-
-- The issue and [pull request](#identity "○") may sit in different repositories, and the pull request may be a draft on any base branch.
-- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
-- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.
-- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -409,17 +402,19 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --pull [**&lt;pr-owner&gt;**](#identity "○")/[**&lt;pr-repo&gt;**](#identity "○")#[**&lt;pull-request-number&gt;**](#identity "○")
 </pre></big>
 
+- Require [Authenticated Access](#authenticated-access "○"), [Repository Prerequisite](#repository-prerequisite "○") before executing the command.
+
+
+- The issue and [pull request](#identity "○") may sit in different repositories, and the pull request may be a draft on any base branch.
+- The script reads both node ids through REST and sends `addCloseIssueReferences` from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
+- Exit 0 means the issue holds the pull request exactly once, the pull request holds the issue, and every other link on the issue stands. Running it again for a linked pair holds the same relation.
+- Exit 1 prints `failed:` with the operation, the step and the tracker's error, or `discrepancy:` with the relation read back.
+
 ### Remove Development Link
 
 Remove one pull request from an issue's Development relation, read the relation back from both ends, and provide [Development Relation](#development-relation "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Require [Authenticated Access](#authenticated-access "○"), [Removal Decision](#removal-decision "○") before executing the command.
-
 **REST gap:** REST exposes no write to the Development relation; `removeCloseIssueReferences` is a GraphQL mutation alone.
-
-- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.
-- Exit 0 means neither end holds the other and every other link on the issue stands.
-- Exit 1 prints `failed:` or `discrepancy:` with the operation, step and tracker error, or the relation read back.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -428,19 +423,18 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --pull [**&lt;pr-owner&gt;**](#identity "○")/[**&lt;pr-repo&gt;**](#identity "○")#[**&lt;pull-request-number&gt;**](#identity "○")
 </pre></big>
 
+- Require [Authenticated Access](#authenticated-access "○"), [Removal Decision](#removal-decision "○") before executing the command.
+
+
+- The script sends `removeCloseIssueReferences` from a generated query file, so the command runs outside `sbx`.
+- Exit 0 means neither end holds the other and every other link on the issue stands.
+- Exit 1 prints `failed:` or `discrepancy:` with the operation, step and tracker error, or the relation read back.
+
 ### Capture Pull Request Links
 
 Write the complete issue-link snapshot for a pull request collection from the pull-request end of the Development relation and provide [Issue-Link Snapshot](#issue-link-snapshot "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Require [Authenticated Access](#authenticated-access "○") before executing the command.
-
 **REST gap:** REST exposes no read of a pull request's closing issue references.
-
-- The snapshot meets [Issue-Link Snapshot](#issue-link-snapshot "●").
-- Each batch of [pull requests](#pull-request-records "○") costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
-- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
-- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.
-- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -448,6 +442,15 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --out '[**&lt;issue-link-snapshot-file&gt;**](#link-snapshot-path "○")'
 </pre></big>
+
+- Require [Authenticated Access](#authenticated-access "○") before executing the command.
+
+
+- The snapshot meets [Issue-Link Snapshot](#issue-link-snapshot "●").
+- Each batch of [pull requests](#pull-request-records "○") costs one `gh api graphql` call from a generated query file, so the command runs outside `sbx`, where `gh` reaches the tracker.
+- A relation is unreadable when any page of it does not arrive whole: the tracker returns no node for its subject, names the subject in an error, or reports a further page it does not supply.
+- Exit 0 means the snapshot is complete. Exit 1 names each unreadable relation with the tracker's reason and writes no snapshot; the caller treats it as a blocker.
+- A call the tracker refuses outright, such as a rejected credential, exits 1 with `GraphQL read failed:` and what `gh` reported, and writes nothing.
 
 ### Save Pull Request Snapshot
 
@@ -482,14 +485,7 @@ gh api &#92;
 
 Append each pull request linked by the plan but missing from the collection, regardless of its title, and provide [Pull Request Records](#pull-request-records "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Use [Collection Path](#collection-path "○") for the saved collection.
-
 **REST gap:** REST exposes no read of the pull requests an issue's Development field holds.
-
-- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives.
-- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows.
-- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker.
-- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -497,6 +493,14 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
   --issues '[**&lt;issue-file&gt;**](#issue-records "○")' ...
 </pre></big>
+
+- Use [Collection Path](#collection-path "○") for the saved collection.
+
+
+- A pull request is linked when a Work Breakdown row's id cell links it or an issue's Development field names it, open, closed or merged, in whichever repository it lives.
+- A pull request no row or Development link names is found by its title alone, through the title-matched fetch this command follows.
+- The command reads the Development field by `gh api graphql` and each missing pull request by REST, so it runs outside `sbx`, where `gh` reaches the tracker.
+- Exit 0 means every linked pull request is in the collection. Exit 1 names each unreadable relation or pull request and appends nothing; the caller treats it as a blocker.
 
 ### Fetch Repository Delivery Pull Requests
 
@@ -555,19 +559,20 @@ gh api --paginate 'repos/[**&lt;owner&gt;**](#repository "○")/[**&lt;repo&gt;*
 
 Mark a draft pull request ready for review and provide [Review State](#review-state "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
+**REST gap:** REST has no endpoint that marks a draft ready for review.
+
+<big><pre>
+gh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
+</pre></big>
+
 - Build the selected GraphQL mutation from [Node Metadata](#node-metadata "○") before running it.
 
-**REST gap:** REST has no endpoint that marks a draft ready for review.
 
 - The [query file](#query-file "○") holds the mutation with the node id inlined, since a GraphQL variable is a literal `$`:
 
   ```graphql
   mutation { markPullRequestReadyForReview(input: {pullRequestId: "<pull-request-node-id>"}) { pullRequest { isDraft } } }
   ```
-
-<big><pre>
-gh api graphql -F query=@'[**&lt;query-file&gt;**](#query-file "○")' --jq .data.markPullRequestReadyForReview.pullRequest.isDraft
-</pre></big>
 
 ### Mark Review Draft
 

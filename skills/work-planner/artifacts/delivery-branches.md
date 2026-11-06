@@ -163,24 +163,18 @@ Provide [Branch Names](#branch-names) and [Epic-Base Names](#epic-base-names), o
 
 Print one epic's base branch names with one name per line and provide [Epic-Base Names](#epic-base-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
+<big><pre>
+git ls-remote --heads origin 'refs/heads/[**&lt;epic-branch-prefix&gt;**](#epic-identity "○")/*' | cut -f2 | sed 's|refs/heads/||'
+</pre></big>
+
 - Run in the [Project Checkout](#project-checkout "○").
 
 - A base is `<epic-branch-prefix>/<name>` whose `<name>` is a [long-lived branch](#branches), named as [Epic Bases](#epic-bases) states.
 - The prefix has the form `i<initiative-number>/e<epic-number>`. **Example:** `i07/e00`; a corresponding base is `i07/e00/main`.
 
-<big><pre>
-git ls-remote --heads origin 'refs/heads/[**&lt;epic-branch-prefix&gt;**](#epic-identity "○")/*' | cut -f2 | sed 's|refs/heads/||'
-</pre></big>
-
 ### List Long-Lived Branches
 
 Print the long-lived branch names with one name per line and provide [Branch Names](#branch-names "●") to the requester, or [Failure](#failure "●") if the operation fails.
-
-- The names meet [Branches](#branches).
-- Select the evaluated revision according to [Branches](#branches).
-- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
-- `--names` reads one `--revision`.
-- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
@@ -189,6 +183,12 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --project '[**&lt;checkout&gt;**](#project-checkout "○")' &#92;
   --revision '[**&lt;revision&gt;**](#revision "○")'
 </pre></big>
+
+- The names meet [Branches](#branches).
+- Select the evaluated revision according to [Branches](#branches).
+- The names are the ones `config/branches` states at the commit `--revision` resolves to. Standard error carries their source: the configuration path, that commit and the repository.
+- `--names` reads one `--revision`.
+- An absent, empty or unreadable statement, or a revision resolving to no commit, prints `unevaluable:` with the source and why, and exits 1.
 
 ### Fetch Remote Branch
 
@@ -204,12 +204,12 @@ git fetch origin '[**&lt;source-branch&gt;**](#source-branch "○")'
 
 Create a remote epic base from the fetched source branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Run in the [Project Checkout](#project-checkout "○").
-- Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
-
 <big><pre>
 git push origin 'origin/[**&lt;source-branch&gt;**](#source-branch "○"):refs/heads/[**&lt;epic-base&gt;**](#epic-base-name "○")'
 </pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+- Require [Missing Destination](#missing-destination "○"), [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
 ### Merge Remote Branch
 
@@ -225,36 +225,36 @@ git merge --no-edit 'origin/[**&lt;source-branch&gt;**](#source-branch "○")'
 
 Push the epic base checked out where it runs to its configured upstream and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Run in the [Checkout](#checkout "○").
-- Require [Successful Merge](#successful-merge "○") before executing the command.
-
 <big><pre>
 git push
 </pre></big>
+
+- Run in the [Checkout](#checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 ### Push Task Branch
 
 Push the head of the checkout it runs in to its named remote task branch and provide [Branch Result](#branch-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Run in the [Unit Checkout](#unit-checkout "○").
-- Require [Successful Merge](#successful-merge "○") before executing the command.
-
 <big><pre>
 git push origin 'HEAD:refs/heads/[**&lt;task-branch&gt;**](#task-branch "○")'
 </pre></big>
+
+- Run in the [Unit Checkout](#unit-checkout "○").
+- Require [Successful Merge](#successful-merge "○") before executing the command.
 
 ### Add Task Worktree
 
 Create a task branch and worktree at the fetched base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
+<big><pre>
+git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' -b '[**&lt;task-branch&gt;**](#task-branch "○")' 'origin/[**&lt;base&gt;**](#base-branch "○")'
+</pre></big>
+
 - Run in the [Project Checkout](#project-checkout "○").
 - Require [Prerequisite Evidence](#prerequisite-evidence "○") before executing the command.
 
 - The path resolves against the directory the command runs in, so supply it as [Task Branches](#task-branches) anchors it rather than relative to a linked worktree.
-
-<big><pre>
-git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' -b '[**&lt;task-branch&gt;**](#task-branch "○")' 'origin/[**&lt;base&gt;**](#base-branch "○")'
-</pre></big>
 
 ### Fetch Review Head
 
@@ -270,25 +270,25 @@ git fetch origin pull/[**&lt;pull-request-number&gt;**](#pull-request-number "�
 
 Create the worktree for an existing epic base and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Run in the [Project Checkout](#project-checkout "○").
-
-- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
-
 <big><pre>
 git worktree add '[**&lt;worktree-path&gt;**](#worktree-path "○")' '[**&lt;epic-base&gt;**](#epic-base-name "○")'
 </pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+
+- The path resolves against the directory the command runs in, so supply it as [Epic Bases](#epic-bases) anchors it rather than relative to a linked worktree.
 
 ### Add Review Worktree
 
 Create a detached worktree at the fetched review head and provide [Worktree Result](#worktree-result "●") to the requester, or [Failure](#failure "●") if the operation fails.
 
-- Run in the [Project Checkout](#project-checkout "○").
-
-- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
-
 <big><pre>
 git worktree add --detach '[**&lt;worktree-path&gt;**](#worktree-path "○")' [**&lt;head-commit&gt;**](#verified-head "○")
 </pre></big>
+
+- Run in the [Project Checkout](#project-checkout "○").
+
+- The path resolves against the directory the command runs in, so supply it as [Review Worktrees](#review-worktrees) anchors it rather than relative to a linked worktree.
 
 ### Fetch Branch Protection
 

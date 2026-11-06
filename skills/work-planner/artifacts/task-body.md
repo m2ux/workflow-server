@@ -19,8 +19,6 @@ An open pull request supplies verification evidence; completion requires its mer
 
 `<criterion-ids>` is a comma-separated list of verified criterion ids.
 
-- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
-
 <big><pre>
 cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/sync.py '[**&lt;task-json-file&gt;**](#task-record "○")' &#92;
@@ -30,6 +28,8 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
   --tick '[**&lt;criterion-ids&gt;**](#delivery-selection "○")' &#92;
   --fix '[**&lt;output-body-file&gt;**](#output-body "○")'
 </pre></big>
+
+- Tick only criteria the requester has verified. The requester publishes comments and closes the tracker issue.
 
 ## Fields
 
