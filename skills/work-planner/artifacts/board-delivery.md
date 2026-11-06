@@ -141,6 +141,35 @@ cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
 
 Provide [Board Changes](#board-changes "●") to the requester.
 
+## Commands
+
+### Compute Board Changes
+
+Computes membership, Status and assignee calls from supplied delivery evidence.
+
+- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
+
+- Missing published agent-review evidence holds the epic In Progress.
+
+- Pass each epic or task JSON file as a separate argument after its corresponding flag.
+
+<big><pre>
+cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
+  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
+  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
+  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
+  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
+  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
+  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' &#92;
+  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
+  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
+  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
+  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
+  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
+</pre></big>
+
+Provide [Board Changes](#board-changes "●") to the requester.
+
 ## Fields
 
 ### Status Changes
@@ -304,32 +333,3 @@ m2ux
 ### Workspace
 
 The absolute supplied checkout path holding the installed Work Planner scripts and sandbox helper.
-
-## Commands
-
-### Compute Board Changes
-
-Computes membership, Status and assignee calls from supplied delivery evidence.
-
-- Include each supplied [Resolved Issues](#resolved-issues "○") file with `--others`.
-
-- Missing published agent-review evidence holds the epic In Progress.
-
-- Pass each epic or task JSON file as a separate argument after its corresponding flag.
-
-<big><pre>
-cd "[**&lt;workspace&gt;**](#workspace "○")" && &#92;
-  "[**&lt;workspace&gt;**](#workspace "○")/scripts/sbx" python3 skills/work-planner/scripts/board.py '[**&lt;initiative-json-file&gt;**](#initiative-record "○")' &#92;
-  --epics '[**&lt;epic-json-file&gt;**](#epic-records "○")' &#92;
-  --tasks '[**&lt;task-json-file&gt;**](#task-records "○")' &#92;
-  --prs '[**&lt;pull-request-records-file&gt;**](#pull-request-records "○")' &#92;
-  --links '[**&lt;issue-link-snapshot-file&gt;**](#issue-link-snapshot "○")' &#92;
-  --agent-reviews '[**&lt;review-records-file&gt;**](#published-reviews "○")' &#92;
-  --board [**&lt;board-identity&gt;**](#board-identity "○") &#92;
-  --fields '[**&lt;board-fields-file&gt;**](#board-fields "○")' &#92;
-  --items '[**&lt;board-items-file&gt;**](#board-items "○")' &#92;
-  --out '[**&lt;output-directory&gt;**](#output-directory "○")' &#92;
-  --assignee '[**&lt;assignee-login&gt;**](#assignee-login "○")'
-</pre></big>
-
-Provide [Board Changes](#board-changes "●") to the requester.
